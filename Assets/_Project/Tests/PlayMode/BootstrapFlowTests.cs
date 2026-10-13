@@ -15,7 +15,6 @@ using Purge.Core.Level;
 using Purge.Core.Visual;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Visibility;
@@ -392,7 +391,7 @@ namespace Purge.Tests.PlayMode
                 Assert.AreEqual(zombie.Cell, view.Cell);
             }
 
-            // Let the AI run (patrols move) and check views follow.
+            // Let the AI run and check views follow.
             await UniTask.Delay(TimeSpan.FromSeconds(1.5));
             foreach (var zombie in zombies.Zombies)
             {
@@ -405,7 +404,6 @@ namespace Purge.Tests.PlayMode
 
             var footprints = container.Resolve<FootprintsView>().Field;
             Assert.IsNotNull(footprints, "The theme has footprints (Purge → Dev → Build Footprints).");
-            Assert.Greater(footprints.AliveCount, 0, "The patrolling zombie leaves prints, also out of the player's sight.");
             Assert.AreEqual(2, container.Resolve<VisionZonesView>().ZoneCount, "Walker and Hunter have vision zones, Listener none.");
 
             // Health bars and numbers (Purge → Dev → Build Damage Numbers).
@@ -437,7 +435,7 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
-        public IEnumerator MapFragments_Map_AndCompletion_SavesStars() => Async(async () =>
+        public IEnumerator Map_Icons_AndCompletionByKillingAll_SavesStars() => Async(async () =>
         {
             const string itemsLevel = "Level_Items";
             var catalog = _container.Resolve<ILevelCatalog>();
@@ -454,17 +452,15 @@ namespace Purge.Tests.PlayMode
                 var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
                 var level = container.Resolve<LevelData>();
                 var grid = container.Resolve<LevelGrid>();
-                var map = container.Resolve<MapSystem>();
                 var presenter = container.Resolve<MapPresenter>();
                 var ui = _container.Resolve<UIRoot>();
-                Assert.GreaterOrEqual(map.TotalCount, 2, "Level_Items has two map fragments.");
 
-                var fragment = level.MapFragments[0];
-                var probe = fragment.Region.Min;
-                Assert.AreEqual(MapRenderer.Unknown, (Color32)presenter.Texture.GetPixel(probe.X, probe.Y));
-                Assert.IsTrue(map.Collect(fragment));
-                Assert.AreEqual(MapRenderer.ColorOf(grid.GetCell(probe)), (Color32)presenter.Texture.GetPixel(probe.X, probe.Y),
-                    "Map texture redrawn on collection.");
+                for (var i = 0; i < grid.CellCount; i++)
+                {
+                    var cell = grid.ToPosition(i);
+                    Assert.AreEqual(MapRenderer.ColorOf(grid.GetCell(cell)), (Color32)presenter.Texture.GetPixel(cell.X, cell.Y),
+                        $"The whole level is drawn: {cell}.");
+                }
 
                 var runtime = container.Resolve<LevelRuntime>();
                 _flow.OpenMap();
@@ -473,44 +469,19 @@ namespace Purge.Tests.PlayMode
                 Assert.IsTrue(ui.Map.IsVisible);
                 Assert.IsFalse(ui.Hud.IsVisible);
 
-                // Icons: refreshed on opening; the player always, fragments not collected yet everywhere.
+                // Icons: refreshed on opening; the start, doors, items, zombies and the player — each with its switch.
                 var icons = presenter.Icons;
                 var player = container.Resolve<PlayerSystem>();
                 var playerIcon = icons[icons.Count - 1];
                 Assert.AreEqual(MapIconKind.Player, playerIcon.Kind);
-                Assert.IsTrue(playerIcon.Visible, "The player is shown also outside collected regions.");
+                Assert.IsTrue(playerIcon.Visible);
                 Assert.AreEqual(MapIconLayout.CenterOf(player.Position), playerIcon.Center);
-                var fragmentIcons = icons.Where(icon => icon.Kind == MapIconKind.MapFragment).ToList();
-                Assert.AreEqual(map.TotalCount, fragmentIcons.Count);
-                Assert.IsFalse(fragmentIcons[0].Visible, "Collected fragment: no icon.");
-                Assert.IsTrue(fragmentIcons[1].Visible, "Not collected: shown even in an unknown region.");
-                var start = level.PlayerStarts[0].Position;
-                Assert.AreEqual(map.IsRevealed(start), icons[0].Visible, "The start only in collected regions.");
-                foreach (var doorIcon in icons.Where(icon => icon.Kind == MapIconKind.Door || icon.Kind == MapIconKind.LockedDoor))
-                {
-                    var cell = new GridPosition(Mathf.FloorToInt(doorIcon.Center.x), Mathf.FloorToInt(doorIcon.Center.y));
-                    Assert.AreEqual(map.IsRevealed(cell), doorIcon.Visible, "Doors only in collected regions.");
-                }
+                Assert.IsTrue(icons[0].Visible, "The start.");
+                Assert.IsTrue(icons.Where(icon => icon.Kind == MapIconKind.Door || icon.Kind == MapIconKind.LockedDoor)
+                    .All(icon => icon.Visible), "Doors.");
 
-                // Zombies, weapons, medkits, keys: bought per level with a rewarded ad (simulated in the editor), then
-                // shown everywhere (also unknown regions), each with its switch; the purchase is saved for the level.
-                var progress = _container.Resolve<IProgressService>();
-                progress.ResetProgress();
-                ui.Map.gameObject.SetActive(false);
-                ui.Map.gameObject.SetActive(true); // Re-open: the switches follow the reset.
-                Assert.IsFalse(presenter.Icons.Any(icon => icon.Kind == MapIconKind.Zombie && icon.Visible), "Locked: no zombies.");
-                foreach (var layer in new[] { MapLayer.Zombies, MapLayer.Weapons, MapLayer.Medkits, MapLayer.Keys })
-                {
-                    var unlock = ui.Map.UnlockButton(layer);
-                    Assert.IsTrue(unlock.gameObject.activeSelf, $"{layer}: locked at first.");
-                    unlock.onClick.Invoke();
-                    Assert.IsFalse(unlock.gameObject.activeSelf, $"{layer}: unlocked by the ad.");
-                }
-
-                Assert.IsTrue(progress.IsMapLayerUnlocked(itemsLevel, MapUnlock.Zombies | MapUnlock.Keys), "Saved for the level.");
-                Assert.IsFalse(progress.IsMapLayerUnlocked("Level_01", MapUnlock.Zombies), "Only for this level.");
-                icons = presenter.Icons;
                 var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
+                Assert.Greater(zombies.TotalCount, 0, "Level_Items has zombies.");
                 var zombieIcons = icons.Where(icon => icon.Kind == MapIconKind.Zombie).ToList();
                 Assert.AreEqual(zombies.TotalCount, zombieIcons.Count);
                 Assert.IsTrue(zombieIcons.All(icon => icon.Visible), "Living zombies are shown wherever they are.");
@@ -518,6 +489,7 @@ namespace Purge.Tests.PlayMode
                 Assert.AreEqual(level.Keys.Count, icons.Count(icon => icon.Kind == MapIconKind.Key && icon.Visible));
                 Assert.AreEqual(level.Medkits.Count, icons.Count(icon => icon.Kind == MapIconKind.Medkit && icon.Visible));
                 Assert.AreEqual(level.Weapons.Count, icons.Count(icon => icon.Kind == MapIconKind.Weapon && icon.Visible));
+
                 var zombieToggle = ui.Map.transform.Find("SafeArea/ShowZombiesToggle").GetComponent<Toggle>();
                 var iconCount = presenter.Icons.Count;
                 zombieToggle.isOn = false;
@@ -532,25 +504,17 @@ namespace Purge.Tests.PlayMode
                 Assert.IsFalse(_container.Resolve<SettingsService>().MapShowPlayer, "Saved in the settings.");
                 playerToggle.isOn = true;
 
-                // Route hint: the magnifier lays a route, drawn on the map and, after closing it, on the floor.
-                var route = container.Resolve<Purge.Gameplay.Navigation.RouteHintSystem>();
-                ui.Map.transform.Find("ButtonsSafeArea/HintButton").GetComponent<Button>().onClick.Invoke();
-                Assert.IsTrue(route.IsActive, "Level_Items: something useful is always reachable from the start.");
-                Assert.GreaterOrEqual(ui.Map.GetComponentInChildren<MapRouteGraphic>().PointCount, 2, "The route on the map.");
                 _flow.CloseMap();
                 Assert.AreEqual(LevelRunState.Running, runtime.State);
-                await UniTask.DelayFrame(2);
-                var line = container.Resolve<RouteLineView>();
-                Assert.IsTrue(line.IsShown, "The route on the floor.");
-                Assert.AreEqual((Vector2)player.Position, line.Points[0], "It starts at the player.");
 
-                _flow.CompleteLevel();
+                // Temporary win rule (until waves): the last zombie killed completes the level.
+                foreach (var zombie in zombies.Zombies.ToList())
+                    if (zombie.IsAlive) zombie.ApplyDamage(100000f, Vector2.left);
                 Assert.AreEqual(GameFlowState.Completed, _flow.State);
                 var result = _flow.LastResult.Value;
-                Assert.AreEqual(1, result.Fragments);
-                Assert.IsFalse(result.AllZombiesKilled);
-                Assert.AreEqual(1, result.Stars, "Exit only: zombies alive, one fragment missing.");
-                Assert.GreaterOrEqual(_container.Resolve<IProgressService>().GetStars(itemsLevel), 1);
+                Assert.IsTrue(result.AllZombiesKilled);
+                Assert.AreEqual(LevelResult.MaxStars, result.Stars);
+                Assert.AreEqual(LevelResult.MaxStars, _container.Resolve<IProgressService>().GetStars(itemsLevel));
                 Assert.IsTrue(ui.Result.IsVisible);
 
                 await _flow.ExitToMenu();
@@ -612,7 +576,7 @@ namespace Purge.Tests.PlayMode
 
         /// <summary>
         /// The tutorial from its menu button: the first step's window pauses the level, Continue resumes; the reminder,
-        /// the arrow and the route line show the step; the map opened counts for the map step.
+        /// the arrow shows the step; the map opened counts for the map step.
         /// </summary>
         [UnityTest]
         public IEnumerator Tutorial_WindowPausesTheLevel_ContinueResumes() => Async(async () =>
@@ -648,8 +612,6 @@ namespace Purge.Tests.PlayMode
             await UniTask.Yield();
             await UniTask.Yield();
             Assert.IsTrue(ui.Tutorial.transform.Find("Pointer").gameObject.activeSelf, "The arrow points at the target.");
-            Assert.AreEqual(Purge.Gameplay.Navigation.RouteTarget.Guide,
-                container.Resolve<Purge.Gameplay.Navigation.RouteHintSystem>().Target, "The line leads to it.");
 
             await _flow.ExitToMenu();
             Assert.IsFalse(ui.Tutorial.IsVisible);

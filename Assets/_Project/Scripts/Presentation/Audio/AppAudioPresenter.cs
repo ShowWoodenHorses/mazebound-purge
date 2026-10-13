@@ -94,17 +94,11 @@ namespace Purge.Presentation.Audio
 
                 case GameFlowState.Paused:
                 case GameFlowState.Map:
-                case GameFlowState.ExitConfirmation:
                 case GameFlowState.Tip:
                     _audio.SetLevelPaused(true);
                     _audio.SetMusicShare(Catalog.PausedMusicVolume);
                     if (state == GameFlowState.Paused || state == GameFlowState.Tip) Play(Catalog.PauseOpen);
-                    else if (state == GameFlowState.Map) Play(Catalog.MapOpen);
-                    else
-                    {
-                        Play(Catalog.ExitReached);
-                        Play(Catalog.ConfirmExit);
-                    }
+                    else Play(Catalog.MapOpen);
                     break;
 
                 case GameFlowState.Completed:

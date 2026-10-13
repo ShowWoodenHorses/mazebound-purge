@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -182,7 +163,6 @@ MonoBehaviour:
   - RECARREGANDO
   - "{0}: pressione \u201CA\xE7\xE3o\u201D para pegar"
   - 'Pegou: {0}'
-  - Fragmento do mapa {0}/{1} encontrado
   - 'Trancada: precisa de uma chave'
   - 'Trancada: precisa da chave vermelha'
   - 'Trancada: precisa da chave azul'
@@ -205,7 +185,6 @@ MonoBehaviour:
   - "Rifle rev\xF3lver"
   - "Rifle de precis\xE3o"
   - Submetralhadora com silenciador
-  - "FINALIZAR O N\xCDVEL?"
   - PAUSADO
   - CONTINUAR
   - "REINICIAR N\xCDVEL"
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: FALHAR'
   - "N\xCDVEL CONCLU\xCDDO"
   - "N\xCDVEL FRACASSADO"
-  - "SA\xCDDA ENCONTRADA"
-  - "SA\xCDDA N\xC3O ENCONTRADA"
   - ZUMBIS {0}/{1}
-  - MAPA {0}/{1}
   - TEMPO {0}
   - RECORDE {0}
   - NOVO RECORDE!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - ALGO DEU ERRADO
   - VOLTAR AO MENU
   - JOGADOR
-  - PARTES DO MAPA
   - ZUMBIS
   - ARMAS
   - "KITS M\xC9DICOS"
   - CHAVES
-  - "Rota at\xE9 o fragmento de mapa mais pr\xF3ximo"
-  - "Rota at\xE9 a sa\xEDda"
-  - "Rota at\xE9 a chave mais pr\xF3xima"
-  - "Rota at\xE9 a porta que sua chave abre"
-  - Nenhuma rota encontrada
-  - "Este n\xEDvel n\xE3o tem mapa"
-  - Nenhum fragmento do mapa encontrado ainda (0/{0})
-  - 'Fragmentos do mapa: {0}/{1}'
   - CONTROLES
   - TIRO
   - OUTROS
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Entre para manter seu progresso em todos os dispositivos
   - TUTORIAL
   - "TUTORIAL CONCLU\xCDDO"
-  - Rota do tutorial
   - "O an\xFAncio n\xE3o est\xE1 dispon\xEDvel agora"
   - Gire o seu aparelho
   - ENTENDI
@@ -331,16 +297,10 @@ MonoBehaviour:
   - "Ferido? Um kit m\xE9dico cura voc\xEA por completo.\nPise nele \u2014 ele s\xF3
     \xE9 usado quando sua vida n\xE3o est\xE1 cheia."
   - "Pise no kit m\xE9dico"
-  - "Este \xE9 um fragmento do mapa. Cada um revela uma parte do mapa do n\xEDvel."
-  - Pegue o fragmento do mapa
   - "Abra o mapa com M ou com o bot\xE3o do mapa no canto superior direito. No mapa,
     a lupa mostra o caminho at\xE9 o objetivo mais pr\xF3ximo."
   - "Abra o mapa com o bot\xE3o do mapa no canto superior direito. No mapa, a lupa
     mostra o caminho at\xE9 o objetivo mais pr\xF3ximo."
   - 'Abra o mapa: M'
   - Abra o mapa
-  - "Agora v\xE1 at\xE9 a sa\xEDda \u2014 a escada.\nNos n\xEDveis voc\xEA ganha
-    estrelas: uma pela sa\xEDda, uma por matar todos os zumbis e uma por todos os
-    fragmentos do mapa."
-  - "V\xE1 at\xE9 a sa\xEDda"
   _missing: []

@@ -42,7 +42,7 @@ namespace Purge.Tests.EditMode.Flow
         {
             _fixture = new VisualFixture();
             LevelAuthoring.GenerateNew(_fixture.Level);
-            _invalidLevel = ScriptableObject.CreateInstance<LevelData>(); // no starts, no exits
+            _invalidLevel = ScriptableObject.CreateInstance<LevelData>(); // no player start
 
             _catalogAsset = ScriptableObject.CreateInstance<LevelCatalog>();
             _catalogAsset.AddOrUpdate(ValidId, "Levels/valid", "Valid");
@@ -310,50 +310,26 @@ namespace Purge.Tests.EditMode.Flow
         });
 
         [UnityTest]
-        public IEnumerator ExitReached_PausesAndAsks_NoResumes_YesCompletes() => UniTask.ToCoroutine(async () =>
-        {
-            await BootToMenu();
-            await _flow.StartLevel(ValidId);
-            var session = _sessions.Created[0];
-
-            session.RaiseExitReached();
-            Assert.AreEqual(GameFlowState.ExitConfirmation, _flow.State);
-            Assert.IsTrue(session.Paused, "Gameplay waits for the answer.");
-
-            _flow.ConfirmExit(false);
-            Assert.AreEqual(GameFlowState.Playing, _flow.State);
-            Assert.IsFalse(session.Paused);
-
-            session.RaiseExitReached();
-            _flow.ConfirmExit(true);
-            Assert.AreEqual(GameFlowState.Completed, _flow.State);
-            Assert.IsTrue(session.Stopped);
-        });
-
-        [UnityTest]
         public IEnumerator Completion_CalculatesStars_SavesProgress_BeforeResultWindow() => UniTask.ToCoroutine(async () =>
         {
             await BootToMenu();
             await _flow.StartLevel(ValidId);
             var session = _sessions.Created[0];
-            session.Kills = 2;
+            session.Kills = 1;
             session.TotalZombies = 2;
-            session.Fragments = 1;
-            session.TotalFragments = 3;
             var savedBeforeResult = false;
             _flow.StateChanged += state =>
             {
                 if (state == GameFlowState.Completed) savedBeforeResult = _progress.Recorded.Count == 1;
             };
 
-            session.RaiseExitReached();
-            _flow.ConfirmExit(true);
+            session.RaiseFinished(LevelOutcome.Completed);
 
             Assert.IsTrue(savedBeforeResult, "ТЗ §89: Calculate Stars → Save → Result Window.");
             Assert.AreEqual(ValidId, _progress.Recorded[0].Key);
             var result = _flow.LastResult.Value;
             Assert.IsTrue(result.Completed);
-            Assert.AreEqual(2, result.Stars, "Exit + all zombies; fragments 1/3.");
+            Assert.AreEqual(2, result.Stars, "Completion + the former map star; zombies 1/2.");
             Assert.AreEqual(result.Stars, _progress.Recorded[0].Value.Stars);
         });
 
@@ -387,8 +363,6 @@ namespace Purge.Tests.EditMode.Flow
             Assert.AreEqual(GameFlowState.Map, _flow.State);
             Assert.IsTrue(session.Paused, "ТЗ §60: the map pauses gameplay.");
 
-            session.RaiseExitReached();
-            Assert.AreEqual(GameFlowState.Map, _flow.State, "Nothing happens while paused.");
 
             _flow.CloseMap();
             Assert.AreEqual(GameFlowState.Playing, _flow.State);
@@ -397,17 +371,6 @@ namespace Purge.Tests.EditMode.Flow
             _flow.PauseGameplay();
             _flow.OpenMap();
             Assert.AreEqual(GameFlowState.Paused, _flow.State, "Not from the pause menu.");
-        });
-
-        [UnityTest]
-        public IEnumerator ExitReached_WhilePaused_IsIgnored() => UniTask.ToCoroutine(async () =>
-        {
-            await BootToMenu();
-            await _flow.StartLevel(ValidId);
-            _flow.PauseGameplay();
-
-            _sessions.Created[0].RaiseExitReached();
-            Assert.AreEqual(GameFlowState.Paused, _flow.State);
         });
 
         [UnityTest]
@@ -468,8 +431,6 @@ namespace Purge.Tests.EditMode.Flow
             public bool IsUnlocked(string levelId) => true;
             public int GetStars(string levelId) => 0;
             public float GetBestTime(string levelId) => 0f;
-            public bool IsMapLayerUnlocked(string levelId, MapUnlock layer) => false;
-            public void UnlockMapLayer(string levelId, MapUnlock layer) { }
             public void RecordCompletion(string levelId, LevelResult result) =>
                 Recorded.Add(new KeyValuePair<string, LevelResult>(levelId, result));
             public void ResetProgress() => Recorded.Clear();
@@ -514,11 +475,9 @@ namespace Purge.Tests.EditMode.Flow
             public bool Unloaded { get; private set; }
 
             public event Action<LevelOutcome> Finished;
-            public event Action ExitReached;
 
             public void RaiseFinished(LevelOutcome outcome) => Finished?.Invoke(outcome);
 
-            public void RaiseExitReached() => ExitReached?.Invoke();
 
             public async UniTask LoadAsync(CancellationToken cancellation)
             {
@@ -530,10 +489,10 @@ namespace Purge.Tests.EditMode.Flow
             public void SetPaused(bool paused) => Paused = paused;
             public void StopGameplay() => Stopped = true;
 
-            public int Kills, TotalZombies, Fragments, TotalFragments;
+            public int Kills, TotalZombies;
 
             public LevelResult GetResult(LevelOutcome outcome) =>
-                new LevelResult(outcome == LevelOutcome.Completed, Kills, TotalZombies, Fragments, TotalFragments);
+                new LevelResult(outcome == LevelOutcome.Completed, Kills, TotalZombies);
 
             public UniTask UnloadAsync()
             {

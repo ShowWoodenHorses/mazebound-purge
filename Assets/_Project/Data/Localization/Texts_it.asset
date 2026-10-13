@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -182,7 +163,6 @@ MonoBehaviour:
   - RICARICA
   - "{0}: premi \xABAzione\xBB per raccogliere"
   - 'Raccolto: {0}'
-  - Frammento di mappa {0}/{1} trovato
   - 'Chiusa a chiave: serve una chiave'
   - 'Chiusa a chiave: serve la chiave rossa'
   - 'Chiusa a chiave: serve la chiave blu'
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Fucile a tamburo
   - Fucile da cecchino
   - Mitraglietta silenziata
-  - TERMINARE IL LIVELLO?
   - PAUSA
   - RIPRENDI
   - RICOMINCIA IL LIVELLO
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: FALLISCI'
   - LIVELLO COMPLETATO
   - LIVELLO FALLITO
-  - USCITA TROVATA
-  - USCITA NON TROVATA
   - ZOMBI {0}/{1}
-  - MAPPA {0}/{1}
   - TEMPO {0}
   - RECORD {0}
   - NUOVO RECORD!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - "QUALCOSA \xC8 ANDATO STORTO"
   - TORNA AL MENU
   - GIOCATORE
-  - PEZZI DI MAPPA
   - ZOMBI
   - ARMI
   - KIT MEDICI
   - CHIAVI
-  - "Percorso verso il frammento di mappa pi\xF9 vicino"
-  - "Percorso verso l\u2019uscita"
-  - "Percorso verso la chiave pi\xF9 vicina"
-  - Percorso verso la porta che apre la tua chiave
-  - Nessun percorso trovato
-  - Questo livello non ha una mappa
-  - Ancora nessun frammento di mappa trovato (0/{0})
-  - 'Frammenti di mappa: {0}/{1}'
   - COMANDI
   - TIRO
   - ALTRO
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Accedi per conservare i progressi su tutti i dispositivi
   - TUTORIAL
   - TUTORIAL COMPLETATO
-  - Percorso del tutorial
   - "La pubblicit\xE0 non \xE8 disponibile al momento"
   - Ruota il dispositivo
   - HO CAPITO
@@ -332,16 +298,10 @@ MonoBehaviour:
   - "Ferito? Un kit medico ti cura del tutto.\nCammina sopra \u2014 viene usato solo
     se la salute non \xE8 piena."
   - Cammina sul kit medico
-  - "Questo \xE8 un frammento di mappa. Ognuno rivela una parte della mappa del livello."
-  - Raccogli il frammento di mappa
   - "Apri la mappa con M o con il pulsante della mappa in alto a destra. Sulla mappa,
     la lente mostra la strada verso l\u2019obiettivo pi\xF9 vicino."
   - "Apri la mappa con il pulsante della mappa in alto a destra. Sulla mappa, la
     lente mostra la strada verso l\u2019obiettivo pi\xF9 vicino."
   - 'Apri la mappa: M'
   - Apri la mappa
-  - "Ora vai all\u2019uscita \u2014 la scala.\nNei livelli guadagni stelle: una per
-    l\u2019uscita, una per aver ucciso tutti gli zombi e una per tutti i frammenti
-    di mappa."
-  - "Vai all\u2019uscita"
   _missing: []

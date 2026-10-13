@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - English
   - SETTINGS
@@ -182,7 +163,6 @@ MonoBehaviour:
   - RELOAD
   - '{0}: press Use to pick up'
   - Picked up {0}
-  - Map fragment {0}/{1} found
   - 'Locked: needs a key'
   - 'Locked: needs the red key'
   - 'Locked: needs the blue key'
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Revolver rifle
   - Sniper rifle
   - Silenced SMG
-  - FINISH LEVEL?
   - PAUSED
   - RESUME
   - RESTART LEVEL
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: FAIL'
   - LEVEL COMPLETE
   - LEVEL FAILED
-  - EXIT FOUND
-  - NO EXIT
   - ZOMBIES {0}/{1}
-  - MAP {0}/{1}
   - TIME {0}
   - BEST {0}
   - NEW RECORD!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - SOMETHING WENT WRONG
   - BACK TO MENU
   - PLAYER
-  - MAP PIECES
   - ZOMBIES
   - WEAPONS
   - MEDKITS
   - KEYS
-  - Route to the nearest map fragment
-  - Route to the exit
-  - Route to the nearest key
-  - Route to the door your key opens
-  - No route found
-  - This level has no map
-  - No map fragments found yet (0/{0})
-  - 'Map fragments: {0}/{1}'
   - CONTROLS
   - SHOOTING
   - OTHER
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Sign in to keep your progress on all devices
   - TUTORIAL
   - TUTORIAL COMPLETE
-  - Tutorial route
   - Ad is not available right now
   - Rotate your device
   - GOT IT
@@ -349,15 +315,10 @@ MonoBehaviour:
   - "Hurt? A medkit heals you to full.\nStep on it \u2014 it is used only when your
     health is not full."
   - Step on the medkit
-  - This is a map fragment. Each one reveals a part of the level map.
-  - Pick up the map fragment
   - Open the map with M or the map button at the top right. On the map, the magnifier
     shows the way to the nearest goal.
   - Open the map with the map button at the top right. On the map, the magnifier
     shows the way to the nearest goal.
   - 'Open the map: M'
   - Open the map
-  - "Now go to the exit \u2014 the stairs.\nIn the levels you earn stars: one for
-    the exit, one for killing all zombies and one for all map fragments."
-  - Go to the exit
   _missing: []

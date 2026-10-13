@@ -17,12 +17,9 @@ MonoBehaviour:
   _generation:
     _width: 15
     _height: 27
-    _mazeSeed: 0
+    _layoutSeed: 0
     _visualSeed: 0
-    _mazeAlgorithm: 0
-    _loopDensity: 0.1
-    _initialPlayerStartCount: 1
-    _initialExitCount: 1
+    _obstacleDensity: 0
     _lightDensity: 0.5
     _decorDensity: 0.15
     _maxAutoDecorHeight: 0.3
@@ -30,19 +27,14 @@ MonoBehaviour:
     _width: 15
     _height: 27
     _cells: 000000000000000000000000000000000101010101010101010001010100000100000000000100010001000000000101010101010100010001010100000100010000000000010001000100000101010001010100010001000100000100010001000000010000000100000100010001010100010101000100000000010001000100000001000100000101010001000101010001000100000100000000000000010001000100000101010101000101010101000100000100000001000100000001000100000101010101000101010101000100000000010000000100000000000100000101010101000101010001010100000100000001000000010001000100000100010101010100010001000100000100010001000000010000000100000100010001010101010001010100000100000000000101000001000100000100010101010101010101000100000100010001010101010000000100000101010001010101010001000100000100000001010101010101000100000101010001010101010101010100000000000000000000000000000000
+    _surfaces: 
   _doors: []
   _playerStarts:
   - _id: start_1
     _position:
       _x: 11
       _y: 23
-  _exits:
-  - _id: exit_1
-    _position:
-      _x: 7
-      _y: 5
   _zombieSpawns: []
-  _patrols: []
   _weapons:
   - _id: weapon_1
     _position:
@@ -96,7 +88,6 @@ MonoBehaviour:
     _definition: {fileID: 11400000, guid: 05592bd23d54afc4fa8f4f31f4a5f45b, type: 2}
   _keys: []
   _medkits: []
-  _mapFragments: []
   _lights:
   - _id: light_1
     _cell:
@@ -1844,10 +1835,6 @@ MonoBehaviour:
     _decorPlacements: []
     _objectPlacements: []
     _objectAssignments:
-    - _entityId: exit_1
-      _choice:
-        _variantId: exit_01
-        _rotation: 3
     - _entityId: weapon_1
       _choice:
         _variantId: weapon_assault_rifle_01
@@ -1889,3 +1876,4 @@ MonoBehaviour:
         _variantId: weapon_smg
         _rotation: 0
     _objectOverrides: []
+  _tutorial: {fileID: 0}

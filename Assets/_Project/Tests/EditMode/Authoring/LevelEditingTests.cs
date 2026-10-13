@@ -14,14 +14,14 @@ namespace Purge.Tests.EditMode.Authoring
         private VisualFixture _fixture;
         private LevelData Level => _fixture.Level;
 
-        // Generated 21x21 maze: (1,1) is a room (floor), (2,2) a pillar (always wall).
+        // Generated 21x21 field with every pillar: (1,1) is floor, (2,2) a pillar (wall).
         private static readonly GridPosition Room = new GridPosition(1, 1);
         private static readonly GridPosition Pillar = new GridPosition(2, 2);
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new VisualFixture();
+            _fixture = new VisualFixture(obstacles: 1f);
             LevelAuthoring.GenerateNew(Level);
         }
 
@@ -248,23 +248,6 @@ namespace Purge.Tests.EditMode.Authoring
 
             Assert.IsFalse(LevelEditing.Rename(Level, key, door.Id));
             Assert.IsFalse(LevelEditing.Rename(Level, key, "  "));
-        }
-
-        [Test]
-        public void Patrol_CreatedOnFirstPoint_RemovedWithZombie()
-        {
-            var zombie = LevelEditing.AddZombie(Level, Room, _fixture.Walker, Direction.East);
-            var patrol = LevelEditing.AddPatrolPoint(Level, zombie, new GridPosition(1, 3));
-            LevelEditing.AddPatrolPoint(Level, zombie, new GridPosition(3, 1));
-
-            Assert.AreEqual(patrol.Id, zombie.PatrolId);
-            Assert.AreEqual(2, patrol.Points.Count);
-
-            LevelEditing.RemoveLastPatrolPoint(Level, zombie);
-            Assert.AreEqual(1, patrol.Points.Count);
-
-            LevelEditing.Remove(Level, zombie);
-            Assert.IsEmpty(Level.Patrols);
         }
 
         [Test]

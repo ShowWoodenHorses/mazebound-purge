@@ -47,8 +47,6 @@ namespace Purge.Editor.Dev
             set.Start = Draw("map_start", 1, Flag, null);
             set.Door = Draw("map_door", 2, DoorPlank, DoorDetails);
             set.LockedDoor = Draw("map_locked_door", 3, Padlock, Keyhole);
-            set.Exit = Draw("map_exit", 4, ExitArrow, null);
-            set.MapFragment = Draw("map_fragment", 5, Scroll, ScrollDetails);
             set.Player = Draw("map_player", 6, PlayerArrow, null);
             set.Zombie = Draw("map_zombie", 7, Skull, SkullDetails);
             set.Weapon = Draw("map_weapon", 8, Sword, null);
@@ -88,26 +86,6 @@ namespace Purge.Editor.Dev
         private static float Keyhole(Vector2 p) => Mathf.Min(
             Circle(p, new Vector2(0f, -0.16f), 0.12f),
             Polygon(p, new Vector2(-0.07f, -0.2f), new Vector2(0.07f, -0.2f), new Vector2(0.12f, -0.52f), new Vector2(-0.12f, -0.52f)));
-
-        private static float ExitArrow(Vector2 p) => Mathf.Min(
-            Mathf.Min(RoundBox(p, new Vector2(0f, -0.12f), new Vector2(0.17f, 0.42f), 0.04f),
-                Polygon(p, new Vector2(-0.6f, 0.22f), new Vector2(0.6f, 0.22f), new Vector2(0f, 0.88f))),
-            RoundBox(p, new Vector2(0f, -0.74f), new Vector2(0.72f, 0.1f), 0.06f));
-
-        private static float Scroll(Vector2 p) => Mathf.Min(
-            RoundBox(p, Vector2.zero, new Vector2(0.56f, 0.66f), 0.05f),
-            Mathf.Min(Capsule(p, new Vector2(-0.68f, 0.66f), new Vector2(0.68f, 0.66f), 0.14f),
-                Capsule(p, new Vector2(-0.68f, -0.66f), new Vector2(0.68f, -0.66f), 0.14f)));
-
-        private static float ScrollDetails(Vector2 p)
-        {
-            var lines = Mathf.Min(Capsule(p, new Vector2(-0.36f, 0.32f), new Vector2(0.36f, 0.3f), 0.03f),
-                Capsule(p, new Vector2(-0.36f, 0.1f), new Vector2(0.2f, 0.12f), 0.03f));
-            var cross = Mathf.Min(Capsule(p, new Vector2(0.06f, -0.48f), new Vector2(0.36f, -0.18f), 0.045f),
-                Capsule(p, new Vector2(0.06f, -0.18f), new Vector2(0.36f, -0.48f), 0.045f));
-            var trail = Capsule(p, new Vector2(-0.38f, -0.4f), new Vector2(-0.1f, -0.3f), 0.025f);
-            return Mathf.Min(lines, Mathf.Min(cross, trail));
-        }
 
         private static float PlayerArrow(Vector2 p) => Polygon(p,
             new Vector2(0f, 0.9f), new Vector2(0.66f, -0.72f), new Vector2(0f, -0.36f), new Vector2(-0.66f, -0.72f));

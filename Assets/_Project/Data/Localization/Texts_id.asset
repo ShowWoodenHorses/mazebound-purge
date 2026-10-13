@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -182,7 +163,6 @@ MonoBehaviour:
   - ISI ULANG
   - "{0}: tekan \u201CAksi\u201D untuk mengambil"
   - 'Diambil: {0}'
-  - Fragmen peta {0}/{1} ditemukan
   - 'Terkunci: perlu kunci'
   - 'Terkunci: perlu kunci merah'
   - 'Terkunci: perlu kunci biru'
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Senapan revolver
   - Senapan runduk
   - SMG berperedam
-  - SELESAIKAN LEVEL?
   - JEDA
   - LANJUTKAN
   - ULANGI LEVEL
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: GAGAL'
   - LEVEL SELESAI
   - LEVEL GAGAL
-  - JALAN KELUAR DITEMUKAN
-  - JALAN KELUAR TIDAK DITEMUKAN
   - ZOMBI {0}/{1}
-  - PETA {0}/{1}
   - WAKTU {0}
   - REKOR {0}
   - REKOR BARU!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - TERJADI KESALAHAN
   - KEMBALI KE MENU
   - PEMAIN
-  - BAGIAN PETA
   - ZOMBI
   - SENJATA
   - KOTAK P3K
   - KUNCI
-  - Rute ke fragmen peta terdekat
-  - Rute ke jalan keluar
-  - Rute ke kunci terdekat
-  - Rute ke pintu yang dibuka kuncimu
-  - Rute tidak ditemukan
-  - Level ini tidak punya peta
-  - Belum ada fragmen peta yang ditemukan (0/{0})
-  - 'Fragmen peta: {0}/{1}'
   - KONTROL
   - MENEMBAK
   - LAINNYA
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Masuk untuk menyimpan progres di semua perangkat
   - TUTORIAL
   - TUTORIAL SELESAI
-  - Rute tutorial
   - Iklan tidak tersedia saat ini
   - Putar perangkatmu
   - MENGERTI
@@ -348,16 +314,10 @@ MonoBehaviour:
   - "Terluka? Kotak P3K memulihkan nyawamu sepenuhnya.\nInjak saja \u2014 hanya terpakai
     saat nyawamu tidak penuh."
   - Injak kotak P3K
-  - Ini fragmen peta. Setiap fragmen membuka sebagian peta level.
-  - Ambil fragmen peta
   - Buka peta dengan M atau tombol peta di kanan atas. Di peta, kaca pembesar menunjukkan
     jalan ke tujuan terdekat.
   - Buka peta dengan tombol peta di kanan atas. Di peta, kaca pembesar menunjukkan
     jalan ke tujuan terdekat.
   - 'Buka peta: M'
   - Buka peta
-  - "Sekarang pergilah ke jalan keluar \u2014 tangga.\nDi setiap level kamu mendapat
-    bintang: satu untuk jalan keluar, satu untuk mengalahkan semua zombi, dan satu
-    untuk semua fragmen peta."
-  - Pergi ke jalan keluar
   _missing: []

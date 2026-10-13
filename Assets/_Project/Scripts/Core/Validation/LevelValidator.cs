@@ -49,22 +49,14 @@ namespace Purge.Core.Validation
 
         // ---------------------------------------------------------------- Structural
 
-        /// <remarks>
-        /// Size parity is not checked: odd size is a requirement of the generator only; a finished, manually
-        /// edited level may have any size.
-        /// </remarks>
         private static void ValidateStructure(LevelData level, ValidationReport report)
         {
             if (level.PlayerStarts.Count == 0)
                 report.Add(Error, Structural, ValidationCodes.NoPlayerStart, "Level has no player start.");
 
-            if (level.Exits.Count == 0)
-                report.Add(Error, Structural, ValidationCodes.NoExit, "Level has no exit.");
-
             ValidateIds(level, report);
             ValidatePlacement(level, report);
             ValidateReferences(level, report);
-            ValidateMapFragments(level, report);
             ValidateSurfaces(level, report);
             ValidateTutorial(level, report);
 
@@ -107,9 +99,8 @@ namespace Purge.Core.Validation
                         $"cell {step.Cell} is outside the level",
                     TutorialGoal.Reach when !step.HasTarget && level.Geometry.GetCell(step.Cell) != CellType.Floor =>
                         $"cell {step.Cell} is not floor",
-                    TutorialGoal.Collect when !(target is KeyData || target is MedkitData || target is WeaponPickupData ||
-                                                target is MapFragmentData) =>
-                        "Collect needs a key, medkit, weapon or map fragment as the target",
+                    TutorialGoal.Collect when !(target is KeyData || target is MedkitData || target is WeaponPickupData) =>
+                        "Collect needs a key, medkit or weapon as the target",
                     TutorialGoal.UnlockDoor when !(target is DoorData door && door.RequiresKey) =>
                         "Unlock Door needs a locked door as the target",
                     TutorialGoal.OpenDoor when !(target is DoorData) => "Open Door needs a door as the target",
@@ -233,63 +224,17 @@ namespace Purge.Core.Validation
                 if (!usedKeyIds.Contains(key.Id))
                     report.Add(Warning, Structural, ValidationCodes.UnusedKey, $"Key '{key.Id}' does not open any door.", key.Position, key.Id);
 
-            var patrolIds = new HashSet<string>(level.Patrols.Select(p => p.Id));
-            var usedPatrolIds = new HashSet<string>();
-
             foreach (var zombie in level.ZombieSpawns)
             {
                 if (zombie.Definition == null)
                     report.Add(Error, Structural, ValidationCodes.MissingDefinition,
                         $"Zombie '{zombie.Id}' has no ZombieDefinition.", zombie.Position, zombie.Id);
-
-                if (!zombie.HasPatrol)
-                    continue;
-
-                usedPatrolIds.Add(zombie.PatrolId);
-                if (!patrolIds.Contains(zombie.PatrolId))
-                    report.Add(Error, Structural, ValidationCodes.MissingPatrolReference,
-                        $"Zombie '{zombie.Id}' uses missing patrol '{zombie.PatrolId}'.", zombie.Position, zombie.Id);
             }
 
             foreach (var weapon in level.Weapons)
                 if (weapon.Definition == null)
                     report.Add(Error, Structural, ValidationCodes.MissingDefinition,
                         $"Weapon '{weapon.Id}' has no WeaponDefinition.", weapon.Position, weapon.Id);
-
-            foreach (var patrol in level.Patrols)
-            {
-                if (patrol.Points.Count < 2)
-                    report.Add(Warning, Structural, ValidationCodes.PatrolTooShort,
-                        $"Patrol '{patrol.Id}' has {patrol.Points.Count} point(s); at least 2 are needed.", entityId: patrol.Id);
-
-                foreach (var point in patrol.Points)
-                    if (!geometry.IsInside(point) || geometry.GetCell(point) == CellType.Wall)
-                        report.Add(Error, Structural, ValidationCodes.InvalidPatrolPoint,
-                            $"Patrol '{patrol.Id}' point {point} is outside the level or inside a wall.", point, patrol.Id);
-
-                if (!usedPatrolIds.Contains(patrol.Id))
-                    report.Add(Warning, Structural, ValidationCodes.UnusedPatrol, $"Patrol '{patrol.Id}' is not used by any zombie.", entityId: patrol.Id);
-            }
-        }
-
-        private static void ValidateMapFragments(LevelData level, ValidationReport report)
-        {
-            var geometry = level.Geometry;
-            var fragments = level.MapFragments;
-
-            foreach (var fragment in fragments)
-            {
-                var r = fragment.Region;
-                if (r.IsEmpty || r.X < 0 || r.Y < 0 || r.XMax > geometry.Width || r.YMax > geometry.Height)
-                    report.Add(Error, Structural, ValidationCodes.InvalidFragmentRegion,
-                        $"Map fragment '{fragment.Id}' region {r} is empty or outside the level.", fragment.Position, fragment.Id);
-            }
-
-            for (var i = 0; i < fragments.Count; i++)
-            for (var j = i + 1; j < fragments.Count; j++)
-                if (fragments[i].Region.Overlaps(fragments[j].Region))
-                    report.Add(Error, Structural, ValidationCodes.FragmentOverlap,
-                        $"Map fragments '{fragments[i].Id}' and '{fragments[j].Id}' overlap.", entityId: fragments[i].Id);
         }
 
         // ---------------------------------------------------------------- Visual
@@ -657,51 +602,14 @@ namespace Purge.Core.Validation
                 return;
 
             var results = starts.Select(s => KeyDoorSolver.Solve(geometry, level.Doors, level.Keys, s.Position)).ToList();
-            var pathfinder = new GridPathfinder(geometry.Width, geometry.Height);
-            var path = new List<GridPosition>();
-            var exitReached = new bool[level.Exits.Count];
-
-            for (var s = 0; s < starts.Count; s++)
-            {
-                var shortest = int.MaxValue;
-                string nearestExit = null;
-
-                for (var e = 0; e < level.Exits.Count; e++)
-                {
-                    var exit = level.Exits[e];
-                    if (!results[s].IsReachable(exit.Position))
-                        continue;
-
-                    exitReached[e] = true;
-                    if (pathfinder.TryFindPath(starts[s].Position, exit.Position, results[s].Passable, path) && path.Count - 1 < shortest)
-                    {
-                        shortest = path.Count - 1;
-                        nearestExit = exit.Id;
-                    }
-                }
-
-                if (nearestExit == null)
-                    report.Add(Error, Gameplay, ValidationCodes.NoReachableExit,
-                        $"No exit is reachable from '{starts[s].Id}'.", starts[s].Position, starts[s].Id);
-                else
-                    report.Add(Info, Gameplay, ValidationCodes.ShortestPath,
-                        $"'{starts[s].Id}' -> '{nearestExit}': {shortest} steps.", starts[s].Position, starts[s].Id);
-            }
-
-            for (var e = 0; e < level.Exits.Count; e++)
-                if (!exitReached[e])
-                    report.Add(Error, Gameplay, ValidationCodes.ExitUnreachable,
-                        $"Exit '{level.Exits[e].Id}' is unreachable from every start.", level.Exits[e].Position, level.Exits[e].Id);
-
             foreach (var key in level.Keys)
                 ReportUnreachable(key, starts, results, ValidationCodes.KeyUnreachable, report);
 
             foreach (var entity in level.Weapons.Cast<LevelEntityData>()
-                         .Concat(level.Medkits).Concat(level.MapFragments).Concat(level.ZombieSpawns))
+                         .Concat(level.Medkits).Concat(level.ZombieSpawns))
                 ReportUnreachable(entity, starts, results, ValidationCodes.ObjectUnreachable, report);
 
             ValidateDoorPassages(level, report);
-            ValidatePatrolRoutes(level, pathfinder, path, report);
         }
 
         private static void ReportUnreachable(LevelEntityData entity, List<PlayerStartData> starts,
@@ -733,49 +641,6 @@ namespace Purge.Core.Validation
                 if (!northSouth && !eastWest)
                     report.Add(Warning, Gameplay, ValidationCodes.DoorWithoutPassage,
                         $"Door '{door.Id}' at {p} does not connect two passable cells.", p, door.Id);
-            }
-        }
-
-        /// <summary>Zombies do not open doors: closed doors block their routes (ТЗ §52).</summary>
-        private static void ValidatePatrolRoutes(LevelData level, GridPathfinder pathfinder, List<GridPosition> path,
-            ValidationReport report)
-        {
-            var geometry = level.Geometry;
-            var openDoors = new HashSet<GridPosition>(level.Doors.Where(d => d.IsInitiallyOpen).Select(d => d.Position));
-            var passable = new bool[geometry.CellCount];
-            for (var i = 0; i < passable.Length; i++)
-            {
-                var p = geometry.ToPosition(i);
-                var cell = geometry.GetCell(p);
-                passable[i] = cell == CellType.Floor || (cell == CellType.Door && openDoors.Contains(p));
-            }
-
-            var zombiePassability = new CellMaskPassability(geometry.Width, geometry.Height, passable);
-            // Duplicate ids are reported by ValidateIds; here the first patrol with an id wins.
-            var patrols = new Dictionary<string, PatrolData>();
-            foreach (var patrol in level.Patrols)
-                if (!string.IsNullOrEmpty(patrol.Id) && !patrols.ContainsKey(patrol.Id))
-                    patrols.Add(patrol.Id, patrol);
-
-            foreach (var zombie in level.ZombieSpawns)
-            {
-                if (!zombie.HasPatrol || !patrols.TryGetValue(zombie.PatrolId, out var patrol) || patrol.Points.Count == 0)
-                    continue;
-
-                var route = new List<GridPosition> { zombie.Position };
-                route.AddRange(patrol.Points);
-                route.Add(patrol.Points[0]);
-
-                for (var i = 0; i + 1 < route.Count; i++)
-                {
-                    if (pathfinder.TryFindPath(route[i], route[i + 1], zombiePassability, path))
-                        continue;
-
-                    report.Add(Warning, Gameplay, ValidationCodes.PatrolPointUnreachable,
-                        $"Zombie '{zombie.Id}' cannot walk from {route[i]} to {route[i + 1]} on patrol '{patrol.Id}'.",
-                        route[i + 1], zombie.Id);
-                    break;
-                }
             }
         }
     }

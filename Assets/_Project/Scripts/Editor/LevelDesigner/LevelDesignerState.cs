@@ -17,9 +17,6 @@ namespace Purge.Editor.LevelDesigner
         /// <summary>Id of the selected object (door, key, zombie...), or null.</summary>
         public string SelectedEntityId { get; set; }
 
-        /// <summary>Rectangle being dragged (map fragment region), drawn as a preview on the grid.</summary>
-        public GridRect? PreviewRect { get; set; }
-
         /// <summary>Cell an object is being dragged to with the Select tool.</summary>
         public GridPosition? DragTarget { get; set; }
 
@@ -45,7 +42,6 @@ namespace Purge.Editor.LevelDesigner
             SelectedCell = null;
             SelectedEntityId = null;
             FocusedIssue = null;
-            PreviewRect = null;
             DragTarget = null;
         }
 

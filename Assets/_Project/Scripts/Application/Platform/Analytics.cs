@@ -29,8 +29,6 @@ namespace Purge.Application.Platform
         public const string LevelComplete = "level_complete";
         public const string LevelFail = "level_fail";
         public const string LevelQuit = "level_quit";
-        public const string HintUsed = "hint_used";
-        public const string MapLayerUnlocked = "map_layer_unlocked";
         public const string Ad = "ad";
         public const string WeaponPickup = "weapon_pickup";
         public const string SettingsChanged = "settings_changed";

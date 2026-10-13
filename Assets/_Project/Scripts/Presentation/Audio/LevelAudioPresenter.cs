@@ -194,8 +194,7 @@ namespace Purge.Presentation.Audio
             {
                 PickupKind.Key => Catalog.PickupKey,
                 PickupKind.Medkit => Catalog.PickupMedkit,
-                PickupKind.Weapon => Catalog.PickupWeapon,
-                _ => Catalog.PickupMapFragment,
+                _ => Catalog.PickupWeapon,
             };
             PlayAt(cue, new Vector2(pickup.Cell.X, pickup.Cell.Y));
         }
@@ -344,7 +343,7 @@ namespace Purge.Presentation.Audio
                 }
 
                 // Groans now and then while not after the player.
-                if (state == ZombieState.Idle || state == ZombieState.Patrol || state == ZombieState.Return)
+                if (state == ZombieState.Idle || state == ZombieState.Return)
                 {
                     sound.GroanIn -= deltaTime;
                     if (sound.GroanIn <= 0f)

@@ -82,9 +82,6 @@ namespace Purge.Core.Authoring
         public static PlayerStartData AddPlayerStart(LevelData level, GridPosition position) =>
             Add(level, level.MutablePlayerStarts, new PlayerStartData(level.CreateUniqueId(PlayerStartData.IdPrefix), position));
 
-        public static ExitData AddExit(LevelData level, GridPosition position) =>
-            Add(level, level.MutableExits, new ExitData(level.CreateUniqueId(ExitData.IdPrefix), position));
-
         public static MedkitData AddMedkit(LevelData level, GridPosition position) =>
             Add(level, level.MutableMedkits, new MedkitData(level.CreateUniqueId(MedkitData.IdPrefix), position));
 
@@ -94,9 +91,6 @@ namespace Purge.Core.Authoring
 
         public static WeaponPickupData AddWeapon(LevelData level, GridPosition position, WeaponDefinition definition) =>
             Add(level, level.MutableWeapons, new WeaponPickupData(level.CreateUniqueId(WeaponPickupData.IdPrefix), position, definition));
-
-        public static MapFragmentData AddMapFragment(LevelData level, GridPosition position, GridRect region) =>
-            Add(level, level.MutableMapFragments, new MapFragmentData(level.CreateUniqueId(MapFragmentData.IdPrefix), position, region));
 
         /// <summary>
         /// Adds a key; if <paramref name="door"/> is given, links it (one key = one door) and colours both.
@@ -141,17 +135,10 @@ namespace Purge.Core.Authoring
                     }
                     break;
 
-                case ZombieSpawnData zombie:
-                    level.MutableZombieSpawns.Remove(zombie);
-                    if (zombie.HasPatrol && level.ZombieSpawns.All(z => z.PatrolId != zombie.PatrolId))
-                        level.MutablePatrols.RemoveAll(p => p.Id == zombie.PatrolId);
-                    break;
-
+                case ZombieSpawnData zombie: level.MutableZombieSpawns.Remove(zombie); break;
                 case PlayerStartData start: level.MutablePlayerStarts.Remove(start); break;
-                case ExitData exit: level.MutableExits.Remove(exit); break;
                 case MedkitData medkit: level.MutableMedkits.Remove(medkit); break;
                 case WeaponPickupData weapon: level.MutableWeapons.Remove(weapon); break;
-                case MapFragmentData fragment: level.MutableMapFragments.Remove(fragment); break;
             }
 
             level.VisualData.RemoveObject(entity.Id);
@@ -160,7 +147,7 @@ namespace Purge.Core.Authoring
         /// <summary>
         /// Erase brush: the cell becomes empty floor — its objects (a door opens the passage), light sources, surface
         /// (snowdrift) and decor ("no decor here", so auto placement leaves it empty) are removed, a wall becomes floor.
-        /// Patrol points and fragment regions passing through the cell stay. False when there was nothing to erase.
+        /// False when there was nothing to erase.
         /// </summary>
         public static bool ClearCell(LevelData level, GridPosition position)
         {
@@ -243,18 +230,6 @@ namespace Purge.Core.Authoring
             return true;
         }
 
-        public static bool RenamePatrol(LevelData level, PatrolData patrol, string newId)
-        {
-            if (!IsFreeId(level, newId) || patrol.Id == newId)
-                return false;
-
-            foreach (var zombie in level.ZombieSpawns.Where(z => z.PatrolId == patrol.Id))
-                zombie.PatrolId = newId;
-
-            patrol.Id = newId;
-            return true;
-        }
-
         public static bool IsFreeId(LevelData level, string id) =>
             !string.IsNullOrWhiteSpace(id) && level.AllIds().All(existing => existing != id);
 
@@ -319,44 +294,6 @@ namespace Purge.Core.Authoring
             weapon.Definition = definition;
             VisualAssigner.AssignObject(level, weapon);
         }
-
-        // ------------------------------------------------------------ Patrols and map fragments
-
-        /// <summary>Appends a patrol point, creating the zombie's patrol on first use.</summary>
-        public static PatrolData AddPatrolPoint(LevelData level, ZombieSpawnData zombie, GridPosition point)
-        {
-            var patrol = level.Patrols.FirstOrDefault(p => zombie.HasPatrol && p.Id == zombie.PatrolId);
-            if (patrol == null)
-            {
-                patrol = new PatrolData(level.CreateUniqueId(PatrolData.IdPrefix));
-                level.MutablePatrols.Add(patrol);
-                zombie.PatrolId = patrol.Id;
-            }
-
-            patrol.MutablePoints.Add(point);
-            return patrol;
-        }
-
-        public static void RemoveLastPatrolPoint(LevelData level, ZombieSpawnData zombie)
-        {
-            var patrol = level.Patrols.FirstOrDefault(p => zombie.HasPatrol && p.Id == zombie.PatrolId);
-            if (patrol != null && patrol.Points.Count > 0)
-                patrol.MutablePoints.RemoveAt(patrol.Points.Count - 1);
-        }
-
-        /// <summary>Removes the zombie's patrol (and the patrol itself if no other zombie uses it).</summary>
-        public static void ClearPatrol(LevelData level, ZombieSpawnData zombie)
-        {
-            if (!zombie.HasPatrol)
-                return;
-
-            var patrolId = zombie.PatrolId;
-            zombie.PatrolId = null;
-            if (level.ZombieSpawns.All(z => z.PatrolId != patrolId))
-                level.MutablePatrols.RemoveAll(p => p.Id == patrolId);
-        }
-
-        public static void SetFragmentRegion(MapFragmentData fragment, GridRect region) => fragment.Region = region;
 
         // ------------------------------------------------------------ Visual overrides
 

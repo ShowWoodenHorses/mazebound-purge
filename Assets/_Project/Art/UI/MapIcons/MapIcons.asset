@@ -15,8 +15,6 @@ MonoBehaviour:
   Start: {fileID: 21300000, guid: ef27ffac9ae3ef0448ae2061917a8e14, type: 3}
   Door: {fileID: 21300000, guid: f896d6f4543f6ad4aa346c740187f5bf, type: 3}
   LockedDoor: {fileID: 21300000, guid: 13beeb28b0c12cd459421a4066930b34, type: 3}
-  Exit: {fileID: 21300000, guid: 27474f875f09ead4c8f47b3adc29fefc, type: 3}
-  MapFragment: {fileID: 21300000, guid: 724ffd37a05570347aa46b6e79deed20, type: 3}
   Player: {fileID: 21300000, guid: 86993c17958813e4988495f3c2010d61, type: 3}
   Zombie: {fileID: 21300000, guid: dd9742674e0e4d34e883f3c9f85f101a, type: 3}
   Weapon: {fileID: 21300000, guid: 83ccaace4cbdec94bad1126ddadc3717, type: 3}
@@ -25,8 +23,7 @@ MonoBehaviour:
   StartColor: {r: 0.35, g: 0.6, b: 1, a: 1}
   DoorColor: {r: 0.78, g: 0.52, b: 0.28, a: 1}
   LockedDoorColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
-  ExitColor: {r: 0.35, g: 0.9, b: 0.45, a: 1}
-  MapFragmentColor: {r: 1, g: 0.88, b: 0.55, a: 1}
+  FrozenDoorColor: {r: 0.62, g: 0.86, b: 1, a: 1}
   PlayerColor: {r: 1, g: 0.45, b: 0.2, a: 1}
   ZombieColor: {r: 0.62, g: 0.85, b: 0.45, a: 1}
   WeaponColor: {r: 0.8, g: 0.82, b: 0.86, a: 1}

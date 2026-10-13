@@ -55,16 +55,16 @@ namespace Purge.Gameplay.Zombies
     }
 
     /// <summary>
-    /// The AI of one zombie (ТЗ §74–77): Idle / Patrol / Chase / Attack / Return.
+    /// The AI of one zombie (ТЗ §74–77): Idle / Chase / Attack / Return.
     /// <list type="bullet">
-    /// <item>Idle — stands at the spawn; Patrol — walks the loop A → B → … → A.</item>
-    /// <item>Alert — on detection from Idle / Patrol / Return: stands and roars for <see cref="AlertDuration"/>, then
+    /// <item>Idle — stands at the spawn.</item>
+    /// <item>Alert — on detection from Idle / Return: stands and roars for <see cref="AlertDuration"/>, then
     /// Chase; the player stepping next to it → Attack at once.</item>
     /// <item>Chase — runs (ChaseSpeed) to the last known player cell (updated while detected). Reaching it without
     /// noticing the player again → Return.</item>
     /// <item>Attack — the player is in a side-adjacent cell (ТЗ §77): hits every AttackInterval (first hit after half
     /// of it). The player leaving → Chase.</item>
-    /// <item>Return — to the nearest patrol point (then Patrol continues from it) or to the spawn (then Idle).</item>
+    /// <item>Return — to the spawn (then Idle).</item>
     /// </list>
     /// Moves cell to cell along A* paths (searched only when the goal or doors change), never into the player's cell;
     /// zombies pass through each other. Detection is sampled every <see cref="DetectionInterval"/>, not every frame.
@@ -93,9 +93,7 @@ namespace Purge.Gameplay.Zombies
         private GridPosition _target;
         private float _attackTimer;
         private float _alertTimer;
-        private int _patrolIndex;
         private GridPosition _returnGoal;
-        private int _returnPatrolIndex = -1;
 
         public ZombieController(ZombieRuntime zombie, NavigationSystem navigation, PlayerSystem player, PlayerHealth playerHealth,
             OccupancyMap occupancy, ISpatialQueryService spatial, float detectionPhase)
@@ -134,7 +132,6 @@ namespace Purge.Gameplay.Zombies
             switch (Zombie.State)
             {
                 case ZombieState.Idle:
-                case ZombieState.Patrol:
                 case ZombieState.Return:
                     if (_hasTarget) Enter(ZombieState.Alert);
                     break;
@@ -143,7 +140,6 @@ namespace Purge.Gameplay.Zombies
             switch (Zombie.State)
             {
                 case ZombieState.Idle: break;
-                case ZombieState.Patrol: TickPatrol(deltaTime); break;
                 case ZombieState.Alert: TickAlert(deltaTime); break;
                 case ZombieState.Chase: TickChase(deltaTime); break;
                 case ZombieState.Attack: TickAttack(deltaTime); break;
@@ -197,23 +193,9 @@ namespace Purge.Gameplay.Zombies
                     _alertTimer = AlertDuration;
                     break;
                 case ZombieState.Return:
-                    ChooseReturnGoal();
+                    _returnGoal = Zombie.Spawn.Position;
                     break;
             }
-        }
-
-        private void TickPatrol(float deltaTime)
-        {
-            var points = Zombie.Patrol;
-            if (points == null)
-            {
-                Enter(ZombieState.Idle);
-                return;
-            }
-
-            var result = MoveTo(points[_patrolIndex], deltaTime);
-            if (result != MoveResult.Moving)
-                _patrolIndex = (_patrolIndex + 1) % points.Count; // arrived, or unreachable: try the next point
         }
 
         /// <summary>Stands roaring toward the target, then chases; the player stepping next to it cuts the roar short.</summary>
@@ -288,46 +270,15 @@ namespace Purge.Gameplay.Zombies
             if (result == MoveResult.Moving || result == MoveResult.Blocked)
                 return;
 
-            if (_returnPatrolIndex >= 0)
-            {
-                _patrolIndex = (_returnPatrolIndex + 1) % Zombie.Patrol.Count;
-                Enter(ZombieState.Patrol);
-            }
-            else
-            {
-                var offset = Zombie.Spawn.Facing.ToOffset();
-                Zombie.Facing = new Vector2(offset.X, offset.Y);
-                Enter(ZombieState.Idle);
-            }
+            var offset = Zombie.Spawn.Facing.ToOffset();
+            Zombie.Facing = new Vector2(offset.X, offset.Y);
+            Enter(ZombieState.Idle);
         }
 
         private void LoseTarget()
         {
             _hasTarget = false;
             Enter(ZombieState.Return);
-        }
-
-        /// <summary>The nearest patrol point (straight-line), or the spawn when there is no patrol (ТЗ §75).</summary>
-        private void ChooseReturnGoal()
-        {
-            _returnPatrolIndex = -1;
-            _returnGoal = Zombie.Spawn.Position;
-            var points = Zombie.Patrol;
-            if (points == null)
-                return;
-
-            var best = float.PositiveInfinity;
-            for (var i = 0; i < points.Count; i++)
-            {
-                var distance = (new Vector2(points[i].X, points[i].Y) - Zombie.Position).sqrMagnitude;
-                if (distance < best)
-                {
-                    best = distance;
-                    _returnPatrolIndex = i;
-                }
-            }
-
-            _returnGoal = points[_returnPatrolIndex];
         }
 
         private bool IsPlayerAdjacent()

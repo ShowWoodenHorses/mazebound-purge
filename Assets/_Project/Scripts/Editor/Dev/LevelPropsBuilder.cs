@@ -19,26 +19,18 @@ namespace Purge.Editor.Dev
     /// torch pointing +Z; see <see cref="LightFixtures"/>): a simple cartoon flame (soft additive blobs rising and
     /// shrinking, a few embers; material <c>Art/Effects/fx_additive</c>) on top of the torch head, tinted by the light
     /// colour at runtime (<see cref="TorchFlame"/>). The Light set goes to the main and the placeholder themes.</item>
-    /// <item><b>Build Exits</b> — ladders in <c>Art/Exit</c>: the model moves into a child so its back touches the wall
-    /// behind the exit cell (−Z at rotation 0; the exit faces the open side, see ObjectOrientation).</item>
     /// </list>
     /// </summary>
     internal static class LevelPropsBuilder
     {
         private const string LightingFolder = "Assets/_Project/Art/Lighting";
-        private const string ExitFolder = "Assets/_Project/Art/Exit";
         private const string ThemesFolder = "Assets/_Project/Data/Themes";
         private const string ThemePath = ThemesFolder + "/CastleBlockTheme.asset";
         private const string PlaceholderThemePath = ThemesFolder + "/PlaceholderTheme.asset";
         private const string LightSetPath = ThemesFolder + "/CastleBlockLightSet.asset";
-        private const string ExitSetPath = ThemesFolder + "/CastleBlockExitSet.asset";
         private const string FlameMaterialPath = "Assets/_Project/Art/Effects/fx_additive.mat";
 
         private const string FlameChild = "Flame";
-        private const string ModelChild = "Model";
-
-        /// <summary>Gap between a ladder's back and the wall, m.</summary>
-        private const float WallGap = 0.02f;
 
         private static readonly Color FlameHot = new Color(1f, 0.93f, 0.6f);
         private static readonly Color FlameWarm = new Color(1f, 0.62f, 0.22f);
@@ -68,24 +60,6 @@ namespace Purge.Editor.Dev
             AssignSet(PlaceholderThemePath, VisualKind.Light, set);
             LitMaterialsConverter.Convert();
             Debug.Log($"[Purge] Light fixtures built: {set.Variants.Count} variant(s) in {LightSetPath}.");
-        }
-
-        [MenuItem("Purge/Dev/Build Exits")]
-        public static void BuildExits()
-        {
-            var prefabs = Prefabs(ExitFolder);
-            foreach (var path in prefabs)
-                Edit(path, root =>
-                {
-                    StripPhysics(root);
-                    NoShadows(root);
-                    AgainstBackWall(root);
-                });
-
-            var set = FillSet(ExitSetPath, VisualKind.Exit, prefabs);
-            AssignSet(ThemePath, VisualKind.Exit, set);
-            LitMaterialsConverter.Convert();
-            Debug.Log($"[Purge] Exits built: {set.Variants.Count} variant(s) in {ExitSetPath}.");
         }
 
         // ---- Light fixtures ----
@@ -217,33 +191,6 @@ namespace Purge.Editor.Dev
                     ? new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, fadeIn), new GradientAlphaKey(0f, 1f) }
                     : new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.5f), new GradientAlphaKey(0f, 1f) });
             color.color = gradient;
-        }
-
-        // ---- Exits ----
-
-        /// <summary>The model goes into a child placed so its back (−Z) touches the wall at z = −0.5.</summary>
-        private static void AgainstBackWall(GameObject root)
-        {
-            var model = root.transform.Find(ModelChild);
-            var filter = root.GetComponent<MeshFilter>();
-            if (model == null && filter != null)
-            {
-                model = new GameObject(ModelChild).transform;
-                model.SetParent(root.transform, false);
-                model.gameObject.AddComponent<MeshFilter>().sharedMesh = filter.sharedMesh;
-                var renderer = root.GetComponent<MeshRenderer>();
-                var moved = model.gameObject.AddComponent<MeshRenderer>();
-                moved.sharedMaterials = renderer.sharedMaterials;
-                moved.shadowCastingMode = ShadowCastingMode.Off;
-                Object.DestroyImmediate(renderer);
-                Object.DestroyImmediate(filter);
-            }
-
-            if (model == null)
-                return;
-
-            var mesh = model.GetComponent<MeshFilter>().sharedMesh;
-            model.localPosition = new Vector3(-mesh.bounds.center.x, -mesh.bounds.min.y, -0.5f + WallGap - mesh.bounds.min.z);
         }
 
         // ---- Common ----

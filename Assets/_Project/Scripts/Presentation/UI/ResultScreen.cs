@@ -71,10 +71,11 @@ namespace Purge.Presentation.UI
             var r = result ?? default;
             _earned[0] = completed;
             _earned[1] = completed && r.AllZombiesKilled;
-            _earned[2] = completed && r.AllFragmentsCollected;
-            SetLabel(0, Text(completed ? TextKeys.ResultExitFound : TextKeys.ResultNoExit), _earned[0]);
+            _earned[2] = completed;
+            // Stars of Maze until the run result is redone (plan stage 6): only the kills have a caption.
+            SetLabel(0, string.Empty, _earned[0]);
             SetLabel(1, Format(TextKeys.ResultZombies, r.Kills, r.TotalZombies), _earned[1]);
-            SetLabel(2, Format(TextKeys.ResultMap, r.Fragments, r.TotalFragments), _earned[2]);
+            SetLabel(2, string.Empty, _earned[2]);
             SetTime(completed, r.Time, previousBest);
 
             for (var i = 0; i < _stars.Length; i++)

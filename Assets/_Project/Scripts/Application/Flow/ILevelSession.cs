@@ -16,9 +16,6 @@ namespace Purge.Application.Flow
         /// <summary>Raised when gameplay ends by a game rule.</summary>
         event Action<LevelOutcome> Finished;
 
-        /// <summary>The player entered an exit cell; GameFlow asks "Finish level?" (ТЗ §62).</summary>
-        event Action ExitReached;
-
         /// <summary>Runs the level load steps (ТЗ §9: build runtime … spawn zombies).</summary>
         UniTask LoadAsync(CancellationToken cancellation);
 

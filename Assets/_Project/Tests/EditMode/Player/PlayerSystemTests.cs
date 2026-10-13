@@ -27,7 +27,7 @@ namespace Purge.Tests.EditMode.Player
         private OccupancyMap _occupancy;
 
         /// <summary>
-        /// 10x3 corridor along y = 1, x = 1..8. Door at (5,1). Starts at (1,1) and (8,1), exit at (3,1).
+        /// 10x3 corridor along y = 1, x = 1..8. Door at (5,1). Starts at (1,1) and (8,1).
         /// </summary>
         [SetUp]
         public void SetUp()
@@ -41,7 +41,6 @@ namespace Purge.Tests.EditMode.Player
             _level.MutableDoors.Add(new DoorData("door_1", new GridPosition(5, 1)));
             _level.MutablePlayerStarts.Add(new PlayerStartData("start_1", new GridPosition(1, 1)));
             _level.MutablePlayerStarts.Add(new PlayerStartData("start_2", new GridPosition(8, 1)));
-            _level.MutableExits.Add(new ExitData("exit_1", new GridPosition(3, 1)));
 
             _definition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _definition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -176,30 +175,6 @@ namespace Purge.Tests.EditMode.Player
             _input.Move = Vector2.right;
             Run(player, 2f);
             Assert.AreEqual(new GridPosition(2, 1), player.Cell);
-        }
-
-        [Test]
-        public void ExitSystem_ReportsEveryEntry_NotStaying()
-        {
-            var player = Spawn(new LevelLaunchOptions(startIndex: 0));
-            var exits = new ExitSystem(_level, player);
-            var reached = 0;
-            exits.ExitReached += _ => reached++;
-
-            _input.Move = Vector2.right;
-            Run(player, 0.6f); // enters (3,1)
-            Assert.AreEqual(1, reached);
-
-            _input.Move = Vector2.zero;
-            Run(player, 0.5f);
-            Assert.AreEqual(1, reached, "Standing on the exit does not ask again.");
-
-            _input.Move = Vector2.left;
-            Run(player, 0.4f); // back to (2,1)
-            _input.Move = Vector2.right;
-            Run(player, 0.4f); // (3,1) again
-            Assert.AreEqual(2, reached, "Entering again asks again.");
-            exits.Dispose();
         }
 
         [Test]

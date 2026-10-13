@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -182,7 +163,6 @@ MonoBehaviour:
   - RECARGA
   - '{0}: pulsa Usar para recoger'
   - 'Recogido: {0}'
-  - Fragmento de mapa encontrado {0}/{1}
   - 'Cerrada: necesitas una llave'
   - 'Cerrada: necesitas la llave roja'
   - 'Cerrada: necesitas la llave azul'
@@ -205,7 +185,6 @@ MonoBehaviour:
   - "Rifle rev\xF3lver"
   - Rifle de francotirador
   - Subfusil con silenciador
-  - "\xBFTERMINAR NIVEL?"
   - PAUSA
   - CONTINUAR
   - REINICIAR NIVEL
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: FALLAR'
   - NIVEL COMPLETADO
   - NIVEL FALLIDO
-  - SALIDA ENCONTRADA
-  - SIN SALIDA
   - ZOMBIS {0}/{1}
-  - MAPA {0}/{1}
   - TIEMPO {0}
   - MEJOR {0}
   - "\xA1NUEVO R\xC9CORD!"
@@ -227,19 +203,10 @@ MonoBehaviour:
   - "ALGO SALI\xD3 MAL"
   - "VOLVER AL MEN\xDA"
   - JUGADOR
-  - PIEZAS DEL MAPA
   - ZOMBIS
   - ARMAS
   - BOTIQUINES
   - LLAVES
-  - "Ruta al fragmento de mapa m\xE1s cercano"
-  - Ruta a la salida
-  - "Ruta a la llave m\xE1s cercana"
-  - Ruta a la puerta que abre tu llave
-  - "No se encontr\xF3 ruta"
-  - Este nivel no tiene mapa
-  - "A\xFAn no hay fragmentos del mapa (0/{0})"
-  - 'Fragmentos del mapa: {0}/{1}'
   - CONTROLES
   - DISPARO
   - OTROS
@@ -278,7 +245,6 @@ MonoBehaviour:
   - "Inicia sesi\xF3n para conservar tu progreso en todos los dispositivos"
   - TUTORIAL
   - TUTORIAL COMPLETADO
-  - Ruta del tutorial
   - "El anuncio no est\xE1 disponible ahora"
   - Gira tu dispositivo
   - ENTENDIDO
@@ -329,17 +295,10 @@ MonoBehaviour:
   - "\xBFHerido? Un botiqu\xEDn te cura por completo.\nP\xEDsalo: solo se usa si
     tu salud no est\xE1 completa."
   - "Pisa el botiqu\xEDn"
-  - Esto es un fragmento de mapa. Cada uno revela una parte del mapa del nivel.
-  - Recoge el fragmento de mapa
   - "Abre el mapa con M o con el bot\xF3n de mapa de arriba a la derecha. En el mapa,
     la lupa muestra el camino al objetivo m\xE1s cercano."
   - "Abre el mapa con el bot\xF3n de mapa de arriba a la derecha. En el mapa, la
     lupa muestra el camino al objetivo m\xE1s cercano."
   - 'Abre el mapa: M'
   - Abre el mapa
-  - 'Ahora ve a la salida: las escaleras.
-
-    En los niveles ganas estrellas: por
-    la salida, por matar a todos los zombis y por todos los fragmentos de mapa.'
-  - Ve a la salida
   _missing: []

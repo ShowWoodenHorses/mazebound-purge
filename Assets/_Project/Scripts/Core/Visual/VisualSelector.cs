@@ -71,7 +71,7 @@ namespace Purge.Core.Visual
     {
         /// <summary>Pickups whose view the designer may shift, lift and turn inside their cell (ObjectPlacement).</summary>
         public static bool IsPlaceable(LevelEntityData entity) =>
-            entity is KeyData || entity is MedkitData || entity is WeaponPickupData || entity is MapFragmentData;
+            entity is KeyData || entity is MedkitData || entity is WeaponPickupData;
 
         /// <summary>False for entities without a visual (player starts).</summary>
         public static bool TryGetForEntity(LevelEntityData entity, out VisualKind kind, out ScriptableObject definition)
@@ -80,10 +80,8 @@ namespace Purge.Core.Visual
             switch (entity)
             {
                 case DoorData _: kind = VisualKind.Door; return true;
-                case ExitData _: kind = VisualKind.Exit; return true;
                 case KeyData _: kind = VisualKind.Key; return true;
                 case MedkitData _: kind = VisualKind.Medkit; return true;
-                case MapFragmentData _: kind = VisualKind.MapFragment; return true;
                 case WeaponPickupData weapon:
                     kind = VisualKind.Weapon;
                     definition = weapon.Definition;

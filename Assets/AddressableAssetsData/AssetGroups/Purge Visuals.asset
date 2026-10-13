@@ -25,11 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 05dafb7dc9ef64b43970de2bdc5cf2ad
-    m_Address: Assets/_Project/Art/Placeholders/fragment_01.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 086988b3054a1da499ddf4e0b981f3b6
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_02.prefab
     m_ReadOnly: 0
@@ -365,11 +360,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a5a611d7500f7ea4187419dafd60f86f
-    m_Address: Assets/_Project/Art/Exit/SM_Prop_Ladder_Tied_01.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5da9085dfba01444a84de434ec89334
     m_Address: Assets/_Project/Art/Placeholders/zombie_02.prefab
     m_ReadOnly: 0
@@ -455,11 +445,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c65e68644a317d04bb623a9ad4070565
-    m_Address: Assets/_Project/Art/Exit/SM_Prop_Ladder_Stackable_01_Half.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbbc307ac2c9b30478769a23a53df34f
     m_Address: Assets/_Project/Art/Floors/SM_Bld_Bunker_Floor_Wood_02.prefab
     m_ReadOnly: 0
@@ -507,11 +492,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e48c75c62bfebf847a40f27019843c41
     m_Address: Assets/_Project/Art/Decor/Snow_GrassPatch_04.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e59132867b851604591d941b9096e133
-    m_Address: Assets/_Project/Art/Items/SM_Item_Book_Open_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -577,11 +557,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fd4d82f6367b9f94192f41787f70f2b6
     m_Address: Assets/_Project/Art/Effects/IceOverlay.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fe2ce03998847d64baa571bdc36e833e
-    m_Address: Assets/_Project/Art/Placeholders/exit_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

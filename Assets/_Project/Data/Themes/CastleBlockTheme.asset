@@ -16,12 +16,10 @@ MonoBehaviour:
   _floor: {fileID: 11400000, guid: 3143762e16a7e23408d38ae891030756, type: 2}
   _wall: {fileID: 11400000, guid: 8f3a52989d6d9534290edf86e19f4dd9, type: 2}
   _door: {fileID: 11400000, guid: cb299dba8e11c1149aa22907c53bc418, type: 2}
-  _exit: {fileID: 11400000, guid: 2a6342712722c654c8aa208b06371596, type: 2}
   _key: {fileID: 11400000, guid: f3f66466e2941c5458939f5dde50eff1, type: 2}
   _medkit: {fileID: 11400000, guid: 4329f07b42756c24caededb8268c1897, type: 2}
   _weapon: {fileID: 11400000, guid: fb15d3c7f0ca317498e3750cb736fd43, type: 2}
   _zombie: {fileID: 11400000, guid: 57b71dca180984d488eb03f23f3bef0b, type: 2}
-  _mapFragment: {fileID: 11400000, guid: 848777e871c45864389124a0559bf682, type: 2}
   _decor: {fileID: 11400000, guid: e1e3a08f74b470148a08ad6db9711a10, type: 2}
   _light: {fileID: 11400000, guid: cfa9392684729334e801c808b8fda77a, type: 2}
   _fogMaterial: {fileID: 2100000, guid: e44f05f90fed0e446b142333febf4f9e, type: 2}
@@ -93,17 +91,36 @@ MonoBehaviour:
     RingGrow: 0.3
     RingFade: 0.4
     RingRearm: 0.3
-  _route:
-    LineMaterial: {fileID: 2100000, guid: 0976e9e2f75b61643818c92e87fa1788, type: 2}
-    Color: {r: 0.62, g: 0.86, b: 1, a: 1}
-    Brightness: 0.85
-    Opacity: 0.6
-    Width: 0.18
-    OutlineColor: {r: 0.04, g: 0.06, b: 0.08, a: 0.9}
-    OutlineWidth: 0.03
-    CornerRadius: 0.35
-    StartFade: 0.6
-    Pulse: 0.35
-    PulseSpacing: 1.6
-    PulseSpeed: 1.2
-    Height: 0.05
+  _weather:
+    ZombieFrost: 0
+    PlayerFrost: 0
+    FrostColor: {r: 0.9, g: 0.95, b: 1, a: 1}
+    FrostSharpness: 2
+    FrostRim: 0.35
+    SnowMaterial: {fileID: 0}
+    SnowRate: 70
+    SnowArea: 12
+    SnowHeight: 4.5
+    SnowFallSpeed: 1.1
+    SnowWind: {x: 0.35, y: -0.15}
+    SnowFlutter: 0.25
+    SnowSize: 0.07
+    SnowColor: {r: 1, g: 1, b: 1, a: 0.85}
+    BreathMaterial: {fileID: 0}
+    BreathInterval: 2.4
+    BreathSize: 0.22
+    BreathLifetime: 1.1
+    BreathColor: {r: 0.92, g: 0.96, b: 1, a: 0.45}
+    BreathMouthOffset: {x: 0.14, y: -0.06}
+    BreathSpeed: 0.35
+    DriftColor: {r: 0.86, g: 0.91, b: 1, a: 1}
+    DriftEdgeSoftness: 0.14
+    DriftEdgeNoise: 0.3
+    DriftNoiseScale: 2.2
+    DriftShadow: 0.25
+    IceOverlay:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0

@@ -223,15 +223,14 @@ namespace Purge.Tests.EditMode.Visibility
         }
 
         [Test]
-        public void GeneratedMazes_VisibleFloorIsConnected_NoIslandsAfterHiddenCells()
+        public void GeneratedFields_VisibleFloorIsConnected_NoIslandsAfterHiddenCells()
         {
-            var generator = new Purge.Core.Generation.MazeGenerator();
+            var generator = new Purge.Core.Generation.OpenFieldGenerator();
             for (var seed = 1; seed <= 20; seed++)
             {
                 var geometry = generator.Generate(new Purge.Core.Level.LevelGenerationSettings
                 {
-                    Width = 21, Height = 21, MazeSeed = seed, LoopDensity = seed % 2 == 0 ? 0.3f : 0f,
-                    InitialPlayerStartCount = 1, InitialExitCount = 1,
+                    Width = 21, Height = 21, LayoutSeed = seed, ObstacleDensity = seed % 2 == 0 ? 0.8f : 0.3f,
                 }).Geometry;
                 var opaque = new bool[geometry.CellCount];
                 for (var i = 0; i < opaque.Length; i++)

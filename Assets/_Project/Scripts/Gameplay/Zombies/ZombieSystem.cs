@@ -62,15 +62,10 @@ namespace Purge.Gameplay.Zombies
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var patrols = new Dictionary<string, IReadOnlyList<GridPosition>>();
-            foreach (var patrol in _level.Patrols)
-                patrols[patrol.Id] = patrol.Points;
-
             for (var i = 0; i < _level.ZombieSpawns.Count; i++)
             {
                 var spawn = _level.ZombieSpawns[i];
-                patrols.TryGetValue(spawn.PatrolId ?? string.Empty, out var points);
-                var zombie = new ZombieRuntime(spawn, points);
+                var zombie = new ZombieRuntime(spawn);
                 _occupancy.AddZombie(zombie.Cell);
                 _spatial.Add(zombie);
                 zombie.Died += OnDied;

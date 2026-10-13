@@ -27,9 +27,6 @@ namespace Purge.Application.Flow
         Failed = 7,
         Error = 8,
 
-        /// <summary>The player entered an exit: gameplay is paused until "Finish level?" is answered (ТЗ §62).</summary>
-        ExitConfirmation = 9,
-
         /// <summary>The fullscreen map is open: gameplay is paused (ТЗ §60).</summary>
         Map = 10,
 
@@ -192,21 +189,6 @@ namespace Purge.Application.Flow
             SetState(GameFlowState.Playing);
         }
 
-        /// <summary>Answer to "Finish level?": yes completes the level, no resumes gameplay.</summary>
-        public void ConfirmExit(bool finishLevel)
-        {
-            if (State != GameFlowState.ExitConfirmation) return;
-
-            if (finishLevel)
-            {
-                EndLevel(GameFlowState.Completed);
-                return;
-            }
-
-            _session.SetPaused(false);
-            SetState(GameFlowState.Playing);
-        }
-
         public void CompleteLevel() => EndLevel(GameFlowState.Completed);
 
         public void FailLevel() => EndLevel(GameFlowState.Failed);
@@ -221,7 +203,6 @@ namespace Purge.Application.Flow
             if (_session != null)
             {
                 _session.Finished -= OnLevelFinished;
-                _session.ExitReached -= OnExitReached;
                 _session.Dispose();
                 _session = null;
             }
@@ -267,7 +248,6 @@ namespace Purge.Application.Flow
 
                 _session = await _sessionFactory.CreateAsync(level, levelAssets, options, cancellation);
                 _session.Finished += OnLevelFinished;
-                _session.ExitReached += OnExitReached;
                 await _session.LoadAsync(cancellation);
                 cancellation.ThrowIfCancellationRequested();
             }
@@ -311,7 +291,6 @@ namespace Purge.Application.Flow
             _session = null;
 
             session.Finished -= OnLevelFinished;
-            session.ExitReached -= OnExitReached;
             try
             {
                 session.StopGameplay();
@@ -330,17 +309,10 @@ namespace Purge.Application.Flow
             else FailLevel();
         }
 
-        private void OnExitReached()
-        {
-            if (State != GameFlowState.Playing) return;
-            _session.SetPaused(true);
-            SetState(GameFlowState.ExitConfirmation);
-        }
-
         /// <summary>ТЗ §88–89: stop gameplay → calculate stars → save (completion only) → result window.</summary>
         private void EndLevel(GameFlowState result)
         {
-            if (State != GameFlowState.Playing && State != GameFlowState.Paused && State != GameFlowState.ExitConfirmation &&
+            if (State != GameFlowState.Playing && State != GameFlowState.Paused &&
                 State != GameFlowState.Map && State != GameFlowState.Tip)
                 return;
 

@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -182,7 +163,6 @@ MonoBehaviour:
   - RECHARGEMENT
   - "{0} : appuyez sur \xAB Action \xBB pour ramasser"
   - "Ramass\xE9 : {0}"
-  - "Fragment de carte {0}/{1} trouv\xE9"
   - "Verrouill\xE9e : il faut une cl\xE9"
   - "Verrouill\xE9e : il faut la cl\xE9 rouge"
   - "Verrouill\xE9e : il faut la cl\xE9 bleue"
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Fusil revolver
   - "Fusil de pr\xE9cision"
   - Pistolet-mitrailleur silencieux
-  - TERMINER LE NIVEAU ?
   - PAUSE
   - REPRENDRE
   - RECOMMENCER LE NIVEAU
@@ -214,10 +193,7 @@ MonoBehaviour:
   - "DEBUG : \xC9CHEC"
   - "NIVEAU TERMIN\xC9"
   - "NIVEAU \xC9CHOU\xC9"
-  - "SORTIE TROUV\xC9E"
-  - "SORTIE NON TROUV\xC9E"
   - ZOMBIES {0}/{1}
-  - CARTE {0}/{1}
   - TEMPS {0}
   - RECORD {0}
   - NOUVEAU RECORD !
@@ -227,19 +203,10 @@ MonoBehaviour:
   - "UN PROBL\xC8ME EST SURVENU"
   - RETOUR AU MENU
   - JOUEUR
-  - MORCEAUX DE CARTE
   - ZOMBIES
   - ARMES
   - TROUSSES DE SOINS
   - "CL\xC9S"
-  - "Itin\xE9raire vers le fragment de carte le plus proche"
-  - "Itin\xE9raire vers la sortie"
-  - "Itin\xE9raire vers la cl\xE9 la plus proche"
-  - "Itin\xE9raire vers la porte que votre cl\xE9 ouvre"
-  - "Aucun itin\xE9raire trouv\xE9"
-  - "Ce niveau n\u2019a pas de carte"
-  - "Aucun fragment de carte trouv\xE9 pour l\u2019instant (0/{0})"
-  - 'Fragments de carte : {0}/{1}'
   - COMMANDES
   - TIR
   - AUTRES
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Connectez-vous pour garder votre progression sur tous vos appareils
   - TUTORIEL
   - "TUTORIEL TERMIN\xC9"
-  - "Itin\xE9raire du tutoriel"
   - "La publicit\xE9 n\u2019est pas disponible pour le moment"
   - Tournez votre appareil
   - COMPRIS
@@ -333,16 +299,10 @@ MonoBehaviour:
   - "Bless\xE9 ? Une trousse de soins vous soigne compl\xE8tement.\nMarchez dessus
     \u2014 elle n\u2019est utilis\xE9e que si votre sant\xE9 n\u2019est pas au maximum."
   - Marchez sur la trousse de soins
-  - "Voici un fragment de carte. Chacun r\xE9v\xE8le une partie de la carte du niveau."
-  - Ramassez le fragment de carte
   - "Ouvrez la carte avec Tab ou le bouton de carte en haut \xE0 droite. Sur la carte,
     la loupe montre le chemin vers l\u2019objectif le plus proche."
   - "Ouvrez la carte avec le bouton de carte en haut \xE0 droite. Sur la carte, la
     loupe montre le chemin vers l\u2019objectif le plus proche."
   - 'Ouvrez la carte : Tab'
   - Ouvrez la carte
-  - "Allez maintenant vers la sortie \u2014 l\u2019escalier.\nDans les niveaux, vous
-    gagnez des \xE9toiles : une pour la sortie, une pour tous les zombies tu\xE9s
-    et une pour tous les fragments de carte."
-  - "Allez \xE0 la sortie"
   _missing: []

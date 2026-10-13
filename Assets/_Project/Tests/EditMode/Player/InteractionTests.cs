@@ -7,7 +7,6 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
@@ -35,7 +34,6 @@ namespace Purge.Tests.EditMode.Player
         private WeaponSystem _weapons;
         private PlayerSystem _player;
         private PickupSystem _pickups;
-        private MapSystem _map;
         private PlayerInteraction _interaction;
         private SoundEventBus _sounds;
         private readonly List<InteractionResult> _results = new List<InteractionResult>();
@@ -43,7 +41,7 @@ namespace Purge.Tests.EditMode.Player
         /// <summary>
         /// 12x3 corridor along y = 1, x = 1..10:
         /// start (1,1) · door_plain (2,1) · key_2 (3,1, opens nothing) · medkit (5,1) · knife + bat (6,1) ·
-        /// pistol (7,1) · door_locked (8,1, key_1) · key_1 (9,1). Map fragments: (4,1) for x 0..5, (10,1) for x 6..11.
+        /// pistol (7,1) · door_locked (8,1, key_1) · key_1 (9,1).
         /// </summary>
         [SetUp]
         public void SetUp()
@@ -68,8 +66,6 @@ namespace Purge.Tests.EditMode.Player
             _level.MutableWeapons.Add(new WeaponPickupData("weapon_1", new GridPosition(6, 1), _knife));
             _level.MutableWeapons.Add(new WeaponPickupData("weapon_2", new GridPosition(6, 1), _bat));
             _level.MutableWeapons.Add(new WeaponPickupData("weapon_3", new GridPosition(7, 1), _pistol));
-            _level.MutableMapFragments.Add(new MapFragmentData("fragment_1", new GridPosition(4, 1), new GridRect(0, 0, 6, 3)));
-            _level.MutableMapFragments.Add(new MapFragmentData("fragment_2", new GridPosition(10, 1), new GridRect(6, 0, 6, 3)));
 
             _definition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _definition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -84,8 +80,7 @@ namespace Purge.Tests.EditMode.Player
             _sounds = new SoundEventBus();
             _player = new PlayerSystem(_level, _definition, _input, _passability, _occupancy, new LevelLaunchOptions(startIndex: 0),
                 Aim.FreeNoAssist);
-            _map = new MapSystem(_level);
-            _pickups = new PickupSystem(_level, _player, _health, _inventory, _weapons, _sounds, _map);
+            _pickups = new PickupSystem(_level, _player, _health, _inventory, _weapons, _sounds);
             _interaction = new PlayerInteraction(_input, _player, _pickups, _doors, _inventory, _occupancy, _sounds);
             _interaction.Interacted += (result, door) => _results.Add(result);
             _results.Clear();
@@ -99,7 +94,6 @@ namespace Purge.Tests.EditMode.Player
         public void TearDown()
         {
             _pickups.Dispose();
-            _map.Dispose();
             Object.DestroyImmediate(_level);
             Object.DestroyImmediate(_definition);
             Object.DestroyImmediate(_knife);
@@ -209,30 +203,6 @@ namespace Purge.Tests.EditMode.Player
             Assert.IsTrue(_inventory.HasKey("key_2"));
             Assert.AreEqual(0, _pickups.At(new GridPosition(3, 1)).Count);
             CollectionAssert.AreEqual(new[] { "key_2" }, removed);
-        }
-
-        [Test]
-        public void MapFragment_IsCollectedOnEntering_RevealsOnlyItsRegion()
-        {
-            var collected = new List<string>();
-            _map.FragmentCollected += fragment => collected.Add(fragment.Id);
-            Assert.AreEqual(2, _map.TotalCount);
-            Assert.IsFalse(_map.IsRevealed(new GridPosition(1, 1)));
-
-            Interact();
-            WalkTo(4);
-
-            CollectionAssert.AreEqual(new[] { "fragment_1" }, collected);
-            Assert.AreEqual(1, _map.CollectedCount);
-            Assert.IsFalse(_map.AllCollected);
-            Assert.AreEqual(0, _pickups.At(new GridPosition(4, 1)).Count, "The fragment no longer lies in the cell.");
-            Assert.IsTrue(_map.IsRevealed(new GridPosition(0, 0)));
-            Assert.IsTrue(_map.IsRevealed(new GridPosition(5, 2)));
-            Assert.IsFalse(_map.IsRevealed(new GridPosition(6, 1)), "Region of the other fragment.");
-
-            WalkTo(3);
-            WalkTo(4);
-            Assert.AreEqual(1, collected.Count, "Collected once.");
         }
 
         [Test]

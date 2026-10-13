@@ -132,26 +132,6 @@ namespace Purge.Tests.EditMode.Progress
             Assert.IsFalse(AudioListener.pause, "Sound is back after the ad.");
         }
 
-        [Test]
-        public void MapLayers_BoughtPerLevel_KeptInTheSave()
-        {
-            var storage = new MemoryStorage();
-            var save = new SaveService(storage);
-            save.Load();
-            var progress = new ProgressService(save, new Catalog(_catalogAsset));
-            Assert.IsFalse(progress.IsMapLayerUnlocked("L1", MapUnlock.Zombies));
-            progress.UnlockMapLayer("L1", MapUnlock.Zombies);
-            progress.UnlockMapLayer("L1", MapUnlock.Keys);
-            Assert.IsTrue(progress.IsMapLayerUnlocked("L1", MapUnlock.Zombies | MapUnlock.Keys));
-            Assert.IsFalse(progress.IsMapLayerUnlocked("L1", MapUnlock.Weapons));
-            Assert.IsFalse(progress.IsMapLayerUnlocked("L2", MapUnlock.Zombies), "Another level: not bought.");
-
-            var reloaded = new SaveService(storage);
-            reloaded.Load();
-            Assert.IsTrue(new ProgressService(reloaded, new Catalog(_catalogAsset)).IsMapLayerUnlocked("L1", MapUnlock.Keys),
-                "Kept for replays of the level.");
-        }
-
         private sealed class FakeProvider : IAdProvider
         {
             public readonly List<AdKind> Shown = new List<AdKind>();

@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -182,7 +163,6 @@ MonoBehaviour:
   - NACHLADEN
   - "{0}: zum Aufheben \u201EBenutzen\u201C dr\xFCcken"
   - 'Aufgehoben: {0}'
-  - Kartenteil gefunden {0}/{1}
   - "Verschlossen: Schl\xFCssel n\xF6tig"
   - "Verschlossen: roter Schl\xFCssel n\xF6tig"
   - "Verschlossen: blauer Schl\xFCssel n\xF6tig"
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Revolvergewehr
   - "Scharfsch\xFCtzengewehr"
   - "MP mit Schalld\xE4mpfer"
-  - LEVEL BEENDEN?
   - PAUSE
   - WEITER
   - NEU STARTEN
@@ -214,10 +193,7 @@ MonoBehaviour:
   - 'DEBUG: SCHEITERN'
   - LEVEL GESCHAFFT
   - LEVEL GESCHEITERT
-  - AUSGANG GEFUNDEN
-  - KEIN AUSGANG
   - ZOMBIES {0}/{1}
-  - KARTE {0}/{1}
   - ZEIT {0}
   - BESTZEIT {0}
   - NEUER REKORD!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - ETWAS IST SCHIEFGELAUFEN
   - "ZUR\xDCCK ZUM MEN\xDC"
   - SPIELER
-  - KARTENTEILE
   - ZOMBIES
   - WAFFEN
   - MEDKITS
   - "SCHL\xDCSSEL"
-  - "Route zum n\xE4chsten Kartenteil"
-  - Route zum Ausgang
-  - "Route zum n\xE4chsten Schl\xFCssel"
-  - "Route zur T\xFCr, die dein Schl\xFCssel \xF6ffnet"
-  - Keine Route gefunden
-  - Dieses Level hat keine Karte
-  - Noch keine Kartenteile gefunden (0/{0})
-  - 'Kartenteile: {0}/{1}'
   - STEUERUNG
   - SCHIESSEN
   - SONSTIGES
@@ -278,7 +245,6 @@ MonoBehaviour:
   - "Melde dich an, um deinen Fortschritt auf allen Ger\xE4ten zu behalten"
   - TUTORIAL
   - TUTORIAL ABGESCHLOSSEN
-  - Route des Tutorials
   - "Werbung ist gerade nicht verf\xFCgbar"
   - "Drehe dein Ger\xE4t"
   - VERSTANDEN
@@ -334,15 +300,10 @@ MonoBehaviour:
   - "Verletzt? Ein Medikit heilt dich vollst\xE4ndig.\nTritt darauf \u2013 es wird
     nur verbraucht, wenn deine Gesundheit nicht voll ist."
   - Tritt auf das Medikit
-  - Das ist ein Kartenteil. Jedes zeigt einen Teil der Levelkarte.
-  - Nimm das Kartenteil
   - "\xD6ffne die Karte mit M oder dem Kartenknopf oben rechts. Die Lupe auf der
     Karte zeigt den Weg zum n\xE4chsten Ziel."
   - "\xD6ffne die Karte mit dem Kartenknopf oben rechts. Die Lupe auf der Karte zeigt
     den Weg zum n\xE4chsten Ziel."
   - "\xD6ffne die Karte: M"
   - "\xD6ffne die Karte"
-  - "Geh jetzt zum Ausgang \u2013 der Treppe.\nIn den Levels verdienst du Sterne:
-    f\xFCr den Ausgang, f\xFCr alle besiegten Zombies und f\xFCr alle Kartenteile."
-  - Geh zum Ausgang
   _missing: []

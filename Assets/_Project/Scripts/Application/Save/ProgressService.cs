@@ -25,12 +25,6 @@ namespace Purge.Application.Save
         /// <summary>Stores a completed run (persistent event): best stars and time, kills, unlocks the next level, saves.</summary>
         void RecordCompletion(string levelId, LevelResult result);
 
-        /// <summary>The map layer was bought for the level (a rewarded ad); it stays for every replay of it.</summary>
-        bool IsMapLayerUnlocked(string levelId, MapUnlock layer);
-
-        /// <summary>Remembers a bought map layer of the level and saves.</summary>
-        void UnlockMapLayer(string levelId, MapUnlock layer);
-
         /// <summary>Forgets all progress (debug).</summary>
         void ResetProgress();
     }
@@ -92,31 +86,8 @@ namespace Purge.Application.Save
                                           (next != null ? $", unlocked '{next}'." : "."));
         }
 
-        public bool IsMapLayerUnlocked(string levelId, MapUnlock layer)
-        {
-            foreach (var record in Data.MapUnlocks)
-                if (string.Equals(record.LevelId, levelId, StringComparison.Ordinal))
-                    return (record.Layers & layer) == layer;
-            return false;
-        }
-
-        public void UnlockMapLayer(string levelId, MapUnlock layer)
-        {
-            if (string.IsNullOrEmpty(levelId) || layer == MapUnlock.None) return;
-            MapUnlockRecord found = null;
-            foreach (var record in Data.MapUnlocks)
-                if (string.Equals(record.LevelId, levelId, StringComparison.Ordinal))
-                    found = record;
-            if (found == null) Data.MapUnlocks.Add(found = new MapUnlockRecord { LevelId = levelId });
-            if ((found.Layers & layer) == layer) return;
-            found.Layers |= layer;
-            _save.Save();
-            GameLog.Info(LogChannel.Save, $"Map layer {layer} unlocked for '{levelId}'.");
-        }
-
         public void ResetProgress()
         {
-            Data.MapUnlocks.Clear();
             Data.UnlockedLevels.Clear();
             Data.LevelStars.Clear();
             Data.TotalKills = 0;

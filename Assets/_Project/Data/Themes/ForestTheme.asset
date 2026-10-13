@@ -16,12 +16,10 @@ MonoBehaviour:
   _floor: {fileID: 11400000, guid: 7df6b5e7968bc1a47af684c78962ed7a, type: 2}
   _wall: {fileID: 11400000, guid: a03fbad0f5cd1db4f90e6bd286099a55, type: 2}
   _door: {fileID: 11400000, guid: cb299dba8e11c1149aa22907c53bc418, type: 2}
-  _exit: {fileID: 11400000, guid: 2a6342712722c654c8aa208b06371596, type: 2}
   _key: {fileID: 11400000, guid: f3f66466e2941c5458939f5dde50eff1, type: 2}
   _medkit: {fileID: 11400000, guid: 4329f07b42756c24caededb8268c1897, type: 2}
   _weapon: {fileID: 11400000, guid: fb15d3c7f0ca317498e3750cb736fd43, type: 2}
   _zombie: {fileID: 11400000, guid: 48eb25521fc4bc1438b2733d9f5e339b, type: 2}
-  _mapFragment: {fileID: 11400000, guid: 848777e871c45864389124a0559bf682, type: 2}
   _decor: {fileID: 11400000, guid: 0e691004cc3d4284493028572ad407a7, type: 2}
   _light: {fileID: 11400000, guid: cfa9392684729334e801c808b8fda77a, type: 2}
   _fogMaterial: {fileID: 2100000, guid: 4f3c02300ccda7548973a54ccdd245c4, type: 2}
@@ -93,20 +91,6 @@ MonoBehaviour:
     RingGrow: 0.3
     RingFade: 0.4
     RingRearm: 0.3
-  _route:
-    LineMaterial: {fileID: 2100000, guid: 0976e9e2f75b61643818c92e87fa1788, type: 2}
-    Color: {r: 0.62, g: 0.86, b: 1, a: 1}
-    Brightness: 0.85
-    Opacity: 0.6
-    Width: 0.18
-    OutlineColor: {r: 0.04, g: 0.06, b: 0.08, a: 0.9}
-    OutlineWidth: 0.03
-    CornerRadius: 0.35
-    StartFade: 0.6
-    Pulse: 0.35
-    PulseSpacing: 1.6
-    PulseSpeed: 1.2
-    Height: 0.05
   _weather:
     ZombieFrost: 0
     PlayerFrost: 0

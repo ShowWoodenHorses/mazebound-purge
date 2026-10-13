@@ -17,12 +17,9 @@ MonoBehaviour:
   _generation:
     _width: 23
     _height: 15
-    _mazeSeed: 0
+    _layoutSeed: 0
     _visualSeed: 0
-    _mazeAlgorithm: 0
-    _loopDensity: 0.1
-    _initialPlayerStartCount: 1
-    _initialExitCount: 1
+    _obstacleDensity: 0
     _lightDensity: 0.5
     _decorDensity: 0.15
     _maxAutoDecorHeight: 0.3
@@ -51,11 +48,6 @@ MonoBehaviour:
     _position:
       _x: 2
       _y: 3
-  _exits:
-  - _id: exit_1
-    _position:
-      _x: 1
-      _y: 11
   _zombieSpawns:
   - _id: zombie_1
     _position:
@@ -63,15 +55,12 @@ MonoBehaviour:
       _y: 3
     _facing: 3
     _definition: {fileID: 11400000, guid: c9e4824799a23154dae897c7fde15723, type: 2}
-    _patrolId: 
   - _id: zombie_2
     _position:
       _x: 7
       _y: 11
     _facing: 1
     _definition: {fileID: 11400000, guid: ac0c610bbc54b95459ad02ba82f4340b, type: 2}
-    _patrolId: 
-  _patrols: []
   _weapons:
   - _id: weapon_1
     _position:
@@ -93,16 +82,6 @@ MonoBehaviour:
     _position:
       _x: 9
       _y: 12
-  _mapFragments:
-  - _id: fragment_1
-    _position:
-      _x: 6
-      _y: 12
-    _region:
-      _x: 0
-      _y: 0
-      _width: 23
-      _height: 15
   _lights:
   - _id: light_1
     _cell:
@@ -2319,13 +2298,5 @@ MonoBehaviour:
       _choice:
         _variantId: medkit_01
         _rotation: 0
-    - _entityId: fragment_1
-      _choice:
-        _variantId: fragment_01
-        _rotation: 0
-    - _entityId: exit_1
-      _choice:
-        _variantId: SM_Prop_Ladder_Tied_01
-        _rotation: 1
     _objectOverrides: []
   _tutorial: {fileID: 11400000, guid: 97ada955ac3f7124da3cafb25040ab2c, type: 2}

@@ -24,8 +24,7 @@ namespace Purge.Tests.EditMode.Validation
         public void TearDown() => _fixture.Dispose();
 
         /// <summary>
-        /// 10x4 corridor: row y = 1, x = 1..8 is floor. Start at (1,1), exit at (8,1),
-        /// door cell at (5,1) (no DoorData yet). Visuals assigned.
+        /// 10x4 corridor: row y = 1, x = 1..8 is floor. Start at (1,1), door at (5,1). Visuals assigned.
         /// </summary>
         private void BuildCorridor(bool withDoor = true)
         {
@@ -36,7 +35,6 @@ namespace Purge.Tests.EditMode.Validation
             Level.ReplaceGeometry(geometry);
             Level.ClearObjects();
             Level.MutablePlayerStarts.Add(new PlayerStartData("start_1", new GridPosition(1, 1)));
-            Level.MutableExits.Add(new ExitData("exit_1", new GridPosition(8, 1)));
 
             if (withDoor)
             {
@@ -75,7 +73,6 @@ namespace Purge.Tests.EditMode.Validation
             LevelAuthoring.GenerateNew(Level);
             var report = Validate();
             Assert.IsTrue(report.IsValid, Describe(report));
-            Assert.IsTrue(report.Has(ValidationCodes.ShortestPath));
         }
 
         [Test]
@@ -89,21 +86,18 @@ namespace Purge.Tests.EditMode.Validation
         // ------------------------------------------------------------ Structural
 
         [Test]
-        public void MissingStartOrExit_IsError()
+        public void MissingStart_IsError()
         {
             BuildCorridor();
             Level.MutablePlayerStarts.Clear();
-            Level.MutableExits.Clear();
-            var report = Validate();
-            AssertHasError(report, ValidationCodes.NoPlayerStart);
-            AssertHasError(report, ValidationCodes.NoExit);
+            AssertHasError(Validate(), ValidationCodes.NoPlayerStart);
         }
 
         [Test]
         public void DuplicateAndEmptyIds_AreErrors()
         {
             BuildCorridor();
-            Level.MutableMedkits.Add(new MedkitData("exit_1", new GridPosition(3, 1)));
+            Level.MutableMedkits.Add(new MedkitData("door_1", new GridPosition(3, 1)));
             Level.MutableMedkits.Add(new MedkitData("", new GridPosition(4, 1)));
             var report = Validate();
             AssertHasError(report, ValidationCodes.DuplicateId);
@@ -142,6 +136,7 @@ namespace Purge.Tests.EditMode.Validation
             Assert.IsTrue(Validate().IsValid, Describe(Validate()));
 
             Level.MutableMedkits.Add(new MedkitData("medkit_1", new GridPosition(8, 1)));
+            Level.MutableMedkits.Add(new MedkitData("medkit_2", new GridPosition(8, 1)));
             Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_3", new GridPosition(1, 1), _fixture.Walker));
             Reassign();
             var report = Validate();
@@ -227,47 +222,6 @@ namespace Purge.Tests.EditMode.Validation
             AssertHasError(Validate(), ValidationCodes.MissingDefinition);
         }
 
-        [Test]
-        public void MapFragments_InvalidRegionAndOverlap_AreErrors()
-        {
-            BuildCorridor();
-            Level.MutableMapFragments.Add(new MapFragmentData("fragment_1", new GridPosition(2, 1), new GridRect(0, 0, 5, 4)));
-            Level.MutableMapFragments.Add(new MapFragmentData("fragment_2", new GridPosition(3, 1), new GridRect(5, 0, 5, 4)));
-            Reassign();
-            Assert.IsFalse(Validate().Has(ValidationCodes.FragmentOverlap));
-
-            Level.MapFragments[1].Region = new GridRect(3, 0, 6, 4);
-            AssertHasError(Validate(), ValidationCodes.FragmentOverlap);
-
-            Level.MapFragments[1].Region = new GridRect(5, 0, 9, 4);
-            AssertHasError(Validate(), ValidationCodes.InvalidFragmentRegion);
-        }
-
-        [Test]
-        public void Patrols_References_Points_AndRoutesThroughClosedDoors()
-        {
-            BuildCorridor();
-            Level.MutablePatrols.Add(new PatrolData("patrol_1", new[] { new GridPosition(2, 1), new GridPosition(4, 1) }));
-            Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", new GridPosition(3, 1), _fixture.Walker, patrolId: "patrol_1"));
-            Reassign();
-            Assert.IsTrue(Validate().IsValid, Describe(Validate()));
-            Assert.IsFalse(Validate().Has(ValidationCodes.PatrolPointUnreachable));
-
-            // Route crosses the closed door at (5,1): zombies do not open doors.
-            Level.Patrols[0].MutablePoints.Add(new GridPosition(7, 1));
-            AssertHasWarning(Validate(), ValidationCodes.PatrolPointUnreachable);
-
-            Level.Doors[0].IsInitiallyOpen = true;
-            Assert.IsFalse(Validate().Has(ValidationCodes.PatrolPointUnreachable));
-
-            Level.Patrols[0].MutablePoints.Add(new GridPosition(5, 0));
-            Level.ZombieSpawns[0].PatrolId = "patrol_missing";
-            var report = Validate();
-            AssertHasError(report, ValidationCodes.InvalidPatrolPoint);
-            AssertHasError(report, ValidationCodes.MissingPatrolReference);
-            AssertHasWarning(report, ValidationCodes.UnusedPatrol);
-        }
-
         // ------------------------------------------------------------ Gameplay
 
         [Test]
@@ -281,7 +235,7 @@ namespace Purge.Tests.EditMode.Validation
         }
 
         [Test]
-        public void KeyBehindItsLockedDoor_SoftLocksTheExit()
+        public void KeyBehindItsLockedDoor_IsUnreachable()
         {
             BuildCorridor();
             Level.Doors[0].KeyId = "key_1";
@@ -290,25 +244,8 @@ namespace Purge.Tests.EditMode.Validation
             Reassign();
 
             var report = Validate();
-            AssertHasError(report, ValidationCodes.NoReachableExit);
-            AssertHasError(report, ValidationCodes.ExitUnreachable);
             AssertHasWarning(report, ValidationCodes.KeyUnreachable);
             AssertHasWarning(report, ValidationCodes.ObjectUnreachable);
-        }
-
-        [Test]
-        public void ExitReachableFromOneStartOnly_IsErrorForTheOtherStart()
-        {
-            BuildCorridor(withDoor: false);
-            Level.Geometry.SetCell(new GridPosition(6, 2), CellType.Floor);
-            Level.Geometry.SetCell(new GridPosition(5, 1), CellType.Wall);
-            Level.MutablePlayerStarts.Add(new PlayerStartData("start_2", new GridPosition(6, 2)));
-            Reassign();
-
-            var report = Validate();
-            AssertHasError(report, ValidationCodes.NoReachableExit);
-            Assert.AreEqual("start_1", report.Issues.First(i => i.Code == ValidationCodes.NoReachableExit).EntityId);
-            Assert.IsFalse(report.Has(ValidationCodes.ExitUnreachable));
         }
 
         [Test]
@@ -343,8 +280,8 @@ namespace Purge.Tests.EditMode.Validation
         public void BrokenPrefabAndBadDefault_AreErrors()
         {
             BuildCorridor();
-            _fixture.Exit.MutableVariants.Add(new VisualVariant("exit_no_prefab", 0));
-            _fixture.Exit.DefaultVariantId = "exit_missing";
+            _fixture.Door.MutableVariants.Add(new VisualVariant("door_no_prefab", 0));
+            _fixture.Door.DefaultVariantId = "door_missing";
             var report = Validate();
             AssertHasError(report, ValidationCodes.BrokenPrefabReference);
             AssertHasError(report, ValidationCodes.InvalidDefaultVariant);
@@ -355,8 +292,8 @@ namespace Purge.Tests.EditMode.Validation
         {
             BuildCorridor();
             Level.VisualData.SetCellOverride(new GridPosition(2, 1), CellLayer.Floor, new VisualChoice("floor_does_not_exist"));
-            Level.VisualData.SetObjectOverride("exit_1", new VisualChoice("exit_does_not_exist"));
-            Level.VisualData.SetObjectOverride("ghost_1", new VisualChoice("exit_01"));
+            Level.VisualData.SetObjectOverride("door_1", new VisualChoice("door_does_not_exist"));
+            Level.VisualData.SetObjectOverride("ghost_1", new VisualChoice("door_01"));
 
             var report = Validate();
             AssertHasError(report, ValidationCodes.UnknownVariant);
@@ -446,13 +383,11 @@ namespace Purge.Tests.EditMode.Validation
             for (var seed = 0; seed < 1000; seed++)
             {
                 var g = Level.Generation;
-                g.Width = sizes.NextInt(2, 21) * 2 + 1;
-                g.Height = sizes.NextInt(2, 21) * 2 + 1;
-                g.MazeSeed = seed;
+                g.Width = sizes.NextInt(5, 44);
+                g.Height = sizes.NextInt(5, 44);
+                g.LayoutSeed = seed;
                 g.VisualSeed = seed * 31 + 7;
-                g.LoopDensity = (float)sizes.NextDouble() * 0.5f;
-                g.InitialPlayerStartCount = sizes.NextInt(1, 3);
-                g.InitialExitCount = sizes.NextInt(1, 3);
+                g.ObstacleDensity = (float)sizes.NextDouble();
 
                 LevelAuthoring.GenerateNew(Level);
                 var report = Validate();

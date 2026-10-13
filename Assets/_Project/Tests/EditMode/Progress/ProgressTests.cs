@@ -8,7 +8,6 @@ using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Presentation.Map;
 using NUnit.Framework;
 using UnityEngine;
@@ -42,8 +41,7 @@ namespace Purge.Tests.EditMode.Progress
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_catalogAsset);
 
-        private static LevelResult Completed(int kills = 0, int zombies = 0, int fragments = 0, int totalFragments = 0) =>
-            new LevelResult(true, kills, zombies, fragments, totalFragments);
+        private static LevelResult Completed(int kills = 0, int zombies = 0) => new LevelResult(true, kills, zombies);
 
         // ------------------------------------------------------------ Time
 
@@ -51,10 +49,10 @@ namespace Purge.Tests.EditMode.Progress
         public void BestTime_KeepsTheFastestCompletedRun_AndSurvivesReload()
         {
             Assert.AreEqual(0f, _progress.GetBestTime("first"), "No time before a completed run.");
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 0, 0, 80f));
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 0, 0, 95f));
+            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 80f));
+            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 95f));
             Assert.AreEqual(80f, _progress.GetBestTime("first"), "A slower run keeps the best.");
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 0, 0, 61.5f));
+            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 61.5f));
             _progress.RecordCompletion("first", Completed());
             Assert.AreEqual(61.5f, _progress.GetBestTime("first"), "Faster replaces it; an unknown time (0) does not.");
 
@@ -66,14 +64,12 @@ namespace Purge.Tests.EditMode.Progress
         // ------------------------------------------------------------ Stars
 
         [Test]
-        public void Stars_ExitAllZombiesAllFragments()
+        public void Stars_CompletionAndAllZombies()
         {
-            Assert.AreEqual(1, Completed(kills: 1, zombies: 2, fragments: 0, totalFragments: 1).Stars);
-            Assert.AreEqual(2, Completed(kills: 2, zombies: 2, fragments: 0, totalFragments: 1).Stars);
-            Assert.AreEqual(2, Completed(kills: 0, zombies: 2, fragments: 1, totalFragments: 1).Stars);
-            Assert.AreEqual(3, Completed(kills: 2, zombies: 2, fragments: 1, totalFragments: 1).Stars);
-            Assert.AreEqual(3, Completed().Stars, "Nothing to kill or collect: those stars are free.");
-            Assert.AreEqual(0, new LevelResult(false, 2, 2, 1, 1).Stars, "No stars without completion.");
+            Assert.AreEqual(2, Completed(kills: 1, zombies: 2).Stars, "Completion + the former map star.");
+            Assert.AreEqual(3, Completed(kills: 2, zombies: 2).Stars);
+            Assert.AreEqual(3, Completed().Stars, "Nothing to kill: that star is free.");
+            Assert.AreEqual(0, new LevelResult(false, 2, 2).Stars, "No stars without completion.");
         }
 
         // ------------------------------------------------------------ Progress
@@ -117,7 +113,7 @@ namespace Purge.Tests.EditMode.Progress
         [Test]
         public void FailedRun_IsNotRecorded()
         {
-            Assert.Throws<System.ArgumentException>(() => _progress.RecordCompletion("first", new LevelResult(false, 1, 1, 0, 0)));
+            Assert.Throws<System.ArgumentException>(() => _progress.RecordCompletion("first", new LevelResult(false, 1, 1)));
             Assert.AreEqual(0, _storage.Writes);
         }
 
@@ -417,7 +413,7 @@ namespace Purge.Tests.EditMode.Progress
         {
             var settings = new SettingsService(_save);
             Assert.IsTrue(settings.MapShowPlayer);
-            Assert.IsTrue(settings.MapShowFragments);
+            Assert.IsTrue(settings.MapShowZombies);
 
             var writes = _storage.Writes;
             settings.MapShowPlayer = false;
@@ -428,13 +424,13 @@ namespace Purge.Tests.EditMode.Progress
             save.Load();
             var loaded = new SettingsService(save);
             Assert.IsFalse(loaded.MapShowPlayer);
-            Assert.IsTrue(loaded.MapShowFragments);
+            Assert.IsTrue(loaded.MapShowZombies);
 
             _storage.Json = "{\"Settings\":{\"ShowFps\":true}}";
             _save.Load();
             var old = new SettingsService(_save);
             Assert.IsTrue(old.MapShowPlayer, "Old saves show the icons.");
-            Assert.IsTrue(old.MapShowFragments);
+            Assert.IsTrue(old.MapShowZombies);
         }
 
         [Test]
@@ -450,7 +446,7 @@ namespace Purge.Tests.EditMode.Progress
         // ------------------------------------------------------------ Map
 
         [Test]
-        public void MapRenderer_DrawsOnlyCollectedRegions_DoorsAsPassages()
+        public void MapRenderer_DrawsTheWholeLevel_DoorsAsPassages()
         {
             var level = ScriptableObject.CreateInstance<LevelData>();
             try
@@ -460,29 +456,16 @@ namespace Purge.Tests.EditMode.Progress
                 geometry.SetCell(new GridPosition(2, 0), CellType.Door);
                 geometry.SetCell(new GridPosition(3, 0), CellType.Floor);
                 level.ReplaceGeometry(geometry);
-                level.MutableMapFragments.Add(new MapFragmentData("fragment_1", new GridPosition(1, 0), new GridRect(0, 0, 2, 2)));
-                level.MutableMapFragments.Add(new MapFragmentData("fragment_2", new GridPosition(3, 0), new GridRect(2, 0, 2, 2)));
 
                 var grid = new LevelGrid(level.Geometry);
-                var map = new MapSystem(level);
                 var pixels = new Color32[grid.CellCount];
+                MapRenderer.Render(grid, pixels);
 
-                MapRenderer.Render(grid, map, pixels);
-                foreach (var pixel in pixels)
-                    Assert.AreEqual(MapRenderer.Unknown, pixel, "Nothing collected: the map is empty.");
-
-                map.Collect(level.MapFragments[0]);
-                MapRenderer.Render(grid, map, pixels);
                 Assert.AreEqual(MapRenderer.Wall, pixels[grid.ToIndex(new GridPosition(0, 0))]);
                 Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(1, 0))]);
                 Assert.AreEqual(MapRenderer.Wall, pixels[grid.ToIndex(new GridPosition(1, 1))]);
-                Assert.AreEqual(MapRenderer.Unknown, pixels[grid.ToIndex(new GridPosition(2, 0))], "Other fragment's region.");
-
-                map.Collect(level.MapFragments[1]);
-                MapRenderer.Render(grid, map, pixels);
                 Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(2, 0))], "A door is a passage; its icon shows it.");
                 Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(3, 0))]);
-                Assert.IsTrue(map.AllCollected);
             }
             finally
             {

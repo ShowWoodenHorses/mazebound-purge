@@ -60,11 +60,12 @@ namespace Purge.Composition
                 }
 
                 var runtime = scope.Container.Resolve<LevelRuntime>();
-                var exits = scope.Container.Resolve<ExitSystem>();
                 var progress = scope.Container.Resolve<LevelProgress>();
-                scope.Container.Resolve<PlayerDeathRule>(); // subscribes on creation; disposed with the scope
+                // Rules subscribe on creation and are disposed with the scope.
+                scope.Container.Resolve<PlayerDeathRule>();
+                scope.Container.Resolve<AllKilledRule>();
                 GameLog.Info(LogChannel.LevelLoading, $"LevelScope for '{level.name}' created.");
-                return new LevelSession(scope, scene, levelAssets, runtime, exits, progress);
+                return new LevelSession(scope, scene, levelAssets, runtime, progress);
             }
             catch
             {
@@ -89,12 +90,11 @@ namespace Purge.Composition
             private readonly Scene _scene;
             private readonly IAssetOwner _assets;
             private readonly LevelRuntime _runtime;
-            private readonly ExitSystem _exits;
             private readonly LevelProgress _progress;
             private LevelLifetimeScope _scope;
             private bool _released;
 
-            public LevelSession(LevelLifetimeScope scope, Scene scene, IAssetOwner assets, LevelRuntime runtime, ExitSystem exits,
+            public LevelSession(LevelLifetimeScope scope, Scene scene, IAssetOwner assets, LevelRuntime runtime,
                 LevelProgress progress)
             {
                 _progress = progress;
@@ -102,13 +102,10 @@ namespace Purge.Composition
                 _scene = scene;
                 _assets = assets;
                 _runtime = runtime;
-                _exits = exits;
                 _runtime.Finished += OnFinished;
-                _exits.ExitReached += OnExitReached;
             }
 
             public event Action<LevelOutcome> Finished;
-            public event Action ExitReached;
 
             public UniTask LoadAsync(CancellationToken cancellation) => _runtime.LoadAsync(cancellation);
 
@@ -143,9 +140,7 @@ namespace Purge.Composition
             {
                 _released = true;
                 _runtime.Finished -= OnFinished;
-                _exits.ExitReached -= OnExitReached;
                 Finished = null;
-                ExitReached = null;
                 if (_scope != null) _scope.Dispose();
                 _scope = null;
             }
@@ -153,8 +148,6 @@ namespace Purge.Composition
             private void ReleaseAssets() => _assets.Dispose();
 
             private void OnFinished(LevelOutcome outcome) => Finished?.Invoke(outcome);
-
-            private void OnExitReached(ExitData exit) => ExitReached?.Invoke();
         }
     }
 }

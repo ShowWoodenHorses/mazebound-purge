@@ -41,7 +41,6 @@ namespace Purge.Editor.Dev
             ("Player", @"^Wood Walk \d+$", c => c.FootstepWalk),
             ("Player", @"^hit\d*$", c => c.PlayerHurt),
             ("Player", @"^death$", c => c.PlayerDeath),
-            ("Player", @"^win$", c => c.ExitReached),
 
             ("Weapon", @"^melee-attack\d*$", c => c.MeleeSwing),
             ("Weapon", @"^rifle_attack\d*$", c => c.Shot),
@@ -53,7 +52,6 @@ namespace Purge.Editor.Dev
             ("Other", @"^key_pick_up$", c => c.PickupKey),
             ("Other", @"^medicine_pick_up$", c => c.PickupMedkit),
             ("Other", @"^weapon_pick_up$", c => c.PickupWeapon),
-            ("Other", @"^map$", c => c.PickupMapFragment),
             ("Other", @"^Door Open \d+$", c => c.DoorOpen),
             ("Other", @"^Door Close \d+$", c => c.DoorClose),
             ("Other", @"^door_unlock$", c => c.DoorUnlock),
@@ -78,7 +76,6 @@ namespace Purge.Editor.Dev
             ("UI", @"^pause_continue$", c => c.PauseResume),
             ("UI", @"^map_open$", c => c.MapOpen),
             ("UI", @"^map_close$", c => c.MapClose),
-            ("UI", @"^window_exit_level$", c => c.ConfirmExit),
             ("UI", @"^game_win$", c => c.LevelComplete),
             ("UI", @"^game_over$", c => c.LevelFailed),
             ("UI", @"^star\d*$", c => c.Star),

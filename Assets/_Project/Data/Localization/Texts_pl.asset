@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - Polski
   - USTAWIENIA
@@ -182,7 +163,6 @@ MonoBehaviour:
   - "PRZE\u0141ADOWANIE"
   - "{0}: naci\u015Bnij \u201EAkcja\u201D, aby podnie\u015B\u0107"
   - 'Podniesiono: {0}'
-  - Znaleziono fragment mapy {0}/{1}
   - "Zamkni\u0119te: potrzebny klucz"
   - "Zamkni\u0119te: potrzebny czerwony klucz"
   - "Zamkni\u0119te: potrzebny niebieski klucz"
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Karabin rewolwerowy
   - Karabin snajperski
   - "Pistolet maszynowy z t\u0142umikiem"
-  - "ZAKO\u0143CZY\u0106 POZIOM?"
   - PAUZA
   - "WZN\xD3W"
   - ZACZNIJ OD NOWA
@@ -214,10 +193,7 @@ MonoBehaviour:
   - "DEBUG: PORA\u017BKA"
   - "POZIOM UKO\u0143CZONY"
   - "POZIOM NIEUKO\u0143CZONY"
-  - "WYJ\u015ACIE ZNALEZIONE"
-  - "WYJ\u015ACIE NIEZNALEZIONE"
   - ZOMBIE {0}/{1}
-  - MAPA {0}/{1}
   - CZAS {0}
   - REKORD {0}
   - NOWY REKORD!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - "CO\u015A POSZ\u0141O NIE TAK"
   - "WR\xD3\u0106 DO MENU"
   - GRACZ
-  - "CZ\u0118\u015ACI MAPY"
   - ZOMBIE
   - "BRO\u0143"
   - APTECZKI
   - KLUCZE
-  - "Trasa do najbli\u017Cszego fragmentu mapy"
-  - "Trasa do wyj\u015Bcia"
-  - "Trasa do najbli\u017Cszego klucza"
-  - "Trasa do drzwi, kt\xF3re otworzy tw\xF3j klucz"
-  - Nie znaleziono trasy
-  - Ten poziom nie ma mapy
-  - "Nie znaleziono jeszcze fragment\xF3w mapy (0/{0})"
-  - 'Fragmenty mapy: {0}/{1}'
   - STEROWANIE
   - STRZELANIE
   - INNE
@@ -279,7 +246,6 @@ MonoBehaviour:
   - "Zaloguj si\u0119, aby zachowa\u0107 post\u0119p na wszystkich urz\u0105dzeniach"
   - SAMOUCZEK
   - "SAMOUCZEK UKO\u0143CZONY"
-  - Trasa samouczka
   - "Reklama jest teraz niedost\u0119pna"
   - "Obr\xF3\u0107 urz\u0105dzenie"
   - ROZUMIEM
@@ -338,16 +304,10 @@ MonoBehaviour:
   - "Ranny? Apteczka leczy do pe\u0142na.\nWejd\u017A na ni\u0105 \u2014 zostanie
     u\u017Cyta tylko wtedy, gdy zdrowie nie jest pe\u0142ne."
   - "Wejd\u017A na apteczk\u0119"
-  - "To fragment mapy. Ka\u017Cdy odkrywa cz\u0119\u015B\u0107 mapy poziomu."
-  - "Podnie\u015B fragment mapy"
   - "Otw\xF3rz map\u0119 klawiszem M lub przyciskiem mapy w prawym g\xF3rnym rogu.
     Na mapie lupa pokazuje drog\u0119 do najbli\u017Cszego celu."
   - "Otw\xF3rz map\u0119 przyciskiem mapy w prawym g\xF3rnym rogu. Na mapie lupa
     pokazuje drog\u0119 do najbli\u017Cszego celu."
   - "Otw\xF3rz map\u0119: M"
   - "Otw\xF3rz map\u0119"
-  - "Teraz id\u017A do wyj\u015Bcia \u2014 schod\xF3w.\nNa poziomach zdobywasz gwiazdki:
-    jedn\u0105 za wyj\u015Bcie, jedn\u0105 za zabicie wszystkich zombie i jedn\u0105
-    za wszystkie fragmenty mapy."
-  - "Id\u017A do wyj\u015Bcia"
   _missing: []

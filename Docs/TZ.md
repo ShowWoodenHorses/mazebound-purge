@@ -2,7 +2,7 @@
 
 Статус: обсуждение (начато 2026-10-13).
 
-**Название** — Mazebound: Purge (одно на всех языках, не переводится; отсылка к Mazebound). **Кодовое имя** — `Purge` (namespace `Purge.*`, сборки, шейдеры `Purge/*`, меню **Purge**, ключ сейва `Purge.SaveData`, пакет `ru.bgames.mazebound.purge`); от названия не зависит. Основа — проект Maze (Mazebound); что из него берём, решается отдельно (Inheritance.md — позже).
+**Название** — Mazebound: Purge (одно на всех языках, не переводится; отсылка к Mazebound). **Кодовое имя** — `Purge` (namespace `Purge.*`, сборки, шейдеры `Purge/*`, меню **Purge**, ключ сейва `Purge.SaveData`, пакет `ru.bgames.mazebound.purge`); от названия не зависит. Основа — проект Maze (Mazebound); что из него берём — [Inheritance.md](Inheritance.md).
 
 ## Решено
 

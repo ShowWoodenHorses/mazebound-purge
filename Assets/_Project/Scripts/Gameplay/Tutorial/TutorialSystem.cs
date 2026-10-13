@@ -6,7 +6,6 @@ using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Zombies;
@@ -18,8 +17,7 @@ namespace Purge.Gameplay.Tutorial
     /// Steps of the tutorial level (<see cref="LevelData.Tutorial"/>; inactive in other levels). A step is finished by the
     /// state of the game, checked on the events that can change it (cell change, pickup taken, door unlocked or moved,
     /// zombie died, map opened) — never per frame. A step already done when its turn comes (the player ran ahead) is
-    /// skipped silently. The route line (<see cref="RouteHintSystem.Guide"/>) leads to the step's target; a hint the
-    /// player asked for on the map is left alone until it ends.
+    /// skipped silently.
     /// </summary>
     public sealed class TutorialSystem : ILevelLoadStep, IDisposable
     {
@@ -29,12 +27,11 @@ namespace Purge.Gameplay.Tutorial
         private readonly PickupSystem _pickups;
         private readonly DoorSystem _doors;
         private readonly ZombieSystem _zombies;
-        private readonly RouteHintSystem _route;
         private bool _mapOpened;
         private bool _subscribed;
 
         public TutorialSystem(LevelData level, PlayerSystem player, PickupSystem pickups, DoorSystem doors,
-            ZombieSystem zombies, RouteHintSystem route)
+            ZombieSystem zombies)
         {
             _level = level;
             _script = level.Tutorial;
@@ -42,7 +39,6 @@ namespace Purge.Gameplay.Tutorial
             _pickups = pickups;
             _doors = doors;
             _zombies = zombies;
-            _route = route;
         }
 
         /// <summary>After the zombies: every target exists when the first step starts.</summary>
@@ -140,7 +136,6 @@ namespace Purge.Gameplay.Tutorial
                 StepIndex++;
                 if (StepIndex >= StepCount)
                 {
-                    if (_route.Target == RouteTarget.Guide) _route.Clear();
                     GameLog.Info(LogChannel.Gameplay, "Tutorial finished.");
                     Finished?.Invoke();
                     return;
@@ -148,7 +143,6 @@ namespace Purge.Gameplay.Tutorial
 
                 if (IsDone(Current)) continue; // Done ahead of its turn.
 
-                Lead();
                 StepStarted?.Invoke(StepIndex);
                 return;
             }
@@ -186,25 +180,6 @@ namespace Purge.Gameplay.Tutorial
             }
         }
 
-        /// <summary>
-        /// The route line to the step's target, unless the player follows a hint of their own. Nothing when the player is
-        /// already there.
-        /// </summary>
-        private void Lead()
-        {
-            var step = Current;
-            if (step == null) return;
-            if (_route.IsActive && _route.Target != RouteTarget.Guide) return;
-            if (!TryGetTargetCell(step, out var cell))
-            {
-                if (_route.Target == RouteTarget.Guide) _route.Clear();
-                return;
-            }
-
-            if (_route.IsActive && _route.TargetCell == cell) return;
-            _route.Guide(cell, _level.FindEntity(step.Target) is DoorData);
-        }
-
         private bool TryGetTargetCell(TutorialStep step, out GridPosition cell)
         {
             cell = step.Cell;
@@ -232,13 +207,9 @@ namespace Purge.Gameplay.Tutorial
         }
 
         private static bool IsPickup(LevelEntityData entity) =>
-            entity is KeyData || entity is MedkitData || entity is WeaponPickupData || entity is MapFragmentData;
+            entity is KeyData || entity is MedkitData || entity is WeaponPickupData;
 
-        private void OnCellChanged(GridPosition from, GridPosition to)
-        {
-            Check();
-            if (Current != null) Lead(); // A moving target (a zombie), or the line ended at the target.
-        }
+        private void OnCellChanged(GridPosition from, GridPosition to) => Check();
 
         private void OnPickupRemoved(Pickup pickup) => Check();
 

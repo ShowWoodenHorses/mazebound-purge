@@ -110,21 +110,6 @@ namespace Purge.Tests.EditMode.Visual
         }
 
         [Test]
-        public void NoAutoLight_InExitCells()
-        {
-            _level.Generation.LightDensity = 1f;
-            LightPlacer.PlaceAll(_level, keepManual: true);
-            var lit = _level.Lights.Select(l => l.Cell).ToList();
-            Assert.IsNotEmpty(lit);
-            for (var i = 0; i < lit.Count; i++)
-                _level.MutableExits.Add(new ExitData("exit_" + i, lit[i]));
-
-            LightPlacer.PlaceAll(_level, keepManual: true);
-            foreach (var light in _level.Lights)
-                CollectionAssert.DoesNotContain(lit, light.Cell, light.Id);
-        }
-
-        [Test]
         public void ColouredKey_GetsTwoLightsOfItsColour_InItsCorridor_EvenWithoutDensity()
         {
             var keySet = ScriptableObject.CreateInstance<VisualSet>();

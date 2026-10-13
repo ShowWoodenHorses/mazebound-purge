@@ -67,21 +67,9 @@ MonoBehaviour:
     _target: medkit_1
     _cell: {x: 0, y: 0}
     _highlight: 0
-  - _text: tutorial.fragment
-    _dialog: 1
-    _goal: 2
-    _target: fragment_1
-    _cell: {x: 0, y: 0}
-    _highlight: 0
   - _text: tutorial.map
     _dialog: 1
     _goal: 6
     _target: 
     _cell: {x: 0, y: 0}
     _highlight: 6
-  - _text: tutorial.exit
-    _dialog: 1
-    _goal: 0
-    _target: exit_1
-    _cell: {x: 0, y: 0}
-    _highlight: 0

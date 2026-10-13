@@ -160,7 +160,6 @@ namespace Purge.Editor.LevelDesigner
                 case KeyData key: DrawKey(key); break;
                 case ZombieSpawnData zombie: DrawZombie(zombie); break;
                 case WeaponPickupData weapon: DrawWeapon(weapon); break;
-                case MapFragmentData fragment: DrawFragment(fragment); break;
                 case PlayerStartData start: DrawStart(start); break;
             }
 
@@ -240,24 +239,6 @@ namespace Purge.Editor.LevelDesigner
             var facing = (Direction)EditorGUILayout.EnumPopup("Facing", zombie.Facing);
             if (EditorGUI.EndChangeCheck())
                 Apply("Change Zombie", () => LevelEditing.SetZombie(Level, zombie, definition, facing));
-
-            var patrol = Level.Patrols.FirstOrDefault(p => zombie.HasPatrol && p.Id == zombie.PatrolId);
-            EditorGUILayout.LabelField("Patrol", patrol == null ? "none (idles at spawn)" : $"{patrol.Id}: {patrol.Points.Count} point(s)");
-
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Edit Patrol"))
-            {
-                _tools.Tool = EditTool.Patrol;
-                _notify("Click cells to add patrol points. Right-click removes the last one.");
-            }
-
-            using (new EditorGUI.DisabledScope(patrol == null))
-            {
-                if (GUILayout.Button("Clear Patrol"))
-                    Apply("Clear Patrol", () => LevelEditing.ClearPatrol(Level, zombie));
-            }
-
-            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawWeapon(WeaponPickupData weapon)
@@ -281,21 +262,6 @@ namespace Purge.Editor.LevelDesigner
             for (var i = 0; i < starts.Count; i++)
                 if (starts[i] == start) return i;
             return -1;
-        }
-
-        private void DrawFragment(MapFragmentData fragment)
-        {
-            var r = fragment.Region;
-            EditorGUI.BeginChangeCheck();
-            var rect = EditorGUILayout.RectIntField("Region", new RectInt(r.X, r.Y, r.Width, r.Height));
-            if (EditorGUI.EndChangeCheck())
-                Apply("Change Region", () => LevelEditing.SetFragmentRegion(fragment, new GridRect(rect.x, rect.y, rect.width, rect.height)));
-
-            if (GUILayout.Button("Draw Region"))
-            {
-                _tools.Tool = EditTool.FragmentRegion;
-                _notify("Drag a rectangle on the grid.");
-            }
         }
 
         /// <summary>

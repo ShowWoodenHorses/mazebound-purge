@@ -105,7 +105,6 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _pickupKey = new SoundCue(0.45f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _pickupMedkit = new SoundCue(0.9f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _pickupWeapon = new SoundCue(0.5f, 0f, 1, Vector2.one);
-        [SerializeField] private SoundCue _pickupMapFragment = new SoundCue(0.6f, 0f, 1, Vector2.one);
 
         [Header("Doors")]
         [SerializeField] private SoundCue _doorOpen = new SoundCue(0.9f, 10f, 2, new Vector2(0.95f, 1.05f));
@@ -155,10 +154,6 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _pauseResume = new SoundCue(0.6f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _mapOpen = new SoundCue(0.7f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _mapClose = new SoundCue(0.7f, 0f, 1, Vector2.one);
-        [Tooltip("The player reached an exit.")]
-        [SerializeField] private SoundCue _exitReached = new SoundCue(0.8f, 0f, 1, Vector2.one);
-        [Tooltip("The \"Finish level?\" window.")]
-        [SerializeField] private SoundCue _confirmExit = new SoundCue(1f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _levelComplete = new SoundCue(1f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _levelFailed = new SoundCue(0.8f, 0f, 1, Vector2.one);
         [Tooltip("Each star of the result, one after another, pitch rising.")]
@@ -192,7 +187,6 @@ namespace Purge.Core.Audio
         public SoundCue PickupKey => _pickupKey;
         public SoundCue PickupMedkit => _pickupMedkit;
         public SoundCue PickupWeapon => _pickupWeapon;
-        public SoundCue PickupMapFragment => _pickupMapFragment;
 
         public SoundCue DoorOpen => _doorOpen;
         public SoundCue DoorClose => _doorClose;
@@ -225,8 +219,6 @@ namespace Purge.Core.Audio
         public SoundCue PauseResume => _pauseResume;
         public SoundCue MapOpen => _mapOpen;
         public SoundCue MapClose => _mapClose;
-        public SoundCue ExitReached => _exitReached;
-        public SoundCue ConfirmExit => _confirmExit;
         public SoundCue LevelComplete => _levelComplete;
         public SoundCue LevelFailed => _levelFailed;
         public SoundCue Star => _star;
@@ -280,13 +272,13 @@ namespace Purge.Core.Audio
                 yield return sound.Attack;
                 yield return sound.Reload;
             }
-            yield return _pickupKey; yield return _pickupMedkit; yield return _pickupWeapon; yield return _pickupMapFragment;
+            yield return _pickupKey; yield return _pickupMedkit; yield return _pickupWeapon;
             yield return _doorOpen; yield return _doorClose; yield return _doorUnlock; yield return _doorLocked;
             yield return _zombieGroan; yield return _zombieRoar; yield return _zombieAttack; yield return _zombieHurt;
             yield return _zombieDeath; yield return _zombieStepWalk; yield return _zombieStepRun; yield return _chaseStinger;
             yield return _torchLoop;
             yield return _click; yield return _back; yield return _denied; yield return _pauseOpen; yield return _pauseResume;
-            yield return _mapOpen; yield return _mapClose; yield return _exitReached; yield return _confirmExit;
+            yield return _mapOpen; yield return _mapClose;
             yield return _levelComplete; yield return _levelFailed; yield return _star;
         }
     }

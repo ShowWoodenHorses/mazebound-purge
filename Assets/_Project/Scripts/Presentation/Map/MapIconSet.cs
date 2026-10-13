@@ -8,8 +8,6 @@ namespace Purge.Presentation.Map
         Start,
         Door,
         LockedDoor,
-        Exit,
-        MapFragment,
         Player,
         Zombie,
         Weapon,
@@ -31,8 +29,6 @@ namespace Purge.Presentation.Map
         public Sprite Door;
         [Tooltip("Locked door: tinted with the colour of its key pair.")]
         public Sprite LockedDoor;
-        public Sprite Exit;
-        public Sprite MapFragment;
         [Tooltip("Points up (north); turned to the player's facing.")]
         public Sprite Player;
         public Sprite Zombie;
@@ -49,24 +45,12 @@ namespace Purge.Presentation.Map
 
         [Tooltip("Door whose ice is not broken yet (a frozen door without a key).")]
         public Color FrozenDoorColor = new Color(0.62f, 0.86f, 1f);
-        public Color ExitColor = new Color(0.35f, 0.9f, 0.45f);
-        public Color MapFragmentColor = new Color(1f, 0.88f, 0.55f);
         public Color PlayerColor = new Color(1f, 0.45f, 0.2f);
         public Color ZombieColor = new Color(0.62f, 0.85f, 0.45f);
         public Color WeaponColor = new Color(0.8f, 0.82f, 0.86f);
         public Color MedkitColor = new Color(0.95f, 0.42f, 0.38f);
         [Tooltip("Key whose door has no colour.")]
         public Color KeyColor = new Color(0.95f, 0.85f, 0.45f);
-
-        [Header("Route hint")]
-        public Color RouteColor = new Color(0.55f, 0.85f, 1f, 1f);
-        public Color RouteOutlineColor = new Color(0.08f, 0.09f, 0.1f, 1f);
-        [Tooltip("Line width, cells (outline excluded).")]
-        [Min(0.05f)] public float RouteWidth = 0.3f;
-        [Tooltip("Outline on each side, cells.")]
-        [Min(0f)] public float RouteOutline = 0.08f;
-        [Tooltip("Thinnest line on screen, canvas units (big levels have tiny cells).")]
-        [Min(0f)] public float RouteMinWidth = 4f;
 
         [Header("Placement")]
         [Tooltip("Icon size in cells (icons are bigger than a cell).")]
@@ -86,8 +70,6 @@ namespace Purge.Presentation.Map
             MapIconKind.Start => Start,
             MapIconKind.Door => Door,
             MapIconKind.LockedDoor => LockedDoor,
-            MapIconKind.Exit => Exit,
-            MapIconKind.MapFragment => MapFragment,
             MapIconKind.Zombie => Zombie,
             MapIconKind.Weapon => Weapon,
             MapIconKind.Medkit => Medkit,
@@ -100,8 +82,6 @@ namespace Purge.Presentation.Map
             MapIconKind.Start => StartColor,
             MapIconKind.Door => DoorColor,
             MapIconKind.LockedDoor => LockedDoorColor,
-            MapIconKind.Exit => ExitColor,
-            MapIconKind.MapFragment => MapFragmentColor,
             MapIconKind.Zombie => ZombieColor,
             MapIconKind.Weapon => WeaponColor,
             MapIconKind.Medkit => MedkitColor,

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
@@ -12,14 +11,13 @@ namespace Purge.Gameplay.Zombies
     public enum ZombieState
     {
         Idle = 0,
-        Patrol = 1,
         Chase = 2,
         Attack = 3,
         Return = 4,
         Dead = 5,
         /// <summary>
         /// Beyond ТЗ §74: noticed the player and roars for <see cref="ZombieController.AlertDuration"/> before every
-        /// chase that starts from Idle / Patrol / Return.
+        /// chase that starts from Idle / Return.
         /// </summary>
         Alert = 6,
     }
@@ -32,27 +30,23 @@ namespace Purge.Gameplay.Zombies
     {
         public const float BodyRadius = 0.35f;
 
-        public ZombieRuntime(ZombieSpawnData spawn, IReadOnlyList<GridPosition> patrol)
+        public ZombieRuntime(ZombieSpawnData spawn)
         {
             Spawn = spawn ?? throw new ArgumentNullException(nameof(spawn));
             if (spawn.Definition == null)
                 throw new ArgumentException($"Zombie '{spawn.Id}' has no definition.", nameof(spawn));
 
-            Patrol = patrol != null && patrol.Count > 0 ? patrol : null;
             Cell = spawn.Position;
             Position = new Vector2(spawn.Position.X, spawn.Position.Y);
             var offset = spawn.Facing.ToOffset();
             Facing = new Vector2(offset.X, offset.Y);
             Health = Definition.MaxHp;
-            State = Patrol != null ? ZombieState.Patrol : ZombieState.Idle;
+            State = ZombieState.Idle;
         }
 
         public string Id => Spawn.Id;
         public ZombieSpawnData Spawn { get; }
         public ZombieDefinition Definition => Spawn.Definition;
-
-        /// <summary>Patrol loop A → B → … → A, or null (stands at the spawn).</summary>
-        public IReadOnlyList<GridPosition> Patrol { get; }
 
         public Vector2 Position { get; internal set; }
         public GridPosition Cell { get; internal set; }

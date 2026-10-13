@@ -48,3 +48,7 @@ UserSettings/
 
 # Store promo screenshots and their generator (local only)
 /Promo/
+
+# Addressables copies it from its build output before every player build (AddressablesPlayerBuildProcessor).
+/Assets/AddressableAssetsData/link.xml
+/Assets/AddressableAssetsData/link.xml.meta

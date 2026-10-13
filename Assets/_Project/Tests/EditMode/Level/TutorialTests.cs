@@ -8,7 +8,6 @@ using Purge.Gameplay.Combat;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
@@ -38,15 +37,13 @@ namespace Purge.Tests.EditMode.Level
         private PlayerSystem _player;
         private PlayerHealth _health;
         private PickupSystem _pickups;
-        private MapSystem _map;
         private ZombieSystem _zombies;
-        private RouteHintSystem _route;
         private TutorialSystem _tutorial;
         private readonly List<int> _started = new List<int>();
         private int _finished;
 
         /// <summary>
-        /// Corridor x = 1..10 at y = 1: start (1,1), medkit_1 at (2,1), key_1 at (3,1) for the locked door (5,1), zombie_1 at (9,1), exit (10,1).
+        /// Corridor x = 1..10 at y = 1: start (1,1), medkit_1 at (2,1), key_1 at (3,1) for the locked door (5,1), zombie_1 at (9,1).
         /// </summary>
         private void Build(params TutorialStep[] steps)
         {
@@ -58,7 +55,6 @@ namespace Purge.Tests.EditMode.Level
             _level.MutablePlayerStarts.Add(new PlayerStartData("start_1", new GridPosition(1, 1)));
             _level.MutableDoors.Add(new DoorData("door_1", new GridPosition(5, 1), keyId: "key_1"));
             _level.MutableKeys.Add(new KeyData("key_1", new GridPosition(3, 1)));
-            _level.MutableExits.Add(new ExitData("exit_1", new GridPosition(10, 1)));
             _level.MutableMedkits.Add(new MedkitData("medkit_1", new GridPosition(2, 1)));
             _zombieDefinition = ScriptableObject.CreateInstance<ZombieDefinition>();
             _level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", new GridPosition(9, 1), _zombieDefinition, Direction.West));
@@ -83,19 +79,16 @@ namespace Purge.Tests.EditMode.Level
             var sounds = new SoundEventBus();
             _player = new PlayerSystem(_level, _definition, _input, passability, occupancy,
                 new LevelLaunchOptions(startIndex: 0), Aim.FreeNoAssist);
-            _map = new MapSystem(_level);
-            _pickups = new PickupSystem(_level, _player, health, inventory, weapons, sounds, _map);
-            _route = new RouteHintSystem(_level, grid, _doors, _player, inventory, _map, _pickups);
+            _pickups = new PickupSystem(_level, _player, health, inventory, weapons, sounds);
             _zombies = new ZombieSystem(_level, new NavigationSystem(grid, passability, _doors), _player, health, occupancy,
                 new SpatialQueryService(grid, _doors), sounds);
-            _tutorial = new TutorialSystem(_level, _player, _pickups, _doors, _zombies, _route);
+            _tutorial = new TutorialSystem(_level, _player, _pickups, _doors, _zombies);
             _tutorial.StepStarted += _started.Add;
             _tutorial.Finished += () => _finished++;
             _started.Clear();
             _finished = 0;
 
             _pickups.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
-            _route.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _player.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _zombies.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _tutorial.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
@@ -106,9 +99,7 @@ namespace Purge.Tests.EditMode.Level
         {
             _tutorial?.Dispose();
             _zombies?.Dispose();
-            _route?.Dispose();
             _pickups?.Dispose();
-            _map?.Dispose();
             foreach (var o in new Object[] { _level, _script, _definition, _zombieDefinition })
                 if (o != null) Object.DestroyImmediate(o);
             _script = null;
@@ -127,7 +118,7 @@ namespace Purge.Tests.EditMode.Level
         }
 
         [Test]
-        public void Steps_FinishByTheGameState_InOrder_TheLineLeadsToEachTarget()
+        public void Steps_FinishByTheGameState_InOrder()
         {
             Build(new TutorialStep("tutorial.move", TutorialGoal.Reach, cell: new Vector2Int(2, 1)),
                 new TutorialStep("tutorial.key", TutorialGoal.Collect, "key_1"),
@@ -137,32 +128,25 @@ namespace Purge.Tests.EditMode.Level
 
             Assert.IsTrue(_tutorial.IsActive);
             CollectionAssert.AreEqual(new[] { 0 }, _started);
-            Assert.AreEqual(RouteTarget.Guide, _route.Target, "The line leads to the step's cell.");
-            Assert.AreEqual(new GridPosition(2, 1), _route.TargetCell);
             Assert.IsTrue(_tutorial.TryGetTarget(out var target));
             Assert.AreEqual(new Vector2(2f, 1f), target);
 
             WalkTo(2);
             Assert.AreEqual(1, _tutorial.StepIndex, "Reached: the key is next.");
-            Assert.AreEqual(new GridPosition(3, 1), _route.TargetCell, "The line now leads to the key.");
 
             WalkTo(3);
             Assert.AreEqual(2, _tutorial.StepIndex, "Key taken: unlock the door.");
-            Assert.AreEqual(new GridPosition(5, 1), _route.TargetCell);
 
             _doors.Unlock("door_1");
             Assert.AreEqual(3, _tutorial.StepIndex, "Unlocked: open the map.");
             Assert.IsFalse(_tutorial.TryGetTarget(out _), "The map step points at nothing.");
-            Assert.AreNotEqual(RouteTarget.Guide, _route.Target, "No line without a target.");
 
             _tutorial.ReportMapOpened();
             Assert.AreEqual(4, _tutorial.StepIndex);
-            Assert.AreEqual(new GridPosition(9, 1), _route.TargetCell, "The line leads to the zombie.");
 
             _zombies.Zombies[0].ApplyDamage(10000f, Vector2.left);
             Assert.IsTrue(_tutorial.IsFinished);
             Assert.AreEqual(1, _finished);
-            Assert.IsFalse(_route.IsActive, "The tutorial line is gone with the last step.");
             CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, _started);
         }
 
@@ -171,13 +155,13 @@ namespace Purge.Tests.EditMode.Level
         {
             Build(new TutorialStep("tutorial.move", TutorialGoal.Reach, cell: new Vector2Int(4, 1)),
                 new TutorialStep("tutorial.key", TutorialGoal.Collect, "key_1"),
-                new TutorialStep("tutorial.exit", TutorialGoal.None, "exit_1"));
+                new TutorialStep("tutorial.medkit", TutorialGoal.None, "medkit_1"));
 
-            WalkTo(4); // Over the key on the way.
+            WalkTo(4); // Over the key on the way (and the medkit: full HP, it stays).
             CollectionAssert.AreEqual(new[] { 0, 2 }, _started, "The key step was done ahead: skipped.");
             Assert.AreEqual(_level.Tutorial.Steps[2], _tutorial.Current);
             Assert.IsTrue(_tutorial.TryGetTarget(out var target));
-            Assert.AreEqual(new Vector2(10f, 1f), target, "The arrow points at the exit.");
+            Assert.AreEqual(new Vector2(2f, 1f), target, "The arrow points at the medkit.");
             Assert.AreEqual(0, _finished);
         }
 
@@ -194,18 +178,6 @@ namespace Purge.Tests.EditMode.Level
         }
 
         [Test]
-        public void HintAskedByThePlayer_IsNotReplaced()
-        {
-            Build(new TutorialStep("tutorial.key", TutorialGoal.Collect, "key_1"),
-                new TutorialStep("tutorial.exit", TutorialGoal.None, "exit_1"));
-
-            _route.Request(); // The magnifier on the map: the nearest goal (here the exit).
-            var target = _route.Target;
-            WalkTo(2);
-            Assert.AreEqual(target, _route.Target, "The player's own hint stays.");
-        }
-
-        [Test]
         public void LevelWithoutScript_IsInactive()
         {
             Build();
@@ -213,7 +185,6 @@ namespace Purge.Tests.EditMode.Level
             Assert.IsNull(_tutorial.Current);
             WalkTo(3);
             Assert.IsEmpty(_started);
-            Assert.IsFalse(_route.IsActive);
         }
 
         [Test]

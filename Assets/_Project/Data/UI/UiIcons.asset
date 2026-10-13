@@ -20,7 +20,6 @@ MonoBehaviour:
   Key: {fileID: 21300000, guid: 287057a55b6902b4393eb8623d926e9d, type: 3}
   Medkit: {fileID: 21300000, guid: a58171424630e414e8222c9c7bd46293, type: 3}
   Skull: {fileID: 21300000, guid: 66b30dc81a9a8ee45943cf32077d9812, type: 3}
-  Fragment: {fileID: 21300000, guid: c99e769cc0858f94b9169c09319493a4, type: 3}
   Melee: {fileID: 21300000, guid: 2671744ca19a81d41baf5898089bb4e6, type: 3}
   Ranged: {fileID: 21300000, guid: 97c2650b6057a4e4f9b3e9b9d8206727, type: 3}
   Attack: {fileID: 21300000, guid: 12f062668088f884a8b729eb6c4f9c79, type: 3}

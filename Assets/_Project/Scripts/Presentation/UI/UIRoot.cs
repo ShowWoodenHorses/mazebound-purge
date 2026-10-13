@@ -17,7 +17,6 @@ namespace Purge.Presentation.UI
         [SerializeField] private HudScreen _hud;
         [SerializeField] private PauseScreen _pause;
         [SerializeField] private ResultScreen _result;
-        [SerializeField] private ConfirmExitScreen _confirmExit;
         [SerializeField] private MapScreen _map;
         [SerializeField] private SettingsScreen _settings;
 
@@ -46,7 +45,6 @@ namespace Purge.Presentation.UI
         public HudScreen Hud => _hud;
         public PauseScreen Pause => _pause;
         public ResultScreen Result => _result;
-        public ConfirmExitScreen ConfirmExit => _confirmExit;
         public MapScreen Map => _map;
         public SettingsScreen Settings => _settings;
         public TutorialScreen Tutorial => _tutorial;
@@ -79,7 +77,7 @@ namespace Purge.Presentation.UI
             foreach (var text in _localizedTexts)
                 if (text != null) text.Apply(texts);
 
-            UIScreen[] screens = { _mainMenu, _levelSelect, _loading, _error, _hud, _pause, _result, _confirmExit, _map, _settings, _tutorial };
+            UIScreen[] screens = { _mainMenu, _levelSelect, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial };
             foreach (var screen in screens)
                 if (screen != null) screen.ApplyLanguage(texts);
             if (_touchControls != null && _touchControls.LayoutEditor != null)

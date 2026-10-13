@@ -6,12 +6,10 @@ namespace Purge.Core.Visual
         Floor = 0,
         Wall = 1,
         Door = 2,
-        Exit = 3,
         Key = 4,
         Medkit = 5,
         Weapon = 6,
         Zombie = 7,
-        MapFragment = 8,
 
         /// <summary>Purely visual props on floor cells (cell layer <see cref="CellLayer.Decor"/>).</summary>
         Decor = 9,

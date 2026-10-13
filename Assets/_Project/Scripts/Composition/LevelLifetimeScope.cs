@@ -7,7 +7,6 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
@@ -66,7 +65,6 @@ namespace Purge.Composition
             builder.Register<SpatialQueryService>(Lifetime.Singleton).AsSelf().As<ISpatialQueryService>();
             builder.Register<PlayerHealth>(Lifetime.Singleton);
             builder.Register<PlayerInventory>(Lifetime.Singleton);
-            builder.Register<MapSystem>(Lifetime.Singleton);
             // Tick order: weapon switching → attack (stops this tick's movement) → movement → steps → interaction → bullets.
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
@@ -75,17 +73,16 @@ namespace Purge.Composition
             builder.Register<PickupSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<PlayerInteraction>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<BulletSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
-            builder.Register<ExitSystem>(Lifetime.Singleton);
             builder.Register<NavigationSystem>(Lifetime.Singleton);
             builder.Register<ZombieSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
-            builder.Register<RouteHintSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
             builder.Register<TutorialSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelAnalytics>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<LevelRuntime>(Lifetime.Singleton);
             builder.Register<PlayerDeathRule>(Lifetime.Singleton);
+            builder.Register<AllKilledRule>(Lifetime.Singleton);
             builder.RegisterEntryPoint<LevelTickDriver>();
 
             // Presentation
@@ -119,7 +116,6 @@ namespace Purge.Composition
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
             builder.Register<VisionZonesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<NoiseWavesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
-            builder.Register<RouteLineView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // After the zombie views: shows their hits when they show.
             builder.Register<CombatFeedbackView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<BlobShadows>(Lifetime.Singleton);

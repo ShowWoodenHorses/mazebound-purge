@@ -30,7 +30,6 @@ namespace Purge.Presentation.Localization
         public const string HudReload = "hud.reload";
         public const string HudWeaponHere = "hud.weapon_here";
         public const string HudWeaponTaken = "hud.weapon_taken";
-        public const string HudFragmentFound = "hud.fragment_found";
         public const string HudLocked = "hud.locked";
         public const string HudDoorUnlocked = "hud.door_unlocked";
         public const string HudDoorBlocked = "hud.door_blocked";
@@ -43,7 +42,6 @@ namespace Purge.Presentation.Localization
         public const string WeaponPrefix = "weapon.";
 
         // Exit, pause, result, error.
-        public const string ConfirmExitTitle = "confirm_exit.title";
         public const string PauseTitle = "pause.title";
         public const string PauseResume = "pause.resume";
         public const string PauseRestart = "pause.restart";
@@ -52,10 +50,7 @@ namespace Purge.Presentation.Localization
         public const string PauseDebugFail = "pause.debug_fail";
         public const string ResultComplete = "result.complete";
         public const string ResultFailed = "result.failed";
-        public const string ResultExitFound = "result.exit_found";
-        public const string ResultNoExit = "result.no_exit";
         public const string ResultZombies = "result.zombies";
-        public const string ResultMap = "result.map";
         public const string ResultTime = "result.time";
         public const string ResultBest = "result.best";
         public const string ResultRecord = "result.record";
@@ -68,17 +63,10 @@ namespace Purge.Presentation.Localization
 
         // Map.
         public const string MapPlayer = "map.player";
-        public const string MapPieces = "map.pieces";
         public const string MapZombies = "map.zombies";
         public const string MapWeapons = "map.weapons";
         public const string MapMedkits = "map.medkits";
         public const string MapKeys = "map.keys";
-        public const string HintFragment = "map.hint.fragment";
-        public const string HintExit = "map.hint.exit";
-        public const string HintKey = "map.hint.key";
-        public const string HintDoor = "map.hint.door";
-        public const string HintNone = "map.hint.none";
-        public const string HintTutorial = "map.hint.tutorial";
         public const string AdUnavailable = "ad.unavailable";
         public const string RotateDevice = "rotate.title";
 
@@ -92,9 +80,6 @@ namespace Purge.Presentation.Localization
         public const string TutorialPrefix = "tutorial.";
         public static readonly string TouchSuffix = ".touch"; // Not a key: not a constant (Build Localization lists constants).
         public static readonly string HintSuffix = ".hint";
-        public const string MapNone = "map.none";
-        public const string MapNoneFound = "map.none_found";
-        public const string MapCount = "map.count";
 
         // Settings.
         public const string SettingsTabControls = "settings.tab.controls";

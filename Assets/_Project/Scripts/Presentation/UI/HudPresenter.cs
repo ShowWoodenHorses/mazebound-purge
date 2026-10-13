@@ -10,7 +10,6 @@ using Purge.Core.Level;
 using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Weapons;
@@ -22,7 +21,7 @@ using UnityEngine;
 namespace Purge.Presentation.UI
 {
     /// <summary>
-    /// Shows the level's player state on the HUD (load stage InitializeUI): HP, map fragments, zombies killed, keys in
+    /// Shows the level's player state on the HUD (load stage InitializeUI): HP, zombies killed, keys in
     /// their doors' colours, weapon slots (the on-screen cluster or the desktop slots), the Use target, short messages
     /// about interactions and a red pulse at the screen edges when the player is hurt. The HUD lives in the Bootstrap
     /// scene; this presenter lives with the level. Counters change on gameplay events; the weapon slots and the Use
@@ -36,7 +35,6 @@ namespace Purge.Presentation.UI
         private readonly PlayerInventory _inventory;
         private readonly WeaponSystem _weapons;
         private readonly PlayerInteraction _interaction;
-        private readonly MapSystem _map;
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
         private readonly ZombieSystem _zombies;
@@ -49,7 +47,7 @@ namespace Purge.Presentation.UI
         private bool _bound;
 
         public HudPresenter(UIRoot ui, LevelData level, PlayerHealth health, PlayerInventory inventory,
-            WeaponSystem weapons, PlayerInteraction interaction, MapSystem map, PlayerSystem player,
+            WeaponSystem weapons, PlayerInteraction interaction, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, WeaponVisualCatalog visuals, LocalizationService texts,
             LevelProgress progress, PlatformService platform = null)
         {
@@ -62,7 +60,6 @@ namespace Purge.Presentation.UI
             _inventory = inventory;
             _weapons = weapons;
             _interaction = interaction;
-            _map = map;
             _player = player;
             _pickups = pickups;
             _zombies = zombies;
@@ -78,7 +75,6 @@ namespace Purge.Presentation.UI
                 _health.Changed += OnHealthChanged;
                 _inventory.KeysChanged += RefreshKeys;
                 _interaction.Interacted += OnInteracted;
-                _map.FragmentCollected += OnFragmentCollected;
                 _player.CellChanged += OnPlayerCellChanged;
                 _zombies.Spawned += OnZombie;
                 _zombies.Died += OnZombie;
@@ -101,7 +97,6 @@ namespace Purge.Presentation.UI
             _health.Changed -= OnHealthChanged;
             _inventory.KeysChanged -= RefreshKeys;
             _interaction.Interacted -= OnInteracted;
-            _map.FragmentCollected -= OnFragmentCollected;
             _player.CellChanged -= OnPlayerCellChanged;
             _zombies.Spawned -= OnZombie;
             _zombies.Died -= OnZombie;
@@ -156,7 +151,6 @@ namespace Purge.Presentation.UI
 
         private void RefreshCounters()
         {
-            _ui.Hud.SetFragments(_map.CollectedCount, _map.TotalCount);
             _ui.Hud.SetKills(_zombies.KilledCount, _zombies.TotalCount);
         }
 
@@ -181,12 +175,6 @@ namespace Purge.Presentation.UI
                     _ui.Hud.ShowMessage(_texts.Format(TextKeys.HudWeaponHere, WeaponName(pickup.Weapon.Definition)));
                     return;
                 }
-        }
-
-        private void OnFragmentCollected(MapFragmentData fragment)
-        {
-            RefreshCounters();
-            _ui.Hud.ShowMessage(_texts.Format(TextKeys.HudFragmentFound, _map.CollectedCount, _map.TotalCount));
         }
 
         private void OnInteracted(InteractionResult result, DoorData door)

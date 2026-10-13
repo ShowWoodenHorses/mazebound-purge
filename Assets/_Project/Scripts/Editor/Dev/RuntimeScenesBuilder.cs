@@ -196,7 +196,6 @@ namespace Purge.Editor.Dev
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
             SetReference(root, "_pause", BuildPause(parent));
-            SetReference(root, "_confirmExit", BuildConfirmExit(parent));
             SetReference(root, "_map", BuildMap(parent));
             SetReference(root, "_result", BuildResult(parent));
             SetReference(root, "_settings", BuildSettings(parent));
@@ -471,9 +470,8 @@ namespace Purge.Editor.Dev
             var trail = BarFill(bar, "Trail", Fade(_style.Text, 0.6f));
             var fill = BarFill(bar, "Fill", _style.Health);
 
-            // Under it: fragments, zombies killed, keys.
+            // Under it: zombies killed, keys.
             var stats = Row(root, "Stats", TopLeft, new Vector2(52f, -128f), 30f);
-            var fragments = Counter(stats, "Fragments", icons.Fragment, out var fragmentsText);
             var kills = Counter(stats, "Kills", icons.Skull, out var killsText);
             var keys = new GameObject("Keys", typeof(RectTransform));
             keys.transform.SetParent(stats, false);
@@ -521,8 +519,6 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_heartRing", heartRing);
             SetReference(screen, "_healthFill", fill);
             SetReference(screen, "_healthTrail", trail);
-            SetReference(screen, "_fragments", fragments);
-            SetReference(screen, "_fragmentsText", fragmentsText);
             SetReference(screen, "_kills", kills);
             SetReference(screen, "_killsText", killsText);
             SetReference(screen, "_keys", keys.GetComponent<RectTransform>());
@@ -1054,21 +1050,6 @@ namespace Purge.Editor.Dev
         }
 
 
-        private static ConfirmExitScreen BuildConfirmExit(Transform parent)
-        {
-            var screen = Screen<ConfirmExitScreen>(parent, "ConfirmExitScreen", Dim);
-            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 660f, new RectOffset(56, 56, 52, 56), 34f);
-            SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
-            Heading(panel, "Title", Loc(TextKeys.ConfirmExitTitle), 54f);
-            var row = ButtonRow(panel, "Buttons", 20f, 86f);
-            var no = TextButton(row, "NoButton", Loc(TextKeys.No), false, null, 86f);
-            var yes = TextButton(row, "YesButton", Loc(TextKeys.Yes), true, null, 86f);
-
-            SetReference(screen, "_yesButton", yes);
-            SetReference(screen, "_noButton", no);
-            return screen;
-        }
-
         private static PauseScreen BuildPause(Transform parent)
         {
             var screen = Screen<PauseScreen>(parent, "PauseScreen", Dim);
@@ -1277,27 +1258,13 @@ namespace Purge.Editor.Dev
             var screen = Screen<MapScreen>(parent, "MapScreen", MapBackground);
             var icons = UiIcons();
 
-            // Narrower than the gap between the switches on the left and Close on the right, also at 4:3.
-            var caption = Text(screen.transform, "Caption", "MAP", 40f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f),
-                new Vector2(0f, -90f), new Vector2(680f, 56f), TextAlignmentOptions.Center, spacing: 8f);
-            caption.textWrappingMode = TextWrappingModes.NoWrap;
-            AutoSize(caption, 0.6f);
-            // Close and the hint inside the safe area: system bars over the page (the VK app) must not cover them.
+            // Close inside the safe area: system bars over the page (the VK app) must not cover it.
             var buttons = new GameObject("ButtonsSafeArea", typeof(RectTransform));
             buttons.transform.SetParent(screen.transform, false);
             Stretch(buttons.GetComponent<RectTransform>());
             buttons.AddComponent<SafeAreaFitter>();
             var close = RoundButton(buttons.transform, "CloseButton", icons.Close, new Vector2(1f, 1f), new Vector2(-100f, -90f),
                 84f, 34f);
-            // Left of Close, spaced so that the widened touch areas meet but do not overlap.
-            var hint = RoundButton(buttons.transform, "HintButton", icons.Search, new Vector2(1f, 1f), new Vector2(-232f, -90f),
-                84f, 36f);
-            AdMark(hint.transform, icons.Ad); // Every hint costs a rewarded ad.
-            var hintStatus = Text(screen.transform, "HintStatus", "", 26f, false, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f),
-                new Vector2(0f, -136f), new Vector2(760f, 34f), TextAlignmentOptions.Center, _style.MutedText);
-            hintStatus.textWrappingMode = TextWrappingModes.NoWrap;
-            AutoSize(hintStatus, 0.6f);
-            hintStatus.gameObject.SetActive(false);
 
             // Switches and the map inside the safe area: a front camera or a notch on the left must not cover a switch.
             var safe = new GameObject("SafeArea", typeof(RectTransform));
@@ -1305,7 +1272,7 @@ namespace Purge.Editor.Dev
             Stretch(safe.GetComponent<RectTransform>());
             safe.AddComponent<SafeAreaFitter>();
 
-            // Area below the caption, right of the switches; the image keeps the level's aspect ratio inside it.
+            // Area right of the switches; the image keeps the level's aspect ratio inside it.
             var area = new GameObject("MapArea", typeof(RectTransform));
             area.transform.SetParent(safe.transform, false);
             var areaRect = area.GetComponent<RectTransform>();
@@ -1321,44 +1288,25 @@ namespace Purge.Editor.Dev
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             fitter.aspectRatio = 1f;
 
-            // First child of the image: under the icons (they are created later, at level loading).
-            var routeObject = new GameObject("Route", typeof(RectTransform));
-            routeObject.transform.SetParent(imageObject.transform, false);
-            var route = routeObject.AddComponent<MapRouteGraphic>();
-            route.raycastTarget = false;
-            Stretch(route.rectTransform);
-
             // Icon switches (one per MapLayer, in its order) stacked at the left of the safe area, with a margin, below
             // the FPS counter (over every screen at about -182..-210). Children of SafeArea named "<name>Toggle" (tests).
             (string name, string caption)[] layers =
             {
-                ("ShowPlayer", TextKeys.MapPlayer), ("ShowFragments", TextKeys.MapPieces), ("ShowZombies", TextKeys.MapZombies),
+                ("ShowPlayer", TextKeys.MapPlayer), ("ShowZombies", TextKeys.MapZombies),
                 ("ShowWeapons", TextKeys.MapWeapons), ("ShowMedkits", TextKeys.MapMedkits), ("ShowKeys", TextKeys.MapKeys),
             };
             var toggles = new List<Object>();
-            var unlocks = new List<Object>();
             for (var i = 0; i < layers.Length; i++)
-            {
-                var toggle = LabeledSwitch(safe.transform, layers[i].name, Loc(layers[i].caption), TopLeft,
-                    new Vector2(80f, -250f - 64f * i));
-                toggles.Add(toggle);
-                // Zombies, weapons, medkits, keys are bought per level with a rewarded ad: while locked, a button over
-                // the switch (child: it gets the tap) with the ad mark at the end of the row.
-                unlocks.Add(i >= (int)Purge.Presentation.Map.MapLayer.Zombies ? UnlockOverlay(toggle.transform, icons.Ad) : null);
-            }
+                toggles.Add(LabeledSwitch(safe.transform, layers[i].name, Loc(layers[i].caption), TopLeft,
+                    new Vector2(80f, -250f - 64f * i)));
 
             var mapIcons = AssetDatabase.LoadAssetAtPath<MapIconSet>(MapIconsBuilder.SetPath);
             if (mapIcons == null) mapIcons = MapIconsBuilder.Build();
 
             SetReference(screen, "_icons", mapIcons);
             SetReferences(screen, "_layers", toggles);
-            SetReferences(screen, "_unlockButtons", unlocks);
-            SetReference(screen, "_hintButton", hint);
-            SetReference(screen, "_hintStatus", hintStatus);
-            SetReference(screen, "_route", route);
             SetReference(screen, "_image", image);
             SetReference(screen, "_fitter", fitter);
-            SetReference(screen, "_caption", caption);
             SetReference(screen, "_closeButton", close);
             return screen;
         }
@@ -1973,37 +1921,6 @@ namespace Purge.Editor.Dev
             var toggle = pill.GetComponent<Toggle>();
             toggle.targetGraphic = pill;
             return toggle;
-        }
-
-        /// <summary>
-        /// Transparent button over a map layer switch row (and the ad mark at its end), shown while the layer is locked.
-        /// </summary>
-        private static Button UnlockOverlay(Transform row, Sprite adIcon)
-        {
-            var overlay = Shape(row, "UnlockButton", new Vector2(0f, 0.5f), Vector2.zero, new Vector2(400f, 60f), true);
-            overlay.rectTransform.pivot = new Vector2(0f, 0.5f);
-            overlay.Fill = Color.clear;
-            overlay.StrokeWidth = 0f;
-            overlay.raycastTarget = true;
-            var mark = Icon(overlay.transform, "Ad", adIcon, new Vector2(0f, 0.5f), new Vector2(372f, 0f), 34f);
-            mark.color = _style.Accent;
-            var button = overlay.gameObject.AddComponent<Button>();
-            button.transition = Selectable.Transition.None;
-            button.targetGraphic = overlay;
-            overlay.gameObject.SetActive(false);
-            return button;
-        }
-
-        /// <summary>A small ad mark at the bottom right of a round button (a rewarded ad comes first).</summary>
-        private static void AdMark(Transform button, Sprite adIcon)
-        {
-            var back = Shape(button, "AdMark", new Vector2(1f, 0f), new Vector2(-6f, 6f), new Vector2(34f, 34f));
-            back.Kind = UiShapeKind.Capsule;
-            back.StrokeWidth = 0f;
-            back.Fill = Background;
-            back.raycastTarget = false;
-            var icon = Icon(back.transform, "Icon", adIcon, Center, Vector2.zero, 24f);
-            icon.color = _style.Accent;
         }
 
         /// <summary>A switch with a caption on its right, placed absolutely (map screen).</summary>

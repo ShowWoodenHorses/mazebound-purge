@@ -365,17 +365,6 @@ namespace Purge.Core.Visual
                 case VisualKind.Door:
                     return context.East != CellType.Floor && context.West != CellType.Floor ? 0 : 1;
 
-                // Exit faces an open side with a wall behind it (a ladder stands against that wall), so in a dead end
-                // it faces the corridor; without such a side — the first open one.
-                case VisualKind.Exit:
-                    foreach (var direction in DirectionExtensions.All)
-                        if (context.Get(direction) != CellType.Wall && context.Get(direction.Opposite()) == CellType.Wall)
-                            return (int)direction;
-                    foreach (var direction in DirectionExtensions.All)
-                        if (context.Get(direction) != CellType.Wall)
-                            return (int)direction;
-                    return 0;
-
                 default:
                     return 0;
             }

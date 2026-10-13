@@ -15,7 +15,7 @@ namespace Purge.Presentation.UI
     /// <summary>
     /// In-level HUD (design mock-up). Top left: a ring with a heart, the level name, HP as a number and a thin bar in an
     /// arrow-tipped frame — a light "trail" shows the lost part for a moment, low health turns the frame red and makes
-    /// it pulse; under it map fragments, zombies killed and the carried keys in their doors' colours. Top centre: a
+    /// it pulse; under it zombies killed and the carried keys in their doors' colours. Top centre: a
     /// short message between diamonds. Top right: Map and Pause. Weapon slots: the on-screen cluster on touch devices,
     /// small slots at the bottom right otherwise. A red pulse at the screen edges when hurt.
     /// </summary>
@@ -48,8 +48,6 @@ namespace Purge.Presentation.UI
         [SerializeField] private RectTransform _healthTrail;
 
         [Header("Counters")]
-        [SerializeField] private GameObject _fragments;
-        [SerializeField] private TMP_Text _fragmentsText;
         [SerializeField] private GameObject _kills;
         [SerializeField] private TMP_Text _killsText;
         [SerializeField] private RectTransform _keys;
@@ -93,8 +91,6 @@ namespace Purge.Presentation.UI
         private float _trailShare = 1f;
         private float _trailWait;
         private bool _low;
-        private int _fragmentsShown = -1;
-        private int _fragmentsTotal = -1;
         private int _killsShown = -1;
         private int _killsTotal = -1;
 
@@ -216,16 +212,6 @@ namespace Purge.Presentation.UI
 
         // ---- counters ----
 
-        /// <summary>Map fragments; hidden when the level has none.</summary>
-        public void SetFragments(int collected, int total)
-        {
-            if (collected == _fragmentsShown && total == _fragmentsTotal) return;
-            _fragmentsShown = collected;
-            _fragmentsTotal = total;
-            if (_fragments != null) _fragments.SetActive(total > 0);
-            if (_fragmentsText != null) _fragmentsText.text = collected + "/" + total;
-        }
-
         /// <summary>Zombies killed; hidden when the level has none.</summary>
         public void SetKills(int killed, int total)
         {
@@ -308,7 +294,7 @@ namespace Purge.Presentation.UI
             _timeShown = -1;
             SetTime(0f);
             _health = _maxHealth = -1;
-            _fragmentsShown = _fragmentsTotal = _killsShown = _killsTotal = -1;
+            _killsShown = _killsTotal = -1;
             _low = false;
             SetKeys(Array.Empty<Color>());
             if (_messageRow != null) _messageRow.SetActive(false);

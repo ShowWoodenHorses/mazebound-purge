@@ -11,12 +11,10 @@ namespace Purge.Core.Visual
         [SerializeField] private VisualSet _floor;
         [SerializeField] private VisualSet _wall;
         [SerializeField] private VisualSet _door;
-        [SerializeField] private VisualSet _exit;
         [SerializeField] private VisualSet _key;
         [SerializeField] private VisualSet _medkit;
         [SerializeField] private VisualSet _weapon;
         [SerializeField] private VisualSet _zombie;
-        [SerializeField] private VisualSet _mapFragment;
 
         [Tooltip("Props on floor cells (optional): auto placed by density, by hand with the Decor brush.")]
         [SerializeField] private VisualSet _decor;
@@ -33,8 +31,6 @@ namespace Purge.Core.Visual
 
         [SerializeField] private ThemeAwareness _awareness = new ThemeAwareness();
 
-        [SerializeField] private ThemeRoute _route = new ThemeRoute();
-
         [SerializeField] private ThemeWeather _weather = new ThemeWeather();
 
         public string Id => _id;
@@ -47,8 +43,6 @@ namespace Purge.Core.Visual
 
         public ThemeAwareness Awareness => _awareness ??= new ThemeAwareness();
 
-        public ThemeRoute Route => _route ??= new ThemeRoute();
-
         public ThemeWeather Weather => _weather ??= new ThemeWeather();
 
         public VisualSet GetSet(VisualKind kind)
@@ -58,12 +52,10 @@ namespace Purge.Core.Visual
                 case VisualKind.Floor: return _floor;
                 case VisualKind.Wall: return _wall;
                 case VisualKind.Door: return _door;
-                case VisualKind.Exit: return _exit;
                 case VisualKind.Key: return _key;
                 case VisualKind.Medkit: return _medkit;
                 case VisualKind.Weapon: return _weapon;
                 case VisualKind.Zombie: return _zombie;
-                case VisualKind.MapFragment: return _mapFragment;
                 case VisualKind.Decor: return _decor;
                 case VisualKind.Light: return _light;
                 default: throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
@@ -77,12 +69,10 @@ namespace Purge.Core.Visual
                 case VisualKind.Floor: _floor = set; break;
                 case VisualKind.Wall: _wall = set; break;
                 case VisualKind.Door: _door = set; break;
-                case VisualKind.Exit: _exit = set; break;
                 case VisualKind.Key: _key = set; break;
                 case VisualKind.Medkit: _medkit = set; break;
                 case VisualKind.Weapon: _weapon = set; break;
                 case VisualKind.Zombie: _zombie = set; break;
-                case VisualKind.MapFragment: _mapFragment = set; break;
                 case VisualKind.Decor: _decor = set; break;
                 case VisualKind.Light: _light = set; break;
                 default: throw new ArgumentOutOfRangeException(nameof(kind), kind, null);

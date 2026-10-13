@@ -18,12 +18,11 @@ namespace Purge.Editor.LevelDesigner
             EditorGUI.BeginChangeCheck();
             var width = EditorGUILayout.IntField("Width", settings.Width);
             var height = EditorGUILayout.IntField("Height", settings.Height);
-            var mazeSeed = SeedField("Purge Seed", settings.MazeSeed);
+            var layoutSeed = SeedField("Layout Seed", settings.LayoutSeed);
             var visualSeed = SeedField("Visual Seed", settings.VisualSeed);
-            var algorithm = (MazeAlgorithm)EditorGUILayout.EnumPopup("Algorithm", settings.MazeAlgorithm);
-            var loopDensity = EditorGUILayout.Slider("Loop Density", settings.LoopDensity, 0f, 1f);
-            var starts = Mathf.Max(1, EditorGUILayout.IntField("Player Starts", settings.InitialPlayerStartCount));
-            var exits = Mathf.Max(1, EditorGUILayout.IntField("Exits", settings.InitialExitCount));
+            var obstacles = EditorGUILayout.Slider(new GUIContent("Obstacle Density",
+                "Single-cell pillars inside the field (cells with both coordinates even); 0 = open field."),
+                settings.ObstacleDensity, 0f, 1f);
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -31,26 +30,16 @@ namespace Purge.Editor.LevelDesigner
                 {
                     settings.Width = width;
                     settings.Height = height;
-                    settings.MazeSeed = mazeSeed;
+                    settings.LayoutSeed = layoutSeed;
                     settings.VisualSeed = visualSeed;
-                    settings.MazeAlgorithm = algorithm;
-                    settings.LoopDensity = loopDensity;
-                    settings.InitialPlayerStartCount = starts;
-                    settings.InitialExitCount = exits;
+                    settings.ObstacleDensity = obstacles;
                 });
             }
 
             var canGenerate = true;
-            if (!settings.HasOddSize)
+            if (settings.Width < OpenFieldGenerator.MinSize || settings.Height < OpenFieldGenerator.MinSize)
             {
-                EditorGUILayout.HelpBox("Width and Height must be odd (e.g. 21 x 21): border wall + 1-cell passages and walls.",
-                    MessageType.Error);
-                canGenerate = false;
-            }
-
-            if (settings.Width < MazeGenerator.MinSize || settings.Height < MazeGenerator.MinSize)
-            {
-                EditorGUILayout.HelpBox($"Minimum size is {MazeGenerator.MinSize}x{MazeGenerator.MinSize}.", MessageType.Error);
+                EditorGUILayout.HelpBox($"Minimum size is {OpenFieldGenerator.MinSize}x{OpenFieldGenerator.MinSize}.", MessageType.Error);
                 canGenerate = false;
             }
 
@@ -67,7 +56,8 @@ namespace Purge.Editor.LevelDesigner
 
             EditorGUILayout.HelpBox(
                 "Generate New is destructive: geometry, all objects and the visual design (including overrides) are replaced. " +
-                "It never runs automatically.", MessageType.None);
+                "It never runs automatically. For now it makes an open field with a border wall and one start in the centre " +
+                "(biome recipes come later).", MessageType.None);
 
             TutorialGUI(state);
         }

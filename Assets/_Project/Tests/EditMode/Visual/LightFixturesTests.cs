@@ -115,19 +115,5 @@ namespace Purge.Tests.EditMode.Visual
             var report = LevelValidator.Validate(_level);
             Assert.IsTrue(report.Issues.Any(i => i.Code == ValidationCodes.UnknownVariant && i.EntityId == light.Id));
         }
-
-        [Test]
-        public void Exit_FacesAnOpenSideWithAWallBehind()
-        {
-            // Corridor cell (2, 1): walls South (border) and none North; West/East open → faces North (wall behind).
-            Assert.AreEqual((int)Direction.North, ObjectOrientation.For(VisualKind.Exit, _level.Geometry, new GridPosition(2, 1)));
-
-            // Dead end facing East: walls N, S, W.
-            var geometry = new LevelGeometry(5, 3);
-            geometry.SetCell(new GridPosition(1, 1), CellType.Floor);
-            geometry.SetCell(new GridPosition(2, 1), CellType.Floor);
-            geometry.SetCell(new GridPosition(3, 1), CellType.Floor);
-            Assert.AreEqual((int)Direction.East, ObjectOrientation.For(VisualKind.Exit, geometry, new GridPosition(1, 1)));
-        }
     }
 }

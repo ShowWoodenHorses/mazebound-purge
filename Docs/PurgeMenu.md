@@ -100,9 +100,9 @@
 2. **Purge → Dev → Build Biome Themes**.
 3. В уровне: Level Designer → вкладка Visuals → тема `SnowTheme` / `ForestTheme` → Regenerate Visuals → Build / Sync.
 
-### Добавить факел (светильник) или выход-лестницу
-1. Префаб — в `Art/Lighting/` (факел: крепление в начале координат, стена в −Z, факел смотрит в +Z) или в `Art/Exit/`.
-2. **Purge → Dev → Build Light Fixtures** / **Build Exits**.
+### Добавить факел (светильник)
+1. Префаб — в `Art/Lighting/` (факел: крепление в начале координат, стена в −Z, факел смотрит в +Z).
+2. **Purge → Dev → Build Light Fixtures**.
 3. Если из пака — **Collect Used Third-Party Assets**.
 
 ### Добавить внешний вид зомби
@@ -127,7 +127,7 @@
   (риг рук и `Grip_L` считаются по модели) → **Extract Character Meshes** → **Convert Object Materials to Purge Lit**.
 
 ### Взяли что-то новое из стороннего пака
-Сначала подготовить ассет его билдером (Decor / Weapons / Light Fixtures / Exits …), затем
+Сначала подготовить ассет его билдером (Decor / Weapons / Light Fixtures …), затем
 **Purge → Dev → Collect Used Third-Party Assets**. Делать **до коммита**: папка `Import` не в git.
 
 ### Изменить или добавить текст игры (локализация)
@@ -299,12 +299,8 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 в цвет источника в игре), заполняет набор Light и назначает его обеим темам, переводит материалы на `Purge/Lit`.
 Требует: `Art/Effects/fx_additive.mat` (иначе — сначала Build Combat Effects).
 
-#### Build Exits
-Лестницы-выходы из `Art/Exit`: снимает физику и тени, сдвигает модель так, чтобы её спина касалась стены позади клетки
-выхода, заполняет набор Exit основной темы (`CastleBlockTheme`), материалы → `Purge/Lit`.
-
 #### Convert Object Materials to Purge Lit
-Все непрозрачные Standard-материалы «живых» объектов (наборы объектов тем: двери, выходы, ключи, пикапы, зомби;
+Все непрозрачные Standard-материалы «живых» объектов (наборы объектов тем: двери, ключи, пикапы, зомби;
 игрок; оружие в руках) → шейдер `Purge/Lit` (фонарь и свет уровня). Цвета и текстуры сохраняются (имена свойств совпадают).
 Прозрачные и cutout-материалы не трогает — перечисляет их в консоли.
 Запускать: после добавления любых новых моделей объектов.
@@ -345,11 +341,6 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 #### Build Awareness Visuals
 Материалы зон зрения зомби (`fx_vision_zone`) и колец шума (`fx_noise_ring`) → `Awareness` темы-заглушки.
 Цвета и тайминги на теме сохраняются.
-
-#### Build Route Line
-Материал линии подсказки маршрута (`fx_route_line`, шейдер `Purge/RouteLine`) → `Route.LineMaterial` всех тем, где его
-ещё нет. Цвет, яркость, ширина, контур, скругление и пульсация — на теме (`Route`), сохраняются.
-Запускать: после создания новой темы не копией существующей (копия уже со ссылкой) или если материал удалён.
 
 #### Build Footprints
 Атлас отпечатков (ботинок игрока / босая нога зомби), его материал и материалы `Footprints` темы (отпечатки + пыль из
@@ -403,7 +394,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 Запускать: после правки иконок в `UiIconsBuilder.cs`. Иконки оружия пересобирает и Build Weapons.
 
 #### Build Map Icons
-Значки карты «от руки» (флаг старта, дверь, замок, выход, свиток-фрагмент, стрелка игрока) → `Art/UI/MapIcons` и
+Значки карты «от руки» (флаг старта, дверь, замок, стрелка игрока, череп, оружие, аптечка, ключ) → `Art/UI/MapIcons` и
 `MapIcons.asset`. Цвета и размеры набора сохраняются; любой спрайт можно потом заменить вручную.
 
 #### Build Runtime Scenes
@@ -430,7 +421,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 
 #### Create Placeholder Theme
 Тема-заглушка `Data/Themes/PlaceholderTheme` с префабами из примитивов (`Art/Placeholders`): пол, стены всех форм,
-двери (простая и цветные запираемые), ключи, выход, аптечка, оружие, зомби, фрагмент карты.
+двери (простая и цветные запираемые), ключи, аптечка, оружие, зомби.
 **Осторожно:** наборы `Placeholder<Вид>Set` очищаются и заполняются заново — в том числе `PlaceholderWeaponSet` и
 `PlaceholderZombieSet`, которые использует и основная тема. После запуска нужно заново выполнить
 Build Weapons и Build Zombie Animations (и Build Light Fixtures для набора света).
@@ -452,6 +443,6 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 - **Create Placeholder Theme** → до Build Weapons и Build Zombie Animations (им нужны наборы темы-заглушки).
 - **Build Player Animations** → затем Build Weapons (риг рук по модели игрока).
 - Билдеры персонажей → затем **Extract Character Meshes**.
-- Новые модели объектов → **Convert Object Materials to Purge Lit** (Light Fixtures и Exits делают это сами).
+- Новые модели объектов → **Convert Object Materials to Purge Lit** (Light Fixtures делает это сам).
 - Что-то из `Import` → в конце **Collect Used Third-Party Assets**.
 - Правка `Strings.tsv` → **Build Localization** (сама запускает Build UI Style). Новая подпись в `RuntimeScenesBuilder` → ещё **Build Runtime Scenes**.

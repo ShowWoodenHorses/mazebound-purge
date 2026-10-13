@@ -488,17 +488,7 @@ PlayerSettings:
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
   m_TemplateCustomTags:
-    PURGE_PLATFORM_HEAD: "<script>\n      window.purgeGd = { ready: false, error: null,
-      listener: null };\n      window.GD_OPTIONS = {\n        gameId: '738b7f3f16bf4176bb70e01f8d655802',\n       
-      advertisementSettings: { autoplay: false },\n        onEvent: function (event)
-      {\n          var gd = window.purgeGd;\n          if (event.name === 'SDK_READY')
-      gd.ready = true;\n          else if (event.name === 'SDK_ERROR') gd.error =
-      event.message || 'SDK_ERROR';\n          if (gd.listener) gd.listener(event);\n       
-      }\n      };\n      (function (d, s, id) {\n        var js, fjs = d.getElementsByTagName(s)[0];\n       
-      if (d.getElementById(id)) return;\n        js = d.createElement(s); js.id =
-      id;\n        js.src = 'https://html5.api.gamedistribution.com/main.min.js';\n       
-      fjs.parentNode.insertBefore(js, fjs);\n      }(document, 'script', 'gamedistribution-jssdk'));\n   
-      </script>"
+    PURGE_PLATFORM_HEAD: 
   mobileMTRendering:
     Android: 1
     iPhone: 1

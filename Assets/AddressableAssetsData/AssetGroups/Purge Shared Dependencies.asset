@@ -35,11 +35,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0976e9e2f75b61643818c92e87fa1788
-    m_Address: Assets/_Project/Art/Effects/fx_route_line.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0bdfa63c78b752e4594e64437e1ddde4
     m_Address: Assets/_Project/Art/Biomes/Meshes/BiomeWall.asset
     m_ReadOnly: 0
@@ -47,6 +42,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e16611dc4905bc40b3602e5077d5d94
     m_Address: Assets/_Project/Art/ThirdParty/PolygonVikings/Textures/Texture_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0eb983427d296f44eb1b70b79c1eb784
+    m_Address: Assets/_Project/Data/Themes/PlaceholderWallSet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f00f2b132e561c44b33e15696e05cfa
+    m_Address: Assets/_Project/Data/Themes/PlaceholderMedkitSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2047875a40d94ed4eb241d51cf1bdf5f
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Crowbar_01.fbx
     m_ReadOnly: 0
@@ -102,11 +107,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 299be5c1d954e8d4d8b9a9ccdb0da1d6
     m_Address: Assets/_Project/Art/Effects/fx_additive.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2a6342712722c654c8aa208b06371596
-    m_Address: Assets/_Project/Data/Themes/CastleBlockExitSet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -167,6 +167,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4329f07b42756c24caededb8268c1897
     m_Address: Assets/_Project/Data/Themes/CastleBlockMedkitSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43b10bfeaefd91c4fb21e3d60c42b384
+    m_Address: Assets/_Project/Data/Themes/PlaceholderFloorSet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -300,11 +305,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 848777e871c45864389124a0559bf682
-    m_Address: Assets/_Project/Data/Themes/CastleBlockMapFragmentSet.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e26df35033987f418d35758fafe06cb
     m_Address: Assets/_Project/Art/Animations/Zombie_idle_2.fbx
     m_ReadOnly: 0
@@ -410,11 +410,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2846f78ff3f75148832bd4261978478
-    m_Address: Assets/_Project/Art/Shaders/PurgeRouteLine.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c798c01d46f63bb4299d10b91436a6c7
     m_Address: Assets/_Project/Art/Effects/fx_footprints.png
     m_ReadOnly: 0
@@ -422,6 +417,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7e9ec95b3da8ad40a670cc1a1994bf7
     m_Address: Assets/_Project/Data/Weapons/RevolverRifle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8ecd396f1b3c2042874a163eca41617
+    m_Address: Assets/_Project/Data/Themes/PlaceholderDoorSet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -457,6 +457,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d32eb243cab9b6d4b8798e6ca1aea014
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_FF66B2.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d514ec6ab1427244bb5232b1b7456ef7
+    m_Address: Assets/_Project/Data/Themes/PlaceholderKeySet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -497,6 +502,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e76253120d07a6c488614b9725e4d42e
     m_Address: Assets/_Project/Art/Biomes/Meshes/BiomeFloor.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7b38e2ce65ec8b4c9afc1c7f463e1f9
+    m_Address: Assets/_Project/Data/Themes/PlaceholderTheme.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -182,12 +182,9 @@ namespace Purge.Tests.EditMode.Progress
         {
             var mine = new SaveData { TotalKills = 10 };
             mine.LevelStars.Add(new LevelStarsRecord { LevelId = "A", Stars = 3, BestTime = 0f });
-            mine.MapUnlocks.Add(new MapUnlockRecord { LevelId = "A", Layers = MapUnlock.Keys });
             mine.Settings.MusicVolume = 0.3f;
             var theirs = new SaveData { TotalKills = 4 };
             theirs.LevelStars.Add(new LevelStarsRecord { LevelId = "A", Stars = 1, BestTime = 70f });
-            theirs.MapUnlocks.Add(new MapUnlockRecord { LevelId = "A", Layers = MapUnlock.Zombies });
-            theirs.MapUnlocks.Add(new MapUnlockRecord { LevelId = "B", Layers = MapUnlock.Medkits });
             theirs.Settings.MusicVolume = 1f;
 
             mine.MergeFrom(theirs);
@@ -195,8 +192,6 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(10, mine.TotalKills);
             Assert.AreEqual(3, mine.LevelStars[0].Stars);
             Assert.AreEqual(70f, mine.LevelStars[0].BestTime, "A time where there was none.");
-            Assert.AreEqual(MapUnlock.Keys | MapUnlock.Zombies, mine.MapUnlocks.Find(r => r.LevelId == "A").Layers);
-            Assert.AreEqual(MapUnlock.Medkits, mine.MapUnlocks.Find(r => r.LevelId == "B").Layers);
             Assert.AreEqual(0.3f, mine.Settings.MusicVolume, "Settings stay these.");
         }
 

@@ -66,14 +66,6 @@ namespace Purge.Core.Level
         public PlayerStartData(string id, GridPosition position) : base(id, position) { }
     }
 
-    [Serializable]
-    public sealed class ExitData : LevelEntityData
-    {
-        public const string IdPrefix = "exit";
-
-        public ExitData(string id, GridPosition position) : base(id, position) { }
-    }
-
     /// <summary>Medkit always heals the player to full HP and is consumed only if HP is below max.</summary>
     [Serializable]
     public sealed class MedkitData : LevelEntityData
@@ -90,23 +82,17 @@ namespace Purge.Core.Level
 
         [SerializeField] private Direction _facing;
         [SerializeField] private ZombieDefinition _definition;
-        [SerializeField] private string _patrolId;
 
         public ZombieSpawnData(string id, GridPosition position, ZombieDefinition definition,
-            Direction facing = Direction.North, string patrolId = null)
+            Direction facing = Direction.North)
             : base(id, position)
         {
             _definition = definition;
             _facing = facing;
-            _patrolId = patrolId;
         }
 
         public Direction Facing { get => _facing; internal set => _facing = value; }
         public ZombieDefinition Definition { get => _definition; internal set => _definition = value; }
-
-        /// <summary>Id of the patrol route. Empty means the zombie idles at its spawn position.</summary>
-        public string PatrolId { get => _patrolId; internal set => _patrolId = value; }
-        public bool HasPatrol => !string.IsNullOrEmpty(_patrolId);
     }
 
     [Serializable]
@@ -122,21 +108,5 @@ namespace Purge.Core.Level
         }
 
         public WeaponDefinition Definition { get => _definition; internal set => _definition = value; }
-    }
-
-    [Serializable]
-    public sealed class MapFragmentData : LevelEntityData
-    {
-        public const string IdPrefix = "fragment";
-
-        [SerializeField] private GridRect _region;
-
-        public MapFragmentData(string id, GridPosition position, GridRect region) : base(id, position)
-        {
-            _region = region;
-        }
-
-        /// <summary>Part of the map revealed when this fragment is collected. Regions must not overlap.</summary>
-        public GridRect Region { get => _region; internal set => _region = value; }
     }
 }

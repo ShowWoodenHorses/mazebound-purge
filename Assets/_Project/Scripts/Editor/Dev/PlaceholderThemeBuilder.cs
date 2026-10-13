@@ -90,7 +90,6 @@ namespace Purge.Editor.Dev
 
             AddSet(theme, VisualKind.Door, null, doors.ToArray());
             AddSet(theme, VisualKind.Key, null, keys.ToArray());
-            AddSet(theme, VisualKind.Exit, null, Variant("exit_01", 1, Exit("exit_01")));
             AddSet(theme, VisualKind.Medkit, null,
                 Variant("medkit_01", 1, Small("medkit_01", PrimitiveType.Cube, new Color(0.95f, 0.95f, 0.95f), new Vector3(0.4f, 0.25f, 0.3f))));
             AddSet(theme, VisualKind.Weapon, null,
@@ -98,8 +97,6 @@ namespace Purge.Editor.Dev
             AddSet(theme, VisualKind.Zombie, null,
                 Variant("zombie_01", 1, Small("zombie_01", PrimitiveType.Capsule, new Color(0.35f, 0.6f, 0.3f), new Vector3(0.6f, 0.9f, 0.6f))),
                 Variant("zombie_02", 1, Small("zombie_02", PrimitiveType.Capsule, new Color(0.45f, 0.5f, 0.3f), new Vector3(0.6f, 0.9f, 0.6f))));
-            AddSet(theme, VisualKind.MapFragment, null,
-                Variant("fragment_01", 1, Small("fragment_01", PrimitiveType.Cube, new Color(0.6f, 0.35f, 0.9f), new Vector3(0.4f, 0.05f, 0.5f))));
 
             EditorUtility.SetDirty(theme);
             AssetDatabase.SaveAssets();
@@ -250,15 +247,6 @@ namespace Purge.Editor.Dev
             var child = new GameObject(name);
             child.transform.SetParent(parent.transform, false);
             return child;
-        }
-
-        private static GameObject Exit(string name)
-        {
-            var root = new GameObject(name);
-            var color = new Color(0.1f, 0.8f, 0.9f);
-            AddPart(root, PrimitiveType.Cube, color, new Vector3(0f, 0.02f, 0f), new Vector3(0.9f, 0.04f, 0.9f));
-            AddPart(root, PrimitiveType.Cube, color, new Vector3(0f, 0.6f, 0.35f), new Vector3(0.9f, 1.2f, 0.1f));
-            return SavePrefab(root);
         }
 
         private static GameObject Small(string name, PrimitiveType type, Color color, Vector3 size)

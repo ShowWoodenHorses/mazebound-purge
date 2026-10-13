@@ -75,18 +75,10 @@ namespace Purge.Tests.EditMode.Zombies
             return definition;
         }
 
-        private void AddZombie(int x, int y, ZombieDefinition definition, Direction facing = Direction.West,
-            params GridPosition[] patrol)
+        private void AddZombie(int x, int y, ZombieDefinition definition, Direction facing = Direction.West)
         {
-            string patrolId = null;
-            if (patrol.Length > 0)
-            {
-                patrolId = "patrol_" + _level.Patrols.Count;
-                _level.MutablePatrols.Add(new PatrolData(patrolId, patrol));
-            }
-
             _level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_" + _level.ZombieSpawns.Count, new GridPosition(x, y),
-                definition, facing, patrolId));
+                definition, facing));
         }
 
         private void Build()
@@ -251,24 +243,17 @@ namespace Purge.Tests.EditMode.Zombies
         }
 
         [Test]
-        public void Patrol_Walks_Chase_RunsAtChaseSpeed()
+        public void Chase_RunsAtChaseSpeed()
         {
-            AddZombie(10, 3, Definition(ZombieDetectionType.VisionOnly, visionAngle: 10f, visionRange: 1f, moveSpeed: 1f,
-                chaseSpeed: 3f), Direction.North, new GridPosition(10, 1), new GridPosition(10, 5));
             AddZombie(7, 3, Definition(ZombieDetectionType.VisionAndHearing, detectionRadius: 12f, moveSpeed: 1f,
                 chaseSpeed: 3f));
             Build();
-            var patrolStart = Zombie(0).Position;
 
+            RunUntil(() => Zombie().State == ZombieState.Chase);
+            var chaseStart = Zombie().Position;
             Run(0.5f);
-            Assert.AreEqual(ZombieState.Patrol, Zombie(0).State);
-            Assert.AreEqual(0.5f, (Zombie(0).Position - patrolStart).magnitude, 0.05f, "Patrol walks at MoveSpeed.");
-
-            RunUntil(() => Zombie(1).State == ZombieState.Chase);
-            var chaseStart = Zombie(1).Position;
-            Run(0.5f);
-            Assert.AreEqual(ZombieState.Chase, Zombie(1).State);
-            Assert.AreEqual(1.5f, (Zombie(1).Position - chaseStart).magnitude, 0.05f, "Chase runs at ChaseSpeed.");
+            Assert.AreEqual(ZombieState.Chase, Zombie().State);
+            Assert.AreEqual(1.5f, (Zombie().Position - chaseStart).magnitude, 0.05f, "Chase runs at ChaseSpeed.");
         }
 
         [Test]
@@ -304,17 +289,16 @@ namespace Purge.Tests.EditMode.Zombies
         [Test]
         public void Alert_RepeatsBeforeEveryNewChase()
         {
-            AddZombie(10, 3, Definition(ZombieDetectionType.VisionOnly, visionAngle: 360f, visionRange: 9f), Direction.West,
-                new GridPosition(10, 1), new GridPosition(10, 5));
+            AddZombie(10, 3, Definition(ZombieDetectionType.VisionOnly, visionAngle: 360f, visionRange: 9f), Direction.West);
             Build();
             RunUntil(() => Zombie().State == ZombieState.Alert);
             RunUntil(() => Zombie().State == ZombieState.Chase);
 
-            _doors.SetOpen("door_1", false); // lost: returns to the patrol
-            RunUntil(() => Zombie().State == ZombieState.Patrol);
+            _doors.SetOpen("door_1", false); // lost: returns to the spawn
+            RunUntil(() => Zombie().State == ZombieState.Return);
 
             _doors.SetOpen("door_1", true); // seen again
-            RunUntil(() => Zombie().State != ZombieState.Patrol);
+            RunUntil(() => Zombie().State == ZombieState.Alert || Zombie().State == ZombieState.Chase);
             Assert.AreEqual(ZombieState.Alert, Zombie().State, "Roars again before the new chase.");
         }
 
@@ -332,24 +316,7 @@ namespace Purge.Tests.EditMode.Zombies
         }
 
         [Test]
-        public void LostTarget_ReturnsToNearestPatrolPoint_AndContinuesPatrol()
-        {
-            AddZombie(10, 3, Definition(ZombieDetectionType.VisionOnly, visionAngle: 360f, visionRange: 9f), Direction.West,
-                new GridPosition(10, 1), new GridPosition(10, 5));
-            Build();
-            RunUntil(() => Zombie().State == ZombieState.Chase);
-
-            _doors.SetOpen("door_1", false); // the player is now unreachable and out of sight
-            RunUntil(() => Zombie().State == ZombieState.Return);
-            RunUntil(() => Zombie().State == ZombieState.Patrol);
-            Assert.AreEqual(new GridPosition(10, 1), Zombie().Cell, "Nearest patrol point (first of two equal).");
-
-            RunUntil(() => Zombie().Cell == new GridPosition(10, 5));
-            Assert.AreEqual(ZombieState.Patrol, Zombie().State, "Continues the loop A → B → A.");
-        }
-
-        [Test]
-        public void LostTarget_WithoutPatrol_ReturnsToSpawnAndIdles()
+        public void LostTarget_ReturnsToSpawnAndIdles()
         {
             AddZombie(10, 3, Definition(ZombieDetectionType.VisionOnly, visionAngle: 360f, visionRange: 9f), Direction.North);
             Build();

@@ -19,7 +19,7 @@ namespace Purge.Presentation.Visual
     /// Vision zones of zombies that see (display only; theme settings <see cref="ThemeAwareness"/>): exactly what
     /// gameplay checks — the vision cone (VisionAngle, VisionRange) or, for vision + hearing, the circle of
     /// DetectionRadius — cut by walls and closed doors (<see cref="VisionZoneShape"/>). A faint fill with a bright edge,
-    /// calm colour in Idle / Patrol / Return, alert colour while roaring; hidden while chasing or attacking, and for
+    /// calm colour in Idle / Return, alert colour while roaring; hidden while chasing or attacking, and for
     /// zombies the player does not see (a zone would give them away through the fog). A shown zone is drawn whole,
     /// over the fog. Each zone is one small mesh rebuilt only when its zombie moved or turned, or a door changed, at
     /// most every <see cref="RebuildInterval"/> seconds; colour and fade go through a property block. No allocations
@@ -146,7 +146,6 @@ namespace Purge.Presentation.Visual
             switch (zombie.State)
             {
                 case ZombieState.Idle:
-                case ZombieState.Patrol:
                 case ZombieState.Return:
                 case ZombieState.Alert:
                     return _visibility.IsVisible(zombie.Cell);

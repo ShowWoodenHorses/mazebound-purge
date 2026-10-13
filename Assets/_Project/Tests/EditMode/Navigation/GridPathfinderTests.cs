@@ -130,16 +130,16 @@ namespace Purge.Tests.EditMode.Navigation
         }
 
         [Test]
-        public void MatchesBfsDistance_OnGeneratedMazesWithLoops_ReusingOneInstance()
+        public void MatchesBfsDistance_OnGeneratedFieldsWithPillars_ReusingOneInstance()
         {
-            var settings = new LevelGenerationSettings { Width = 31, Height = 31, LoopDensity = 0.3f };
+            var settings = new LevelGenerationSettings { Width = 31, Height = 31, ObstacleDensity = 0.6f };
             var pathfinder = new GridPathfinder(31, 31);
             var path = new List<GridPosition>();
 
             for (var seed = 0; seed < 20; seed++)
             {
-                settings.MazeSeed = seed;
-                var geometry = new MazeGenerator().Generate(settings).Geometry;
+                settings.LayoutSeed = seed;
+                var geometry = new OpenFieldGenerator().Generate(settings).Geometry;
                 var mask = Mask(geometry);
                 var start = new GridPosition(1, 1);
                 var distances = Bfs(geometry, start);

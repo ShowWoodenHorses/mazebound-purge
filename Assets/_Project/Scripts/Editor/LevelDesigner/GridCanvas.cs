@@ -30,7 +30,6 @@ namespace Purge.Editor.LevelDesigner
         private static readonly Color FloorColor = new Color(0.80f, 0.78f, 0.72f);
         private static readonly Color DoorColor = new Color(0.55f, 0.36f, 0.18f);
         private static readonly Color SnowdriftColor = new Color(0.86f, 0.93f, 1f);
-        private static readonly Color FragmentColor = new Color(0.65f, 0.35f, 0.95f);
         private static readonly Color DecorAutoColor = new Color(0.45f, 0.4f, 0.32f);
         private static readonly Color DecorManualColor = new Color(0.2f, 0.6f, 0.25f);
         private static readonly Color SelectedColor = new Color(1f, 0.85f, 0.1f);
@@ -39,13 +38,10 @@ namespace Purge.Editor.LevelDesigner
 
         private readonly Dictionary<GridPosition, (string Text, Color Color)> _glyphs = new Dictionary<GridPosition, (string, Color)>();
         private static readonly Color SelectedEntityColor = new Color(0.2f, 1f, 1f);
-        private static readonly Color PatrolColor = new Color(1f, 0.35f, 0.35f, 0.55f);
-        private static readonly Color SelectedPatrolColor = new Color(1f, 0.3f, 0.3f, 1f);
 
         private float _cellSize;
         private Vector2 _origin;
         private GUIStyle _glyphStyle;
-        private GUIStyle _smallStyle;
         private bool _dragging;
         private bool _panning;
         private bool _spaceHeld;
@@ -243,28 +239,10 @@ namespace Purge.Editor.LevelDesigner
                 EditorGUI.DrawRect(new Rect(r.x, r.y, r.width - gap, r.height - gap), color);
             }
 
-            foreach (var fragment in level.MapFragments)
-            {
-                var region = fragment.Region;
-                if (region.IsEmpty)
-                    continue;
-
-                var min = CellRect(new GridPosition(region.X, region.YMax - 1), geometry.Height);
-                DrawOutline(new Rect(min.x, min.y, region.Width * _cellSize, region.Height * _cellSize), FragmentColor, 2f);
-            }
-
-            PaintPatrols(state);
             PaintDecor(level, local);
             PaintLights(level, local);
             PaintGlyphs(level, local);
             PaintIssues(state);
-
-            if (state.PreviewRect.HasValue)
-            {
-                var region = state.PreviewRect.Value;
-                var min = CellRect(new GridPosition(region.X, region.YMax - 1), geometry.Height);
-                DrawOutline(new Rect(min.x, min.y, region.Width * _cellSize, region.Height * _cellSize), Color.white, 2f);
-            }
 
             if (state.HoveredCell.HasValue)
                 DrawOutline(CellRect(state.HoveredCell.Value, geometry.Height), Color.white, 1f);
@@ -324,48 +302,6 @@ namespace Purge.Editor.LevelDesigner
                 color.a = 1f;
                 Handles.color = color;
                 Handles.DrawSolidDisc(center, Vector3.forward, radius);
-            }
-        }
-
-        /// <summary>Patrol loops: spawn -> P1 -> ... -> Pn -> P1. The selected zombie's route is highlighted.</summary>
-        private void PaintPatrols(LevelDesignerState state)
-        {
-            var level = state.Level;
-            var height = level.Geometry.Height;
-            if (_smallStyle == null)
-                _smallStyle = new GUIStyle(EditorStyles.miniBoldLabel) { alignment = TextAnchor.UpperLeft };
-
-            foreach (var zombie in level.ZombieSpawns)
-            {
-                if (!zombie.HasPatrol)
-                    continue;
-
-                PatrolData patrol = null;
-                foreach (var p in level.Patrols)
-                    if (p.Id == zombie.PatrolId)
-                        patrol = p;
-
-                if (patrol == null || patrol.Points.Count == 0)
-                    continue;
-
-                var selected = zombie.Id == state.SelectedEntityId;
-                var points = new List<Vector3> { CellRect(zombie.Position, height).center };
-                foreach (var point in patrol.Points)
-                    points.Add(CellRect(point, height).center);
-                points.Add(CellRect(patrol.Points[0], height).center);
-
-                Handles.color = selected ? SelectedPatrolColor : PatrolColor;
-                Handles.DrawAAPolyLine(selected ? 4f : 2f, points.ToArray());
-
-                if (!selected || _cellSize < 12f)
-                    continue;
-
-                _smallStyle.normal.textColor = SelectedPatrolColor;
-                for (var i = 0; i < patrol.Points.Count; i++)
-                {
-                    var r = CellRect(patrol.Points[i], height);
-                    GUI.Label(new Rect(r.x + 2f, r.y, r.width, r.height), (i + 1).ToString(), _smallStyle);
-                }
             }
         }
 
@@ -451,13 +387,11 @@ namespace Purge.Editor.LevelDesigner
             switch (entity)
             {
                 case PlayerStartData _: return ("S", new Color(0.2f, 0.85f, 0.3f));
-                case ExitData _: return ("E", new Color(0.2f, 0.85f, 1f));
                 case DoorData door: return ("D", PairColor(level, door) ?? Color.white);
                 case KeyData key: return ("K", PairColor(level, key) ?? Color.yellow);
                 case ZombieSpawnData _: return ("Z", new Color(1f, 0.25f, 0.25f));
                 case WeaponPickupData _: return ("W", new Color(1f, 0.6f, 0.15f));
                 case MedkitData _: return ("+", new Color(1f, 0.4f, 0.8f));
-                case MapFragmentData _: return ("M", new Color(0.75f, 0.5f, 1f));
                 default: return ("?", Color.gray);
             }
         }

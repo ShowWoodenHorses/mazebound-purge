@@ -76,8 +76,6 @@ namespace Purge.Presentation.UI
             _ui.Result.RetryClicked += OnRetryRequested;
             _ui.Result.MenuClicked += OnMenuRequested;
             _ui.Result.NextClicked += OnNextRequested;
-            _ui.ConfirmExit.YesClicked += OnFinishLevelConfirmed;
-            _ui.ConfirmExit.NoClicked += OnFinishLevelDeclined;
 
             Show(_flow.State);
         }
@@ -115,8 +113,6 @@ namespace Purge.Presentation.UI
             _ui.Result.RetryClicked -= OnRetryRequested;
             _ui.Result.MenuClicked -= OnMenuRequested;
             _ui.Result.NextClicked -= OnNextRequested;
-            _ui.ConfirmExit.YesClicked -= OnFinishLevelConfirmed;
-            _ui.ConfirmExit.NoClicked -= OnFinishLevelDeclined;
         }
 
         /// <summary>Portrait on a phone: the level stops under "Rotate your device"; the player resumes it from the pause.</summary>
@@ -130,8 +126,7 @@ namespace Purge.Presentation.UI
             var menu = state == GameFlowState.MainMenu;
             var loading = state == GameFlowState.None || state == GameFlowState.Initializing || state == GameFlowState.Loading;
             // The map is fullscreen: the HUD is hidden under it.
-            var inLevel = state == GameFlowState.Playing || state == GameFlowState.Paused ||
-                          state == GameFlowState.ExitConfirmation || state == GameFlowState.Tip;
+            var inLevel = state == GameFlowState.Playing || state == GameFlowState.Paused || state == GameFlowState.Tip;
             var result = state == GameFlowState.Completed || state == GameFlowState.Failed;
             var error = state == GameFlowState.Error;
 
@@ -156,7 +151,6 @@ namespace Purge.Presentation.UI
             _ui.Pause.SetVisible(state == GameFlowState.Paused);
             _ui.Result.SetVisible(result);
             _ui.Error.SetVisible(error);
-            _ui.ConfirmExit.SetVisible(state == GameFlowState.ExitConfirmation);
             _ui.Map.SetVisible(state == GameFlowState.Map);
             if (_ui.Tutorial != null)
             {
@@ -265,8 +259,7 @@ namespace Purge.Presentation.UI
         private void OnLanguageChanged()
         {
             var state = _flow.State;
-            if (state == GameFlowState.Paused || state == GameFlowState.Playing || state == GameFlowState.ExitConfirmation ||
-                state == GameFlowState.Tip)
+            if (state == GameFlowState.Paused || state == GameFlowState.Playing || state == GameFlowState.Tip)
                 _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));
         }
 
@@ -332,9 +325,5 @@ namespace Purge.Presentation.UI
         }
 
         private void OnMenuRequested() => _flow.ExitToMenu().Forget();
-
-        private void OnFinishLevelConfirmed() => _flow.ConfirmExit(true);
-
-        private void OnFinishLevelDeclined() => _flow.ConfirmExit(false);
     }
 }

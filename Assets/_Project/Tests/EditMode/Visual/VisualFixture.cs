@@ -15,14 +15,14 @@ namespace Purge.Tests.EditMode.Visual
     {
         private readonly List<Object> _created = new List<Object>();
 
-        public VisualFixture(int width = 21, int height = 21, int mazeSeed = 1, int visualSeed = 1, float loopDensity = 0.2f)
+        public VisualFixture(int width = 21, int height = 21, int layoutSeed = 1, int visualSeed = 1, float obstacles = 0.3f)
         {
             Level = Create<LevelData>();
             Level.Generation.Width = width;
             Level.Generation.Height = height;
-            Level.Generation.MazeSeed = mazeSeed;
+            Level.Generation.LayoutSeed = layoutSeed;
             Level.Generation.VisualSeed = visualSeed;
-            Level.Generation.LoopDensity = loopDensity;
+            Level.Generation.ObstacleDensity = obstacles;
 
             Pistol = Create<WeaponDefinition>();
             Knife = Create<WeaponDefinition>();
@@ -48,7 +48,6 @@ namespace Purge.Tests.EditMode.Visual
                 Variant("door_02", 1),
                 Variant("door_red", 1, colorTag: "red"),
                 Variant("door_blue", 1, colorTag: "blue"));
-            Exit = AddSet(VisualKind.Exit, null, Variant("exit_01", 1));
             Weapon = AddSet(VisualKind.Weapon, null,
                 Variant("pistol_black", 1, definition: Pistol),
                 Variant("pistol_red", 1, definition: Pistol),
@@ -58,7 +57,6 @@ namespace Purge.Tests.EditMode.Visual
                 Variant("key_blue", 1, colorTag: "blue"));
             AddSet(VisualKind.Medkit, null, Variant("medkit_01", 1));
             AddSet(VisualKind.Zombie, null, Variant("zombie_01", 1), Variant("zombie_02", 1));
-            AddSet(VisualKind.MapFragment, null, Variant("fragment_01", 1));
 
             Level.VisualTheme = Theme;
         }
@@ -69,7 +67,6 @@ namespace Purge.Tests.EditMode.Visual
         public VisualSet Wall { get; }
         public VisualSet Door { get; }
         public VisualSet Key { get; }
-        public VisualSet Exit { get; }
         public VisualSet Weapon { get; }
         public WeaponDefinition Pistol { get; }
         public WeaponDefinition Knife { get; }

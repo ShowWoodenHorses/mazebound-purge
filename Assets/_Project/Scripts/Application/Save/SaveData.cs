@@ -31,16 +31,11 @@ namespace Purge.Application.Save
 
         public SettingsData Settings = new SettingsData();
 
-        /// <summary>Map layers bought with a rewarded ad, per level (they stay for replays of that level).</summary>
-        public List<MapUnlockRecord> MapUnlocks = new List<MapUnlockRecord>();
-
         /// <summary>Replaces lists and objects missing in old or hand-edited JSON.</summary>
         public void Normalize()
         {
             UnlockedLevels ??= new List<string>();
             LevelStars ??= new List<LevelStarsRecord>();
-            MapUnlocks ??= new List<MapUnlockRecord>();
-            MapUnlocks.RemoveAll(record => record == null || string.IsNullOrEmpty(record.LevelId));
             Settings ??= new SettingsData();
             Settings.Language ??= string.Empty;
             // Saves made before the controls settings existed have zeros there (a valid size is never zero).
@@ -68,7 +63,7 @@ namespace Purge.Application.Save
 
         /// <summary>
         /// Adds the progress of another save (the same player on another device, before signing in): opened levels,
-        /// best stars and times, layers bought on the map; kills — the larger count. Settings stay these.
+        /// best stars and times; kills — the larger count. Settings stay these.
         /// Both saves must be normalized.
         /// </summary>
         public void MergeFrom(SaveData other)
@@ -92,13 +87,6 @@ namespace Purge.Application.Save
                     mine.BestTime = theirs.BestTime;
             }
 
-            foreach (var theirs in other.MapUnlocks)
-            {
-                var mine = MapUnlocks.Find(record => record.LevelId == theirs.LevelId);
-                if (mine == null) MapUnlocks.Add(new MapUnlockRecord { LevelId = theirs.LevelId, Layers = theirs.Layers });
-                else mine.Layers |= theirs.Layers;
-            }
-
             if (other.TotalKills > TotalKills) TotalKills = other.TotalKills;
         }
     }
@@ -113,24 +101,6 @@ namespace Purge.Application.Save
         public float BestTime;
     }
 
-    /// <summary>Map layers that need a rewarded ad (the player and map pieces are always free).</summary>
-    [Flags]
-    public enum MapUnlock
-    {
-        None = 0,
-        Zombies = 1,
-        Weapons = 2,
-        Medkits = 4,
-        Keys = 8,
-    }
-
-    [Serializable]
-    public sealed class MapUnlockRecord
-    {
-        public string LevelId;
-        public MapUnlock Layers;
-    }
-
     [Serializable]
     public sealed class SettingsData
     {
@@ -143,9 +113,6 @@ namespace Purge.Application.Save
 
         /// <summary>Map screen: hide the player icon. Negated so that old saves (false) show it.</summary>
         public bool MapHidePlayer;
-
-        /// <summary>Map screen: hide icons of map fragments not collected yet. Negated like <see cref="MapHidePlayer"/>.</summary>
-        public bool MapHideFragments;
 
         /// <summary>Map screen: hide zombies / weapons / medkits / keys. Negated like <see cref="MapHidePlayer"/>.</summary>
         public bool MapHideZombies;

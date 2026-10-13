@@ -80,13 +80,6 @@ namespace Purge.Application.Services
             set => SetFlag(ref _save.Data.Settings.MapHidePlayer, !value);
         }
 
-        /// <summary>Map screen shows icons of map fragments not collected yet. Saved at once.</summary>
-        public bool MapShowFragments
-        {
-            get => !_save.Data.Settings.MapHideFragments;
-            set => SetFlag(ref _save.Data.Settings.MapHideFragments, !value);
-        }
-
         /// <summary>Map screen shows living zombies (also out of sight). Saved at once.</summary>
         public bool MapShowZombies
         {

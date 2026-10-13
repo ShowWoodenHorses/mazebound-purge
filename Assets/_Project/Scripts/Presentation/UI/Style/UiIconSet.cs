@@ -18,7 +18,6 @@ namespace Purge.Presentation.UI.Style
         public Sprite Key;
         public Sprite Medkit;
         public Sprite Skull;
-        public Sprite Fragment;
         public Sprite Melee;
         public Sprite Ranged;
         public Sprite Attack;

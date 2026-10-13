@@ -17,12 +17,9 @@ MonoBehaviour:
   _generation:
     _width: 21
     _height: 17
-    _mazeSeed: 42
+    _layoutSeed: 42
     _visualSeed: 7
-    _mazeAlgorithm: 0
-    _loopDensity: 0.25
-    _initialPlayerStartCount: 1
-    _initialExitCount: 1
+    _obstacleDensity: 0
     _lightDensity: 0.5
     _decorDensity: 0.15
     _maxAutoDecorHeight: 0.3
@@ -30,6 +27,7 @@ MonoBehaviour:
     _width: 21
     _height: 17
     _cells: 000000000000000000000000000000000000000000000101010101010101010101010101010101010100000100010001000000010000000100000000000100000101010001010101010101000101010101000100000100010000000000000001000100000001000100000100010101010101010001000101010001000100000100010001000100010001000100010001000100000101010001000100010101000101010001010100000100010001000100000000000000010000000000000101010101000100010101000101010001010100000200000001000100010101000100000001000000000101010101000101010101010101010101010100000200000000000101010001000000010000000100000100010101010101010001010100010101000100000100010001000000000001000100010001000100000100010101010101010101000101010001010100000000000000000000000000000000000000000000
+    _surfaces: 
   _doors:
   - _id: door_1
     _position:
@@ -37,22 +35,19 @@ MonoBehaviour:
       _y: 12
     _keyId: 
     _isInitiallyOpen: 0
+    _iceHits: 0
   - _id: door_2
     _position:
       _x: 1
       _y: 10
     _keyId: key_1
     _isInitiallyOpen: 0
+    _iceHits: 0
   _playerStarts:
   - _id: start_1
     _position:
       _x: 1
       _y: 15
-  _exits:
-  - _id: exit_1
-    _position:
-      _x: 19
-      _y: 9
   _zombieSpawns:
   - _id: zombie_1
     _position:
@@ -60,28 +55,18 @@ MonoBehaviour:
       _y: 11
     _facing: 3
     _definition: {fileID: 11400000, guid: 64ec30b356044824083cab89bfdd3cdc, type: 2}
-    _patrolId: 
   - _id: zombie_2
     _position:
       _x: 3
       _y: 9
     _facing: 3
     _definition: {fileID: 11400000, guid: c9e4824799a23154dae897c7fde15723, type: 2}
-    _patrolId: patrol_1
   - _id: zombie_3
     _position:
       _x: 3
       _y: 7
     _facing: 0
     _definition: {fileID: 11400000, guid: ac0c610bbc54b95459ad02ba82f4340b, type: 2}
-    _patrolId: 
-  _patrols:
-  - _id: patrol_1
-    _points:
-    - _x: 1
-      _y: 9
-    - _x: 5
-      _y: 9
   _weapons:
   - _id: weapon_1
     _position:
@@ -108,34 +93,6 @@ MonoBehaviour:
     _position:
       _x: 4
       _y: 11
-  _mapFragments:
-  - _id: fragment_1
-    _position:
-      _x: 1
-      _y: 11
-    _region:
-      _x: 0
-      _y: 10
-      _width: 16
-      _height: 7
-  - _id: fragment_2
-    _position:
-      _x: 7
-      _y: 13
-    _region:
-      _x: 0
-      _y: 0
-      _width: 16
-      _height: 10
-  - _id: fragment_3
-    _position:
-      _x: 19
-      _y: 15
-    _region:
-      _x: 16
-      _y: 0
-      _width: 5
-      _height: 17
   _lights:
   - _id: light_1
     _cell:
@@ -1691,10 +1648,6 @@ MonoBehaviour:
     _decorPlacements: []
     _objectPlacements: []
     _objectAssignments:
-    - _entityId: exit_1
-      _choice:
-        _variantId: exit_01
-        _rotation: 3
     - _entityId: weapon_1
       _choice:
         _variantId: weapon_katana
@@ -1735,16 +1688,5 @@ MonoBehaviour:
       _choice:
         _variantId: zombie_listener
         _rotation: 0
-    - _entityId: fragment_1
-      _choice:
-        _variantId: fragment_01
-        _rotation: 0
-    - _entityId: fragment_2
-      _choice:
-        _variantId: fragment_01
-        _rotation: 0
-    - _entityId: fragment_3
-      _choice:
-        _variantId: fragment_01
-        _rotation: 0
     _objectOverrides: []
+  _tutorial: {fileID: 0}

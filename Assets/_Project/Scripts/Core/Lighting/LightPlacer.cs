@@ -12,7 +12,7 @@ namespace Purge.Core.Lighting
     /// order and taken while no other light is closer than the spacing given by
     /// <see cref="LevelGenerationSettings.LightDensity"/>; the kind of light is a weighted pick from the theme's
     /// <see cref="Visual.ThemeLighting.LightPresets"/>. Hand-placed lights stay (and keep the others away from them).
-    /// Rules: no auto light in an exit cell; every key with a coloured visual first gets <see cref="KeyLightCount"/>
+    /// Rules: every key with a coloured visual first gets <see cref="KeyLightCount"/>
     /// lights of its colour within <see cref="KeyLightSteps"/> steps along the floor (a hint for the player; placed
     /// regardless of density, the other lights keep their spacing from them).
     /// </summary>
@@ -47,10 +47,6 @@ namespace Purge.Core.Lighting
             }
 
             var seed = StableHash.Combine(Salt, unchecked((ulong)level.Generation.VisualSeed));
-            var exits = new HashSet<GridPosition>();
-            foreach (var exit in level.Exits)
-                exits.Add(exit.Position);
-
             var taken = new List<Vector2>();
             var usedCells = new HashSet<GridPosition>();
             foreach (var light in lights)
@@ -60,7 +56,7 @@ namespace Purge.Core.Lighting
             }
 
             foreach (var key in level.Keys)
-                PlaceKeyLights(level, key, presets, seed, exits, taken, usedCells);
+                PlaceKeyLights(level, key, presets, seed, taken, usedCells);
 
             var density = level.Generation.LightDensity;
             if (density > 0f)
@@ -71,7 +67,7 @@ namespace Purge.Core.Lighting
 
                 foreach (var candidate in candidates)
                 {
-                    if (usedCells.Contains(candidate.Cell) || exits.Contains(candidate.Cell))
+                    if (usedCells.Contains(candidate.Cell))
                         continue;
 
                     var point = candidate.Point;
@@ -93,14 +89,14 @@ namespace Purge.Core.Lighting
         /// (walls and doors bound the search, so they light the key's own corridor). A key without colour gets none.
         /// </summary>
         private static void PlaceKeyLights(LevelData level, KeyData key, List<LightPreset> presets, ulong seed,
-            HashSet<GridPosition> exits, List<Vector2> taken, HashSet<GridPosition> usedCells)
+            List<Vector2> taken, HashSet<GridPosition> usedCells)
         {
             if (!TryGetKeyColor(level, key, out var color))
                 return;
 
             var near = Reachable(level.Geometry, key.Position, KeyLightSteps);
             var candidates = Candidates(level.Geometry, StableHash.Combine(seed, StableHash.Of(key.Id)), near);
-            candidates.RemoveAll(c => usedCells.Contains(c.Cell) || exits.Contains(c.Cell));
+            candidates.RemoveAll(c => usedCells.Contains(c.Cell));
             candidates.Sort((a, b) => a.Key.CompareTo(b.Key));
 
             var placed = new List<Vector2>();

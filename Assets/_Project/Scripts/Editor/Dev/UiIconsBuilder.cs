@@ -60,8 +60,6 @@ namespace Purge.Editor.Dev
             set.Medkit = Draw("ui_medkit", new Icon().Polyline(true, 3.5f, 7, 20.5f, 7, 20.5f, 19.5f, 3.5f, 19.5f)
                 .Polyline(false, 9, 7, 9, 4.5f, 15, 4.5f, 15, 7).Segment(12, 10.5f, 12, 16).Segment(9.25f, 13.25f, 14.75f, 13.25f));
             set.Skull = Draw("ui_skull", SkullIcon());
-            set.Fragment = Draw("ui_fragment", new Icon().Polyline(true, 4, 5, 13, 5, 11.5f, 9.5f, 15, 12, 13, 19, 4, 19)
-                .Polyline(false, 13, 5, 20, 5, 20, 19, 13, 19));
             set.Melee = Draw("ui_melee", AxeIcon());
             set.Ranged = Draw("ui_ranged", new Icon().Polyline(true, 3, 8, 20.5f, 8, 20.5f, 11.2f, 12.6f, 11.2f, 10.8f, 16.5f, 7.4f, 16.5f, 8.6f, 11.2f, 3, 11.2f)
                 .Polyline(false, 14, 11.2f, 13.6f, 13.6f, 11.6f, 13.6f));

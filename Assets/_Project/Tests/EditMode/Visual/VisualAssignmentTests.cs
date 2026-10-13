@@ -35,9 +35,6 @@ namespace Purge.Tests.EditMode.Visual
                     Assert.AreEqual(isWall, !data.GetCellAssignment(CellLayer.Wall, i).IsEmpty, $"Wall layer of {geometry.ToPosition(i)}");
                     Assert.IsNotNull(f.Floor.FindVariant(data.GetCellAssignment(CellLayer.Floor, i).VariantId));
                 }
-
-                foreach (var exit in f.Level.Exits)
-                    Assert.AreEqual("exit_01", VisualResolver.ResolveObject(f.Level, exit).VariantId);
             }
         }
 
@@ -57,8 +54,8 @@ namespace Purge.Tests.EditMode.Visual
         [Test]
         public void SameSeedsAndSets_GiveIdenticalVisuals()
         {
-            using (var a = new VisualFixture(mazeSeed: 4, visualSeed: 9))
-            using (var b = new VisualFixture(mazeSeed: 4, visualSeed: 9))
+            using (var a = new VisualFixture(layoutSeed: 4, visualSeed: 9))
+            using (var b = new VisualFixture(layoutSeed: 4, visualSeed: 9))
             {
                 LevelAuthoring.GenerateNew(a.Level);
                 LevelAuthoring.GenerateNew(b.Level);
@@ -67,15 +64,15 @@ namespace Purge.Tests.EditMode.Visual
         }
 
         [Test]
-        public void VisualSeed_IsIndependentFromMazeSeed()
+        public void VisualSeed_IsIndependentFromLayoutSeed()
         {
-            using (var a = new VisualFixture(mazeSeed: 4, visualSeed: 1))
-            using (var b = new VisualFixture(mazeSeed: 4, visualSeed: 2))
+            using (var a = new VisualFixture(layoutSeed: 4, visualSeed: 1))
+            using (var b = new VisualFixture(layoutSeed: 4, visualSeed: 2))
             {
                 LevelAuthoring.GenerateNew(a.Level);
                 LevelAuthoring.GenerateNew(b.Level);
 
-                CollectionAssert.AreEqual(a.Level.Geometry.CopyCells(), b.Level.Geometry.CopyCells(), "Same maze.");
+                CollectionAssert.AreEqual(a.Level.Geometry.CopyCells(), b.Level.Geometry.CopyCells(), "Same layout.");
                 CollectionAssert.AreNotEqual(ResolveAllCells(a.Level), ResolveAllCells(b.Level), "Different visuals.");
             }
         }
@@ -99,7 +96,7 @@ namespace Purge.Tests.EditMode.Visual
         [Test]
         public void Weights_ApproximateDistribution_AndZeroOrSpecialNeverPicked()
         {
-            using (var f = new VisualFixture(width: 81, height: 81, loopDensity: 1f))
+            using (var f = new VisualFixture(width: 81, height: 81, obstacles: 1f))
             {
                 LevelAuthoring.GenerateNew(f.Level);
                 var counts = VisualResolver.CountCellVariants(f.Level, CellLayer.Floor);
@@ -117,7 +114,7 @@ namespace Purge.Tests.EditMode.Visual
         [Test]
         public void Walls_UseVariantOfTheirContextCategory_OrExplicitDefault()
         {
-            using (var f = new VisualFixture(loopDensity: 1f))
+            using (var f = new VisualFixture(obstacles: 1f))
             {
                 LevelAuthoring.GenerateNew(f.Level);
                 var geometry = f.Level.Geometry;
@@ -146,7 +143,7 @@ namespace Purge.Tests.EditMode.Visual
                     }
                 }
 
-                Assert.IsTrue(sawDefault, "Full loop density should produce isolated pillars.");
+                Assert.IsTrue(sawDefault, "Full obstacle density should produce isolated pillars.");
             }
         }
 
@@ -171,10 +168,10 @@ namespace Purge.Tests.EditMode.Visual
             {
                 LevelAuthoring.GenerateNew(f.Level);
                 var cell = f.Level.PlayerStarts[0].Position;
-                var exit = f.Level.Exits[0];
+                var medkit = LevelEditing.AddMedkit(f.Level, cell);
 
                 f.Level.VisualData.SetCellOverride(cell, CellLayer.Floor, new VisualChoice("floor_special_blood"));
-                f.Level.VisualData.SetObjectOverride(exit.Id, new VisualChoice("exit_01", 2));
+                f.Level.VisualData.SetObjectOverride(medkit.Id, new VisualChoice("medkit_01", 2));
 
                 Assert.AreEqual("floor_special_blood", VisualResolver.ResolveCell(f.Level, cell, CellLayer.Floor, out var source).VariantId);
                 Assert.AreEqual(VisualSource.Override, source);
@@ -182,7 +179,7 @@ namespace Purge.Tests.EditMode.Visual
                 f.Level.Generation.VisualSeed = 99;
                 LevelAuthoring.RegenerateVisuals(f.Level, clearOverrides: false);
                 Assert.AreEqual("floor_special_blood", VisualResolver.ResolveCell(f.Level, cell, CellLayer.Floor).VariantId);
-                Assert.AreEqual(2, VisualResolver.ResolveObject(f.Level, exit).Rotation);
+                Assert.AreEqual(2, VisualResolver.ResolveObject(f.Level, medkit).Rotation);
 
                 LevelAuthoring.RegenerateVisuals(f.Level, clearOverrides: true);
                 Assert.AreNotEqual(VisualSource.Override, Resolve(f.Level, cell));
@@ -248,12 +245,12 @@ namespace Purge.Tests.EditMode.Visual
         [Test]
         public void Objects_RespectDefinitionFilter_DoorOrientation_AndRemoval()
         {
-            using (var f = new VisualFixture(width: 13, height: 13, loopDensity: 0f))
+            using (var f = new VisualFixture(width: 13, height: 13, obstacles: 0f))
             {
                 LevelAuthoring.GenerateNew(f.Level);
                 var level = f.Level;
 
-                // Horizontal corridor cell between rooms (1,1) and (3,1) -> walls North/South -> rotation 1.
+                // Passage cell between (1,1) and (3,1) -> walls North/South -> rotation 1.
                 level.Geometry.SetCell(new GridPosition(1, 1), CellType.Floor);
                 level.Geometry.SetCell(new GridPosition(2, 1), CellType.Door);
                 level.Geometry.SetCell(new GridPosition(3, 1), CellType.Floor);

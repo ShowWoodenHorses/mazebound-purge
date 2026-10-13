@@ -8,13 +8,13 @@ namespace Purge.Core.Authoring
     internal static class LevelAuthoring
     {
         /// <summary>
-        /// Destructive: new logical maze from MazeSeed, all objects and visual design (including overrides)
-        /// are replaced, then initial visuals are assigned from VisualSeed.
+        /// Destructive: new logical layout from the generation settings, all objects and visual design (including
+        /// overrides) are replaced, then initial visuals are assigned from VisualSeed.
         /// </summary>
         public static void GenerateNew(LevelData level)
         {
-            var result = new MazeGenerator().Generate(level.Generation);
-            level.ApplyGeneratedMaze(result);
+            var result = new OpenFieldGenerator().Generate(level.Generation);
+            level.ApplyGenerated(result);
             VisualAssigner.AssignAll(level, clearOverrides: true);
         }
 

@@ -22,8 +22,6 @@ namespace Purge.Application.Platform
     public sealed class LevelRunStats
     {
         public float Elapsed;
-        public int HintsUsed;
-        public int LayersUnlocked;
         public int WeaponsPicked;
         public string LastAttacker;
         public Vector2Int PlayerCell;
@@ -35,7 +33,7 @@ namespace Purge.Application.Platform
         public void Reset()
         {
             Elapsed = 0f;
-            HintsUsed = LayersUnlocked = WeaponsPicked = Frames = 0;
+            WeaponsPicked = Frames = 0;
             FrameTime = 0f;
             LastAttacker = null;
             PlayerCell = default;
@@ -43,9 +41,8 @@ namespace Purge.Application.Platform
     }
 
     /// <summary>
-    /// Level scope part of the analytics: counts hints, weapon pickups, the last zombie that hit the player, where the
-    /// player is, play time and the frame rate into <see cref="LevelRunStats"/>; sends the in-level events (hint used,
-    /// weapon picked up, tutorial step started — the funnel of the tutorial). Ticks are trivial assignments; events are rare.
+    /// Level scope part of the analytics: counts weapon pickups, the last zombie that hit the player, where the
+    /// player is, play time and the frame rate into <see cref="LevelRunStats"/>; sends the in-level events (weapon picked up, tutorial step started — the funnel of the tutorial). Ticks are trivial assignments; events are rare.
     /// </summary>
     public sealed class LevelAnalytics : ILevelLoadStep, ILevelTickable, ILevelLateTickable, IDisposable
     {
@@ -53,7 +50,6 @@ namespace Purge.Application.Platform
         private readonly AnalyticsService _analytics;
         private readonly LevelProgress _progress;
         private readonly PlayerSystem _player;
-        private readonly RouteHintSystem _route;
         private readonly PickupSystem _pickups;
         private readonly ZombieSystem _zombies;
         private readonly TutorialSystem _tutorial;
@@ -61,7 +57,7 @@ namespace Purge.Application.Platform
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
-            RouteHintSystem route, PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
+            PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
             TutorialSystem tutorial = null)
         {
             _tutorial = tutorial;
@@ -69,7 +65,6 @@ namespace Purge.Application.Platform
             _analytics = analytics;
             _progress = progress;
             _player = player;
-            _route = route;
             _pickups = pickups;
             _zombies = zombies;
             _levelId = level.name;
@@ -80,7 +75,6 @@ namespace Purge.Application.Platform
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             if (_subscribed) return UniTask.CompletedTask;
-            _route.Requested += OnHint;
             _pickups.Removed += OnPickupRemoved;
             _zombies.Attacked += OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted += OnTutorialStep;
@@ -106,21 +100,10 @@ namespace Purge.Application.Platform
         public void Dispose()
         {
             if (!_subscribed) return;
-            _route.Requested -= OnHint;
             _pickups.Removed -= OnPickupRemoved;
             _zombies.Attacked -= OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted -= OnTutorialStep;
             _subscribed = false;
-        }
-
-        private void OnHint(RouteTarget target)
-        {
-            _stats.HintsUsed++;
-            var parameters = _analytics.Begin();
-            parameters["level"] = _levelId;
-            parameters["target"] = target.ToString().ToLowerInvariant();
-            parameters["time"] = Mathf.RoundToInt(_progress.Elapsed);
-            _analytics.Send(AnalyticsEvents.HintUsed);
         }
 
         private void OnPickupRemoved(Pickup pickup)
@@ -149,7 +132,7 @@ namespace Purge.Application.Platform
 
     /// <summary>
     /// Level events from <see cref="GameFlow"/>: start (with attempt number and where it was started from), complete
-    /// (time, stars, kills, fragments, deaths before the win, hints, map layers bought, new record, average FPS), fail
+    /// (time, stars, kills, deaths before the win, new record, average FPS), fail
     /// (time, where, by whom), quit (left from the pause). Attempts are counted per level for the session.
     /// </summary>
     public sealed class GameAnalytics : IDisposable
@@ -260,9 +243,6 @@ namespace Purge.Application.Platform
             parameters["time"] = Mathf.RoundToInt(result.Time);
             parameters["kills"] = result.Kills;
             parameters["zombies"] = result.TotalZombies;
-            parameters["fragments"] = result.Fragments;
-            parameters["fragments_total"] = result.TotalFragments;
-            parameters["hints"] = _stats.HintsUsed;
             parameters["avg_fps"] = Mathf.RoundToInt(_stats.AverageFps);
             _failsSinceWin.TryGetValue(level, out var fails);
             if (completed)
@@ -270,9 +250,7 @@ namespace Purge.Application.Platform
                 var previousBest = _flow.LastPreviousBestTime;
                 parameters["stars"] = result.Stars;
                 parameters["star_zombies"] = result.AllZombiesKilled;
-                parameters["star_map"] = result.AllFragmentsCollected;
                 parameters["deaths_before"] = fails;
-                parameters["layers_unlocked"] = _stats.LayersUnlocked;
                 parameters["new_best"] = previousBest <= 0f || result.Time < previousBest;
                 _failsSinceWin[level] = 0;
                 _analytics.Send(AnalyticsEvents.LevelComplete);
@@ -293,7 +271,6 @@ namespace Purge.Application.Platform
             if (level == null) return;
             var parameters = Level(level);
             parameters["time"] = Mathf.RoundToInt(_stats.Elapsed);
-            parameters["hints"] = _stats.HintsUsed;
             _analytics.Send(AnalyticsEvents.LevelQuit);
         }
 

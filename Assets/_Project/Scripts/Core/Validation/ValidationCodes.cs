@@ -5,7 +5,6 @@ namespace Purge.Core.Validation
         // Structural
         public const string GeometryCorrupted = "GeometryCorrupted";
         public const string NoPlayerStart = "NoPlayerStart";
-        public const string NoExit = "NoExit";
         public const string EmptyId = "EmptyId";
         public const string DuplicateId = "DuplicateId";
         public const string OutOfBounds = "OutOfBounds";
@@ -17,13 +16,7 @@ namespace Purge.Core.Validation
         public const string MissingKeyReference = "MissingKeyReference";
         public const string UnusedKey = "UnusedKey";
         public const string KeySharedByDoors = "KeySharedByDoors";
-        public const string MissingPatrolReference = "MissingPatrolReference";
-        public const string InvalidPatrolPoint = "InvalidPatrolPoint";
-        public const string PatrolTooShort = "PatrolTooShort";
-        public const string UnusedPatrol = "UnusedPatrol";
         public const string MissingDefinition = "MissingDefinition";
-        public const string InvalidFragmentRegion = "InvalidFragmentRegion";
-        public const string FragmentOverlap = "FragmentOverlap";
         public const string FrozenDoorInitiallyOpen = "FrozenDoorInitiallyOpen";
         public const string SurfacesOutOfSync = "SurfacesOutOfSync";
         public const string SurfaceNotOnFloor = "SurfaceNotOnFloor";
@@ -64,12 +57,8 @@ namespace Purge.Core.Validation
         public const string TutorialStepInvalid = "TutorialStepInvalid";
 
         // Gameplay
-        public const string NoReachableExit = "NoReachableExit";
-        public const string ExitUnreachable = "ExitUnreachable";
         public const string KeyUnreachable = "KeyUnreachable";
         public const string ObjectUnreachable = "ObjectUnreachable";
         public const string DoorWithoutPassage = "DoorWithoutPassage";
-        public const string PatrolPointUnreachable = "PatrolPointUnreachable";
-        public const string ShortestPath = "ShortestPath";
     }
 }

@@ -29,7 +29,6 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
-  - hud.fragment_found
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -52,7 +51,6 @@ MonoBehaviour:
   - weapon.revolver_rifle
   - weapon.sniper_rifle
   - weapon.smg
-  - confirm_exit.title
   - pause.title
   - pause.resume
   - pause.restart
@@ -61,10 +59,7 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.exit_found
-  - result.no_exit
   - result.zombies
-  - result.map
   - result.time
   - result.best
   - result.record
@@ -74,19 +69,10 @@ MonoBehaviour:
   - error.title
   - error.back
   - map.player
-  - map.pieces
   - map.zombies
   - map.weapons
   - map.medkits
   - map.keys
-  - map.hint.fragment
-  - map.hint.exit
-  - map.hint.key
-  - map.hint.door
-  - map.hint.none
-  - map.none
-  - map.none_found
-  - map.count
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -125,7 +111,6 @@ MonoBehaviour:
   - menu.sign_in.hint
   - hud.tutorial
   - result.tutorial_complete
-  - map.hint.tutorial
   - ad.unavailable
   - rotate.title
   - tutorial_ui.continue
@@ -158,14 +143,10 @@ MonoBehaviour:
   - tutorial.shoot.hint
   - tutorial.medkit
   - tutorial.medkit.hint
-  - tutorial.fragment
-  - tutorial.fragment.hint
   - tutorial.map
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
-  - tutorial.exit
-  - tutorial.exit.hint
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -182,7 +163,6 @@ MonoBehaviour:
   - "QAYTA O\u02BBQLASH"
   - "{0}: olish uchun \xABHarakat\xBB tugmasini bosing"
   - 'Olindi: {0}'
-  - "Xarita bo\u02BBlagi topildi: {0}/{1}"
   - 'Qulflangan: kalit kerak'
   - 'Qulflangan: qizil kalit kerak'
   - "Qulflangan: ko\u02BBk kalit kerak"
@@ -205,7 +185,6 @@ MonoBehaviour:
   - Revolver miltiq
   - "Snayper miltig\u02BBi"
   - "Ovoz pasaytirgichli avtomat-to\u02BBpponcha"
-  - DARAJANI YAKUNLAYSIZMI?
   - PAUZA
   - DAVOM ETISH
   - QAYTA BOSHLASH
@@ -214,10 +193,7 @@ MonoBehaviour:
   - "DEBUG: MAG\u02BBLUBIYAT"
   - "DARAJA O\u02BBTILDI"
   - "DARAJA O\u02BBTILMADI"
-  - CHIQISH TOPILDI
-  - CHIQISH TOPILMADI
   - ZOMBILAR {0}/{1}
-  - XARITA {0}/{1}
   - VAQT {0}
   - REKORD {0}
   - YANGI REKORD!
@@ -227,19 +203,10 @@ MonoBehaviour:
   - "NIMADIR NOTO\u02BBG\u02BBRI KETDI"
   - MENYUGA
   - "O\u02BBYINCHI"
-  - "XARITA BO\u02BBLAKLARI"
   - ZOMBILAR
   - QUROLLAR
   - DORI QUTILARI
   - KALITLAR
-  - "Eng yaqin xarita bo\u02BBlagiga yo\u02BBl"
-  - "Chiqishga yo\u02BBl"
-  - "Eng yaqin kalitga yo\u02BBl"
-  - "Kalitingiz ochadigan eshikka yo\u02BBl"
-  - "Yo\u02BBl topilmadi"
-  - "Bu darajada xarita yo\u02BBq"
-  - "Xarita bo\u02BBlaklari hali topilmadi (0/{0})"
-  - "Xarita bo\u02BBlaklari: {0}/{1}"
   - BOSHQARUV
   - OTISH
   - BOSHQA
@@ -278,7 +245,6 @@ MonoBehaviour:
   - Barcha qurilmalarda natijani saqlash uchun kiring
   - "O\u02BBRGATISH"
   - "O\u02BBRGATISH TUGADI"
-  - "O\u02BBrgatish yo\u02BBli"
   - Reklama hozir mavjud emas
   - Qurilmani aylantiring
   - TUSHUNARLI
@@ -331,16 +297,10 @@ MonoBehaviour:
   - "Yaralandingizmi? Dori qutisi to\u02BBliq davolaydi.\nUning ustiga bosing \u2014
     u faqat sog\u02BBlig\u02BBingiz to\u02BBliq bo\u02BBlmaganda sarflanadi."
   - Dori qutisiga bosing
-  - "Bu \u2014 xarita bo\u02BBlagi. Har biri daraja xaritasining bir qismini ochadi."
-  - "Xarita bo\u02BBlagini oling"
   - "Xaritani M tugmasi yoki yuqori o\u02BBngdagi xarita tugmasi bilan oching. Xaritadagi
     lupa eng yaqin maqsadga yo\u02BBlni ko\u02BBrsatadi."
   - "Xaritani yuqori o\u02BBngdagi xarita tugmasi bilan oching. Xaritadagi lupa eng
     yaqin maqsadga yo\u02BBlni ko\u02BBrsatadi."
   - 'Xaritani oching: M'
   - Xaritani oching
-  - "Endi chiqishga \u2014 zinapoyaga boring.\nDarajalarda yulduzlar olasiz: biri
-    chiqish uchun, biri barcha zombilarni yo\u02BBq qilganingiz uchun va biri barcha
-    xarita bo\u02BBlaklari uchun."
-  - Chiqishga boring
   _missing: []

@@ -115,7 +115,7 @@ namespace Purge.Tests.EditMode.Player
         [Test]
         public void Fuzz_NeverOverlapsWalls_NeverSkipsCells()
         {
-            var fixture = new VisualFixture(width: 21, height: 21, mazeSeed: 7, loopDensity: 0.3f);
+            var fixture = new VisualFixture(width: 21, height: 21, layoutSeed: 7, obstacles: 0.6f);
             try
             {
                 LevelAuthoring.GenerateNew(fixture.Level);

@@ -218,9 +218,9 @@ namespace Purge.Tests.EditMode.Visual
                 LevelAuthoring.GenerateNew(f.Level);
                 var floors = FloorCells(f.Level).Where(p => f.Level.AllEntities().All(e => e.Position != p)).ToArray();
                 var medkit = LevelEditing.AddMedkit(f.Level, floors[0]);
-                var exit = f.Level.Exits[0];
+                var start = f.Level.PlayerStarts[0];
 
-                Assert.IsFalse(LevelEditing.SetObjectPlacement(f.Level, exit, Vector2.zero, 1f, 0f), "Exits are not placeable.");
+                Assert.IsFalse(LevelEditing.SetObjectPlacement(f.Level, start, Vector2.zero, 1f, 0f), "Starts are not placeable.");
                 Assert.IsTrue(LevelEditing.SetObjectPlacement(f.Level, medkit, new Vector2(0.2f, 0.7f), 0.58f, -30f));
                 VisualResolver.ResolveObjectPose(f.Level, medkit, VisualResolver.ResolveObject(f.Level, medkit), out var offset, out var yaw);
                 Assert.AreEqual(new Vector3(0.2f, 0.58f, DecorPlacement.MaxOffset), offset, "Clamped into its cell.");

@@ -6,7 +6,6 @@ using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Map;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Weapons;
@@ -18,16 +17,13 @@ namespace Purge.Gameplay.Pickups
         Key = 0,
         Medkit = 1,
         Weapon = 2,
-        MapFragment = 3,
     }
 
     /// <summary>An item lying in a cell. Pickups never block movement (ТЗ §51).</summary>
     public sealed class Pickup
     {
-        internal Pickup(PickupKind kind, GridPosition cell, KeyData key = null, MedkitData medkit = null, WeaponRuntime weapon = null,
-            MapFragmentData fragment = null)
+        internal Pickup(PickupKind kind, GridPosition cell, KeyData key = null, MedkitData medkit = null, WeaponRuntime weapon = null)
         {
-            Fragment = fragment;
             Kind = kind;
             Cell = cell;
             Key = key;
@@ -40,18 +36,16 @@ namespace Purge.Gameplay.Pickups
         public KeyData Key { get; }
         public MedkitData Medkit { get; }
         public WeaponRuntime Weapon { get; }
-        public MapFragmentData Fragment { get; }
 
         /// <summary>Entity id; also the id of its view.</summary>
-        public string Id => Key?.Id ?? Medkit?.Id ?? Fragment?.Id ?? Weapon.Id;
+        public string Id => Key?.Id ?? Medkit?.Id ?? Weapon.Id;
 
         /// <summary>Level object that defines the saved visual.</summary>
-        public LevelEntityData Source => (LevelEntityData)Key ?? (LevelEntityData)Medkit ?? (LevelEntityData)Fragment ?? Weapon.Source;
+        public LevelEntityData Source => (LevelEntityData)Key ?? (LevelEntityData)Medkit ?? Weapon.Source;
     }
 
     /// <summary>
-    /// Items on the ground (ТЗ §58, §67, §72). On entering a cell the player picks up keys and map fragments
-    /// automatically and uses a
+    /// Items on the ground (ТЗ §67, §72). On entering a cell the player picks up keys automatically and uses a
     /// medkit only when hurt (it heals to full and disappears; at full HP it stays). Weapons are picked up by the
     /// Interact action (<see cref="TryTakeWeapon"/>): the new one becomes active, a replaced one drops into the cell.
     /// </summary>
@@ -65,14 +59,12 @@ namespace Purge.Gameplay.Pickups
         private readonly PlayerInventory _inventory;
         private readonly WeaponSystem _weapons;
         private readonly SoundEventBus _sounds;
-        private readonly MapSystem _map;
         private readonly Dictionary<GridPosition, List<Pickup>> _byCell = new Dictionary<GridPosition, List<Pickup>>();
         private bool _subscribed;
 
         public PickupSystem(LevelData level, PlayerSystem player, PlayerHealth health, PlayerInventory inventory, WeaponSystem weapons,
-            SoundEventBus sounds, MapSystem map)
+            SoundEventBus sounds)
         {
-            _map = map;
             _sounds = sounds;
             _level = level;
             _player = player;
@@ -126,8 +118,6 @@ namespace Purge.Gameplay.Pickups
                 Place(new Pickup(PickupKind.Medkit, medkit.Position, medkit: medkit));
             foreach (var weapon in _level.Weapons)
                 Place(new Pickup(PickupKind.Weapon, weapon.Position, weapon: new WeaponRuntime(weapon)));
-            foreach (var fragment in _level.MapFragments)
-                Place(new Pickup(PickupKind.MapFragment, fragment.Position, fragment: fragment));
 
             if (!_subscribed)
             {
@@ -189,11 +179,6 @@ namespace Purge.Gameplay.Pickups
                     Take(pickup);
                     _inventory.AddKey(pickup.Key);
                     GameLog.Info(LogChannel.Gameplay, $"Picked up key '{pickup.Id}'.");
-                }
-                else if (pickup.Kind == PickupKind.MapFragment)
-                {
-                    Take(pickup);
-                    _map.Collect(pickup.Fragment);
                 }
             }
 

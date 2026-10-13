@@ -16,14 +16,10 @@ namespace Purge.Editor.LevelDesigner
         Floor,
         Door,
         PlayerStart,
-        Exit,
         Key,
         Zombie,
         Weapon,
         Medkit,
-        MapFragment,
-        FragmentRegion,
-        Patrol,
         Decor,
         Snowdrift,
         Erase,
@@ -52,7 +48,6 @@ namespace Purge.Editor.LevelDesigner
         private readonly Action<string> _notify;
         private int _undoGroup;
         private bool _changed;
-        private GridPosition _strokeStart;
 
         public EditToolController(LevelDesignerState state, Action<string> notify)
         {
@@ -83,14 +78,11 @@ namespace Purge.Editor.LevelDesigner
         {
             Undo.IncrementCurrentGroup();
             _undoGroup = Undo.GetCurrentGroup();
-            _strokeStart = cell;
             _state.SelectedCell = cell;
 
             if (e.button == 1)
             {
-                if (ActiveTool == EditTool.Patrol && _state.SelectedEntity is ZombieSpawnData zombie)
-                    Apply("Remove Patrol Point", () => LevelEditing.RemoveLastPatrolPoint(Level, zombie));
-                else if (ActiveTool == EditTool.Decor)
+                if (ActiveTool == EditTool.Decor)
                     PaintDecor(cell, DecorBrushMode.None);
                 else if (ActiveTool == EditTool.Snowdrift)
                     PaintSurface(cell, CellSurface.None);
@@ -106,15 +98,6 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Floor:
                 case EditTool.Door:
                     Paint(cell);
-                    break;
-                case EditTool.FragmentRegion:
-                    if (_state.SelectedEntity is MapFragmentData)
-                        _state.PreviewRect = GridRect.FromCorners(cell, cell);
-                    else
-                        _notify("Select a map fragment first.");
-                    break;
-                case EditTool.Patrol:
-                    AddPatrolPoint(cell);
                     break;
                 case EditTool.Decor:
                     PaintDecor(cell, DecorMode);
@@ -159,10 +142,6 @@ namespace Purge.Editor.LevelDesigner
                     if (_state.SelectedEntity != null)
                         _state.DragTarget = cell;
                     break;
-                case EditTool.FragmentRegion:
-                    if (_state.PreviewRect.HasValue)
-                        _state.PreviewRect = GridRect.FromCorners(_strokeStart, cell);
-                    break;
                 case EditTool.Erase:
                     Erase(cell);
                     break;
@@ -185,14 +164,7 @@ namespace Purge.Editor.LevelDesigner
                     });
             }
 
-            if (ActiveTool == EditTool.FragmentRegion && _state.PreviewRect.HasValue && _state.SelectedEntity is MapFragmentData fragment)
-            {
-                var region = _state.PreviewRect.Value;
-                Apply("Set Map Fragment Region", () => LevelEditing.SetFragmentRegion(fragment, region));
-            }
-
             _state.DragTarget = null;
-            _state.PreviewRect = null;
 
             if (_changed)
             {
@@ -287,9 +259,6 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.PlayerStart:
                     Apply("Add Player Start", () => created = LevelEditing.AddPlayerStart(Level, cell));
                     break;
-                case EditTool.Exit:
-                    Apply("Add Exit", () => created = LevelEditing.AddExit(Level, cell));
-                    break;
                 case EditTool.Medkit:
                     Apply("Add Medkit", () => created = LevelEditing.AddMedkit(Level, cell));
                     break;
@@ -307,11 +276,6 @@ namespace Purge.Editor.LevelDesigner
                     break;
                 case EditTool.Weapon:
                     Apply("Add Weapon", () => created = LevelEditing.AddWeapon(Level, cell, WeaponDefinition));
-                    break;
-                case EditTool.MapFragment:
-                    Apply("Add Map Fragment", () => created = LevelEditing.AddMapFragment(Level, cell, new GridRect(cell.X, cell.Y, 1, 1)));
-                    Tool = EditTool.FragmentRegion;
-                    _notify("Now drag the region this fragment reveals.");
                     break;
             }
 
@@ -355,24 +319,6 @@ namespace Purge.Editor.LevelDesigner
             }
 
             return reason == null;
-        }
-
-        private void AddPatrolPoint(GridPosition cell)
-        {
-            if (!(_state.SelectedEntity is ZombieSpawnData zombie))
-            {
-                _notify("Select a zombie first, then click patrol points.");
-                return;
-            }
-
-            if (Level.Geometry.GetCell(cell) == CellType.Wall)
-            {
-                _notify("Patrol points must be on floor or door cells.");
-                return;
-            }
-
-            Apply("Add Patrol Point", () => LevelEditing.AddPatrolPoint(Level, zombie, cell));
-            _state.SelectedCell = zombie.Position;
         }
 
         /// <summary>Clears the cell to empty floor (see <see cref="LevelEditing.ClearCell"/>); empty cells are skipped.</summary>

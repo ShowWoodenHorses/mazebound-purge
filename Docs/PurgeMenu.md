@@ -1,13 +1,13 @@
-# Меню Maze — что делает каждая команда
+# Меню Purge — что делает каждая команда
 
-Справочник по меню **Maze** в редакторе Unity: что делает команда, когда её запускать и что она перезаписывает.
+Справочник по меню **Purge** в редакторе Unity: что делает команда, когда её запускать и что она перезаписывает.
 В начале — готовые рецепты для частых задач («добавить оружие», «добавить звук» …), ниже — описание каждой команды.
 
 Общие правила почти для всех билдеров:
 - Повторный запуск безопасен: ассеты пересоздаются **на месте** (GUID сохраняется, ссылки уровней и префабов не рвутся).
 - Подстроенные руками значения (статы оружия, громкость звуков, цвета/тайминги темы, веса вариантов) **сохраняются** —
   перезаписывается только то, что билдер генерирует сам.
-- Результат и ошибки пишутся в консоль с префиксом `[Maze]`.
+- Результат и ошибки пишутся в консоль с префиксом `[Purge]`.
 - Билдеры сами находят контент **по папкам и именам файлов** — чтобы добавить модель или звук, в код лезть не нужно.
   Код правится только там, где он сам и есть контент: процедурные эффекты/иконки, вёрстка UI, новый *вид* звука.
 
@@ -26,16 +26,16 @@
    | `Art/Weapons/Rifle/` (любая другая, кроме `Melee` и `Pickups`) | огнестрел, одиночный выстрел |
 
    Если модель из пака в `Import` — префаб перенести/скопировать в `Art/Weapons`, меши/текстуры подтянет шаг 3.
-2. **Maze → Dev → Build Weapons** — найдёт новую модель и создаст определение `Data/Weapons/<имя>.asset`
+2. **Purge → Dev → Build Weapons** — найдёт новую модель и создаст определение `Data/Weapons/<имя>.asset`
    (имя — имя префаба без `SM_Wep_`: `SM_Wep_Machete_01` → `Machete_01`, id `machete_01`) с черновыми статами по виду,
    метки Muzzle/Tip и `Grip_L`, пикап-префаб, вариант `weapon_<id>` в наборе оружия, запись в каталоге визуала и иконку
    для HUD. В консоли будет `1 new (Machete_01: draft values …)`.
-3. Если брали из пака — **Maze → Dev → Collect Used Third-Party Assets** (до коммита).
-4. **Maze → Dev → Convert Object Materials to Maze Lit** — материалы модели на шейдер игры.
+3. Если брали из пака — **Purge → Dev → Collect Used Third-Party Assets** (до коммита).
+4. **Purge → Dev → Convert Object Materials to Purge Lit** — материалы модели на шейдер игры.
 5. Статы подстроить в `Data/Weapons/<имя>.asset` (урон, скорострельность, магазин, радиус звука …) — Build Weapons их больше
    не трогает. Id тоже можно поменять, пока оружие не расставлено по уровням.
 6. Свой звук выстрела/удара или перезарядки — см. «Звуки оружия» ниже (например, глушитель: в поле `Sound` выбрать `silenced`).
-7. Поставить на уровень: **Maze → Level Designer** → инструмент Weapon → поле `Definition` → клик по клетке → Build / Sync.
+7. Поставить на уровень: **Purge → Level Designer** → инструмент Weapon → поле `Definition` → клик по клетке → Build / Sync.
 
 **Убрать оружие** — удалить префаб модели и снова Build Weapons; определение, оставшееся без модели, он назовёт в консоли
 (его стоит удалить и убрать с уровней). **Заменить модель** существующего оружия — положить новый префаб, в каталоге
@@ -68,7 +68,7 @@
 **Общая категория на несколько видов оружия** (дробовики, глушитель …):
 1. Папка `Sounds/Weapon/<категория>/` с файлами `attack*` и/или `reload*`, например `Sounds/Weapon/shotgun/attack1.wav`.
 2. У каждого нужного оружия в определении в списке `Sound` выбрать `shotgun` (папка появится в списке сразу).
-3. **Maze → Dev → Build Audio**.
+3. **Purge → Dev → Build Audio**.
 
 Уже есть группа **`silenced`** (выстрел с глушителем): чтобы оружие стреляло с глушителем, выбрать ему в `Sound` пункт `silenced`.
 
@@ -84,34 +84,34 @@
    Имя должно подходить под шаблон нужного звука (таблица шаблонов — массив `Cues` в
    [AudioBuilder.cs](../Assets/_Project/Scripts/Editor/Dev/AudioBuilder.cs)). Пример: ещё один вариант выстрела — `Weapon/rifle_attack3.wav`;
    все файлы, подходящие под шаблон, станут случайными вариантами одного звука.
-2. **Maze → Dev → Build Audio**.
+2. **Purge → Dev → Build Audio**.
 3. Совсем новый вид звука (не подходит ни под один шаблон) — нужны поле в `AudioCatalog`, строка в `Cues` и код,
    который его играет (`LevelAudioPresenter` / `AppAudioPresenter`).
 
 ### Добавить декор
 1. Префаб модели — в `Assets/_Project/Art/Decor/` (подпапки допускаются).
-2. **Maze → Dev → Build Decor** (материалы на `Maze/Geometry`, Read/Write, масштаб под клетку, вариант в наборе декора).
+2. **Purge → Dev → Build Decor** (материалы на `Purge/Geometry`, Read/Write, масштаб под клетку, вариант в наборе декора).
 3. Если из пака — **Collect Used Third-Party Assets**.
 4. В уровнях: Level Designer → Regenerate Visuals (авторасстановка) или ручная расстановка.
 
 ### Биом: снег / лес, поменять вид пола и стен
 1. Цвета и узоры текстур — в коде `BiomeThemeBuilder` (метод на поверхность: `SnowGround`, `Ice`, `SnowStoneWall`, `Grass`,
    `Hedge`, `MossyStoneWall`, `LogWall`…; веса вариантов — в `Snow()` / `Forest()`).
-2. **Maze → Dev → Build Biome Themes**.
+2. **Purge → Dev → Build Biome Themes**.
 3. В уровне: Level Designer → вкладка Visuals → тема `SnowTheme` / `ForestTheme` → Regenerate Visuals → Build / Sync.
 
 ### Добавить факел (светильник) или выход-лестницу
 1. Префаб — в `Art/Lighting/` (факел: крепление в начале координат, стена в −Z, факел смотрит в +Z) или в `Art/Exit/`.
-2. **Maze → Dev → Build Light Fixtures** / **Build Exits**.
+2. **Purge → Dev → Build Light Fixtures** / **Build Exits**.
 3. Если из пака — **Collect Used Third-Party Assets**.
 
 ### Добавить внешний вид зомби
 1. Префаб модели — в `Assets/_Project/Art/Zombie/`.
-2. **Maze → Dev → Build Zombie Animations** — префаб получит контроллер и масштаб, в наборе зомби
+2. **Purge → Dev → Build Zombie Animations** — префаб получит контроллер и масштаб, в наборе зомби
    (`Data/Themes/PlaceholderZombieSet`) появится вариант с id по имени префаба (`Zombie_04` → `zombie_04`).
    Тип зомби новому виду ставится автоматически (тип, у которого ещё нет вида, иначе первый), в консоли — предупреждение.
    **Проверить** поле `Definition` у варианта в наборе и при необходимости поменять — билдер его больше не трогает.
-3. **Extract Character Meshes** → **Convert Object Materials to Maze Lit** → (если из пака) **Collect Used Third-Party Assets**.
+3. **Extract Character Meshes** → **Convert Object Materials to Purge Lit** → (если из пака) **Collect Used Third-Party Assets**.
 
 Несколько видов у одного типа — можно: в игре вид выбирается из них по весам (`Weight` варианта).
 
@@ -124,11 +124,11 @@
   клип — положить файл с тем же именем → **Build Player Animations**.
 - Новая модель: префаб (Humanoid) положить в `Art/Player/` **вместо** старого — модель игрока = единственный префаб прямо
   в этой папке (если их несколько, берётся текущий из `PlayerVisual`). Затем **Build Player Animations** → **Build Weapons**
-  (риг рук и `Grip_L` считаются по модели) → **Extract Character Meshes** → **Convert Object Materials to Maze Lit**.
+  (риг рук и `Grip_L` считаются по модели) → **Extract Character Meshes** → **Convert Object Materials to Purge Lit**.
 
 ### Взяли что-то новое из стороннего пака
 Сначала подготовить ассет его билдером (Decor / Weapons / Light Fixtures / Exits …), затем
-**Maze → Dev → Collect Used Third-Party Assets**. Делать **до коммита**: папка `Import` не в git.
+**Purge → Dev → Collect Used Third-Party Assets**. Делать **до коммита**: папка `Import` не в git.
 
 ### Изменить или добавить текст игры (локализация)
 Все тексты UI — в таблице `Data/Localization/Strings.tsv`: строка на ключ, колонка на язык (`en ru tr es de`), колонки
@@ -137,7 +137,7 @@
 которые на экране заглавными, и в таблице пишутся заглавными (турецкое i/İ код не переведёт). `{0}`, `{1}` — значения;
 у всех языков набор `{n}` должен совпадать.
 1. Поправить текст в таблице.
-2. **Maze → Dev → Build Localization** — таблицы языков, проверка, атласы шрифтов под новые символы.
+2. **Purge → Dev → Build Localization** — таблицы языков, проверка, атласы шрифтов под новые символы.
 
 **Новый текст в коде** — ключ-константа в `TextKeys` + строка в таблице; статичная подпись в `RuntimeScenesBuilder` —
 `Loc(TextKeys.…)` вместо литерала (затем Build Runtime Scenes). **Новое оружие** — строка `weapon.<id>`, **новый цвет
@@ -148,20 +148,20 @@
 в Rajdhani, берутся из Exo 2 (кириллица); для других алфавитов (греческий, CJK …) нужен свой fallback-шрифт в `UiStyleBuilder`.
 
 ### Поменяли вёрстку UI в коде
-**Maze → Dev → Build Runtime Scenes** — сцены Bootstrap и Game пересоздаются из `RuntimeScenesBuilder`.
+**Purge → Dev → Build Runtime Scenes** — сцены Bootstrap и Game пересоздаются из `RuntimeScenesBuilder`.
 
 ### Собрать игру
-**Maze → Build → …** (см. ниже). Перед сборкой стоит сделать Build / Sync в Level Designer для изменённых уровней.
+**Purge → Build → …** (см. ниже). Перед сборкой стоит сделать Build / Sync в Level Designer для изменённых уровней.
 
 ---
 
-## Maze → Level Designer
+## Purge → Level Designer
 Окно редактора уровней: генерация, правка клеток и объектов, визуал, свет, валидация, Build / Sync, Test / Play.
 Подробно — [LevelDesigner.md](LevelDesigner.md).
 
-## Maze → Build
+## Purge → Build
 Сборка игры в `Builds/<Platform>` (папка не в git). Порядок: проверка всех уровней каталога (невалидный — сборка не идёт) →
-перенос ассетов, попавших в несколько бандлов, в группу **Maze Shared Dependencies** → Addressables-контент → плеер.
+перенос ассетов, попавших в несколько бандлов, в группу **Purge Shared Dependencies** → Addressables-контент → плеер.
 В конце в консоли — размер сборки.
 
 | Команда | Что собирает |
@@ -181,18 +181,18 @@
 | **Android RuStore APK (Development)** | APK для RuStore, dev-сборка (отладочный ключ) → `Builds/Android/Mazebound-RuStore-dev.apk` |
 | **Android RuStore APK (Release)** | APK для RuStore, релиз → `Builds/Android/Mazebound-RuStore.apk` (его загружать в консоль RuStore) |
 
-**Яндекс Игры:** в сборку попадает symbol `MAZE_YANDEX` (только в плеер, редактор без него) — игра работает через SDK ЯИ
+**Яндекс Игры:** в сборку попадает symbol `PURGE_YANDEX` (только в плеер, редактор без него) — игра работает через SDK ЯИ
 (язык площадки, сейв в данных игрока, кнопка «Войти» в меню, реклама ЯИ, события загрузки/геймплея), в `<head>` — `/sdk.js`
 и счётчик Метрики, если задан `WebPlatforms.YandexMetrikaCounter` (`Editor/Build/WebPlatform.cs`; пусто — Метрики нет).
 Рядом с папкой сборки кладётся zip с `index.html` в корне — его загружают в черновик игры в консоли ЯИ.
 В консоль — **только release** (~25 МБ): dev-сборка без сжатия и с отладочным кодом (`.wasm` ~150 МБ) не проходит лимит ЯИ
 100 МБ в распакованном виде; она — для локальной проверки через прокси.
 
-**CrazyGames:** symbol `MAZE_CRAZYGAMES`, в `<head>` — их JS SDK v3. Проверка у себя: открыть сборку с `localhost` (любой
+**CrazyGames:** symbol `PURGE_CRAZYGAMES`, в `<head>` — их JS SDK v3. Проверка у себя: открыть сборку с `localhost` (любой
 статический сервер, например `python -m http.server 8000` в папке сборки) — SDK работает в локальном режиме (демо-реклама,
 тестовый пользователь); на другом адресе SDK выключен и игра идёт как без площадки. В портале при отправке включить
 **Progress Save** (иначе сейв не работает) и альбомную ориентацию.
-**Игры ВКонтакте:** symbol `MAZE_VK`, в `<head>` — VK Bridge (`vk-bridge.min.js` рядом со страницей, копия npm
+**Игры ВКонтакте:** symbol `PURGE_VK`, в `<head>` — VK Bridge (`vk-bridge.min.js` рядом со страницей, копия npm
 `@vkontakte/vk-bridge` 3.0.2 из `WebPlatforms/Vk/`; CDN в регионе игрока может быть недоступен) и `VKWebAppInit` до загрузки
 игры. Игра: язык из `vk_language`, сейв в VK Storage частями (`SlottedCloudSave`), реклама VK, баннер снизу (на телефонах — `VkPlatform.MobileBanner`), пауза при
 скрытии в приложении ВК, строка «Поддержка» в настройках (Other). Вне ВК мост не отвечает — игра идёт как без площадки.
@@ -202,7 +202,7 @@
 входа (ключ сохранится), каждую выкладку надо подтвердить на телефоне; на вопросы «update prod/dev urls?» — да. Только
 в режим разработки (видят админы): `set MINI_APPS_ENVIRONMENT=dev` перед командой (cmd) или `$env:MINI_APPS_ENVIRONMENT="dev"`
 (PowerShell). Лимит — 24 выкладки в сутки; адрес игры меняется при каждой выкладке.
-**GameDistribution:** symbol `MAZE_GAMEDISTRIBUTION`, в `<head>` — `GD_OPTIONS` с Game ID (`WebPlatforms.GameDistributionGameId`
+**GameDistribution:** symbol `PURGE_GAMEDISTRIBUTION`, в `<head>` — `GD_OPTIONS` с Game ID (`WebPlatforms.GameDistributionGameId`
 в `Editor/Build/WebPlatform.cs`) и загрузчик их SDK (`html5.api.gamedistribution.com/main.min.js`). Игра: interstitial перед
 каждым уровнем (и первым PLAY) и при выходе в меню с окна результата — частоту ведёт SDK GD (наши «не раньше 4-го уровня /
 раз в 90 с» здесь выключены); rewarded как везде, награда — только за досмотренную; пауза и тишина на время рекламы.
@@ -214,7 +214,7 @@
 — прокси печатает ссылку вида `https://yandex.ru/games/app/628471?game_url=https://localhost:…`, игра открывается внутри ЯИ
 с настоящим SDK; `--dev-mode true` — имитация SDK без площадки. Вне ЯИ (просто открыть папку) SDK нет — игра работает как без площадки.
 
-**RuStore (Android):** symbol `MAZE_RUSTORE` — реклама — Рекламная сеть VK, аналитика — MyTracker, в настройках (Other) — почта
+**RuStore (Android):** symbol `PURGE_RUSTORE` — реклама — Рекламная сеть VK, аналитика — MyTracker, в настройках (Other) — почта
 поддержки и «Политика конфиденциальности» (кнопка открывает `Contacts.PrivacyPolicyUrl`). Ключи — в одном месте,
 `RuStoreKeys` (`Scripts/Application/Platform/Android/RuStore.cs`): пустой ключ MyTracker — аналитика только в лог, нулевые
 слоты рекламы — демо-слоты VK (тестовая реклама, без дохода). Команда сама выставляет: компанию **BGames**, пакет
@@ -224,7 +224,7 @@
 `Assets/Plugins/Android` (создаются при первой Android-сборке; Gradle качает их при сборке — нужен интернет).
 **Подпись release:** ключ не в git. Один раз создать (JDK есть в Unity):
 `"<Unity>\Editor\Data\PlaybackEngines\AndroidPlayer\OpenJDKin\keytool" -genkeypair -v -keystore D:\Keys\mazebound.keystore -alias mazebound -keyalg RSA -keysize 2048 -validity 36500`,
-затем заполнить `UserSettings/MazeAndroidSigning.json` (создаётся при первой release-сборке): путь к keystore, пароли, alias.
+затем заполнить `UserSettings/PurgeAndroidSigning.json` (создаётся при первой release-сборке): путь к keystore, пароли, alias.
 **Ключ и пароли хранить в надёжном месте с копией:** без них новые версии в RuStore не загрузить. Путь и пароли в
 ProjectSettings не остаются (команда сбрасывает их после сборки). Dev-сборки — отладочным ключом Unity.
 
@@ -237,15 +237,15 @@ ProjectSettings не остаются (команда сбрасывает их 
 имена файлов с хешем, текстуры ASTC (в мобильных браузерах нет DXT; первая смена — долгий переимпорт), IL2CPP «меньше размер» (release), вырезание кода Medium — наши сборки, VContainer и UniTask
 сохраняет `Assets/_Project/link.xml`. Подцель ASTC передаётся и в саму сборку плеера (`BuildPlayerOptions.subtarget`):
 без этого Unity собирал плеер с DXT и сбрасывал настройку — каждая следующая сборка заново переимпортировала все текстуры.
-Визуал (**Maze Visuals**) упакован **по бандлу на префаб** (имена — только хеш): браузер качает лишь то, что нужно уровню
-(до первого уровня ~16–17 МБ вместо ~20–23). Общие зависимости (**Maze Shared Dependencies**) — одним бандлом: по бандлу на
+Визуал (**Purge Visuals**) упакован **по бандлу на префаб** (имена — только хеш): браузер качает лишь то, что нужно уровню
+(до первого уровня ~16–17 МБ вместо ~20–23). Общие зависимости (**Purge Shared Dependencies**) — одним бандлом: по бандлу на
 ассет старт был на ~3 с дольше (кэш Unity в браузере проверяет у сервера каждый файл при каждом запуске). LZMA для бандлов на WebGL
-Addressables не поддерживает — остаётся LZ4. Музыка — группа **Maze Music** (бандл на трек, качается только когда играет),
+Addressables не поддерживает — остаётся LZ4. Музыка — группа **Purge Music** (бандл на трек, качается только когда играет),
 её создаёт Build / Sync.
 
 ---
 
-## Maze → Dev
+## Purge → Dev
 
 ### Контент игры
 
@@ -289,29 +289,29 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 Запускать: после того, как какой-либо билдер назначил персонажу новую модель.
 
 #### Build Decor
-Готовит модели `Art/Decor` для слоя Decor: копии материалов на `Maze/Geometry` (`Art/Decor/Materials`), Read/Write
+Готовит модели `Art/Decor` для слоя Decor: копии материалов на `Purge/Geometry` (`Art/Decor/Materials`), Read/Write
 у мешей, масштаб под клетку (кроме тел — они в натуральную величину), подъём плоских предметов на 4 мм; заполняет
 `PlaceholderDecorSet` (id = имя префаба, веса и категории существующих вариантов сохраняются, высоты меряются заново).
 Запускать: после добавления/замены декора.
 
 #### Build Light Fixtures
 Факелы из `Art/Lighting`: снимает физику и тени, ставит на головку факела мультяшное пламя (частицы, окрашиваются
-в цвет источника в игре), заполняет набор Light и назначает его обеим темам, переводит материалы на `Maze/Lit`.
+в цвет источника в игре), заполняет набор Light и назначает его обеим темам, переводит материалы на `Purge/Lit`.
 Требует: `Art/Effects/fx_additive.mat` (иначе — сначала Build Combat Effects).
 
 #### Build Exits
 Лестницы-выходы из `Art/Exit`: снимает физику и тени, сдвигает модель так, чтобы её спина касалась стены позади клетки
-выхода, заполняет набор Exit основной темы (`CastleBlockTheme`), материалы → `Maze/Lit`.
+выхода, заполняет набор Exit основной темы (`CastleBlockTheme`), материалы → `Purge/Lit`.
 
-#### Convert Object Materials to Maze Lit
+#### Convert Object Materials to Purge Lit
 Все непрозрачные Standard-материалы «живых» объектов (наборы объектов тем: двери, выходы, ключи, пикапы, зомби;
-игрок; оружие в руках) → шейдер `Maze/Lit` (фонарь и свет уровня). Цвета и текстуры сохраняются (имена свойств совпадают).
+игрок; оружие в руках) → шейдер `Purge/Lit` (фонарь и свет уровня). Цвета и текстуры сохраняются (имена свойств совпадают).
 Прозрачные и cutout-материалы не трогает — перечисляет их в консоли.
 Запускать: после добавления любых новых моделей объектов.
 
 #### Build Weather
 Погода темы (`VisualTheme.Weather`, `ThemeWeather`): текстуры и материалы снежинки и облачка пара (`Art/Effects/fx_snowflake`,
-`fx_breath`, `Maze/Particle`), префаб льда мёрзлых дверей **`Art/Effects/IceOverlay.prefab`** (6 глыб на `Maze/Lit`,
+`fx_breath`, `Purge/Particle`), префаб льда мёрзлых дверей **`Art/Effects/IceOverlay.prefab`** (6 глыб на `Purge/Lit`,
 компонент `FrozenDoorIce` — глыбы отваливаются по ударам сверху вниз) — всё назначается `SnowTheme`. Первый запуск
 включает изморозь зомби (`ZombieFrost` 0.55); подстроенные числа темы потом не трогает. Изморозь, снег, пар
 (интенсивность, ветер, размеры, цвета) настраиваются в инспекторе темы → **Weather**; пустой материал = эффекта нет.
@@ -322,7 +322,7 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 `Data/Audio/AudioCatalog` заполняется **по именам файлов** (шаблоны — массив `Cues` в `AudioBuilder.cs`; все файлы
 под шаблон — варианты одного звука); подпапки `Sounds/Weapon/<группа>/` — звуковые группы оружия (см. «Звуки оружия»),
 группы без папки из каталога убираются. Настройки в каталоге (громкость, разброс тона, дальность, голоса, интервалы) сохраняются,
-меняются только клипы. Каталог и музыка — Addressable (группа Maze Shared).
+меняются только клипы. Каталог и музыка — Addressable (группа Purge Shared).
 Лёд мёрзлых дверей: `Sounds/Other/ice_hit*` (удар), `ice_break*` (лёд разбит); пока файлов нет — звучат попадание пули
 в стену и отпирание двери (Build Audio предупреждает о пустых шаблонах).
 Запускать: после добавления, удаления или переименования звуковых файлов.
@@ -331,14 +331,14 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 
 #### Build Combat Effects
 Свои мультяшные эффекты боя (без крови и следов пуль) в `Art/Effects`: текстуры (мягкая точка, звезда, трассер),
-материалы (`Maze/Particle`, `Maze/SwingArc`), меш трассера, префабы (вспышка, гильза, искры, «звёздочка», пыль, дуга удара)
+материалы (`Purge/Particle`, `Purge/SwingArc`), меш трассера, префабы (вспышка, гильза, искры, «звёздочка», пыль, дуга удара)
 → `Data/Combat/CombatVisual`. Цвета и параметры частиц — в коде билдера.
 Запускать: после правок эффектов в `CombatEffectsBuilder.cs`.
 
 #### Build Damage Numbers
 Атлас цифр для полосок здоровья и всплывающих цифр урона/лечения: вырезает «0–9», «+», «-» из SDF-атласа жирного
 шрифта UI (`UiStyle.BoldFont`, Rajdhani Bold) в маленькую текстуру `Art/Effects/fx_digits.png`, материал
-`Art/Effects/fx_overhead.mat` (`Maze/Overhead`) и раскладку глифов → `Data/Combat/CombatVisual` (раздел
+`Art/Effects/fx_overhead.mat` (`Purge/Overhead`) и раскладку глифов → `Data/Combat/CombatVisual` (раздел
 **Health bars and numbers**). Цвета, размеры и тайминги там же — правятся в инспекторе, при пересборке сохраняются.
 Запускать: после смены шрифта UI (Build UI Style) или если `fx_digits`/`fx_overhead` удалены.
 
@@ -347,7 +347,7 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 Цвета и тайминги на теме сохраняются.
 
 #### Build Route Line
-Материал линии подсказки маршрута (`fx_route_line`, шейдер `Maze/RouteLine`) → `Route.LineMaterial` всех тем, где его
+Материал линии подсказки маршрута (`fx_route_line`, шейдер `Purge/RouteLine`) → `Route.LineMaterial` всех тем, где его
 ещё нет. Цвет, яркость, ширина, контур, скругление и пульсация — на теме (`Route`), сохраняются.
 Запускать: после создания новой темы не копией существующей (копия уже со ссылкой) или если материал удалён.
 
@@ -358,7 +358,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 #### Build Biome Themes
 Темы **`SnowTheme`** и **`ForestTheme`** (`Data/Themes`) из процедурных бесшовных текстур (цвет + карта нормалей, 512 px,
 `Art/Biomes/<Биом>/Textures`): свои меши блоков пола и стены с тайлинговыми UV (`Art/Biomes/Meshes`; у стены два материала —
-бока и верх), материалы на `Maze/Geometry`, префабы, наборы `<Биом>FloorSet` / `<Биом>WallSet` (стены — варианты для
+бока и верх), материалы на `Purge/Geometry`, префабы, наборы `<Биом>FloorSet` / `<Биом>WallSet` (стены — варианты для
 всех форм, поэтому без предупреждений о категориях). Снег: утоптанный снег, сугробы-рябь, лёд; стены — камень со снежной
 шапкой, верх — белый снег. Лес: земля с листьями, трава, плиты во мху; стены — камень во мху и бревенчатый частокол, верх —
 живая изгородь. Верх стен по цвету резко отличается от пола — лабиринт читается сверху.
@@ -368,12 +368,12 @@ Build Combat Effects). Подстроенные числа темы сохран
 (удалённые вручную варианты, веса, default) сохраняются — в существующий набор добавляются только варианты категории,
 которой в нём ещё нет. У снега — три варианта пола категории **Snowdrift** (`floor_snowdrift_01..03`: блок пола с низким
 снежным холмом до 0.2 м, меши `Art/Biomes/Meshes/BiomeDrift_*`, материал обычного снега `floor_snow`) — их получают
-только клетки-сугробы (кисть **Snowdrift**). Белизну сугроба и мягкий неровный край рисует шейдер `Maze/Geometry`
+только клетки-сугробы (кисть **Snowdrift**). Белизну сугроба и мягкий неровный край рисует шейдер `Purge/Geometry`
 (маска сугробов уровня), настройки — `SnowTheme` → Weather → Snowdrifts (цвет, мягкость и шум края, тень у подножия).
 Декор пока общий с замком (`PlaceholderDecorSet`).
 
 #### Create Placeholder Fog
-Бесшовная текстура шума `Art/Fog/FogNoise.png` и материал тумана `Art/Fog/Fog.mat` (`Maze/Fog`) → тема-заглушка.
+Бесшовная текстура шума `Art/Fog/FogNoise.png` и материал тумана `Art/Fog/Fog.mat` (`Purge/Fog`) → тема-заглушка.
 Существующий материал сохраняет настройки (дозаполняется только отсутствующая текстура).
 
 #### Create Placeholder Lighting
@@ -384,7 +384,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 
 #### Build Localization
 Из `Data/Localization/Strings.tsv` делает таблицу на язык (`Texts_<код>.asset`) и каталог языков `Languages.asset`
-(всё Addressable, группа Maze Shared; в памяти игры — только выбранный язык), проверяет таблицу: ключи из `TextKeys`,
+(всё Addressable, группа Purge Shared; в памяти игры — только выбранный язык), проверяет таблицу: ключи из `TextKeys`,
 которых нет в таблице, и разные `{n}` у языков — ошибки (ничего не пишется); неиспользуемые ключи, непереведённые
 тексты, оружие без названия, цвет ключа без сообщения — предупреждения. Затем запускает Build UI Style (атласы шрифтов
 под символы всех языков). Отчёт — в консоли.
@@ -452,6 +452,6 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 - **Create Placeholder Theme** → до Build Weapons и Build Zombie Animations (им нужны наборы темы-заглушки).
 - **Build Player Animations** → затем Build Weapons (риг рук по модели игрока).
 - Билдеры персонажей → затем **Extract Character Meshes**.
-- Новые модели объектов → **Convert Object Materials to Maze Lit** (Light Fixtures и Exits делают это сами).
+- Новые модели объектов → **Convert Object Materials to Purge Lit** (Light Fixtures и Exits делают это сами).
 - Что-то из `Import` → в конце **Collect Used Third-Party Assets**.
 - Правка `Strings.tsv` → **Build Localization** (сама запускает Build UI Style). Новая подпись в `RuntimeScenesBuilder` → ещё **Build Runtime Scenes**.

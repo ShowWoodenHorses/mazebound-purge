@@ -72,7 +72,7 @@ namespace Purge.Editor.Build
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(SigningFile));
                 File.WriteAllText(SigningFile, JsonUtility.ToJson(new Signing { alias = "mazebound" }, true));
-                return (null, $"No release key: fill in '{Path.GetFullPath(SigningFile)}' (keystore path, passwords, alias) — see Docs/MazeMenu.md.");
+                return (null, $"No release key: fill in '{Path.GetFullPath(SigningFile)}' (keystore path, passwords, alias) — see Docs/PurgeMenu.md.");
             }
 
             var signing = JsonUtility.FromJson<Signing>(File.ReadAllText(SigningFile));

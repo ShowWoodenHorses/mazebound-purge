@@ -1,0 +1,345 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_es
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: es
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - "Espa\xF1ol"
+  - AJUSTES
+  - "S\xCD"
+  - NO
+  - '{0} %'
+  - JUGAR
+  - NIVELES
+  - 'DEBUG: REINICIAR PROGRESO'
+  - ELIGE NIVEL
+  - "A\xFAn no hay niveles: ejecuta Build / Sync en el Level Designer."
+  - CARGANDO
+  - NIVEL {0}
+  - RECARGA
+  - '{0}: pulsa Usar para recoger'
+  - 'Recogido: {0}'
+  - Fragmento de mapa encontrado {0}/{1}
+  - 'Cerrada: necesitas una llave'
+  - 'Cerrada: necesitas la llave roja'
+  - 'Cerrada: necesitas la llave azul'
+  - 'Cerrada: necesitas la llave verde'
+  - 'Cerrada: necesitas la llave amarilla'
+  - 'Cerrada: necesitas la llave naranja'
+  - 'Cerrada: necesitas la llave cian'
+  - 'Cerrada: necesitas la llave morada'
+  - 'Cerrada: necesitas la llave rosa'
+  - Puerta desbloqueada
+  - Algo bloquea la puerta
+  - 'Congelada: rompe el hielo con un arma cuerpo a cuerpo'
+  - Fusil de asalto
+  - Fusil de combate
+  - Bate
+  - Palanca
+  - Hacha de bombero
+  - Rifle de caza
+  - Katana
+  - "Rifle rev\xF3lver"
+  - Rifle de francotirador
+  - Subfusil con silenciador
+  - "\xBFTERMINAR NIVEL?"
+  - PAUSA
+  - CONTINUAR
+  - REINICIAR NIVEL
+  - "SALIR AL MEN\xDA"
+  - 'DEBUG: COMPLETAR'
+  - 'DEBUG: FALLAR'
+  - NIVEL COMPLETADO
+  - NIVEL FALLIDO
+  - SALIDA ENCONTRADA
+  - SIN SALIDA
+  - ZOMBIS {0}/{1}
+  - MAPA {0}/{1}
+  - TIEMPO {0}
+  - MEJOR {0}
+  - "\xA1NUEVO R\xC9CORD!"
+  - "MEN\xDA"
+  - REPETIR
+  - SIGUIENTE
+  - "ALGO SALI\xD3 MAL"
+  - "VOLVER AL MEN\xDA"
+  - JUGADOR
+  - PIEZAS DEL MAPA
+  - ZOMBIS
+  - ARMAS
+  - BOTIQUINES
+  - LLAVES
+  - "Ruta al fragmento de mapa m\xE1s cercano"
+  - Ruta a la salida
+  - "Ruta a la llave m\xE1s cercana"
+  - Ruta a la puerta que abre tu llave
+  - "No se encontr\xF3 ruta"
+  - Este nivel no tiene mapa
+  - "A\xFAn no hay fragmentos del mapa (0/{0})"
+  - 'Fragmentos del mapa: {0}/{1}'
+  - CONTROLES
+  - DISPARO
+  - OTROS
+  - Zona muerta del stick
+  - Respuesta del stick
+  - "Tama\xF1o de los controles"
+  - Opacidad de los controles
+  - Stick flotante (aparece bajo el pulgar)
+  - "Dise\xF1o para zurdos"
+  - "Disposici\xF3n de botones"
+  - EDITAR
+  - Direcciones de apuntado
+  - LIBRE
+  - OCHO
+  - CUATRO
+  - "Apuntado autom\xE1tico a zombis"
+  - "M\xFAsica"
+  - Sonido
+  - Mostrar contador de FPS
+  - Idioma
+  - Soporte
+  - "Pol\xEDtica de privacidad"
+  - ABRIR
+  - "RESTABLECER PESTA\xD1A"
+  - "Arrastra el stick y los botones. Toca uno para cambiar su tama\xF1o."
+  - "{0}: tama\xF1o {1}"
+  - Stick
+  - Ataque y armas
+  - Usar
+  - Cuerpo a cuerpo
+  - A distancia
+  - RESTABLECER
+  - LISTO
+  - TUTORIAL
+  - "INICIAR SESI\xD3N"
+  - "Inicia sesi\xF3n para conservar tu progreso en todos los dispositivos"
+  - TUTORIAL
+  - TUTORIAL COMPLETADO
+  - Ruta del tutorial
+  - "El anuncio no est\xE1 disponible ahora"
+  - Gira tu dispositivo
+  - ENTENDIDO
+  - "\xA1Bienvenido al laberinto! Tu objetivo es encontrar la salida.\nMu\xE9vete
+    con WASD o las flechas y sigue la l\xEDnea luminosa."
+  - "\xA1Bienvenido al laberinto! Tu objetivo es encontrar la salida.\nMu\xE9vete
+    con el stick de la izquierda y sigue la l\xEDnea luminosa."
+  - "Sigue la l\xEDnea"
+  - "Algunas puertas est\xE1n cerradas con llave. Una llave abre una puerta de su
+    color.\nPara recogerla, basta con pisarla."
+  - Recoge la llave
+  - "Ac\xE9rcate a la puerta del color de la llave y pulsa E para abrirla. La llave
+    se gasta."
+  - "Ac\xE9rcate a la puerta del color de la llave y pulsa Usar (el bot\xF3n redondo)
+    para abrirla. La llave se gasta."
+  - 'Abre la puerta: E'
+  - 'Abre la puerta: Usar'
+  - La puerta ya no tiene llave, pero sigue cerrada. Pulsa E otra vez para abrirla.
+    Las puertas se pueden abrir y cerrar cuantas veces quieras.
+  - La puerta ya no tiene llave, pero sigue cerrada. Pulsa Usar otra vez para abrirla.
+    Las puertas se pueden abrir y cerrar cuantas veces quieras.
+  - 'Abre la puerta: E'
+  - 'Abre la puerta: Usar'
+  - "Las armas est\xE1n en el suelo. Ponte encima de una y pulsa E para cogerla.\nPuedes
+    llevar un arma cuerpo a cuerpo y un arma de fuego."
+  - "Las armas est\xE1n en el suelo. Ponte encima de una y pulsa Usar para cogerla.\nPuedes
+    llevar un arma cuerpo a cuerpo y un arma de fuego."
+  - 'Coge el arma: E'
+  - 'Coge el arma: Usar'
+  - "\xA1Hay un zombi tras esta puerta! El cono amarillo es lo que ve: si entras
+    en \xE9l, ruge y ataca.\nAbre la puerta y golp\xE9alo con Espacio o el bot\xF3n
+    izquierdo del rat\xF3n."
+  - "\xA1Hay un zombi tras esta puerta! El cono amarillo es lo que ve: si entras
+    en \xE9l, ruge y ataca.\nAbre la puerta y golp\xE9alo con el gran bot\xF3n de
+    ataque de la derecha."
+  - "Derrota al zombi: Espacio / bot\xF3n izquierdo"
+  - 'Derrota al zombi: Ataque'
+  - "\xA1Un arma de fuego! Golpea de lejos, pero el cargador es peque\xF1o: se recarga
+    solo al vaciarse, o pulsa R.\nCambia de arma con 1 y 2."
+  - "\xA1Un arma de fuego! Golpea de lejos, pero el cargador es peque\xF1o: se recarga
+    solo al vaciarse, o vuelve a tocar su ranura.\nCambia de arma tocando las ranuras
+    alrededor del bot\xF3n de ataque."
+  - 'Coge el arma: E'
+  - 'Coge el arma: Usar'
+  - "Hay otro zombi al fondo del pasillo. Este no ve nada, pero oye bien, y los disparos
+    son ruidosos: vendr\xE1 hacia ti.\nDisp\xE1rale antes de que se acerque."
+  - Dispara al zombi
+  - "\xBFHerido? Un botiqu\xEDn te cura por completo.\nP\xEDsalo: solo se usa si
+    tu salud no est\xE1 completa."
+  - "Pisa el botiqu\xEDn"
+  - Esto es un fragmento de mapa. Cada uno revela una parte del mapa del nivel.
+  - Recoge el fragmento de mapa
+  - "Abre el mapa con M o con el bot\xF3n de mapa de arriba a la derecha. En el mapa,
+    la lupa muestra el camino al objetivo m\xE1s cercano."
+  - "Abre el mapa con el bot\xF3n de mapa de arriba a la derecha. En el mapa, la
+    lupa muestra el camino al objetivo m\xE1s cercano."
+  - 'Abre el mapa: M'
+  - Abre el mapa
+  - 'Ahora ve a la salida: las escaleras.
+
+    En los niveles ganas estrellas: por
+    la salida, por matar a todos los zombis y por todos los fragmentos de mapa.'
+  - Ve a la salida
+  _missing: []

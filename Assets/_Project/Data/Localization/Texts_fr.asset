@@ -1,0 +1,348 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_fr
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: fr
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - "Fran\xE7ais"
+  - "PARAM\xC8TRES"
+  - OUI
+  - NON
+  - '{0} %'
+  - JOUER
+  - NIVEAUX
+  - "DEBUG : R\xC9INITIALISER LA PROGRESSION"
+  - CHOISIR UN NIVEAU
+  - "Aucun niveau pour l\u2019instant : lancez Build / Sync dans le Level Designer."
+  - CHARGEMENT
+  - NIVEAU {0}
+  - RECHARGEMENT
+  - "{0} : appuyez sur \xAB Action \xBB pour ramasser"
+  - "Ramass\xE9 : {0}"
+  - "Fragment de carte {0}/{1} trouv\xE9"
+  - "Verrouill\xE9e : il faut une cl\xE9"
+  - "Verrouill\xE9e : il faut la cl\xE9 rouge"
+  - "Verrouill\xE9e : il faut la cl\xE9 bleue"
+  - "Verrouill\xE9e : il faut la cl\xE9 verte"
+  - "Verrouill\xE9e : il faut la cl\xE9 jaune"
+  - "Verrouill\xE9e : il faut la cl\xE9 orange"
+  - "Verrouill\xE9e : il faut la cl\xE9 cyan"
+  - "Verrouill\xE9e : il faut la cl\xE9 violette"
+  - "Verrouill\xE9e : il faut la cl\xE9 rose"
+  - "Porte d\xE9verrouill\xE9e"
+  - Quelque chose bloque le passage
+  - "Gel\xE9e : brisez la glace avec une arme de m\xEAl\xE9e"
+  - "Fusil d\u2019assaut"
+  - Fusil de combat
+  - Batte
+  - Pied-de-biche
+  - Hache de pompier
+  - Fusil de chasse
+  - Katana
+  - Fusil revolver
+  - "Fusil de pr\xE9cision"
+  - Pistolet-mitrailleur silencieux
+  - TERMINER LE NIVEAU ?
+  - PAUSE
+  - REPRENDRE
+  - RECOMMENCER LE NIVEAU
+  - QUITTER VERS LE MENU
+  - 'DEBUG : TERMINER'
+  - "DEBUG : \xC9CHEC"
+  - "NIVEAU TERMIN\xC9"
+  - "NIVEAU \xC9CHOU\xC9"
+  - "SORTIE TROUV\xC9E"
+  - "SORTIE NON TROUV\xC9E"
+  - ZOMBIES {0}/{1}
+  - CARTE {0}/{1}
+  - TEMPS {0}
+  - RECORD {0}
+  - NOUVEAU RECORD !
+  - MENU
+  - REJOUER
+  - SUIVANT
+  - "UN PROBL\xC8ME EST SURVENU"
+  - RETOUR AU MENU
+  - JOUEUR
+  - MORCEAUX DE CARTE
+  - ZOMBIES
+  - ARMES
+  - TROUSSES DE SOINS
+  - "CL\xC9S"
+  - "Itin\xE9raire vers le fragment de carte le plus proche"
+  - "Itin\xE9raire vers la sortie"
+  - "Itin\xE9raire vers la cl\xE9 la plus proche"
+  - "Itin\xE9raire vers la porte que votre cl\xE9 ouvre"
+  - "Aucun itin\xE9raire trouv\xE9"
+  - "Ce niveau n\u2019a pas de carte"
+  - "Aucun fragment de carte trouv\xE9 pour l\u2019instant (0/{0})"
+  - 'Fragments de carte : {0}/{1}'
+  - COMMANDES
+  - TIR
+  - AUTRES
+  - Zone morte du joystick
+  - "R\xE9activit\xE9 du joystick"
+  - Taille des boutons
+  - "Opacit\xE9 des boutons"
+  - "Joystick flottant (appara\xEEt sous le pouce)"
+  - Disposition pour gauchers
+  - Disposition des boutons
+  - MODIFIER
+  - "Directions de vis\xE9e"
+  - LIBRE
+  - HUIT
+  - QUATRE
+  - "Vis\xE9e automatique sur les zombies"
+  - Musique
+  - Sons
+  - Afficher les FPS
+  - Langue
+  - Assistance
+  - "Confidentialit\xE9"
+  - OUVRIR
+  - "R\xC9INITIALISER L\u2019ONGLET"
+  - "D\xE9placez le joystick et les boutons. Touchez-en un pour changer sa taille."
+  - '{0} : taille {1}'
+  - Joystick
+  - Attaque et armes
+  - Action
+  - "M\xEAl\xE9e"
+  - Distance
+  - "R\xC9INITIALISER"
+  - "TERMIN\xC9"
+  - TUTORIEL
+  - SE CONNECTER
+  - Connectez-vous pour garder votre progression sur tous vos appareils
+  - TUTORIEL
+  - "TUTORIEL TERMIN\xC9"
+  - "Itin\xE9raire du tutoriel"
+  - "La publicit\xE9 n\u2019est pas disponible pour le moment"
+  - Tournez votre appareil
+  - COMPRIS
+  - "Bienvenue dans le labyrinthe ! Votre but : trouver la sortie.\nD\xE9placez-vous
+    avec ZQSD ou les fl\xE8ches et suivez la ligne lumineuse."
+  - "Bienvenue dans le labyrinthe ! Votre but : trouver la sortie.\nD\xE9placez-vous
+    avec le joystick \xE0 gauche et suivez la ligne lumineuse."
+  - Suivez la ligne
+  - "Certaines portes sont verrouill\xE9es. Une cl\xE9 ouvre une porte de sa couleur.\nPour
+    ramasser une cl\xE9, marchez simplement dessus."
+  - "Ramassez la cl\xE9"
+  - "Approchez-vous de la porte de la couleur de la cl\xE9 et appuyez sur E pour
+    la d\xE9verrouiller. La cl\xE9 est consomm\xE9e."
+  - "Approchez-vous de la porte de la couleur de la cl\xE9 et appuyez sur \xAB Action
+    \xBB (le bouton rond) pour la d\xE9verrouiller. La cl\xE9 est consomm\xE9e."
+  - "D\xE9verrouillez la porte : E"
+  - "D\xE9verrouillez la porte : \xAB Action \xBB"
+  - "La porte est d\xE9verrouill\xE9e mais encore ferm\xE9e. Appuyez de nouveau sur
+    E pour l\u2019ouvrir. Les portes s\u2019ouvrent et se ferment autant de fois
+    que vous voulez."
+  - "La porte est d\xE9verrouill\xE9e mais encore ferm\xE9e. Appuyez de nouveau sur
+    \xAB Action \xBB pour l\u2019ouvrir. Les portes s\u2019ouvrent et se ferment
+    autant de fois que vous voulez."
+  - 'Ouvrez la porte : E'
+  - "Ouvrez la porte : \xAB Action \xBB"
+  - "Les armes sont au sol. Placez-vous dessus et appuyez sur E pour la prendre.\nVous
+    pouvez porter une arme de m\xEAl\xE9e et une arme \xE0 feu."
+  - "Les armes sont au sol. Placez-vous dessus et appuyez sur \xAB Action \xBB pour
+    la prendre.\nVous pouvez porter une arme de m\xEAl\xE9e et une arme \xE0 feu."
+  - "Prenez l\u2019arme : E"
+  - "Prenez l\u2019arme : \xAB Action \xBB"
+  - "Un zombie se cache derri\xE8re cette porte ! Le c\xF4ne jaune montre ce qu\u2019il
+    voit : entrez-y et il grogne et attaque.\nOuvrez la porte et frappez-le avec
+    Espace ou le clic gauche."
+  - "Un zombie se cache derri\xE8re cette porte ! Le c\xF4ne jaune montre ce qu\u2019il
+    voit : entrez-y et il grogne et attaque.\nOuvrez la porte et frappez-le avec
+    le grand bouton Attaque \xE0 droite."
+  - 'Battez le zombie : Espace / clic gauche'
+  - 'Battez le zombie : Attaque'
+  - "Une arme \xE0 feu ! Elle touche de loin, mais le chargeur est petit : il se
+    recharge tout seul une fois vide, ou appuyez sur R.\nChangez d\u2019arme avec
+    1 et 2."
+  - "Une arme \xE0 feu ! Elle touche de loin, mais le chargeur est petit : il se
+    recharge tout seul une fois vide, ou touchez de nouveau son emplacement.\nChangez
+    d\u2019arme en touchant les emplacements autour du bouton Attaque."
+  - "Prenez l\u2019arme : E"
+  - "Prenez l\u2019arme : \xAB Action \xBB"
+  - "Un autre zombie attend au bout du couloir. Celui-ci ne voit rien mais entend
+    bien, et les tirs sont bruyants : il viendra \xE0 vous.\nAbattez-le avant qu\u2019il
+    approche."
+  - Abattez le zombie
+  - "Bless\xE9 ? Une trousse de soins vous soigne compl\xE8tement.\nMarchez dessus
+    \u2014 elle n\u2019est utilis\xE9e que si votre sant\xE9 n\u2019est pas au maximum."
+  - Marchez sur la trousse de soins
+  - "Voici un fragment de carte. Chacun r\xE9v\xE8le une partie de la carte du niveau."
+  - Ramassez le fragment de carte
+  - "Ouvrez la carte avec Tab ou le bouton de carte en haut \xE0 droite. Sur la carte,
+    la loupe montre le chemin vers l\u2019objectif le plus proche."
+  - "Ouvrez la carte avec le bouton de carte en haut \xE0 droite. Sur la carte, la
+    loupe montre le chemin vers l\u2019objectif le plus proche."
+  - 'Ouvrez la carte : Tab'
+  - Ouvrez la carte
+  - "Allez maintenant vers la sortie \u2014 l\u2019escalier.\nDans les niveaux, vous
+    gagnez des \xE9toiles : une pour la sortie, une pour tous les zombies tu\xE9s
+    et une pour tous les fragments de carte."
+  - "Allez \xE0 la sortie"
+  _missing: []

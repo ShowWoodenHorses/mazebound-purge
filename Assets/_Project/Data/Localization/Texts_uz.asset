@@ -1,0 +1,346 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_uz
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: uz
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - "O\u02BBzbekcha"
+  - SOZLAMALAR
+  - HA
+  - "YO\u02BBQ"
+  - '{0}%'
+  - "O\u02BBYNASH"
+  - BOSQICHLAR
+  - 'DEBUG: PROGRESSNI TIKLASH'
+  - DARAJANI TANLANG
+  - "Hozircha darajalar yo\u02BBq: Level Designer ichida Build / Sync ni ishga tushiring."
+  - YUKLANMOQDA
+  - '{0}-DARAJA'
+  - "QAYTA O\u02BBQLASH"
+  - "{0}: olish uchun \xABHarakat\xBB tugmasini bosing"
+  - 'Olindi: {0}'
+  - "Xarita bo\u02BBlagi topildi: {0}/{1}"
+  - 'Qulflangan: kalit kerak'
+  - 'Qulflangan: qizil kalit kerak'
+  - "Qulflangan: ko\u02BBk kalit kerak"
+  - 'Qulflangan: yashil kalit kerak'
+  - 'Qulflangan: sariq kalit kerak'
+  - "Qulflangan: to\u02BBq sariq kalit kerak"
+  - 'Qulflangan: havorang kalit kerak'
+  - 'Qulflangan: binafsha kalit kerak'
+  - 'Qulflangan: pushti kalit kerak'
+  - Eshik qulfi ochildi
+  - Eshik oldida nimadir bor
+  - 'Eshik muzlagan: muzni yaqin jang quroli bilan sindiring'
+  - Avtomat
+  - Jangovar miltiq
+  - Bita
+  - Lom
+  - "O\u02BBt o\u02BBchirish boltasi"
+  - "Ov miltig\u02BBi"
+  - Katana
+  - Revolver miltiq
+  - "Snayper miltig\u02BBi"
+  - "Ovoz pasaytirgichli avtomat-to\u02BBpponcha"
+  - DARAJANI YAKUNLAYSIZMI?
+  - PAUZA
+  - DAVOM ETISH
+  - QAYTA BOSHLASH
+  - MENYUGA CHIQISH
+  - "DEBUG: O\u02BBTISH"
+  - "DEBUG: MAG\u02BBLUBIYAT"
+  - "DARAJA O\u02BBTILDI"
+  - "DARAJA O\u02BBTILMADI"
+  - CHIQISH TOPILDI
+  - CHIQISH TOPILMADI
+  - ZOMBILAR {0}/{1}
+  - XARITA {0}/{1}
+  - VAQT {0}
+  - REKORD {0}
+  - YANGI REKORD!
+  - MENYU
+  - QAYTADAN
+  - KEYINGI
+  - "NIMADIR NOTO\u02BBG\u02BBRI KETDI"
+  - MENYUGA
+  - "O\u02BBYINCHI"
+  - "XARITA BO\u02BBLAKLARI"
+  - ZOMBILAR
+  - QUROLLAR
+  - DORI QUTILARI
+  - KALITLAR
+  - "Eng yaqin xarita bo\u02BBlagiga yo\u02BBl"
+  - "Chiqishga yo\u02BBl"
+  - "Eng yaqin kalitga yo\u02BBl"
+  - "Kalitingiz ochadigan eshikka yo\u02BBl"
+  - "Yo\u02BBl topilmadi"
+  - "Bu darajada xarita yo\u02BBq"
+  - "Xarita bo\u02BBlaklari hali topilmadi (0/{0})"
+  - "Xarita bo\u02BBlaklari: {0}/{1}"
+  - BOSHQARUV
+  - OTISH
+  - BOSHQA
+  - "Stikning o\u02BBlik zonasi"
+  - Stik sezgirligi
+  - "Tugmalar o\u02BBlchami"
+  - "Tugmalar ko\u02BBrinishi"
+  - "Suzuvchi stik (barmoq ostida paydo bo\u02BBladi)"
+  - Chapaqaylar uchun joylashuv
+  - Tugmalar joylashuvi
+  - "O\u02BBZGARTIRISH"
+  - "Nishonga olish yo\u02BBnalishlari"
+  - ERKIN
+  - SAKKIZ
+  - "TO\u02BBRT"
+  - Zombilarga avtomatik nishon
+  - Musiqa
+  - Tovushlar
+  - "FPS ni ko\u02BBrsatish"
+  - Til
+  - Yordam
+  - Maxfiylik siyosati
+  - OCHISH
+  - "BO\u02BBLIMNI TIKLASH"
+  - "Stik va tugmalarni suring. O\u02BBlchamini o\u02BBzgartirish uchun birini bosing."
+  - "{0}: o\u02BBlcham {1}"
+  - Stik
+  - Hujum va qurol
+  - Harakat
+  - Yaqin jang
+  - Uzoq jang
+  - TIKLASH
+  - TAYYOR
+  - "O\u02BBRGATISH"
+  - KIRISH
+  - Barcha qurilmalarda natijani saqlash uchun kiring
+  - "O\u02BBRGATISH"
+  - "O\u02BBRGATISH TUGADI"
+  - "O\u02BBrgatish yo\u02BBli"
+  - Reklama hozir mavjud emas
+  - Qurilmani aylantiring
+  - TUSHUNARLI
+  - "Labirintga xush kelibsiz! Maqsadingiz \u2014 chiqishni topish.\nWASD yoki strelka
+    tugmalari bilan yuring va yorqin chiziq bo\u02BBylab boring."
+  - "Labirintga xush kelibsiz! Maqsadingiz \u2014 chiqishni topish.\nChapdagi stik
+    bilan yuring va yorqin chiziq bo\u02BBylab boring."
+  - "Chiziq bo\u02BBylab boring"
+  - "Ba\u02BCzi eshiklar qulflangan. Kalit o\u02BBz rangidagi bitta eshikni ochadi.\nKalitni
+    olish uchun uning ustiga bosing."
+  - Kalitni oling
+  - Kalit rangidagi eshikka yaqinlashing va qulfni ochish uchun E ni bosing. Kalit
+    sarflanadi.
+  - "Kalit rangidagi eshikka yaqinlashing va qulfni ochish uchun \xABHarakat\xBB
+    (dumaloq tugma) ni bosing. Kalit sarflanadi."
+  - 'Eshik qulfini oching: E'
+  - "Eshik qulfini oching: \xABHarakat\xBB"
+  - Eshik qulfi ochildi, lekin u hali yopiq. Ochish uchun E ni yana bosing. Eshiklarni
+    xohlagancha ochib-yopish mumkin.
+  - "Eshik qulfi ochildi, lekin u hali yopiq. Ochish uchun \xABHarakat\xBB ni yana
+    bosing. Eshiklarni xohlagancha ochib-yopish mumkin."
+  - 'Eshikni oching: E'
+  - "Eshikni oching: \xABHarakat\xBB"
+  - "Qurollar polda yotadi. Uning ustida turing va olish uchun E ni bosing.\nBitta
+    yaqin jang qurolini va bitta o\u02BBqotar qurolni olib yurish mumkin."
+  - "Qurollar polda yotadi. Uning ustida turing va olish uchun \xABHarakat\xBB ni
+    bosing.\nBitta yaqin jang qurolini va bitta o\u02BBqotar qurolni olib yurish
+    mumkin."
+  - 'Qurolni oling: E'
+  - "Qurolni oling: \xABHarakat\xBB"
+  - "Bu eshik ortida zombi bor! Sariq konus u nimani ko\u02BBrishini ko\u02BBrsatadi:
+    unga kirsangiz, zombi irillab hujum qiladi.\nEshikni oching va uni Probel yoki
+    sichqonchaning chap tugmasi bilan uring."
+  - "Bu eshik ortida zombi bor! Sariq konus u nimani ko\u02BBrishini ko\u02BBrsatadi:
+    unga kirsangiz, zombi irillab hujum qiladi.\nEshikni oching va uni o\u02BBngdagi
+    katta Hujum tugmasi bilan uring."
+  - 'Zombini yenging: Probel / sichqonchaning chap tugmasi'
+  - 'Zombini yenging: Hujum tugmasi'
+  - "O\u02BBqotar qurol! U uzoqdan uradi, lekin magazini kichik: bo\u02BBshaganda
+    o\u02BBzi o\u02BBqlanadi yoki R ni bosing.\nQurolni 1 va 2 tugmalari bilan almashtiring."
+  - "O\u02BBqotar qurol! U uzoqdan uradi, lekin magazini kichik: bo\u02BBshaganda
+    o\u02BBzi o\u02BBqlanadi yoki uning uyachasini yana bosing.\nQurolni Hujum tugmasi
+    atrofidagi uyachalarni bosib almashtiring."
+  - 'Qurolni oling: E'
+  - "Qurolni oling: \xABHarakat\xBB"
+  - "Yo\u02BBlak oxirida yana bir zombi bor. U hech narsani ko\u02BBrmaydi, lekin
+    yaxshi eshitadi, otishmalar esa baland \u2014 u o\u02BBzi sizga keladi.\nYaqinlashmasidan
+    uni otib tashlang."
+  - Zombini oting
+  - "Yaralandingizmi? Dori qutisi to\u02BBliq davolaydi.\nUning ustiga bosing \u2014
+    u faqat sog\u02BBlig\u02BBingiz to\u02BBliq bo\u02BBlmaganda sarflanadi."
+  - Dori qutisiga bosing
+  - "Bu \u2014 xarita bo\u02BBlagi. Har biri daraja xaritasining bir qismini ochadi."
+  - "Xarita bo\u02BBlagini oling"
+  - "Xaritani M tugmasi yoki yuqori o\u02BBngdagi xarita tugmasi bilan oching. Xaritadagi
+    lupa eng yaqin maqsadga yo\u02BBlni ko\u02BBrsatadi."
+  - "Xaritani yuqori o\u02BBngdagi xarita tugmasi bilan oching. Xaritadagi lupa eng
+    yaqin maqsadga yo\u02BBlni ko\u02BBrsatadi."
+  - 'Xaritani oching: M'
+  - Xaritani oching
+  - "Endi chiqishga \u2014 zinapoyaga boring.\nDarajalarda yulduzlar olasiz: biri
+    chiqish uchun, biri barcha zombilarni yo\u02BBq qilganingiz uchun va biri barcha
+    xarita bo\u02BBlaklari uchun."
+  - Chiqishga boring
+  _missing: []

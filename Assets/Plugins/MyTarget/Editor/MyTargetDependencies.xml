@@ -1,0 +1,7 @@
+<!-- External Dependency Manager: the Android library of VK Ad Network (ex. myTarget). Pinned to the version the
+     Unity plugin 1.4.0 (Library/) was written for: its AndroidJavaProxy listeners must match the SDK's interfaces. -->
+<dependencies>
+  <androidPackages>
+    <androidPackage spec="com.my.target:mytarget-sdk:5.27.4" />
+  </androidPackages>
+</dependencies>

@@ -1,0 +1,429 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af674c3552250484ca873b9d34108e25, type: 3}
+  m_Name: AudioCatalog
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Audio.AudioCatalog
+  _menuMusic:
+    _clip:
+      m_AssetGUID: 2ebc912a5364cd2408461cf7f971fdcc
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _volume: 0.6
+    _loopOverlap: 0
+  _levelMusic:
+    _clip:
+      m_AssetGUID: ae2933770e372d449846e0f5db7a246a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _volume: 0.35
+    _loopOverlap: 2.5
+  _musicFade: 1.5
+  _pausedMusicVolume: 0.5
+  _resultMusicVolume: 0.25
+  _footstep:
+    _clips:
+    - {fileID: 8300000, guid: 3b7df717c1f1a1c4caeb7db3ba7535aa, type: 3}
+    - {fileID: 8300000, guid: ccb2368ab0f7b0c43b3130259e233258, type: 3}
+    - {fileID: 8300000, guid: 7760b162d4085f649978ceca131c456f, type: 3}
+    - {fileID: 8300000, guid: 9acd48847b1d4c346b33fef51d7b9a02, type: 3}
+    - {fileID: 8300000, guid: 6acfa60f2525e414d838000bbdd4fd56, type: 3}
+    - {fileID: 8300000, guid: 173e0d17cef98704a9f77c6a19aaa73d, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _footstepWalk:
+    _clips:
+    - {fileID: 8300000, guid: ac0e8271dd302f646843c879c9fb898b, type: 3}
+    - {fileID: 8300000, guid: 91c2c36467e8e284f830e4951f239ef2, type: 3}
+    - {fileID: 8300000, guid: b783c0bfd21af124784396504ce90df4, type: 3}
+    - {fileID: 8300000, guid: a49baa181bdf8584facdf4f3ed041af9, type: 3}
+    - {fileID: 8300000, guid: b6b58e4d61a6b4a4b8bdea8aa8e1db92, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _playerHurt:
+    _clips:
+    - {fileID: 8300000, guid: 26c300a6c6707c64caab6bdaee6f90eb, type: 3}
+    - {fileID: 8300000, guid: c1acc335d0deaa64faf9351645da6b31, type: 3}
+    - {fileID: 8300000, guid: f4127387ba9635b44b86efb7a42bc5ec, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.15
+  _playerDeath:
+    _clips:
+    - {fileID: 8300000, guid: 58d7513d5d58de34796b76d308ac39f0, type: 3}
+    _volume: 1
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _meleeSwing:
+    _clips:
+    - {fileID: 8300000, guid: 7a4d25848a621434098aaa29f138c8b9, type: 3}
+    - {fileID: 8300000, guid: e9e238516b6366e49ac5504ea0135f6c, type: 3}
+    - {fileID: 8300000, guid: 46a7434d7a9244045805a3747e6d0bf4, type: 3}
+    _volume: 0.9
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _shot:
+    _clips:
+    - {fileID: 8300000, guid: 57f08dc91a067bd479a9b18acf06b759, type: 3}
+    - {fileID: 8300000, guid: 0d9cd495cd20c8841a80940d257bf7af, type: 3}
+    - {fileID: 8300000, guid: 1dedd3f8f4c5a264c8048f9bf8602156, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 0
+    _maxVoices: 4
+    _minInterval: 0
+  _weaponSounds:
+  - _group: silenced
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 5587993326d6a3940afbdaca413a7e4b, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  _reloadMagazine:
+    _clips:
+    - {fileID: 8300000, guid: 767e49557b8d23b4dac6b8880d30d303, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _reloadSingle:
+    _clips:
+    - {fileID: 8300000, guid: 3c098f85e48cc664ab13bb0dad762efa, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _switchWeapon:
+    _clips:
+    - {fileID: 8300000, guid: 4a02f41b897938f4fac1d191adc1469b, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.97, y: 1.03}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _bulletImpact:
+    _clips:
+    - {fileID: 8300000, guid: c2f1b1d8d8ef9844d84931fd4240890c, type: 3}
+    - {fileID: 8300000, guid: f08df492caaa869438782352df031d53, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 10
+    _maxVoices: 3
+    _minInterval: 0
+  _pickupKey:
+    _clips:
+    - {fileID: 8300000, guid: 0997ed0501dd84a4a8815997835c5378, type: 3}
+    _volume: 0.45
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _pickupMedkit:
+    _clips:
+    - {fileID: 8300000, guid: 7a7291050a3fd444187e9a009a5836a0, type: 3}
+    _volume: 0.9
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _pickupWeapon:
+    _clips:
+    - {fileID: 8300000, guid: 5f7de0294b38ab14a900db065f440548, type: 3}
+    _volume: 0.5
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _pickupMapFragment:
+    _clips:
+    - {fileID: 8300000, guid: fa2437653f6a43447bdb481c0a51a6cc, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _doorOpen:
+    _clips:
+    - {fileID: 8300000, guid: ae72fd96744f5cb4e970b9a761af28ff, type: 3}
+    - {fileID: 8300000, guid: db5161156ad7000489650efb2bca0c57, type: 3}
+    _volume: 0.9
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 10
+    _maxVoices: 2
+    _minInterval: 0
+  _doorClose:
+    _clips:
+    - {fileID: 8300000, guid: 9feee484ae9f70d4ab3dbf16cd6c44f2, type: 3}
+    - {fileID: 8300000, guid: 6e402919ef5103545992ec6053ab2a51, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 10
+    _maxVoices: 2
+    _minInterval: 0
+  _doorUnlock:
+    _clips:
+    - {fileID: 8300000, guid: 1fbd0bc2faa312548aed4cdfaff9e294, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 10
+    _maxVoices: 1
+    _minInterval: 0
+  _doorLocked:
+    _clips:
+    - {fileID: 8300000, guid: 66c4d06a2a3a2694090e28f5f221b5d0, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.97, y: 1.03}
+    _range: 10
+    _maxVoices: 1
+    _minInterval: 0.3
+  _iceHit:
+    _clips: []
+    _volume: 0.7
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 10
+    _maxVoices: 2
+    _minInterval: 0
+  _iceBreak:
+    _clips: []
+    _volume: 0.85
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 12
+    _maxVoices: 1
+    _minInterval: 0
+  _zombieGroan:
+    _clips:
+    - {fileID: 8300000, guid: 86ff00ad1c0102544bf0954056c1b3a0, type: 3}
+    - {fileID: 8300000, guid: 8f122a02c75eaeb4cb313d320f08859d, type: 3}
+    - {fileID: 8300000, guid: bc9ba4d43ffe13449b89563e02c2a9ec, type: 3}
+    _volume: 0.4
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 7
+    _maxVoices: 2
+    _minInterval: 0
+  _zombieRoar:
+    _clips:
+    - {fileID: 8300000, guid: 0d54922b9ae42674db9e1681bf5796c9, type: 3}
+    - {fileID: 8300000, guid: dddc621eeb700ef48bdf3b6e5c3cc242, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 12
+    _maxVoices: 2
+    _minInterval: 0
+  _zombieAttack:
+    _clips:
+    - {fileID: 8300000, guid: 2ff488f279a2ae14f945525626def3dd, type: 3}
+    - {fileID: 8300000, guid: 25307e67ecf90c845b40118e16eef8ea, type: 3}
+    - {fileID: 8300000, guid: f252424aa8ab6bb4d8853e3869d00c3e, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 8
+    _maxVoices: 2
+    _minInterval: 0
+  _zombieHurt:
+    _clips:
+    - {fileID: 8300000, guid: e46314481eee5134293a72ee569428c3, type: 3}
+    - {fileID: 8300000, guid: cdeafb28640c8d64ab5cd6595ce172c8, type: 3}
+    - {fileID: 8300000, guid: 5c47ace50b348d644b56c8d47780af71, type: 3}
+    - {fileID: 8300000, guid: 4d2c5390ce0661947a061b9c5216f083, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 10
+    _maxVoices: 3
+    _minInterval: 0
+  _zombieDeath:
+    _clips:
+    - {fileID: 8300000, guid: 5be6316351019ba4ca2a1c6083c7f35f, type: 3}
+    - {fileID: 8300000, guid: 895882f9226146e47bff4d08fdd8b096, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 10
+    _maxVoices: 2
+    _minInterval: 0
+  _zombieStepWalk:
+    _clips:
+    - {fileID: 8300000, guid: 6a227a20111f6cf49a29b2f8d2e86b7c, type: 3}
+    - {fileID: 8300000, guid: 3d0aebe42460e914fa92812af6ae28d2, type: 3}
+    - {fileID: 8300000, guid: b490bcd042ba3934a8632c27f8522d25, type: 3}
+    - {fileID: 8300000, guid: 8e6ecd8cee9c5b74baf093e07f42d4f0, type: 3}
+    - {fileID: 8300000, guid: 402e00d6f5958df4bb174f3e6e48e5d4, type: 3}
+    _volume: 0.9
+    _pitch: {x: 0.9, y: 1.05}
+    _range: 6
+    _maxVoices: 3
+    _minInterval: 0
+  _zombieStepRun:
+    _clips:
+    - {fileID: 8300000, guid: d1ed7d492ec7b2c4f9ab6d9740ab9729, type: 3}
+    - {fileID: 8300000, guid: e206455701a30774b9ab3d375fd6ee6b, type: 3}
+    - {fileID: 8300000, guid: cc0e78f4e05a2054085985a918c50f92, type: 3}
+    - {fileID: 8300000, guid: 845090debc5cc0c4f993474b62ef9372, type: 3}
+    - {fileID: 8300000, guid: 0f629bfccec3d904ea1949c8d000b110, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.9, y: 1.05}
+    _range: 8
+    _maxVoices: 3
+    _minInterval: 0
+  _zombieVoices:
+  - ZombieId: walker
+    Pitch: 1
+  - ZombieId: listener
+    Pitch: 1.12
+  - ZombieId: hunter
+    Pitch: 0.88
+  _groanInterval: {x: 6, y: 14}
+  _zombieWalkStep: 0.7
+  _zombieRunStep: 1.1
+  _chaseStinger:
+    _clips:
+    - {fileID: 8300000, guid: 76fd41fef572783459e9490bb7fd69f3, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _stingerRearm: 6
+  _torchLoop:
+    _clips:
+    - {fileID: 8300000, guid: 044491aba8b03aa48940a25d4dd8ade6, type: 3}
+    _volume: 0.45
+    _pitch: {x: 1, y: 1}
+    _range: 5
+    _maxVoices: 3
+    _minInterval: 0
+  _maxTorchLoops: 3
+  _click:
+    _clips:
+    - {fileID: 8300000, guid: 31e05f483b307244e8f9fb0b3e5ef9dd, type: 3}
+    - {fileID: 8300000, guid: f2014f6393b32134ab7015113f222f3f, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.97, y: 1.03}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _back:
+    _clips:
+    - {fileID: 8300000, guid: d8bae5ccc83837d42af3191873428c72, type: 3}
+    _volume: 0.3
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _denied:
+    _clips:
+    - {fileID: 8300000, guid: fbeb66283186cef4eab594856c9be131, type: 3}
+    _volume: 0.5
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.2
+  _pauseOpen:
+    _clips:
+    - {fileID: 8300000, guid: acf402e4c6484184aa6d947ce1af6aee, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _pauseResume:
+    _clips:
+    - {fileID: 8300000, guid: 87765700fb39e5e449f68e7fde24d235, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _mapOpen:
+    _clips:
+    - {fileID: 8300000, guid: 4f3f8c89261ce7e4ea216b522a03215f, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _mapClose:
+    _clips:
+    - {fileID: 8300000, guid: f42daf8abc0c6ad46b901024ed93f953, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _exitReached:
+    _clips:
+    - {fileID: 8300000, guid: e97a1cf936649e54eacdb3c7591fec38, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _confirmExit:
+    _clips:
+    - {fileID: 8300000, guid: 49745ffc6f97dec438b653ba1191ceae, type: 3}
+    _volume: 1
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _levelComplete:
+    _clips:
+    - {fileID: 8300000, guid: ddd59d824d5c5d640b5f14627aabed78, type: 3}
+    _volume: 1
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _levelFailed:
+    _clips:
+    - {fileID: 8300000, guid: f329181417d0d1e45a576673cec7a461, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _star:
+    _clips:
+    - {fileID: 8300000, guid: b5b7ca95904f1b149bf8f3c0aae84d68, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 3
+    _minInterval: 0
+  _resultDelay: 0.5
+  _starInterval: 0.4
+  _starPitchStep: 0.12

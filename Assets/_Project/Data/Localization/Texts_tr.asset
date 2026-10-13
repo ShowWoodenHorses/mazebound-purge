@@ -1,0 +1,351 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_tr
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: tr
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - "T\xFCrk\xE7e"
+  - AYARLAR
+  - EVET
+  - HAYIR
+  - '%{0}'
+  - OYNA
+  - "B\xD6L\xDCMLER"
+  - "DEBUG: \u0130LERLEMEY\u0130 SIFIRLA"
+  - "B\xD6L\xDCM SE\xC7"
+  - "Hen\xFCz b\xF6l\xFCm yok: Level Designer'da Build / Sync \xE7al\u0131\u015Ft\u0131r\u0131n."
+  - "Y\xDCKLEN\u0130YOR"
+  - "B\xD6L\xDCM {0}"
+  - DOLDURMA
+  - "{0}: almak i\xE7in Kullan'a bas\u0131n"
+  - "Al\u0131nd\u0131: {0}"
+  - "Harita par\xE7as\u0131 bulundu {0}/{1}"
+  - 'Kilitli: anahtar gerekli'
+  - "Kilitli: k\u0131rm\u0131z\u0131 anahtar gerekli"
+  - 'Kilitli: mavi anahtar gerekli'
+  - "Kilitli: ye\u015Fil anahtar gerekli"
+  - "Kilitli: sar\u0131 anahtar gerekli"
+  - 'Kilitli: turuncu anahtar gerekli'
+  - 'Kilitli: turkuaz anahtar gerekli'
+  - 'Kilitli: mor anahtar gerekli'
+  - 'Kilitli: pembe anahtar gerekli'
+  - "Kap\u0131n\u0131n kilidi a\xE7\u0131ld\u0131"
+  - "Kap\u0131 aral\u0131\u011F\u0131nda bir \u015Fey var"
+  - "Donmu\u015F: buzu yak\u0131n d\xF6v\xFC\u015F silah\u0131yla k\u0131r"
+  - "Sald\u0131r\u0131 t\xFCfe\u011Fi"
+  - "Muharebe t\xFCfe\u011Fi"
+  - Sopa
+  - Levye
+  - "Yang\u0131n baltas\u0131"
+  - "Av t\xFCfe\u011Fi"
+  - Katana
+  - "Revolver t\xFCfek"
+  - "Keskin ni\u015Fanc\u0131 t\xFCfe\u011Fi"
+  - Susturuculu hafif makineli
+  - "B\xD6L\xDCM\xDC B\u0130T\u0130R?"
+  - DURAKLATILDI
+  - DEVAM ET
+  - "YEN\u0130DEN BA\u015ELAT"
+  - "MEN\xDCYE D\xD6N"
+  - 'DEBUG: TAMAMLA'
+  - 'DEBUG: KAYBET'
+  - "B\xD6L\xDCM TAMAMLANDI"
+  - "B\xD6L\xDCM BA\u015EARISIZ"
+  - "\xC7IKI\u015E BULUNDU"
+  - "\xC7IKI\u015E BULUNAMADI"
+  - "ZOMB\u0130LER {0}/{1}"
+  - "HAR\u0130TA {0}/{1}"
+  - "S\xDCRE {0}"
+  - "EN \u0130Y\u0130 {0}"
+  - "YEN\u0130 REKOR!"
+  - "MEN\xDC"
+  - TEKRAR
+  - "SONRAK\u0130"
+  - "B\u0130R \u015EEYLER TERS G\u0130TT\u0130"
+  - "MEN\xDCYE D\xD6N"
+  - OYUNCU
+  - "HAR\u0130TA PAR\xC7ALARI"
+  - "ZOMB\u0130LER"
+  - "S\u0130LAHLAR"
+  - "\u0130LK YARDIM"
+  - ANAHTARLAR
+  - "En yak\u0131n harita par\xE7as\u0131na rota"
+  - "\xC7\u0131k\u0131\u015Fa rota"
+  - "En yak\u0131n anahtara rota"
+  - "Anahtar\u0131n\u0131z\u0131n a\xE7t\u0131\u011F\u0131 kap\u0131ya rota"
+  - "Rota bulunamad\u0131"
+  - "Bu b\xF6l\xFCmde harita yok"
+  - "Hen\xFCz harita par\xE7as\u0131 bulunamad\u0131 (0/{0})"
+  - "Harita par\xE7alar\u0131: {0}/{1}"
+  - KONTROLLER
+  - "ATI\u015E"
+  - "D\u0130\u011EER"
+  - "\xC7ubuk \xF6l\xFC b\xF6lgesi"
+  - "\xC7ubuk tepkisi"
+  - Kontrol boyutu
+  - "Kontrol opakl\u0131\u011F\u0131"
+  - "Kayan \xE7ubuk (ba\u015Fparma\u011F\u0131n alt\u0131nda belirir)"
+  - "Solak d\xFCzeni"
+  - "D\xFC\u011Fme d\xFCzeni"
+  - "D\xDCZENLE"
+  - "Ni\u015Fan y\xF6nleri"
+  - SERBEST
+  - "SEK\u0130Z"
+  - "D\xD6RT"
+  - "Zombilere otomatik ni\u015Fan"
+  - "M\xFCzik"
+  - Ses
+  - "FPS sayac\u0131n\u0131 g\xF6ster"
+  - Dil
+  - Destek
+  - "Gizlilik politikas\u0131"
+  - "A\xC7"
+  - "SEKMEY\u0130 SIFIRLA"
+  - "\xC7ubu\u011Fu ve d\xFC\u011Fmeleri s\xFCr\xFCkleyin. Boyutunu de\u011Fi\u015Ftirmek
+    i\xE7in birine dokunun."
+  - '{0} boyutu: {1}'
+  - "\xC7ubuk"
+  - "Sald\u0131r\u0131 ve silahlar"
+  - Kullan
+  - "Yak\u0131n d\xF6v\xFC\u015F"
+  - Uzak menzil
+  - SIFIRLA
+  - TAMAM
+  - "E\u011E\u0130T\u0130M"
+  - "G\u0130R\u0130\u015E YAP"
+  - "\u0130lerlemeni t\xFCm cihazlarda korumak i\xE7in giri\u015F yap"
+  - "E\u011E\u0130T\u0130M"
+  - "E\u011E\u0130T\u0130M TAMAMLANDI"
+  - "E\u011Fitim rotas\u0131"
+  - "Reklam \u015Fu anda kullan\u0131lam\u0131yor"
+  - "Cihaz\u0131n\u0131z\u0131 d\xF6nd\xFCr\xFCn"
+  - ANLADIM
+  - "Labirente ho\u015F geldin! Amac\u0131n \xE7\u0131k\u0131\u015F\u0131 bulmak.\nWASD
+    veya ok tu\u015Flar\u0131yla hareket et ve parlayan \xE7izgiyi takip et."
+  - "Labirente ho\u015F geldin! Amac\u0131n \xE7\u0131k\u0131\u015F\u0131 bulmak.\nSoldaki
+    \xE7ubukla hareket et ve parlayan \xE7izgiyi takip et."
+  - "\xC7izgiyi takip et"
+  - "Baz\u0131 kap\u0131lar kilitli. Bir anahtar, kendi rengindeki bir kap\u0131y\u0131
+    a\xE7ar.\nAnahtar\u0131 almak i\xE7in \xFCzerine basman yeterli."
+  - "Anahtar\u0131 al"
+  - "Anahtar\u0131n rengindeki kap\u0131ya git ve kilidi a\xE7mak i\xE7in E'ye bas.
+    Anahtar harcan\u0131r."
+  - "Anahtar\u0131n rengindeki kap\u0131ya git ve kilidi a\xE7mak i\xE7in Kullan'a
+    (yuvarlak d\xFC\u011Fme) bas. Anahtar harcan\u0131r."
+  - "Kap\u0131n\u0131n kilidini a\xE7: E"
+  - "Kap\u0131n\u0131n kilidini a\xE7: Kullan"
+  - "Kap\u0131n\u0131n kilidi a\xE7\u0131ld\u0131 ama h\xE2l\xE2 kapal\u0131. A\xE7mak
+    i\xE7in tekrar E'ye bas. Kap\u0131lar istedi\u011Fin kadar a\xE7\u0131l\u0131p
+    kapat\u0131labilir."
+  - "Kap\u0131n\u0131n kilidi a\xE7\u0131ld\u0131 ama h\xE2l\xE2 kapal\u0131. A\xE7mak
+    i\xE7in tekrar Kullan'a bas. Kap\u0131lar istedi\u011Fin kadar a\xE7\u0131l\u0131p
+    kapat\u0131labilir."
+  - "Kap\u0131y\u0131 a\xE7: E"
+  - "Kap\u0131y\u0131 a\xE7: Kullan"
+  - "Silahlar yerde durur. Birinin \xFCzerine \xE7\u0131k ve almak i\xE7in E'ye bas.\nBir
+    yak\u0131n d\xF6v\xFC\u015F silah\u0131 ve bir ate\u015Fli silah ta\u015F\u0131yabilirsin."
+  - "Silahlar yerde durur. Birinin \xFCzerine \xE7\u0131k ve almak i\xE7in Kullan'a
+    bas.\nBir yak\u0131n d\xF6v\xFC\u015F silah\u0131 ve bir ate\u015Fli silah ta\u015F\u0131yabilirsin."
+  - "Silah\u0131 al: E"
+  - "Silah\u0131 al: Kullan"
+  - "Bu kap\u0131n\u0131n arkas\u0131nda bir zombi var! Sar\u0131 koni onun g\xF6rd\xFC\u011F\xFC
+    aland\u0131r: i\xE7ine girersen k\xFCkrer ve sald\u0131r\u0131r.\nKap\u0131y\u0131
+    a\xE7 ve ona Bo\u015Fluk tu\u015Fu veya sol fare tu\u015Fuyla vur."
+  - "Bu kap\u0131n\u0131n arkas\u0131nda bir zombi var! Sar\u0131 koni onun g\xF6rd\xFC\u011F\xFC
+    aland\u0131r: i\xE7ine girersen k\xFCkrer ve sald\u0131r\u0131r.\nKap\u0131y\u0131
+    a\xE7 ve sa\u011Fdaki b\xFCy\xFCk sald\u0131r\u0131 d\xFC\u011Fmesiyle ona vur."
+  - "Zombiyi yen: Bo\u015Fluk / sol fare tu\u015Fu"
+  - "Zombiyi yen: Sald\u0131r\u0131"
+  - "Ate\u015Fli silah! Uzaktan vurur ama \u015Farj\xF6r\xFC k\xFC\xE7\xFCkt\xFCr:
+    bo\u015Fal\u0131nca kendili\u011Finden dolar ya da R'ye bas.\nSilahlar\u0131
+    1 ve 2 ile de\u011Fi\u015Ftir."
+  - "Ate\u015Fli silah! Uzaktan vurur ama \u015Farj\xF6r\xFC k\xFC\xE7\xFCkt\xFCr:
+    bo\u015Fal\u0131nca kendili\u011Finden dolar ya da yuvas\u0131na tekrar dokun.\nSilahlar\u0131
+    sald\u0131r\u0131 d\xFC\u011Fmesinin \xE7evresindeki yuvalara dokunarak de\u011Fi\u015Ftir."
+  - "Silah\u0131 al: E"
+  - "Silah\u0131 al: Kullan"
+  - "Koridorun ilerisinde bir zombi daha var. Bu hi\xE7bir \u015Fey g\xF6rmez ama
+    iyi duyar ve silah sesleri y\xFCksektir: sana gelecek.\nYakla\u015Fmadan onu
+    vur."
+  - Zombiyi vur
+  - "Yaral\u0131 m\u0131s\u0131n? \u0130lk yard\u0131m \xE7antas\u0131 seni tamamen
+    iyile\u015Ftirir.\n\xDCzerine bas \u2014 yaln\u0131zca can\u0131n tam de\u011Filse
+    kullan\u0131l\u0131r."
+  - "\u0130lk yard\u0131m \xE7antas\u0131na bas"
+  - "Bu bir harita par\xE7as\u0131. Her biri seviye haritas\u0131n\u0131n bir b\xF6l\xFCm\xFCn\xFC
+    a\xE7ar."
+  - "Harita par\xE7as\u0131n\u0131 al"
+  - "Haritay\u0131 M tu\u015Fuyla veya sa\u011F \xFCstteki harita d\xFC\u011Fmesiyle
+    a\xE7. Haritadaki b\xFCy\xFCte\xE7 en yak\u0131n hedefe giden yolu g\xF6sterir."
+  - "Haritay\u0131 sa\u011F \xFCstteki harita d\xFC\u011Fmesiyle a\xE7. Haritadaki
+    b\xFCy\xFCte\xE7 en yak\u0131n hedefe giden yolu g\xF6sterir."
+  - "Haritay\u0131 a\xE7: M"
+  - "Haritay\u0131 a\xE7"
+  - "\u015Eimdi \xE7\u0131k\u0131\u015Fa, merdivenlere git.\nSeviyelerde y\u0131ld\u0131z
+    kazan\u0131rs\u0131n: \xE7\u0131k\u0131\u015F i\xE7in, t\xFCm zombileri \xF6ld\xFCrmek
+    i\xE7in ve t\xFCm harita par\xE7alar\u0131 i\xE7in."
+  - "\xC7\u0131k\u0131\u015Fa git"
+  _missing: []

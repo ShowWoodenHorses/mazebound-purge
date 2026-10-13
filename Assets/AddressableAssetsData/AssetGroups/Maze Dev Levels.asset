@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Maze Dev Levels
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Maze Dev Levels
+  m_GUID: 64d43b4ecac6dba4f9d4435e10a085bb
+  m_SerializeEntries:
+  - m_GUID: 305e7b6e98f2e314f900aa53372e70c0
+    m_Address: Levels/Level_light
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67a2f0ae34e5cf74eac8e988d36dcd59
+    m_Address: LevelCatalog/Dev
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83b5aa64504d7ca429fec1144bdb53fd
+    m_Address: Levels/Level_Items
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d9cb4905379ad440b1876fbda3920fa
+    m_Address: Levels/Level_weapon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 957fbfe3b8576bd40a38125e4b1f48c7
+    m_Address: Levels/Level_Dev
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 7b0b4a63a91ea59479d6f21c16e4df79, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0739eb91cd738d7468da96cde769f6c9, type: 2}
+    - {fileID: 11400000, guid: 765882e2bfbffed43a7072d9a93e8940, type: 2}
+    m_SchemaDisplayOrder:
+    - Maze Dev Levels_BundledAssetGroupSchema
+    - Maze Dev Levels_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<projectSettings>
+  <projectSetting name="Google.PackageManagerResolver.Enable" value="False" />
+  <projectSetting name="Google.PackageManagerResolver.PromptToAddRegistries" value="False" />
+  <projectSetting name="Google.PackageManagerResolver.PromptToMigratePackages" value="False" />
+  <projectSetting name="GooglePlayServices.AutoResolutionDisabledWarning" value="False" />
+  <projectSetting name="GooglePlayServices.AutoResolveOnBuild" value="True" />
+  <projectSetting name="GooglePlayServices.AutoResolverEnabled" value="False" />
+  <projectSetting name="GooglePlayServices.PatchAndroidManifest" value="True" />
+  <projectSetting name="GooglePlayServices.PatchMainTemplateGradle" value="True" />
+  <projectSetting name="GooglePlayServices.PatchPropertiesTemplateGradle" value="True" />
+  <projectSetting name="GooglePlayServices.PatchSettingsTemplateGradle" value="True" />
+  <projectSetting name="GooglePlayServices.PromptBeforeAutoResolution" value="False" />
+  <projectSetting name="GooglePlayServices.UseGradleDaemon" value="False" />
+  <projectSetting name="GooglePlayServices.UseJetifier" value="True" />
+</projectSettings>

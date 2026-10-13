@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec29044341dd8704baf7fe46f45d2cfd, type: 3}
+  m_Name: CastleBlockTheme
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.VisualTheme
+  _id: castle_block
+  _floor: {fileID: 11400000, guid: 3143762e16a7e23408d38ae891030756, type: 2}
+  _wall: {fileID: 11400000, guid: 8f3a52989d6d9534290edf86e19f4dd9, type: 2}
+  _door: {fileID: 11400000, guid: cb299dba8e11c1149aa22907c53bc418, type: 2}
+  _exit: {fileID: 11400000, guid: 2a6342712722c654c8aa208b06371596, type: 2}
+  _key: {fileID: 11400000, guid: f3f66466e2941c5458939f5dde50eff1, type: 2}
+  _medkit: {fileID: 11400000, guid: 4329f07b42756c24caededb8268c1897, type: 2}
+  _weapon: {fileID: 11400000, guid: fb15d3c7f0ca317498e3750cb736fd43, type: 2}
+  _zombie: {fileID: 11400000, guid: 57b71dca180984d488eb03f23f3bef0b, type: 2}
+  _mapFragment: {fileID: 11400000, guid: 848777e871c45864389124a0559bf682, type: 2}
+  _decor: {fileID: 11400000, guid: e1e3a08f74b470148a08ad6db9711a10, type: 2}
+  _light: {fileID: 11400000, guid: cfa9392684729334e801c808b8fda77a, type: 2}
+  _fogMaterial: {fileID: 2100000, guid: e44f05f90fed0e446b142333febf4f9e, type: 2}
+  _lighting:
+    Ambient: {r: 0.2, g: 0.25, b: 0.34, a: 1}
+    MoonColor: {r: 0.62, g: 0.72, b: 0.95, a: 1}
+    MoonIntensity: 0.35
+    LanternColor: {r: 1, g: 0.82, b: 0.58, a: 1}
+    LanternIntensity: 0.9
+    LanternRadius: 4.5
+    LanternHeight: 1.3
+    LightFadeStart: 0.8
+    LightFadeLength: 0.6
+    LightTopShare: 0.15
+    BlobShadowMaterial: {fileID: 2100000, guid: 46cd222b1c4f77742b6e467b2b291b2c, type: 2}
+    BlobShadowSize: 0.9
+    LightPresets:
+    - Id: torch
+      Weight: 3
+      Color: {r: 1, g: 0.6, b: 0.28, a: 1}
+      Radius: 4
+      Intensity: 1.3
+      Flicker: 0.6
+    - Id: cold_lamp
+      Weight: 1
+      Color: {r: 1, g: 0.7250718, b: 0.3176471, a: 1}
+      Radius: 5
+      Intensity: 0.9
+      Flicker: 0.05
+  _footprints:
+    PrintMaterial: {fileID: 2100000, guid: 8ec1aafa434afa44987c004e69ba7af6, type: 2}
+    MaxPrints: 96
+    Player:
+      StepLength: 0.7
+      Length: 0.3
+      Width: 0.15
+      Spacing: 0.09
+      Color: {r: 0.05, g: 0.04, b: 0.03, a: 0.7}
+      FadeFrom: 1
+      FadeTo: 2
+      Lifetime: 2
+    Zombie:
+      StepLength: 0.55
+      Length: 0.3
+      Width: 0.16
+      Spacing: 0.1
+      Color: {r: 0.05, g: 0.07, b: 0.02, a: 0.75}
+      FadeFrom: 3
+      FadeTo: 4
+      Lifetime: 8
+    DustMaterial: {fileID: 2100000, guid: 5bd4c4442526e134a9eb1a3db185116b, type: 2}
+    DustColor: {r: 0.7, g: 0.66, b: 0.58, a: 0.35}
+    DustSize: 0.28
+    DustLifetime: 0.4
+    DustRunSpeed: 1.5
+  _awareness:
+    ZoneMaterial: {fileID: 2100000, guid: 307013d4046175540b40ca4e3e8dcfd7, type: 2}
+    CalmColor: {r: 1, g: 0.82, b: 0.3, a: 1}
+    AlertColor: {r: 1, g: 0.18, b: 0.12, a: 1}
+    FillAlpha: 0.05
+    EdgeAlpha: 0.35
+    EdgeWidth: 0.04
+    RayStep: 4
+    ZoneFade: 0.2
+    NoiseMaterial: {fileID: 2100000, guid: f27b134fb56d17341899f871cca56d03, type: 2}
+    NoiseColor: {r: 0.75, g: 0.75, b: 0.78, a: 0.2}
+    RingWidth: 0.035
+    WaveTime: 0.7
+    RingGrow: 0.3
+    RingFade: 0.4
+    RingRearm: 0.3
+  _route:
+    LineMaterial: {fileID: 2100000, guid: 0976e9e2f75b61643818c92e87fa1788, type: 2}
+    Color: {r: 0.62, g: 0.86, b: 1, a: 1}
+    Brightness: 0.85
+    Opacity: 0.6
+    Width: 0.18
+    OutlineColor: {r: 0.04, g: 0.06, b: 0.08, a: 0.9}
+    OutlineWidth: 0.03
+    CornerRadius: 0.35
+    StartFade: 0.6
+    Pulse: 0.35
+    PulseSpacing: 1.6
+    PulseSpeed: 1.2
+    Height: 0.05

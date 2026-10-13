@@ -1,0 +1,363 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_id
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: id
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - Bahasa Indonesia
+  - PENGATURAN
+  - YA
+  - TIDAK
+  - '{0}%'
+  - MAIN
+  - LEVEL
+  - 'DEBUG: ATUR ULANG PROGRES'
+  - PILIH LEVEL
+  - 'Belum ada level: jalankan Build / Sync di Level Designer.'
+  - MEMUAT
+  - LEVEL {0}
+  - ISI ULANG
+  - "{0}: tekan \u201CAksi\u201D untuk mengambil"
+  - 'Diambil: {0}'
+  - Fragmen peta {0}/{1} ditemukan
+  - 'Terkunci: perlu kunci'
+  - 'Terkunci: perlu kunci merah'
+  - 'Terkunci: perlu kunci biru'
+  - 'Terkunci: perlu kunci hijau'
+  - 'Terkunci: perlu kunci kuning'
+  - 'Terkunci: perlu kunci oranye'
+  - 'Terkunci: perlu kunci biru muda'
+  - 'Terkunci: perlu kunci ungu'
+  - 'Terkunci: perlu kunci merah muda'
+  - Pintu tidak terkunci lagi
+  - Ada yang menghalangi pintu
+  - 'Membeku: pecahkan es dengan senjata jarak dekat'
+  - Senapan serbu
+  - Senapan tempur
+  - Pemukul
+  - Linggis
+  - Kapak pemadam
+  - Senapan berburu
+  - Katana
+  - Senapan revolver
+  - Senapan runduk
+  - SMG berperedam
+  - SELESAIKAN LEVEL?
+  - JEDA
+  - LANJUTKAN
+  - ULANGI LEVEL
+  - KELUAR KE MENU
+  - 'DEBUG: SELESAI'
+  - 'DEBUG: GAGAL'
+  - LEVEL SELESAI
+  - LEVEL GAGAL
+  - JALAN KELUAR DITEMUKAN
+  - JALAN KELUAR TIDAK DITEMUKAN
+  - ZOMBI {0}/{1}
+  - PETA {0}/{1}
+  - WAKTU {0}
+  - REKOR {0}
+  - REKOR BARU!
+  - MENU
+  - ULANGI
+  - BERIKUTNYA
+  - TERJADI KESALAHAN
+  - KEMBALI KE MENU
+  - PEMAIN
+  - BAGIAN PETA
+  - ZOMBI
+  - SENJATA
+  - KOTAK P3K
+  - KUNCI
+  - Rute ke fragmen peta terdekat
+  - Rute ke jalan keluar
+  - Rute ke kunci terdekat
+  - Rute ke pintu yang dibuka kuncimu
+  - Rute tidak ditemukan
+  - Level ini tidak punya peta
+  - Belum ada fragmen peta yang ditemukan (0/{0})
+  - 'Fragmen peta: {0}/{1}'
+  - KONTROL
+  - MENEMBAK
+  - LAINNYA
+  - Zona mati stik
+  - Respons stik
+  - Ukuran tombol
+  - Kejelasan tombol
+  - Stik mengambang (muncul di bawah jari)
+  - Tata letak kidal
+  - Posisi tombol
+  - UBAH
+  - Arah bidikan
+  - BEBAS
+  - DELAPAN
+  - EMPAT
+  - Bidik otomatis ke zombi
+  - Musik
+  - Suara
+  - Tampilkan FPS
+  - Bahasa
+  - Dukungan
+  - Kebijakan privasi
+  - BUKA
+  - ATUR ULANG TAB
+  - Seret stik dan tombol. Ketuk salah satunya untuk mengubah ukurannya.
+  - '{0}: ukuran {1}'
+  - Stik
+  - Serangan dan senjata
+  - Aksi
+  - Jarak dekat
+  - Jarak jauh
+  - ATUR ULANG
+  - SELESAI
+  - TUTORIAL
+  - MASUK
+  - Masuk untuk menyimpan progres di semua perangkat
+  - TUTORIAL
+  - TUTORIAL SELESAI
+  - Rute tutorial
+  - Iklan tidak tersedia saat ini
+  - Putar perangkatmu
+  - MENGERTI
+  - 'Selamat datang di labirin! Tujuanmu adalah menemukan jalan keluar.
+
+    Bergerak
+    dengan WASD atau tombol panah dan ikuti garis yang bersinar.'
+  - 'Selamat datang di labirin! Tujuanmu adalah menemukan jalan keluar.
+
+    Bergerak
+    dengan stik di kiri dan ikuti garis yang bersinar.'
+  - Ikuti garisnya
+  - 'Beberapa pintu terkunci. Satu kunci membuka satu pintu dengan warna yang sama.
+
+    Untuk
+    mengambil kunci, cukup injak saja.'
+  - Ambil kuncinya
+  - Dekati pintu yang warnanya sama dengan kunci dan tekan E untuk membuka kuncinya.
+    Kunci akan terpakai.
+  - "Dekati pintu yang warnanya sama dengan kunci dan tekan \u201CAksi\u201D (tombol
+    bulat) untuk membuka kuncinya. Kunci akan terpakai."
+  - 'Buka kunci pintu: E'
+  - "Buka kunci pintu: \u201CAksi\u201D"
+  - Pintu sudah tidak terkunci, tapi masih tertutup. Tekan E lagi untuk membukanya.
+    Pintu bisa dibuka dan ditutup berapa kali pun.
+  - "Pintu sudah tidak terkunci, tapi masih tertutup. Tekan \u201CAksi\u201D lagi
+    untuk membukanya. Pintu bisa dibuka dan ditutup berapa kali pun."
+  - 'Buka pintu: E'
+  - "Buka pintu: \u201CAksi\u201D"
+  - 'Senjata tergeletak di lantai. Berdirilah di atasnya dan tekan E untuk mengambilnya.
+
+    Kamu
+    bisa membawa satu senjata jarak dekat dan satu senjata api.'
+  - "Senjata tergeletak di lantai. Berdirilah di atasnya dan tekan \u201CAksi\u201D
+    untuk mengambilnya.\nKamu bisa membawa satu senjata jarak dekat dan satu senjata
+    api."
+  - 'Ambil senjata: E'
+  - "Ambil senjata: \u201CAksi\u201D"
+  - 'Ada zombi di balik pintu ini! Kerucut kuning menunjukkan apa yang dilihatnya:
+    masuk ke dalamnya dan zombi akan menggeram lalu menyerang.
+
+    Buka pintu dan
+    pukul dengan Spasi atau tombol kiri mouse.'
+  - 'Ada zombi di balik pintu ini! Kerucut kuning menunjukkan apa yang dilihatnya:
+    masuk ke dalamnya dan zombi akan menggeram lalu menyerang.
+
+    Buka pintu dan
+    pukul dengan tombol Serang besar di kanan.'
+  - 'Kalahkan zombi: Spasi / tombol kiri mouse'
+  - 'Kalahkan zombi: Serang'
+  - 'Senjata api! Bisa menembak dari jauh, tapi magasinnya kecil: terisi ulang sendiri
+    saat kosong, atau tekan R.
+
+    Ganti senjata dengan 1 dan 2.'
+  - 'Senjata api! Bisa menembak dari jauh, tapi magasinnya kecil: terisi ulang sendiri
+    saat kosong, atau ketuk slotnya lagi.
+
+    Ganti senjata dengan mengetuk slot
+    di sekitar tombol Serang.'
+  - 'Ambil senjata: E'
+  - "Ambil senjata: \u201CAksi\u201D"
+  - 'Ada zombi lain di ujung lorong. Yang ini tidak bisa melihat tapi pendengarannya
+    tajam, dan tembakan itu keras: ia akan mendatangimu.
+
+    Tembak sebelum ia mendekat.'
+  - Tembak zombinya
+  - "Terluka? Kotak P3K memulihkan nyawamu sepenuhnya.\nInjak saja \u2014 hanya terpakai
+    saat nyawamu tidak penuh."
+  - Injak kotak P3K
+  - Ini fragmen peta. Setiap fragmen membuka sebagian peta level.
+  - Ambil fragmen peta
+  - Buka peta dengan M atau tombol peta di kanan atas. Di peta, kaca pembesar menunjukkan
+    jalan ke tujuan terdekat.
+  - Buka peta dengan tombol peta di kanan atas. Di peta, kaca pembesar menunjukkan
+    jalan ke tujuan terdekat.
+  - 'Buka peta: M'
+  - Buka peta
+  - "Sekarang pergilah ke jalan keluar \u2014 tangga.\nDi setiap level kamu mendapat
+    bintang: satu untuk jalan keluar, satu untuk mengalahkan semua zombi, dan satu
+    untuk semua fragmen peta."
+  - Pergi ke jalan keluar
+  _missing: []

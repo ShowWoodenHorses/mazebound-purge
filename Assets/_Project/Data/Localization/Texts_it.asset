@@ -1,0 +1,347 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_it
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: it
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - Italiano
+  - IMPOSTAZIONI
+  - "S\xCC"
+  - NO
+  - '{0}%'
+  - GIOCA
+  - LIVELLI
+  - 'DEBUG: AZZERA I PROGRESSI'
+  - SCEGLI IL LIVELLO
+  - 'Ancora nessun livello: esegui Build / Sync nel Level Designer.'
+  - CARICAMENTO
+  - LIVELLO {0}
+  - RICARICA
+  - "{0}: premi \xABAzione\xBB per raccogliere"
+  - 'Raccolto: {0}'
+  - Frammento di mappa {0}/{1} trovato
+  - 'Chiusa a chiave: serve una chiave'
+  - 'Chiusa a chiave: serve la chiave rossa'
+  - 'Chiusa a chiave: serve la chiave blu'
+  - 'Chiusa a chiave: serve la chiave verde'
+  - 'Chiusa a chiave: serve la chiave gialla'
+  - 'Chiusa a chiave: serve la chiave arancione'
+  - 'Chiusa a chiave: serve la chiave azzurra'
+  - 'Chiusa a chiave: serve la chiave viola'
+  - 'Chiusa a chiave: serve la chiave rosa'
+  - Porta aperta con la chiave
+  - Qualcosa blocca il passaggio
+  - "Ghiacciata: rompi il ghiaccio con un\u2019arma da mischia"
+  - "Fucile d\u2019assalto"
+  - Fucile da battaglia
+  - Mazza
+  - Piede di porco
+  - Ascia antincendio
+  - Fucile da caccia
+  - Katana
+  - Fucile a tamburo
+  - Fucile da cecchino
+  - Mitraglietta silenziata
+  - TERMINARE IL LIVELLO?
+  - PAUSA
+  - RIPRENDI
+  - RICOMINCIA IL LIVELLO
+  - ESCI AL MENU
+  - 'DEBUG: COMPLETA'
+  - 'DEBUG: FALLISCI'
+  - LIVELLO COMPLETATO
+  - LIVELLO FALLITO
+  - USCITA TROVATA
+  - USCITA NON TROVATA
+  - ZOMBI {0}/{1}
+  - MAPPA {0}/{1}
+  - TEMPO {0}
+  - RECORD {0}
+  - NUOVO RECORD!
+  - MENU
+  - RIPROVA
+  - AVANTI
+  - "QUALCOSA \xC8 ANDATO STORTO"
+  - TORNA AL MENU
+  - GIOCATORE
+  - PEZZI DI MAPPA
+  - ZOMBI
+  - ARMI
+  - KIT MEDICI
+  - CHIAVI
+  - "Percorso verso il frammento di mappa pi\xF9 vicino"
+  - "Percorso verso l\u2019uscita"
+  - "Percorso verso la chiave pi\xF9 vicina"
+  - Percorso verso la porta che apre la tua chiave
+  - Nessun percorso trovato
+  - Questo livello non ha una mappa
+  - Ancora nessun frammento di mappa trovato (0/{0})
+  - 'Frammenti di mappa: {0}/{1}'
+  - COMANDI
+  - TIRO
+  - ALTRO
+  - Zona morta dello stick
+  - Risposta dello stick
+  - Dimensione dei pulsanti
+  - "Opacit\xE0 dei pulsanti"
+  - Stick mobile (appare sotto il dito)
+  - Layout per mancini
+  - Posizione dei pulsanti
+  - MODIFICA
+  - Direzioni di mira
+  - LIBERA
+  - OTTO
+  - QUATTRO
+  - Mira automatica sugli zombi
+  - Musica
+  - Suoni
+  - Mostra FPS
+  - Lingua
+  - Assistenza
+  - Privacy
+  - APRI
+  - RIPRISTINA SCHEDA
+  - Trascina lo stick e i pulsanti. Toccane uno per cambiarne la dimensione.
+  - '{0}: dimensione {1}'
+  - Stick
+  - Attacco e armi
+  - Azione
+  - Mischia
+  - Distanza
+  - RIPRISTINA
+  - FATTO
+  - TUTORIAL
+  - ACCEDI
+  - Accedi per conservare i progressi su tutti i dispositivi
+  - TUTORIAL
+  - TUTORIAL COMPLETATO
+  - Percorso del tutorial
+  - "La pubblicit\xE0 non \xE8 disponibile al momento"
+  - Ruota il dispositivo
+  - HO CAPITO
+  - "Benvenuto nel labirinto! Il tuo obiettivo \xE8 trovare l\u2019uscita.\nMuoviti
+    con WASD o le frecce e segui la linea luminosa."
+  - "Benvenuto nel labirinto! Il tuo obiettivo \xE8 trovare l\u2019uscita.\nMuoviti
+    con lo stick a sinistra e segui la linea luminosa."
+  - Segui la linea
+  - 'Alcune porte sono chiuse a chiave. Una chiave apre una porta del suo colore.
+
+    Per
+    raccogliere una chiave, basta camminarci sopra.'
+  - Raccogli la chiave
+  - Avvicinati alla porta del colore della chiave e premi E per aprire la serratura.
+    La chiave viene consumata.
+  - "Avvicinati alla porta del colore della chiave e premi \xABAzione\xBB (il pulsante
+    rotondo) per aprire la serratura. La chiave viene consumata."
+  - 'Apri la serratura: E'
+  - "Apri la serratura: \xABAzione\xBB"
+  - "La porta non \xE8 pi\xF9 chiusa a chiave, ma \xE8 ancora chiusa. Premi di nuovo
+    E per aprirla. Le porte si possono aprire e chiudere quante volte vuoi."
+  - "La porta non \xE8 pi\xF9 chiusa a chiave, ma \xE8 ancora chiusa. Premi di nuovo
+    \xABAzione\xBB per aprirla. Le porte si possono aprire e chiudere quante volte
+    vuoi."
+  - 'Apri la porta: E'
+  - "Apri la porta: \xABAzione\xBB"
+  - "Le armi sono a terra. Mettiti sopra e premi E per prenderla.\nPuoi portare un\u2019arma
+    da mischia e un\u2019arma da fuoco."
+  - "Le armi sono a terra. Mettiti sopra e premi \xABAzione\xBB per prenderla.\nPuoi
+    portare un\u2019arma da mischia e un\u2019arma da fuoco."
+  - "Prendi l\u2019arma: E"
+  - "Prendi l\u2019arma: \xABAzione\xBB"
+  - "Dietro questa porta c\u2019\xE8 uno zombi! Il cono giallo mostra cosa vede:
+    se ci entri, ringhia e attacca.\nApri la porta e colpiscilo con Spazio o il tasto
+    sinistro del mouse."
+  - "Dietro questa porta c\u2019\xE8 uno zombi! Il cono giallo mostra cosa vede:
+    se ci entri, ringhia e attacca.\nApri la porta e colpiscilo con il grande pulsante
+    Attacco a destra."
+  - 'Sconfiggi lo zombi: Spazio / tasto sinistro del mouse'
+  - 'Sconfiggi lo zombi: Attacco'
+  - "Un\u2019arma da fuoco! Colpisce da lontano, ma il caricatore \xE8 piccolo: si
+    ricarica da solo quando \xE8 vuoto, oppure premi R.\nCambia arma con 1 e 2."
+  - "Un\u2019arma da fuoco! Colpisce da lontano, ma il caricatore \xE8 piccolo: si
+    ricarica da solo quando \xE8 vuoto, oppure tocca di nuovo il suo slot.\nCambia
+    arma toccando gli slot intorno al pulsante Attacco."
+  - "Prendi l\u2019arma: E"
+  - "Prendi l\u2019arma: \xABAzione\xBB"
+  - "C\u2019\xE8 un altro zombi in fondo al corridoio. Questo non vede nulla ma sente
+    bene, e gli spari sono rumorosi: verr\xE0 da te.\nSparagli prima che si avvicini."
+  - Spara allo zombi
+  - "Ferito? Un kit medico ti cura del tutto.\nCammina sopra \u2014 viene usato solo
+    se la salute non \xE8 piena."
+  - Cammina sul kit medico
+  - "Questo \xE8 un frammento di mappa. Ognuno rivela una parte della mappa del livello."
+  - Raccogli il frammento di mappa
+  - "Apri la mappa con M o con il pulsante della mappa in alto a destra. Sulla mappa,
+    la lente mostra la strada verso l\u2019obiettivo pi\xF9 vicino."
+  - "Apri la mappa con il pulsante della mappa in alto a destra. Sulla mappa, la
+    lente mostra la strada verso l\u2019obiettivo pi\xF9 vicino."
+  - 'Apri la mappa: M'
+  - Apri la mappa
+  - "Ora vai all\u2019uscita \u2014 la scala.\nNei livelli guadagni stelle: una per
+    l\u2019uscita, una per aver ucciso tutti gli zombi e una per tutti i frammenti
+    di mappa."
+  - "Vai all\u2019uscita"
+  _missing: []

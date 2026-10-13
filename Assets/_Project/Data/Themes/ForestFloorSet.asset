@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4059f11680f60145b7d0f9b59619e3b, type: 3}
+  m_Name: ForestFloorSet
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.VisualSet
+  _kind: 0
+  _defaultVariantId: floor_forest_grass
+  _variants:
+  - _id: floor_forest_grass
+    _prefab:
+      m_AssetGUID: c023baa0fe42b8a46813a0eb570bfbaf
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0

@@ -1,0 +1,2898 @@
+# Техническое задание
+
+## 3D Top-Down Maze Zombie Game
+
+**Версия:** 2.0
+
+---
+
+# 1. Общая концепция
+
+Игра представляет собой 3D top-down игру для **WebGL и Android**.
+
+Основной игровой цикл:
+
+1. Игрок появляется внутри лабиринта.
+2. Исследует доступную область.
+3. Открывает двери ключами.
+4. Подбирает оружие и расходные предметы.
+5. Избегает или уничтожает небольшое количество зомби.
+6. Находит выход.
+7. Завершает уровень.
+8. При необходимости собирает части карты и уничтожает всех зомби для получения дополнительных звёзд.
+
+Главная цель игры:
+
+> Выбраться из лабиринта.
+
+Зомби являются прежде всего препятствием и источником опасности, а не целью массового уничтожения.
+
+---
+
+# 2. Целевые платформы
+
+Обязательная поддержка:
+
+* Android;
+* WebGL 2;
+* desktop browser.
+
+---
+
+# 3. Технологический стек
+
+Используется:
+
+* Unity 6 LTS;
+* Built-in Render Pipeline;
+* VContainer;
+* Addressables;
+* UniTask;
+* Unity Input System;
+* Unity Animator / Mecanim;
+* uGUI;
+* Mesh Combine;
+* Static Batching;
+* Object Pooling;
+* собственная Grid Navigation;
+* A*;
+* собственная Spatial Query System;
+* EditMode Tests;
+* PlayMode Tests.
+
+Не используется:
+
+* URP;
+* HDRP;
+* NavMesh;
+* ECS/DOTS;
+* Unity Physics;
+* Rigidbody;
+* Collider;
+* Physics.Raycast;
+* Physics.Overlap;
+* OnCollision;
+* OnTrigger;
+* LOD.
+
+---
+
+# 4. Основные архитектурные принципы
+
+Архитектура должна быть пригодна как для разработки человеком, так и для реализации AI-агентами.
+
+Основные правила:
+
+* зависимости задаются через VContainer;
+* gameplay не запускается самостоятельно из `Awake`, `Start`, `OnEnable`;
+* lifecycle контролируется Composition Root / GameFlow;
+* нет глобального mutable singleton state;
+* нет `GameManager.Instance`;
+* нет `FindObjectOfType`;
+* нет `GameObject.Find`;
+* нет `Resources.FindObjectsOfTypeAll`;
+* LevelData является source of truth для дизайна уровня;
+* runtime state отделён от LevelData;
+* gameplay не зависит от Presentation;
+* Presentation не владеет gameplay logic;
+* Editor зависит от Runtime/Data;
+* Runtime не зависит от Editor;
+* дорогие операции запускаются событиями, а не каждый кадр;
+* не допускается God Object.
+
+---
+
+# 5. Слои архитектуры
+
+Концептуально:
+
+```text
+Core
+  ↑
+Gameplay
+  ↑
+Application
+  ↑
+Presentation
+```
+
+Editor:
+
+```text
+Editor
+  ↓
+Runtime / Data
+```
+
+Runtime не должен зависеть от Editor.
+
+---
+
+# 6. Bootstrap
+
+Структура:
+
+```text
+Bootstrap
+└── ProjectLifetimeScope
+```
+
+Bootstrap Scene загружается первой.
+
+## 6.1. ProjectLifetimeScope
+
+Содержит только application-wide сервисы:
+
+```text
+ProjectLifetimeScope
+├── GameFlow
+├── SaveService
+├── AudioService
+├── InputService
+├── AddressablesService
+├── SettingsService
+└── другие application-wide сервисы
+```
+
+Не содержит:
+
+* LevelData;
+* LevelGrid;
+* Player runtime;
+* Zombie runtime;
+* Door runtime;
+* level-specific state.
+
+---
+
+# 7. Level Lifetime Scope
+
+Для каждого активного уровня создаётся отдельный scope:
+
+```text
+LevelLifetimeScope
+├── LevelData
+├── LevelGrid
+├── DoorSystem
+├── NavigationSystem
+├── VisibilitySystem
+├── PlayerSystem
+├── ZombieSystem
+├── CombatSystem
+├── WeaponSystem
+├── PickupSystem
+├── MapSystem
+├── LevelProgress
+├── LevelVisualSystem
+└── LevelRuntime
+```
+
+Одновременно существует только один LevelScope.
+
+---
+
+# 8. GameFlow
+
+`GameFlow` управляет lifecycle игры.
+
+Основные операции:
+
+```text
+InitializeApplication
+OpenMainMenu
+StartLevel
+StartGameplay
+PauseGameplay
+ResumeGameplay
+CompleteLevel
+FailLevel
+RetryLevel
+ExitToMenu
+```
+
+---
+
+# 9. Загрузка уровня
+
+```text
+StartLevel(levelId)
+    ↓
+Stop current gameplay
+    ↓
+Dispose old LevelScope
+    ↓
+Release old level Addressables
+    ↓
+Load LevelData Addressable
+    ↓
+Create LevelScope
+    ↓
+Build runtime
+    ↓
+Initialize systems
+    ↓
+Build navigation
+    ↓
+Initialize visibility
+    ↓
+Build visual representation
+    ↓
+Initialize UI
+    ↓
+Spawn player
+    ↓
+Spawn zombies
+    ↓
+StartGameplay
+```
+
+Все async операции должны поддерживать cancellation.
+
+Level-specific async operations должны быть привязаны к lifetime текущего LevelScope.
+
+---
+
+# 10. LevelData
+
+`LevelData : ScriptableObject`.
+
+Каждый уровень является Addressable asset.
+
+Структура:
+
+```text
+LevelData
+├── Settings
+├── Geometry
+├── Doors[]
+├── PlayerStarts[]
+├── Exits[]
+├── ZombieSpawns[]
+├── Patrols[]
+├── Weapons[]
+├── Keys[]
+├── Medkits[]
+├── MapFragments[]
+└── VisualData
+```
+
+LevelData является source of truth для завершённого уровня.
+
+---
+
+# 11. Принцип разделения Logic и Visual
+
+Ключевой архитектурный принцип:
+
+> Логика уровня и его визуальное представление являются разными слоями.
+
+Например:
+
+```text
+LevelGrid Cell = Wall
+```
+
+определяет:
+
+* блокирует ли клетка движение;
+* блокирует ли она LOS;
+* блокирует ли она пулю;
+* участвует ли она в Navigation.
+
+Конкретный prefab:
+
+```text
+wall_02.prefab
+```
+
+определяет только визуальное представление этой стены.
+
+Prefab не должен определять gameplay semantics.
+
+---
+
+# 12. Генерация уровня
+
+## 12.1. Generation Settings
+
+```text
+LevelGenerationSettings
+├── Width
+├── Height
+├── Seed
+├── MazeAlgorithm
+├── LoopDensity
+├── InitialPlayerStartCount
+└── InitialExitCount
+```
+
+Размеры должны быть чётными:
+
+```text
+Width % 2 == 0
+Height % 2 == 0
+```
+
+---
+
+# 13. Размер клетки
+
+* 1 Unity unit = 1 метр;
+* одна логическая клетка = 1×1 метр;
+* одна клетка имеет размер 1×1.
+
+Автоматическая генерация использует:
+
+* стены 1×1;
+* двери 1×1;
+* проходы шириной 1 клетка.
+
+Не генерируются автоматически:
+
+* стены 2×2;
+* двери 2×2;
+* проходы шириной 2 клетки.
+
+После генерации дизайнер может вручную изменить геометрию.
+
+---
+
+# 14. Алгоритм генерации
+
+Базовый алгоритм:
+
+**Randomized DFS / Recursive Backtracker**.
+
+Допускается управляемое добавление циклов через:
+
+```text
+LoopDensity
+```
+
+Генератор создаёт:
+
+* Floor;
+* Wall;
+* Player Starts;
+* Exits.
+
+Двери могут добавляться дизайнером.
+
+---
+
+# 15. Ручное редактирование
+
+После `Generate New` дизайнер может изменить абсолютно любые элементы:
+
+* стены;
+* пол;
+* двери;
+* ключи;
+* оружие;
+* зомби;
+* стартовые точки;
+* выходы;
+* patrol points;
+* patrol routes;
+* map fragments;
+* визуальные варианты;
+* связи ключей и дверей;
+* другие элементы.
+
+Генератор не должен автоматически перегенерировать уровень после ручного изменения.
+
+`Generate New` является destructive operation и должен предупреждать об удалении текущего дизайна.
+
+---
+
+# 16. Editor Workflow
+
+```text
+Generation Settings
+        ↓
+Generate New
+        ↓
+Generate Logical Maze
+        ↓
+Generate Initial Visual Assignments
+        ↓
+Edit Level
+        ↓
+Edit Visuals
+        ↓
+Validate
+        ↓
+Build / Sync
+        ↓
+Test / Play
+```
+
+---
+
+# 17. Визуальная система
+
+Вводится отдельный слой:
+
+```text
+LevelVisualSystem
+```
+
+Его задача:
+
+> Превратить готовую логическую структуру уровня в конкретное визуальное представление.
+
+Он не определяет игровую логику.
+
+---
+
+# 18. Главный принцип визуальной рандомизации
+
+Визуальная вариативность используется **только на стадии создания/подготовки уровня**.
+
+Она не является runtime randomization.
+
+Правильный pipeline:
+
+```text
+Generate New
+      ↓
+Generate logical geometry
+      ↓
+Select visual variants using weights
+      ↓
+Store selected variants
+      ↓
+Level Designer edits level
+      ↓
+Level Designer edits visual variants
+      ↓
+Level is finalized
+      ↓
+Runtime uses exact saved visual assignments
+```
+
+После завершения уровня:
+
+> Runtime никогда не выбирает случайный prefab.
+
+---
+
+# 19. Visual Seed
+
+Для воспроизводимости используется отдельный:
+
+```text
+VisualSeed
+```
+
+Он отделён от:
+
+```text
+MazeSeed
+```
+
+Пример:
+
+```text
+LevelGenerationSettings
+├── MazeSeed
+└── VisualSeed
+```
+
+`MazeSeed` определяет логическую генерацию лабиринта.
+
+`VisualSeed` определяет первоначальный выбор визуальных вариантов.
+
+Одинаковые:
+
+```text
+MazeSeed
++
+VisualSeed
++
+VisualSets
+```
+
+должны давать одинаковый первоначальный визуальный результат.
+
+---
+
+# 20. Визуальный результат является частью дизайна
+
+После генерации:
+
+```text
+Wall cell #123
+→ wall_02
+```
+
+или:
+
+```text
+Floor cell #457
+→ floor_01
+```
+
+этот результат должен быть зафиксирован.
+
+После этого изменение:
+
+```text
+VisualSeed
+```
+
+не должно менять уже завершённый уровень автоматически.
+
+Дизайнер может изменить конкретный визуальный вариант вручную.
+
+---
+
+# 21. Visual Theme
+
+Для удобства повторного использования вводится:
+
+```text
+VisualTheme
+```
+
+Например:
+
+```text
+DungeonTheme
+LaboratoryTheme
+HospitalTheme
+IndustrialTheme
+```
+
+LevelData содержит ссылку на VisualTheme:
+
+```text
+LevelData
+└── VisualThemeReference
+```
+
+VisualTheme содержит ссылки на наборы визуальных вариантов.
+
+---
+
+# 22. Visual Sets
+
+Пример:
+
+```text
+VisualTheme
+├── FloorVisualSet
+├── WallVisualSet
+├── DoorVisualSet
+├── ExitVisualSet
+├── WeaponVisualSet
+├── KeyVisualSet
+├── MedkitVisualSet
+├── ZombieVisualSet
+└── OtherVisualSets
+```
+
+Visual Sets являются переиспользуемыми ресурсами.
+
+Один VisualTheme может использоваться несколькими уровнями.
+
+---
+
+# 23. Weighted Visual Variants
+
+Каждый VisualSet может содержать несколько вариантов.
+
+Например:
+
+```text
+FloorVisualSet
+
+floor_01.prefab    Weight = 80
+floor_02.prefab    Weight = 10
+floor_03.prefab    Weight = 10
+```
+
+Или:
+
+```text
+WallVisualSet
+
+wall_01.prefab     Weight = 70
+wall_02.prefab     Weight = 20
+wall_03.prefab     Weight = 10
+```
+
+Вес означает вероятность выбора варианта **во время первоначального формирования визуала уровня**.
+
+---
+
+# 24. Веса не используются в Runtime
+
+После завершения создания уровня:
+
+```text
+Weight = irrelevant
+```
+
+Runtime не делает:
+
+```text
+Random()
+```
+
+для выбора визуального prefab.
+
+Runtime использует уже сохранённый результат:
+
+```text
+Cell → SelectedVisualVariant
+```
+
+Таким образом два запуска одного и того же уровня всегда дают одинаковый визуальный результат.
+
+---
+
+# 25. Хранение выбранных вариантов
+
+В LevelData должен храниться результат visual assignment.
+
+Концептуально:
+
+```text
+VisualData
+├── GeometryVisualAssignments
+├── ObjectVisualAssignments
+└── Overrides
+```
+
+Например:
+
+```text
+GeometryVisualAssignment
+├── CellPosition
+├── VisualType
+└── VariantId
+```
+
+Для клетки:
+
+```text
+(10, 15)
+```
+
+может быть записано:
+
+```text
+Floor
+VariantId = floor_02
+```
+
+Runtime затем не выполняет random selection.
+
+---
+
+# 26. Почему сохраняется VariantId, а не только Random Seed
+
+`VisualSeed` нужен для первоначальной генерации.
+
+Но после ручного редактирования дизайнером уровень должен быть независим от дальнейшего изменения random seed.
+
+Поэтому итоговый уровень должен хранить **конкретные назначения вариантов**.
+
+То есть:
+
+```text
+VisualSeed
+```
+
+используется при создании.
+
+А:
+
+```text
+VariantId
+```
+
+является частью готового дизайна.
+
+---
+
+# 27. Ручной Visual Override
+
+Дизайнер должен иметь возможность вручную заменить выбранный вариант.
+
+Например:
+
+```text
+Generated:
+Floor cell (10,15)
+→ floor_01
+```
+
+Дизайнер меняет:
+
+```text
+→ floor_special_blood
+```
+
+После этого:
+
+```text
+Override = floor_special_blood
+```
+
+имеет приоритет над автоматическим выбором.
+
+---
+
+# 28. Приоритет визуального выбора
+
+Иерархия:
+
+```text
+Explicit Designer Override
+        ↓
+Saved Visual Assignment
+        ↓
+Generated Weighted Assignment
+        ↓
+Default Visual
+```
+
+То есть ручной выбор всегда имеет приоритет.
+
+---
+
+# 29. Generate New и Visual Assignments
+
+`Generate New` создаёт новый базовый уровень.
+
+При этом:
+
+* старая геометрия заменяется;
+* старые visual assignments удаляются;
+* создаются новые visual assignments;
+* применяется новый или заданный VisualSeed;
+* дизайнер получает новый базовый визуальный результат.
+
+Это ожидаемое destructive behaviour.
+
+---
+
+# 30. Build / Sync
+
+`Build / Sync` должен фиксировать текущее состояние уровня.
+
+После:
+
+```text
+Build / Sync
+```
+
+runtime должен использовать именно текущее состояние:
+
+* геометрии;
+* дверей;
+* объектов;
+* visual assignments;
+* overrides.
+
+Build / Sync не должен случайно выполнять новый randomization.
+
+---
+
+# 31. Runtime Visual Pipeline
+
+Runtime:
+
+```text
+LevelData
+    ↓
+LevelGrid
+    ↓
+Saved Visual Assignments
+    ↓
+LevelVisualSystem
+    ↓
+GeometryBuilder / EntityViewFactory
+    ↓
+Exact Prefab
+```
+
+Никакого:
+
+```text
+Runtime
+→ Weighted Random
+```
+
+---
+
+# 32. Геометрические визуальные варианты
+
+Для пола и стен допускается несколько вариантов.
+
+Минимально:
+
+```text
+Floor
+Wall
+```
+
+Но система должна быть расширяемой.
+
+Для стен могут существовать категории:
+
+```text
+Straight
+Corner
+T_Junction
+End
+Special
+```
+
+Например:
+
+```text
+WallVisualSet
+├── Straight
+├── Corner
+├── T_Junction
+├── End
+└── Special
+```
+
+---
+
+# 33. Контекстный выбор Wall Prefab
+
+Выбор визуала стены может учитывать структуру соседних клеток.
+
+Например:
+
+```text
+CellVisualContext
+├── CellType
+├── North
+├── South
+├── East
+├── West
+├── NorthEast
+├── NorthWest
+├── SouthEast
+├── SouthWest
+├── DoorState
+└── NeighbourCells
+```
+
+На основании этого определяется тип визуального элемента:
+
+```text
+Straight
+Corner
+T-Junction
+End
+...
+```
+
+После определения категории применяется weighted selection внутри этой категории.
+
+---
+
+# 34. Важное ограничение
+
+Контекстная визуализация не должна изменять логическую геометрию.
+
+Она только отвечает:
+
+> Как визуально представить уже существующую конфигурацию клеток?
+
+---
+
+# 35. Floor Variants
+
+Пол может иметь варианты:
+
+```text
+floor_01
+floor_02
+floor_03
+...
+```
+
+Например:
+
+```text
+floor_01 = 80
+floor_02 = 10
+floor_03 = 10
+```
+
+Первоначальное распределение выполняется во время подготовки уровня.
+
+После фиксации:
+
+```text
+Cell → floor_01
+```
+
+остаётся постоянным.
+
+---
+
+# 36. Wall Variants
+
+Стены могут иметь несколько визуальных вариантов с весами.
+
+Например:
+
+```text
+wall_01 = 80
+wall_02 = 10
+wall_03 = 10
+```
+
+Но если тип стены зависит от окружения, сначала определяется категория:
+
+```text
+Straight
+Corner
+End
+...
+```
+
+а затем выбирается вариант внутри соответствующей категории.
+
+---
+
+# 37. Door Visuals
+
+Двери являются отдельным типом визуального набора.
+
+Например:
+
+```text
+DoorVisualSet
+├── door_01
+├── door_02
+└── door_03
+```
+
+Также могут существовать визуальные состояния:
+
+```text
+Closed
+Open
+Locked
+Unlocked
+```
+
+Логическое состояние двери определяется `DoorSystem`.
+
+Prefab только визуально представляет это состояние.
+
+---
+
+# 38. Exit Visuals
+
+Выход имеет собственный VisualSet.
+
+Например:
+
+```text
+ExitVisualSet
+├── exit_01
+├── exit_02
+└── exit_03
+```
+
+Если выходов несколько, каждый конкретный Exit получает заранее выбранный визуальный вариант.
+
+---
+
+# 39. Weapon Visuals
+
+Gameplay weapon должен быть отделён от конкретного prefab.
+
+Рекомендуемая структура:
+
+```text
+WeaponDefinition
+        ↓
+WeaponVisualDefinition
+        ↓
+Prefab
+```
+
+Runtime:
+
+```text
+WeaponData
+    ↓
+WeaponRuntime
+    ↓
+WeaponView
+```
+
+---
+
+# 40. Key Visuals
+
+Ключ должен иметь визуальное представление.
+
+Цвет является частью визуальной идентификации пары:
+
+```text
+Key
+↕
+Door
+```
+
+При этом техническая связь осуществляется через:
+
+```text
+KeyId
+DoorId
+```
+
+а не через цвет.
+
+---
+
+# 41. Zombie Visuals
+
+Zombie type определяет gameplay behaviour.
+
+VisualSet определяет внешний вид.
+
+Например:
+
+```text
+ZombieVisualSet
+├── zombie_01
+├── zombie_02
+├── zombie_03
+```
+
+Конкретный визуальный вариант может быть назначен при подготовке уровня.
+
+Runtime не выбирает случайный prefab.
+
+---
+
+# 42. Medkit Visuals
+
+Medkit имеет собственное визуальное представление.
+
+Конкретный prefab фиксируется при подготовке уровня.
+
+---
+
+# 43. Object Visual Assignment
+
+Для конкретных объектов:
+
+```text
+Weapon
+Key
+Medkit
+Zombie
+Exit
+Door
+```
+
+визуальный вариант должен быть привязан к конкретному объекту в LevelData.
+
+Например:
+
+```text
+Weapon #17
+VisualVariantId = shotgun_red
+```
+
+---
+
+# 44. Addressables и Visual Prefabs
+
+Visual Prefabs должны быть совместимы с Addressables architecture.
+
+Рекомендуется:
+
+```text
+Shared Visual Assets
+        ↓
+Addressables
+```
+
+LevelData не должен бесконтрольно загружать тысячи уникальных prefab assets.
+
+Должна существовать контролируемая система lifetime/ownership.
+
+При необходимости VisualTheme/VisualSet может ссылаться на Addressable prefab definitions.
+
+---
+
+# 45. Prefab не является источником игровой логики
+
+Например:
+
+```text
+wall_01.prefab
+```
+
+не определяет:
+
+```text
+IsWalkable
+BlocksSight
+BlocksBullet
+```
+
+Эти свойства определяются логическим уровнем.
+
+Аналогично:
+
+```text
+door_01.prefab
+```
+
+не определяет:
+
+```text
+RequiresKey
+BlocksSound
+BlocksSight
+```
+
+Это определяется `DoorSystem`.
+
+---
+
+# 46. Visibility и Visual Prefabs
+
+Visibility работает поверх готового визуального уровня.
+
+Pipeline:
+
+```text
+LevelGrid
+      ↓
+VisibleCells
+      ↓
+VisibilityController
+      ↓
+Already selected visual representations
+```
+
+Visibility не должна выбирать prefab.
+
+Она только определяет:
+
+```text
+Visible
+Hidden
+```
+
+---
+
+# 47. Visibility для Geometry
+
+Если клетка не видима:
+
+```text
+Geometry View = Hidden
+```
+
+Это относится к:
+
+* Floor;
+* Wall;
+* Door;
+* Exit;
+* static environment.
+
+При этом:
+
+```text
+LevelGrid
+```
+
+остаётся неизменным.
+
+---
+
+# 48. Visibility для Dynamic Entities
+
+Для:
+
+* Zombie;
+* Weapon;
+* Key;
+* Medkit;
+* других объектов
+
+VisibilityController использует их `GridPosition`.
+
+Если клетка не входит в `VisibleCells`:
+
+```text
+EntityView = Hidden
+```
+
+Runtime entity продолжает существовать.
+
+---
+
+# 49. Navigation, Visibility и Visuals
+
+Эти системы независимы:
+
+```text
+LevelGrid
+   ├── Navigation
+   ├── Visibility
+   ├── Visual Representation
+   └── Map
+```
+
+Например:
+
+```text
+Wall Cell
+```
+
+одновременно может:
+
+* блокировать Navigation;
+* блокировать LOS;
+* быть визуально скрыта из-за Fog of War.
+
+Это нормальное состояние.
+
+---
+
+# 50. Grid
+
+Типы клеток:
+
+```text
+Floor
+Wall
+Door
+```
+
+Дверь занимает одну клетку.
+
+---
+
+# 51. Occupancy
+
+Игрок:
+
+```text
+Player = максимум 1 объект в клетке
+```
+
+Зомби:
+
+```text
+Zombies = 0..N
+```
+
+Игрок и зомби не могут находиться в одной клетке.
+
+Несколько зомби могут находиться в одной клетке.
+
+Pickup objects не блокируют путь.
+
+---
+
+# 52. Navigation
+
+Используется:
+
+```text
+Grid Navigation + A*
+```
+
+Постоянные blockers:
+
+* Wall;
+* Closed Door.
+
+Не являются постоянными blockers:
+
+* Player;
+* Zombie;
+* Pickup;
+* Weapon.
+
+A* не выполняется каждый кадр.
+
+Пересчёт происходит при:
+
+* изменении target;
+* изменении двери;
+* invalidation path;
+* изменении AI task.
+
+---
+
+# 53. Visibility / Fog of War
+
+Игрок видит область:
+
+```text
+11 × 11
+```
+
+с центром в текущей логической клетке игрока.
+
+То есть:
+
+```text
+5 клеток
+```
+
+во все стороны.
+
+---
+
+# 54. Жёсткое правило видимости
+
+Всё, что:
+
+* находится за пределами 11×11;
+* находится внутри 11×11, но скрыто Line of Sight;
+
+должно быть визуально скрыто.
+
+Скрывается:
+
+* пол;
+* стены;
+* двери;
+* выходы;
+* окружение;
+* зомби;
+* оружие;
+* ключи;
+* medkits;
+* другие gameplay entities.
+
+---
+
+# 55. Line of Sight
+
+Блокируют:
+
+* Wall;
+* Closed Door.
+
+Не блокирует:
+
+* Open Door.
+
+---
+
+# 56. Visibility Recalculation
+
+Visibility пересчитывается:
+
+```text
+PlayerCellChanged
+```
+
+а не каждый кадр.
+
+Pipeline:
+
+```text
+Player GridPosition
+        ↓
+VisibilitySystem
+        ↓
+VisibleCells
+        ↓
+VisibilityController
+```
+
+---
+
+# 57. Visibility не отключает AI
+
+Невидимый объект:
+
+```text
+View = Hidden
+```
+
+но:
+
+```text
+Runtime = Active
+AI = Active
+Navigation = Active
+Detection = Active
+```
+
+---
+
+# 58. Map
+
+Игрок собирает части карты.
+
+Map Fragment:
+
+```text
+FragmentId
+Region
+Collected
+```
+
+Количество задаёт дизайнер.
+
+Фрагменты не пересекаются.
+
+---
+
+# 59. Map Editor
+
+Editor должен позволять:
+
+* создавать fragment;
+* задавать ID;
+* выделять Region;
+* изменять Region;
+* видеть границы;
+* проверять overlap.
+
+---
+
+# 60. Map Content
+
+Собранный фрагмент показывает:
+
+* стены;
+* проходы;
+* двери;
+* выходы;
+* стартовые точки.
+
+Не показывает:
+
+* игрока;
+* зомби;
+* ключи;
+* оружие;
+* medkits.
+
+MapRenderer использует:
+
+```text
+LevelGrid
+```
+
+как source of geometry.
+
+Map не зависит от текущей Visibility.
+
+Map открывается fullscreen и ставит gameplay на pause.
+
+---
+
+# 61. Player Start
+
+Start — место появления игрока.
+
+При нескольких Start:
+
+```text
+Random Start
+```
+
+выбирается при начале уровня.
+
+Validator проверяет достижимость выхода из каждой стартовой точки.
+
+Editor поддерживает:
+
+```text
+Test from Start #N
+```
+
+---
+
+# 62. Exits
+
+Любой Exit равнозначен.
+
+При входе:
+
+```text
+Confirm:
+Завершить уровень?
+```
+
+`No`:
+
+* окно закрывается;
+* gameplay продолжается.
+
+Повторный вход вызывает окно снова.
+
+---
+
+# 63. Player
+
+Player состоит из:
+
+```text
+PlayerController
+├── Movement
+├── Combat
+├── Inventory
+└── Interaction
+```
+
+---
+
+# 64. Управление
+
+Android:
+
+* joystick снизу слева;
+* attack button снизу справа;
+* melee;
+* ranged;
+* map;
+* door.
+
+Desktop:
+
+* WASD;
+* mouse;
+* keyboard/mouse actions.
+
+Input abstraction:
+
+```text
+Move
+Look
+Attack
+Interact
+SwitchMelee
+SwitchRanged
+OpenMap
+```
+
+---
+
+# 65. Player Movement
+
+Движение плавное.
+
+Не строго по клеткам.
+
+GridPosition обновляется при переходе в другую логическую клетку.
+
+Направление движения определяет направление взгляда.
+
+При остановке последнее направление сохраняется.
+
+Нет strafe/backpedal с сохранением направления взгляда.
+
+---
+
+# 66. Player Attack
+
+Игрок не может двигаться во время выполнения атаки.
+
+При атаке:
+
+1. движение останавливается;
+2. выполняется атака;
+3. движение разрешается сразу;
+4. cooldown блокирует только следующую атаку.
+
+После выстрела двигаться можно сразу.
+
+---
+
+# 67. Weapons
+
+Два слота:
+
+```text
+Melee
+Ranged
+```
+
+Подбор оружия:
+
+* отдельная кнопка;
+* оружие сразу становится активным.
+
+Если слот занят оружием того же типа:
+
+* старое выпадает;
+* новое занимает слот;
+* старое сбрасывает состояние.
+
+Любое лежащее оружие считается полностью готовым при подборе.
+
+---
+
+# 68. Ranged
+
+Параметры:
+
+```text
+Damage
+FireInterval
+MagazineSize
+ReloadTime
+FireMode
+```
+
+FireMode:
+
+* Single;
+* Automatic.
+
+Общий боезапас бесконечен.
+
+Магазин ограничен.
+
+Ручной reload отсутствует.
+
+---
+
+# 69. Melee
+
+Параметры:
+
+```text
+Damage
+AttackSpeed
+```
+
+Атака происходит в направлении взгляда.
+
+---
+
+# 70. Combat
+
+Пуля уничтожается при попадании в:
+
+* Wall;
+* Door;
+* Zombie.
+
+Closed Door блокирует пулю.
+
+Open Door не блокирует.
+
+Для fast projectile использовать:
+
+```text
+PreviousPosition
+        ↓
+CurrentPosition
+        ↓
+Segment/Grid Query
+```
+
+---
+
+# 71. Sound
+
+```text
+SoundEvent
+├── Position
+├── Radius
+└── Type
+```
+
+Типы:
+
+* Step;
+* Pickup;
+* Door;
+* Melee;
+* Ranged.
+
+Звук не блокируется стенами или дверями.
+
+Step является периодическим событием при движении.
+
+Нет noise accumulation.
+
+---
+
+# 72. Medkit
+
+Medkit не переносится.
+
+При входе:
+
+```text
+HP < MaxHP
+```
+
+→ лечение и удаление.
+
+Если HP полный:
+
+→ medkit остаётся.
+
+---
+
+# 73. Zombie Types
+
+## Vision Only
+
+Параметры:
+
+```text
+VisionAngle
+VisionRange
+```
+
+Например:
+
+```text
+45°
+```
+
+Обнаружил игрока:
+
+```text
+Chase
+```
+
+Потерял:
+
+```text
+Return
+```
+
+## Hearing Only
+
+Параметр:
+
+```text
+HearingRadius
+```
+
+Sound внутри radius:
+
+```text
+Chase / Attack
+```
+
+Потерял:
+
+```text
+Return
+```
+
+## Vision + Hearing
+
+Общий detection radius.
+
+Игрок внутри:
+
+```text
+Chase / Attack
+```
+
+Игрок снаружи:
+
+```text
+Return
+```
+
+---
+
+# 74. Zombie State Machine
+
+```text
+Idle
+Patrol
+Chase
+Attack
+Return
+```
+
+Архитектура:
+
+```text
+ZombieController
+├── ZombieStateMachine
+├── Detection
+│   ├── Vision
+│   └── Hearing
+├── Navigation
+└── Combat
+```
+
+Detection не командует AI напрямую.
+
+---
+
+# 75. Zombie Patrol
+
+Patrol loop:
+
+```text
+A → B → C → D → A
+```
+
+При потере игрока:
+
+* ближайшая patrol point;
+* возврат;
+* продолжение patrol.
+
+Если patrol отсутствует:
+
+* Original Position;
+* Idle/Wait.
+
+---
+
+# 76. Zombie Reaction
+
+Если игрок вне detection zone:
+
+полученный урон не вызывает автоматическую реакцию.
+
+Не используются:
+
+* zombie information sharing;
+* сложная memory;
+* investigation;
+* координация;
+* глобальная агро-система.
+
+---
+
+# 77. Zombie Collision
+
+Если зомби достигает соседней клетки:
+
+```text
+Attack
+```
+
+Игрок не проходит через зомби.
+
+Зомби проходят друг через друга.
+
+---
+
+# 78. No Physics
+
+Gameplay не использует Unity Physics.
+
+Вместо неё:
+
+```text
+Grid
+Occupancy
+SpatialQuery
+SegmentQuery
+RadiusQuery
+```
+
+---
+
+# 79. Gameplay / View
+
+Основная модель:
+
+```text
+Data
+ ↓
+Runtime
+ ↓
+View
+```
+
+Примеры:
+
+```text
+WeaponData
+ ↓
+WeaponRuntime
+ ↓
+WeaponView
+```
+
+```text
+PlayerRuntime
+ ↓
+PlayerView
+```
+
+MonoBehaviour используется для:
+
+* Transform;
+* Animator;
+* Renderer;
+* UI;
+* VFX.
+
+---
+
+# 80. Animator
+
+Animator/Mecanim используется для визуальных анимаций.
+
+Animator не должен самостоятельно запускать gameplay logic.
+
+Gameplay state управляет Animator.
+
+Не наоборот.
+
+---
+
+# 81. Spatial Query
+
+Использовать:
+
+```text
+ISpatialQueryService
+├── GetObjectsInCell
+├── GetObjectsAroundCell
+├── QuerySegment
+├── QueryDirection
+└── QueryRadius
+```
+
+Используется для:
+
+* melee;
+* bullets;
+* AI;
+* combat;
+* interactions.
+
+---
+
+# 82. Geometry Builder
+
+Для статической геометрии:
+
+```text
+LevelData
+ ↓
+LevelGrid
+ ↓
+GeometryBuilder
+ ↓
+Saved Visual Assignments
+ ↓
+Mesh Generation
+ ↓
+Mesh Combine
+ ↓
+Static Batching
+```
+
+Не создавать сотни отдельных wall GameObjects без необходимости.
+
+---
+
+# 83. Object Pooling
+
+Использовать для:
+
+* bullets;
+* VFX;
+* zombies при частом spawn/despawn;
+* других transient objects.
+
+Не требуется пулить каждый объект.
+
+---
+
+# 84. Addressables
+
+Каждый LevelData — Addressable.
+
+Одновременно загружен один уровень.
+
+Shared assets могут оставаться resident.
+
+Каждый acquired handle должен иметь owner/lifetime.
+
+После уничтожения LevelScope:
+
+```text
+Release level-specific Addressables
+```
+
+Lost handles запрещены.
+
+Visual assets должны иметь контролируемый Addressables lifetime.
+
+---
+
+# 85. SaveData
+
+```text
+SaveData
+├── UnlockedLevels
+├── LevelStars[]
+├── TotalKills
+└── Settings
+```
+
+Сохраняется:
+
+* после успешного завершения;
+* при изменении настроек;
+* при других явно определённых persistent events.
+
+Текущее незавершённое прохождение не сохраняется.
+
+---
+
+# 86. Level Progress
+
+Runtime progress:
+
+* killed zombies;
+* collected fragments;
+* door states;
+* player state;
+* weapon state.
+
+При смерти runtime progress полностью сбрасывается.
+
+---
+
+# 87. Stars
+
+3 звезды:
+
+1. завершение уровня;
+2. уничтожение всех зомби;
+3. сбор всех map fragments.
+
+---
+
+# 88. Death Flow
+
+```text
+HP <= 0
+    ↓
+StopGameplay
+    ↓
+Disable Input
+    ↓
+Death Window
+```
+
+Действия:
+
+```text
+Retry
+Menu
+```
+
+Retry:
+
+```text
+Dispose LevelScope
+    ↓
+Rebuild from LevelData
+    ↓
+Fresh Runtime State
+```
+
+---
+
+# 89. Completion Flow
+
+```text
+Player enters Exit
+        ↓
+Confirm
+        ↓
+Yes
+        ↓
+CompleteLevel
+        ↓
+StopGameplay
+        ↓
+Calculate Stars
+        ↓
+Save
+        ↓
+Result Window
+```
+
+---
+
+# 90. Validator
+
+## Structural
+
+Проверяет:
+
+* even dimensions;
+* valid cells;
+* coordinates;
+* IDs;
+* duplicate IDs;
+* objects inside walls;
+* invalid positions;
+* intersections;
+* Door/Key references;
+* map fragment bounds;
+* visual assignment validity;
+* существование referenced Visual Variant.
+
+## Gameplay
+
+Проверяет:
+
+* reachable exits;
+* every Player Start;
+* doors/keys;
+* soft-locks;
+* basic navigation;
+* important object reachability.
+
+---
+
+# 91. Visual Validation
+
+Validator должен дополнительно проверять:
+
+* VisualTheme существует;
+* VisualSet существует;
+* VariantId существует;
+* prefab reference корректен;
+* нет битых visual references;
+* все обязательные визуальные категории имеют допустимый вариант;
+* contextual wall category имеет доступные варианты;
+* manual override ссылается на существующий visual asset.
+
+Visual error не должен приводить к тихому случайному выбору другого prefab.
+
+---
+
+# 92. Validation Severity
+
+### Error
+
+Уровень нельзя считать готовым.
+
+Например:
+
+* Start в стене;
+* Exit недостижим;
+* отсутствует Key reference;
+* отсутствует Visual Variant;
+* broken prefab reference.
+
+### Warning
+
+Потенциальная проблема.
+
+Например:
+
+* оружие недостижимо;
+* ненужный ключ;
+* потенциально бессмысленная дверь;
+* слишком однообразный visual distribution.
+
+### Info
+
+Информационные сообщения.
+
+---
+
+# 93. Visual Distribution Diagnostics
+
+Editor может отображать статистику визуального распределения.
+
+Например:
+
+```text
+Floor
+
+floor_01   79.4%
+floor_02   10.2%
+floor_03   10.4%
+```
+
+Это диагностический инструмент.
+
+Фактическое распределение может немного отличаться от заданных весов из-за конечного количества клеток.
+
+---
+
+# 94. Editor Visual Controls
+
+Level Designer должен иметь возможность:
+
+* выбрать VisualTheme;
+* посмотреть VisualSets;
+* изменить weight;
+* regenerate visual assignments;
+* зафиксировать assignments;
+* вручную выбрать prefab/Variant;
+* очистить override;
+* увидеть текущий VariantId;
+* увидеть визуальные overrides;
+* проверить visual distribution.
+
+---
+
+# 95. Regenerate Visuals
+
+Должна существовать отдельная команда:
+
+```text
+Regenerate Visuals
+```
+
+Она отличается от:
+
+```text
+Generate New
+```
+
+`Regenerate Visuals`:
+
+* не меняет логическую геометрию;
+* не меняет позиции объектов;
+* не меняет двери;
+* не меняет ключи;
+* не меняет зомби;
+* не меняет map fragments;
+* заново создаёт первоначальные visual assignments.
+
+Но действие должно быть явно контролируемым, потому что оно может заменить существующий визуальный дизайн.
+
+Перед операцией рекомендуется предупреждение.
+
+---
+
+# 96. Manual Visual Override после Regenerate Visuals
+
+Необходимо определить явное поведение:
+
+### По умолчанию
+
+`Regenerate Visuals` заменяет автоматически сгенерированные assignments.
+
+### Designer Override
+
+Ручные overrides сохраняются, если дизайнер явно не выбрал:
+
+```text
+Regenerate Visuals + Clear Overrides
+```
+
+Таким образом:
+
+```text
+Generated Visual
+        ↓
+Manual Override
+        ↓
+Regenerate Visuals
+```
+
+не должен случайно уничтожать ручную работу дизайнера.
+
+---
+
+# 97. Завершённый уровень
+
+Уровень считается визуально готовым, когда:
+
+* все логические элементы размещены;
+* все visual assignments определены;
+* все необходимые overrides внесены;
+* отсутствуют visual validation errors;
+* Level Designer считает визуальную часть завершённой.
+
+После этого:
+
+> Runtime не выполняет никакой визуальной рандомизации.
+
+---
+
+# 98. Determinism
+
+Один и тот же готовый LevelData должен выглядеть одинаково при:
+
+* первом запуске;
+* повторном запуске;
+* Retry;
+* загрузке с другого устройства;
+* WebGL;
+* Android.
+
+Runtime не должен зависеть от random state для выбора prefab.
+
+---
+
+# 99. Визуальный дизайн как часть Level Design
+
+Итоговая модель:
+
+```text
+Logical Design
++
+Visual Design
+=
+Finished Level
+```
+
+Генератор помогает создать:
+
+```text
+Logical Base
++
+Initial Visual Variation
+```
+
+Level Designer затем завершает:
+
+```text
+Geometry
++
+Objects
++
+Gameplay
++
+Visuals
+```
+
+И только после этого уровень считается готовым.
+
+---
+
+# 100. Генератор не является финальным автором визуала
+
+Генератор создаёт первоначальный визуальный результат.
+
+Он не должен навязывать дизайнеру окончательный результат.
+
+Например:
+
+```text
+Generate New
+
+Floor:
+80/10/10
+→ initial assignments
+
+Wall:
+80/10/10
+→ initial assignments
+
+Designer:
+→ меняет 7 клеток пола
+→ меняет 3 стены
+→ заменяет дверь
+→ добавляет special visual
+```
+
+Именно состояние после редактирования является финальным дизайном.
+
+---
+
+# 101. Визуальный pipeline
+
+Полный pipeline:
+
+```text
+Generation Settings
+        ↓
+Generate New
+        ↓
+Logical Maze
+        ↓
+VisualTheme
+        ↓
+Context Analysis
+        ↓
+Weighted Visual Selection
+        ↓
+Saved Visual Assignments
+        ↓
+Level Designer
+        ↓
+Manual Visual Overrides
+        ↓
+Validate
+        ↓
+Build / Sync
+        ↓
+Final LevelData
+        ↓
+Addressable
+        ↓
+Runtime
+        ↓
+Exact Saved Visuals
+```
+
+---
+
+# 102. Runtime pipeline
+
+Runtime:
+
+```text
+LevelData
+    ↓
+LevelGrid
+    ├── NavigationSystem
+    ├── VisibilitySystem
+    ├── MapSystem
+    └── SpatialQuerySystem
+            ↓
+       Gameplay Runtime
+            ↓
+       Presentation
+```
+
+Visual selection в runtime отсутствует.
+
+Runtime выполняет только:
+
+```text
+Saved Assignment
+    ↓
+Load / Instantiate Visual
+```
+
+---
+
+# 103. Performance
+
+Цель:
+
+```text
+30–60 FPS
+```
+
+Не допускаются:
+
+* per-frame A*;
+* per-frame Visibility;
+* per-frame heavy AI;
+* per-frame Physics;
+* unnecessary allocations;
+* excessive GameObjects;
+* constant mesh regeneration;
+* heavy realtime shadows;
+* heavy transparency;
+* heavy post-processing;
+* huge textures.
+
+Использовать:
+
+* Mesh Combine;
+* Static Batching;
+* Object Pooling;
+* Addressables;
+* event-driven systems;
+* visibility chunks.
+
+---
+
+# 104. Visibility Performance
+
+Visibility:
+
+```text
+PlayerCellChanged
+```
+
+→ calculate:
+
+```text
+11×11
++
+LOS
+```
+
+→ update:
+
+```text
+VisibleCells
+```
+
+→ update:
+
+```text
+VisibilityController
+```
+
+Невидимые объекты не уничтожаются и не перестают симулироваться.
+
+---
+
+# 105. Visual Chunks
+
+Для статической геометрии рекомендуется использовать визуальные chunks:
+
+```text
+VisibilityChunk
+├── Floor
+├── Walls
+├── Doors
+├── Static Environment
+└── Other Visuals
+```
+
+Это позволит не управлять тысячами отдельных GameObject при каждом изменении видимости.
+
+---
+
+# 106. Архитектура Visibility
+
+```text
+LevelGrid
++
+DoorState
++
+PlayerGridPosition
+        ↓
+VisibilitySystem
+        ↓
+VisibleCells
+        ↓
+VisibilityController
+        ↓
+Visual Chunks
++
+Dynamic Entity Views
+```
+
+---
+
+# 107. Три независимые системы
+
+Обязательно разделять:
+
+### Navigation
+
+> Может ли объект перемещаться?
+
+### Visibility
+
+> Может ли игрок визуально видеть объект?
+
+### Detection
+
+> Может ли зомби обнаружить игрока?
+
+Они не должны быть объединены в одну систему.
+
+---
+
+# 108. Logging
+
+Structured logs:
+
+* Bootstrap;
+* GameFlow;
+* Addressables;
+* Level loading;
+* Level unloading;
+* Validation;
+* Save;
+* major gameplay errors;
+* visual build errors.
+
+Не использовать большое количество `Debug.Log` в production loops.
+
+---
+
+# 109. Error Handling
+
+При критической ошибке:
+
+1. остановить initialization;
+2. отменить async operations;
+3. освободить Addressables;
+4. уничтожить повреждённый LevelScope;
+5. показать controlled error state.
+
+Не оставлять частично инициализированный уровень.
+
+---
+
+# 110. Tests
+
+## EditMode
+
+Тестировать:
+
+* Grid;
+* Generator;
+* Generator seeds;
+* Visual weighted selection;
+* Visual deterministic selection;
+* Visual assignments;
+* Visual overrides;
+* Validator;
+* A*;
+* Key/Door solver;
+* Visibility;
+* Save serialization;
+* Progress;
+* Spatial Queries.
+
+## PlayMode
+
+Тестировать:
+
+* Bootstrap;
+* GameFlow;
+* Addressables;
+* LevelScope;
+* Player spawn;
+* Door;
+* Key;
+* Weapon;
+* Zombie;
+* Death;
+* Retry;
+* Completion;
+* Save;
+* Visibility;
+* visual loading.
+
+---
+
+# 111. Generator Mass Test
+
+Минимальный тест:
+
+```text
+1000 random seeds
+    ↓
+Generate
+    ↓
+Assign Visuals
+    ↓
+Validate
+```
+
+Должна собираться статистика ошибок.
+
+---
+
+# 112. Scope
+
+В scope входят:
+
+* 3D top-down gameplay;
+* maze generation;
+* Editor Level Designer Tool;
+* manual level editing;
+* visual prefab system;
+* VisualTheme;
+* VisualSets;
+* weighted visual variants;
+* deterministic visual assignments;
+* visual seed;
+* manual visual overrides;
+* contextual wall variants;
+* validation;
+* doors;
+* keys;
+* weapons;
+* combat;
+* zombies;
+* patrol;
+* hearing;
+* vision;
+* Visibility/Fog of War;
+* map fragments;
+* exits;
+* stars;
+* save;
+* level progression;
+* WebGL;
+* Android;
+* Addressables;
+* VContainer;
+* Grid Navigation;
+* A*;
+* Spatial Queries;
+* performance optimization;
+* automated tests.
+
+---
+
+# 113. Не входит в scope
+
+Не входят:
+
+* multiplayer;
+* online/backend;
+* cloud save;
+* analytics backend;
+* сложная procedural generation;
+* NavMesh;
+* ECS/DOTS;
+* LOD;
+* Unity Physics;
+* сложная zombie coordination;
+* checkpoints;
+* traps;
+* regeneration;
+* advanced stealth simulation.
+
+---
+
+# 114. Итоговая архитектура
+
+```text
+                         ┌───────────────────────┐
+                         │    ProjectScope       │
+                         │                       │
+                         │ GameFlow              │
+                         │ SaveService           │
+                         │ InputService          │
+                         │ AudioService          │
+                         │ AddressablesService   │
+                         └───────────┬───────────┘
+                                     │
+                                     ▼
+                         ┌───────────────────────┐
+                         │     LevelScope        │
+                         │                       │
+                         │ LevelData             │
+                         │ LevelGrid             │
+                         │ DoorSystem             │
+                         │ NavigationSystem       │
+                         │ VisibilitySystem       │
+                         │ LevelVisualSystem      │
+                         │ PlayerSystem           │
+                         │ ZombieSystem           │
+                         │ CombatSystem           │
+                         │ WeaponSystem           │
+                         │ PickupSystem           │
+                         │ MapSystem              │
+                         │ LevelProgress          │
+                         └───────────┬───────────┘
+                                     │
+             ┌───────────────────────┼──────────────────────┐
+             │                       │                      │
+             ▼                       ▼                      ▼
+       Navigation              Visibility              Gameplay
+             │                       │                      │
+             ▼                       ▼                      ▼
+         Movement              VisibleCells            Runtime State
+                                     │
+                                     ▼
+                            VisibilityController
+                                     │
+                                     ▼
+                            Visual Representation
+                                     │
+                    ┌────────────────┼─────────────────┐
+                    │                │                 │
+                    ▼                ▼                 ▼
+                Geometry          Doors             Entities
+                    │                │                 │
+                    └────────────────┼─────────────────┘
+                                     ▼
+                                  Rendering
+```
+
+---
+
+# 115. Финальная модель визуальной системы
+
+Ключевая модель проекта:
+
+```text
+                 EDITOR / LEVEL CREATION
+                         │
+                         ▼
+                 ┌───────────────┐
+                 │ Maze Generator│
+                 └───────┬───────┘
+                         │
+                         ▼
+                   Logical Level
+                         │
+                         ▼
+                   Visual Theme
+                         │
+                         ▼
+                 Context Analysis
+                         │
+                         ▼
+                Weighted Selection
+                         │
+                         ▼
+                Visual Assignments
+                         │
+                         ▼
+                 Level Designer
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+        Gameplay Editing       Visual Editing
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                  Validate / Sync
+                         │
+                         ▼
+                  FINAL LEVEL DATA
+                         │
+                         │
+                  ───────┼───────
+                         │
+                         ▼
+                       RUNTIME
+                         │
+                         ▼
+              Load Saved Visuals
+                         │
+                         ▼
+                 Render Exact Result
+```
+
+Главное правило:
+
+> **Weighted Random существует только при создании/подготовке уровня. Runtime никогда не выбирает визуальный prefab случайно.**
+
+Например, если при создании уровня система получила:
+
+```text
+floor_01 = 80%
+floor_02 = 10%
+floor_03 = 10%
+```
+
+и в результате конкретная клетка получила:
+
+```text
+Cell (15, 23)
+→ floor_02
+```
+
+то после завершения работы Level Designer эта клетка **всегда** использует `floor_02`, пока дизайнер явно не изменит её визуальный вариант.
+
+То же самое относится к стенам, дверям, выходам, оружию, ключам, зомби и другим визуальным объектам.
+
+Таким образом, визуальная часть является **полноценной частью финального дизайна уровня**, а не процедурной системой, работающей во время игры.

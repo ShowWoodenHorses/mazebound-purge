@@ -1,0 +1,30 @@
+{
+    "name": "Maze.Editor",
+    "rootNamespace": "Maze.Editor",
+    "references": [
+        "Maze.Core",
+        "Maze.Gameplay",
+        "Maze.Application",
+        "Maze.Presentation",
+        "Maze.Composition",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

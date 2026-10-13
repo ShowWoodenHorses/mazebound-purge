@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e67db940f1f22479cb602c362d7f24, type: 3}
+  m_Name: WeaponVisuals
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.WeaponVisualCatalog
+  _weapons:
+  - _definition: {fileID: 11400000, guid: a63bb30920a56754d8f8a5188eea4139, type: 2}
+    _heldPrefab:
+      m_AssetGUID: ce3b93c2ff9f6f644890d8abcb3a5749
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: c16d96c9c2d060847a69f0e7f2d00392, type: 3}
+  - _definition: {fileID: 11400000, guid: 2bb7dc9d0eb49d94aa908e133bb58da9, type: 2}
+    _heldPrefab:
+      m_AssetGUID: 9dca697e99b490c43a892a09177b038d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 6dd5ebd771c615e4f8d34013d6f519d8, type: 3}
+  - _definition: {fileID: 11400000, guid: b648aac8a8cb44c45a97d41297b31aba, type: 2}
+    _heldPrefab:
+      m_AssetGUID: be28daa0667386f4ab1d6e0ae1ac59dc
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: b56c769a606a83b4498b208f5e25f635, type: 3}
+  - _definition: {fileID: 11400000, guid: 9f444227525d435499517b13b3b00da1, type: 2}
+    _heldPrefab:
+      m_AssetGUID: e6e89d136fb41ad488c4568853260c9f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: ed264bfb293f6c9418083120100e8245, type: 3}
+  - _definition: {fileID: 11400000, guid: 05592bd23d54afc4fa8f4f31f4a5f45b, type: 2}
+    _heldPrefab:
+      m_AssetGUID: b68cdd3552a07f643aca1595689f96a4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: bdf8d04166885504cbc4abea2e577130, type: 3}
+  - _definition: {fileID: 11400000, guid: bd948e954d146054e87e4bd8308c40a7, type: 2}
+    _heldPrefab:
+      m_AssetGUID: 67d413abe225d2d47a78fb336374d015
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 3371e894cdef04e4fa5f78384d5d9c08, type: 3}
+  - _definition: {fileID: 11400000, guid: 3493d85149291cd41ac4d077cc3ec857, type: 2}
+    _heldPrefab:
+      m_AssetGUID: d7fd9fdf4a2cc10458a5b98d0da75977
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 4f70dd6ba0f1d30469ec4ac1e5a6b82f, type: 3}
+  - _definition: {fileID: 11400000, guid: 7ca6f9caabab14249976bf0a5ceda6ef, type: 2}
+    _heldPrefab:
+      m_AssetGUID: e28f1d16de9bd0a4b80abb0b08b53d94
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: eac4a9a2b41204d4abf64ab96a2d9b57, type: 3}
+  - _definition: {fileID: 11400000, guid: eed7f5fc0ce713d418f2014e9021fd8b, type: 2}
+    _heldPrefab:
+      m_AssetGUID: 8e692d55281b90b43a27979a894927c2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: fed87a5090a03bf45884870c5dcc6428, type: 3}
+  - _definition: {fileID: 11400000, guid: c7e9ec95b3da8ad40a670cc1a1994bf7, type: 2}
+    _heldPrefab:
+      m_AssetGUID: 28e42837255a8cc418b9fb2162ecb882
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 9c8693ae3fa1a7b4fb8781bc1ddfe665, type: 3}

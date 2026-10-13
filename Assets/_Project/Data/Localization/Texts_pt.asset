@@ -1,0 +1,346 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_pt
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: pt
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - "Portugu\xEAs"
+  - "CONFIGURA\xC7\xD5ES"
+  - SIM
+  - "N\xC3O"
+  - '{0}%'
+  - JOGAR
+  - "N\xCDVEIS"
+  - 'DEBUG: REDEFINIR PROGRESSO'
+  - "ESCOLHA O N\xCDVEL"
+  - "Ainda n\xE3o h\xE1 n\xEDveis: execute Build / Sync no Level Designer."
+  - CARREGANDO
+  - "N\xCDVEL {0}"
+  - RECARREGANDO
+  - "{0}: pressione \u201CA\xE7\xE3o\u201D para pegar"
+  - 'Pegou: {0}'
+  - Fragmento do mapa {0}/{1} encontrado
+  - 'Trancada: precisa de uma chave'
+  - 'Trancada: precisa da chave vermelha'
+  - 'Trancada: precisa da chave azul'
+  - 'Trancada: precisa da chave verde'
+  - 'Trancada: precisa da chave amarela'
+  - 'Trancada: precisa da chave laranja'
+  - 'Trancada: precisa da chave ciano'
+  - 'Trancada: precisa da chave roxa'
+  - 'Trancada: precisa da chave rosa'
+  - Porta destrancada
+  - "H\xE1 algo na passagem"
+  - 'Congelada: quebre o gelo com uma arma corpo a corpo'
+  - Fuzil de assalto
+  - Fuzil de batalha
+  - Taco
+  - "P\xE9 de cabra"
+  - "Machado de inc\xEAndio"
+  - "Rifle de ca\xE7a"
+  - Katana
+  - "Rifle rev\xF3lver"
+  - "Rifle de precis\xE3o"
+  - Submetralhadora com silenciador
+  - "FINALIZAR O N\xCDVEL?"
+  - PAUSADO
+  - CONTINUAR
+  - "REINICIAR N\xCDVEL"
+  - SAIR PARA O MENU
+  - 'DEBUG: CONCLUIR'
+  - 'DEBUG: FALHAR'
+  - "N\xCDVEL CONCLU\xCDDO"
+  - "N\xCDVEL FRACASSADO"
+  - "SA\xCDDA ENCONTRADA"
+  - "SA\xCDDA N\xC3O ENCONTRADA"
+  - ZUMBIS {0}/{1}
+  - MAPA {0}/{1}
+  - TEMPO {0}
+  - RECORDE {0}
+  - NOVO RECORDE!
+  - MENU
+  - DE NOVO
+  - "PR\xD3XIMO"
+  - ALGO DEU ERRADO
+  - VOLTAR AO MENU
+  - JOGADOR
+  - PARTES DO MAPA
+  - ZUMBIS
+  - ARMAS
+  - "KITS M\xC9DICOS"
+  - CHAVES
+  - "Rota at\xE9 o fragmento de mapa mais pr\xF3ximo"
+  - "Rota at\xE9 a sa\xEDda"
+  - "Rota at\xE9 a chave mais pr\xF3xima"
+  - "Rota at\xE9 a porta que sua chave abre"
+  - Nenhuma rota encontrada
+  - "Este n\xEDvel n\xE3o tem mapa"
+  - Nenhum fragmento do mapa encontrado ainda (0/{0})
+  - 'Fragmentos do mapa: {0}/{1}'
+  - CONTROLES
+  - TIRO
+  - OUTROS
+  - "Zona morta do anal\xF3gico"
+  - "Resposta do anal\xF3gico"
+  - "Tamanho dos bot\xF5es"
+  - "Opacidade dos bot\xF5es"
+  - "Anal\xF3gico flutuante (aparece sob o dedo)"
+  - Layout para canhotos
+  - "Posi\xE7\xE3o dos bot\xF5es"
+  - EDITAR
+  - "Dire\xE7\xF5es da mira"
+  - LIVRE
+  - OITO
+  - QUATRO
+  - "Mira autom\xE1tica em zumbis"
+  - "M\xFAsica"
+  - Sons
+  - Mostrar FPS
+  - Idioma
+  - Suporte
+  - "Pol\xEDtica de privacidade"
+  - ABRIR
+  - REDEFINIR ABA
+  - "Arraste o anal\xF3gico e os bot\xF5es. Toque em um para mudar o tamanho."
+  - '{0}: tamanho {1}'
+  - "Anal\xF3gico"
+  - Ataque e armas
+  - "A\xE7\xE3o"
+  - Corpo a corpo
+  - "\xC0 dist\xE2ncia"
+  - REDEFINIR
+  - PRONTO
+  - TUTORIAL
+  - ENTRAR
+  - Entre para manter seu progresso em todos os dispositivos
+  - TUTORIAL
+  - "TUTORIAL CONCLU\xCDDO"
+  - Rota do tutorial
+  - "O an\xFAncio n\xE3o est\xE1 dispon\xEDvel agora"
+  - Gire o seu aparelho
+  - ENTENDI
+  - "Bem-vindo ao labirinto! Seu objetivo \xE9 encontrar a sa\xEDda.\nMova-se com
+    WASD ou as setas e siga a linha brilhante."
+  - "Bem-vindo ao labirinto! Seu objetivo \xE9 encontrar a sa\xEDda.\nMova-se com
+    o anal\xF3gico \xE0 esquerda e siga a linha brilhante."
+  - Siga a linha
+  - "Algumas portas est\xE3o trancadas. Uma chave abre uma porta da sua cor.\nPara
+    pegar uma chave, basta pisar nela."
+  - Pegue a chave
+  - "V\xE1 at\xE9 a porta da cor da chave e pressione E para destranc\xE1-la. A chave
+    \xE9 gasta."
+  - "V\xE1 at\xE9 a porta da cor da chave e pressione \u201CA\xE7\xE3o\u201D (o bot\xE3o
+    redondo) para destranc\xE1-la. A chave \xE9 gasta."
+  - 'Destranque a porta: E'
+  - "Destranque a porta: \u201CA\xE7\xE3o\u201D"
+  - "A porta est\xE1 destrancada, mas ainda fechada. Pressione E de novo para abri-la.
+    As portas podem ser abertas e fechadas quantas vezes quiser."
+  - "A porta est\xE1 destrancada, mas ainda fechada. Pressione \u201CA\xE7\xE3o\u201D
+    de novo para abri-la. As portas podem ser abertas e fechadas quantas vezes quiser."
+  - 'Abra a porta: E'
+  - "Abra a porta: \u201CA\xE7\xE3o\u201D"
+  - "As armas ficam no ch\xE3o. Fique sobre uma e pressione E para peg\xE1-la.\nVoc\xEA
+    pode carregar uma arma corpo a corpo e uma arma de fogo."
+  - "As armas ficam no ch\xE3o. Fique sobre uma e pressione \u201CA\xE7\xE3o\u201D
+    para peg\xE1-la.\nVoc\xEA pode carregar uma arma corpo a corpo e uma arma de
+    fogo."
+  - 'Pegue a arma: E'
+  - "Pegue a arma: \u201CA\xE7\xE3o\u201D"
+  - "H\xE1 um zumbi atr\xE1s desta porta! O cone amarelo mostra o que ele v\xEA:
+    entre nele e o zumbi rosna e ataca.\nAbra a porta e acerte-o com Espa\xE7o ou
+    o bot\xE3o esquerdo do mouse."
+  - "H\xE1 um zumbi atr\xE1s desta porta! O cone amarelo mostra o que ele v\xEA:
+    entre nele e o zumbi rosna e ataca.\nAbra a porta e acerte-o com o bot\xE3o grande
+    de Ataque \xE0 direita."
+  - "Derrote o zumbi: Espa\xE7o / bot\xE3o esquerdo do mouse"
+  - 'Derrote o zumbi: Ataque'
+  - "Uma arma de fogo! Ela acerta de longe, mas o pente \xE9 pequeno: recarrega sozinha
+    quando esvazia, ou pressione R.\nTroque de arma com 1 e 2."
+  - "Uma arma de fogo! Ela acerta de longe, mas o pente \xE9 pequeno: recarrega sozinha
+    quando esvazia, ou toque no slot dela de novo.\nTroque de arma tocando nos slots
+    ao redor do bot\xE3o de Ataque."
+  - 'Pegue a arma: E'
+  - "Pegue a arma: \u201CA\xE7\xE3o\u201D"
+  - "H\xE1 outro zumbi no fim do corredor. Este n\xE3o v\xEA nada, mas ouve bem,
+    e os tiros s\xE3o altos: ele vir\xE1 at\xE9 voc\xEA.\nAtire nele antes que chegue
+    perto."
+  - Atire no zumbi
+  - "Ferido? Um kit m\xE9dico cura voc\xEA por completo.\nPise nele \u2014 ele s\xF3
+    \xE9 usado quando sua vida n\xE3o est\xE1 cheia."
+  - "Pise no kit m\xE9dico"
+  - "Este \xE9 um fragmento do mapa. Cada um revela uma parte do mapa do n\xEDvel."
+  - Pegue o fragmento do mapa
+  - "Abra o mapa com M ou com o bot\xE3o do mapa no canto superior direito. No mapa,
+    a lupa mostra o caminho at\xE9 o objetivo mais pr\xF3ximo."
+  - "Abra o mapa com o bot\xE3o do mapa no canto superior direito. No mapa, a lupa
+    mostra o caminho at\xE9 o objetivo mais pr\xF3ximo."
+  - 'Abra o mapa: M'
+  - Abra o mapa
+  - "Agora v\xE1 at\xE9 a sa\xEDda \u2014 a escada.\nNos n\xEDveis voc\xEA ganha
+    estrelas: uma pela sa\xEDda, uma por matar todos os zumbis e uma por todos os
+    fragmentos do mapa."
+  - "V\xE1 at\xE9 a sa\xEDda"
+  _missing: []

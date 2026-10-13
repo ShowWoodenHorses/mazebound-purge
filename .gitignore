@@ -1,0 +1,50 @@
+# Unity folders at the project root only (unanchored, "Build/" also hid Assets/_Project/Scripts/Editor/Build).
+/[Ll]ibrary/
+/[Tt]emp/
+/[Bb]uild/
+/[Bb]uilds/
+# Android native build intermediates (Unity 6 Gradle/CMake/Ninja, recreated on every APK build)
+.utmp/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+[Pp]rojectSettings/EditorBuildSettings.asset
+
+# Asset meta data should be tracked
+# *.meta
+
+# Visual Studio cache
+.vs/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+
+# Rider
+.idea/
+*.sln.iml
+
+# Unity cache
+**/obj/
+*.pidb
+*.booproj
+*.svd
+
+# Crash Reports
+sysinfo.txt
+
+# VSCode
+.vscode/
+
+UserSettings/
+.vsconfig
+
+# Third-party asset packs as downloaded (hundreds of MB). Used assets are moved into Assets/_Project/Art
+# (keeping GUIDs) before committing; the packs themselves stay local.
+/Assets/_Project/Import/
+/Assets/_Project/Import.meta
+
+# Store promo screenshots and their generator (local only)
+/Promo/

@@ -1,0 +1,2228 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3456ec49ae625e43bc2e11dfbf2db27, type: 3}
+  m_Name: Level_01
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Level.LevelData
+  _settings:
+    _displayName: New Level
+  _generation:
+    _width: 15
+    _height: 21
+    _mazeSeed: 0
+    _visualSeed: 0
+    _mazeAlgorithm: 0
+    _loopDensity: 0.154
+    _initialPlayerStartCount: 1
+    _initialExitCount: 1
+    _lightDensity: 0.5
+    _decorDensity: 0.1
+    _maxAutoDecorHeight: 0.3
+  _geometry:
+    _width: 15
+    _height: 21
+    _cells: 000000000000000000000000000000000101010101000100010101010100000100010001000100010001000000000101010001010100010001010100000100000001000000010000000100000101010101000101010001010100000100000001000100010101000100000100010101000101010101010100000000010000000100000000000100000101010001000100010101010100000100000001000100010000000000000100010101000200010101010100000100010101010100000000000100000100010101010100010101010100000100010101000000000000000100000100010100000100010101010100000100000000010100010000000000000101010101010100010101010100000100010000000100000100000100000101010101010101010101010100000000000000000000000000000000
+  _doors:
+  - _id: door_1
+    _position:
+      _x: 7
+      _y: 11
+    _keyId: 
+    _isInitiallyOpen: 0
+  _playerStarts:
+  - _id: start_1
+    _position:
+      _x: 5
+      _y: 9
+  _exits:
+  - _id: exit_1
+    _position:
+      _x: 1
+      _y: 7
+  _zombieSpawns:
+  - _id: zombie_1
+    _position:
+      _x: 13
+      _y: 7
+    _facing: 2
+    _definition: {fileID: 11400000, guid: c9e4824799a23154dae897c7fde15723, type: 2}
+    _patrolId: patrol_1
+  - _id: zombie_2
+    _position:
+      _x: 9
+      _y: 6
+    _facing: 2
+    _definition: {fileID: 11400000, guid: ac0c610bbc54b95459ad02ba82f4340b, type: 2}
+    _patrolId: 
+  - _id: zombie_3
+    _position:
+      _x: 6
+      _y: 3
+    _facing: 1
+    _definition: {fileID: 11400000, guid: ac0c610bbc54b95459ad02ba82f4340b, type: 2}
+    _patrolId: 
+  _patrols:
+  - _id: patrol_1
+    _points:
+    - _x: 7
+      _y: 7
+    - _x: 7
+      _y: 5
+    - _x: 9
+      _y: 5
+    - _x: 9
+      _y: 1
+    - _x: 11
+      _y: 1
+    - _x: 11
+      _y: 3
+    - _x: 13
+      _y: 3
+    - _x: 13
+      _y: 7
+  _weapons:
+  - _id: weapon_1
+    _position:
+      _x: 4
+      _y: 15
+    _definition: {fileID: 11400000, guid: b648aac8a8cb44c45a97d41297b31aba, type: 2}
+  - _id: weapon_2
+    _position:
+      _x: 7
+      _y: 15
+    _definition: {fileID: 11400000, guid: 9f444227525d435499517b13b3b00da1, type: 2}
+  _keys: []
+  _medkits: []
+  _mapFragments:
+  - _id: fragment_1
+    _position:
+      _x: 3
+      _y: 15
+    _region:
+      _x: 0
+      _y: 9
+      _width: 15
+      _height: 12
+  - _id: fragment_2
+    _position:
+      _x: 13
+      _y: 1
+    _region:
+      _x: 0
+      _y: 0
+      _width: 15
+      _height: 9
+  _lights:
+  - _id: light_1
+    _cell:
+      _x: 3
+      _y: 7
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0.6, b: 0.28, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_2
+    _cell:
+      _x: 1
+      _y: 14
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 1, g: 0.6, b: 0.28, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_3
+    _cell:
+      _x: 10
+      _y: 1
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0.6, b: 0.28, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_4
+    _cell:
+      _x: 5
+      _y: 19
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 0.62, g: 0.82, b: 1, a: 1}
+    _radius: 5
+    _intensity: 0.9
+    _flicker: 0.05
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_5
+    _cell:
+      _x: 9
+      _y: 9
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0.6, b: 0.28, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_6
+    _cell:
+      _x: 3
+      _y: 1
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0.6, b: 0.28, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_7
+    _cell:
+      _x: 13
+      _y: 15
+    _offset: {x: 0.42, y: 0}
+    _color: {r: 0.62, g: 0.82, b: 1, a: 1}
+    _radius: 5
+    _intensity: 0.9
+    _flicker: 0.05
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  _visualTheme: {fileID: 11400000, guid: 4852d557940957f4e90455abefa07fe8, type: 2}
+  _visualData:
+    _floorAssignments:
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_03
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    - _variantId: floor_wood_02
+      _rotation: 0
+    - _variantId: floor_wood_01
+      _rotation: 0
+    _wallAssignments:
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 0
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 1
+    - _variantId: wall_castle_block
+      _rotation: 2
+    _decorAssignments:
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_02
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_02
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_01
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BloodPool_03
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_02
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BloodPool_03
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_02
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_02
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_BurnPile_Books_03
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: SM_Prop_TreasurePile_01
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    _cellOverrides:
+    - _position:
+        _x: 3
+        _y: 13
+      _layer: 2
+      _choice:
+        _variantId: 
+        _rotation: 0
+    - _position:
+        _x: 7
+        _y: 15
+      _layer: 2
+      _choice:
+        _variantId: SM_Prop_Table_01
+        _rotation: 0
+    - _position:
+        _x: 11
+        _y: 6
+      _layer: 2
+      _choice:
+        _variantId: 
+        _rotation: 0
+    - _position:
+        _x: 12
+        _y: 5
+      _layer: 2
+      _choice:
+        _variantId: 
+        _rotation: 0
+    - _position:
+        _x: 13
+        _y: 7
+      _layer: 2
+      _choice:
+        _variantId: 
+        _rotation: 0
+    - _position:
+        _x: 3
+        _y: 15
+      _layer: 2
+      _choice:
+        _variantId: SM_Prop_Table_02
+        _rotation: 0
+    - _position:
+        _x: 13
+        _y: 1
+      _layer: 2
+      _choice:
+        _variantId: SM_Prop_Table_02
+        _rotation: 0
+    - _position:
+        _x: 4
+        _y: 15
+      _layer: 2
+      _choice:
+        _variantId: SM_Prop_Table_01
+        _rotation: 0
+    _decorPlacements:
+    - _cell:
+        _x: 13
+        _y: 1
+      _offset: {x: 0, y: 0}
+      _height: 0
+      _yaw: 90
+    _objectPlacements:
+    - _entityId: fragment_1
+      _offset: {x: 0, y: 0}
+      _height: 0.329
+      _yaw: 0
+    - _entityId: weapon_1
+      _offset: {x: 0, y: 0}
+      _height: 0.581
+      _yaw: 0
+    - _entityId: fragment_2
+      _offset: {x: 0, y: 0}
+      _height: 0.329
+      _yaw: 90
+    - _entityId: weapon_2
+      _offset: {x: 0, y: 0}
+      _height: 0.581
+      _yaw: 0
+    _objectAssignments:
+    - _entityId: exit_1
+      _choice:
+        _variantId: SM_Prop_Ladder_Tied_01
+        _rotation: 2
+    - _entityId: door_1
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: weapon_1
+      _choice:
+        _variantId: weapon_fire_axe
+        _rotation: 0
+    - _entityId: fragment_1
+      _choice:
+        _variantId: fragment_01
+        _rotation: 0
+    - _entityId: fragment_2
+      _choice:
+        _variantId: fragment_01
+        _rotation: 0
+    - _entityId: zombie_1
+      _choice:
+        _variantId: zombie_walker
+        _rotation: 0
+    - _entityId: zombie_2
+      _choice:
+        _variantId: zombie_listener
+        _rotation: 0
+    - _entityId: weapon_2
+      _choice:
+        _variantId: weapon_katana
+        _rotation: 0
+    - _entityId: zombie_3
+      _choice:
+        _variantId: zombie_listener
+        _rotation: 0
+    _objectOverrides: []

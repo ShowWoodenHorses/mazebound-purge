@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a267a04b317234d8b24440aafce228, type: 3}
+  m_Name: CombatVisual
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.CombatVisualDefinition
+  _bullet:
+    m_AssetGUID: 740c49c56bd0a924999b433a0c99d7d1
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _tracerLength: 1.2
+  _muzzleFlash:
+    m_AssetGUID: 6f7df8ab0f74eb943ac0a4e89f9a49dc
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _shellCasing:
+    m_AssetGUID: ff61208721dbe0245acebc1c37ef64fa
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _impact:
+    m_AssetGUID: b8a5e01ac996b3f489772a571fe22712
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _targetHit:
+    m_AssetGUID: 1bcb3a52cf5e4a846a3e14607b358298
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _meleeSwing:
+    m_AssetGUID: e072561891ea0bf4d96ffab9c5d065b2
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _effectDuration: 0.15
+  _hitFlashColor: {r: 1, g: 1, b: 1, a: 0.85}
+  _playerHitFlashColor: {r: 1, g: 0.25, b: 0.2, a: 0.7}
+  _hitFlashTime: 0.15
+  _feedback:
+    _material: {fileID: 2100000, guid: 8dbdd91a73f593e4ea71141a79c1f228, type: 2}
+    _barShowTime: 3
+    _barFadeTime: 0.25
+    _barWidth: 0.7
+    _barHeight: 0.09
+    _barOffset: 0.75
+    _barBorder: 0.015
+    _barBorderColor: {r: 0.925, g: 0.902, b: 0.839, a: 0.75}
+    _barBackgroundColor: {r: 0.05, g: 0.05, b: 0.045, a: 0.7}
+    _barFillColor: {r: 0.788, g: 0.314, b: 0.247, a: 1}
+    _barTrailColor: {r: 0.95, g: 0.92, b: 0.85, a: 0.9}
+    _barTrailDelay: 0.2
+    _barTrailTime: 0.3
+    _zombieDamageColor: {r: 1, g: 0.27, b: 0.2, a: 1}
+    _playerDamageColor: {r: 1, g: 0.2, b: 0.15, a: 1}
+    _healColor: {r: 0.42, g: 0.86, b: 0.36, a: 1}
+    _outlineColor: {r: 0.08, g: 0.02, b: 0.02, a: 0.9}
+    _outlineWidth: 0.22
+    _numberLifetime: 0.6
+    _numberStartSize: 0.18
+    _numberEndSize: 0.38
+    _numberGrowShare: 0.35
+    _numberRise: 0.3
+    _numberOffset: 0.2
+    _numberSpread: 0.5
+    _glyphs:
+    - Character: 48
+      Uv:
+        serializedVersion: 2
+        x: 0.004454343
+        y: 0.03773585
+        width: 0.08240534
+        height: 0.9245283
+      Quad: {x: -0.08416486, y: -0.19392624, z: 0.94316703, w: 1.1665944}
+      Advance: 0.8334056
+    - Character: 49
+      Uv:
+        serializedVersion: 2
+        x: 0.09131403
+        y: 0.03773585
+        width: 0.06013363
+        height: 0.9245283
+      Quad: {x: -0.13101952, y: -0.19392624, z: 0.6186551, w: 1.1665944}
+      Advance: 0.5193059
+    - Character: 50
+      Uv:
+        serializedVersion: 2
+        x: 0.155902
+        y: 0.03773585
+        width: 0.08017817
+        height: 0.9245283
+      Quad: {x: -0.09978308, y: -0.19392624, z: 0.8997831, w: 1.1665944}
+      Advance: 0.76659435
+    - Character: 51
+      Uv:
+        serializedVersion: 2
+        x: 0.24053451
+        y: 0.03773585
+        width: 0.08017817
+        height: 0.9245283
+      Quad: {x: -0.10889371, y: -0.19392624, z: 0.89067245, w: 1.1665944}
+      Advance: 0.7913232
+    - Character: 52
+      Uv:
+        serializedVersion: 2
+        x: 0.32516703
+        y: 0.03773585
+        width: 0.09131403
+        height: 0.9245283
+      Quad: {x: -0.1154013, y: -0.19392624, z: 1.0229934, w: 1.1665944}
+      Advance: 0.8412148
+    - Character: 53
+      Uv:
+        serializedVersion: 2
+        x: 0.42093542
+        y: 0.03773585
+        width: 0.08017817
+        height: 0.9245283
+      Quad: {x: -0.09674621, y: -0.19392624, z: 0.90281993, w: 1.1665944}
+      Advance: 0.7869848
+    - Character: 54
+      Uv:
+        serializedVersion: 2
+        x: 0.5055679
+        y: 0.03773585
+        width: 0.08240534
+        height: 0.9245283
+      Quad: {x: -0.08590022, y: -0.19392624, z: 0.94143164, w: 1.1665944}
+      Advance: 0.8164859
+    - Character: 55
+      Uv:
+        serializedVersion: 2
+        x: 0.5924276
+        y: 0.03773585
+        width: 0.077951
+        height: 0.9245283
+      Quad: {x: -0.13709328, y: -0.19392624, z: 0.83470714, w: 1.1665944}
+      Advance: 0.670282
+    - Character: 56
+      Uv:
+        serializedVersion: 2
+        x: 0.67483294
+        y: 0.03773585
+        width: 0.084632516
+        height: 0.9245283
+      Quad: {x: -0.08416486, y: -0.19392624, z: 0.9709328, w: 1.1665944}
+      Advance: 0.8429501
+    - Character: 57
+      Uv:
+        serializedVersion: 2
+        x: 0.76391983
+        y: 0.03773585
+        width: 0.08240534
+        height: 0.9245283
+      Quad: {x: -0.09978308, y: -0.19392624, z: 0.9275488, w: 1.1665944}
+      Advance: 0.8164859
+    - Character: 43
+      Uv:
+        serializedVersion: 2
+        x: 0.85077953
+        y: 0.03773585
+        width: 0.08240534
+        height: 0.6792453
+      Quad: {x: -0.05770065, y: -0.0026030368, z: 0.96963125, w: 0.99696314}
+      Advance: 0.87852496
+    - Character: 45
+      Uv:
+        serializedVersion: 2
+        x: 0.9376392
+        y: 0.03773585
+        width: 0.05790646
+        height: 0.33962265
+      Quad: {x: -0.104555316, y: 0.24208243, z: 0.61735356, w: 0.7418655}
+      Advance: 0.48503253

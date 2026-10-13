@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b587cb3edc711c45a25eaf17d527032, type: 3}
+  m_Name: TutorialSteps
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Level.TutorialScript
+  _steps:
+  - _text: tutorial.move
+    _dialog: 1
+    _goal: 1
+    _target: 
+    _cell: {x: 7, y: 3}
+    _highlight: 1
+  - _text: tutorial.key
+    _dialog: 1
+    _goal: 2
+    _target: key_1
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.unlock
+    _dialog: 1
+    _goal: 3
+    _target: door_1
+    _cell: {x: 0, y: 0}
+    _highlight: 3
+  - _text: tutorial.open
+    _dialog: 0
+    _goal: 4
+    _target: door_1
+    _cell: {x: 0, y: 0}
+    _highlight: 3
+  - _text: tutorial.melee
+    _dialog: 1
+    _goal: 2
+    _target: weapon_1
+    _cell: {x: 0, y: 0}
+    _highlight: 3
+  - _text: tutorial.zombie
+    _dialog: 1
+    _goal: 5
+    _target: zombie_1
+    _cell: {x: 0, y: 0}
+    _highlight: 2
+  - _text: tutorial.ranged
+    _dialog: 1
+    _goal: 2
+    _target: weapon_2
+    _cell: {x: 0, y: 0}
+    _highlight: 5
+  - _text: tutorial.shoot
+    _dialog: 1
+    _goal: 5
+    _target: zombie_2
+    _cell: {x: 0, y: 0}
+    _highlight: 2
+  - _text: tutorial.medkit
+    _dialog: 1
+    _goal: 1
+    _target: medkit_1
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.fragment
+    _dialog: 1
+    _goal: 2
+    _target: fragment_1
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.map
+    _dialog: 1
+    _goal: 6
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 6
+  - _text: tutorial.exit
+    _dialog: 1
+    _goal: 0
+    _target: exit_1
+    _cell: {x: 0, y: 0}
+    _highlight: 0

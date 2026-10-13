@@ -1,0 +1,3232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3456ec49ae625e43bc2e11dfbf2db27, type: 3}
+  m_Name: Level_18
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Level.LevelData
+  _settings:
+    _displayName: New Level
+  _generation:
+    _width: 21
+    _height: 21
+    _mazeSeed: 0
+    _visualSeed: 0
+    _mazeAlgorithm: 0
+    _loopDensity: 0.1
+    _initialPlayerStartCount: 1
+    _initialExitCount: 2
+    _lightDensity: 0.5
+    _decorDensity: 0.15
+    _maxAutoDecorHeight: 1
+  _geometry:
+    _width: 21
+    _height: 21
+    _cells: 000000000000000000000000000000000000000000000101010101000101010001010101010101000100000100010002000100010000000000010001000100000100010001010100020001010101010001000100000000010000000200010001000000000001000100000101010001010101010001010101010101010100000100010000000000020000000000010000000000000100010001010100010101020100010101010100000100000001000100000001000100010000000100000101010101000100010101000100010101010100000100000000000100000002000100000001000000000101010101000101010001000101010001010100000000010001000000010001000000010000000100000100010101010100010001010101010101010100000100000001000100010000000100000001000100000102010001000100010101000101010001010100000100010001000100000001000100010000000000000200020001000101010001010100010101010100000100010001000000010000000000010000000100000100010201010101010101010100010101010100000000000000000000000000000000000000000000
+  _doors:
+  - _id: door_1
+    _position:
+      _x: 1
+      _y: 17
+    _keyId: key_1
+    _isInitiallyOpen: 0
+  - _id: door_2
+    _position:
+      _x: 2
+      _y: 15
+    _keyId: key_2
+    _isInitiallyOpen: 0
+  - _id: door_3
+    _position:
+      _x: 3
+      _y: 17
+    _keyId: key_3
+    _isInitiallyOpen: 0
+  - _id: door_4
+    _position:
+      _x: 4
+      _y: 19
+    _keyId: key_4
+    _isInitiallyOpen: 0
+  - _id: door_5
+    _position:
+      _x: 7
+      _y: 4
+    _keyId: 
+    _isInitiallyOpen: 0
+  - _id: door_6
+    _position:
+      _x: 9
+      _y: 6
+    _keyId: 
+    _isInitiallyOpen: 0
+  - _id: door_7
+    _position:
+      _x: 9
+      _y: 3
+    _keyId: 
+    _isInitiallyOpen: 0
+  - _id: door_8
+    _position:
+      _x: 11
+      _y: 10
+    _keyId: 
+    _isInitiallyOpen: 0
+  - _id: door_9
+    _position:
+      _x: 12
+      _y: 7
+    _keyId: 
+    _isInitiallyOpen: 0
+  - _id: door_10
+    _position:
+      _x: 5
+      _y: 2
+    _keyId: 
+    _isInitiallyOpen: 0
+  _playerStarts:
+  - _id: start_1
+    _position:
+      _x: 19
+      _y: 1
+  _exits:
+  - _id: exit_1
+    _position:
+      _x: 1
+      _y: 19
+  - _id: exit_2
+    _position:
+      _x: 5
+      _y: 5
+  _zombieSpawns:
+  - _id: zombie_1
+    _position:
+      _x: 13
+      _y: 7
+    _facing: 0
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_2
+    _position:
+      _x: 11
+      _y: 11
+    _facing: 0
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_3
+    _position:
+      _x: 9
+      _y: 7
+    _facing: 1
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_4
+    _position:
+      _x: 5
+      _y: 1
+    _facing: 3
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_5
+    _position:
+      _x: 9
+      _y: 2
+    _facing: 2
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_6
+    _position:
+      _x: 6
+      _y: 5
+    _facing: 1
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_7
+    _position:
+      _x: 7
+      _y: 2
+    _facing: 2
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: 
+  - _id: zombie_8
+    _position:
+      _x: 19
+      _y: 9
+    _facing: 2
+    _definition: {fileID: 11400000, guid: 129d1e556b1ec62469645bd76a8eebaf, type: 2}
+    _patrolId: patrol_1
+  - _id: zombie_9
+    _position:
+      _x: 3
+      _y: 13
+    _facing: 2
+    _definition: {fileID: 11400000, guid: 041380d58bee7cb4b9b7eaadee9653f4, type: 2}
+    _patrolId: patrol_2
+  - _id: zombie_10
+    _position:
+      _x: 10
+      _y: 19
+    _facing: 2
+    _definition: {fileID: 11400000, guid: 569bd0a2dfbcec247963c70c9445e643, type: 2}
+    _patrolId: patrol_3
+  _patrols:
+  - _id: patrol_1
+    _points:
+    - _x: 15
+      _y: 9
+    - _x: 15
+      _y: 7
+    - _x: 19
+      _y: 7
+    - _x: 19
+      _y: 9
+  - _id: patrol_2
+    _points:
+    - _x: 5
+      _y: 13
+    - _x: 5
+      _y: 11
+    - _x: 3
+      _y: 11
+    - _x: 3
+      _y: 13
+  - _id: patrol_3
+    _points:
+    - _x: 6
+      _y: 19
+    - _x: 10
+      _y: 19
+  _weapons:
+  - _id: weapon_1
+    _position:
+      _x: 11
+      _y: 1
+    _definition: {fileID: 11400000, guid: 3493d85149291cd41ac4d077cc3ec857, type: 2}
+  - _id: weapon_2
+    _position:
+      _x: 19
+      _y: 17
+    _definition: {fileID: 11400000, guid: 05592bd23d54afc4fa8f4f31f4a5f45b, type: 2}
+  - _id: weapon_3
+    _position:
+      _x: 19
+      _y: 15
+    _definition: {fileID: 11400000, guid: 9f444227525d435499517b13b3b00da1, type: 2}
+  _keys:
+  - _id: key_1
+    _position:
+      _x: 19
+      _y: 19
+  - _id: key_2
+    _position:
+      _x: 9
+      _y: 9
+  - _id: key_3
+    _position:
+      _x: 1
+      _y: 3
+  - _id: key_4
+    _position:
+      _x: 3
+      _y: 7
+  _medkits:
+  - _id: medkit_1
+    _position:
+      _x: 11
+      _y: 9
+  - _id: medkit_2
+    _position:
+      _x: 3
+      _y: 5
+  - _id: medkit_3
+    _position:
+      _x: 5
+      _y: 14
+  _mapFragments:
+  - _id: fragment_1
+    _position:
+      _x: 12
+      _y: 1
+    _region:
+      _x: 0
+      _y: 0
+      _width: 21
+      _height: 21
+  _lights:
+  - _id: light_1
+    _cell:
+      _x: 17
+      _y: 19
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 1, b: 0, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_2
+    _cell:
+      _x: 18
+      _y: 17
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 1, b: 0, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_3
+    _cell:
+      _x: 9
+      _y: 9
+    _offset: {x: 0, y: 0.42}
+    _color: {r: 0, g: 0.5019608, b: 0, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_4
+    _cell:
+      _x: 11
+      _y: 8
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 0, g: 0.5019608, b: 0, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_5
+    _cell:
+      _x: 1
+      _y: 3
+    _offset: {x: 0.42, y: 0}
+    _color: {r: 1, g: 0, b: 0, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_6
+    _cell:
+      _x: 1
+      _y: 1
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0, b: 0, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_7
+    _cell:
+      _x: 3
+      _y: 4
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 0, g: 0, b: 1, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_8
+    _cell:
+      _x: 3
+      _y: 6
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 0, g: 0, b: 1, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_9
+    _cell:
+      _x: 17
+      _y: 4
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 0.78431374, g: 1, b: 0.47843137, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_10
+    _cell:
+      _x: 1
+      _y: 13
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 0.78431374, g: 1, b: 0.47843137, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_11
+    _cell:
+      _x: 8
+      _y: 1
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 0.78431374, g: 1, b: 0.47843137, a: 1}
+    _radius: 4.5
+    _intensity: 0.9
+    _flicker: 0.15
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_12
+    _cell:
+      _x: 5
+      _y: 18
+    _offset: {x: -0.42, y: 0}
+    _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_13
+    _cell:
+      _x: 19
+      _y: 11
+    _offset: {x: 0, y: -0.42}
+    _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_02
+      _rotation: 0
+  - _id: light_14
+    _cell:
+      _x: 11
+      _y: 17
+    _offset: {x: 0, y: 0.42}
+    _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  _visualTheme: {fileID: 11400000, guid: ad23ba20b94ed7a45b12d5a6627c3e0f, type: 2}
+  _visualData:
+    _floorAssignments:
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    - _variantId: floor_forest_grass
+      _rotation: 0
+    _wallAssignments:
+    - _variantId: wall_forest_logs_corner
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_isolated
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_isolated
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_cross
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_end
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    _decorAssignments:
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Ivy
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 3
+    - _variantId: Forest_Flowers_08
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_13
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_05
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_05
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_13
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_17
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_13
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Ivy
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_17
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Ivy
+      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Ivy
+      _rotation: 3
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_08
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: Forest_Flowers_11
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    _cellOverrides: []
+    _decorPlacements: []
+    _objectPlacements: []
+    _objectAssignments:
+    - _entityId: exit_1
+      _choice:
+        _variantId: SM_Prop_Ladder_Tied_01
+        _rotation: 2
+    - _entityId: exit_2
+      _choice:
+        _variantId: SM_Prop_Ladder_Tied_01
+        _rotation: 1
+    - _entityId: door_1
+      _choice:
+        _variantId: door_yellow
+        _rotation: 0
+    - _entityId: key_1
+      _choice:
+        _variantId: key_yellow
+        _rotation: 0
+    - _entityId: door_2
+      _choice:
+        _variantId: door_green
+        _rotation: 1
+    - _entityId: key_2
+      _choice:
+        _variantId: key_green
+        _rotation: 0
+    - _entityId: door_3
+      _choice:
+        _variantId: door_red
+        _rotation: 0
+    - _entityId: key_3
+      _choice:
+        _variantId: key_red
+        _rotation: 0
+    - _entityId: door_4
+      _choice:
+        _variantId: door_blue
+        _rotation: 1
+    - _entityId: key_4
+      _choice:
+        _variantId: key_blue
+        _rotation: 0
+    - _entityId: door_5
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: door_6
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: door_7
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: door_8
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: door_9
+      _choice:
+        _variantId: door_wood
+        _rotation: 1
+    - _entityId: door_10
+      _choice:
+        _variantId: door_wood
+        _rotation: 0
+    - _entityId: zombie_1
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_2
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_3
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_4
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_5
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_6
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_7
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_8
+      _choice:
+        _variantId: forest_zombie_hunter
+        _rotation: 0
+    - _entityId: zombie_9
+      _choice:
+        _variantId: forest_zombie_listener
+        _rotation: 0
+    - _entityId: zombie_10
+      _choice:
+        _variantId: forest_zombie_walker
+        _rotation: 0
+    - _entityId: weapon_1
+      _choice:
+        _variantId: weapon_assault_rifle_03
+        _rotation: 0
+    - _entityId: weapon_2
+      _choice:
+        _variantId: weapon_smg
+        _rotation: 0
+    - _entityId: weapon_3
+      _choice:
+        _variantId: weapon_katana
+        _rotation: 0
+    - _entityId: fragment_1
+      _choice:
+        _variantId: fragment_01
+        _rotation: 0
+    - _entityId: medkit_1
+      _choice:
+        _variantId: medkit_01
+        _rotation: 0
+    - _entityId: medkit_2
+      _choice:
+        _variantId: medkit_01
+        _rotation: 0
+    - _entityId: medkit_3
+      _choice:
+        _variantId: medkit_01
+        _rotation: 0
+    _objectOverrides: []

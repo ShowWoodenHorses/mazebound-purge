@@ -1,0 +1,22 @@
+{
+    "name": "Maze.Application.Android",
+    "rootNamespace": "Maze.Application.Platform",
+    "references": [
+        "Maze.Core",
+        "Maze.Application",
+        "UniTask",
+        "MyTarget",
+        "MyTracker"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_ANDROID || UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

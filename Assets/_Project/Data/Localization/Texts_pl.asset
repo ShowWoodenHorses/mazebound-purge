@@ -1,0 +1,353 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_pl
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: pl
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - Polski
+  - USTAWIENIA
+  - TAK
+  - NIE
+  - '{0}%'
+  - GRAJ
+  - POZIOMY
+  - "DEBUG: RESETUJ POST\u0118P"
+  - WYBIERZ POZIOM
+  - "Brak poziom\xF3w: uruchom Build / Sync w Level Designer."
+  - WCZYTYWANIE
+  - POZIOM {0}
+  - "PRZE\u0141ADOWANIE"
+  - "{0}: naci\u015Bnij \u201EAkcja\u201D, aby podnie\u015B\u0107"
+  - 'Podniesiono: {0}'
+  - Znaleziono fragment mapy {0}/{1}
+  - "Zamkni\u0119te: potrzebny klucz"
+  - "Zamkni\u0119te: potrzebny czerwony klucz"
+  - "Zamkni\u0119te: potrzebny niebieski klucz"
+  - "Zamkni\u0119te: potrzebny zielony klucz"
+  - "Zamkni\u0119te: potrzebny \u017C\xF3\u0142ty klucz"
+  - "Zamkni\u0119te: potrzebny pomara\u0144czowy klucz"
+  - "Zamkni\u0119te: potrzebny b\u0142\u0119kitny klucz"
+  - "Zamkni\u0119te: potrzebny fioletowy klucz"
+  - "Zamkni\u0119te: potrzebny r\xF3\u017Cowy klucz"
+  - Drzwi otwarte kluczem
+  - "Co\u015B blokuje przej\u015Bcie"
+  - "Zamarzni\u0119te: rozbij l\xF3d broni\u0105 do walki wr\u0119cz"
+  - Karabin szturmowy
+  - Karabin bojowy
+  - Kij baseballowy
+  - "\u0141om"
+  - "Top\xF3r stra\u017Cacki"
+  - "Sztucer my\u015Bliwski"
+  - Katana
+  - Karabin rewolwerowy
+  - Karabin snajperski
+  - "Pistolet maszynowy z t\u0142umikiem"
+  - "ZAKO\u0143CZY\u0106 POZIOM?"
+  - PAUZA
+  - "WZN\xD3W"
+  - ZACZNIJ OD NOWA
+  - "WYJD\u0179 DO MENU"
+  - "DEBUG: UKO\u0143CZ"
+  - "DEBUG: PORA\u017BKA"
+  - "POZIOM UKO\u0143CZONY"
+  - "POZIOM NIEUKO\u0143CZONY"
+  - "WYJ\u015ACIE ZNALEZIONE"
+  - "WYJ\u015ACIE NIEZNALEZIONE"
+  - ZOMBIE {0}/{1}
+  - MAPA {0}/{1}
+  - CZAS {0}
+  - REKORD {0}
+  - NOWY REKORD!
+  - MENU
+  - JESZCZE RAZ
+  - DALEJ
+  - "CO\u015A POSZ\u0141O NIE TAK"
+  - "WR\xD3\u0106 DO MENU"
+  - GRACZ
+  - "CZ\u0118\u015ACI MAPY"
+  - ZOMBIE
+  - "BRO\u0143"
+  - APTECZKI
+  - KLUCZE
+  - "Trasa do najbli\u017Cszego fragmentu mapy"
+  - "Trasa do wyj\u015Bcia"
+  - "Trasa do najbli\u017Cszego klucza"
+  - "Trasa do drzwi, kt\xF3re otworzy tw\xF3j klucz"
+  - Nie znaleziono trasy
+  - Ten poziom nie ma mapy
+  - "Nie znaleziono jeszcze fragment\xF3w mapy (0/{0})"
+  - 'Fragmenty mapy: {0}/{1}'
+  - STEROWANIE
+  - STRZELANIE
+  - INNE
+  - "Martwa strefa ga\u0142ki"
+  - "Czu\u0142o\u015B\u0107 ga\u0142ki"
+  - "Rozmiar przycisk\xF3w"
+  - "Widoczno\u015B\u0107 przycisk\xF3w"
+  - "P\u0142ywaj\u0105ca ga\u0142ka (pojawia si\u0119 pod palcem)"
+  - "Uk\u0142ad dla lewor\u0119cznych"
+  - "Rozmieszczenie przycisk\xF3w"
+  - EDYTUJ
+  - Kierunki celowania
+  - DOWOLNE
+  - OSIEM
+  - CZTERY
+  - Automatyczne celowanie w zombie
+  - Muzyka
+  - "D\u017Awi\u0119ki"
+  - "Poka\u017C FPS"
+  - "J\u0119zyk"
+  - Pomoc
+  - "Polityka prywatno\u015Bci"
+  - "OTW\xD3RZ"
+  - "RESETUJ KART\u0118"
+  - "Przeci\u0105gaj ga\u0142k\u0119 i przyciski. Dotknij jednego, aby zmieni\u0107
+    jego rozmiar."
+  - '{0}: rozmiar {1}'
+  - "Ga\u0142ka"
+  - "Atak i bro\u0144"
+  - Akcja
+  - "Walka wr\u0119cz"
+  - Dystans
+  - RESETUJ
+  - GOTOWE
+  - SAMOUCZEK
+  - "ZALOGUJ SI\u0118"
+  - "Zaloguj si\u0119, aby zachowa\u0107 post\u0119p na wszystkich urz\u0105dzeniach"
+  - SAMOUCZEK
+  - "SAMOUCZEK UKO\u0143CZONY"
+  - Trasa samouczka
+  - "Reklama jest teraz niedost\u0119pna"
+  - "Obr\xF3\u0107 urz\u0105dzenie"
+  - ROZUMIEM
+  - "Witaj w labiryncie! Twoim celem jest znale\u017A\u0107 wyj\u015Bcie.\nPoruszaj
+    si\u0119 klawiszami WASD lub strza\u0142kami i pod\u0105\u017Caj za \u015Bwiec\u0105c\u0105
+    lini\u0105."
+  - "Witaj w labiryncie! Twoim celem jest znale\u017A\u0107 wyj\u015Bcie.\nPoruszaj
+    si\u0119 ga\u0142k\u0105 po lewej i pod\u0105\u017Caj za \u015Bwiec\u0105c\u0105
+    lini\u0105."
+  - "Id\u017A za lini\u0105"
+  - "Niekt\xF3re drzwi s\u0105 zamkni\u0119te. Klucz otwiera jedne drzwi w swoim
+    kolorze.\nAby podnie\u015B\u0107 klucz, po prostu na niego wejd\u017A."
+  - "Podnie\u015B klucz"
+  - "Podejd\u017A do drzwi w kolorze klucza i naci\u015Bnij E, aby je odblokowa\u0107.
+    Klucz zostanie zu\u017Cyty."
+  - "Podejd\u017A do drzwi w kolorze klucza i naci\u015Bnij \u201EAkcja\u201D (okr\u0105g\u0142y
+    przycisk), aby je odblokowa\u0107. Klucz zostanie zu\u017Cyty."
+  - 'Odblokuj drzwi: E'
+  - "Odblokuj drzwi: \u201EAkcja\u201D"
+  - "Drzwi s\u0105 odblokowane, ale wci\u0105\u017C zamkni\u0119te. Naci\u015Bnij
+    E jeszcze raz, aby je otworzy\u0107. Drzwi mo\u017Cna otwiera\u0107 i zamyka\u0107
+    dowolnie wiele razy."
+  - "Drzwi s\u0105 odblokowane, ale wci\u0105\u017C zamkni\u0119te. Naci\u015Bnij
+    \u201EAkcja\u201D jeszcze raz, aby je otworzy\u0107. Drzwi mo\u017Cna otwiera\u0107
+    i zamyka\u0107 dowolnie wiele razy."
+  - "Otw\xF3rz drzwi: E"
+  - "Otw\xF3rz drzwi: \u201EAkcja\u201D"
+  - "Bro\u0144 le\u017Cy na pod\u0142odze. Sta\u0144 na niej i naci\u015Bnij E, aby
+    j\u0105 wzi\u0105\u0107.\nMo\u017Cesz nosi\u0107 jedn\u0105 bro\u0144 do walki
+    wr\u0119cz i jedn\u0105 bro\u0144 paln\u0105."
+  - "Bro\u0144 le\u017Cy na pod\u0142odze. Sta\u0144 na niej i naci\u015Bnij \u201EAkcja\u201D,
+    aby j\u0105 wzi\u0105\u0107.\nMo\u017Cesz nosi\u0107 jedn\u0105 bro\u0144 do
+    walki wr\u0119cz i jedn\u0105 bro\u0144 paln\u0105."
+  - "We\u017A bro\u0144: E"
+  - "We\u017A bro\u0144: \u201EAkcja\u201D"
+  - "Za tymi drzwiami jest zombie! \u017B\xF3\u0142ty sto\u017Cek pokazuje, co widzi:
+    wejd\u017A w niego, a zombie zaryczy i zaatakuje.\nOtw\xF3rz drzwi i uderz go
+    Spacj\u0105 lub lewym przyciskiem myszy."
+  - "Za tymi drzwiami jest zombie! \u017B\xF3\u0142ty sto\u017Cek pokazuje, co widzi:
+    wejd\u017A w niego, a zombie zaryczy i zaatakuje.\nOtw\xF3rz drzwi i uderz go
+    du\u017Cym przyciskiem Atak po prawej."
+  - 'Pokonaj zombie: Spacja / lewy przycisk myszy'
+  - 'Pokonaj zombie: Atak'
+  - "Bro\u0144 palna! Trafia z daleka, ale magazynek jest ma\u0142y: prze\u0142adowuje
+    si\u0119 sam, gdy jest pusty, albo naci\u015Bnij R.\nZmieniaj bro\u0144 klawiszami
+    1 i 2."
+  - "Bro\u0144 palna! Trafia z daleka, ale magazynek jest ma\u0142y: prze\u0142adowuje
+    si\u0119 sam, gdy jest pusty, albo dotknij jej miejsca jeszcze raz.\nZmieniaj
+    bro\u0144, dotykaj\u0105c miejsc wok\xF3\u0142 przycisku Atak."
+  - "We\u017A bro\u0144: E"
+  - "We\u017A bro\u0144: \u201EAkcja\u201D"
+  - "Dalej w korytarzu jest kolejny zombie. Ten nic nie widzi, ale dobrze s\u0142yszy,
+    a strza\u0142y s\u0105 g\u0142o\u015Bne: przyjdzie do ciebie.\nZastrzel go, zanim
+    podejdzie blisko."
+  - Zastrzel zombie
+  - "Ranny? Apteczka leczy do pe\u0142na.\nWejd\u017A na ni\u0105 \u2014 zostanie
+    u\u017Cyta tylko wtedy, gdy zdrowie nie jest pe\u0142ne."
+  - "Wejd\u017A na apteczk\u0119"
+  - "To fragment mapy. Ka\u017Cdy odkrywa cz\u0119\u015B\u0107 mapy poziomu."
+  - "Podnie\u015B fragment mapy"
+  - "Otw\xF3rz map\u0119 klawiszem M lub przyciskiem mapy w prawym g\xF3rnym rogu.
+    Na mapie lupa pokazuje drog\u0119 do najbli\u017Cszego celu."
+  - "Otw\xF3rz map\u0119 przyciskiem mapy w prawym g\xF3rnym rogu. Na mapie lupa
+    pokazuje drog\u0119 do najbli\u017Cszego celu."
+  - "Otw\xF3rz map\u0119: M"
+  - "Otw\xF3rz map\u0119"
+  - "Teraz id\u017A do wyj\u015Bcia \u2014 schod\xF3w.\nNa poziomach zdobywasz gwiazdki:
+    jedn\u0105 za wyj\u015Bcie, jedn\u0105 za zabicie wszystkich zombie i jedn\u0105
+    za wszystkie fragmenty mapy."
+  - "Id\u017A do wyj\u015Bcia"
+  _missing: []

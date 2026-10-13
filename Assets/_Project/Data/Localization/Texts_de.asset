@@ -1,0 +1,348 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
+  m_Name: Texts_de
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  _language: de
+  _keys:
+  - language.name
+  - common.settings
+  - common.yes
+  - common.no
+  - format.percent
+  - menu.play
+  - menu.levels
+  - menu.reset_progress
+  - level_select.title
+  - level_select.empty
+  - loading
+  - hud.level
+  - hud.reload
+  - hud.weapon_here
+  - hud.weapon_taken
+  - hud.fragment_found
+  - hud.locked
+  - hud.locked.red
+  - hud.locked.blue
+  - hud.locked.green
+  - hud.locked.yellow
+  - hud.locked.orange
+  - hud.locked.cyan
+  - hud.locked.purple
+  - hud.locked.pink
+  - hud.door_unlocked
+  - hud.door_blocked
+  - hud.door_frozen
+  - weapon.assault_rifle_01
+  - weapon.assault_rifle_03
+  - weapon.bat
+  - weapon.crowbar
+  - weapon.fire_axe
+  - weapon.hunting_rifle
+  - weapon.katana
+  - weapon.revolver_rifle
+  - weapon.sniper_rifle
+  - weapon.smg
+  - confirm_exit.title
+  - pause.title
+  - pause.resume
+  - pause.restart
+  - pause.exit
+  - pause.debug_complete
+  - pause.debug_fail
+  - result.complete
+  - result.failed
+  - result.exit_found
+  - result.no_exit
+  - result.zombies
+  - result.map
+  - result.time
+  - result.best
+  - result.record
+  - result.menu
+  - result.retry
+  - result.next
+  - error.title
+  - error.back
+  - map.player
+  - map.pieces
+  - map.zombies
+  - map.weapons
+  - map.medkits
+  - map.keys
+  - map.hint.fragment
+  - map.hint.exit
+  - map.hint.key
+  - map.hint.door
+  - map.hint.none
+  - map.none
+  - map.none_found
+  - map.count
+  - settings.tab.controls
+  - settings.tab.shooting
+  - settings.tab.other
+  - settings.dead_zone
+  - settings.stick_response
+  - settings.controls_size
+  - settings.controls_opacity
+  - settings.floating_stick
+  - settings.left_handed
+  - settings.button_layout
+  - settings.edit
+  - settings.aim_mode
+  - settings.aim.free
+  - settings.aim.eight
+  - settings.aim.four
+  - settings.aim_assist
+  - settings.music
+  - settings.sound
+  - settings.show_fps
+  - settings.language
+  - settings.support
+  - settings.privacy
+  - settings.privacy.open
+  - settings.reset_tab
+  - layout.hint
+  - layout.size
+  - layout.element.stick
+  - layout.element.attack
+  - layout.element.use
+  - layout.element.melee
+  - layout.element.ranged
+  - layout.reset
+  - layout.done
+  - menu.tutorial
+  - menu.sign_in
+  - menu.sign_in.hint
+  - hud.tutorial
+  - result.tutorial_complete
+  - map.hint.tutorial
+  - ad.unavailable
+  - rotate.title
+  - tutorial_ui.continue
+  - tutorial.move
+  - tutorial.move.touch
+  - tutorial.move.hint
+  - tutorial.key
+  - tutorial.key.hint
+  - tutorial.unlock
+  - tutorial.unlock.touch
+  - tutorial.unlock.hint
+  - tutorial.unlock.hint.touch
+  - tutorial.open
+  - tutorial.open.touch
+  - tutorial.open.hint
+  - tutorial.open.hint.touch
+  - tutorial.melee
+  - tutorial.melee.touch
+  - tutorial.melee.hint
+  - tutorial.melee.hint.touch
+  - tutorial.zombie
+  - tutorial.zombie.touch
+  - tutorial.zombie.hint
+  - tutorial.zombie.hint.touch
+  - tutorial.ranged
+  - tutorial.ranged.touch
+  - tutorial.ranged.hint
+  - tutorial.ranged.hint.touch
+  - tutorial.shoot
+  - tutorial.shoot.hint
+  - tutorial.medkit
+  - tutorial.medkit.hint
+  - tutorial.fragment
+  - tutorial.fragment.hint
+  - tutorial.map
+  - tutorial.map.touch
+  - tutorial.map.hint
+  - tutorial.map.hint.touch
+  - tutorial.exit
+  - tutorial.exit.hint
+  _texts:
+  - Deutsch
+  - EINSTELLUNGEN
+  - JA
+  - NEIN
+  - '{0} %'
+  - SPIELEN
+  - LEVEL
+  - "DEBUG: FORTSCHRITT ZUR\xDCCKSETZEN"
+  - "LEVEL W\xC4HLEN"
+  - "Noch keine Level: Build / Sync im Level Designer ausf\xFChren."
+  - LADEN
+  - LEVEL {0}
+  - NACHLADEN
+  - "{0}: zum Aufheben \u201EBenutzen\u201C dr\xFCcken"
+  - 'Aufgehoben: {0}'
+  - Kartenteil gefunden {0}/{1}
+  - "Verschlossen: Schl\xFCssel n\xF6tig"
+  - "Verschlossen: roter Schl\xFCssel n\xF6tig"
+  - "Verschlossen: blauer Schl\xFCssel n\xF6tig"
+  - "Verschlossen: gr\xFCner Schl\xFCssel n\xF6tig"
+  - "Verschlossen: gelber Schl\xFCssel n\xF6tig"
+  - "Verschlossen: orangefarbener Schl\xFCssel n\xF6tig"
+  - "Verschlossen: t\xFCrkiser Schl\xFCssel n\xF6tig"
+  - "Verschlossen: violetter Schl\xFCssel n\xF6tig"
+  - "Verschlossen: rosa Schl\xFCssel n\xF6tig"
+  - "T\xFCr aufgeschlossen"
+  - "Etwas steht in der T\xFCr"
+  - 'Vereist: Brich das Eis mit einer Nahkampfwaffe'
+  - Sturmgewehr
+  - Kampfgewehr
+  - "Schl\xE4ger"
+  - Brecheisen
+  - Feuerwehraxt
+  - Jagdgewehr
+  - Katana
+  - Revolvergewehr
+  - "Scharfsch\xFCtzengewehr"
+  - "MP mit Schalld\xE4mpfer"
+  - LEVEL BEENDEN?
+  - PAUSE
+  - WEITER
+  - NEU STARTEN
+  - "ZUM MEN\xDC"
+  - 'DEBUG: ABSCHLIESSEN'
+  - 'DEBUG: SCHEITERN'
+  - LEVEL GESCHAFFT
+  - LEVEL GESCHEITERT
+  - AUSGANG GEFUNDEN
+  - KEIN AUSGANG
+  - ZOMBIES {0}/{1}
+  - KARTE {0}/{1}
+  - ZEIT {0}
+  - BESTZEIT {0}
+  - NEUER REKORD!
+  - "MEN\xDC"
+  - NOCHMAL
+  - WEITER
+  - ETWAS IST SCHIEFGELAUFEN
+  - "ZUR\xDCCK ZUM MEN\xDC"
+  - SPIELER
+  - KARTENTEILE
+  - ZOMBIES
+  - WAFFEN
+  - MEDKITS
+  - "SCHL\xDCSSEL"
+  - "Route zum n\xE4chsten Kartenteil"
+  - Route zum Ausgang
+  - "Route zum n\xE4chsten Schl\xFCssel"
+  - "Route zur T\xFCr, die dein Schl\xFCssel \xF6ffnet"
+  - Keine Route gefunden
+  - Dieses Level hat keine Karte
+  - Noch keine Kartenteile gefunden (0/{0})
+  - 'Kartenteile: {0}/{1}'
+  - STEUERUNG
+  - SCHIESSEN
+  - SONSTIGES
+  - Totzone des Sticks
+  - Stick-Reaktion
+  - "Gr\xF6\xDFe der Steuerung"
+  - Deckkraft der Steuerung
+  - Schwebender Stick (erscheint unter dem Daumen)
+  - "Linksh\xE4nder-Layout"
+  - Tastenanordnung
+  - "\xC4NDERN"
+  - Zielrichtungen
+  - FREI
+  - ACHT
+  - VIER
+  - Automatisches Zielen auf Zombies
+  - Musik
+  - Sound
+  - "FPS-Z\xE4hler anzeigen"
+  - Sprache
+  - Support
+  - Datenschutz
+  - "\xD6FFNEN"
+  - "TAB ZUR\xDCCKSETZEN"
+  - "Stick und Tasten ziehen. Antippen, um die Gr\xF6\xDFe zu \xE4ndern."
+  - "{0}: Gr\xF6\xDFe {1}"
+  - Stick
+  - Angriff und Waffen
+  - Benutzen
+  - Nahkampf
+  - Fernkampf
+  - "ZUR\xDCCKSETZEN"
+  - FERTIG
+  - TUTORIAL
+  - ANMELDEN
+  - "Melde dich an, um deinen Fortschritt auf allen Ger\xE4ten zu behalten"
+  - TUTORIAL
+  - TUTORIAL ABGESCHLOSSEN
+  - Route des Tutorials
+  - "Werbung ist gerade nicht verf\xFCgbar"
+  - "Drehe dein Ger\xE4t"
+  - VERSTANDEN
+  - 'Willkommen im Labyrinth! Dein Ziel ist der Ausgang.
+
+    Bewege dich mit WASD
+    oder den Pfeiltasten und folge der leuchtenden Linie.'
+  - 'Willkommen im Labyrinth! Dein Ziel ist der Ausgang.
+
+    Bewege dich mit dem
+    Stick links und folge der leuchtenden Linie.'
+  - Folge der Linie
+  - "Manche T\xFCren sind verschlossen. Ein Schl\xFCssel \xF6ffnet eine T\xFCr seiner
+    Farbe.\nUm ihn aufzuheben, tritt einfach darauf."
+  - "Nimm den Schl\xFCssel"
+  - "Geh zur T\xFCr in der Farbe des Schl\xFCssels und dr\xFCcke E, um sie aufzuschlie\xDFen.
+    Der Schl\xFCssel wird verbraucht."
+  - "Geh zur T\xFCr in der Farbe des Schl\xFCssels und dr\xFCcke \u201EBenutzen\u201C
+    (der runde Knopf), um sie aufzuschlie\xDFen. Der Schl\xFCssel wird verbraucht."
+  - "Schlie\xDF die T\xFCr auf: E"
+  - "Schlie\xDF die T\xFCr auf: \u201EBenutzen\u201C"
+  - "Die T\xFCr ist aufgeschlossen, aber noch zu. Dr\xFCcke erneut E, um sie zu \xF6ffnen.
+    T\xFCren lassen sich beliebig oft \xF6ffnen und schlie\xDFen."
+  - "Die T\xFCr ist aufgeschlossen, aber noch zu. Dr\xFCcke erneut \u201EBenutzen\u201C,
+    um sie zu \xF6ffnen. T\xFCren lassen sich beliebig oft \xF6ffnen und schlie\xDFen."
+  - "\xD6ffne die T\xFCr: E"
+  - "\xD6ffne die T\xFCr: \u201EBenutzen\u201C"
+  - "Waffen liegen auf dem Boden. Stell dich darauf und dr\xFCcke E, um sie aufzuheben.\nDu
+    kannst eine Nahkampfwaffe und eine Schusswaffe tragen."
+  - "Waffen liegen auf dem Boden. Stell dich darauf und dr\xFCcke \u201EBenutzen\u201C,
+    um sie aufzuheben.\nDu kannst eine Nahkampfwaffe und eine Schusswaffe tragen."
+  - 'Nimm die Waffe: E'
+  - "Nimm die Waffe: \u201EBenutzen\u201C"
+  - "Hinter dieser T\xFCr ist ein Zombie! Der gelbe Kegel zeigt, was er sieht: Tritt
+    hinein, und er br\xFCllt und greift an.\n\xD6ffne die T\xFCr und schlag ihn mit
+    der Leertaste oder der linken Maustaste."
+  - "Hinter dieser T\xFCr ist ein Zombie! Der gelbe Kegel zeigt, was er sieht: Tritt
+    hinein, und er br\xFCllt und greift an.\n\xD6ffne die T\xFCr und schlag ihn mit
+    dem gro\xDFen Angriffsknopf rechts."
+  - 'Besiege den Zombie: Leertaste / linke Maustaste'
+  - 'Besiege den Zombie: Angriff'
+  - "Eine Schusswaffe! Sie trifft aus der Ferne, aber das Magazin ist klein: Leer
+    l\xE4dt es von selbst nach, oder dr\xFCcke R.\nWechsle die Waffen mit 1 und 2."
+  - "Eine Schusswaffe! Sie trifft aus der Ferne, aber das Magazin ist klein: Leer
+    l\xE4dt es von selbst nach, oder tippe erneut auf ihr Fach.\nWechsle die Waffen
+    durch Tippen auf die F\xE4cher um den Angriffsknopf."
+  - 'Nimm die Waffe: E'
+  - "Nimm die Waffe: \u201EBenutzen\u201C"
+  - "Weiter den Gang entlang ist noch ein Zombie. Dieser sieht nichts, h\xF6rt aber
+    gut, und Sch\xFCsse sind laut: Er wird zu dir kommen.\nErschie\xDF ihn, bevor
+    er nah ist."
+  - "Erschie\xDF den Zombie"
+  - "Verletzt? Ein Medikit heilt dich vollst\xE4ndig.\nTritt darauf \u2013 es wird
+    nur verbraucht, wenn deine Gesundheit nicht voll ist."
+  - Tritt auf das Medikit
+  - Das ist ein Kartenteil. Jedes zeigt einen Teil der Levelkarte.
+  - Nimm das Kartenteil
+  - "\xD6ffne die Karte mit M oder dem Kartenknopf oben rechts. Die Lupe auf der
+    Karte zeigt den Weg zum n\xE4chsten Ziel."
+  - "\xD6ffne die Karte mit dem Kartenknopf oben rechts. Die Lupe auf der Karte zeigt
+    den Weg zum n\xE4chsten Ziel."
+  - "\xD6ffne die Karte: M"
+  - "\xD6ffne die Karte"
+  - "Geh jetzt zum Ausgang \u2013 der Treppe.\nIn den Levels verdienst du Sterne:
+    f\xFCr den Ausgang, f\xFCr alle besiegten Zombies und f\xFCr alle Kartenteile."
+  - Geh zum Ausgang
+  _missing: []

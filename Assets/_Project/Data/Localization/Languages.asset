@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda400de030acc645b9907703fca3e92, type: 3}
+  m_Name: Languages
+  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LanguageCatalog
+  _languages:
+  - _code: en
+    _nativeName: English
+    _systemLanguages: 0a000000
+    _table:
+      m_AssetGUID: 9744d57c36b976149a90a0edaafb09b3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: ru
+    _nativeName: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
+    _systemLanguages: 1e000000
+    _table:
+      m_AssetGUID: 373f07124d1c81d4b8e32b798c9db6ea
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: tr
+    _nativeName: "T\xFCrk\xE7e"
+    _systemLanguages: 25000000
+    _table:
+      m_AssetGUID: 3028039187233b14186282895b133e1b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: es
+    _nativeName: "Espa\xF1ol"
+    _systemLanguages: 22000000
+    _table:
+      m_AssetGUID: 028230155977b4c499c5b3a05839884c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: de
+    _nativeName: Deutsch
+    _systemLanguages: 0f000000
+    _table:
+      m_AssetGUID: 55fa078d516f4d34ca6b4a50fb509587
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: pt
+    _nativeName: "Portugu\xEAs"
+    _systemLanguages: 1c000000
+    _table:
+      m_AssetGUID: d5585a80f7c452740981cf17fec9c6f7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: fr
+    _nativeName: "Fran\xE7ais"
+    _systemLanguages: 0e000000
+    _table:
+      m_AssetGUID: 15c71a35b72204541a7c5d9edd3e323a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: it
+    _nativeName: Italiano
+    _systemLanguages: 15000000
+    _table:
+      m_AssetGUID: 010d6d85fdd40ed40b76615b05508bef
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: pl
+    _nativeName: Polski
+    _systemLanguages: 1b000000
+    _table:
+      m_AssetGUID: ca767776d6b669a469456b8390f7afab
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: id
+    _nativeName: Bahasa Indonesia
+    _systemLanguages: 14000000
+    _table:
+      m_AssetGUID: 359b5063e14de5d429649d57a1d36b36
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: kk
+    _nativeName: "\u049A\u0430\u0437\u0430\u049B\u0448\u0430"
+    _systemLanguages: 
+    _table:
+      m_AssetGUID: 3382225294cedd544ab1493886a27f40
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: uz
+    _nativeName: "O\u02BBzbekcha"
+    _systemLanguages: 
+    _table:
+      m_AssetGUID: fcb1f63709928a34283a2ae26fa21f77
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - _code: be
+    _nativeName: "\u0411\u0435\u043B\u0430\u0440\u0443\u0441\u043A\u0430\u044F"
+    _systemLanguages: 03000000
+    _table:
+      m_AssetGUID: 6de025a2d6916da40b99eb76a04e78e7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0

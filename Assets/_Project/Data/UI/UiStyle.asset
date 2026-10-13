@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9feb142a62d273a40979efd53f344a75, type: 3}
+  m_Name: UiStyle
+  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiStyle
+  Line: {r: 0.925, g: 0.902, b: 0.839, a: 0.72}
+  Text: {r: 0.925, g: 0.902, b: 0.839, a: 1}
+  MutedText: {r: 0.663, g: 0.635, b: 0.576, a: 1}
+  Fill: {r: 0.047, g: 0.047, b: 0.043, a: 0.45}
+  PressedFill: {r: 0.925, g: 0.902, b: 0.839, a: 0.2}
+  Accent: {r: 0.914, g: 0.714, b: 0.31, a: 1}
+  Health: {r: 0.788, g: 0.314, b: 0.247, a: 1}
+  Danger: {r: 0.878, g: 0.29, b: 0.208, a: 1}
+  DisabledAlpha: 0.35
+  Stroke: 1.5
+  ThinStroke: 1
+  ShapeMaterial: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
+  Font: {fileID: 11400000, guid: b1f7a5571b684a34193588a430c31598, type: 2}
+  BoldFont: {fileID: 11400000, guid: cbfbd2e18cb6eec4f8217e5123113d8b, type: 2}

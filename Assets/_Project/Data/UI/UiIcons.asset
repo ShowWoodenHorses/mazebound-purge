@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfc1767ad7a959444afb2456b9982e85, type: 3}
+  m_Name: UiIcons
+  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiIconSet
+  Map: {fileID: 21300000, guid: 7a9eba7910b92a74abce63fb88080bcc, type: 3}
+  Pause: {fileID: 21300000, guid: 285c8c5c31e153943a9e3e4c205dd93b, type: 3}
+  Settings: {fileID: 21300000, guid: 7a6102fdd3a8e3348b151335f8e9d45a, type: 3}
+  Door: {fileID: 21300000, guid: c3d9db18c902d344a952fd3bde4b6b9b, type: 3}
+  PickUp: {fileID: 21300000, guid: 3c3f146106002d1448e3d93b4ce5a9f7, type: 3}
+  Key: {fileID: 21300000, guid: 287057a55b6902b4393eb8623d926e9d, type: 3}
+  Medkit: {fileID: 21300000, guid: a58171424630e414e8222c9c7bd46293, type: 3}
+  Skull: {fileID: 21300000, guid: 66b30dc81a9a8ee45943cf32077d9812, type: 3}
+  Fragment: {fileID: 21300000, guid: c99e769cc0858f94b9169c09319493a4, type: 3}
+  Melee: {fileID: 21300000, guid: 2671744ca19a81d41baf5898089bb4e6, type: 3}
+  Ranged: {fileID: 21300000, guid: 97c2650b6057a4e4f9b3e9b9d8206727, type: 3}
+  Attack: {fileID: 21300000, guid: 12f062668088f884a8b729eb6c4f9c79, type: 3}
+  Star: {fileID: 21300000, guid: 7fa2b25d92ebff9448473b615f341c09, type: 3}
+  StarFilled: {fileID: 21300000, guid: 20ee0c7df878671418454d88e53690bb, type: 3}
+  Lock: {fileID: 21300000, guid: dc49ac5eba0bb74439e5931e18455d0e, type: 3}
+  Heart: {fileID: 21300000, guid: d6f62e2bf360dfb4294eb377b05a4605, type: 3}
+  HeartFill: {fileID: 21300000, guid: 916c71cbd21133d4882b132a0d95258d, type: 3}
+  ChevronLeft: {fileID: 21300000, guid: 195d0699c6cd2884dac56e86d37a4542, type: 3}
+  ChevronRight: {fileID: 21300000, guid: 71b80941dc2f4d84788ec93e7c4dcbe1, type: 3}
+  Resume: {fileID: 21300000, guid: aa00ddfbf2d84d34da04cf6e67155551, type: 3}
+  Retry: {fileID: 21300000, guid: ea9938b1a0419bb4e9c98a74dfe9eed0, type: 3}
+  Menu: {fileID: 21300000, guid: 5b0ed0645be6ae14ba50290eef3eb97c, type: 3}
+  Exit: {fileID: 21300000, guid: f7161a9368a002a4b887893dcd19c405, type: 3}
+  Close: {fileID: 21300000, guid: 1c19dd3e3e48e8744b1b67eea2e73e69, type: 3}
+  Player: {fileID: 21300000, guid: 9dd474664034dad43b372260e2c72eaf, type: 3}
+  Search: {fileID: 21300000, guid: ac40797d642a02b4baf4a1251da47e02, type: 3}
+  Help: {fileID: 21300000, guid: 3b2d75fb3d87b3a4db8d11e87a922082, type: 3}
+  Ad: {fileID: 21300000, guid: fad084edd0a8f3d4ea8af889840f7a69, type: 3}
+  Backdrop: {fileID: 2800000, guid: fbb64d402343584429d9663abb6f9b90, type: 3}

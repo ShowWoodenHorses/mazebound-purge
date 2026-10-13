@@ -1,11 +1,11 @@
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Route Line: the material of the route hint line (<c>Maze/RouteLine</c>; colours, widths and
+    /// Purge → Dev → Build Route Line: the material of the route hint line (<c>Purge/RouteLine</c>; colours, widths and
     /// pulses are set per theme in <see cref="ThemeRoute"/> and passed from code) and its assignment to every
     /// <see cref="VisualTheme"/> that has none yet. The material is overwritten (GUID kept); tuned theme values stay.
     /// </summary>
@@ -14,13 +14,13 @@ namespace Maze.Editor.Dev
         private const string Folder = "Assets/_Project/Art/Effects";
         private const string MaterialPath = Folder + "/fx_route_line.mat";
 
-        [MenuItem("Maze/Dev/Build Route Line")]
+        [MenuItem("Purge/Dev/Build Route Line")]
         public static void Build()
         {
-            var shader = Shader.Find("Maze/RouteLine");
+            var shader = Shader.Find("Purge/RouteLine");
             if (shader == null)
             {
-                Debug.LogError("[Maze] Shader 'Maze/RouteLine' is required.");
+                Debug.LogError("[Purge] Shader 'Purge/RouteLine' is required.");
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Maze.Editor.Dev
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Route line material built: {MaterialPath}; assigned to {assigned} theme(s).");
+            Debug.Log($"[Purge] Route line material built: {MaterialPath}; assigned to {assigned} theme(s).");
         }
     }
 }

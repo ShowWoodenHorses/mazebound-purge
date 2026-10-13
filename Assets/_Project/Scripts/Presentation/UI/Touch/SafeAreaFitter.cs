@@ -1,7 +1,7 @@
-using Maze.Application.Platform;
+using Purge.Application.Platform;
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Fits a RectTransform into <see cref="Screen.safeArea"/> (notches, rounded corners) narrowed by the page's insets

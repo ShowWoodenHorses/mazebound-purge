@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8a267a04b317234d8b24440aafce228, type: 3}
   m_Name: CombatVisual
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.CombatVisualDefinition
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.CombatVisualDefinition
   _bullet:
     m_AssetGUID: 740c49c56bd0a924999b433a0c99d7d1
     m_SubObjectName: 

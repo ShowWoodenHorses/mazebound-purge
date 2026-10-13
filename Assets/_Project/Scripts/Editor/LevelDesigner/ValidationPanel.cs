@@ -1,8 +1,8 @@
-using Maze.Core.Validation;
+using Purge.Core.Validation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Validation results (ТЗ §90–92). Clicking an issue selects its cell on the grid.</summary>
     internal sealed class ValidationPanel

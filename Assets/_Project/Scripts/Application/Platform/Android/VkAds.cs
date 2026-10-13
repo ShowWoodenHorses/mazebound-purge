@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 using Mycom.Target.Unity.Ads;
 using Mycom.Target.Unity.Common;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// Ads of the Android build: VK Ad Network (ex. myTarget, plugin in <c>Assets/Plugins/MyTarget</c>), slots from

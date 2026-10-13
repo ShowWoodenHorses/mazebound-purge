@@ -1,12 +1,12 @@
 using System.Linq;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Lighting;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Lighting;
+using Purge.Core.Visual;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     /// <summary>Auto placement of light sources: along walls, spacing by density, deterministic, manual lights kept.</summary>
     public class LightPlacerTests

@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
 
-namespace Maze.Gameplay.Zombies
+namespace Purge.Gameplay.Zombies
 {
     /// <summary>
     /// Zombies of the level (ТЗ §73–77): spawns them (load stage SpawnZombies), ticks their AI, forwards sounds to

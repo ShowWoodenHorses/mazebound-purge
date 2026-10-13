@@ -1,13 +1,13 @@
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Core.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Core.Visual;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     /// <summary>Decor layer: auto placement (density, height limit, VisualSeed), manual overrides, validation.</summary>
     public class DecorTests

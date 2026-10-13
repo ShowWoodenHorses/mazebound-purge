@@ -1,7 +1,7 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>What blocks the player.</summary>
     public interface IPlayerBlockers

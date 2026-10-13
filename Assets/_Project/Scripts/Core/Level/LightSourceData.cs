@@ -1,9 +1,9 @@
 using System;
-using Maze.Core.Grid;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>
     /// A light source of the level (visual only: gameplay, LOS and AI ignore it). Not a Unity light: its light is

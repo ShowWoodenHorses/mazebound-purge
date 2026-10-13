@@ -1,4 +1,4 @@
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>What a visual set represents. Each kind has its own slot in <see cref="VisualTheme"/>.</summary>
     public enum VisualKind

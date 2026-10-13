@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Marks of a weapon model (display only, set up by Maze → Dev → Build Weapons): the muzzle of a gun (shots,
+    /// Marks of a weapon model (display only, set up by Purge → Dev → Build Weapons): the muzzle of a gun (shots,
     /// flashes), the left hand's grip of a gun and the far end of a melee weapon (swing trails). Pivot is the grip, the weapon points along +Z.
     /// </summary>
     public sealed class WeaponModel : MonoBehaviour

@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using System.Threading;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visibility;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Weapons;
-using Maze.Tests.EditMode.Player;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visibility;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Weapons;
+using Purge.Tests.EditMode.Player;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Combat
+namespace Purge.Tests.EditMode.Combat
 {
     /// <summary>Player attacks, bullets, spatial queries and combat sounds (ТЗ §66, §68–71, §81).</summary>
     public class CombatTests

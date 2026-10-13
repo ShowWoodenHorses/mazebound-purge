@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Services;
-using Maze.Core.Common;
+using Purge.Application.Services;
+using Purge.Core.Common;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// One analytics backend of a platform (Yandex Metrica on Yandex Games, MyTracker on Android, a log in the

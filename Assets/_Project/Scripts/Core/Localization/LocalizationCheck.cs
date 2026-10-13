@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Maze.Core.Localization
+namespace Purge.Core.Localization
 {
     /// <summary>
-    /// Checks of the translation table (Maze → Dev → Build Localization, tests): keys the game uses but the table lacks
+    /// Checks of the translation table (Purge → Dev → Build Localization, tests): keys the game uses but the table lacks
     /// (error), table keys nobody uses (warning), untranslated texts (warning), texts whose <c>{0}</c> placeholders differ
     /// from the base language's (error) and missing language rows (<see cref="LocalizationSource.NameKey"/>).
     /// </summary>

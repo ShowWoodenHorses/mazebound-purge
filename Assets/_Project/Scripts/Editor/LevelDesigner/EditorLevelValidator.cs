@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Runtime validator plus checks that need the AssetDatabase: a prefab reference can be well-formed
@@ -48,7 +48,7 @@ namespace Maze.Editor.LevelDesigner
 
         /// <summary>
         /// Floor, wall and decor prefabs are merged into chunk meshes at runtime (GeometryBuilder): their meshes must be
-        /// readable and their materials must use the Maze/Geometry shader, otherwise visibility cannot hide cells.
+        /// readable and their materials must use the Purge/Geometry shader, otherwise visibility cannot hide cells.
         /// </summary>
         private static void CheckGeometryPrefabs(LevelData level, ValidationReport report)
         {

@@ -3,7 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Application.Assets
+namespace Purge.Application.Assets
 {
     /// <summary>
     /// Owner of Addressables handles (ТЗ §84). Every handle is registered in its owner the moment it is

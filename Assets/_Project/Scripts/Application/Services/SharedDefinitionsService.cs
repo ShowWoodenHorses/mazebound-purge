@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Definitions;
-using Maze.Core.Visual;
+using Purge.Application.Assets;
+using Purge.Core.Definitions;
+using Purge.Core.Visual;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>
     /// Definitions shared by every level (player parameters and look, combat visuals, held weapon looks), loaded once and kept resident

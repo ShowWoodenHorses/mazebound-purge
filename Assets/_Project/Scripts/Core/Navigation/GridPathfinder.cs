@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Navigation
+namespace Purge.Core.Navigation
 {
     /// <summary>
     /// 4-directional A* on the level grid (ТЗ §52). All buffers are allocated once per grid size and reused,

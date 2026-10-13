@@ -1,7 +1,7 @@
-using Maze.Presentation.UI;
+using Purge.Presentation.UI;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.UI
+namespace Purge.Tests.EditMode.UI
 {
     public class TimeFormatTests
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Lighting
+namespace Purge.Core.Lighting
 {
     /// <summary>A kind of light the theme's auto placement chooses from (by weight), e.g. torch, cold lamp.</summary>
     [Serializable]

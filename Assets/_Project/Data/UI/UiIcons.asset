@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfc1767ad7a959444afb2456b9982e85, type: 3}
   m_Name: UiIcons
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiIconSet
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiIconSet
   Map: {fileID: 21300000, guid: 7a9eba7910b92a74abce63fb88080bcc, type: 3}
   Pause: {fileID: 21300000, guid: 285c8c5c31e153943a9e3e4c205dd93b, type: 3}
   Settings: {fileID: 21300000, guid: 7a6102fdd3a8e3348b151335f8e9d45a, type: 3}

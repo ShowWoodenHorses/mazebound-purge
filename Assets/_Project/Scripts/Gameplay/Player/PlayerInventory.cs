@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Level;
+using Purge.Core.Level;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>Keys the player carries (ТЗ §63 Inventory). Weapons live in <see cref="Weapons.WeaponSystem"/>.</summary>
     public sealed class PlayerInventory

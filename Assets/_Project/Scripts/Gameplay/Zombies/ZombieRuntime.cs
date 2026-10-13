@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Spatial;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Spatial;
 using UnityEngine;
 
-namespace Maze.Gameplay.Zombies
+namespace Purge.Gameplay.Zombies
 {
     /// <summary>ТЗ §74 plus <see cref="Alert"/>.</summary>
     public enum ZombieState

@@ -1,7 +1,7 @@
-using Maze.Core.Audio;
+using Purge.Core.Audio;
 using UnityEngine;
 
-namespace Maze.Core.Definitions
+namespace Purge.Core.Definitions
 {
     public enum WeaponSlot
     {
@@ -19,7 +19,7 @@ namespace Maze.Core.Definitions
     /// Gameplay parameters of a weapon. Visual representation is defined separately
     /// (WeaponVisualDefinition), never here.
     /// </summary>
-    [CreateAssetMenu(fileName = "WeaponDefinition", menuName = "Maze/Definitions/Weapon")]
+    [CreateAssetMenu(fileName = "WeaponDefinition", menuName = "Purge/Definitions/Weapon")]
     public sealed class WeaponDefinition : ScriptableObject
     {
         [SerializeField] private string _id;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Style
+namespace Purge.Presentation.UI.Style
 {
     /// <summary>
     /// A screen fades in when shown (unscaled time, so also over a paused level); its panel, if any, grows from slightly

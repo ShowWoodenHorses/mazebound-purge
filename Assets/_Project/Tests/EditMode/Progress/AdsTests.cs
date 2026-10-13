@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Levels;
-using Maze.Application.Platform;
-using Maze.Application.Save;
-using Maze.Core.Level;
+using Purge.Application.Levels;
+using Purge.Application.Platform;
+using Purge.Application.Save;
+using Purge.Core.Level;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     /// <summary>Ads: the interstitial policy, rewarded results, analytics of every ad; map layers bought per level.</summary>
     public class AdsTests

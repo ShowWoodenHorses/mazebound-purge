@@ -1,10 +1,10 @@
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     /// <summary>One key opens one door; the key always has the colour of its door (ТЗ §40).</summary>
     public class KeyDoorColorTests

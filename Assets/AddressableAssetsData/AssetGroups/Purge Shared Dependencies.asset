@@ -1,0 +1,568 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Purge Shared Dependencies
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Purge Shared Dependencies
+  m_GUID: f25b94d44c1933643bbcfe494300844d
+  m_SerializeEntries:
+  - m_GUID: 01238d71c6125c24180cc686a7f71ac5
+    m_Address: Assets/_Project/Art/Zombie/Zombie.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0366f4db39e3fbb41be79e095f497f5d
+    m_Address: Assets/_Project/Art/Animations/Zombie_attack_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05592bd23d54afc4fa8f4f31f4a5f45b
+    m_Address: Assets/_Project/Data/Weapons/MP5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 058a571248af9cd46bdb6ec9b1e6c67f
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_FF800D.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0976e9e2f75b61643818c92e87fa1788
+    m_Address: Assets/_Project/Art/Effects/fx_route_line.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bdfa63c78b752e4594e64437e1ddde4
+    m_Address: Assets/_Project/Art/Biomes/Meshes/BiomeWall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e16611dc4905bc40b3602e5077d5d94
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonVikings/Textures/Texture_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1230f058d284a5e45b30dbc0faf6a013
+    m_Address: Assets/_Project/Art/Decor/Materials/PolyVikings_Material_01_Decor.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16f79d1fe1ae3bd43ab06d8bad3ac5bb
+    m_Address: Assets/_Project/Art/Animations/Zombie_attack_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 174abc94a5cf6b44992c03a6bf528bee
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_AssaultRifle_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17964ef0678f5d14385a3e458f62ade4
+    m_Address: Assets/_Project/Art/Shaders/PurgeLit.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b96d7b7e85668e4a8fd7c823e9962f2
+    m_Address: Assets/_Project/Art/Characters/SM_Chr_Zombie_Male_02.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ea3910fe806cf74da26686d25f32ffb
+    m_Address: Assets/_Project/Art/Animations/Zombie_death.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ec2943ff3bb5314884462800b648ea0
+    m_Address: Assets/_Project/Art/Biomes/Forest/Textures/wall_forest_top_n.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2047875a40d94ed4eb241d51cf1bdf5f
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Crowbar_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 270fd5c64f7118c4495be93b7ce2530c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/PolygonFantasyKingdom_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28090f5c9f83d0a41bd0fd189da3107a
+    m_Address: Assets/_Project/Art/Effects/fx_soft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 299be5c1d954e8d4d8b9a9ccdb0da1d6
+    m_Address: Assets/_Project/Art/Effects/fx_additive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a6342712722c654c8aa208b06371596
+    m_Address: Assets/_Project/Data/Themes/CastleBlockExitSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bb7dc9d0eb49d94aa908e133bb58da9
+    m_Address: Assets/_Project/Data/Weapons/Crowbar.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cc7b8ab74a2dfe4db5e2b8abe10cd6b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_HuntingRifle_Clean_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2da7c32de6fc2bd4bb9fbab91d3398ff
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Models/SM_Env_Ivy_08.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e85d085836cfbc418b37c26a35b3385
+    m_Address: Assets/_Project/Art/Animations/Zombie_scream.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f70223cb96ce5342b1611c69ac6131d
+    m_Address: Assets/_Project/Art/Shaders/PurgeParticle.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fa09797b27ada84abb30998ce58a37f
+    m_Address: Assets/_Project/Art/Biomes/Forest/Textures/wall_forest_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 307013d4046175540b40ca4e3e8dcfd7
+    m_Address: Assets/_Project/Art/Effects/fx_vision_zone.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3143762e16a7e23408d38ae891030756
+    m_Address: Assets/_Project/Data/Themes/CastleBlockFloorSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3493d85149291cd41ac4d077cc3ec857
+    m_Address: Assets/_Project/Data/Weapons/M416.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37158060f1d8a304588d025d46d43776
+    m_Address: Assets/_Project/Art/Biomes/Snow/Materials/wall_snow_top.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3af61cfeddf135f499b68564046540f3
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Bat_Wood_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4329f07b42756c24caededb8268c1897
+    m_Address: Assets/_Project/Data/Themes/CastleBlockMedkitSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46cc68aac8aae044191e0f180e577ddd
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Bld_Door_Barricaded_08.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46cd222b1c4f77742b6e467b2b291b2c
+    m_Address: Assets/_Project/Art/Lighting/BlobShadow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4852d557940957f4e90455abefa07fe8
+    m_Address: Assets/_Project/Data/Themes/CastleBlockTheme.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a1d7426d7e312f449a48763e9a44eb5
+    m_Address: Assets/_Project/Art/Animations/Zombie_idle_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cc44080e090eeb4587abd21b38ba962
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_F2D91A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52544eaa2c194144ab7b28fa647d781c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/Misc/PolygonApocalypse_Emissive_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 535606c83797fb04ea7fd64794db6d8c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_SubMGun_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54dc22f7d0bb2c54da63d7c7fb082522
+    m_Address: Assets/_Project/Art/Floors/Materials/PolygonApocalypse_Material_01_A_Geometry.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57b71dca180984d488eb03f23f3bef0b
+    m_Address: Assets/_Project/Data/Themes/PlaceholderZombieSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58f9375385fbcf64d85d0df3b1a9714f
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_SniperRifle_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 597c50e5978547344a80d8abc2a9855a
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Chr_Attach_Zombie_Male_Hair_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bb68a94905ffc0418608fc7e572ea42
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Materials/PolygonApocalypse_Material_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bd4c4442526e134a9eb1a3db185116b
+    m_Address: Assets/_Project/Art/Effects/fx_dust.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c99cec570bb90c4db42c3a608969eee
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/Misc/PolygonApocalypse_Normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d35bf80426007a4f971186317308fc1
+    m_Address: Assets/_Project/Art/Decor/Materials/PolygonFantasyKingdom_Mat_01_A_Decor.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64abee7731e9cfb489b2b67f67c005df
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_A633E6.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64ec30b356044824083cab89bfdd3cdc
+    m_Address: Assets/_Project/Data/Zombies/ZombieHunter.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6972f4bfc5301414ba01b6e8606ff09d
+    m_Address: Assets/_Project/Art/ThirdParty/Gabies_Assets/Keys/Models/Simple_03.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aac82dfb5a99c542a883fd2a8615461
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Alts/Characters/PolygonApocalypseWasteland_Character_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fa6e3a289a54da4387f58e1eb847ef8
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonPirates/Textures/Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71e41e43b459a244abaf5acca76b89ee
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Materials/PolygonFantasyKingdom_Mat_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 764ab5ef7f700ad4c94796777fbeda73
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_1F1F1F.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c2a5fb0e861fc242bb7bb40feddc206
+    m_Address: Assets/_Project/Art/Characters/CharactersAvatar.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ca6f9caabab14249976bf0a5ceda6ef
+    m_Address: Assets/_Project/Data/Weapons/HuntingRifle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81b5bd9bb854c674fb9ed9598003a2cd
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_FireAxe_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 822402f846727b24890cc7d5f5430675
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 848777e871c45864389124a0559bf682
+    m_Address: Assets/_Project/Data/Themes/CastleBlockMapFragmentSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e26df35033987f418d35758fafe06cb
+    m_Address: Assets/_Project/Art/Animations/Zombie_idle_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ec1aafa434afa44987c004e69ba7af6
+    m_Address: Assets/_Project/Art/Effects/fx_footprints.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f3a52989d6d9534290edf86e19f4dd9
+    m_Address: Assets/_Project/Data/Themes/CastleBlockWallSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9782ffd36b3686f4eb4d820b0861438f
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_AssaultRifle_03.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97ef3c7cdf0c73648bad7e94f60e15ec
+    m_Address: Assets/_Project/Art/Shaders/PurgeBlobShadow.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9841c20c900ed354dbc135cc4571d48e
+    m_Address: Assets/_Project/Art/Biomes/Snow/Textures/floor_snow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b1c17e9381cd9b498d02fdf8d61b77a
+    m_Address: Assets/_Project/Art/Animations/Zombie_attack_3.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b82d6373e2325c468a37bd22a5efb5b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Hybrid_03.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ecb9a7ec3c4c6541a4e92686dfa670e
+    m_Address: Assets/_Project/Art/Placeholders/Materials/G_524C57.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f444227525d435499517b13b3b00da1
+    m_Address: Assets/_Project/Data/Weapons/Katana.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5899f9817b81e8419c56ebfc3aa1ce3
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_1AD9D9.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a63bb30920a56754d8f8a5188eea4139
+    m_Address: Assets/_Project/Data/Weapons/Bat.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6f33f64366992e4989a77d9b65d2b8b
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_D92626.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac0c610bbc54b95459ad02ba82f4340b
+    m_Address: Assets/_Project/Data/Zombies/ZombieListener.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b222ebbe4d129c443bf95e5da51751c5
+    m_Address: Assets/_Project/Art/Fog/FogNoise.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b33f17226115b1949a44373d62d754bd
+    m_Address: Assets/_Project/Art/Biomes/Snow/Textures/wall_snow_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b648aac8a8cb44c45a97d41297b31aba
+    m_Address: Assets/_Project/Data/Weapons/FireAxe.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d64fc864c3b824e9243d03bb589638
+    m_Address: Assets/_Project/Art/Biomes/Snow/Textures/floor_snow_n.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b733ec61742d91345b3f4027205340fa
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Props/SM_Prop_Trailer_Cage_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd948e954d146054e87e4bd8308c40a7
+    m_Address: Assets/_Project/Data/Weapons/AK-74.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfea5a2a82000c54482c881fc1a91dc5
+    m_Address: Assets/_Project/Art/Shaders/PurgeGeometry.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2846f78ff3f75148832bd4261978478
+    m_Address: Assets/_Project/Art/Shaders/PurgeRouteLine.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c798c01d46f63bb4299d10b91436a6c7
+    m_Address: Assets/_Project/Art/Effects/fx_footprints.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7e9ec95b3da8ad40a670cc1a1994bf7
+    m_Address: Assets/_Project/Data/Weapons/RevolverRifle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9e4824799a23154dae897c7fde15723
+    m_Address: Assets/_Project/Data/Zombies/ZombieWalker.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb299dba8e11c1149aa22907c53bc418
+    m_Address: Assets/_Project/Data/Themes/CastleBlockDoorSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd39757a289ccc644b8149727d72a763
+    m_Address: Assets/_Project/Art/Biomes/Forest/Materials/wall_forest_top.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfa9392684729334e801c808b8fda77a
+    m_Address: Assets/_Project/Data/Themes/CastleBlockLightSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d050248346c3357449c66ac0e7fbf87e
+    m_Address: Assets/_Project/Art/Animations/Zombie_run.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0979293b58f90343b18039357dc34e5
+    m_Address: Assets/_Project/Art/Shaders/PurgeFog.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d32eb243cab9b6d4b8798e6ca1aea014
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_FF66B2.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7c996b3a490a6348bd7a4ef95c8cf36
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Katana_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dab322d45ab133f4bb1103083421ce6b
+    m_Address: Assets/_Project/Art/Animations/Zombie_walk.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db59a61cfdad6764a9fd2eb2c83d5922
+    m_Address: Assets/_Project/Art/Biomes/Snow/Materials/floor_snow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd7352355407bcd4e93e5a11584d9524
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_2659E6.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddc131df32f11f54a98daf8633aee1a3
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/Misc/PolygonFantasyKingdom_Texture_Emmisive.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1e3a08f74b470148a08ad6db9711a10
+    m_Address: Assets/_Project/Data/Themes/PlaceholderDecorSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e44f05f90fed0e446b142333febf4f9e
+    m_Address: Assets/_Project/Art/Fog/Fog.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e76253120d07a6c488614b9725e4d42e
+    m_Address: Assets/_Project/Art/Biomes/Meshes/BiomeFloor.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e97cc13d80855764baf01f1b83fa1529
+    m_Address: Assets/_Project/Art/Biomes/Snow/Textures/wall_snow_top_n.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea5c3ebdf030b11448d31d5cb3817f43
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Materials/Forest_PolygonApocalypse_Material.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee4ca7d229aa8f04cab686907c5f3396
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/Misc/PolygonFantasyKingdom_Texture_Normal_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eed7f5fc0ce713d418f2014e9021fd8b
+    m_Address: Assets/_Project/Data/Weapons/SniperRifle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f27b134fb56d17341899f871cca56d03
+    m_Address: Assets/_Project/Art/Effects/fx_noise_ring.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3f66466e2941c5458939f5dde50eff1
+    m_Address: Assets/_Project/Data/Themes/CastleBlockKeySet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f49a2f304f01b9f4292f3a57c14bd4ab
+    m_Address: Assets/_Project/Art/Shaders/PurgeRing.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa17c2d599ff7fa45876247dbf34fd09
+    m_Address: Assets/_Project/Art/Decor/Materials/PolygonApocalypse_Material_01_A_Decor.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb15d3c7f0ca317498e3750cb736fd43
+    m_Address: Assets/_Project/Data/Themes/PlaceholderWeaponSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc2425854efc2d04db8c6b5bab474c29
+    m_Address: Assets/_Project/Art/Placeholders/Materials/M_26BF40.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fff80543fc372b443a4903b7beade2a1
+    m_Address: Assets/_Project/Art/Decor/Materials/PolygonPirates_Material_01_A_Decor.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 7b0b4a63a91ea59479d6f21c16e4df79, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: def98e0c82265334b891c88da8d087b8, type: 2}
+    - {fileID: 11400000, guid: c2fc7c65707fd884f95c74f757d50f21, type: 2}
+    m_SchemaDisplayOrder:
+    - Purge Shared Dependencies_BundledAssetGroupSchema
+    - Purge Shared Dependencies_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 using Mycom.Tracker.Unity;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// Game events to MyTracker (the Android build; plugin in <c>Assets/Plugins/MyTracker</c>): the event's name and

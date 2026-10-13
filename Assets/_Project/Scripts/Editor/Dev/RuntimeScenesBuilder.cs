@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Maze.Application.Save;
-using Maze.Composition;
-using Maze.Core.Localization;
-using Maze.Presentation.Localization;
-using Maze.Presentation.Map;
-using Maze.Presentation.UI;
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
-using Maze.Presentation.UI.Touch;
-using Maze.Presentation.Visual;
+using Purge.Application.Save;
+using Purge.Composition;
+using Purge.Core.Localization;
+using Purge.Presentation.Localization;
+using Purge.Presentation.Map;
+using Purge.Presentation.UI;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
+using Purge.Presentation.UI.Touch;
+using Purge.Presentation.Visual;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -21,7 +21,7 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Creates the runtime scenes (ТЗ §6–7) with placeholder uGUI screens and puts them into Build Settings:
@@ -52,7 +52,7 @@ namespace Maze.Editor.Dev
         /// <summary>Marks a caption argument of the helpers below as a key: <see cref="Text"/> localizes it.</summary>
         private const char KeyMark = '\u0001';
 
-        [MenuItem("Maze/Dev/Build Runtime Scenes")]
+        [MenuItem("Purge/Dev/Build Runtime Scenes")]
         public static void Build()
         {
             var existing = File.Exists(BootstrapPath) || File.Exists(GamePath);
@@ -90,7 +90,7 @@ namespace Maze.Editor.Dev
             BuildBootstrapScene();
             RegisterInBuildSettings();
 
-            Debug.Log($"[Maze] Runtime scenes built: {BootstrapPath} (first in Build Settings), {GamePath}.");
+            Debug.Log($"[Purge] Runtime scenes built: {BootstrapPath} (first in Build Settings), {GamePath}.");
             return null;
         }
 
@@ -1344,7 +1344,7 @@ namespace Maze.Editor.Dev
                 toggles.Add(toggle);
                 // Zombies, weapons, medkits, keys are bought per level with a rewarded ad: while locked, a button over
                 // the switch (child: it gets the tap) with the ad mark at the end of the row.
-                unlocks.Add(i >= (int)Maze.Presentation.Map.MapLayer.Zombies ? UnlockOverlay(toggle.transform, icons.Ad) : null);
+                unlocks.Add(i >= (int)Purge.Presentation.Map.MapLayer.Zombies ? UnlockOverlay(toggle.transform, icons.Ad) : null);
             }
 
             var mapIcons = AssetDatabase.LoadAssetAtPath<MapIconSet>(MapIconsBuilder.SetPath);

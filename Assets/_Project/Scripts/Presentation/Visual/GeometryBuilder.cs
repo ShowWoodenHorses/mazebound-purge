@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Builds the static level geometry (ТЗ §82): saved cell visuals → exact prefabs → their meshes combined

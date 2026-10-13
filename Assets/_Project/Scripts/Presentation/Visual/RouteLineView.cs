@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Player;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// The route hint on the floor (display only; theme settings <see cref="ThemeRoute"/>): a ribbon from the player

@@ -1,8 +1,8 @@
-using Maze.Core.Grid;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Visual;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     public class WallShapesTests
     {

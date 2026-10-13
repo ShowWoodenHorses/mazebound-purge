@@ -1,12 +1,12 @@
-using Maze.Core.Lighting;
-using Maze.Core.Visual;
+using Purge.Core.Lighting;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Create Placeholder Lighting: the blob shadow material (shader Maze/BlobShadow, instancing on) and
+    /// Purge → Dev → Create Placeholder Lighting: the blob shadow material (shader Purge/BlobShadow, instancing on) and
     /// its assignment to the placeholder theme's lighting, plus light presets (torch, cold lamp) if the theme has none.
     /// An existing material and presets keep their tuned values.
     /// The rest of the lighting mood is tuned on the theme asset (Lighting).
@@ -17,7 +17,7 @@ namespace Maze.Editor.Dev
         private const string BlobShadowPath = Folder + "/BlobShadow.mat";
         private const string ThemePath = "Assets/_Project/Data/Themes/PlaceholderTheme.asset";
 
-        [MenuItem("Maze/Dev/Create Placeholder Lighting")]
+        [MenuItem("Purge/Dev/Create Placeholder Lighting")]
         public static void Create()
         {
             if (!AssetDatabase.IsValidFolder(Folder))
@@ -26,10 +26,10 @@ namespace Maze.Editor.Dev
             var material = AssetDatabase.LoadAssetAtPath<Material>(BlobShadowPath);
             if (material == null)
             {
-                var shader = Shader.Find("Maze/BlobShadow");
+                var shader = Shader.Find("Purge/BlobShadow");
                 if (shader == null)
                 {
-                    Debug.LogError("[Maze] Shader 'Maze/BlobShadow' not found.");
+                    Debug.LogError("[Purge] Shader 'Purge/BlobShadow' not found.");
                     return;
                 }
 
@@ -58,7 +58,7 @@ namespace Maze.Editor.Dev
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Blob shadow material at {BlobShadowPath}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
+            Debug.Log($"[Purge] Blob shadow material at {BlobShadowPath}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
         }
     }
 }

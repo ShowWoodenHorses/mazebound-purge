@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// On-screen stick (ТЗ §64) that drives a gamepad stick through the Input System. Lives on an invisible zone

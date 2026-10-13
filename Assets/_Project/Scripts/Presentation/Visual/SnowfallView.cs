@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Falling snow of the theme's weather (<see cref="ThemeWeather"/>, display only): flakes are emitted from code into

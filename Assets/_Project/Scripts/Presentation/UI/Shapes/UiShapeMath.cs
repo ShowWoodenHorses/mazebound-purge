@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Shapes
+namespace Purge.Presentation.UI.Shapes
 {
-    /// <summary>Kind of a <see cref="UiShape"/>; the numbers are passed to the <c>Maze/UIShape</c> shader.</summary>
+    /// <summary>Kind of a <see cref="UiShape"/>; the numbers are passed to the <c>Purge/UIShape</c> shader.</summary>
     public enum UiShapeKind
     {
         /// <summary>The rect with rounded corners (<see cref="UiShape"/> corner radius, 0 = sharp).</summary>
@@ -20,7 +20,7 @@ namespace Maze.Presentation.UI.Shapes
 
     /// <summary>
     /// Signed distances of the <see cref="UiShape"/> shapes (negative inside, in canvas units) — the same formulas as
-    /// the <c>Maze/UIShape</c> shader, so hit tests match what is drawn. Angles are degrees, 0 = right (+x),
+    /// the <c>Purge/UIShape</c> shader, so hit tests match what is drawn. Angles are degrees, 0 = right (+x),
     /// counter-clockwise (y up).
     /// </summary>
     public static class UiShapeMath

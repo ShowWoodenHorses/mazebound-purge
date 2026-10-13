@@ -1,16 +1,16 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
 using UnityEngine;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>Picks the player start (ТЗ §61): a forced index or a random one.</summary>
     public static class PlayerStartSelector

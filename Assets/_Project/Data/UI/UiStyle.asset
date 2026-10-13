@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9feb142a62d273a40979efd53f344a75, type: 3}
   m_Name: UiStyle
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiStyle
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiStyle
   Line: {r: 0.925, g: 0.902, b: 0.839, a: 0.72}
   Text: {r: 0.925, g: 0.902, b: 0.839, a: 1}
   MutedText: {r: 0.663, g: 0.635, b: 0.576, a: 1}

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Player;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Level
+namespace Purge.Gameplay.Level
 {
     /// <summary>
     /// Exits (ТЗ §62): every exit is equal. Entering an exit cell asks for confirmation; entering again asks again.

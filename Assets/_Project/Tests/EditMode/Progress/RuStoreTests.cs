@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Application.Platform;
+using Purge.Application.Platform;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     public sealed class RuStoreTests
     {

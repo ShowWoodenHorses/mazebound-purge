@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af674c3552250484ca873b9d34108e25, type: 3}
   m_Name: AudioCatalog
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Audio.AudioCatalog
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Audio.AudioCatalog
   _menuMusic:
     _clip:
       m_AssetGUID: 2ebc912a5364cd2408461cf7f971fdcc

@@ -1,11 +1,11 @@
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Lighting;
-using Maze.Core.Visibility;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Lighting;
+using Purge.Core.Visibility;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     /// <summary>Light of the level's sources over the grid: falloff, walls and doors, partial rebuild, flicker share.</summary>
     public class LightFieldTests

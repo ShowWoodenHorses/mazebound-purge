@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Short flash of a character model when hit (display only, instead of a hit clip): <c>_HitFlash</c> of the
-    /// <c>Maze/Lit</c> materials is set through a <see cref="MaterialPropertyBlock"/> and fades out. Only renderers
+    /// <c>Purge/Lit</c> materials is set through a <see cref="MaterialPropertyBlock"/> and fades out. Only renderers
     /// whose materials have the property take part (not blob shadows, effects). Renderers are found once, on creation.
     /// The same property block carries the model's frost (<c>_Frost</c>, theme weather): a second block would be
     /// overwritten by the flash.

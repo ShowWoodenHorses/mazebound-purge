@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: BGames
-  productName: Mazebound
+  productName: 'Mazebound: Purge'
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -143,7 +143,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 1.0.0
+  bundleVersion: 0.1.0
   preloadedAssets:
   - {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   metroInputSource: 0
@@ -167,7 +167,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: ru.bgames.mazebound
+    Android: ru.bgames.mazebound.purge
     Standalone: com.DefaultCompany.3D-Project
   buildNumber:
     Standalone: 0
@@ -175,7 +175,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 10000
+  AndroidBundleVersionCode: 100
   AndroidMinSdkVersion: 25
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -488,10 +488,10 @@ PlayerSettings:
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
   m_TemplateCustomTags:
-    MAZE_PLATFORM_HEAD: "<script>\n      window.mazeGd = { ready: false, error: null,
+    PURGE_PLATFORM_HEAD: "<script>\n      window.purgeGd = { ready: false, error: null,
       listener: null };\n      window.GD_OPTIONS = {\n        gameId: '738b7f3f16bf4176bb70e01f8d655802',\n       
       advertisementSettings: { autoplay: false },\n        onEvent: function (event)
-      {\n          var gd = window.mazeGd;\n          if (event.name === 'SDK_READY')
+      {\n          var gd = window.purgeGd;\n          if (event.name === 'SDK_READY')
       gd.ready = true;\n          else if (event.name === 'SDK_ERROR') gd.error =
       event.message || 'SDK_ERROR';\n          if (gd.listener) gd.listener(event);\n       
       }\n      };\n      (function (d, s, id) {\n        var js, fjs = d.getElementsByTagName(s)[0];\n       
@@ -772,7 +772,7 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: PROJECT:Mazebound
+  webGLTemplate: PROJECT:Purge
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
   webGLCompressionFormat: 0
@@ -818,14 +818,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Maze
+  metroPackageName: Purge
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Maze
+  metroApplicationDescription: Purge
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -897,10 +897,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 67813c74-88c8-4036-8ed7-7f992fc7670a
+  cloudProjectId: 
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Maze
+  projectName: Purge
   organizationId: woodenturtle
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

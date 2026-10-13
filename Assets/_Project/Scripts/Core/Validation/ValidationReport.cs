@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Validation
+namespace Purge.Core.Validation
 {
     /// <summary>ТЗ §92: Error = level is not ready; Warning = potential problem; Info = informational.</summary>
     public enum ValidationSeverity

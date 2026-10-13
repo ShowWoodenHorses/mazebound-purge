@@ -1,7 +1,7 @@
 using System;
-using Maze.Core.Definitions;
+using Purge.Core.Definitions;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>The player's HP (runtime state, ТЗ §86). Starts full; damage comes with combat, healing with medkits.</summary>
     public sealed class PlayerHealth

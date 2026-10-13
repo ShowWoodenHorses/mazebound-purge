@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Health bars over damaged zombies and flying numbers — damage to zombies and to the player, medkit healing.
@@ -22,7 +22,7 @@ namespace Maze.Presentation.Visual
     /// <item>A number appears small at the target, grows while rising and fades (<see cref="CombatFeedback.NumberLifetime"/>).
     /// Zombie numbers are hidden with the zombie's view; quick hits in a row are spread sideways.</item>
     /// </list>
-    /// Everything is one dynamic mesh with the <c>Maze/Overhead</c> material (one draw call): fixed pools, no
+    /// Everything is one dynamic mesh with the <c>Purge/Overhead</c> material (one draw call): fixed pools, no
     /// GameObject per bar or number, no Canvas, no allocations during play; the mesh is rebuilt only while something
     /// shows. The camera never turns, so quads lie flat with "up" = +Z.
     /// </summary>

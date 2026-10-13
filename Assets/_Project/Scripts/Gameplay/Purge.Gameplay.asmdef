@@ -1,0 +1,17 @@
+{
+    "name": "Purge.Gameplay",
+    "rootNamespace": "Purge.Gameplay",
+    "references": [
+        "Purge.Core",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

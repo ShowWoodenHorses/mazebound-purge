@@ -103,7 +103,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 910fff120bd7b7d40ae04a16abaf1cb4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.TorchFlame
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.TorchFlame
   _systems:
   - {fileID: 3742227487195450662}
   - {fileID: 548685243246907110}

@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Audio;
-using Maze.Core.Common;
+using Purge.Application.Assets;
+using Purge.Core.Audio;
+using Purge.Core.Common;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>Who a sound belongs to: level sounds pause with the gameplay and stop when the level ends.</summary>
     public enum SoundChannel

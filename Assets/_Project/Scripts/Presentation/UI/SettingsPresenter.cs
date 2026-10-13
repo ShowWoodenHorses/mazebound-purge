@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Platform;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Presentation.UI.Touch;
+using Purge.Application.Flow;
+using Purge.Application.Platform;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Presentation.UI.Touch;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Applies <see cref="SettingsService.Controls"/> to the on-screen controls and <see cref="SettingsService.ShowFps"/>

@@ -7,4 +7,4 @@ ever loaded; now null is skipped ("Maze patch" comment). Not taken: the bundled 
 has it as a package), the demo, `MyTargetAndroidPostProcessor` (its Gradle property
 `android.useFullClasspathForDexingTransform=true` is in `Assets/Plugins/Android/gradleTemplate.properties`).
 Own: `MyTarget.asmdef` (Android and editor only), `Editor/MyTargetDependencies.xml` (Android SDK pinned to 5.27.4).
-Used by `Maze.Application.Android` → `VkAdsProvider`.
+Used by `Purge.Application.Android` → `VkAdsProvider`.

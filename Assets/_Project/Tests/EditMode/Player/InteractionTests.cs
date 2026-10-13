@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 using System.Threading;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Weapons;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Weapons;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Player
+namespace Purge.Tests.EditMode.Player
 {
     /// <summary>Doors with keys, pickups (keys, medkits, weapons) and the Interact action (ТЗ §40, §63, §67, §72).</summary>
     public class InteractionTests

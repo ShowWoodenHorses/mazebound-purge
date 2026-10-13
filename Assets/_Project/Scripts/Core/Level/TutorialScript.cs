@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>What the player has to do to finish a tutorial step.</summary>
     public enum TutorialGoal
@@ -94,7 +94,7 @@ namespace Maze.Core.Level
     /// Steps of a tutorial level, in order. Referenced by its <see cref="LevelData.Tutorial"/>; such a level is the game's
     /// tutorial (Build / Sync lists it apart from the numbered levels).
     /// </summary>
-    [CreateAssetMenu(fileName = "TutorialScript", menuName = "Maze/Tutorial Script")]
+    [CreateAssetMenu(fileName = "TutorialScript", menuName = "Purge/Tutorial Script")]
     public sealed class TutorialScript : ScriptableObject
     {
         [SerializeField] private List<TutorialStep> _steps = new List<TutorialStep>();

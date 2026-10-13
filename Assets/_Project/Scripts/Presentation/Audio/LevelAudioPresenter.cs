@@ -2,22 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Services;
-using Maze.Core.Audio;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Weapons;
-using Maze.Gameplay.Zombies;
-using Maze.Presentation.Visual;
+using Purge.Application.Services;
+using Purge.Core.Audio;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Weapons;
+using Purge.Gameplay.Zombies;
+using Purge.Presentation.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Audio
+namespace Purge.Presentation.Audio
 {
     /// <summary>
     /// Sounds of the level (ТЗ §71, display only): listens to gameplay events and plays the cues of the

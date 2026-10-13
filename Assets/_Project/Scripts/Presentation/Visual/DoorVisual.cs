@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Optional component of a door prefab: shows the state decided by DoorSystem (ТЗ §37 Closed/Open/Locked/

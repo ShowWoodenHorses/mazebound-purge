@@ -1,9 +1,9 @@
-using Maze.Core.Generation;
-using Maze.Core.Level;
+using Purge.Core.Generation;
+using Purge.Core.Level;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Generation settings and the destructive "Generate New" command (ТЗ §12–16).</summary>
     internal sealed class GenerationPanel
@@ -18,7 +18,7 @@ namespace Maze.Editor.LevelDesigner
             EditorGUI.BeginChangeCheck();
             var width = EditorGUILayout.IntField("Width", settings.Width);
             var height = EditorGUILayout.IntField("Height", settings.Height);
-            var mazeSeed = SeedField("Maze Seed", settings.MazeSeed);
+            var mazeSeed = SeedField("Purge Seed", settings.MazeSeed);
             var visualSeed = SeedField("Visual Seed", settings.VisualSeed);
             var algorithm = (MazeAlgorithm)EditorGUILayout.EnumPopup("Algorithm", settings.MazeAlgorithm);
             var loopDensity = EditorGUILayout.Slider("Loop Density", settings.LoopDensity, 0f, 1f);

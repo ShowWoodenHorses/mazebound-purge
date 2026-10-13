@@ -1,17 +1,17 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Flow;
-using Maze.Core.Common;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
+using Purge.Application.Assets;
+using Purge.Application.Flow;
+using Purge.Core.Common;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
-namespace Maze.Composition
+namespace Purge.Composition
 {
     /// <summary>
     /// Creates a level session: loads the Game scene additively and builds its <see cref="LevelLifetimeScope"/>

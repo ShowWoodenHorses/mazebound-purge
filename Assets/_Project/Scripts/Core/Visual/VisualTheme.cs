@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>Bundle of visual sets reused by many levels, e.g. DungeonTheme, LaboratoryTheme (ТЗ §21).</summary>
-    [CreateAssetMenu(fileName = "VisualTheme", menuName = "Maze/Visual/Visual Theme")]
+    [CreateAssetMenu(fileName = "VisualTheme", menuName = "Purge/Visual/Visual Theme")]
     public sealed class VisualTheme : ScriptableObject
     {
         [SerializeField] private string _id;
@@ -24,7 +24,7 @@ namespace Maze.Core.Visual
         [Tooltip("Fixtures of light sources (optional), e.g. torches: hung on the wall the light is shifted to.")]
         [SerializeField] private VisualSet _light;
 
-        [Tooltip("Animated fog over hidden cells (shader Maze/Fog). Empty = no fog: hidden cells are simply not drawn.")]
+        [Tooltip("Animated fog over hidden cells (shader Purge/Fog). Empty = no fog: hidden cells are simply not drawn.")]
         [SerializeField] private Material _fogMaterial;
 
         [SerializeField] private ThemeLighting _lighting = new ThemeLighting();

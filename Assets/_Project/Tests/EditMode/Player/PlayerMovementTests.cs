@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using Maze.Core.Authoring;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Gameplay.Player;
-using Maze.Tests.EditMode.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Gameplay.Player;
+using Purge.Tests.EditMode.Visual;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Player
+namespace Purge.Tests.EditMode.Player
 {
     public class PlayerMovementTests
     {

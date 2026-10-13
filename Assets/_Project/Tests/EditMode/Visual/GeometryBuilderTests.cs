@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     public class GeometryBuilderTests
     {

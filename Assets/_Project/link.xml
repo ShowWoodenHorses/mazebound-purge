@@ -1,16 +1,16 @@
-<!-- Managed code stripping (MazeBuilder: Medium) keeps these assemblies whole: VContainer builds the scopes by
+<!-- Managed code stripping (PurgeBuilder: Medium) keeps these assemblies whole: VContainer builds the scopes by
      reflection (constructors, [Inject]), and our types are created by it or referenced only from serialized data. -->
 <linker>
-  <assembly fullname="Maze.Core" preserve="all"/>
-  <assembly fullname="Maze.Gameplay" preserve="all"/>
-  <assembly fullname="Maze.Application" preserve="all"/>
-  <assembly fullname="Maze.Presentation" preserve="all"/>
-  <assembly fullname="Maze.Composition" preserve="all"/>
-  <assembly fullname="Maze.Application.Android" preserve="all" ignoreIfMissing="1"/>
+  <assembly fullname="Purge.Core" preserve="all"/>
+  <assembly fullname="Purge.Gameplay" preserve="all"/>
+  <assembly fullname="Purge.Application" preserve="all"/>
+  <assembly fullname="Purge.Presentation" preserve="all"/>
+  <assembly fullname="Purge.Composition" preserve="all"/>
+  <assembly fullname="Purge.Application.Android" preserve="all" ignoreIfMissing="1"/>
   <assembly fullname="VContainer" preserve="all"/>
   <assembly fullname="UniTask" preserve="all"/>
   <!-- Android SDKs: Java calls back into C# (AndroidJavaProxy) by method name. Not in web builds
-       (MazeBuilder filters their assemblies out there). -->
+       (PurgeBuilder filters their assemblies out there). -->
   <assembly fullname="MyTarget" preserve="all" ignoreIfMissing="1"/>
   <assembly fullname="MyTracker" preserve="all" ignoreIfMissing="1"/>
 </linker>

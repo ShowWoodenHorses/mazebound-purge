@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Globalization;
-using Maze.Core.Generation;
-using Maze.Core.Grid;
-using Maze.Core.Visual;
+using Purge.Core.Generation;
+using Purge.Core.Grid;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>
     /// Source of truth for a finished level design. Each level is an Addressable asset.
     /// Read-only for runtime code; mutation API is internal (editor tool and tests only).
     /// </summary>
-    [CreateAssetMenu(fileName = "LevelData", menuName = "Maze/Level Data")]
+    [CreateAssetMenu(fileName = "LevelData", menuName = "Purge/Level Data")]
     public sealed class LevelData : ScriptableObject
     {
         [SerializeField] private LevelSettings _settings = new LevelSettings();

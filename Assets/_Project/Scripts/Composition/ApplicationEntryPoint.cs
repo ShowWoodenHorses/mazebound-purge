@@ -1,16 +1,16 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Platform;
-using Maze.Core.Common;
-using Maze.Presentation.Audio;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Platform;
+using Purge.Core.Common;
+using Purge.Presentation.Audio;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI;
 using VContainer.Unity;
 
-namespace Maze.Composition
+namespace Purge.Composition
 {
     /// <summary>Starts the application once the ProjectLifetimeScope is built: UI, sound, input, services, main menu.</summary>
     public sealed class ApplicationEntryPoint : IAsyncStartable

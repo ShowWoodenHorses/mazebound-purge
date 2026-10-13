@@ -1,26 +1,26 @@
 using System.Collections.Generic;
 using System.Threading;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Navigation;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Weapons;
-using Maze.Presentation.Visual;
-using Maze.Tests.EditMode.Player;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Navigation;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Weapons;
+using Purge.Presentation.Visual;
+using Purge.Tests.EditMode.Player;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Navigation
+namespace Purge.Tests.EditMode.Navigation
 {
     /// <summary>Route hint: target priority, cutting the walked part, detours, reaching (and the line's geometry).</summary>
     public class RouteHintTests

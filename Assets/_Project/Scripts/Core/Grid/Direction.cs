@@ -1,6 +1,6 @@
 using System;
 
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>Cardinal direction on the grid. North is +Y (world +Z).</summary>
     public enum Direction : byte

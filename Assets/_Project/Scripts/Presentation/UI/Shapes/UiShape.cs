@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Shapes
+namespace Purge.Presentation.UI.Shapes
 {
     /// <summary>
-    /// Thin-line UI shape (rect, capsule/circle, annular sector) drawn by the <c>Maze/UIShape</c> shader as a signed
+    /// Thin-line UI shape (rect, capsule/circle, annular sector) drawn by the <c>Purge/UIShape</c> shader as a signed
     /// distance field — crisp at any DPI and scale, one quad per shape. Fill and stroke colours travel in vertex
     /// channels, so all shapes share one material and batch together; <see cref="Graphic.color"/> stays a tint over
     /// the whole shape (button transitions, CanvasGroup fades). Clicks count only inside the shape (plus

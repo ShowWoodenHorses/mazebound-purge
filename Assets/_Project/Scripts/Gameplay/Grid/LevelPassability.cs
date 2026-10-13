@@ -1,7 +1,7 @@
-using Maze.Core.Grid;
-using Maze.Gameplay.Doors;
+using Purge.Core.Grid;
+using Purge.Gameplay.Doors;
 
-namespace Maze.Gameplay.Grid
+namespace Purge.Gameplay.Grid
 {
     /// <summary>
     /// Static walkability of cells (ТЗ §52): Floor and open Door are walkable; Wall, closed Door and everything

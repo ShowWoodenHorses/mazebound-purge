@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Navigation;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Navigation;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
 
-namespace Maze.Gameplay.Navigation
+namespace Purge.Gameplay.Navigation
 {
     /// <summary>Zombie walkability (ТЗ §52): Floor and open doors; zombies never open doors. Struct: no boxing in A*.</summary>
     public readonly struct LevelWalkability : IGridPassability

@@ -1,8 +1,8 @@
 using System;
-using Maze.Application.Services;
-using Maze.Presentation.UI;
+using Purge.Application.Services;
+using Purge.Presentation.UI;
 
-namespace Maze.Presentation.Localization
+namespace Purge.Presentation.Localization
 {
     /// <summary>
     /// Puts the texts of the current language on the application UI: at start-up (once the table is loaded) and on

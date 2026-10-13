@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     /// <summary>Level with a fully populated test theme. Dispose destroys every created asset.</summary>
     internal sealed class VisualFixture : IDisposable

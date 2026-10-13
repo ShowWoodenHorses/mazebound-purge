@@ -1,8 +1,8 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Grid
+namespace Purge.Tests.EditMode.Grid
 {
     public class GridPositionTests
     {

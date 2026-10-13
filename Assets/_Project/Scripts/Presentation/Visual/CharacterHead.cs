@@ -1,7 +1,7 @@
-using Maze.Core.Common;
+using Purge.Core.Common;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Head of a character view (breath puffs): the humanoid head bone, found once; without one — the model's root

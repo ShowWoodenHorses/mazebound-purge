@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
-    /// Calls into the Yandex Games SDK v2 (<c>Plugins/WebGL/MazeYandex.jslib</c>). Async calls get a request id and
+    /// Calls into the Yandex Games SDK v2 (<c>Plugins/WebGL/PurgeYandex.jslib</c>). Async calls get a request id and
     /// end with one reply (code + text). Only a WebGL player has the SDK: elsewhere every call throws, so a Yandex
     /// build started in the editor works as <see cref="GenericPlatform"/>.
     /// </summary>
@@ -86,37 +86,37 @@ namespace Maze.Application.Platform
         private static class Native
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            [DllImport("__Internal", EntryPoint = "MazeYandex_Init")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_Init")]
             public static extern void Init(ReplyCallback callback, int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_HasPlayer")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_HasPlayer")]
             public static extern int HasPlayer();
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_IsAuthorized")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_IsAuthorized")]
             public static extern int IsAuthorized();
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_SignIn")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_SignIn")]
             public static extern void SignIn(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_GetData")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_GetData")]
             public static extern void GetData(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_SetData")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_SetData")]
             public static extern void SetData(int id, string json);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_ShowFullscreen")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_ShowFullscreen")]
             public static extern void ShowFullscreen(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_ShowRewarded")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_ShowRewarded")]
             public static extern void ShowRewarded(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_LoadingReady")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_LoadingReady")]
             public static extern void LoadingReady();
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_Gameplay")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_Gameplay")]
             public static extern void Gameplay(int start);
 
-            [DllImport("__Internal", EntryPoint = "MazeYandex_Goal")]
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_Goal")]
             public static extern void Goal(string name, string parameters);
 #else
             private static Exception NoSdk() => new PlatformNotSupportedException("The Yandex Games SDK exists only in a WebGL build.");
@@ -136,7 +136,7 @@ namespace Maze.Application.Platform
     }
 
     /// <summary>
-    /// Yandex Games (build symbol <c>MAZE_YANDEX</c>): the site's language, saves in the player's data (they follow
+    /// Yandex Games (build symbol <c>PURGE_YANDEX</c>): the site's language, saves in the player's data (they follow
     /// the account between devices and new build addresses), sign-in on request, loading/gameplay events, pauses
     /// asked by the site.
     /// </summary>

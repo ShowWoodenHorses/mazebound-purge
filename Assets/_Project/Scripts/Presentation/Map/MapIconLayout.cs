@@ -1,8 +1,8 @@
-using Maze.Core.Common;
-using Maze.Core.Grid;
+using Purge.Core.Common;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Presentation.Map
+namespace Purge.Presentation.Map
 {
     /// <summary>One icon on the map: what, where (cell units, x = East, y = North; a cell centre is x + 0.5), how.</summary>
     public struct MapIcon

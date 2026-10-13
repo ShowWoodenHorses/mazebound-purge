@@ -1,10 +1,10 @@
-using Maze.Core.Definitions;
-using Maze.Core.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Visual;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     public class WeaponVisualCatalogTests
     {

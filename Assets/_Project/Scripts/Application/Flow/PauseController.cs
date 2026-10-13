@@ -1,7 +1,7 @@
 using System;
-using Maze.Application.Services;
+using Purge.Application.Services;
 
-namespace Maze.Application.Flow
+namespace Purge.Application.Flow
 {
     /// <summary>
     /// Toggles pause from the Pause input action (Escape / Start / Android Back) and the map from the OpenMap action.

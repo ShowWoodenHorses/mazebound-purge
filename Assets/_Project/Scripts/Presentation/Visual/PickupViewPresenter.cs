@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Pickups;
+using Purge.Core.Common;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Pickups;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Keeps pickup views in sync with <see cref="PickupSystem"/>: removes the view of a taken item and creates the

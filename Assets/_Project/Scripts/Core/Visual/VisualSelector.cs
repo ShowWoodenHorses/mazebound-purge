@@ -1,10 +1,10 @@
 using System;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Deterministic weighted selection. Used only at level creation time (Generate New / Regenerate Visuals);

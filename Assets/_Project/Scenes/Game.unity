@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e959cda64bea7b149a38a9e9fef58c64, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.TopDownCamera
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.TopDownCamera
   _pitch: 88
   _margin: 1.05
   _followHalfExtent: 4
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5cc31282e3624848adae8c72e193e6a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.LevelViewRoot
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.LevelViewRoot
   _moon: {fileID: 738654673}
 --- !u!4 &326749845
 Transform:
@@ -293,7 +293,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1685a7b9ce625c448820fc104fb5be8d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Composition::Maze.Composition.LevelLifetimeScope
+  m_EditorClassIdentifier: Purge.Composition::Purge.Composition.LevelLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 0

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>Reusable set of weighted visual variants for one <see cref="VisualKind"/> (ТЗ §22–23).</summary>
-    [CreateAssetMenu(fileName = "VisualSet", menuName = "Maze/Visual/Visual Set")]
+    [CreateAssetMenu(fileName = "VisualSet", menuName = "Purge/Visual/Visual Set")]
     public sealed class VisualSet : ScriptableObject
     {
         [SerializeField] private VisualKind _kind;

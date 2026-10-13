@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Weapons: the weapons of the game from the models in Art/Weapons (Synty: pivot at the grip,
+    /// Purge → Dev → Build Weapons: the weapons of the game from the models in Art/Weapons (Synty: pivot at the grip,
     /// pointing along +Z). Every prefab there (except Pickups) is a weapon; its folders tell the kind: under a
     /// <c>Melee</c> folder — melee, otherwise a gun, automatic when a folder on its path is <c>Auto</c>.
     /// <list type="number">
@@ -60,7 +60,7 @@ namespace Maze.Editor.Dev
             public WeaponDefinition Definition;
         }
 
-        [MenuItem("Maze/Dev/Build Weapons")]
+        [MenuItem("Purge/Dev/Build Weapons")]
         public static void Build()
         {
             try
@@ -73,7 +73,7 @@ namespace Maze.Editor.Dev
                 catalog.MutableWeapons.Clear();
                 var set = AssetDatabase.LoadAssetAtPath<VisualSet>(WeaponSetPath);
                 if (set == null)
-                    throw new InvalidOperationException($"'{WeaponSetPath}' not found: run Maze → Dev → Create Placeholder Theme first.");
+                    throw new InvalidOperationException($"'{WeaponSetPath}' not found: run Purge → Dev → Create Placeholder Theme first.");
                 set.MutableVariants.Clear();
                 set.DefaultVariantId = null;
 
@@ -107,18 +107,18 @@ namespace Maze.Editor.Dev
                 MarkGrips(playerPrefab, weapons);
                 var reassigned = ReassignLevels(set);
                 var problem = LevelDesigner.LevelSync.SyncShared(settings);
-                if (problem != null) Debug.LogWarning("[Maze] " + problem);
+                if (problem != null) Debug.LogWarning("[Purge] " + problem);
                 AssetDatabase.SaveAssets();
                 UiIconsBuilder.BuildWeaponIcons(catalog); // Models may have changed.
                 WarnUnusedDefinitions(weapons);
                 var news = created.Count > 0 ? $" ({string.Join(", ", created)}: draft values, tune them in {DataPath})" : "";
                 var removed = removedPickups > 0 ? $", {removedPickups} unused removed" : "";
-                Debug.Log($"[Maze] Weapons built: {weapons.Count} weapon(s), {created.Count} new{news}; held and pickup " +
+                Debug.Log($"[Purge] Weapons built: {weapons.Count} weapon(s), {created.Count} new{news}; held and pickup " +
                           $"prefabs{removed}, player rig; {reassigned} weapon visual(s) in levels reassigned.");
             }
             catch (Exception e)
             {
-                Debug.LogError("[Maze] Building weapons failed: " + e.Message);
+                Debug.LogError("[Purge] Building weapons failed: " + e.Message);
                 throw;
             }
         }
@@ -167,7 +167,7 @@ namespace Maze.Editor.Dev
                 }
 
                 if (definition.Slot != slot)
-                    Debug.LogWarning($"[Maze] Weapon '{definition.name}' is {definition.Slot}, but its model '{path}' lies in " +
+                    Debug.LogWarning($"[Purge] Weapon '{definition.name}' is {definition.Slot}, but its model '{path}' lies in " +
                                      $"a {slot} folder: the definition stays {definition.Slot}.");
                 if (ids.TryGetValue(definition.Id, out var other))
                     throw new InvalidOperationException($"Weapons '{other}' and '{path}' have the same id '{definition.Id}': " +
@@ -308,7 +308,7 @@ namespace Maze.Editor.Dev
             {
                 var definition = AssetDatabase.LoadAssetAtPath<WeaponDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 if (definition != null && weapons.All(weapon => weapon.Definition != definition))
-                    Debug.LogWarning($"[Maze] Weapon definition '{definition.name}' has no model in {ModelsPath}, so it has " +
+                    Debug.LogWarning($"[Purge] Weapon definition '{definition.name}' has no model in {ModelsPath}, so it has " +
                                      "no look in game: delete it or put its model back.");
             }
         }

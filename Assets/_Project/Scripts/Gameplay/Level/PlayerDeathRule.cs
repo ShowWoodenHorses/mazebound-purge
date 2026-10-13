@@ -1,8 +1,8 @@
 using System;
-using Maze.Core.Common;
-using Maze.Gameplay.Player;
+using Purge.Core.Common;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Level
+namespace Purge.Gameplay.Level
 {
     /// <summary>The player's HP reaching 0 fails the level (ТЗ §88); runtime progress is dropped with the level.</summary>
     public sealed class PlayerDeathRule : IDisposable

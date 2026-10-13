@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Main menu (minimal by the user's choice): the title, Play (starts the next level at once), Levels (the level

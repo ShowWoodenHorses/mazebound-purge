@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Common;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
+using Purge.Application.Assets;
+using Purge.Core.Common;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Builds the visual representation of the level (ТЗ §31, load stage BuildVisuals): loads the prefabs of

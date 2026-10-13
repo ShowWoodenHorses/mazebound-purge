@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75d5a8edd49c0d44c86df8779ea5a214, type: 3}
   m_Name: PlayerVisual
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.PlayerVisualDefinition
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.PlayerVisualDefinition
   _prefab:
     m_AssetGUID: a4be1ef066a343b479403ae698a6a07c
     m_SubObjectName: 

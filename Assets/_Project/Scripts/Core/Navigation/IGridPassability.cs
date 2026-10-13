@@ -1,6 +1,6 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Navigation
+namespace Purge.Core.Navigation
 {
     /// <summary>
     /// Answers "can a walker enter this cell?". Implemented by structs and passed as a generic argument,

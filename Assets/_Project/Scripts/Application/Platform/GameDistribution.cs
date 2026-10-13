@@ -2,12 +2,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
-    /// Calls into the GameDistribution HTML5 SDK (<c>Plugins/WebGL/MazeGd.jslib</c>; the page sets <c>GD_OPTIONS</c>
+    /// Calls into the GameDistribution HTML5 SDK (<c>Plugins/WebGL/PurgeGd.jslib</c>; the page sets <c>GD_OPTIONS</c>
     /// and loads the SDK itself, <c>WebPlatforms.Head</c>). Only a WebGL player has it: elsewhere every call throws, so
     /// the game works as <see cref="GenericPlatform"/>.
     /// </summary>
@@ -58,10 +58,10 @@ namespace Maze.Application.Platform
         private static class Native
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            [DllImport("__Internal", EntryPoint = "MazeGd_Init")]
+            [DllImport("__Internal", EntryPoint = "PurgeGd_Init")]
             public static extern void Init(ReplyCallback callback, int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeGd_ShowAd")]
+            [DllImport("__Internal", EntryPoint = "PurgeGd_ShowAd")]
             public static extern void ShowAd(int id, int rewarded);
 #else
             private static Exception NoSdk() => new PlatformNotSupportedException("The GameDistribution SDK exists only in a WebGL build.");
@@ -72,7 +72,7 @@ namespace Maze.Application.Platform
     }
 
     /// <summary>
-    /// GameDistribution (build symbol <c>MAZE_GAMEDISTRIBUTION</c>): the game runs on thousands of sites in GD's frame.
+    /// GameDistribution (build symbol <c>PURGE_GAMEDISTRIBUTION</c>): the game runs on thousands of sites in GD's frame.
     /// The site gives no language (the system's is used), no saves (the browser's storage), no accounts and no loading
     /// or gameplay events; links and contacts are forbidden (default <see cref="PlatformTraits"/>). Only ads, and the
     /// SDK's pause around ads it shows itself.

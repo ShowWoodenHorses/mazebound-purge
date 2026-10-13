@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Level;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>Identifies one visual variant of a theme: the set (kind) and the variant inside it.</summary>
     public readonly struct VisualKey : IEquatable<VisualKey>

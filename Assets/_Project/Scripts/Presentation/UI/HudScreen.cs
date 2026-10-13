@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Maze.Application.Services;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
-using Maze.Presentation.UI.Touch;
+using Purge.Application.Services;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
+using Purge.Presentation.UI.Touch;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// In-level HUD (design mock-up). Top left: a ring with a heart, the level name, HP as a number and a thin bar in an

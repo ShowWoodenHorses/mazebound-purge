@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
 using UnityEngine;
 
-namespace Maze.Gameplay.Zombies
+namespace Purge.Gameplay.Zombies
 {
     /// <summary>
     /// Detection (ТЗ §73): only reports where the player was noticed; it never drives the AI (ТЗ §74).

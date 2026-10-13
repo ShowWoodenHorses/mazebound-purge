@@ -1,11 +1,11 @@
 using System;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Every change the tool makes to a LevelData goes through here: Undo record, mutation, SetDirty.

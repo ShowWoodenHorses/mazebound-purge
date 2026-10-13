@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Maze.Editor.LevelDesigner;
+using Purge.Editor.LevelDesigner;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Extract Character Meshes. A Synty pack keeps all its characters in one model file
+    /// Purge → Dev → Extract Character Meshes. A Synty pack keeps all its characters in one model file
     /// (Characters.fbx, ~60 meshes), and a build that references any of them carries the whole file once it is an
     /// explicit Addressables entry. This copies the meshes and avatars the character prefabs (<see cref="PrefabFolders"/>)
     /// really use into <see cref="TargetFolder"/> and points the prefabs at the copies; then the model file is no longer
@@ -20,7 +20,7 @@ namespace Maze.Editor.Dev
         private static readonly string[] PrefabFolders = { "Assets/_Project/Art/Player", "Assets/_Project/Art/Zombie" };
         private const string TargetFolder = "Assets/_Project/Art/Characters";
 
-        [MenuItem("Maze/Dev/Extract Character Meshes")]
+        [MenuItem("Purge/Dev/Extract Character Meshes")]
         public static void Extract()
         {
             if (!AssetDatabase.IsValidFolder(TargetFolder))
@@ -64,7 +64,7 @@ namespace Maze.Editor.Dev
             AssetDatabase.SaveAssets();
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             var shared = settings != null ? LevelSync.IsolateDuplicates(settings) : 0;
-            Debug.Log($"[Maze] Character meshes: {copies.Count} asset(s) copied to {TargetFolder}, {changedPrefabs} prefab(s) " +
+            Debug.Log($"[Purge] Character meshes: {copies.Count} asset(s) copied to {TargetFolder}, {changedPrefabs} prefab(s) " +
                       $"updated; '{LevelSync.SharedDependenciesGroup}' rebuilt ({shared} entries).");
         }
 

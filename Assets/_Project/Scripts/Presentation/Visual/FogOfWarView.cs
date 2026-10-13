@@ -1,19 +1,19 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Visibility;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Visibility;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Animated fog of war (visual only): one plane at floor level over the whole level with the theme's fog material
-    /// (shader "Maze/Fog"). Its mask follows <see cref="VisibilitySystem.RevealedCells"/> — the same cells as the
+    /// (shader "Purge/Fog"). Its mask follows <see cref="VisibilitySystem.RevealedCells"/> — the same cells as the
     /// geometry — and fades in and out over the material's Fade Time. The mask texture is uploaded only on a
     /// visibility change and while cells are fading. No fog material in the theme = no fog.
     /// With fog, geometry of a cell leaving the view is hidden only once the fog has fully covered it
@@ -24,8 +24,8 @@ namespace Maze.Presentation.Visual
         /// <summary>The plane reaches this far past the level: the camera sees beyond the border near the edges.</summary>
         private const float Margin = 20f;
 
-        private static readonly int MaskId = Shader.PropertyToID("_MazeFog");
-        private static readonly int MaskSizeId = Shader.PropertyToID("_MazeFogSize");
+        private static readonly int MaskId = Shader.PropertyToID("_PurgeFog");
+        private static readonly int MaskSizeId = Shader.PropertyToID("_PurgeFogSize");
         private static readonly int FadeSecondsId = Shader.PropertyToID("_FadeSeconds");
         private static readonly int PlaneHeightId = Shader.PropertyToID("_PlaneHeight");
 
@@ -75,7 +75,7 @@ namespace Maze.Presentation.Visual
             _mask = new FogMask(_grid.Width, _grid.Height);
             _texture = new Texture2D(_mask.TextureWidth, _mask.TextureHeight, TextureFormat.R8, false, true)
             {
-                name = "Maze Fog Mask",
+                name = "Purge Fog Mask",
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp,
                 hideFlags = HideFlags.DontSave,
@@ -155,7 +155,7 @@ namespace Maze.Presentation.Visual
             var maxZ = _grid.Height - 0.5f + Margin;
             _mesh = new Mesh
             {
-                name = "Maze Fog Plane",
+                name = "Purge Fog Plane",
                 hideFlags = HideFlags.DontSave,
                 vertices = new[]
                 {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Visibility
+namespace Purge.Core.Visibility
 {
     /// <summary>
     /// Cells the player can see (ТЗ §53–55): a square window of <c>2·radius+1</c> cells around the player's cell,

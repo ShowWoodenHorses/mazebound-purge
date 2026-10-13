@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Maze.Core.Audio;
-using Maze.Core.Definitions;
+using Purge.Core.Audio;
+using Purge.Core.Definitions;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Audio: import settings of the sounds (<c>Sounds/</c>) and music (<c>Music/</c>), and the
+    /// Purge → Dev → Build Audio: import settings of the sounds (<c>Sounds/</c>) and music (<c>Music/</c>), and the
     /// <see cref="AudioCatalog"/> filled from file names (a cue gets every file matching its pattern, in name order).
     /// Weapon sound groups come from the folders under Sounds/Weapon (<see cref="FillWeaponSounds"/>).
     /// Rerun after adding or renaming sound files. Tuning in the catalog (volumes, ranges, pitch…) is kept; only the
-    /// clips are replaced. The catalog and the music are made Addressable (group Maze Shared).
+    /// clips are replaced. The catalog and the music are made Addressable (group Purge Shared).
     /// </summary>
     internal static class AudioBuilder
     {
@@ -99,7 +99,7 @@ namespace Maze.Editor.Dev
             ("hunter", 0.88f),
         };
 
-        [MenuItem("Maze/Dev/Build Audio")]
+        [MenuItem("Purge/Dev/Build Audio")]
         public static void Build()
         {
             var sounds = Clips(SoundsFolder);
@@ -156,10 +156,10 @@ namespace Maze.Editor.Dev
             AssetDatabase.SaveAssets();
 
             var unused = sounds.Where(p => !used.Contains(p)).Select(p => p.Substring(SoundsFolder.Length + 1)).ToList();
-            if (empty.Count > 0) Debug.LogWarning("[Maze] Build Audio: no files for " + string.Join(", ", empty));
-            if (unused.Count > 0) Debug.LogWarning("[Maze] Build Audio: files not used by any sound: " + string.Join(", ", unused));
-            if (problem != null) Debug.LogWarning("[Maze] " + problem);
-            Debug.Log($"[Maze] Audio built: {CatalogPath}, {sounds.Count} sound file(s), {music.Count} music file(s), " +
+            if (empty.Count > 0) Debug.LogWarning("[Purge] Build Audio: no files for " + string.Join(", ", empty));
+            if (unused.Count > 0) Debug.LogWarning("[Purge] Build Audio: files not used by any sound: " + string.Join(", ", unused));
+            if (problem != null) Debug.LogWarning("[Purge] " + problem);
+            Debug.Log($"[Purge] Audio built: {CatalogPath}, {sounds.Count} sound file(s), {music.Count} music file(s), " +
                       $"{reimported} reimported.");
         }
 
@@ -204,13 +204,13 @@ namespace Maze.Editor.Dev
                 groups.Add(sound);
 
                 if (users.Count == 0)
-                    Debug.LogWarning($"[Maze] Build Audio: no weapon uses the sound group '{name}' (set it in the Sound field " +
+                    Debug.LogWarning($"[Purge] Build Audio: no weapon uses the sound group '{name}' (set it in the Sound field " +
                                      "of a weapon definition, or name the folder by a weapon id).");
             }
 
             foreach (var definition in definitions)
                 if (!string.IsNullOrEmpty(definition.Sound) && groups.All(g => !string.Equals(g.Group, definition.Sound, StringComparison.OrdinalIgnoreCase)))
-                    Debug.LogWarning($"[Maze] Build Audio: weapon '{definition.name}' uses the sound group '{definition.Sound}', " +
+                    Debug.LogWarning($"[Purge] Build Audio: weapon '{definition.name}' uses the sound group '{definition.Sound}', " +
                                      $"but there is no folder {WeaponGroupsFolder}/{definition.Sound}: it plays the common sounds.");
 
             catalog.MutableWeaponSounds.Clear();
@@ -302,7 +302,7 @@ namespace Maze.Editor.Dev
             importer.defaultSampleSettings = settings;
             if (web == null) importer.ClearSampleSettingOverride(WebGL);
             else if (!importer.SetOverrideSampleSettings(WebGL, web.Value))
-                Debug.LogWarning($"[Maze] Build Audio: the WebGL override of '{importer.assetPath}' was refused.");
+                Debug.LogWarning($"[Purge] Build Audio: the WebGL override of '{importer.assetPath}' was refused.");
             importer.SaveAndReimport();
             return true;
         }

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// One visual option inside a <see cref="VisualSet"/>. Weight matters only while assigning visuals

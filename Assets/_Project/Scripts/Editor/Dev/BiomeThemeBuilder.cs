@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Maze.Core.Lighting;
-using Maze.Core.Visual;
+using Purge.Core.Lighting;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// "Maze → Dev → Build Biome Themes": Snow and Forest themes from procedural, seamless textures (albedo + normal
+    /// "Purge → Dev → Build Biome Themes": Snow and Forest themes from procedural, seamless textures (albedo + normal
     /// map from a height field). Floors and walls are own block meshes with tiling UVs (Synty blocks are mapped to a
     /// palette); a wall has two materials — sides and top. Everything except Floor and Wall is shared with
     /// CastleBlockTheme: a new theme starts as its copy (lighting, fog, footprints and awareness retuned once);
@@ -32,7 +32,7 @@ namespace Maze.Editor.Dev
             VisualCategory.End, VisualCategory.Cross, VisualCategory.Isolated,
         };
 
-        [MenuItem("Maze/Dev/Build Biome Themes")]
+        [MenuItem("Purge/Dev/Build Biome Themes")]
         public static void Build()
         {
             var floorMesh = SaveMesh(BuildFloorMesh(), $"{ArtRoot}/Meshes/BiomeFloor.asset");
@@ -42,7 +42,7 @@ namespace Maze.Editor.Dev
             BuildBiome(Forest(), floorMesh, wallMesh);
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Biome themes built: {ThemesFolder}/SnowTheme.asset, {ThemesFolder}/ForestTheme.asset.");
+            Debug.Log($"[Purge] Biome themes built: {ThemesFolder}/SnowTheme.asset, {ThemesFolder}/ForestTheme.asset.");
         }
 
         // ------------------------------------------------------------------ Biome descriptions
@@ -72,7 +72,7 @@ namespace Maze.Editor.Dev
 
             /// <summary>
             /// Floors of snowdrift cells (category Snowdrift): a low mound on the floor block, each its own shape, with
-            /// the material of the first floor — the drift whiteness and its soft edge are drawn by Maze/Geometry over
+            /// the material of the first floor — the drift whiteness and its soft edge are drawn by Purge/Geometry over
             /// any floor (SnowdriftMask), so a drift texture of its own would show a seam at the cell border.
             /// </summary>
             public (int Seed, int Weight)[] Drifts;
@@ -274,10 +274,10 @@ namespace Maze.Editor.Dev
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
-                material = new Material(Shader.Find("Maze/Geometry"));
+                material = new Material(Shader.Find("Purge/Geometry"));
                 AssetDatabase.CreateAsset(material, path);
             }
-            material.shader = Shader.Find("Maze/Geometry");
+            material.shader = Shader.Find("Purge/Geometry");
             material.SetColor("_Color", Color.white);
             material.SetTexture("_MainTex", albedo);
             material.SetTexture("_BumpMap", normal);

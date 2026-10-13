@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Core.Audio
+namespace Purge.Core.Audio
 {
     /// <summary>
     /// A string field naming a weapon sound group: the inspector shows a dropdown of the group folders

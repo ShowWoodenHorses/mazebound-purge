@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Levels;
-using Maze.Application.Services;
-using Maze.Core.Common;
+using Purge.Application.Levels;
+using Purge.Application.Services;
+using Purge.Core.Common;
 using UnityEngine;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     public enum AdKind
     {

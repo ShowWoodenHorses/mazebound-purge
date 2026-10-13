@@ -1,7 +1,7 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// A rectangle of cells whose static geometry (floor, walls) is one combined mesh (ТЗ §105).

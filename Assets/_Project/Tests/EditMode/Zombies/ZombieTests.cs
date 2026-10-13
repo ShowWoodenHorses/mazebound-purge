@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using System.Threading;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Zombies;
-using Maze.Tests.EditMode.Player;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Zombies;
+using Purge.Tests.EditMode.Player;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Zombies
+namespace Purge.Tests.EditMode.Zombies
 {
     /// <summary>Zombie navigation, detection, state machine, attacks and death (ТЗ §52, §73–77, §88).</summary>
     public class ZombieTests

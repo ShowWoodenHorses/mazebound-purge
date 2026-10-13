@@ -1,13 +1,13 @@
 using System;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Soft snowdrifts for the "Maze/Geometry" shader (display only): a Width x Height R8 texture, a texel per cell
+    /// Soft snowdrifts for the "Purge/Geometry" shader (display only): a Width x Height R8 texture, a texel per cell
     /// (255 = the cell shows a drift floor of the theme), sampled bilinearly in world space, so neighbouring drift
     /// cells merge without seams and the edge is a soft, noisy line between cells. Walls and doors next to a drift get
     /// a partial value: the drift reaches the wall base without leaking along it. Built once at load, never per frame;
@@ -71,7 +71,7 @@ namespace Maze.Presentation.Visual
 
             var texture = new Texture2D(width, height, TextureFormat.R8, false, true)
             {
-                name = "Maze Snowdrifts",
+                name = "Purge Snowdrifts",
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp,
                 hideFlags = HideFlags.DontSave,

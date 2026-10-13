@@ -1,30 +1,30 @@
-using Maze.Application.Platform;
-using Maze.Application.Services;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Tutorial;
-using Maze.Gameplay.Visibility;
-using Maze.Gameplay.Weapons;
-using Maze.Gameplay.Zombies;
-using Maze.Presentation.Audio;
-using Maze.Presentation.Map;
-using Maze.Presentation.UI;
-using Maze.Presentation.Visual;
+using Purge.Application.Platform;
+using Purge.Application.Services;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Tutorial;
+using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Weapons;
+using Purge.Gameplay.Zombies;
+using Purge.Presentation.Audio;
+using Purge.Presentation.Map;
+using Purge.Presentation.UI;
+using Purge.Presentation.Visual;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Maze.Composition
+namespace Purge.Composition
 {
     /// <summary>
     /// Scope of the active level (ТЗ §7), placed in the Game scene with Auto Run off. Built by
@@ -42,7 +42,7 @@ namespace Maze.Composition
         {
             if (autoRun)
             {
-                Debug.LogWarning("[Maze] LevelLifetimeScope must not auto-run: it is built by LevelSessionFactory.", this);
+                Debug.LogWarning("[Purge] LevelLifetimeScope must not auto-run: it is built by LevelSessionFactory.", this);
                 autoRun = false;
             }
 

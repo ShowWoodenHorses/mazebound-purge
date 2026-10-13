@@ -1,0 +1,30 @@
+{
+    "name": "Purge.Editor",
+    "rootNamespace": "Purge.Editor",
+    "references": [
+        "Purge.Core",
+        "Purge.Gameplay",
+        "Purge.Application",
+        "Purge.Presentation",
+        "Purge.Composition",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

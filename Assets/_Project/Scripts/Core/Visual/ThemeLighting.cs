@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Lighting;
+using Purge.Core.Lighting;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Lighting mood of a theme: no realtime shadows; a gloomy ambient, a weak shadowless "moon" (directional light,
@@ -21,7 +21,7 @@ namespace Maze.Core.Visual
 
         [Range(0f, 2f)] public float MoonIntensity = 0.35f;
 
-        [Tooltip("Light around the player (shaders Maze/Geometry and Maze/Lit).")]
+        [Tooltip("Light around the player (shaders Purge/Geometry and Purge/Lit).")]
         public Color LanternColor = new Color(1f, 0.82f, 0.58f);
 
         [Range(0f, 4f)] public float LanternIntensity = 0.9f;
@@ -42,7 +42,7 @@ namespace Maze.Core.Visual
         [Tooltip("Share of the sources' light left above the fade (wall tops): 0 = dark tops.")]
         [Range(0f, 1f)] public float LightTopShare = 0.15f;
 
-        [Tooltip("Soft round shadow under the player and zombies (shader Maze/BlobShadow). Empty = none.")]
+        [Tooltip("Soft round shadow under the player and zombies (shader Purge/BlobShadow). Empty = none.")]
         public Material BlobShadowMaterial;
 
         [Tooltip("Diameter of the blob shadow, cells.")]

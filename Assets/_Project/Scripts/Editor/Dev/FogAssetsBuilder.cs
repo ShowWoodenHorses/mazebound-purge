@@ -1,14 +1,14 @@
 using System.IO;
-using Maze.Core.Common;
-using Maze.Core.Visual;
+using Purge.Core.Common;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Create Placeholder Fog: a tiling noise texture (baked once, so the shader stays cheap), a
-    /// "Maze/Fog" material and its assignment to the placeholder theme. An existing material keeps its tuned values;
+    /// Purge → Dev → Create Placeholder Fog: a tiling noise texture (baked once, so the shader stays cheap), a
+    /// "Purge/Fog" material and its assignment to the placeholder theme. An existing material keeps its tuned values;
     /// only a missing noise texture is filled in.
     /// </summary>
     internal static class FogAssetsBuilder
@@ -19,7 +19,7 @@ namespace Maze.Editor.Dev
         private const string ThemePath = "Assets/_Project/Data/Themes/PlaceholderTheme.asset";
         private const int Size = 128;
 
-        [MenuItem("Maze/Dev/Create Placeholder Fog")]
+        [MenuItem("Purge/Dev/Create Placeholder Fog")]
         public static void Create()
         {
             if (!AssetDatabase.IsValidFolder(Folder))
@@ -32,10 +32,10 @@ namespace Maze.Editor.Dev
             var material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
             if (material == null)
             {
-                var shader = Shader.Find("Maze/Fog");
+                var shader = Shader.Find("Purge/Fog");
                 if (shader == null)
                 {
-                    Debug.LogError("[Maze] Shader 'Maze/Fog' not found.");
+                    Debug.LogError("[Purge] Shader 'Purge/Fog' not found.");
                     return;
                 }
 
@@ -58,7 +58,7 @@ namespace Maze.Editor.Dev
 
             AssetDatabase.SaveAssets();
             Selection.activeObject = material;
-            Debug.Log($"[Maze] Fog material at {MaterialPath}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
+            Debug.Log($"[Purge] Fog material at {MaterialPath}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
         }
 
         /// <summary>Tiling value noise, three octaves; the lattice wraps, so the texture repeats without seams.</summary>

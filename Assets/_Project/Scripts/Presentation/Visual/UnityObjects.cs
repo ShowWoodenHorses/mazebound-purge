@@ -1,4 +1,4 @@
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     internal static class UnityObjects
     {

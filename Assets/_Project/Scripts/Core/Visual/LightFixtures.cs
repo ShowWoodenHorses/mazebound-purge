@@ -1,8 +1,8 @@
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Where the fixture of a light source (a torch) hangs: on the wall face of the light's cell, on the side the light

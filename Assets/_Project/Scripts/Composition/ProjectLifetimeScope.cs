@@ -1,19 +1,19 @@
-using Maze.Application.Assets;
-using Maze.Application.Flow;
-using Maze.Application.Platform;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Player;
-using Maze.Presentation.Audio;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI;
+using Purge.Application.Assets;
+using Purge.Application.Flow;
+using Purge.Application.Platform;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Player;
+using Purge.Presentation.Audio;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Maze.Composition
+namespace Purge.Composition
 {
     /// <summary>
     /// Root scope in the Bootstrap scene (ТЗ §6.1): application-wide services only, no level state.
@@ -31,17 +31,17 @@ namespace Maze.Composition
 
             // IApplicationService initialization order = registration order. Settings are read from the save.
             // The site the build runs on (its SDK): first, saves and language depend on it. A platform build defines
-            // its symbol (MazeBuilder: MAZE_YANDEX, MAZE_CRAZYGAMES, MAZE_VK, MAZE_GAMEDISTRIBUTION; Android for RuStore: MAZE_RUSTORE); no
+            // its symbol (PurgeBuilder: PURGE_YANDEX, PURGE_CRAZYGAMES, PURGE_VK, PURGE_GAMEDISTRIBUTION; Android for RuStore: PURGE_RUSTORE); no
             // symbol = no site.
-#if MAZE_YANDEX
+#if PURGE_YANDEX
             builder.Register<YandexPlatform>(Lifetime.Singleton).As<IGamePlatform>();
-#elif MAZE_CRAZYGAMES
+#elif PURGE_CRAZYGAMES
             builder.Register<CrazyGamesPlatform>(Lifetime.Singleton).As<IGamePlatform>();
-#elif MAZE_VK
+#elif PURGE_VK
             builder.Register<VkPlatform>(Lifetime.Singleton).As<IGamePlatform>();
-#elif MAZE_GAMEDISTRIBUTION
+#elif PURGE_GAMEDISTRIBUTION
             builder.Register<GameDistributionPlatform>(Lifetime.Singleton).As<IGamePlatform>();
-#elif MAZE_RUSTORE
+#elif PURGE_RUSTORE
             builder.Register<RuStorePlatform>(Lifetime.Singleton).As<IGamePlatform>();
 #else
             builder.Register<GenericPlatform>(Lifetime.Singleton).As<IGamePlatform>();
@@ -60,16 +60,16 @@ namespace Maze.Composition
 
             // Platform: analytics sinks and the ad provider of the build's platform (SDK integrations go here).
             builder.Register<LogAnalyticsSink>(Lifetime.Singleton).As<IAnalyticsSink>();
-#if MAZE_YANDEX
+#if PURGE_YANDEX
             builder.Register<YandexMetrikaSink>(Lifetime.Singleton).As<IAnalyticsSink>();
             builder.Register<YandexAdProvider>(Lifetime.Singleton).As<IAdProvider>();
-#elif MAZE_CRAZYGAMES
+#elif PURGE_CRAZYGAMES
             builder.Register<CrazyGamesAdProvider>(Lifetime.Singleton).As<IAdProvider>(); // its own statistics: no sink
-#elif MAZE_VK
+#elif PURGE_VK
             builder.Register<VkAdProvider>(Lifetime.Singleton).As<IAdProvider>(); // VK's own statistics: no sink
-#elif MAZE_GAMEDISTRIBUTION
+#elif PURGE_GAMEDISTRIBUTION
             builder.Register<GameDistributionAdProvider>(Lifetime.Singleton).As<IAdProvider>(); // analytics forbidden: no sink
-#elif MAZE_RUSTORE
+#elif PURGE_RUSTORE
             builder.Register<MyTrackerSink>(Lifetime.Singleton).As<IAnalyticsSink>();
             builder.Register<VkAdsProvider>(Lifetime.Singleton).As<IAdProvider>();
 #else

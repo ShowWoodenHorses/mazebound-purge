@@ -1,18 +1,18 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
 
-namespace Maze.Gameplay.Tutorial
+namespace Purge.Gameplay.Tutorial
 {
     /// <summary>
     /// Steps of the tutorial level (<see cref="LevelData.Tutorial"/>; inactive in other levels). A step is finished by the

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Audio
+namespace Purge.Core.Audio
 {
     /// <summary>
     /// One sound of the game: variants (a random one each time, never the same twice in a row), volume, pitch spread,

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>What a control sounds like when used.</summary>
     public enum UiSoundKind

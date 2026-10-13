@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visibility;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visibility;
 using UnityEngine;
 
-namespace Maze.Core.Lighting
+namespace Purge.Core.Lighting
 {
     /// <summary>
     /// Light of the level's sources over the grid, <see cref="TexelsPerCell"/>² texels per cell: computed once at

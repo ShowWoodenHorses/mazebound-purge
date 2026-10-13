@@ -1,11 +1,11 @@
 using System;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Per-cell visibility for the "Maze/Geometry" shader: a Width x Height R8 texture (255 = visible), bound
+    /// Per-cell visibility for the "Purge/Geometry" shader: a Width x Height R8 texture (255 = visible), bound
     /// globally while the level is active. Changes are written to a CPU buffer and uploaded by <see cref="Apply"/>,
     /// once per visibility update, never per frame.
     /// </summary>
@@ -25,7 +25,7 @@ namespace Maze.Presentation.Visual
             _cells = new byte[width * height];
             _texture = new Texture2D(width, height, TextureFormat.R8, false, true)
             {
-                name = "Maze Cell Visibility",
+                name = "Purge Cell Visibility",
                 filterMode = FilterMode.Point,
                 wrapMode = TextureWrapMode.Clamp,
                 hideFlags = HideFlags.DontSave,

@@ -1,6 +1,6 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Navigation
+namespace Purge.Core.Navigation
 {
     /// <summary>
     /// Cost of stepping into a passable cell for <see cref="GridPathfinder"/>: at least 1 (the Manhattan heuristic stays

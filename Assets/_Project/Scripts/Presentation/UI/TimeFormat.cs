@@ -1,6 +1,6 @@
 using System;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Play time as "m:ss" ("h:mm:ss" from an hour), the same in every language (digits and a colon only).

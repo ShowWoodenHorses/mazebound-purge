@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>
     /// Application-wide service initialized by <see cref="Flow.GameFlow.InitializeApplication"/>

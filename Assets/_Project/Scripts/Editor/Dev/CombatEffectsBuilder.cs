@@ -1,19 +1,19 @@
 using System;
 using System.IO;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Combat Effects: the game's own cartoon combat effects (no blood, no bullet marks) in
+    /// Purge → Dev → Build Combat Effects: the game's own cartoon combat effects (no blood, no bullet marks) in
     /// Art/Effects, made from code so they can be rebuilt after a tweak here — textures (soft dot, star, tracer),
-    /// materials (<c>Maze/Particle</c>, <c>Maze/SwingArc</c>), the tracer mesh and the prefabs — and assigned to
+    /// materials (<c>Purge/Particle</c>, <c>Purge/SwingArc</c>), the tracer mesh and the prefabs — and assigned to
     /// Data/Combat/CombatVisual (kept Addressable with its prefabs). Particle systems never use the Collision module.
     /// Prefabs, materials and textures are overwritten (GUIDs kept), so the definition's references stay valid.
     /// A pack's effects can replace them later in the same slots of the definition.
@@ -33,12 +33,12 @@ namespace Maze.Editor.Dev
 
         private enum Blend { Additive, Alpha }
 
-        [MenuItem("Maze/Dev/Build Combat Effects")]
+        [MenuItem("Purge/Dev/Build Combat Effects")]
         public static void Build()
         {
-            if (Shader.Find("Maze/Particle") == null || Shader.Find("Maze/SwingArc") == null)
+            if (Shader.Find("Purge/Particle") == null || Shader.Find("Purge/SwingArc") == null)
             {
-                Debug.LogError("[Maze] Shaders 'Maze/Particle' and 'Maze/SwingArc' are required.");
+                Debug.LogError("[Purge] Shaders 'Purge/Particle' and 'Purge/SwingArc' are required.");
                 return;
             }
 
@@ -49,12 +49,12 @@ namespace Maze.Editor.Dev
             var star = SaveTexture("fx_star", 128, 128, Star);
             var tracerTexture = SaveTexture("fx_tracer", 64, 16, Tracer);
 
-            var additive = SaveMaterial("fx_additive", "Maze/Particle", soft, Blend.Additive, Color.white);
-            var dust = SaveMaterial("fx_dust", "Maze/Particle", soft, Blend.Alpha, Color.white);
-            var stars = SaveMaterial("fx_star", "Maze/Particle", star, Blend.Alpha, Color.white, overModels: true);
-            var shell = SaveMaterial("fx_shell", "Maze/Particle", null, Blend.Alpha, Color.white);
-            var tracer = SaveMaterial("fx_tracer", "Maze/Particle", tracerTexture, Blend.Additive, TracerColor);
-            var swing = SaveMaterial("fx_swing", "Maze/SwingArc", null, Blend.Alpha, new Color(1f, 1f, 1f, 0.75f));
+            var additive = SaveMaterial("fx_additive", "Purge/Particle", soft, Blend.Additive, Color.white);
+            var dust = SaveMaterial("fx_dust", "Purge/Particle", soft, Blend.Alpha, Color.white);
+            var stars = SaveMaterial("fx_star", "Purge/Particle", star, Blend.Alpha, Color.white, overModels: true);
+            var shell = SaveMaterial("fx_shell", "Purge/Particle", null, Blend.Alpha, Color.white);
+            var tracer = SaveMaterial("fx_tracer", "Purge/Particle", tracerTexture, Blend.Additive, TracerColor);
+            var swing = SaveMaterial("fx_swing", "Purge/SwingArc", null, Blend.Alpha, new Color(1f, 1f, 1f, 0.75f));
             swing.SetFloat("_Inner", 0.7f); // a crescent, not a wedge
             var tracerMesh = SaveTracerMesh();
 
@@ -80,8 +80,8 @@ namespace Maze.Editor.Dev
 
             var problem = LevelDesigner.LevelSync.SyncShared(AddressableAssetSettingsDefaultObject.GetSettings(true));
             AssetDatabase.SaveAssets();
-            if (problem != null) Debug.LogWarning("[Maze] " + problem);
-            Debug.Log($"[Maze] Combat effects built in {Folder} and assigned to {CombatVisualPath}.");
+            if (problem != null) Debug.LogWarning("[Purge] " + problem);
+            Debug.Log($"[Purge] Combat effects built in {Folder} and assigned to {CombatVisualPath}.");
         }
 
         // ---- Prefabs ----

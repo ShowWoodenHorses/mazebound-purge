@@ -1,12 +1,12 @@
 using System;
-using Maze.Core.Level;
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
+using Purge.Core.Level;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Tutorial layer over the HUD (shown in the tutorial level only): the reminder of the current step at the top, an

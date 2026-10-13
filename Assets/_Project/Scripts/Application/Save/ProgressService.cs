@@ -1,9 +1,9 @@
 using System;
-using Maze.Application.Levels;
-using Maze.Core.Common;
-using Maze.Gameplay.Level;
+using Purge.Application.Levels;
+using Purge.Core.Common;
+using Purge.Gameplay.Level;
 
-namespace Maze.Application.Save
+namespace Purge.Application.Save
 {
     /// <summary>Player progress across levels: unlocked levels, best stars, total kills (ТЗ §85, §89).</summary>
     public interface IProgressService

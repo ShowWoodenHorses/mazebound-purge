@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Audio;
+using Purge.Core.Audio;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Dropdown for <see cref="WeaponSoundGroupAttribute"/> fields: "Default" (empty: the folder named by the weapon's

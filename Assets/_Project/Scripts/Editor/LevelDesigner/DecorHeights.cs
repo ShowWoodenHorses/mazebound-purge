@@ -1,7 +1,7 @@
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Measures decor prefabs into <see cref="VisualVariant.Height"/> (top of the meshes above the floor, with the

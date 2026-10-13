@@ -1,13 +1,13 @@
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Awareness Visuals: the materials of zombie vision zones (<c>Maze/Particle</c>, alpha, no
-    /// texture — vertex colour × the tint set per zone; drawn after the fog) and of noise waves (<c>Maze/Ring</c>), and
+    /// Purge → Dev → Build Awareness Visuals: the materials of zombie vision zones (<c>Purge/Particle</c>, alpha, no
+    /// texture — vertex colour × the tint set per zone; drawn after the fog) and of noise waves (<c>Purge/Ring</c>), and
     /// their assignment to the placeholder theme's <see cref="ThemeAwareness"/>. Materials are overwritten (GUIDs
     /// kept); the tuned colours and timings of the theme stay.
     /// </summary>
@@ -18,14 +18,14 @@ namespace Maze.Editor.Dev
         private const string NoisePath = Folder + "/fx_noise_ring.mat";
         private const string ThemePath = "Assets/_Project/Data/Themes/PlaceholderTheme.asset";
 
-        [MenuItem("Maze/Dev/Build Awareness Visuals")]
+        [MenuItem("Purge/Dev/Build Awareness Visuals")]
         public static void Build()
         {
-            var particle = Shader.Find("Maze/Particle");
-            var ring = Shader.Find("Maze/Ring");
+            var particle = Shader.Find("Purge/Particle");
+            var ring = Shader.Find("Purge/Ring");
             if (particle == null || ring == null)
             {
-                Debug.LogError("[Maze] Shaders 'Maze/Particle' and 'Maze/Ring' are required.");
+                Debug.LogError("[Purge] Shaders 'Purge/Particle' and 'Purge/Ring' are required.");
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace Maze.Editor.Dev
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Awareness visuals built in {Folder}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
+            Debug.Log($"[Purge] Awareness visuals built in {Folder}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
         }
 
         private static Material LoadOrCreate(string path, Shader shader)

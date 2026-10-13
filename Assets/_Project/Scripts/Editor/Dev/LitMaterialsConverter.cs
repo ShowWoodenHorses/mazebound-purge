@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Convert Object Materials to Maze/Lit: every opaque Standard material of the prefabs the game shows
+    /// Purge → Dev → Convert Object Materials to Purge/Lit: every opaque Standard material of the prefabs the game shows
     /// besides floor and walls — themes' object sets (doors, exits, keys, pickups, zombies...), the player, weapons in
     /// hands — switches to the shared lit shader (lantern and level lights, no shadows). Property names match, so
     /// colors and textures are kept. Transparent and cutout materials are left as they are (reported).
@@ -15,15 +15,15 @@ namespace Maze.Editor.Dev
     /// </summary>
     internal static class LitMaterialsConverter
     {
-        private const string LitShader = "Maze/Lit";
+        private const string LitShader = "Purge/Lit";
 
-        [MenuItem("Maze/Dev/Convert Object Materials to Maze Lit")]
+        [MenuItem("Purge/Dev/Convert Object Materials to Purge Lit")]
         public static void Convert()
         {
             var lit = Shader.Find(LitShader);
             if (lit == null)
             {
-                Debug.LogError($"[Maze] Shader '{LitShader}' not found.");
+                Debug.LogError($"[Purge] Shader '{LitShader}' not found.");
                 return;
             }
 
@@ -46,7 +46,7 @@ namespace Maze.Editor.Dev
                     continue;
                 }
 
-                Undo.RecordObject(material, "Convert to Maze/Lit");
+                Undo.RecordObject(material, "Convert to Purge/Lit");
                 material.shader = lit;
                 material.shaderKeywords = new string[0];
                 material.renderQueue = -1;
@@ -55,7 +55,7 @@ namespace Maze.Editor.Dev
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Maze/Lit: {converted.Count} material(s) converted" +
+            Debug.Log($"[Purge] Purge/Lit: {converted.Count} material(s) converted" +
                       (converted.Count > 0 ? ": " + string.Join(", ", converted) : "") +
                       (skipped.Count > 0 ? $". Skipped {skipped.Count}: " + string.Join(", ", skipped) : "."));
         }
@@ -68,7 +68,7 @@ namespace Maze.Editor.Dev
             foreach (VisualKind kind in System.Enum.GetValues(typeof(VisualKind)))
             {
                 if (kind == VisualKind.Floor || kind == VisualKind.Wall)
-                    continue; // Level geometry: Maze/Geometry.
+                    continue; // Level geometry: Purge/Geometry.
                 var set = theme.GetSet(kind);
                 if (set == null) continue;
                 foreach (var variant in set.Variants)

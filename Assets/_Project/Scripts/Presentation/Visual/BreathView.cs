@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Breath puffs in the cold (<see cref="ThemeWeather"/>, display only): every <see cref="ThemeWeather.BreathInterval"/>

@@ -1,8 +1,8 @@
-using Maze.Application.Platform;
+using Purge.Application.Platform;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     public sealed class SoundSuspensionTests
     {

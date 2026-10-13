@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Receives mouse input on grid cells; the active edit tool implements it.</summary>
     internal interface IGridInputHandler

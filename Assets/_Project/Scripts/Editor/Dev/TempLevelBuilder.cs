@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Maze.Core.Authoring;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Editor.LevelDesigner;
+using Purge.Core.Authoring;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Editor.LevelDesigner;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Temporary content helper (not a tool): builds catalog levels from a spec through the regular authoring API.

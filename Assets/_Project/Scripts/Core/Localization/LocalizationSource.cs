@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Maze.Core.Localization
+namespace Purge.Core.Localization
 {
     /// <summary>
     /// The translation source: one tab-separated table (<c>Data/Localization/Strings.tsv</c>), first row
     /// <c>key, en, ru, …</c> (language codes; the first language is the base — its text fills gaps of the others),
     /// then a row per key. Empty lines and lines starting with <c>#</c> are skipped; <c>\n</c> in a cell is a line
     /// break. Rows <see cref="NameKey"/> and <see cref="SystemKey"/> describe the languages themselves.
-    /// Parsed by Maze → Dev → Build Localization into per-language <see cref="LocalizationTable"/> assets.
+    /// Parsed by Purge → Dev → Build Localization into per-language <see cref="LocalizationTable"/> assets.
     /// </summary>
     public sealed class LocalizationSource
     {

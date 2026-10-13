@@ -1,9 +1,9 @@
-using Maze.Gameplay.Combat;
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
+using Purge.Gameplay.Combat;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Diamond marks around the stick ring showing the aim mode: four (N, E, S, W) for <see cref="AimMode.Four"/>, eight

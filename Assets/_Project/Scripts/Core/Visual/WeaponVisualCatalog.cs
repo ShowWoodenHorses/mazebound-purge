@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Definitions;
+using Purge.Core.Definitions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Look of one weapon in the player's hands (ТЗ §39: WeaponDefinition → WeaponVisualDefinition → prefab). The
@@ -17,7 +17,7 @@ namespace Maze.Core.Visual
         [SerializeField] private WeaponDefinition _definition;
         [SerializeField] private AssetReferenceGameObject _heldPrefab;
 
-        [Tooltip("White silhouette for the HUD weapon slots (Maze → Dev → Build UI Icons).")]
+        [Tooltip("White silhouette for the HUD weapon slots (Purge → Dev → Build UI Icons).")]
         [SerializeField] private Sprite _icon;
 
         public WeaponVisualDefinition(WeaponDefinition definition, AssetReferenceGameObject heldPrefab, Sprite icon = null)
@@ -39,7 +39,7 @@ namespace Maze.Core.Visual
     }
 
     /// <summary>Held looks of all weapons, shared by every level, Addressable at <see cref="Address"/>.</summary>
-    [CreateAssetMenu(fileName = "WeaponVisuals", menuName = "Maze/Visual/Weapon Visuals")]
+    [CreateAssetMenu(fileName = "WeaponVisuals", menuName = "Purge/Visual/Weapon Visuals")]
     public sealed class WeaponVisualCatalog : ScriptableObject
     {
         public const string Address = "Weapons/Visual";

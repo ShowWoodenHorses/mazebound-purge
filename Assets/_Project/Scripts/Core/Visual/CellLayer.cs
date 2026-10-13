@@ -1,6 +1,6 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Visual layers of a cell. Every cell (wall, floor, door) has a Floor layer, so the floor is visually

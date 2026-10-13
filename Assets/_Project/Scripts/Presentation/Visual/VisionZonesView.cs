@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Visibility;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Vision zones of zombies that see (display only; theme settings <see cref="ThemeAwareness"/>): exactly what

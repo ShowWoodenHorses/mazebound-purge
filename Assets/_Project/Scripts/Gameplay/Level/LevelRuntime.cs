@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
+using Purge.Core.Level;
 
-namespace Maze.Gameplay.Level
+namespace Purge.Gameplay.Level
 {
     public enum LevelRunState
     {

@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Tool palette and per-tool options for manual editing (ТЗ §15).</summary>
     internal sealed class EditPanel
@@ -57,7 +57,7 @@ namespace Maze.Editor.LevelDesigner
             var set = state.Level.VisualTheme != null ? state.Level.VisualTheme.GetSet(VisualKind.Decor) : null;
             if (set == null || set.Variants.Count == 0)
             {
-                EditorGUILayout.HelpBox("The theme has no Decor set (Maze > Dev > Build Decor).", MessageType.Warning);
+                EditorGUILayout.HelpBox("The theme has no Decor set (Purge > Dev > Build Decor).", MessageType.Warning);
                 return;
             }
 

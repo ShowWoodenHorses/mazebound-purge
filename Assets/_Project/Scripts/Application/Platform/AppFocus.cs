@@ -1,10 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
-using Maze.Application.Flow;
-using Maze.Application.Save;
+using Purge.Application.Flow;
+using Purge.Application.Save;
 using UnityEngine;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>Why the whole game is silent (<see cref="AudioListener.pause"/>).</summary>
     [Flags]
@@ -128,7 +128,7 @@ namespace Maze.Application.Platform
     }
 
     /// <summary>
-    /// The page around a WebGL build (<c>Plugins/WebGL/MazePage.jslib</c>): tab visibility. Elsewhere — nothing.
+    /// The page around a WebGL build (<c>Plugins/WebGL/PurgePage.jslib</c>): tab visibility. Elsewhere — nothing.
     /// </summary>
     public static class WebPage
     {
@@ -149,8 +149,8 @@ namespace Maze.Application.Platform
             if (_listening) return;
             _listening = true;
 #if UNITY_WEBGL && !UNITY_EDITOR
-            MazePage_ListenVisibility(OnVisibility);
-            MazePage_ListenInsets(OnInsets);
+            PurgePage_ListenVisibility(OnVisibility);
+            PurgePage_ListenInsets(OnInsets);
 #endif
         }
 
@@ -176,10 +176,10 @@ namespace Maze.Application.Platform
         private delegate void InsetsCallback(int left, int top, int right, int bottom);
 
         [DllImport("__Internal")]
-        private static extern void MazePage_ListenVisibility(IntCallback callback);
+        private static extern void PurgePage_ListenVisibility(IntCallback callback);
 
         [DllImport("__Internal")]
-        private static extern void MazePage_ListenInsets(InsetsCallback callback);
+        private static extern void PurgePage_ListenInsets(InsetsCallback callback);
 
         [AOT.MonoPInvokeCallback(typeof(IntCallback))]
         private static void OnVisibility(int visible) => Raise(visible != 0);
@@ -188,7 +188,7 @@ namespace Maze.Application.Platform
         private static void OnInsets(int left, int top, int right, int bottom)
         {
             SetInsets(left, top, right, bottom);
-            Maze.Core.Common.GameLog.Info(Maze.Core.Common.LogChannel.Bootstrap,
+            Purge.Core.Common.GameLog.Info(Purge.Core.Common.LogChannel.Bootstrap,
                 $"Screen insets: left {left}, top {top}, right {right}, bottom {bottom} px.");
         }
 #endif

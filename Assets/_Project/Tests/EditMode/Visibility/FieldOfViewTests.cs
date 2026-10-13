@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Visibility;
+using Purge.Core.Grid;
+using Purge.Core.Visibility;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Visibility
+namespace Purge.Tests.EditMode.Visibility
 {
     public class FieldOfViewTests
     {
@@ -225,10 +225,10 @@ namespace Maze.Tests.EditMode.Visibility
         [Test]
         public void GeneratedMazes_VisibleFloorIsConnected_NoIslandsAfterHiddenCells()
         {
-            var generator = new Maze.Core.Generation.MazeGenerator();
+            var generator = new Purge.Core.Generation.MazeGenerator();
             for (var seed = 1; seed <= 20; seed++)
             {
-                var geometry = generator.Generate(new Maze.Core.Level.LevelGenerationSettings
+                var geometry = generator.Generate(new Purge.Core.Level.LevelGenerationSettings
                 {
                     Width = 21, Height = 21, MazeSeed = seed, LoopDensity = seed % 2 == 0 ? 0.3f : 0f,
                     InitialPlayerStartCount = 1, InitialExitCount = 1,

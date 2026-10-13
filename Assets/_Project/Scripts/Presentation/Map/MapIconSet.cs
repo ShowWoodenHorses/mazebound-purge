@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Map
+namespace Purge.Presentation.Map
 {
     /// <summary>Kinds of icons on the map (ТЗ §60).</summary>
     public enum MapIconKind
@@ -19,10 +19,10 @@ namespace Maze.Presentation.Map
 
     /// <summary>
     /// Icons of the map screen: hand-drawn sprites (white shapes with a dark outline, tinted by <c>*Color</c>) and how
-    /// they are placed. Made by Maze → Dev → Build Map Icons; the sprites may be replaced by any others without code.
+    /// they are placed. Made by Purge → Dev → Build Map Icons; the sprites may be replaced by any others without code.
     /// Referenced by the map screen in the Bootstrap scene.
     /// </summary>
-    [CreateAssetMenu(menuName = "Maze/Map Icons", fileName = "MapIcons")]
+    [CreateAssetMenu(menuName = "Purge/Map Icons", fileName = "MapIcons")]
     public sealed class MapIconSet : ScriptableObject
     {
         [Header("Sprites (pointing up / unrotated)")]

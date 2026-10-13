@@ -287,7 +287,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea4fbabd530c09a4fad00710940dbbf4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.WeaponModel
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.WeaponModel
   _muzzle: {fileID: 2860123775563229761}
   _tip: {fileID: 0}
   _gripLeft: {fileID: 7842164562335400201}

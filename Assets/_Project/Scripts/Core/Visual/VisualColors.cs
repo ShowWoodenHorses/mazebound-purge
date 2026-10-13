@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Colour of a <see cref="VisualVariant.ColorTag"/> (key/door pair): our own names first (bright enough for the

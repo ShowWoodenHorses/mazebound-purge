@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b587cb3edc711c45a25eaf17d527032, type: 3}
   m_Name: TutorialSteps
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Level.TutorialScript
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Level.TutorialScript
   _steps:
   - _text: tutorial.move
     _dialog: 1

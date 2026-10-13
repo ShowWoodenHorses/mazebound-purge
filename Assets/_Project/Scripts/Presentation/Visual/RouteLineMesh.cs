@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Geometry of the route hint line (no Unity objects but the lists it fills, testable): the polyline from the

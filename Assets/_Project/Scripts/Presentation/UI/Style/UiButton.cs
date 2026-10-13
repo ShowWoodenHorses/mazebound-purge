@@ -1,8 +1,8 @@
-using Maze.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Shapes;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Style
+namespace Purge.Presentation.UI.Style
 {
     /// <summary>
     /// Button in the UI style: a <see cref="UiShape"/> body (dark fill, thin outline) and content (label, icons) in the

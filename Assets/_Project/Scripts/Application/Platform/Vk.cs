@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 using UnityEngine;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
-    /// Calls into VK Bridge (<c>Plugins/WebGL/MazeVk.jslib</c>; the page loads the library and sends <c>VKWebAppInit</c>
+    /// Calls into VK Bridge (<c>Plugins/WebGL/PurgeVk.jslib</c>; the page loads the library and sends <c>VKWebAppInit</c>
     /// itself, <c>WebPlatforms.Head</c>). Only a WebGL player has it: elsewhere every call throws, so the game works as
     /// <see cref="GenericPlatform"/>.
     /// </summary>
@@ -69,19 +69,19 @@ namespace Maze.Application.Platform
         private static class Native
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            [DllImport("__Internal", EntryPoint = "MazeVk_Init")]
+            [DllImport("__Internal", EntryPoint = "PurgeVk_Init")]
             public static extern void Init(ReplyCallback callback, int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeVk_StorageGet")]
+            [DllImport("__Internal", EntryPoint = "PurgeVk_StorageGet")]
             public static extern void StorageGet(int id, string keysJson);
 
-            [DllImport("__Internal", EntryPoint = "MazeVk_StorageSet")]
+            [DllImport("__Internal", EntryPoint = "PurgeVk_StorageSet")]
             public static extern void StorageSet(int id, string key, string value);
 
-            [DllImport("__Internal", EntryPoint = "MazeVk_ShowAd")]
+            [DllImport("__Internal", EntryPoint = "PurgeVk_ShowAd")]
             public static extern void ShowAd(int id, int rewarded);
 
-            [DllImport("__Internal", EntryPoint = "MazeVk_Banner")]
+            [DllImport("__Internal", EntryPoint = "PurgeVk_Banner")]
             public static extern void Banner(int show, int compact);
 #else
             private static Exception NoSdk() => new PlatformNotSupportedException("VK Bridge exists only in a WebGL build.");
@@ -95,7 +95,7 @@ namespace Maze.Application.Platform
     }
 
     /// <summary>
-    /// VK Games (build symbol <c>MAZE_VK</c>; vk.com, m.vk.com, the VK apps): the language of VK's interface, saves in
+    /// VK Games (build symbol <c>PURGE_VK</c>; vk.com, m.vk.com, the VK apps): the language of VK's interface, saves in
     /// VK Storage (every player is signed in; the hosting changes the game's address with every upload, so the
     /// browser's storage does not last), pauses when the VK app hides the game, the sticky banner (desktop; phones —
     /// <see cref="MobileBanner"/>), the support contact (catalog rule). VK has no loading/gameplay events.
@@ -112,7 +112,7 @@ namespace Maze.Application.Platform
 
         /// <summary>
         /// The VK app on a phone covers the top-right buttons with its navigation bar even with the insets fallback
-        /// (MazeVk.jslib, 48 CSS px — not enough, checked by the user 2026-10-13): on phones they move left by a button.
+        /// (PurgeVk.jslib, 48 CSS px — not enough, checked by the user 2026-10-13): on phones they move left by a button.
         /// </summary>
         public const float PhoneButtonsShift = 84f;
 

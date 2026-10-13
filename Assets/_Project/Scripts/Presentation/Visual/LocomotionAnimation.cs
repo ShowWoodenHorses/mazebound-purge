@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>Playback speed of in-place walk/run clips for a character moving at a given speed.</summary>
     public static class LocomotionAnimation

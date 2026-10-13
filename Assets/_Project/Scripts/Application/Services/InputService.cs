@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Gameplay.Player;
+using Purge.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     public interface IInputService
     {
@@ -97,7 +97,7 @@ namespace Maze.Application.Services
 
         public UniTask InitializeAsync(CancellationToken cancellation)
         {
-            _actions = new InputActionMap("Maze");
+            _actions = new InputActionMap("Purge");
 
             _move = _actions.AddAction("Move", InputActionType.Value, expectedControlLayout: "Vector2");
             _move.AddCompositeBinding("2DVector")

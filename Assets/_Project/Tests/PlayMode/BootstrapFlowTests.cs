@@ -3,25 +3,25 @@ using System.Collections;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Composition;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Visibility;
-using Maze.Presentation.Map;
-using Maze.Presentation.UI;
-using Maze.Presentation.Visual;
+using Purge.Application.Assets;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Composition;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Visibility;
+using Purge.Presentation.Map;
+using Purge.Presentation.UI;
+using Purge.Presentation.Visual;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,7 +29,7 @@ using UnityEngine.TestTools;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Maze.Tests.PlayMode
+namespace Purge.Tests.PlayMode
 {
     /// <summary>
     /// Real Bootstrap scene, Addressables and LevelScope (ТЗ §110 PlayMode: Bootstrap, GameFlow, Addressables,
@@ -188,10 +188,10 @@ namespace Maze.Tests.PlayMode
 
             var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
             var level = container.Resolve<LevelData>();
-            var player = container.Resolve<Maze.Gameplay.Player.PlayerSystem>();
+            var player = container.Resolve<Purge.Gameplay.Player.PlayerSystem>();
             Assert.IsTrue(player.IsSpawned);
             Assert.AreEqual(level.PlayerStarts[0].Position, player.Cell);
-            Assert.AreEqual(player.Cell, container.Resolve<Maze.Gameplay.Grid.OccupancyMap>().PlayerCell);
+            Assert.AreEqual(player.Cell, container.Resolve<Purge.Gameplay.Grid.OccupancyMap>().PlayerCell);
 
             var view = container.Resolve<PlayerViewPresenter>().View;
             Assert.IsNotNull(view, "Player view instantiated.");
@@ -214,7 +214,7 @@ namespace Maze.Tests.PlayMode
 
             var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
             var visibility = container.Resolve<VisibilitySystem>();
-            var player = container.Resolve<Maze.Gameplay.Player.PlayerSystem>();
+            var player = container.Resolve<Purge.Gameplay.Player.PlayerSystem>();
             var grid = container.Resolve<LevelGrid>();
             var geometry = container.Resolve<LevelVisualSystem>().Geometry;
 
@@ -320,8 +320,8 @@ namespace Maze.Tests.PlayMode
             Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
             var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
             var level = container.Resolve<LevelData>();
-            var bullets = container.Resolve<Maze.Gameplay.Combat.BulletSystem>();
-            var combat = container.Resolve<Maze.Gameplay.Combat.PlayerCombat>();
+            var bullets = container.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+            var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
             var views = container.Resolve<CombatViewPresenter>();
 
             var gun = level.Weapons.First(w => w.Definition.Slot == WeaponSlot.Ranged);
@@ -382,7 +382,7 @@ namespace Maze.Tests.PlayMode
             await _flow.StartLevel(itemsLevel, new LevelLaunchOptions(startIndex: 0));
             Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
             var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
-            var zombies = container.Resolve<Maze.Gameplay.Zombies.ZombieSystem>();
+            var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
             var views = container.Resolve<EntityViewRegistry>();
             Assert.Greater(zombies.TotalCount, 0, "Level_Items has zombies.");
 
@@ -404,13 +404,13 @@ namespace Maze.Tests.PlayMode
             }
 
             var footprints = container.Resolve<FootprintsView>().Field;
-            Assert.IsNotNull(footprints, "The theme has footprints (Maze → Dev → Build Footprints).");
+            Assert.IsNotNull(footprints, "The theme has footprints (Purge → Dev → Build Footprints).");
             Assert.Greater(footprints.AliveCount, 0, "The patrolling zombie leaves prints, also out of the player's sight.");
             Assert.AreEqual(2, container.Resolve<VisionZonesView>().ZoneCount, "Walker and Hunter have vision zones, Listener none.");
 
-            // Health bars and numbers (Maze → Dev → Build Damage Numbers).
+            // Health bars and numbers (Purge → Dev → Build Damage Numbers).
             var feedback = container.Resolve<CombatFeedbackView>();
-            var health = container.Resolve<Maze.Gameplay.Player.PlayerHealth>();
+            var health = container.Resolve<Purge.Gameplay.Player.PlayerHealth>();
             zombies.Zombies[1].ApplyDamage(5f, Vector2.right);
             health.Damage(7);
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
@@ -510,7 +510,7 @@ namespace Maze.Tests.PlayMode
                 Assert.IsTrue(progress.IsMapLayerUnlocked(itemsLevel, MapUnlock.Zombies | MapUnlock.Keys), "Saved for the level.");
                 Assert.IsFalse(progress.IsMapLayerUnlocked("Level_01", MapUnlock.Zombies), "Only for this level.");
                 icons = presenter.Icons;
-                var zombies = container.Resolve<Maze.Gameplay.Zombies.ZombieSystem>();
+                var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
                 var zombieIcons = icons.Where(icon => icon.Kind == MapIconKind.Zombie).ToList();
                 Assert.AreEqual(zombies.TotalCount, zombieIcons.Count);
                 Assert.IsTrue(zombieIcons.All(icon => icon.Visible), "Living zombies are shown wherever they are.");
@@ -533,7 +533,7 @@ namespace Maze.Tests.PlayMode
                 playerToggle.isOn = true;
 
                 // Route hint: the magnifier lays a route, drawn on the map and, after closing it, on the floor.
-                var route = container.Resolve<Maze.Gameplay.Navigation.RouteHintSystem>();
+                var route = container.Resolve<Purge.Gameplay.Navigation.RouteHintSystem>();
                 ui.Map.transform.Find("ButtonsSafeArea/HintButton").GetComponent<Button>().onClick.Invoke();
                 Assert.IsTrue(route.IsActive, "Level_Items: something useful is always reachable from the start.");
                 Assert.GreaterOrEqual(ui.Map.GetComponentInChildren<MapRouteGraphic>().PointCount, 2, "The route on the map.");
@@ -569,7 +569,7 @@ namespace Maze.Tests.PlayMode
         {
             Assert.IsTrue(views.TryGet(entityId, out var view), $"No view for '{entityId}'.");
             var found = view.GameObject.transform.Find(child);
-            Assert.IsNotNull(found, $"'{entityId}' has no '{child}' (placeholder doors: Maze → Dev → Rebuild Placeholder Doors).");
+            Assert.IsNotNull(found, $"'{entityId}' has no '{child}' (placeholder doors: Purge → Dev → Rebuild Placeholder Doors).");
             return found.gameObject;
         }
 
@@ -629,7 +629,7 @@ namespace Maze.Tests.PlayMode
             Assert.IsTrue(ui.Tutorial.IsVisible);
 
             var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
-            var tutorial = container.Resolve<Maze.Gameplay.Tutorial.TutorialSystem>();
+            var tutorial = container.Resolve<Purge.Gameplay.Tutorial.TutorialSystem>();
             var runtime = container.Resolve<LevelRuntime>();
             Assert.AreEqual(0, tutorial.StepIndex, "The first step is on.");
 
@@ -648,8 +648,8 @@ namespace Maze.Tests.PlayMode
             await UniTask.Yield();
             await UniTask.Yield();
             Assert.IsTrue(ui.Tutorial.transform.Find("Pointer").gameObject.activeSelf, "The arrow points at the target.");
-            Assert.AreEqual(Maze.Gameplay.Navigation.RouteTarget.Guide,
-                container.Resolve<Maze.Gameplay.Navigation.RouteHintSystem>().Target, "The line leads to it.");
+            Assert.AreEqual(Purge.Gameplay.Navigation.RouteTarget.Guide,
+                container.Resolve<Purge.Gameplay.Navigation.RouteHintSystem>().Target, "The line leads to it.");
 
             await _flow.ExitToMenu();
             Assert.IsFalse(ui.Tutorial.IsVisible);

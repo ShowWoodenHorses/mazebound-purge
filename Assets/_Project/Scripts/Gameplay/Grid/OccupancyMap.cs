@@ -1,7 +1,7 @@
 using System;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Gameplay.Grid
+namespace Purge.Gameplay.Grid
 {
     /// <summary>
     /// Who stands where (ТЗ §51): at most one player per cell, 0..N zombies per cell, never the player and a zombie

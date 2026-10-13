@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Footprints and step dust of the theme (display only). Prints are left by the player and by zombies as they
@@ -14,7 +14,7 @@ namespace Maze.Core.Visual
     public sealed class ThemeFootprints
     {
         [Tooltip("Print texture: left half — the player's boot, right half — a zombie's bare foot; toes / tip up (+v). " +
-                 "Unlit, alpha blended, drawn right after opaque geometry (under the fog). Maze → Dev → Build Footprints.")]
+                 "Unlit, alpha blended, drawn right after opaque geometry (under the fog). Purge → Dev → Build Footprints.")]
         public Material PrintMaterial;
 
         [Tooltip("Prints alive at once on the level; the oldest is reused when there are more.")]

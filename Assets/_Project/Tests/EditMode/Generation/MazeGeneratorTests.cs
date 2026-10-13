@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Maze.Core.Common;
-using Maze.Core.Generation;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Generation;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Generation
+namespace Purge.Tests.EditMode.Generation
 {
     public class MazeGeneratorTests
     {

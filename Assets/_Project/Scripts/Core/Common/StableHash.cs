@@ -1,4 +1,4 @@
-namespace Maze.Core.Common
+namespace Purge.Core.Common
 {
     /// <summary>
     /// Platform-independent hashing. Never use string.GetHashCode for persisted or seeded data:

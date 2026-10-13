@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Platform;
-using Maze.Application.Save;
+using Purge.Application.Platform;
+using Purge.Application.Save;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     public sealed class CloudSaveTests
     {

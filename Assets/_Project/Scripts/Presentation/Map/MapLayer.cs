@@ -1,4 +1,4 @@
-namespace Maze.Presentation.Map
+namespace Purge.Presentation.Map
 {
     /// <summary>Groups of map icons the player switches on and off (a switch each on the map screen, saved in settings).</summary>
     public enum MapLayer

@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
+using Purge.Application.Assets;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
 
-namespace Maze.Application.Flow
+namespace Purge.Application.Flow
 {
     /// <summary>
     /// The active level: its LevelScope, scene and level-specific assets. Created by

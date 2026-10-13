@@ -1,7 +1,7 @@
-using Maze.Application.Services;
+using Purge.Application.Services;
 using UnityEngine.EventSystems;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// <see cref="IUiPointer"/> from the Bootstrap scene's EventSystem: the pointer is over a raycast target of any UI

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Core.Definitions
+namespace Purge.Core.Definitions
 {
     public enum ZombieDetectionType
     {
@@ -10,7 +10,7 @@ namespace Maze.Core.Definitions
     }
 
     /// <summary>Gameplay behaviour of a zombie type. Appearance is defined by ZombieVisualSet, never here.</summary>
-    [CreateAssetMenu(fileName = "ZombieDefinition", menuName = "Maze/Definitions/Zombie")]
+    [CreateAssetMenu(fileName = "ZombieDefinition", menuName = "Purge/Definitions/Zombie")]
     public sealed class ZombieDefinition : ScriptableObject
     {
         [SerializeField] private string _id;

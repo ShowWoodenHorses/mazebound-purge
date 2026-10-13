@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Core.Audio
+namespace Purge.Core.Audio
 {
     /// <summary>A music track: an Addressable clip (loaded only while it plays) and how it loops.</summary>
     [Serializable]
@@ -62,9 +62,9 @@ namespace Maze.Core.Audio
     /// <summary>
     /// Every sound and music track of the game (ТЗ §71), Addressable at <see cref="Address"/> and resident for the
     /// application lifetime (music clips are loaded only while they play). Display only: gameplay never reads it.
-    /// Filled by Maze → Dev → Build Audio, which keeps the tuning (volumes, ranges…) on rebuild.
+    /// Filled by Purge → Dev → Build Audio, which keeps the tuning (volumes, ranges…) on rebuild.
     /// </summary>
-    [CreateAssetMenu(fileName = "AudioCatalog", menuName = "Maze/Audio Catalog")]
+    [CreateAssetMenu(fileName = "AudioCatalog", menuName = "Purge/Audio Catalog")]
     public sealed class AudioCatalog : ScriptableObject
     {
         public const string Address = "Audio/Catalog";

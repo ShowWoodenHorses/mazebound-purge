@@ -4939,7 +4939,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b715ab46320a1084e909e372b9a663df, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.CombatEffect
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.CombatEffect
   _duration: 0.32
 --- !u!1 &8765988652068071275
 GameObject:

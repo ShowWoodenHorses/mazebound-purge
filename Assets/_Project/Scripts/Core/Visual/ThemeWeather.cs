@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
-    /// Weather of the theme (display only): frost on the characters (<c>Maze/Lit</c>: whitening of the surfaces facing
+    /// Weather of the theme (display only): frost on the characters (<c>Purge/Lit</c>: whitening of the surfaces facing
     /// up and of the edges), falling snow around the player, breath puffs of the player and the zombies and the look of
-    /// the snowdrift edges (<c>Maze/Geometry</c>, keyword <c>MAZE_SNOWDRIFT</c>). Empty
+    /// the snowdrift edges (<c>Purge/Geometry</c>, keyword <c>PURGE_SNOWDRIFT</c>). Empty
     /// <see cref="SnowMaterial"/> = no snow, empty <see cref="BreathMaterial"/> = no breath, frost 0 = no frost.
     /// </summary>
     [Serializable]
@@ -30,7 +30,7 @@ namespace Maze.Core.Visual
         [Range(0f, 1f)] public float FrostRim = 0.35f;
 
         [Header("Snowfall")]
-        [Tooltip("Snowflake particle (Maze/Particle, alpha). Maze → Dev → Build Weather. Empty = no snow.")]
+        [Tooltip("Snowflake particle (Purge/Particle, alpha). Purge → Dev → Build Weather. Empty = no snow.")]
         public Material SnowMaterial;
 
         [Tooltip("Snowflakes per second around the player.")]
@@ -57,7 +57,7 @@ namespace Maze.Core.Visual
         public Color SnowColor = new Color(1f, 1f, 1f, 0.85f);
 
         [Header("Breath")]
-        [Tooltip("Soft round puff (Maze/Particle, alpha). Maze → Dev → Build Weather. Empty = no breath.")]
+        [Tooltip("Soft round puff (Purge/Particle, alpha). Purge → Dev → Build Weather. Empty = no breath.")]
         public Material BreathMaterial;
 
         [Tooltip("Seconds between two puffs of one character.")]
@@ -96,7 +96,7 @@ namespace Maze.Core.Visual
 
         [Header("Frozen doors")]
         [Tooltip("Ice put over a frozen door (pivot = the door's centre on the floor, door rotation 0 = passage " +
-                 "South–North). Optional FrozenDoorIce component chips the pieces off. Maze → Dev → Build Weather.")]
+                 "South–North). Optional FrozenDoorIce component chips the pieces off. Purge → Dev → Build Weather.")]
         public AssetReferenceGameObject IceOverlay;
 
         public bool HasFrost => ZombieFrost > 0f || PlayerFrost > 0f;

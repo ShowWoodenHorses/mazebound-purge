@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec29044341dd8704baf7fe46f45d2cfd, type: 3}
   m_Name: ForestTheme
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.VisualTheme
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.VisualTheme
   _id: forest
   _floor: {fileID: 11400000, guid: 7df6b5e7968bc1a47af684c78962ed7a, type: 2}
   _wall: {fileID: 11400000, guid: a03fbad0f5cd1db4f90e6bd286099a55, type: 2}

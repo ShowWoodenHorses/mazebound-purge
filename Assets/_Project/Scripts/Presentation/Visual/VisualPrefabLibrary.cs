@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Common;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Application.Assets;
+using Purge.Core.Common;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>Prefab of an exact visual variant. Null when the variant or its prefab is missing.</summary>
     public interface IVisualPrefabs

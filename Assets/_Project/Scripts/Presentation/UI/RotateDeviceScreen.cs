@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// "Rotate your device" over everything while a phone or tablet browser is held in portrait (the game is

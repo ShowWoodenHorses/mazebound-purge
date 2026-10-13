@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Save;
-using Maze.Gameplay.Combat;
+using Purge.Application.Save;
+using Purge.Gameplay.Combat;
 using UnityEngine;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>
     /// Player settings (ТЗ §85: part of SaveData). Every change is saved at once (a persistent event).

@@ -2,25 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Platform;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Zombies;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI;
-using Maze.Presentation.Visual;
+using Purge.Application.Platform;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Zombies;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI;
+using Purge.Presentation.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Map
+namespace Purge.Presentation.Map
 {
     /// <summary>
     /// Owns the map texture of the level (one pixel per cell) and the icons over it, and shows them on

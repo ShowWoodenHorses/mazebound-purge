@@ -1,21 +1,21 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Presentation.Map;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Presentation.Map;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     /// <summary>SaveData, progress across levels, stars, settings and the map image (ТЗ §58–60, §85–87).</summary>
     public class ProgressTests

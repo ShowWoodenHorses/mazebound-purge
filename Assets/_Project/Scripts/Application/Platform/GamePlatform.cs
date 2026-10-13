@@ -1,14 +1,14 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Common;
-using Maze.Gameplay.Level;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Common;
+using Purge.Gameplay.Level;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// Saves kept by the platform for the player (Yandex Games player data, CrazyGames Data…): they follow the player

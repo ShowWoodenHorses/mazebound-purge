@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Weapons;
+using Purge.Application.Assets;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Weapons;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Ice of the frozen doors (display only): the theme's <see cref="ThemeWeather.IceOverlay"/> on every frozen door's

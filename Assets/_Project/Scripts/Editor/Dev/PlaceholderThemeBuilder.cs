@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Maze.Core.Definitions;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Creates a placeholder VisualTheme with primitive-based prefabs (no colliders: physics is not used, ТЗ §3).
@@ -39,7 +39,7 @@ namespace Maze.Editor.Dev
         /// Rebuilds only the door prefabs in place (same paths and GUIDs, so the theme keeps its references):
         /// closed panel, open panel against the West side and a padlock on coloured (lockable) doors.
         /// </summary>
-        [MenuItem("Maze/Dev/Rebuild Placeholder Doors")]
+        [MenuItem("Purge/Dev/Rebuild Placeholder Doors")]
         public static void RebuildDoors()
         {
             Materials.Clear();
@@ -47,10 +47,10 @@ namespace Maze.Editor.Dev
             foreach (var (tag, color) in PairColors)
                 Door($"door_{tag}", color, lockable: true);
             AssetDatabase.SaveAssets();
-            Debug.Log("[Maze] Placeholder door prefabs rebuilt.");
+            Debug.Log("[Purge] Placeholder door prefabs rebuilt.");
         }
 
-        [MenuItem("Maze/Dev/Create Placeholder Theme")]
+        [MenuItem("Purge/Dev/Create Placeholder Theme")]
         public static void Create()
         {
             EnsureFolder(Root);
@@ -105,7 +105,7 @@ namespace Maze.Editor.Dev
             AssetDatabase.SaveAssets();
             Selection.activeObject = theme;
             EditorGUIUtility.PingObject(theme);
-            Debug.Log($"[Maze] Placeholder theme created at {AssetDatabase.GetAssetPath(theme)}");
+            Debug.Log($"[Purge] Placeholder theme created at {AssetDatabase.GetAssetPath(theme)}");
         }
 
         private const string PlayerDataPath = "Assets/_Project/Data/Player";
@@ -115,7 +115,7 @@ namespace Maze.Editor.Dev
         /// Placeholder player: capsule with a "nose" showing the facing (+Z), plus PlayerDefinition and PlayerVisual
         /// assets made Addressable at their fixed addresses. Existing definition values are kept.
         /// </summary>
-        [MenuItem("Maze/Dev/Create Placeholder Player")]
+        [MenuItem("Purge/Dev/Create Placeholder Player")]
         public static void CreatePlayer()
         {
             EnsureFolder(Root);
@@ -135,15 +135,15 @@ namespace Maze.Editor.Dev
 
             var problem = LevelDesigner.LevelSync.SyncShared(UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.GetSettings(true));
             AssetDatabase.SaveAssets();
-            if (problem != null) Debug.LogWarning("[Maze] " + problem);
-            Debug.Log($"[Maze] Placeholder player created in {PlayerDataPath} and made Addressable.");
+            if (problem != null) Debug.LogWarning("[Purge] " + problem);
+            Debug.Log($"[Purge] Placeholder player created in {PlayerDataPath} and made Addressable.");
         }
 
         /// <summary>
         /// Placeholder zombie types in Data/Zombies, one per detection type (ТЗ §73): Walker (vision), Listener
         /// (hearing), Hunter (vision + hearing radius). Existing assets are kept with their values.
         /// </summary>
-        [MenuItem("Maze/Dev/Create Placeholder Zombies")]
+        [MenuItem("Purge/Dev/Create Placeholder Zombies")]
         public static void CreateZombies()
         {
             EnsureFolder(ZombieDataPath);
@@ -151,7 +151,7 @@ namespace Maze.Editor.Dev
             Zombie("ZombieListener", "listener", ZombieDetectionType.HearingOnly);
             Zombie("ZombieHunter", "hunter", ZombieDetectionType.VisionAndHearing);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Placeholder zombies created in {ZombieDataPath}.");
+            Debug.Log($"[Purge] Placeholder zombies created in {ZombieDataPath}.");
         }
 
         private static void Zombie(string assetName, string id, ZombieDetectionType detection)
@@ -269,7 +269,7 @@ namespace Maze.Editor.Dev
             return SavePrefab(root);
         }
 
-        /// <param name="geometry">Floor/wall part: uses the Maze/Geometry shader so single cells can be hidden.</param>
+        /// <param name="geometry">Floor/wall part: uses the Purge/Geometry shader so single cells can be hidden.</param>
         private static void AddPart(GameObject root, PrimitiveType type, Color color, Vector3 position, Vector3 scale,
             bool geometry = false)
         {

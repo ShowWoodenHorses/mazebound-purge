@@ -1892,7 +1892,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ebbd7d71757dfe4198a2e83475b57c4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.CharacterWeaponRig
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.CharacterWeaponRig
   _meleeSocket: {fileID: 7951318297356221377}
   _palmRight: {fileID: 951852388942334972}
   _palmLeft: {fileID: 1749563456431327318}

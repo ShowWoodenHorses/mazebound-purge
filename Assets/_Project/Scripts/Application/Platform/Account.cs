@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Save;
+using Purge.Application.Save;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// Signing in to the site's account (Yandex Games): only when the player asks for it (the site's rules — never

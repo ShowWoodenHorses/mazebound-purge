@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Maze.Core.Visual;
-using Maze.Presentation.UI.Style;
+using Purge.Core.Visual;
+using Purge.Presentation.UI.Style;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build UI Icons: draws the line icons of the UI (the drawings of the design mock-up: a 24-unit grid,
+    /// Purge → Dev → Build UI Icons: draws the line icons of the UI (the drawings of the design mock-up: a 24-unit grid,
     /// one line width, white, anti-aliased by distance) as PNG sprites and fills <see cref="UiIconSet"/>; renders every
     /// held weapon model of <see cref="WeaponVisualCatalog"/> into a white silhouette (guns barrel to the right, melee
     /// blade up-right) and stores it in the catalog. PNGs are overwritten (GUIDs kept). Weapon icons are rebuilt by
@@ -29,7 +29,7 @@ namespace Maze.Editor.Dev
         private const int WeaponSize = 128;
         private const int WeaponSupersample = 4;
 
-        [MenuItem("Maze/Dev/Build UI Icons")]
+        [MenuItem("Purge/Dev/Build UI Icons")]
         public static void BuildMenu()
         {
             var set = Build();
@@ -96,7 +96,7 @@ namespace Maze.Editor.Dev
 
             EditorUtility.SetDirty(set);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] UI icons built: {SetPath}.");
+            Debug.Log($"[Purge] UI icons built: {SetPath}.");
             return set;
         }
 
@@ -481,7 +481,7 @@ namespace Maze.Editor.Dev
                 EditorUtility.SetDirty(catalog);
                 AssetDatabase.SaveAssets();
                 var removed = DeleteUnusedWeaponIcons(catalog);
-                Debug.Log($"[Maze] Weapon icons built: {built}" + (removed > 0 ? $", {removed} unused removed." : "."));
+                Debug.Log($"[Purge] Weapon icons built: {built}" + (removed > 0 ? $", {removed} unused removed." : "."));
             }
             finally
             {

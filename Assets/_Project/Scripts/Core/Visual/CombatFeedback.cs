@@ -1,18 +1,18 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Health bars over damaged zombies and flying numbers (damage to zombies and the player, medkit healing) — display
     /// only, part of <see cref="CombatVisualDefinition"/>. Every colour is here, so it is changed without code. Sizes are
     /// in cells; "up" is the top of the screen (+Z, the camera never turns). The digit glyphs and the material are made by
-    /// Maze → Dev → Build Damage Numbers; no material = nothing is shown.
+    /// Purge → Dev → Build Damage Numbers; no material = nothing is shown.
     /// </summary>
     [Serializable]
     public sealed class CombatFeedback
     {
-        [Tooltip("Maze/Overhead material with the digit atlas. Made by Build Damage Numbers.")]
+        [Tooltip("Purge/Overhead material with the digit atlas. Made by Build Damage Numbers.")]
         [SerializeField] private Material _material;
 
         [Header("Health bar (zombies)")]

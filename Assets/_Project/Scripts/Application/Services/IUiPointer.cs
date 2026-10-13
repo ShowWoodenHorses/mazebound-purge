@@ -1,4 +1,4 @@
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>
     /// Whether the mouse / pointer is over an element of the UI (a button, a panel) — so a click there is not also a

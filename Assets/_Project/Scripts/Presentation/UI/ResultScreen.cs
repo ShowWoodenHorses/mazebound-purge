@@ -1,13 +1,13 @@
 using System;
-using Maze.Application.Services;
-using Maze.Gameplay.Level;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI.Style;
+using Purge.Application.Services;
+using Purge.Gameplay.Level;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Result of a run (ТЗ §87, §89): LEVEL COMPLETE / LEVEL FAILED and the level name; three star slots with what

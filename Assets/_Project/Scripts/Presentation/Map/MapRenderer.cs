@@ -1,9 +1,9 @@
 using System;
-using Maze.Core.Grid;
-using Maze.Gameplay.Map;
+using Purge.Core.Grid;
+using Purge.Gameplay.Map;
 using UnityEngine;
 
-namespace Maze.Presentation.Map
+namespace Purge.Presentation.Map
 {
     /// <summary>
     /// Draws the map (ТЗ §60) into pixels, one pixel per cell (row-major from the south-west corner, as a texture).

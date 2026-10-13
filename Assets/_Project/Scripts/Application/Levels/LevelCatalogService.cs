@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Services;
-using Maze.Core.Level;
+using Purge.Application.Assets;
+using Purge.Application.Services;
+using Purge.Core.Level;
 
-namespace Maze.Application.Levels
+namespace Purge.Application.Levels
 {
     public interface ILevelCatalog
     {

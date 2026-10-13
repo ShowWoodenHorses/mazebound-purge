@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Generation
+namespace Purge.Core.Generation
 {
     /// <summary>Output of <see cref="MazeGenerator"/>: logical geometry plus initial player starts and exits.</summary>
     public sealed class MazeGenerationResult

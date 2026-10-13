@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Core.Definitions;
-using Maze.Core.Visual;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Visibility;
-using Maze.Gameplay.Weapons;
+using Purge.Application.Assets;
+using Purge.Core.Definitions;
+using Purge.Core.Visual;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Weapons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Pool;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Views of combat (ТЗ §79, §83), display only, cartoon style:

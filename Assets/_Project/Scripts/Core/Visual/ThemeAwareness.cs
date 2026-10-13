@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Display of what zombies notice (theme settings, display only — gameplay never reads them):
@@ -17,7 +17,7 @@ namespace Maze.Core.Visual
     public sealed class ThemeAwareness
     {
         [Header("Vision zones")]
-        [Tooltip("Unlit, alpha blended, vertex colour × tint (Maze/Particle), drawn over the fog. Maze → Dev → Build Awareness Visuals.")]
+        [Tooltip("Unlit, alpha blended, vertex colour × tint (Purge/Particle), drawn over the fog. Purge → Dev → Build Awareness Visuals.")]
         public Material ZoneMaterial;
 
         [Tooltip("Idle, patrol, return.")]
@@ -39,7 +39,7 @@ namespace Maze.Core.Visual
         [Range(0.01f, 1f)] public float ZoneFade = 0.2f;
 
         [Header("Noise waves")]
-        [Tooltip("Ring with a faint fill (shader Maze/Ring), drawn over everything but the UI. Empty = no waves.")]
+        [Tooltip("Ring with a faint fill (shader Purge/Ring), drawn over everything but the UI. Empty = no waves.")]
         public Material NoiseMaterial;
 
         public Color NoiseColor = new Color(0.75f, 0.75f, 0.78f, 0.2f);

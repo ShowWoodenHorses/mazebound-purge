@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>Axis-aligned rectangle of cells. Min is inclusive, Max is exclusive.</summary>
     [Serializable]

@@ -1,11 +1,11 @@
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Level Designer Tool (ТЗ §15–16): left side = command panels and inspector, right side = top-down 2D grid.
@@ -31,7 +31,7 @@ namespace Maze.Editor.LevelDesigner
         private EditToolController _tools;
         private SelectionInspector _inspector;
 
-        [MenuItem("Maze/Level Designer")]
+        [MenuItem("Purge/Level Designer")]
         public static void Open() => GetWindow<LevelDesignerWindow>("Level Designer").minSize = new Vector2(800f, 520f);
 
         private void OnEnable()
@@ -184,7 +184,7 @@ namespace Maze.Editor.LevelDesigner
             if (!LevelPlayLauncher.Launch(_state.Level, startIndex, out var problem))
             {
                 Notify(problem);
-                Debug.LogWarning("[Maze] Test level: " + problem);
+                Debug.LogWarning("[Purge] Test level: " + problem);
             }
         }
 

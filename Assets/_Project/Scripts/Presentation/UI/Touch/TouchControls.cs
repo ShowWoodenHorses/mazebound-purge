@@ -1,9 +1,9 @@
-using Maze.Application.Save;
+using Purge.Application.Save;
 using UnityEngine;
 using UnityEngine.InputSystem.OnScreen;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Root of the on-screen controls (ТЗ §64): a separate overlay canvas under the application UI, so sizes are
@@ -193,7 +193,7 @@ namespace Maze.Presentation.UI.Touch
             if (_canvas == null) return;
             var dpi = Screen.dpi > 0f ? Screen.dpi : FallbackDpi;
             var scale = dpi / UnitsPerInch * _size;
-            var height = Maze.Application.Platform.WebPage.SafeArea(Screen.safeArea, Screen.width, Screen.height).height;
+            var height = Purge.Application.Platform.WebPage.SafeArea(Screen.safeArea, Screen.width, Screen.height).height;
             if (height > 0f) scale = Mathf.Min(scale, height / _designHeight);
             if (!Mathf.Approximately(_canvas.scaleFactor, scale))
                 _canvas.scaleFactor = scale;

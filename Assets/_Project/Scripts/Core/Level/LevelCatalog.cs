@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>One playable level: stable id, Addressables address of its <see cref="LevelData"/> and menu name.</summary>
     [Serializable]
@@ -32,7 +32,7 @@ namespace Maze.Core.Level
     /// The tutorial (a level with <see cref="LevelData.Tutorial"/>) is kept apart from the numbered levels: it is
     /// started from its own main menu button and is not part of the progression.
     /// </summary>
-    [CreateAssetMenu(fileName = "LevelCatalog", menuName = "Maze/Level Catalog")]
+    [CreateAssetMenu(fileName = "LevelCatalog", menuName = "Purge/Level Catalog")]
     public sealed class LevelCatalog : ScriptableObject
     {
         public const string Address = "LevelCatalog";

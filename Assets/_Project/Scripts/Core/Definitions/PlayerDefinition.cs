@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Maze.Core.Definitions
+namespace Purge.Core.Definitions
 {
     /// <summary>
     /// Gameplay parameters of the player. Shared by all levels, Addressable at <see cref="Address"/>.
     /// Visual representation is defined separately (<see cref="Visual.PlayerVisualDefinition"/>), never here.
     /// </summary>
-    [CreateAssetMenu(fileName = "PlayerDefinition", menuName = "Maze/Definitions/Player")]
+    [CreateAssetMenu(fileName = "PlayerDefinition", menuName = "Purge/Definitions/Player")]
     public sealed class PlayerDefinition : ScriptableObject
     {
         public const string Address = "Player/Definition";

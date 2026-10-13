@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Authoring;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     internal enum EditTool
     {
@@ -236,17 +236,17 @@ namespace Maze.Editor.LevelDesigner
                 return;
 
             var data = Level.VisualData;
-            var hasOverride = data.TryGetCellOverride(cell, Maze.Core.Visual.CellLayer.Decor, out var current);
+            var hasOverride = data.TryGetCellOverride(cell, Purge.Core.Visual.CellLayer.Decor, out var current);
             switch (mode)
             {
                 case DecorBrushMode.Automatic:
                     if (hasOverride)
-                        Apply("Clear Decor", () => LevelEditing.ClearCellOverride(Level, cell, Maze.Core.Visual.CellLayer.Decor));
+                        Apply("Clear Decor", () => LevelEditing.ClearCellOverride(Level, cell, Purge.Core.Visual.CellLayer.Decor));
                     break;
                 case DecorBrushMode.None:
                     if (!hasOverride || !current.IsEmpty)
-                        Apply("Remove Decor", () => LevelEditing.SetCellOverride(Level, cell, Maze.Core.Visual.CellLayer.Decor,
-                            Maze.Core.Visual.VisualChoice.None));
+                        Apply("Remove Decor", () => LevelEditing.SetCellOverride(Level, cell, Purge.Core.Visual.CellLayer.Decor,
+                            Purge.Core.Visual.VisualChoice.None));
                     break;
                 default:
                     if (string.IsNullOrEmpty(DecorVariantId))
@@ -255,9 +255,9 @@ namespace Maze.Editor.LevelDesigner
                         return;
                     }
 
-                    var choice = new Maze.Core.Visual.VisualChoice(DecorVariantId, DecorRotation);
+                    var choice = new Purge.Core.Visual.VisualChoice(DecorVariantId, DecorRotation);
                     if (!hasOverride || !current.Equals(choice))
-                        Apply("Paint Decor", () => LevelEditing.SetCellOverride(Level, cell, Maze.Core.Visual.CellLayer.Decor, choice));
+                        Apply("Paint Decor", () => LevelEditing.SetCellOverride(Level, cell, Purge.Core.Visual.CellLayer.Decor, choice));
                     break;
             }
         }
@@ -389,7 +389,7 @@ namespace Maze.Editor.LevelDesigner
             (Level.Geometry.GetCell(cell) != CellType.Floor
              || Level.AllEntities().Any(e => e.Position == cell)
              || Level.Lights.Any(l => l.Cell == cell)
-             || !Maze.Core.Visual.VisualResolver.ResolveDecor(Level, cell).IsEmpty);
+             || !Purge.Core.Visual.VisualResolver.ResolveDecor(Level, cell).IsEmpty);
 
         private void Apply(string undoName, Action change)
         {

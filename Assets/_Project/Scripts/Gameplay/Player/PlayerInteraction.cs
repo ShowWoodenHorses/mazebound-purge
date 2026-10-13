@@ -1,14 +1,14 @@
 using System;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Sound;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Sound;
 using UnityEngine;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>What happened on Interact, for UI feedback.</summary>
     public enum InteractionResult

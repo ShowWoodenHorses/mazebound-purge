@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// A pooled one-shot effect (display only): restarts its particle systems on every use and says how long it lasts.

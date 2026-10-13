@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 
-namespace Maze.Gameplay.Map
+namespace Purge.Gameplay.Map
 {
     /// <summary>
     /// Map fragments of the level (ТЗ §58): which ones the player has collected. A collected fragment reveals its

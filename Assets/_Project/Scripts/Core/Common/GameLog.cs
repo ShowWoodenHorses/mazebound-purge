@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Common
+namespace Purge.Core.Common
 {
     /// <summary>Log channels from ТЗ §108. The channel is written as a tag so logs can be filtered.</summary>
     public enum LogChannel
@@ -20,7 +20,7 @@ namespace Maze.Core.Common
     }
 
     /// <summary>
-    /// Structured logging (ТЗ §108): "[Maze][Channel] message". Stateless; meant for lifecycle events,
+    /// Structured logging (ТЗ §108): "[Purge][Channel] message". Stateless; meant for lifecycle events,
     /// not for per-frame loops.
     /// </summary>
     public static class GameLog
@@ -48,6 +48,6 @@ namespace Maze.Core.Common
             Debug.LogException(exception);
         }
 
-        private static string Format(LogChannel channel, string message) => "[Maze][" + channel + "] " + message;
+        private static string Format(LogChannel channel, string message) => "[Purge][" + channel + "] " + message;
     }
 }

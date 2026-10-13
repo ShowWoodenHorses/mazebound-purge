@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Maze.Application.Assets
+namespace Purge.Application.Assets
 {
     /// <summary>
     /// Application-wide entry point to Addressables. Assets are never loaded directly: callers create an

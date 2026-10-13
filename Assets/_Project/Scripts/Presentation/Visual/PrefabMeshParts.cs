@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Maze.Core.Common;
+using Purge.Core.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>One sub-mesh of a geometry prefab with its material and placement relative to the prefab root.</summary>
     public readonly struct MeshPart

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>Closed patrol loop: A -> B -> C -> D -> A.</summary>
     [Serializable]

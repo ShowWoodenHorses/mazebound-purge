@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Lighting;
-using Maze.Core.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Lighting;
+using Purge.Core.Visual;
 
-namespace Maze.Core.Authoring
+namespace Purge.Core.Authoring
 {
     /// <summary>
     /// Manual level editing operations (ТЗ §15): every operation keeps the level consistent —

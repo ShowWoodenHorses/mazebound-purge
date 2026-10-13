@@ -1,7 +1,7 @@
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Sound
+namespace Purge.Gameplay.Sound
 {
     /// <summary>
     /// Step sounds (ТЗ §71): a periodic event while the player moves — one every

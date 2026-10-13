@@ -1,9 +1,9 @@
 using System;
-using Maze.Application.Services;
+using Purge.Application.Services;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Base of application screens. Screens are passive views: they show data and raise events;

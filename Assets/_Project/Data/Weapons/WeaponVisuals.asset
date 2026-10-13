@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70e67db940f1f22479cb602c362d7f24, type: 3}
   m_Name: WeaponVisuals
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.WeaponVisualCatalog
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.WeaponVisualCatalog
   _weapons:
   - _definition: {fileID: 11400000, guid: a63bb30920a56754d8f8a5188eea4139, type: 2}
     _heldPrefab:

@@ -1,8 +1,8 @@
-using Maze.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Shapes;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.UI
+namespace Purge.Tests.EditMode.UI
 {
     public class UiShapeTests
     {

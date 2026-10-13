@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Built static geometry of the level: visibility chunks plus the per-cell mask. Visibility only switches

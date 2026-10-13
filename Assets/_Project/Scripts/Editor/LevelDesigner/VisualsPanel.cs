@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Theme, Regenerate Visuals, light sources, overrides and distribution diagnostics (ТЗ §93–96).</summary>
     internal sealed class VisualsPanel
@@ -39,7 +39,7 @@ namespace Maze.Editor.LevelDesigner
 
             if (level.VisualTheme == null)
             {
-                EditorGUILayout.HelpBox("Assign a VisualTheme (Create > Maze > Visual > Visual Theme).", MessageType.Warning);
+                EditorGUILayout.HelpBox("Assign a VisualTheme (Create > Purge > Visual > Visual Theme).", MessageType.Warning);
                 return;
             }
 
@@ -190,7 +190,7 @@ namespace Maze.Editor.LevelDesigner
             var set = level.VisualTheme.GetSet(VisualKind.Decor);
             if (set == null)
             {
-                EditorGUILayout.HelpBox("The theme has no Decor set (Maze > Dev > Build Decor).", MessageType.Info);
+                EditorGUILayout.HelpBox("The theme has no Decor set (Purge > Dev > Build Decor).", MessageType.Info);
                 return;
             }
 

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>"Finish level?" (ТЗ §62). No closes the window and gameplay continues.</summary>
     public sealed class ConfirmExitScreen : UIScreen

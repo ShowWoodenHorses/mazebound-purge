@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// Keys of the Android build for RuStore — the one place to set them; rebuild after a change. Empty means "not yet":
@@ -11,13 +11,13 @@ namespace Maze.Application.Platform
     public static class RuStoreKeys
     {
         /// <summary>MyTracker SDK key (tracker.my.com → the app's settings).</summary>
-        public const string MyTrackerSdkKey = "08865277942125933786";
+        public const string MyTrackerSdkKey = "";
 
         /// <summary>Rewarded ad slot id (VK Ad Network partner interface → the ad unit, <c>slot_id</c>); 0 = not yet.</summary>
-        public const uint RewardedSlotId = 2088152;
+        public const uint RewardedSlotId = 0;
 
         /// <summary>Interstitial ad slot id; 0 = not yet.</summary>
-        public const uint InterstitialSlotId = 2088149;
+        public const uint InterstitialSlotId = 0;
 
         /// <summary>VK Ad Network's demo slots (its demo app): rewarded video and a video interstitial.</summary>
         public const uint DemoRewardedSlotId = 45101;

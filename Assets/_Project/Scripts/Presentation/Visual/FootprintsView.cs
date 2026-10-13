@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Visibility;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Footprints and step dust (display only; theme settings <see cref="ThemeFootprints"/>). The player and every living

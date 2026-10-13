@@ -1,10 +1,10 @@
 using System.Linq;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Level
+namespace Purge.Tests.EditMode.Level
 {
     public class LevelDataTests
     {

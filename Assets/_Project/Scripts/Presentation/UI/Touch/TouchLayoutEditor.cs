@@ -1,13 +1,13 @@
 using System;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Presentation.Localization;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Presentation.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Layout editing of the on-screen controls (opened from the settings): the player drags the stick and buttons

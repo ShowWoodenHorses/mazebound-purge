@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 
-namespace Maze.Gameplay.Doors
+namespace Purge.Gameplay.Doors
 {
     /// <summary>
     /// Runtime door state (ТЗ §37, §45: the prefab never decides): open/closed and locked/unlocked.

@@ -1,8 +1,8 @@
-using Maze.Presentation.Visual;
+using Purge.Presentation.Visual;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Visual
+namespace Purge.Tests.EditMode.Visual
 {
     public class TwoBoneIKTests
     {

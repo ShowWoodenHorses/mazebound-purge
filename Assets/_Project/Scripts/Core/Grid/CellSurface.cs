@@ -1,4 +1,4 @@
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>
     /// Ground of a Floor cell (gameplay, set by hand in the Level Designer). Other cell types have none.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Gameplay.Sound
+namespace Purge.Gameplay.Sound
 {
     public enum SoundType
     {

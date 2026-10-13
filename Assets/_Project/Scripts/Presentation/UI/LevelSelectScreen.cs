@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Level select (opened by Play in the main menu): pages of ten levels in two rows of five

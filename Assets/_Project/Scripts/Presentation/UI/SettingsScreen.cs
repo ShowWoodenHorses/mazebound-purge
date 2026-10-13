@@ -1,14 +1,14 @@
 using System;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Gameplay.Combat;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI.Style;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Gameplay.Combat;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>Pages of the settings screen.</summary>
     public enum SettingsTab

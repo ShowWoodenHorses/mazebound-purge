@@ -3,22 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Authoring;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
-using Maze.Tests.EditMode.Common;
-using Maze.Tests.EditMode.Visual;
+using Purge.Application.Assets;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Authoring;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
+using Purge.Tests.EditMode.Common;
+using Purge.Tests.EditMode.Visual;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Flow
+namespace Purge.Tests.EditMode.Flow
 {
     public class GameFlowTests
     {

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5e76eae51c81e94ab9a92fbdfe88d8b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.DoorVisual
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.DoorVisual
   _closed: {fileID: 4561564445752255838}
   _open: {fileID: 3293359496047491710}
   _locked: {fileID: 1633240908117430486}

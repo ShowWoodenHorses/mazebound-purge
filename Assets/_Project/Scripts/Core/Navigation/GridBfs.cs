@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Navigation
+namespace Purge.Core.Navigation
 {
     /// <summary>
     /// Breadth-first search over the grid (4 directions) from one cell: the path length to every reachable cell at once,

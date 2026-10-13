@@ -1,8 +1,8 @@
-using Maze.Presentation.UI.Touch;
+using Purge.Presentation.UI.Touch;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Player
+namespace Purge.Tests.EditMode.Player
 {
     /// <summary>On-screen stick response: dead zone, soft start, full output before the edge.</summary>
     public class StickResponseTests

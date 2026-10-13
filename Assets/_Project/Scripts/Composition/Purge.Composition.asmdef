@@ -1,0 +1,22 @@
+{
+    "name": "Purge.Composition",
+    "rootNamespace": "Purge.Composition",
+    "references": [
+        "Purge.Core",
+        "Purge.Gameplay",
+        "Purge.Application",
+        "Purge.Application.Android",
+        "Purge.Presentation",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

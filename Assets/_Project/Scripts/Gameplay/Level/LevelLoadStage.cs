@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Maze.Gameplay.Level
+namespace Purge.Gameplay.Level
 {
     /// <summary>Level loading stages after the LevelScope is created, in ТЗ §9 order.</summary>
     public enum LevelLoadStage

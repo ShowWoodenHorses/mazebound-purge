@@ -1,28 +1,28 @@
 using System.Collections.Generic;
 using System.Threading;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Tutorial;
-using Maze.Gameplay.Weapons;
-using Maze.Gameplay.Zombies;
-using Maze.Tests.EditMode.Player;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Tutorial;
+using Purge.Gameplay.Weapons;
+using Purge.Gameplay.Zombies;
+using Purge.Tests.EditMode.Player;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Level
+namespace Purge.Tests.EditMode.Level
 {
     /// <summary>Tutorial steps: order, finishing by game state, skipping steps done ahead, the route to the target.</summary>
     public class TutorialTests

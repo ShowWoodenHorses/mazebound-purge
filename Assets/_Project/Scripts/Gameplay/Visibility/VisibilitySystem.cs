@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visibility;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visibility;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Visibility
+namespace Purge.Gameplay.Visibility
 {
     /// <summary>Sight blockers of the running level (ТЗ §55): Wall and closed Door; open Door and Floor are see-through.</summary>
     public readonly struct LevelOpacity : IGridOpacity

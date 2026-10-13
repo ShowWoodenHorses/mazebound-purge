@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Visual of one level object (door, exit, pickup, zombie). Display only: gameplay systems own the state and

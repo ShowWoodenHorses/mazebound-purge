@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>One level tile of the level select screen.</summary>
     public readonly struct LevelTileData

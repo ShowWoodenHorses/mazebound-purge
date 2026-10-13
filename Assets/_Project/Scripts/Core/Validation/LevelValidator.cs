@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Navigation;
-using Maze.Core.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Navigation;
+using Purge.Core.Visual;
 
-namespace Maze.Core.Validation
+namespace Purge.Core.Validation
 {
     /// <summary>
     /// Level validator (ТЗ §90–92): structural, visual and gameplay checks.

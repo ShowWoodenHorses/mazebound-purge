@@ -1,18 +1,18 @@
 using System;
 using System.IO;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Weather: textures and materials (<c>Maze/Particle</c>, alpha) of the snowflake and the breath
+    /// Purge → Dev → Build Weather: textures and materials (<c>Purge/Particle</c>, alpha) of the snowflake and the breath
     /// puff in <c>Art/Effects</c>, and the ice of frozen doors (<c>Art/Effects/IceOverlay.prefab</c>: chunky blocks on
-    /// <c>Maze/Lit</c>, <see cref="FrozenDoorIce"/> pieces from the top down), assigned to <see cref="ThemeWeather"/> of the
+    /// <c>Purge/Lit</c>, <see cref="FrozenDoorIce"/> pieces from the top down), assigned to <see cref="ThemeWeather"/> of the
     /// snow theme. The first run also turns the zombies' frost on; tuned numbers of the theme are kept on later runs.
     /// Assets are overwritten (GUIDs kept).
     /// </summary>
@@ -22,12 +22,12 @@ namespace Maze.Editor.Dev
         private const string ThemePath = "Assets/_Project/Data/Themes/SnowTheme.asset";
         private const float DefaultZombieFrost = 0.55f;
 
-        [MenuItem("Maze/Dev/Build Weather")]
+        [MenuItem("Purge/Dev/Build Weather")]
         public static void Build()
         {
-            if (Shader.Find("Maze/Particle") == null)
+            if (Shader.Find("Purge/Particle") == null)
             {
-                Debug.LogError("[Maze] Shader 'Maze/Particle' not found.");
+                Debug.LogError("[Purge] Shader 'Purge/Particle' not found.");
                 return;
             }
 
@@ -51,11 +51,11 @@ namespace Maze.Editor.Dev
             }
             else
             {
-                Debug.LogWarning($"[Maze] {ThemePath} not found (Maze → Dev → Build Biome Themes): materials are not assigned.");
+                Debug.LogWarning($"[Purge] {ThemePath} not found (Purge → Dev → Build Biome Themes): materials are not assigned.");
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Weather built in {Folder}" + (theme != null ? ", assigned to SnowTheme." : "."));
+            Debug.Log($"[Purge] Weather built in {Folder}" + (theme != null ? ", assigned to SnowTheme." : "."));
         }
 
         // ---- Ice of frozen doors ----
@@ -74,7 +74,7 @@ namespace Maze.Editor.Dev
             var overlay = root.AddComponent<FrozenDoorIce>();
             var pieces = new System.Collections.Generic.List<GameObject>();
             const int columns = 3, rows = 2;
-            var random = new Maze.Core.Common.DeterministicRandom(17); // fixed shape
+            var random = new Purge.Core.Common.DeterministicRandom(17); // fixed shape
             for (var row = rows - 1; row >= 0; row--)
             for (var column = 0; column < columns; column++)
             {
@@ -108,7 +108,7 @@ namespace Maze.Editor.Dev
         private static Material SaveIceMaterial()
         {
             var path = $"{Folder}/ice_overlay.mat";
-            var shader = Shader.Find("Maze/Lit");
+            var shader = Shader.Find("Purge/Lit");
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
@@ -128,7 +128,7 @@ namespace Maze.Editor.Dev
         private static Material SaveMaterial(string name, Texture texture)
         {
             var path = $"{Folder}/{name}.mat";
-            var shader = Shader.Find("Maze/Particle");
+            var shader = Shader.Find("Purge/Particle");
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {

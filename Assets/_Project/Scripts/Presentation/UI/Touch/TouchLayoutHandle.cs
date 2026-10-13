@@ -1,8 +1,8 @@
-using Maze.Application.Save;
+using Purge.Application.Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Makes an on-screen control draggable in <see cref="TouchLayoutEditor"/>. Enabled only while the layout is edited

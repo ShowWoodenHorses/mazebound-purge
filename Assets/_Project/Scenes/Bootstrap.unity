@@ -188,7 +188,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -264,7 +264,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -517,7 +517,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: level_select.title
   _text: {fileID: 17479818}
 --- !u!1 &19841071
@@ -618,7 +618,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -698,7 +698,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &22423623
 MonoBehaviour:
@@ -711,7 +711,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -780,7 +780,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &24888917
 MonoBehaviour:
@@ -872,7 +872,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -921,7 +921,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -1018,7 +1018,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce5faa95bd07ec348abb2946beb39644, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.HudWeaponSlot
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.HudWeaponSlot
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _frame: {fileID: 30041838}
   _icon: {fileID: 1800832654}
@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -1334,7 +1334,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -1410,7 +1410,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -1859,7 +1859,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.player
   _text: {fileID: 68837867}
 --- !u!1 &70102957
@@ -1985,7 +1985,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -2157,7 +2157,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -2236,7 +2236,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 1
 --- !u!114 &100746944
 MonoBehaviour:
@@ -2249,7 +2249,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -2298,7 +2298,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -2449,7 +2449,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -2525,7 +2525,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -2608,7 +2608,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &116628523
 CanvasGroup:
@@ -2671,7 +2671,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24904d08be9523b49ae1dfddbd360344, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.TutorialScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.TutorialScreen
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _hintRow: {fileID: 1989455228}
   _hint: {fileID: 1286223824}
@@ -2895,7 +2895,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &127314047
 MonoBehaviour:
@@ -2908,7 +2908,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -2978,7 +2978,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -3230,7 +3230,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.zombies
   _text: {fileID: 136563584}
 --- !u!1 &141278075
@@ -3368,7 +3368,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -3703,7 +3703,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: common.yes
   _text: {fileID: 165659523}
 --- !u!1 &172424378
@@ -3891,7 +3891,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -4164,7 +4164,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -4297,7 +4297,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -4377,7 +4377,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &206360065
 MonoBehaviour:
@@ -4390,7 +4390,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -4459,7 +4459,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -4636,7 +4636,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.restart
   _text: {fileID: 208537150}
 --- !u!1 &214923992
@@ -4687,7 +4687,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -4764,7 +4764,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -4957,7 +4957,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &220913611
 MonoBehaviour:
@@ -5034,7 +5034,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -5148,7 +5148,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -5346,7 +5346,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.controls_size
   _text: {fileID: 227606804}
 --- !u!1 &228106679
@@ -5399,7 +5399,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &228106682
 MonoBehaviour:
@@ -5456,7 +5456,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -5684,7 +5684,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2277147d2f16e314089ad838fee1cd00, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchLayoutHandle
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchLayoutHandle
   _element: 0
   _editor: {fileID: 571322982}
 --- !u!114 &247949975
@@ -5698,7 +5698,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0008703c2ecf9ef42939fbfdd3cf9e91, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchStickMarks
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchStickMarks
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _marks:
   - {fileID: 1057764770}
@@ -5720,7 +5720,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -5993,7 +5993,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.floating_stick
   _text: {fileID: 252224538}
 --- !u!1 &253503873
@@ -6065,7 +6065,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -6305,7 +6305,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &257296450
 CanvasGroup:
@@ -6368,7 +6368,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d604936cb32381644b440b5891a0c3cc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LoadingScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LoadingScreen
 --- !u!1 &257765089
 GameObject:
   m_ObjectHideFlags: 0
@@ -6418,7 +6418,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -6924,7 +6924,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.stick_response
   _text: {fileID: 278087222}
 --- !u!1 &279854302
@@ -7119,7 +7119,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &283611763
 MonoBehaviour:
@@ -7132,7 +7132,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -7202,7 +7202,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -7278,7 +7278,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -7455,7 +7455,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.tutorial
   _text: {fileID: 299199688}
 --- !u!1 &308917925
@@ -7729,7 +7729,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.debug_complete
   _text: {fileID: 316002316}
 --- !u!1 &317080306
@@ -7881,7 +7881,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: common.settings
   _text: {fileID: 317080308}
 --- !u!1 &318447462
@@ -8054,7 +8054,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.aim_mode
   _text: {fileID: 318447465}
 --- !u!1 &318649165
@@ -8201,7 +8201,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -8298,7 +8298,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -8529,7 +8529,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &329514230
 MonoBehaviour:
@@ -8542,7 +8542,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 36765619}
   _knob: {fileID: 2006527129}
@@ -8606,7 +8606,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -8822,7 +8822,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: layout.done
   _text: {fileID: 340309823}
 --- !u!114 &340309823
@@ -9067,7 +9067,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -9285,7 +9285,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &350957904
 MonoBehaviour:
@@ -9298,7 +9298,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -9368,7 +9368,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -9450,7 +9450,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &354753588
 MonoBehaviour:
@@ -9463,7 +9463,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 354753589}
   _number: {fileID: 1152534109}
@@ -9488,7 +9488,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -9538,7 +9538,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -9629,7 +9629,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!114 &356217741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9641,7 +9641,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &356217742
 CanvasGroup:
@@ -9704,7 +9704,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0afe712930745bb42b70c13c90ccdc1a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.HudScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.HudScreen
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _levelName: {fileID: 1997013686}
   _timer: {fileID: 1938584657}
@@ -9968,7 +9968,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.left_handed
   _text: {fileID: 363233627}
 --- !u!1 &366080661
@@ -9999,7 +9999,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 641dab1316c268147a19d812e1cb381b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Composition::Maze.Composition.ProjectLifetimeScope
+  m_EditorClassIdentifier: Purge.Composition::Purge.Composition.ProjectLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1
@@ -10170,7 +10170,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.reset_tab
   _text: {fileID: 368519060}
 --- !u!1 &371023088
@@ -10328,7 +10328,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -10610,7 +10610,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d1bef10da6b02249895ccf4773675b7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UIRoot
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UIRoot
   _mainMenu: {fileID: 2124936299}
   _levelSelect: {fileID: 596977964}
   _loading: {fileID: 257296453}
@@ -10832,7 +10832,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -11009,7 +11009,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.privacy.open
   _text: {fileID: 389918067}
 --- !u!1 &390654256
@@ -11060,7 +11060,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f5f0ddac99d4ad4d8db3945ddcb3380, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LanguagePicker
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LanguagePicker
   _root: {fileID: 221969332}
   _blocker: {fileID: 228106682}
   _scroll: {fileID: 1643473845}
@@ -11220,7 +11220,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -11334,7 +11334,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -11415,7 +11415,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce5faa95bd07ec348abb2946beb39644, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.HudWeaponSlot
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.HudWeaponSlot
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _frame: {fileID: 410587592}
   _icon: {fileID: 1345807779}
@@ -11435,7 +11435,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -11774,7 +11774,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: loading
   _text: {fileID: 438810805}
 --- !u!1 &441362803
@@ -11825,7 +11825,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -11966,7 +11966,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b31d24c2487efb3429fab035879eb24b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.RotateDeviceScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.RotateDeviceScreen
   _content: {fileID: 2042774682}
 --- !u!1 &449652253
 GameObject:
@@ -12182,7 +12182,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &452316179
 MonoBehaviour:
@@ -12195,7 +12195,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -12265,7 +12265,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -12428,7 +12428,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -12752,7 +12752,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -13145,7 +13145,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -13322,7 +13322,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: common.no
   _text: {fileID: 506979316}
 --- !u!1 &509998378
@@ -13377,7 +13377,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 1
 --- !u!114 &509998381
 MonoBehaviour:
@@ -13390,7 +13390,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -13459,7 +13459,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -13749,7 +13749,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &521915280
 MonoBehaviour:
@@ -13762,7 +13762,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 521915281}
   _number: {fileID: 347158114}
@@ -13787,7 +13787,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -13837,7 +13837,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -13988,7 +13988,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -14176,7 +14176,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -14257,7 +14257,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &540240279
 MonoBehaviour:
@@ -14270,7 +14270,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -14340,7 +14340,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -14538,7 +14538,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: confirm_exit.title
   _text: {fileID: 540335778}
 --- !u!1 &547871330
@@ -14594,7 +14594,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &547871333
 MonoBehaviour:
@@ -14607,7 +14607,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -14677,7 +14677,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -14774,7 +14774,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -15259,7 +15259,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &566226317
 MonoBehaviour:
@@ -15272,7 +15272,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 566226318}
   _number: {fileID: 1231616073}
@@ -15297,7 +15297,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -15347,7 +15347,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -15423,7 +15423,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -15734,7 +15734,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38b428d5be01212418fe02b38fc8c5e7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchLayoutEditor
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchLayoutEditor
   _controls: {fileID: 1628316747}
   _selection: {fileID: 388757984}
   _background: {fileID: 699411084}
@@ -15753,7 +15753,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &573124227
 GameObject:
   m_ObjectHideFlags: 0
@@ -15939,7 +15939,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -16111,7 +16111,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -16288,7 +16288,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.edit
   _text: {fileID: 585293043}
 --- !u!1 &590656418
@@ -16339,7 +16339,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -16422,7 +16422,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &591397810
 CanvasGroup:
@@ -16485,7 +16485,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85145241b0659b4469b9755e3ab4c00c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.MapScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.MapScreen
   _image: {fileID: 2057479131}
   _fitter: {fileID: 2057479130}
   _caption: {fileID: 1218137685}
@@ -16678,7 +16678,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: error.title
   _text: {fileID: 591949282}
 --- !u!1 &592191700
@@ -16962,7 +16962,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -17043,7 +17043,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &596977961
 CanvasGroup:
@@ -17106,7 +17106,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdd26b78b64ccae4380af7415c7ccd75, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelSelectScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelSelectScreen
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _backButton: {fileID: 100746944}
   _totalStars: {fileID: 1776151470}
@@ -17373,7 +17373,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.dead_zone
   _text: {fileID: 609082872}
 --- !u!1 &617556513
@@ -17683,7 +17683,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: error.back
   _text: {fileID: 620410841}
 --- !u!1 &621176430
@@ -17976,7 +17976,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -18284,7 +18284,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -18360,7 +18360,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -18552,7 +18552,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2277147d2f16e314089ad838fee1cd00, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchLayoutHandle
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchLayoutHandle
   _element: 2
   _editor: {fileID: 571322982}
 --- !u!114 &658453620
@@ -18566,7 +18566,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b027a36f252a7964db2db5626e5a759d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchPress
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchPress
 --- !u!114 &658453621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18591,7 +18591,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -18688,7 +18688,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -19029,7 +19029,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -19105,7 +19105,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -19339,7 +19339,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -19827,7 +19827,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.sign_in
   _text: {fileID: 711305705}
 --- !u!1 &714525700
@@ -20065,7 +20065,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -20544,7 +20544,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &727490129
 MonoBehaviour:
@@ -20577,7 +20577,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 727490132}
   _knob: {fileID: 1663303650}
@@ -20641,7 +20641,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -20792,7 +20792,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -20868,7 +20868,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -20947,7 +20947,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 1902948980}
 --- !u!225 &746176341
 CanvasGroup:
@@ -21362,7 +21362,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -21659,7 +21659,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -21735,7 +21735,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -21912,7 +21912,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.sign_in.hint
   _text: {fileID: 791525193}
 --- !u!1 &791824071
@@ -22064,7 +22064,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.aim.eight
   _text: {fileID: 791824073}
 --- !u!1 &792618731
@@ -22355,7 +22355,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -22532,7 +22532,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.medkits
   _text: {fileID: 818397780}
 --- !u!1 &820980126
@@ -22855,7 +22855,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -22934,7 +22934,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &847575330
 MonoBehaviour:
@@ -22991,7 +22991,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -23168,7 +23168,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.tab.controls
   _text: {fileID: 861162942}
 --- !u!1 &863009884
@@ -23219,7 +23219,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -23383,7 +23383,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 1
 --- !u!114 &870206217
 MonoBehaviour:
@@ -23396,7 +23396,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -23445,7 +23445,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -23622,7 +23622,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.keys
   _text: {fileID: 870478392}
 --- !u!1 &880938707
@@ -23837,7 +23837,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &890326896
 MonoBehaviour:
@@ -23850,7 +23850,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 890326897}
   _number: {fileID: 1811653582}
@@ -23875,7 +23875,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -23925,7 +23925,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -24123,7 +24123,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: layout.hint
   _text: {fileID: 895244254}
 --- !u!1 &906641718
@@ -24275,7 +24275,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: level_select.empty
   _text: {fileID: 906641720}
 --- !u!1 &908328878
@@ -24444,7 +24444,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &912775469
 GameObject:
   m_ObjectHideFlags: 0
@@ -24498,7 +24498,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &912775472
 MonoBehaviour:
@@ -24511,7 +24511,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -24581,7 +24581,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -24662,7 +24662,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 2
 --- !u!114 &917795187
 MonoBehaviour:
@@ -24675,7 +24675,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -24745,7 +24745,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -24971,7 +24971,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -25053,7 +25053,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &938741900
 MonoBehaviour:
@@ -25066,7 +25066,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 938741901}
   _number: {fileID: 1357657416}
@@ -25091,7 +25091,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -25141,7 +25141,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -25217,7 +25217,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -25314,7 +25314,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -25396,7 +25396,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &945770989
 MonoBehaviour:
@@ -25409,7 +25409,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 945770990}
   _number: {fileID: 690628786}
@@ -25434,7 +25434,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -25484,7 +25484,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -25698,7 +25698,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &955842889
 MonoBehaviour:
@@ -25711,7 +25711,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 955842890}
   _number: {fileID: 714525702}
@@ -25736,7 +25736,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -25786,7 +25786,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -26239,7 +26239,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &972730240
 MonoBehaviour:
@@ -26252,7 +26252,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -26321,7 +26321,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -26554,7 +26554,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &981919856
 MonoBehaviour:
@@ -26631,7 +26631,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -26886,7 +26886,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.music
   _text: {fileID: 984435119}
 --- !u!1 &989291011
@@ -26987,7 +26987,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -27132,7 +27132,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &995808182
 MonoBehaviour:
@@ -27145,7 +27145,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -27215,7 +27215,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -27413,7 +27413,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.sound
   _text: {fileID: 999931463}
 --- !u!1 &1005352442
@@ -27565,7 +27565,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.weapons
   _text: {fileID: 1005352444}
 --- !u!1 &1013928663
@@ -27637,7 +27637,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -27855,7 +27855,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -27971,7 +27971,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 1
 --- !u!114 &1028245219
 MonoBehaviour:
@@ -27984,7 +27984,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -28053,7 +28053,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -28150,7 +28150,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -28327,7 +28327,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: layout.reset
   _text: {fileID: 1029717850}
 --- !u!1 &1035977125
@@ -28479,7 +28479,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.debug_fail
   _text: {fileID: 1035977127}
 --- !u!1 &1042566722
@@ -29121,7 +29121,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -29202,7 +29202,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1058635624
 MonoBehaviour:
@@ -29235,7 +29235,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1058635627}
   _knob: {fileID: 1720972532}
@@ -29299,7 +29299,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -29462,7 +29462,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -29657,7 +29657,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 2
 --- !u!114 &1075982700
 MonoBehaviour:
@@ -29670,7 +29670,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -29719,7 +29719,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -29937,7 +29937,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1078601992
 MonoBehaviour:
@@ -29950,7 +29950,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1624416726}
   _knob: {fileID: 102673874}
@@ -30014,7 +30014,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -30126,7 +30126,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -30414,7 +30414,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -30493,7 +30493,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 2
 --- !u!114 &1090015709
 MonoBehaviour:
@@ -30506,7 +30506,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -30555,7 +30555,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -30637,7 +30637,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1103742160
 MonoBehaviour:
@@ -30650,7 +30650,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 1103742161}
   _number: {fileID: 258864928}
@@ -30675,7 +30675,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -30725,7 +30725,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -30913,7 +30913,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &1128451671
 GameObject:
   m_ObjectHideFlags: 0
@@ -31058,7 +31058,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -31256,7 +31256,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.language
   _text: {fileID: 1135823876}
 --- !u!1 &1138143408
@@ -31307,7 +31307,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -31523,7 +31523,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1147121081
 MonoBehaviour:
@@ -31580,7 +31580,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -31661,7 +31661,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1149147500
 MonoBehaviour:
@@ -31674,7 +31674,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -31744,7 +31744,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -31957,7 +31957,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42ec5c5bce670314483e0047fa1dfc88, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.MapRouteGraphic
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.MapRouteGraphic
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -32087,7 +32087,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -32305,7 +32305,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &1180096558
 GameObject:
   m_ObjectHideFlags: 0
@@ -32354,7 +32354,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -32451,7 +32451,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -32628,7 +32628,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: result.next
   _text: {fileID: 1184224491}
 --- !u!1 &1188895110
@@ -32679,7 +32679,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -32755,7 +32755,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -33031,7 +33031,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -33143,7 +33143,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -33219,7 +33219,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -33821,7 +33821,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1218146178
 MonoBehaviour:
@@ -33834,7 +33834,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1564617163}
   _knob: {fileID: 458355020}
@@ -33898,7 +33898,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -33980,7 +33980,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &1221022327
 CanvasGroup:
@@ -34043,7 +34043,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f91fa87efb3ec494facc8df607291738, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.SettingsScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.SettingsScreen
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _tabButtons:
   - {fileID: 1282094010}
@@ -34398,7 +34398,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.show_fps
   _text: {fileID: 1242035596}
 --- !u!1 &1243002416
@@ -34550,7 +34550,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: common.settings
   _text: {fileID: 1243002418}
 --- !u!1 &1243075048
@@ -34702,7 +34702,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.resume
   _text: {fileID: 1243075050}
 --- !u!1 &1245483212
@@ -34757,7 +34757,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1245483215
 MonoBehaviour:
@@ -34770,7 +34770,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -34839,7 +34839,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -34917,7 +34917,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -35078,7 +35078,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -35398,7 +35398,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.tab.shooting
   _text: {fileID: 1279684827}
 --- !u!1 &1279730751
@@ -35449,7 +35449,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -35616,7 +35616,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1282094010
 MonoBehaviour:
@@ -35693,7 +35693,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -36049,7 +36049,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1286283631
 MonoBehaviour:
@@ -36062,7 +36062,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 225330269}
   _knob: {fileID: 590656420}
@@ -36126,7 +36126,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -36298,7 +36298,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -36453,7 +36453,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -36705,7 +36705,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: map.pieces
   _text: {fileID: 1316048035}
 --- !u!1 &1316491467
@@ -36761,7 +36761,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 2
 --- !u!114 &1316491470
 MonoBehaviour:
@@ -36774,7 +36774,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -36844,7 +36844,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -36999,7 +36999,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1320443773
 MonoBehaviour:
@@ -37012,7 +37012,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -37081,7 +37081,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -37279,7 +37279,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: hud.tutorial
   _text: {fileID: 1322414922}
 --- !u!1 &1332244163
@@ -37456,7 +37456,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1338677702
 MonoBehaviour:
@@ -37469,7 +37469,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -37539,7 +37539,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -37773,7 +37773,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.aim_assist
   _text: {fileID: 1344592602}
 --- !u!1 &1345807777
@@ -38021,7 +38021,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.title
   _text: {fileID: 1347350703}
 --- !u!1 &1348976608
@@ -38076,7 +38076,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 1453409166}
 --- !u!225 &1348976611
 CanvasGroup:
@@ -38139,7 +38139,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51d6da2ed7355b94f97b1bdb8bee4a5e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.ConfirmExitScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.ConfirmExitScreen
   _yesButton: {fileID: 206360065}
   _noButton: {fileID: 1028245219}
 --- !u!1 &1349145951
@@ -38271,7 +38271,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1352293497
 MonoBehaviour:
@@ -38284,7 +38284,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1762754305}
   _knob: {fileID: 786006956}
@@ -38348,7 +38348,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -38426,7 +38426,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c43b232f0f55ae14798e6600739bc422, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchStick
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchStick
   _controlPath: <Gamepad>/leftStick
   _ring: {fileID: 247949973}
   _knob: {fileID: 580911859}
@@ -38713,7 +38713,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: rotate.title
   _text: {fileID: 1367173891}
 --- !u!114 &1367173891
@@ -38963,7 +38963,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 181428617}
 --- !u!225 &1371792121
 CanvasGroup:
@@ -39026,7 +39026,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e6af2e8a7b5ce94ca827d5821381a18, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.ErrorScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.ErrorScreen
   _message: {fileID: 1968409942}
   _backButton: {fileID: 509998381}
 --- !u!1 &1372284017
@@ -39077,7 +39077,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -39340,7 +39340,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -39487,7 +39487,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -39584,7 +39584,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -39666,7 +39666,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1397597855
 MonoBehaviour:
@@ -39679,7 +39679,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 1397597856}
   _number: {fileID: 1043884864}
@@ -39704,7 +39704,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -39754,7 +39754,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -39851,7 +39851,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -40373,7 +40373,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.controls_opacity
   _text: {fileID: 1423979546}
 --- !u!1 &1425655188
@@ -40924,7 +40924,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -41117,7 +41117,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1474368760
 MonoBehaviour:
@@ -41130,7 +41130,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -41200,7 +41200,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -41282,7 +41282,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1478431978
 MonoBehaviour:
@@ -41295,7 +41295,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 257765091}
   _knob: {fileID: 173563874}
@@ -41359,7 +41359,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -41593,7 +41593,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -41770,7 +41770,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.levels
   _text: {fileID: 1493237716}
 --- !u!1 &1496211663
@@ -41821,7 +41821,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -41998,7 +41998,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.play
   _text: {fileID: 1496720105}
 --- !u!1 &1505152324
@@ -42053,7 +42053,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1505152327
 MonoBehaviour:
@@ -42066,7 +42066,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -42135,7 +42135,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -42687,7 +42687,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b027a36f252a7964db2db5626e5a759d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchPress
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchPress
 --- !u!114 &1538710773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42712,7 +42712,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -42861,7 +42861,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -43162,7 +43162,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -43588,7 +43588,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -43664,7 +43664,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -43953,7 +43953,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.aim.four
   _text: {fileID: 1577005148}
 --- !u!1 &1577663224
@@ -44057,7 +44057,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -44106,7 +44106,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -44303,7 +44303,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: result.retry
   _text: {fileID: 1581083809}
 --- !u!1 &1586568085
@@ -44355,7 +44355,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!114 &1586568088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44367,7 +44367,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88cb19263fccd92488f6c45a5194aecb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.FpsCounter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.FpsCounter
   _text: {fileID: 573124229}
 --- !u!1 &1589029031
 GameObject:
@@ -44731,7 +44731,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 1196402558}
 --- !u!225 &1612969131
 CanvasGroup:
@@ -44794,7 +44794,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a3f586ad821f924f9991a2e04d90228, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.PauseScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.PauseScreen
   _resumeButton: {fileID: 917795187}
   _retryButton: {fileID: 1719669652}
   _settingsButton: {fileID: 1474368760}
@@ -45047,7 +45047,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.privacy
   _text: {fileID: 1616768276}
 --- !u!1 &1620091609
@@ -45174,7 +45174,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -45254,7 +45254,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e9276587df5de94bbe14d686a3f390e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchControls
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchControls
   _canvas: {fileID: 1628316748}
   _group: {fileID: 1915601072}
   _stick: {fileID: 1354297307}
@@ -45377,7 +45377,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -45453,7 +45453,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -45561,7 +45561,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -46068,7 +46068,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -46144,7 +46144,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -46220,7 +46220,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -46317,7 +46317,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -46398,7 +46398,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1669929835
 MonoBehaviour:
@@ -46411,7 +46411,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -46481,7 +46481,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -46629,7 +46629,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &1691818791
 GameObject:
   m_ObjectHideFlags: 0
@@ -46842,7 +46842,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -47351,7 +47351,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1719669652
 MonoBehaviour:
@@ -47364,7 +47364,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -47434,7 +47434,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -47611,7 +47611,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: common.settings
   _text: {fileID: 1719763106}
 --- !u!1 &1719780841
@@ -47737,7 +47737,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -47834,7 +47834,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -47931,7 +47931,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -48144,7 +48144,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -48224,7 +48224,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1747511271
 MonoBehaviour:
@@ -48237,7 +48237,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -48306,7 +48306,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -48385,7 +48385,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 2
 --- !u!114 &1752713658
 MonoBehaviour:
@@ -48398,7 +48398,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -48447,7 +48447,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -48685,7 +48685,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -49024,7 +49024,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1780987462
 MonoBehaviour:
@@ -49081,7 +49081,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -49519,7 +49519,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -49833,7 +49833,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: pause.exit
   _text: {fileID: 1813752142}
 --- !u!1 &1816113784
@@ -50025,7 +50025,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -50074,7 +50074,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -50190,7 +50190,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -50266,7 +50266,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -50555,7 +50555,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.tab.other
   _text: {fileID: 1836419844}
 --- !u!1 &1846407162
@@ -50611,7 +50611,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1846407165
 MonoBehaviour:
@@ -50624,7 +50624,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -50694,7 +50694,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -50982,7 +50982,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.aim.free
   _text: {fileID: 1860506675}
 --- !u!1 &1861645183
@@ -51033,7 +51033,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -51111,7 +51111,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b027a36f252a7964db2db5626e5a759d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchPress
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchPress
 --- !u!114 &1873393378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51136,7 +51136,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -51388,7 +51388,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: result.menu
   _text: {fileID: 1897028162}
 --- !u!1 &1899531896
@@ -51515,7 +51515,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2277147d2f16e314089ad838fee1cd00, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchLayoutHandle
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchLayoutHandle
   _element: 1
   _editor: {fileID: 571322982}
 --- !u!114 &1900807612
@@ -51529,7 +51529,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a32aa018f88ad9d4b991b1044288a512, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchAttackCluster
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchAttackCluster
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _content: {fileID: 43366037}
   _attack: {fileID: 1873393379}
@@ -51657,7 +51657,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -51733,7 +51733,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -51967,7 +51967,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -52058,7 +52058,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &1916594246
 GameObject:
   m_ObjectHideFlags: 0
@@ -52148,7 +52148,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1918432503
 MonoBehaviour:
@@ -52181,7 +52181,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1918432506}
   _knob: {fileID: 652733813}
@@ -52245,7 +52245,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -52342,7 +52342,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -52540,7 +52540,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.support
   _text: {fileID: 1923220690}
 --- !u!1 &1924147465
@@ -52612,7 +52612,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -52688,7 +52688,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -52770,7 +52770,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f8f156a5ad4d2e42abc803df38df6b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.SafeAreaFitter
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.SafeAreaFitter
 --- !u!1 &1938584655
 GameObject:
   m_ObjectHideFlags: 0
@@ -52977,7 +52977,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -53128,7 +53128,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -53305,7 +53305,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: tutorial_ui.continue
   _text: {fileID: 1949709697}
 --- !u!1 &1949997621
@@ -53356,7 +53356,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -53432,7 +53432,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -53513,7 +53513,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &1957899365
 MonoBehaviour:
@@ -53546,7 +53546,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba545999148aa4c8b0b7f2f0fddc34, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiSwitch
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiSwitch
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _pill: {fileID: 1957899368}
   _knob: {fileID: 1263304218}
@@ -53610,7 +53610,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -53686,7 +53686,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -54066,7 +54066,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -54143,7 +54143,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -54219,7 +54219,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -54590,7 +54590,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -54735,7 +54735,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 989291012}
 --- !u!225 &2011950625
 CanvasGroup:
@@ -54798,7 +54798,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42a2d901498b3954ba0fa2463427ff17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.ResultScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.ResultScreen
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _title: {fileID: 1707414172}
   _levelName: {fileID: 617556516}
@@ -54988,7 +54988,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -55204,7 +55204,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2024242074
 MonoBehaviour:
@@ -55361,7 +55361,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: menu.reset_progress
   _text: {fileID: 2024242075}
 --- !u!1 &2024433904
@@ -55534,7 +55534,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 529259a7f98c6424580bf68f896879cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Localization.LocalizedText
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Localization.LocalizedText
   _key: settings.button_layout
   _text: {fileID: 2024433907}
 --- !u!1 &2028403161
@@ -55749,7 +55749,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -55983,7 +55983,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2052097656
 MonoBehaviour:
@@ -55996,7 +55996,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -56045,7 +56045,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -56123,7 +56123,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b027a36f252a7964db2db5626e5a759d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Touch.TouchPress
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Touch.TouchPress
 --- !u!114 &2055370369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56148,7 +56148,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -56312,7 +56312,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -56391,7 +56391,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2089263213
 MonoBehaviour:
@@ -56448,7 +56448,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -56599,7 +56599,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -56675,7 +56675,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -56844,7 +56844,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -56941,7 +56941,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -57118,7 +57118,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05b32b3c527ae5749b3555fc4caccb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiAppear
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiAppear
   _panel: {fileID: 0}
 --- !u!225 &2124936296
 CanvasGroup:
@@ -57181,7 +57181,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a62adbd32e6905449bc7d7bac02ed7dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.MainMenuScreen
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.MainMenuScreen
   _playButton: {fileID: 127314047}
   _levelsButton: {fileID: 1669929835}
   _tutorialButton: {fileID: 1846407165}
@@ -57382,7 +57382,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2141254930
 MonoBehaviour:
@@ -57395,7 +57395,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -57464,7 +57464,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -57540,7 +57540,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -57620,7 +57620,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2143201014
 MonoBehaviour:
@@ -57633,7 +57633,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -57682,7 +57682,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -57764,7 +57764,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8bfd9e0b32f28ce4a8d09095811e9a17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.UiSound
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.UiSound
   _kind: 0
 --- !u!114 &2144716773
 MonoBehaviour:
@@ -57777,7 +57777,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddbce39093ec664a86faa93a562a666, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.LevelTile
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.LevelTile
   _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
   _button: {fileID: 2144716774}
   _number: {fileID: 1208410838}
@@ -57802,7 +57802,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04850869515cda4e8bedf52d720d455, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Style.UiButton
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Style.UiButton
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -57852,7 +57852,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.UI.Shapes.UiShape
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1

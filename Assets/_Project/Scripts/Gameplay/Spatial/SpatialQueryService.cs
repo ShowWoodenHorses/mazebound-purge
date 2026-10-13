@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Visibility;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Visibility;
-using Maze.Gameplay.Doors;
+using Purge.Core.Grid;
+using Purge.Core.Visibility;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Doors;
 using UnityEngine;
 
-namespace Maze.Gameplay.Spatial
+namespace Purge.Gameplay.Spatial
 {
     /// <summary>Something with a position in the level that queries can find (zombies, later other runtime objects).</summary>
     public interface ISpatialObject

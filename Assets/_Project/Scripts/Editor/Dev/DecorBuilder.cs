@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Visual;
-using Maze.Editor.LevelDesigner;
+using Purge.Core.Visual;
+using Purge.Editor.LevelDesigner;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Decor: prepares the props in <c>Art/Decor</c> for the Decor layer and fills the theme's
+    /// Purge → Dev → Build Decor: prepares the props in <c>Art/Decor</c> for the Decor layer and fills the theme's
     /// Decor set. Decor is merged into chunk meshes like floors and walls, so each prefab gets: materials on
-    /// <c>Maze/Geometry</c> (copies of the original materials, <c>Art/Decor/Materials</c>), readable meshes (model
+    /// <c>Purge/Geometry</c> (copies of the original materials, <c>Art/Decor/Materials</c>), readable meshes (model
     /// import settings) and a root scale that fits a big prop into its cell (footprint ≤ <see cref="FitSize"/>;
     /// dead bodies stay life-size — characters must not shrink). Variant ids are the prefab names; weights and
     /// categories of existing variants stay; heights are measured (<see cref="DecorHeights"/>).
@@ -26,7 +26,7 @@ namespace Maze.Editor.Dev
         /// <summary>Largest footprint side of an auto-fitted prop, metres (a cell is 1 m).</summary>
         private const float FitSize = 0.95f;
 
-        [MenuItem("Maze/Dev/Build Decor")]
+        [MenuItem("Purge/Dev/Build Decor")]
         public static void Build()
         {
             if (!AssetDatabase.IsValidFolder(MaterialsFolder))
@@ -88,7 +88,7 @@ namespace Maze.Editor.Dev
 
             AssetDatabase.SaveAssets();
             var auto = set.Variants.Count(v => v.Height <= 0.3f);
-            Debug.Log($"[Maze] Decor built: {set.Variants.Count} variants in {SetPath} ({auto} not taller than 0.3 m).");
+            Debug.Log($"[Purge] Decor built: {set.Variants.Count} variants in {SetPath} ({auto} not taller than 0.3 m).");
         }
 
         private static void PreparePrefab(string path, Dictionary<Material, Material> geometryMaterials)
@@ -116,7 +116,7 @@ namespace Maze.Editor.Dev
             }
         }
 
-        /// <summary>A Maze/Geometry copy of a material (already one: kept).</summary>
+        /// <summary>A Purge/Geometry copy of a material (already one: kept).</summary>
         private static Material GeometryMaterial(Material source, Dictionary<Material, Material> cache)
         {
             if (source.shader != null && source.shader.name == GeometryShaderName) return source;
@@ -143,7 +143,7 @@ namespace Maze.Editor.Dev
             return copy;
         }
 
-        private const string GeometryShaderName = "Maze/Geometry";
+        private const string GeometryShaderName = "Purge/Geometry";
 
         private static void MakeReadable(Mesh mesh)
         {

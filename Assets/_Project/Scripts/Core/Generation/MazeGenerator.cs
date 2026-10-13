@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 
-namespace Maze.Core.Generation
+namespace Purge.Core.Generation
 {
     /// <summary>
     /// Generates the logical maze for "Generate New" (ТЗ §12–14).
@@ -37,7 +37,7 @@ namespace Maze.Core.Generation
                     CarveRecursiveBacktracker(geometry, cols, rows, random);
                     break;
                 default:
-                    throw new NotSupportedException($"Maze algorithm {settings.MazeAlgorithm} is not supported.");
+                    throw new NotSupportedException($"Purge algorithm {settings.MazeAlgorithm} is not supported.");
             }
 
             AddLoops(geometry, cols, rows, settings.LoopDensity, random);

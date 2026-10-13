@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Shared combat visuals, Addressable at <see cref="Address"/>. Display only (ТЗ §79): prefabs are pooled and
     /// never decide hits. Any reference may be empty — that effect is simply not shown. Effect prefabs face +Z; their
     /// particle systems are restarted on every use (a <c>CombatEffect</c> component, if any, sets how long one lasts).
     /// </summary>
-    [CreateAssetMenu(fileName = "CombatVisual", menuName = "Maze/Visual/Combat Visual")]
+    [CreateAssetMenu(fileName = "CombatVisual", menuName = "Purge/Visual/Combat Visual")]
     public sealed class CombatVisualDefinition : ScriptableObject
     {
         public const string Address = "Combat/Visual";
@@ -40,7 +40,7 @@ namespace Maze.Core.Visual
         [Tooltip("Seconds an effect without a CombatEffect component stays before returning to the pool.")]
         [SerializeField, Min(0.02f)] private float _effectDuration = 0.15f;
 
-        [Header("Model flash when hit (Maze/Lit materials)")]
+        [Header("Model flash when hit (Purge/Lit materials)")]
         [Tooltip("Zombie hit: colour, alpha = strength.")]
         [SerializeField] private Color _hitFlashColor = new Color(1f, 1f, 1f, 0.85f);
 

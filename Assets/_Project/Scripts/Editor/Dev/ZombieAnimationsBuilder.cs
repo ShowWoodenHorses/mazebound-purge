@@ -1,28 +1,28 @@
 using System;
 using System.Linq;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Zombies;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static Maze.Editor.Dev.CharacterAnimationUtility;
-using Z = Maze.Presentation.Visual.ZombieAnimatorParameters;
+using static Purge.Editor.Dev.CharacterAnimationUtility;
+using Z = Purge.Presentation.Visual.ZombieAnimatorParameters;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Zombie Animations: one Animator Controller for every zombie look.
+    /// Purge → Dev → Build Zombie Animations: one Animator Controller for every zombie look.
     /// <list type="number">
     /// <item>Mixamo clips "Zombie_*" → Humanoid (see <see cref="CharacterAnimationUtility.ImportClips"/>); idles,
     /// walk and run loop.</item>
     /// <item>Controller: Idle (two variants by IdleVariant), Walk (patrol, return), Scream (Alert, the roar part of
     /// the clip squeezed into <see cref="ZombieController.AlertDuration"/>), Run (chase), three attacks, death. The measured ground speeds of walk and run are stored as parameters (WalkGroundSpeed, RunGroundSpeed);
     /// the presenter turns them and the speeds of <see cref="ZombieDefinition"/> into playback multipliers
-    /// (<see cref="Maze.Presentation.Visual.LocomotionAnimation"/>). Attacks last 1 s at AttackSpeed = 1.</item>
+    /// (<see cref="Purge.Presentation.Visual.LocomotionAnimation"/>). Attacks last 1 s at AttackSpeed = 1.</item>
     /// <item>Every prefab in Art/Zombie gets the controller (no root motion) and the scale; the placeholder theme's
     /// zombie set gets one variant per prefab tied to a zombie type (chosen in the set, see
     /// <see cref="UpdateZombieSet"/>), the prefabs are made Addressable, and zombies of saved levels whose visual no
@@ -55,7 +55,7 @@ namespace Maze.Editor.Dev
         private static readonly string[] Attacks = { "Zombie_attack_1", "Zombie_attack_2", "Zombie_attack_3" };
         private static readonly string[] Looping = { Idle1, Idle2, Walk, Run };
 
-        [MenuItem("Maze/Dev/Build Zombie Animations")]
+        [MenuItem("Purge/Dev/Build Zombie Animations")]
         public static void Build()
         {
             try
@@ -73,12 +73,12 @@ namespace Maze.Editor.Dev
 
                 var reassigned = UpdateZombieSet(prefabPaths);
                 AssetDatabase.SaveAssets();
-                Debug.Log($"[Maze] Zombie animations built: {ControllerPath}, {prefabPaths.Length} prefab(s), " +
+                Debug.Log($"[Purge] Zombie animations built: {ControllerPath}, {prefabPaths.Length} prefab(s), " +
                           $"{reassigned} zombie visual(s) in levels reassigned.");
             }
             catch (Exception e)
             {
-                Debug.LogError("[Maze] Building zombie animations failed: " + e.Message);
+                Debug.LogError("[Purge] Building zombie animations failed: " + e.Message);
                 throw;
             }
         }
@@ -215,7 +215,7 @@ namespace Maze.Editor.Dev
         {
             var set = AssetDatabase.LoadAssetAtPath<VisualSet>(ZombieSetPath);
             if (set == null)
-                throw new InvalidOperationException($"'{ZombieSetPath}' not found: run Maze → Dev → Create Placeholder Theme first.");
+                throw new InvalidOperationException($"'{ZombieSetPath}' not found: run Purge → Dev → Create Placeholder Theme first.");
 
             var types = AssetDatabase.FindAssets("t:ZombieDefinition", new[] { ZombieDataPath })
                 .Select(AssetDatabase.GUIDToAssetPath)
@@ -224,7 +224,7 @@ namespace Maze.Editor.Dev
                 .Where(type => type != null)
                 .ToList();
             if (types.Count == 0)
-                throw new InvalidOperationException($"No zombie types in {ZombieDataPath}: run Maze → Dev → Create Placeholder Zombies.");
+                throw new InvalidOperationException($"No zombie types in {ZombieDataPath}: run Purge → Dev → Create Placeholder Zombies.");
 
             var settings = AddressableAssetSettingsDefaultObject.GetSettings(true);
             var visualsGroup = settings.FindGroup(LevelDesigner.LevelSync.VisualsGroup) ?? settings.DefaultGroup;
@@ -243,7 +243,7 @@ namespace Maze.Editor.Dev
                 if (kept != null)
                 {
                     if (kept.Definition == null)
-                        Debug.LogWarning($"[Maze] Zombie look '{kept.Id}' ({path}) has no zombie type: set Definition in {ZombieSetPath}.");
+                        Debug.LogWarning($"[Purge] Zombie look '{kept.Id}' ({path}) has no zombie type: set Definition in {ZombieSetPath}.");
                     variants.Add(kept);
                     continue;
                 }
@@ -255,13 +255,13 @@ namespace Maze.Editor.Dev
                 var unique = id;
                 for (var n = 2; variants.Concat(staying).Any(v => v.Id == unique); n++) unique = $"{id}_{n}";
                 variants.Add(new VisualVariant(unique, definition: type, prefab: new AssetReferenceGameObject(guid)));
-                Debug.LogWarning($"[Maze] New zombie look '{unique}' ({path}) shows the type '{type.name}': check it " +
+                Debug.LogWarning($"[Purge] New zombie look '{unique}' ({path}) shows the type '{type.name}': check it " +
                                  $"(Definition of the variant) in {ZombieSetPath}, then run Build Zombie Animations again.");
             }
 
             foreach (var type in types)
                 if (variants.All(variant => variant.Definition != type))
-                    Debug.LogWarning($"[Maze] Zombie type '{type.name}' has no look: such zombies are invisible in game.");
+                    Debug.LogWarning($"[Purge] Zombie type '{type.name}' has no look: such zombies are invisible in game.");
 
             set.DefaultVariantId = null;
             EditorUtility.SetDirty(set);

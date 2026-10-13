@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Melee swing stroke over the attack sector (display only): a flat quad with the <c>Maze/SwingArc</c> shader,
+    /// Melee swing stroke over the attack sector (display only): a flat quad with the <c>Purge/SwingArc</c> shader,
     /// sized to the weapon's reach and cut to its arc. The head of the stroke sweeps across the arc in the first
     /// <see cref="_sweepShare"/> of the effect, then the stroke fades. Swings alternate their direction.
     /// The quad is the child <see cref="_quad"/>: lying flat, 1×1 units, +v = forward (+Z of this object).

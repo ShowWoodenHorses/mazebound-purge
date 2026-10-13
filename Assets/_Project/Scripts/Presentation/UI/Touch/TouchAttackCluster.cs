@@ -1,9 +1,9 @@
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Look of the attack cluster and the Use button (design: a quarter-circle Attack with its right angle at the

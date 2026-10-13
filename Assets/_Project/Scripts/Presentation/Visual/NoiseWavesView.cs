@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Weapons;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Weapons;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Noise waves (display only; theme settings <see cref="ThemeAwareness"/>): every sound of the player
@@ -21,7 +21,7 @@ namespace Maze.Presentation.Visual
     /// automatic fire show one ring when walking / firing starts — it grows out of the player to the step / weapon
     /// radius (<see cref="ThemeAwareness.RingGrow"/>) following them and fades (<see cref="ThemeAwareness.RingFade"/>)
     /// while they go on; the next ring only after a quiet pause (<see cref="ThemeAwareness.RingRearm"/>). Single events (a single shot, a melee hit, a door, a pickup) each send a wave. Flat quads with
-    /// the <c>Maze/Ring</c> shader from a small pool made while loading; no allocations during play.
+    /// the <c>Purge/Ring</c> shader from a small pool made while loading; no allocations during play.
     /// </summary>
     public sealed class NoiseWavesView : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {

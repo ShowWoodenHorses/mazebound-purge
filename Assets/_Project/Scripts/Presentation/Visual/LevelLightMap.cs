@@ -1,26 +1,26 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Lighting;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Visibility;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Lighting;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Visibility;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Light of the level's sources (<see cref="LevelData.Lights"/>) as a texture read by the shaders
-    /// (MazeLighting.cginc): computed at load by <see cref="LightField"/>; when a door opens or closes only the
+    /// (PurgeLighting.cginc): computed at load by <see cref="LightField"/>; when a door opens or closes only the
     /// lights reaching it are recomputed and the texture is uploaded again (rare event). No lights = no texture.
     /// </summary>
     public sealed class LevelLightMap : ILevelLoadStep, IDisposable
     {
-        private static readonly int MapId = Shader.PropertyToID("_MazeLightMap");
-        private static readonly int MapSizeId = Shader.PropertyToID("_MazeLightMapSize");
+        private static readonly int MapId = Shader.PropertyToID("_PurgeLightMap");
+        private static readonly int MapSizeId = Shader.PropertyToID("_PurgeLightMapSize");
 
         private readonly LevelData _level;
         private readonly LevelGrid _grid;
@@ -52,7 +52,7 @@ namespace Maze.Presentation.Visual
             _field.Rebuild(new LevelOpacity(_grid, _doors));
             _texture = new Texture2D(_field.TextureWidth, _field.TextureHeight, TextureFormat.RGBA32, false, true)
             {
-                name = "Maze Light Map",
+                name = "Purge Light Map",
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp,
                 hideFlags = HideFlags.DontSave,

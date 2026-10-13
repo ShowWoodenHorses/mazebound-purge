@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Animator contract of zombie prefabs (parameter names). The controller is built by
-    /// Maze → Dev → Build Zombie Animations; <see cref="ZombieViewPresenter"/> drives it. Every parameter is optional.
+    /// Purge → Dev → Build Zombie Animations; <see cref="ZombieViewPresenter"/> drives it. Every parameter is optional.
     /// </summary>
     public static class ZombieAnimatorParameters
     {

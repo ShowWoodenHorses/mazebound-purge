@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Levels;
-using Maze.Application.Platform;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Common;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Gameplay.Level;
+using Purge.Application.Assets;
+using Purge.Application.Levels;
+using Purge.Application.Platform;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Common;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Gameplay.Level;
 
-namespace Maze.Application.Flow
+namespace Purge.Application.Flow
 {
     public enum GameFlowState
     {

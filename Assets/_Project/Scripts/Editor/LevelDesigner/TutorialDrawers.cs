@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Maze.Core.Level;
-using Maze.Core.Localization;
-using Maze.Editor.Dev;
-using Maze.Presentation.Localization;
+using Purge.Core.Level;
+using Purge.Core.Localization;
+using Purge.Editor.Dev;
+using Purge.Presentation.Localization;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Dropdown for <see cref="TutorialTextAttribute"/>: the step keys of the translation table (tutorial.*, without

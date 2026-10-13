@@ -1,16 +1,16 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Services;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Tutorial;
-using Maze.Presentation.Localization;
-using Maze.Presentation.Visual;
+using Purge.Application.Flow;
+using Purge.Application.Services;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Tutorial;
+using Purge.Presentation.Localization;
+using Purge.Presentation.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Shows the tutorial (<see cref="TutorialSystem"/>) on <see cref="UIRoot.Tutorial"/>: a step with a window opens it

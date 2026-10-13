@@ -1,8 +1,8 @@
-using Maze.Presentation.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Global shader keywords survive leaving play mode. If a level was not disposed cleanly, the visibility

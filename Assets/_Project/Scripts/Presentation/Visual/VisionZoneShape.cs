@@ -1,8 +1,8 @@
-using Maze.Core.Grid;
-using Maze.Core.Visibility;
+using Purge.Core.Grid;
+using Purge.Core.Visibility;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Outline of what a zombie can see (display only, allocation-free): a fan of rays from its position cut where the

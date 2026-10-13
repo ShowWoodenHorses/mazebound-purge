@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Services;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Navigation;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Tutorial;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Zombies;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Services;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Tutorial;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
     /// What happened during the current run, gathered by the level's <see cref="LevelAnalytics"/> for the level events
@@ -61,7 +61,7 @@ namespace Maze.Application.Platform
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
-            RouteHintSystem route, PickupSystem pickups, ZombieSystem zombies, Maze.Core.Level.LevelData level,
+            RouteHintSystem route, PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
             TutorialSystem tutorial = null)
         {
             _tutorial = tutorial;

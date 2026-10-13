@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>
     /// Serialized cell layout of a level. Cells are stored row by row: index = y * Width + x.

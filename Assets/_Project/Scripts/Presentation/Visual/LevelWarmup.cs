@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>A level view with objects that are not shown right away (pooled effects, weapons not in hand yet).</summary>
     public interface IViewWarmup

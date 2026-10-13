@@ -1,0 +1,598 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Purge Visuals
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Purge Visuals
+  m_GUID: 53448397b8cdb104f8abe7d68a0b8a0a
+  m_SerializeEntries:
+  - m_GUID: 049b0a329261d1b4d9a593610ea82861
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_cyan.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05534052652194744903bc027a133509
+    m_Address: Assets/_Project/Art/Placeholders/wall_isolated.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05dafb7dc9ef64b43970de2bdc5cf2ad
+    m_Address: Assets/_Project/Art/Placeholders/fragment_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 086988b3054a1da499ddf4e0b981f3b6
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c1032f40f199f2418c5d670d7118424
+    m_Address: Assets/_Project/Art/Decor/SM_DeadBody_Male_08.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f7960afd8d4fcc419395025c83d109f
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_AssaultRifle_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1321646b0ec40ed4fad6766376806244
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 143018cfbd162844a91be3f2b49a8c21
+    m_Address: Assets/_Project/Art/Keys/key_green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1569e28419b9c3d449fa2c2e26f72332
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snow_drift.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1681bc070307efc45a88839b0fb386ea
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BloodPool_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 193d58e81267ac143bd7dbc3192ca6c0
+    m_Address: Assets/_Project/Art/Placeholders/door_green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1abf5e27cdaa2d24cb55353ed64a8861
+    m_Address: Assets/_Project/Art/Decor/SM_DeadBody_Male_12.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1be988901817f664f8fc5bdf1a4619ce
+    m_Address: Assets/_Project/Art/Zombie/Zombie_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 228d362ddec8bb7479d312437ec801fe
+    m_Address: Assets/_Project/Art/Keys/key_blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22d9508cdfcebae4f898dc3270a841e9
+    m_Address: Assets/_Project/Art/Placeholders/key_red.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 238e708f7fdf6854c892ba07fbddabba
+    m_Address: Assets/_Project/Art/Decor/Forest_Flowers_08.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24319d0f96baa0b42a9e6db3c26027d4
+    m_Address: Assets/_Project/Art/Floors/SM_Bld_Bunker_Floor_Wood_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25b654f452a9c0f42bcc6873bd55b37b
+    m_Address: Assets/_Project/Art/Placeholders/wall_straight_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 264655015b698b545b64f50511a09226
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_AssaultRifle_03_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 266a46f376028f3468b7fdf521b9ebb5
+    m_Address: Assets/_Project/Art/Floors/SM_Bld_Bunker_Floor_Wood_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 267996229ea51bd4db76cbb4f8e296ad
+    m_Address: Assets/_Project/Art/Placeholders/door_blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bf304437e5febf4ab790bdf8259bd60
+    m_Address: Assets/_Project/Art/Placeholders/wall_end.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 309bd111d7d2d0e4db1e7ab7610bf954
+    m_Address: Assets/_Project/Art/Placeholders/floor_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3201111cf6a7873488717227d0f908d4
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 334b759b0204b3f47a95a6c8325df011
+    m_Address: Assets/_Project/Art/Keys/key_red.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34900a2fe8356b34a84ded3a07e96c95
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35042fb9ee459f74baa389a4b670ba6c
+    m_Address: Assets/_Project/Art/Zombie/Zombie_06.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 356220aeb4abb0049bc95ed688e16a99
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_SniperRifle_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 380a06f7e15f09340ba7d15ab415dcbd
+    m_Address: Assets/_Project/Art/Zombie/Zombie_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38b2943fcbbd3e04999a3ffe42b0306b
+    m_Address: Assets/_Project/Art/Placeholders/floor_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b7037896ac67ff409db276fb3328ee4
+    m_Address: Assets/_Project/Art/Placeholders/medkit_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c7c889586221ac49a606806f2106b86
+    m_Address: Assets/_Project/Art/Zombie/Zombie_05.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d3985f05e334d44eb82d9adbe394c7f
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ebc84ac539e0749aa91a37e048b6a7
+    m_Address: Assets/_Project/Art/Placeholders/floor_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47a336e3955104e4e9d8c531c88f6af6
+    m_Address: Assets/_Project/Art/Decor/Snow_Grass_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a7f6226c286e934c916f1179f6f95ac
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ba4be40fed048a4388042ed91c4fe88
+    m_Address: Assets/_Project/Art/Placeholders/zombie_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c22e4a590b520e49a60c7f51137de85
+    m_Address: Assets/_Project/Art/Decor/Snow_Grass_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d46abda59fa611408258f5cf721c4c1
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 520c66d654da1a646b2469f856ee6122
+    m_Address: Assets/_Project/Art/Placeholders/wall_straight_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52a40ffef88101d488aa917a4847fb26
+    m_Address: Assets/_Project/Art/Placeholders/key_green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52bf82913080d784ab4e73fc851ad61d
+    m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_flagstones.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 547f220f01f3805448f5df7b28318202
+    m_Address: Assets/_Project/Art/Decor/Forest_Ivy_08.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54dadb18da01ec54dae370f632b1b89e
+    m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/wall_forest_logs.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 560f18092b37e2544aab4b08ffca02e8
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58150729399d0ab4ab8f198f91ade59a
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_FireAxe_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bf5b8e260d165c448c4d016eebda95c
+    m_Address: Assets/_Project/Art/Zombie/Zombie_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ef82be4f8bbaff49a8b3c0e403351c6
+    m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/wall_forest_mossy_stone.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f5cd756fd8888a4ebfca0d206e46da2
+    m_Address: Assets/_Project/Art/Keys/key_purple.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7036cc3cecbd03d44bfd2258a960804b
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Bat_Wood_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 705d1b3e272f9a341aa3abfb3ebe4767
+    m_Address: Assets/_Project/Art/Decor/Forest_Flowers_05.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70ef0f35b3c7c8b47853e9399130d57b
+    m_Address: Assets/_Project/Art/Placeholders/key_yellow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74b4e6258f807744eb65f5231a73b5e4
+    m_Address: Assets/_Project/Art/Placeholders/wall_cross.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b87ec8741a1c8843ad4f339c5ad25c7
+    m_Address: Assets/_Project/Art/Keys/key_cyan.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80829110669eccc459c625929fb933c4
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_red.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8287a53fedd97874faba2445155d8503
+    m_Address: Assets/_Project/Art/Decor/Forest_Flowers_17.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83c093c4e335b1d469a4032f23a75672
+    m_Address: Assets/_Project/Art/Items/SM_Prop_MedicalBox_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86e55a12c453cf9418abf2113b0dc82b
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_Books_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8745f43fd23507c48adc718d65073d06
+    m_Address: Assets/_Project/Art/Keys/key_pink.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a2c165ad88244b4aa3c8b8bb300a059
+    m_Address: Assets/_Project/Art/Decor/Forest_Flowers_11.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b3ad0b31d4acb54eb31040339252903
+    m_Address: Assets/_Project/Art/Placeholders/floor_special_blood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95d4d9e502e4d5e4dbc109d0e6d60e53
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_purple.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96049d571ab2544459b510a2b1dadca7
+    m_Address: Assets/_Project/Art/Decor/Snow_GrassPatch_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96143ae90acecb54b86a5a49bf743f5e
+    m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_soil.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b66bdea7c919b342b6def1c14fa7c3f
+    m_Address: Assets/_Project/Art/Keys/key_orange.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bb91ce527df877448dc0f74dd51736d
+    m_Address: Assets/_Project/Art/Decor/Forest_Flowers_13.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f094055fdac6324e908944a519e5e9f
+    m_Address: Assets/_Project/Art/Placeholders/door_red.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fadab9044064aa4abaaa2bef3503f9d
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_Barrel_Nuke_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a47e8dbbaf3bda04d9258a1b3c1e3776
+    m_Address: Assets/_Project/Art/Lighting/SM_Prop_Torch_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4e46255948171a4cbbb9a769dd427af
+    m_Address: Assets/_Project/Art/Decor/Snow_GrassPatch_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5a611d7500f7ea4187419dafd60f86f
+    m_Address: Assets/_Project/Art/Exit/SM_Prop_Ladder_Tied_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5da9085dfba01444a84de434ec89334
+    m_Address: Assets/_Project/Art/Placeholders/zombie_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8c50428a313bb34d8d2b1915ff0a22d
+    m_Address: Assets/_Project/Art/Decor/Forest_Ivy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9dc04b5f2ede4d4d9e4c294f51db4de
+    m_Address: Assets/_Project/Art/Placeholders/weapon_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad1938c236c5e8740aa1d65bc91bc6dc
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_SubMGun_02_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b12c1a0a575595c44830c7cc2b2dea1e
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_Books_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b25ac67a5fcfdd1448db74b22c224d8b
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_Table_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4ecfabf4ae7e7347a3cf2f8d2f06abf
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Katana_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7242339de7d95c4e8c26ecffa4467bb
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_ice.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b88c77b46cf1d3f4b858d10a78a6d6f0
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_orange.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba4897ffed852104ea57eea973481eae
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_yellow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba861bc331b687d4080cede81ae6eb73
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_HuntingRifle_Clean_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bafb9f82f99160c4ea21bc3253958ab4
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf481ca2ecbcd7741a2c1dd2634b337d
+    m_Address: Assets/_Project/Art/Lighting/SM_Prop_Torch_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf895cb5fd4363f479ff71d9c859c4cb
+    m_Address: Assets/_Project/Art/Placeholders/door_wood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c023baa0fe42b8a46813a0eb570bfbaf
+    m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_grass.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1399f418ca2ed2448252ca11c2be771
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/wall_snow_blocks.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c515cfb27bfa54647ae7cea6bdcff3c1
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Hybrid_03_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c65e68644a317d04bb623a9ad4070565
+    m_Address: Assets/_Project/Art/Exit/SM_Prop_Ladder_Stackable_01_Half.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbbc307ac2c9b30478769a23a53df34f
+    m_Address: Assets/_Project/Art/Floors/SM_Bld_Bunker_Floor_Wood_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd6be72a77cef5a48aa9ad6d3eb30407
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_Barrel_Water_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0c2a8b3ac5fc494ca877c3c268c7c14
+    m_Address: Assets/_Project/Art/Decor/Snow_GrassPatch_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d247dbba00b4456498edf1696de8ac8b
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_Books_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3a3580e80602684e8594cf479170f2d
+    m_Address: Assets/_Project/Art/Keys/key_yellow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4cee775991cd60468668c93d72fb322
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_pink.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8edb8760195c5842ade3b3708c73605
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de976f49bdc391747aaf76bcf1de36d7
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/wall_snow_stone.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e068c4d9df561f942bd10addf004cd1d
+    m_Address: Assets/_Project/Art/Walls/SM_Bld_Castle_Wall_Block_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e48c75c62bfebf847a40f27019843c41
+    m_Address: Assets/_Project/Art/Decor/Snow_GrassPatch_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e59132867b851604591d941b9096e133
+    m_Address: Assets/_Project/Art/Items/SM_Item_Book_Open_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e68e02650b92b3c4fa1f1c10a7b6ce07
+    m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e70302ea4c17d6442b2e7555d6d824bf
+    m_Address: Assets/_Project/Art/Placeholders/wall_t.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8ce55ce5f2a6e046be1087f736239ae
+    m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea281acffbcd71f48b626a6e95dde94f
+    m_Address: Assets/_Project/Art/Placeholders/key_blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea58a74de66ad6149960500c35476343
+    m_Address: Assets/_Project/Art/Placeholders/wall_corner.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb89925d60d019e4ba12a516fffc49b9
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BloodPool_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec154b6779a6a27458406f925a7717e0
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Crowbar_01_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f26cc48745963e544b17f80fb7c34db3
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2c84bc6f7c40c34f97ab68de3a3d006
+    m_Address: Assets/_Project/Art/Zombie/Zombie_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5f924cd63abdd04696bb82c74f4ed79
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BloodPool_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7aca19616ac6834a8fad517cc155f7c
+    m_Address: Assets/_Project/Art/Placeholders/door_yellow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f93f53310920b544b98e5d432a6e4778
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_Table_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd4d82f6367b9f94192f41787f70f2b6
+    m_Address: Assets/_Project/Art/Effects/IceOverlay.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe2ce03998847d64baa571bdc36e833e
+    m_Address: Assets/_Project/Art/Placeholders/exit_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 7b0b4a63a91ea59479d6f21c16e4df79, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c72d0c790f25c014c9746abe9c233581, type: 2}
+    - {fileID: 11400000, guid: 6b08b5ded3ce2cf43b90f25b9f404ab5, type: 2}
+    m_SchemaDisplayOrder:
+    - Purge Visuals_BundledAssetGroupSchema
+    - Purge Visuals_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

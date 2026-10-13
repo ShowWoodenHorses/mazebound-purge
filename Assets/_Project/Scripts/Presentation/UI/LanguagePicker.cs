@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Maze.Presentation.UI.Style;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// The language list of the settings (a drop-down: with a dozen languages arrows would mean many taps). Every

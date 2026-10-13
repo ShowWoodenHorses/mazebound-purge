@@ -1,8 +1,8 @@
 using System;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Core.Visibility
+namespace Purge.Core.Visibility
 {
     /// <summary>
     /// Where a segment first enters an opaque cell (bullets, melee reach — ТЗ §70: Wall and closed Door block,

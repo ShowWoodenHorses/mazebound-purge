@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Gameplay.Player;
+using Purge.Gameplay.Player;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Player
+namespace Purge.Tests.EditMode.Player
 {
     /// <summary>Scripted input: set <see cref="Move"/>, or <see cref="Press"/> a button for the next tick.</summary>
     public sealed class FakePlayerInput : IPlayerInput

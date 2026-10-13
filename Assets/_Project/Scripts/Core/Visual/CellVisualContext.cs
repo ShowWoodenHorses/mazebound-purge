@@ -1,6 +1,6 @@
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Neighbourhood of a cell used to pick its visual shape (ТЗ §33). Cells outside the grid read as Wall.

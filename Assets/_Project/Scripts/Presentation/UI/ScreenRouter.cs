@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Levels;
-using Maze.Application.Platform;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Gameplay.Level;
-using Maze.Presentation.Localization;
+using Purge.Application.Flow;
+using Purge.Application.Levels;
+using Purge.Application.Platform;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Gameplay.Level;
+using Purge.Presentation.Localization;
 using UnityEngine;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Presenter of the application screens: shows the screen matching <see cref="GameFlow.State"/>

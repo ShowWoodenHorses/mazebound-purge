@@ -1,10 +1,10 @@
 using System;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Weapons
+namespace Purge.Gameplay.Weapons
 {
     /// <summary>
     /// One concrete weapon of the level (ТЗ §39: WeaponData → WeaponRuntime → WeaponView). Keeps the id and saved

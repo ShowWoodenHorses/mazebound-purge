@@ -1,9 +1,9 @@
-using Maze.Core.Authoring;
-using Maze.Core.Level;
+using Purge.Core.Authoring;
+using Purge.Core.Level;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Light sources of the edited level in the Scene view (over the preview): a sphere at the light's point,

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Touch
+namespace Purge.Presentation.UI.Touch
 {
     /// <summary>
     /// Turns a raw on-screen stick deflection (1 = edge of travel) into the Move value: a dead zone, then a curve with

@@ -1,8 +1,8 @@
-using Maze.Application.Services;
+using Purge.Application.Services;
 using TMPro;
 using UnityEngine;
 
-namespace Maze.Presentation.Localization
+namespace Purge.Presentation.Localization
 {
     /// <summary>
     /// A static caption by key (a <see cref="TextKeys"/> constant, set by <c>RuntimeScenesBuilder</c>). Listed in

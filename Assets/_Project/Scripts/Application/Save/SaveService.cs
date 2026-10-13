@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Platform;
-using Maze.Application.Services;
-using Maze.Core.Common;
+using Purge.Application.Platform;
+using Purge.Application.Services;
+using Purge.Core.Common;
 using UnityEngine;
 
-namespace Maze.Application.Save
+namespace Purge.Application.Save
 {
     /// <summary>Where the save JSON lives. Swapped for an in-memory one in tests.</summary>
     public interface ISaveStorage
@@ -23,7 +23,7 @@ namespace Maze.Application.Save
     /// </summary>
     public sealed class PlayerPrefsSaveStorage : ISaveStorage
     {
-        public const string Key = "Maze.SaveData";
+        public const string Key = "Purge.SaveData";
 
         public string Read() => PlayerPrefs.HasKey(Key) ? PlayerPrefs.GetString(Key) : null;
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Application.Save
+namespace Purge.Application.Save
 {
     /// <summary>On-screen controls the player can move and resize (part of <see cref="TouchLayout"/>).</summary>
     public enum TouchElement

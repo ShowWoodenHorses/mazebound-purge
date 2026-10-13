@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Style
+namespace Purge.Presentation.UI.Style
 {
     /// <summary>
-    /// White line icons of the UI (one line width, tinted by the Image colour), drawn by Maze → Dev → Build UI Icons.
+    /// White line icons of the UI (one line width, tinted by the Image colour), drawn by Purge → Dev → Build UI Icons.
     /// Screens get the sprites they need when <c>RuntimeScenesBuilder</c> builds them; weapon icons are silhouettes of
     /// the models, kept in the weapon visual catalog. Any sprite may be replaced by hand (the builder overwrites PNGs).
     /// </summary>
-    [CreateAssetMenu(menuName = "Maze/UI/Icon Set", fileName = "UiIcons")]
+    [CreateAssetMenu(menuName = "Purge/UI/Icon Set", fileName = "UiIcons")]
     public sealed class UiIconSet : ScriptableObject
     {
         public Sprite Map;

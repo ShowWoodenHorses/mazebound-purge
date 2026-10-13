@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>A print on the floor (grid units: x = East, y = North).</summary>
     public struct Footprint

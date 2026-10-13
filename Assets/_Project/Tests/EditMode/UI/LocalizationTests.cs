@@ -4,15 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Save;
-using Maze.Application.Services;
-using Maze.Core.Localization;
-using Maze.Presentation.Localization;
-using Maze.Tests.EditMode.Common;
+using Purge.Application.Save;
+using Purge.Application.Services;
+using Purge.Core.Localization;
+using Purge.Presentation.Localization;
+using Purge.Tests.EditMode.Common;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.UI
+namespace Purge.Tests.EditMode.UI
 {
     public class LocalizationTests
     {

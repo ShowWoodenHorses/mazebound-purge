@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Flame of a light fixture (on the root of a torch prefab; set up by Maze → Dev → Build Light Fixtures): looping
+    /// Flame of a light fixture (on the root of a torch prefab; set up by Purge → Dev → Build Light Fixtures): looping
     /// particle systems tinted by the colour of their light. Display only, no logic of its own.
     /// </summary>
     public sealed class TorchFlame : MonoBehaviour

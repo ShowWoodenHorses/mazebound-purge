@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     public enum VisualSource
     {

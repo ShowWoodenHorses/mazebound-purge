@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Spatial;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Spatial;
 using UnityEngine;
 
-namespace Maze.Gameplay.Combat
+namespace Purge.Gameplay.Combat
 {
     public enum BulletEnd
     {

@@ -1,5 +1,5 @@
 # Translation table: key, then a column per language (the first, en, is the base: it fills untranslated cells).
-# Columns are separated by TABs. After editing run Maze -> Dev -> Build Localization. Texts shown in capitals are
+# Columns are separated by TABs. After editing run Purge -> Dev -> Build Localization. Texts shown in capitals are
 # written in capitals here (Turkish i/I cannot be upper-cased by code). {0}, {1} are values; \n is a line break.
 key	en	ru	tr	es	de	pt	fr	it	pl	id	kk	uz	be
 language.name	English	Русский	Türkçe	Español	Deutsch	Português	Français	Italiano	Polski	Bahasa Indonesia	Қазақша	Oʻzbekcha	Беларуская

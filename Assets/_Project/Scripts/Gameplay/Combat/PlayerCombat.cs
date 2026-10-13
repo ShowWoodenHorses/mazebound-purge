@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Sound;
-using Maze.Gameplay.Spatial;
-using Maze.Gameplay.Weapons;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Weapons;
 using UnityEngine;
 
-namespace Maze.Gameplay.Combat
+namespace Purge.Gameplay.Combat
 {
     /// <summary>
     /// The player's attacks (ТЗ §66, §68, §69). Attack = Attack button; the direction is the facing (movement

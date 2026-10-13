@@ -1,19 +1,19 @@
 using System;
 using System.Linq;
-using Maze.Core.Definitions;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Definitions;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static Maze.Editor.Dev.CharacterAnimationUtility;
-using P = Maze.Presentation.Visual.PlayerAnimatorParameters;
+using static Purge.Editor.Dev.CharacterAnimationUtility;
+using P = Purge.Presentation.Visual.PlayerAnimatorParameters;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Player Animations: turns the player model and the Mixamo clips "Player_*" into the game's
+    /// Purge → Dev → Build Player Animations: turns the player model and the Mixamo clips "Player_*" into the game's
     /// player prefab.
     /// <list type="number">
     /// <item>Clips are imported as Humanoid (own avatar per file, retargeted onto the model), one clip per file named
@@ -60,7 +60,7 @@ namespace Maze.Editor.Dev
 
         private const string PlayerDefinitionPath = "Assets/_Project/Data/Player/PlayerDefinition.asset";
 
-        [MenuItem("Maze/Dev/Build Player Animations")]
+        [MenuItem("Purge/Dev/Build Player Animations")]
         public static void Build()
         {
             try
@@ -72,11 +72,11 @@ namespace Maze.Editor.Dev
                 var prefab = SetupPrefab(prefabPath, controller);
                 AssignToPlayerVisual(prefab);
                 AssetDatabase.SaveAssets();
-                Debug.Log($"[Maze] Player animations built: {ControllerPath}, prefab {prefabPath}.");
+                Debug.Log($"[Purge] Player animations built: {ControllerPath}, prefab {prefabPath}.");
             }
             catch (Exception e)
             {
-                Debug.LogError("[Maze] Building player animations failed: " + e.Message);
+                Debug.LogError("[Purge] Building player animations failed: " + e.Message);
                 throw;
             }
         }
@@ -290,13 +290,13 @@ namespace Maze.Editor.Dev
         {
             var visual = AssetDatabase.LoadAssetAtPath<PlayerVisualDefinition>(PlayerVisualPath);
             if (visual == null)
-                throw new InvalidOperationException($"'{PlayerVisualPath}' not found: run Maze → Dev → Create Placeholder Player first.");
+                throw new InvalidOperationException($"'{PlayerVisualPath}' not found: run Purge → Dev → Create Placeholder Player first.");
 
             visual.Prefab = new AssetReferenceGameObject(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(prefab)));
             EditorUtility.SetDirty(visual);
 
             var problem = LevelDesigner.LevelSync.SyncShared(UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.GetSettings(true));
-            if (problem != null) Debug.LogWarning("[Maze] " + problem);
+            if (problem != null) Debug.LogWarning("[Purge] " + problem);
         }
     }
 }

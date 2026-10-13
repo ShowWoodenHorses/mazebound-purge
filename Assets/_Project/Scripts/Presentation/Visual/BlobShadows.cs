@@ -1,14 +1,14 @@
 using System;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Soft round shadows under characters (instead of realtime shadows): a child quad on the floor with the theme's
-    /// blob shadow material (shader Maze/BlobShadow). One shared mesh and material, so they batch by instancing;
+    /// blob shadow material (shader Purge/BlobShadow). One shared mesh and material, so they batch by instancing;
     /// the quad is part of the view, so it hides with it and is warmed up with it. No material = no shadows.
     /// </summary>
     public sealed class BlobShadows : IDisposable
@@ -55,7 +55,7 @@ namespace Maze.Presentation.Visual
         /// <summary>Unit quad in the XZ plane facing up, UV 0..1.</summary>
         private static Mesh CreateQuad()
         {
-            var mesh = new Mesh { name = "Maze Blob Shadow", hideFlags = HideFlags.DontSave };
+            var mesh = new Mesh { name = "Purge Blob Shadow", hideFlags = HideFlags.DontSave };
             mesh.vertices = new[]
             {
                 new Vector3(-0.5f, 0f, -0.5f), new Vector3(-0.5f, 0f, 0.5f),

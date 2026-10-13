@@ -2,24 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Platform;
-using Maze.Application.Services;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
-using Maze.Gameplay.Weapons;
-using Maze.Gameplay.Zombies;
-using Maze.Presentation.Localization;
-using Maze.Presentation.Visual;
+using Purge.Application.Platform;
+using Purge.Application.Services;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
+using Purge.Gameplay.Weapons;
+using Purge.Gameplay.Zombies;
+using Purge.Presentation.Localization;
+using Purge.Presentation.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Shows the level's player state on the HUD (load stage InitializeUI): HP, map fragments, zombies killed, keys in

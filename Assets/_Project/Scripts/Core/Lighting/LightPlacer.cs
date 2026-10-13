@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 using UnityEngine;
 
-namespace Maze.Core.Lighting
+namespace Purge.Core.Lighting
 {
     /// <summary>
     /// Auto placement of light sources (editor, level creation): like torches on walls — a floor cell next to a wall,

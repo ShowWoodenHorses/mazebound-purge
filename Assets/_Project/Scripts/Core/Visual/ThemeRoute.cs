@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Look of the route hint line on the floor (display only): a ribbon from the player to the hint target with an
@@ -10,7 +10,7 @@ namespace Maze.Core.Visual
     [Serializable]
     public sealed class ThemeRoute
     {
-        [Tooltip("Shader Maze/RouteLine (colours below are set from code). Empty = no line. Maze → Dev → Build Route Line.")]
+        [Tooltip("Shader Purge/RouteLine (colours below are set from code). Empty = no line. Purge → Dev → Build Route Line.")]
         public Material LineMaterial;
 
         [Tooltip("Colour of the line (sRGB).")]

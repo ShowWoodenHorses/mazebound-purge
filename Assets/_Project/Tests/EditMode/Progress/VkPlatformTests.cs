@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Platform;
+using Purge.Application.Platform;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Progress
+namespace Purge.Tests.EditMode.Progress
 {
     public sealed class VkPlatformTests
     {

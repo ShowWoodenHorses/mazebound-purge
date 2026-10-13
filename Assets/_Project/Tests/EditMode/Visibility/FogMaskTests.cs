@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Presentation.Visual;
+using Purge.Core.Grid;
+using Purge.Presentation.Visual;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Visibility
+namespace Purge.Tests.EditMode.Visibility
 {
     /// <summary>Fog of war mask: border, instant first reveal, fading only of changed cells.</summary>
     public class FogMaskTests

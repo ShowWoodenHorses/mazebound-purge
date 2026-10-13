@@ -1,7 +1,7 @@
 using System;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Core.Visibility
+namespace Purge.Core.Visibility
 {
     /// <summary>
     /// Answers "does this cell block sight?" (ТЗ §55: Wall and closed Door; outside the grid counts as Wall).

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Lighting;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Lighting;
 
-namespace Maze.Core.Visual
+namespace Purge.Core.Visual
 {
     /// <summary>
     /// Creates saved visual assignments from the level's VisualTheme and VisualSeed (ТЗ §18–29, §95–96).

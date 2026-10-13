@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b50615c978853148ac821b2ced6756b, type: 3}
   m_Name: Katana
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Definitions.WeaponDefinition
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: katana
   _slot: 0
   _damage: 34

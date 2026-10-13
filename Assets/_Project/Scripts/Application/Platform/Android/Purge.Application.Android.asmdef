@@ -1,0 +1,22 @@
+{
+    "name": "Purge.Application.Android",
+    "rootNamespace": "Purge.Application.Platform",
+    "references": [
+        "Purge.Core",
+        "Purge.Application",
+        "UniTask",
+        "MyTarget",
+        "MyTracker"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_ANDROID || UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

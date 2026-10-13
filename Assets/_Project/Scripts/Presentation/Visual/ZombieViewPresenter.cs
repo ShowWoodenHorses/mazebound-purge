@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Gameplay.Combat;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Weapons;
-using Maze.Gameplay.Zombies;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Weapons;
+using Purge.Gameplay.Zombies;
 using UnityEngine;
-using Z = Maze.Presentation.Visual.ZombieAnimatorParameters;
+using Z = Purge.Presentation.Visual.ZombieAnimatorParameters;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Zombie views (ТЗ §41, §79): the saved visual of each zombie, mirroring position and facing every frame.

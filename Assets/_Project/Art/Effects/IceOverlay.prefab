@@ -409,7 +409,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 53a1dcc1554d020449297884c8c0b662, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Visual.FrozenDoorIce
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.FrozenDoorIce
   _pieces:
   - {fileID: 1470389784642196515}
   - {fileID: 3141852726779887624}

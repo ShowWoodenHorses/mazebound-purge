@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>The answer of a site's SDK to one call: a code (meaning depends on the call) and an optional text.</summary>
     public readonly struct WebReply

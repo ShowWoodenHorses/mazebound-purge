@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>A site's key-value storage for the player (VK Storage): short string values only.</summary>
     public interface IKeyValueStorage

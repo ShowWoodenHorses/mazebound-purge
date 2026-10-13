@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Scene view handles that place something inside its cell: the cell's frame, a square to shift (≤ half a cell),

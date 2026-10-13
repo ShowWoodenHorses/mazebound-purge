@@ -1,8 +1,8 @@
-using Maze.Core.Generation;
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Generation;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 
-namespace Maze.Core.Authoring
+namespace Purge.Core.Authoring
 {
     /// <summary>High-level level creation commands used by the editor tool (ТЗ §16, §29, §95).</summary>
     internal static class LevelAuthoring

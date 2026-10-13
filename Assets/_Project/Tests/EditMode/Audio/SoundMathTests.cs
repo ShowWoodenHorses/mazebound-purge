@@ -1,10 +1,10 @@
-using Maze.Core.Audio;
-using Maze.Core.Common;
-using Maze.Core.Definitions;
+using Purge.Core.Audio;
+using Purge.Core.Common;
+using Purge.Core.Definitions;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Maze.Tests.EditMode.Audio
+namespace Purge.Tests.EditMode.Audio
 {
     public class SoundMathTests
     {

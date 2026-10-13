@@ -1,8 +1,8 @@
-namespace Maze.Presentation.Localization
+namespace Purge.Presentation.Localization
 {
     /// <summary>
     /// Keys of the texts in <c>Data/Localization/Strings.tsv</c>. Every key the game uses is a constant here or starts
-    /// with one of the <c>*Prefix</c> families (content: weapon ids, key colours, touch controls): Maze → Dev → Build
+    /// with one of the <c>*Prefix</c> families (content: weapon ids, key colours, touch controls): Purge → Dev → Build
     /// Localization reports table keys that are neither (unused) and constants missing from the table.
     /// </summary>
     public static class TextKeys

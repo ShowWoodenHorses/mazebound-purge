@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Audio;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Localization;
-using Maze.Core.Visual;
+using Purge.Core.Audio;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Localization;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Build.AnalyzeRules;
@@ -14,7 +14,7 @@ using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Build / Sync (ТЗ §30, §84): fixes the current state of the level for runtime. Validates, makes the level
@@ -26,14 +26,14 @@ namespace Maze.Editor.LevelDesigner
     /// </summary>
     internal static class LevelSync
     {
-        public const string LevelsGroup = "Maze Levels";
-        public const string DevLevelsGroup = "Maze Dev Levels";
-        public const string VisualsGroup = "Maze Visuals";
-        public const string SharedGroup = "Maze Shared";
-        public const string SharedDependenciesGroup = "Maze Shared Dependencies";
+        public const string LevelsGroup = "Purge Levels";
+        public const string DevLevelsGroup = "Purge Dev Levels";
+        public const string VisualsGroup = "Purge Visuals";
+        public const string SharedGroup = "Purge Shared";
+        public const string SharedDependenciesGroup = "Purge Shared Dependencies";
 
         /// <summary>Music tracks: a bundle per track, downloaded only when it starts playing (not with the start-up bundle).</summary>
-        public const string MusicGroup = "Maze Music";
+        public const string MusicGroup = "Purge Music";
         public const string LevelAddressPrefix = "Levels/";
         public const string CatalogPath = "Assets/_Project/Data/Levels/LevelCatalog.asset";
         public const string DevCatalogPath = "Assets/_Project/Data/Levels/DevLevelCatalog.asset";
@@ -53,7 +53,7 @@ namespace Maze.Editor.LevelDesigner
             var address = Place(settings, level, dev);
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] '{level.name}' is now a {(dev ? "development" : "game")} level ('{address}').");
+            Debug.Log($"[Purge] '{level.name}' is now a {(dev ? "development" : "game")} level ('{address}').");
         }
 
         /// <summary>
@@ -129,12 +129,12 @@ namespace Maze.Editor.LevelDesigner
 
             var sharedProblem = SyncShared(settings);
             if (sharedProblem != null)
-                Debug.LogWarning("[Maze] Build/Sync: " + sharedProblem);
+                Debug.LogWarning("[Purge] Build/Sync: " + sharedProblem);
 
             EditorUtility.SetDirty(settings);
             EditorUtility.SetDirty(level);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Build/Sync '{level.name}': address '{address}', {added} visual prefab(s) made Addressable, " +
+            Debug.Log($"[Purge] Build/Sync '{level.name}': address '{address}', {added} visual prefab(s) made Addressable, " +
                       $"{report.ErrorCount} error(s), {report.WarningCount} warning(s).");
             return true;
         }
@@ -152,8 +152,8 @@ namespace Maze.Editor.LevelDesigner
             var player = EnsureSingleAddressable<PlayerDefinition>(settings, sharedGroup, PlayerDefinition.Address);
             var visual = EnsureSingleAddressable<PlayerVisualDefinition>(settings, sharedGroup, PlayerVisualDefinition.Address);
             if (player == null || visual == null)
-                return "Player definition or player visual is missing: run Maze → Dev → Create Placeholder Player or create them " +
-                       "(Create → Maze → Definitions → Player, Create → Maze → Visual → Player Visual). The game cannot start a level without them.";
+                return "Player definition or player visual is missing: run Purge → Dev → Create Placeholder Player or create them " +
+                       "(Create → Purge → Definitions → Player, Create → Purge → Visual → Player Visual). The game cannot start a level without them.";
 
             if (visual.Prefab == null || !visual.Prefab.RuntimeKeyIsValid())
                 return $"'{visual.name}' has no prefab.";
@@ -162,22 +162,22 @@ namespace Maze.Editor.LevelDesigner
 
             var combat = EnsureSingleAddressable<CombatVisualDefinition>(settings, sharedGroup, CombatVisualDefinition.Address);
             if (combat == null)
-                return "Combat visual is missing: run Maze → Dev → Build Combat Effects or create one " +
-                       "(Create → Maze → Visual → Combat Visual). The game cannot start without it.";
+                return "Combat visual is missing: run Purge → Dev → Build Combat Effects or create one " +
+                       "(Create → Purge → Visual → Combat Visual). The game cannot start without it.";
             foreach (var prefab in combat.Prefabs)
                 EnsurePrefabAddressable(settings, sharedGroup, prefab);
 
             var weapons = EnsureSingleAddressable<WeaponVisualCatalog>(settings, sharedGroup, WeaponVisualCatalog.Address);
             if (weapons == null)
-                return "Weapon visuals are missing: run Maze → Dev → Build Weapons or create them " +
-                       "(Create → Maze → Visual → Weapon Visuals). The game cannot start without them.";
+                return "Weapon visuals are missing: run Purge → Dev → Build Weapons or create them " +
+                       "(Create → Purge → Visual → Weapon Visuals). The game cannot start without them.";
             foreach (var weapon in weapons.Weapons)
                 if (weapon != null)
                     EnsurePrefabAddressable(settings, sharedGroup, weapon.HeldPrefab);
 
             var audio = EnsureSingleAddressable<AudioCatalog>(settings, sharedGroup, AudioCatalog.Address);
             if (audio == null)
-                return "Audio catalog is missing: run Maze → Dev → Build Audio or create one (Create → Maze → Audio Catalog). " +
+                return "Audio catalog is missing: run Purge → Dev → Build Audio or create one (Create → Purge → Audio Catalog). " +
                        "The game cannot start without it.";
             // Music is loaded only while it plays: its own entries, each track in its own bundle (a web build downloads
             // a bundle whole: inside the start-up bundle both tracks would be downloaded before the menu).
@@ -188,7 +188,7 @@ namespace Maze.Editor.LevelDesigner
 
             var languages = EnsureSingleAddressable<LanguageCatalog>(settings, sharedGroup, LanguageCatalog.Address);
             if (languages == null)
-                return "Language catalog is missing: run Maze → Dev → Build Localization. The game cannot start without it.";
+                return "Language catalog is missing: run Purge → Dev → Build Localization. The game cannot start without it.";
             // Only the chosen language is loaded: every table is its own entry.
             foreach (var language in languages.Languages)
                 if (language != null) EnsurePrefabAddressable(settings, sharedGroup, language.Table);
@@ -219,7 +219,7 @@ namespace Maze.Editor.LevelDesigner
             if (guids.Length == 0)
                 return null;
             if (guids.Length > 1)
-                Debug.LogWarning($"[Maze] {guids.Length} {typeof(T).Name} assets found; '{AssetDatabase.GUIDToAssetPath(guids[0])}' is used.");
+                Debug.LogWarning($"[Purge] {guids.Length} {typeof(T).Name} assets found; '{AssetDatabase.GUIDToAssetPath(guids[0])}' is used.");
 
             var entry = settings.FindAssetEntry(guids[0]) ?? settings.CreateOrMoveEntry(guids[0], group);
             entry.address = address;
@@ -239,7 +239,7 @@ namespace Maze.Editor.LevelDesigner
             {
                 catalog = ScriptableObject.CreateInstance<LevelCatalog>();
                 AssetDatabase.CreateAsset(catalog, path);
-                Debug.Log($"[Maze] Created level catalog at {path}.");
+                Debug.Log($"[Purge] Created level catalog at {path}.");
             }
 
             var guid = AssetDatabase.AssetPathToGUID(path);

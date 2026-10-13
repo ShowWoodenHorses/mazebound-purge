@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Maze.Core.Grid;
-using Maze.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Level;
 
-namespace Maze.Core.Navigation
+namespace Purge.Core.Navigation
 {
     /// <summary>What the player can reach from one start, collecting every key on the way.</summary>
     public sealed class ReachabilityResult

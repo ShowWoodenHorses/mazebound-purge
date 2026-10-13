@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Gameplay.Combat
+namespace Purge.Gameplay.Combat
 {
     /// <summary>Directions the player's attacks (and the facing after stopping) snap to.</summary>
     public enum AimMode

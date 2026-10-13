@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
-using Maze.Application.Platform;
-using Maze.Core.Common;
-using Maze.Core.Localization;
+using Purge.Application.Assets;
+using Purge.Application.Platform;
+using Purge.Core.Common;
+using Purge.Core.Localization;
 using UnityEngine;
 
-namespace Maze.Application.Services
+namespace Purge.Application.Services
 {
     /// <summary>
     /// Texts of the game by key in the chosen language. The languages come from <see cref="LanguageCatalog"/>; only
@@ -65,7 +65,7 @@ namespace Maze.Application.Services
             _catalogAssets = _addressables.CreateOwner("Application: Languages");
             _catalog = await _catalogAssets.LoadAsync<LanguageCatalog>(LanguageCatalog.Address, cancellation);
             var index = _catalog.Choose(_settings.Language, _platform?.Language, SystemLanguage);
-            if (index < 0) throw new InvalidOperationException("The language catalog is empty: run Maze → Dev → Build Localization.");
+            if (index < 0) throw new InvalidOperationException("The language catalog is empty: run Purge → Dev → Build Localization.");
 
             await LoadAsync(index, cancellation);
             GameLog.Info(LogChannel.Localization, $"Language '{Language}' ({_table.Count} texts).");

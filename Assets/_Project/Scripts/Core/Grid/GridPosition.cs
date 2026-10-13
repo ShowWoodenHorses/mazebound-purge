@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>
     /// Logical cell coordinate. One cell is 1x1 Unity unit; cell (x, y) is centered at world (x, 0, y).

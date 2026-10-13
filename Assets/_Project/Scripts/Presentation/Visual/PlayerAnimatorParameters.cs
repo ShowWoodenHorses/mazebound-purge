@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Animator contract of the player prefab (parameter names). The controller is built by
-    /// Maze → Dev → Build Player Animations; <see cref="PlayerViewPresenter"/> drives it. Every parameter is optional:
+    /// Purge → Dev → Build Player Animations; <see cref="PlayerViewPresenter"/> drives it. Every parameter is optional:
     /// a controller without one simply does not get it.
     /// </summary>
     public static class PlayerAnimatorParameters

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Ice over a frozen door (display only, on the root of the theme's ice prefab). The ice is made of pieces: hits

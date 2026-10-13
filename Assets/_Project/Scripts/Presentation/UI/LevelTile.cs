@@ -1,11 +1,11 @@
 using System;
-using Maze.Presentation.UI.Style;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// A level tile (on its button): the number; under it three star slots once completed (earned ones filled with the

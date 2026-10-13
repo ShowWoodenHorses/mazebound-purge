@@ -1,8 +1,8 @@
-using Maze.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Shapes;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI.Style
+namespace Purge.Presentation.UI.Style
 {
     /// <summary>
     /// Look of a <see cref="Toggle"/> as a thin pill switch: the knob on the right and both in the accent when on,

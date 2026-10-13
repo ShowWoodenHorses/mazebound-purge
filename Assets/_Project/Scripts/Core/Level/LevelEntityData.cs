@@ -1,9 +1,9 @@
 using System;
-using Maze.Core.Definitions;
-using Maze.Core.Grid;
+using Purge.Core.Definitions;
+using Purge.Core.Grid;
 using UnityEngine;
 
-namespace Maze.Core.Level
+namespace Purge.Core.Level
 {
     /// <summary>Base for every object placed in a cell of the level.</summary>
     [Serializable]

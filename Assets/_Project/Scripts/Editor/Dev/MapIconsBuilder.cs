@@ -1,13 +1,13 @@
 using System;
 using System.IO;
-using Maze.Presentation.Map;
+using Purge.Presentation.Map;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Map Icons: draws the map icons (start flag, door plank, padlock, exit arrow, map scroll,
+    /// Purge → Dev → Build Map Icons: draws the map icons (start flag, door plank, padlock, exit arrow, map scroll,
     /// player arrow, skull, sword, medkit, key) "by hand" — signed-distance shapes with a slightly wobbly dark outline, white inside (tinted by
     /// <see cref="MapIconSet"/> colours) — as PNG sprites and fills <see cref="MapIconSet"/>. PNGs are overwritten
     /// (GUIDs kept); the tuned colours and sizes of an existing set stay. Any sprite may be replaced by hand afterwards.
@@ -22,7 +22,7 @@ namespace Maze.Editor.Dev
         private const float Wobble = 0.022f;
         private static readonly Color Ink = new Color(0.1f, 0.09f, 0.08f, 1f);
 
-        [MenuItem("Maze/Dev/Build Map Icons")]
+        [MenuItem("Purge/Dev/Build Map Icons")]
         public static void BuildMenu()
         {
             var set = Build();
@@ -56,7 +56,7 @@ namespace Maze.Editor.Dev
             set.Key = Draw("map_key", 10, Key, null);
             EditorUtility.SetDirty(set);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Map icons built: {SetPath}.");
+            Debug.Log($"[Purge] Map icons built: {SetPath}.");
             return set;
         }
 

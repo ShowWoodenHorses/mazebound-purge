@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Navigation;
-using Maze.Gameplay.Doors;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Pickups;
-using Maze.Gameplay.Player;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Navigation;
+using Purge.Gameplay.Doors;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Player;
 
-namespace Maze.Gameplay.Navigation
+namespace Purge.Gameplay.Navigation
 {
     /// <summary>What a route hint leads to.</summary>
     public enum RouteTarget

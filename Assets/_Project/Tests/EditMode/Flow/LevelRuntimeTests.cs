@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Level;
-using Maze.Gameplay.Level;
+using Purge.Core.Level;
+using Purge.Gameplay.Level;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Maze.Tests.EditMode.Flow
+namespace Purge.Tests.EditMode.Flow
 {
     public class LevelRuntimeTests
     {

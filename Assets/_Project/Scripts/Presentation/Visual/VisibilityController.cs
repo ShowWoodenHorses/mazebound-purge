@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Grid;
-using Maze.Gameplay.Level;
-using Maze.Gameplay.Visibility;
+using Purge.Core.Grid;
+using Purge.Gameplay.Level;
+using Purge.Gameplay.Visibility;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Applies VisibleCells to the already built views (ТЗ §46–48, §106): the per-cell geometry mask and chunks,

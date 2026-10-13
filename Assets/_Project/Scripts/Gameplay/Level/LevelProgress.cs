@@ -1,7 +1,7 @@
-using Maze.Gameplay.Map;
-using Maze.Gameplay.Zombies;
+using Purge.Gameplay.Map;
+using Purge.Gameplay.Zombies;
 
-namespace Maze.Gameplay.Level
+namespace Purge.Gameplay.Level
 {
     /// <summary>
     /// Outcome of one run of a level and its stars (ТЗ §87): 1 — the level is completed, 2 — every zombie is killed,

@@ -1,7 +1,7 @@
-using Maze.Core.Common;
+using Purge.Core.Common;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Common
+namespace Purge.Tests.EditMode.Common
 {
     public class DeterministicRandomTests
     {

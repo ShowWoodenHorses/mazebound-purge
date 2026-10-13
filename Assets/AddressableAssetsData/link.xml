@@ -1,67 +1,67 @@
 <linker>
-  <assembly fullname="Maze.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-    <type fullname="Maze.Core.Audio.AudioCatalog" preserve="all" />
-    <type fullname="Maze.Core.Definitions.PlayerDefinition" preserve="all" />
-    <type fullname="Maze.Core.Definitions.WeaponDefinition" preserve="all" />
-    <type fullname="Maze.Core.Definitions.ZombieDefinition" preserve="all" />
-    <type fullname="Maze.Core.Level.LevelCatalog" preserve="all" />
-    <type fullname="Maze.Core.Level.LevelData" preserve="all" />
-    <type fullname="Maze.Core.Level.TutorialScript" preserve="all" />
-    <type fullname="Maze.Core.Localization.LanguageCatalog" preserve="all" />
-    <type fullname="Maze.Core.Localization.LocalizationTable" preserve="all" />
-    <type fullname="Maze.Core.Visual.CombatVisualDefinition" preserve="all" />
-    <type fullname="Maze.Core.Visual.PlayerVisualDefinition" preserve="all" />
-    <type fullname="Maze.Core.Visual.VisualSet" preserve="all" />
-    <type fullname="Maze.Core.Visual.VisualTheme" preserve="all" />
-    <type fullname="Maze.Core.Visual.WeaponVisualCatalog" preserve="all" />
-    <type fullname="Maze.Core.Audio.MusicTrack" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Audio.SoundCue" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Audio.WeaponSound" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Audio.ZombieVoice" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Localization.LanguageEntry" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.CombatFeedback" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.NumberGlyph" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.WeaponVisualDefinition" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Grid.GridPosition" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Grid.GridRect" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Grid.LevelGeometry" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.DoorData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.ExitData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.KeyData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.LevelCatalogEntry" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.LevelGenerationSettings" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.LevelSettings" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.LightSourceData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.MapFragmentData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.MedkitData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.PatrolData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.PlayerStartData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.WeaponPickupData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.ZombieSpawnData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Lighting.LightPreset" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.CellVisualOverride" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.DecorPlacement" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.FootprintKind" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ObjectPlacement" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ObjectVisualAssignment" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ThemeAwareness" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ThemeFootprints" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ThemeLighting" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ThemeRoute" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.ThemeWeather" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.VisualChoice" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.VisualData" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Visual.VisualVariant" preserve="nothing" serialized="true" />
-    <type fullname="Maze.Core.Level.TutorialStep" preserve="nothing" serialized="true" />
+  <assembly fullname="Purge.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Purge.Core.Audio.AudioCatalog" preserve="all" />
+    <type fullname="Purge.Core.Definitions.PlayerDefinition" preserve="all" />
+    <type fullname="Purge.Core.Definitions.WeaponDefinition" preserve="all" />
+    <type fullname="Purge.Core.Definitions.ZombieDefinition" preserve="all" />
+    <type fullname="Purge.Core.Level.LevelCatalog" preserve="all" />
+    <type fullname="Purge.Core.Level.LevelData" preserve="all" />
+    <type fullname="Purge.Core.Level.TutorialScript" preserve="all" />
+    <type fullname="Purge.Core.Localization.LanguageCatalog" preserve="all" />
+    <type fullname="Purge.Core.Localization.LocalizationTable" preserve="all" />
+    <type fullname="Purge.Core.Visual.CombatVisualDefinition" preserve="all" />
+    <type fullname="Purge.Core.Visual.PlayerVisualDefinition" preserve="all" />
+    <type fullname="Purge.Core.Visual.VisualSet" preserve="all" />
+    <type fullname="Purge.Core.Visual.VisualTheme" preserve="all" />
+    <type fullname="Purge.Core.Visual.WeaponVisualCatalog" preserve="all" />
+    <type fullname="Purge.Core.Audio.MusicTrack" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Audio.SoundCue" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Audio.WeaponSound" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Audio.ZombieVoice" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Localization.LanguageEntry" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.CombatFeedback" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.NumberGlyph" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.WeaponVisualDefinition" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Grid.GridPosition" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Grid.GridRect" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Grid.LevelGeometry" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.DoorData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.ExitData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.KeyData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.LevelCatalogEntry" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.LevelGenerationSettings" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.LevelSettings" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.LightSourceData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.MapFragmentData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.MedkitData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.PatrolData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.PlayerStartData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.WeaponPickupData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.ZombieSpawnData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Lighting.LightPreset" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.CellVisualOverride" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.DecorPlacement" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.FootprintKind" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ObjectPlacement" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ObjectVisualAssignment" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ThemeAwareness" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ThemeFootprints" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ThemeLighting" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ThemeRoute" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.ThemeWeather" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.VisualChoice" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.VisualData" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Visual.VisualVariant" preserve="nothing" serialized="true" />
+    <type fullname="Purge.Core.Level.TutorialStep" preserve="nothing" serialized="true" />
   </assembly>
-  <assembly fullname="Maze.Presentation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-    <type fullname="Maze.Presentation.Visual.CharacterWeaponRig" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.CombatEffect" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.DoorVisual" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.FrozenDoorIce" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.SwingArc" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.TorchFlame" preserve="all" />
-    <type fullname="Maze.Presentation.Visual.WeaponModel" preserve="all" />
+  <assembly fullname="Purge.Presentation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Purge.Presentation.Visual.CharacterWeaponRig" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.CombatEffect" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.DoorVisual" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.FrozenDoorIce" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.SwingArc" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.TorchFlame" preserve="all" />
+    <type fullname="Purge.Presentation.Visual.WeaponModel" preserve="all" />
   </assembly>
   <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
     <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />

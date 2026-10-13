@@ -1,13 +1,13 @@
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Editor-only 3D preview of a level in the open scene, built exactly from the saved visual design
@@ -16,7 +16,7 @@ namespace Maze.Editor.LevelDesigner
     /// </summary>
     internal static class LevelPreviewBuilder
     {
-        private const string RootName = "[Maze Level Preview]";
+        private const string RootName = "[Purge Level Preview]";
 
         /// <summary>Soft drift edges of the previewed level (same shader path as in the game); null without drifts.</summary>
         private static SnowdriftMask _snowdrifts;

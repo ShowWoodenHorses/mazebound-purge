@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 931abe13cc041c146921f6ec44578b43, type: 3}
   m_Name: MapIcons
-  m_EditorClassIdentifier: Maze.Presentation::Maze.Presentation.Map.MapIconSet
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Map.MapIconSet
   Start: {fileID: 21300000, guid: ef27ffac9ae3ef0448ae2061917a8e14, type: 3}
   Door: {fileID: 21300000, guid: f896d6f4543f6ad4aa346c740187f5bf, type: 3}
   LockedDoor: {fileID: 21300000, guid: 13beeb28b0c12cd459421a4066930b34, type: 3}

@@ -1,9 +1,9 @@
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Navigation;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Navigation;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Navigation
+namespace Purge.Tests.EditMode.Navigation
 {
     public class KeyDoorSolverTests
     {

@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using System.IO;
-using Maze.Core.Visual;
-using Maze.Presentation.UI.Style;
+using Purge.Core.Visual;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Damage Numbers: the digit atlas and material for health bars and damage numbers
+    /// Purge → Dev → Build Damage Numbers: the digit atlas and material for health bars and damage numbers
     /// (<see cref="CombatFeedback"/>, <c>CombatFeedbackView</c>). Cuts "0-9", "+" and "-" with their distance-field
     /// padding out of the UI's bold font (<see cref="UiStyle.BoldFont"/>, Rajdhani Bold) into a small single-channel
-    /// texture, so the level does not pull in the whole UI atlas; writes the glyph layout and the <c>Maze/Overhead</c>
+    /// texture, so the level does not pull in the whole UI atlas; writes the glyph layout and the <c>Purge/Overhead</c>
     /// material into Data/Combat/CombatVisual. Colours and sizes in the asset are kept. Run after changing the font.
     /// </summary>
     public static class DamageNumbersBuilder
@@ -25,16 +25,16 @@ namespace Maze.Editor.Dev
         private const string Characters = "0123456789+-";
         private const int Gap = 2;
 
-        [MenuItem("Maze/Dev/Build Damage Numbers")]
+        [MenuItem("Purge/Dev/Build Damage Numbers")]
         public static void Build()
         {
-            var shader = Shader.Find("Maze/Overhead");
+            var shader = Shader.Find("Purge/Overhead");
             var style = AssetDatabase.LoadAssetAtPath<UiStyle>(UiStyleBuilder.StylePath);
             var font = style != null ? style.BoldFont : null;
             var visual = AssetDatabase.LoadAssetAtPath<CombatVisualDefinition>(CombatVisualPath);
             if (shader == null || font == null || font.atlasTexture == null || visual == null)
             {
-                Debug.LogError("[Maze] Build Damage Numbers needs the 'Maze/Overhead' shader, UiStyle with a Bold Font " +
+                Debug.LogError("[Purge] Build Damage Numbers needs the 'Purge/Overhead' shader, UiStyle with a Bold Font " +
                                $"(Build UI Style) and {CombatVisualPath} (Build Combat Effects).");
                 return;
             }
@@ -48,7 +48,7 @@ namespace Maze.Editor.Dev
             {
                 if (!font.characterLookupTable.TryGetValue(character, out var found) || found.glyph == null)
                 {
-                    Debug.LogWarning($"[Maze] Font '{font.name}' has no '{character}'.");
+                    Debug.LogWarning($"[Purge] Font '{font.name}' has no '{character}'.");
                     continue;
                 }
 
@@ -70,7 +70,7 @@ namespace Maze.Editor.Dev
             if (cut.Count == 0 || digitHeight <= 0f)
             {
                 Object.DestroyImmediate(source);
-                Debug.LogError($"[Maze] Font '{font.name}' has no digits.");
+                Debug.LogError($"[Purge] Font '{font.name}' has no digits.");
                 return;
             }
 
@@ -125,8 +125,8 @@ namespace Maze.Editor.Dev
 
             var problem = LevelDesigner.LevelSync.SyncShared(AddressableAssetSettingsDefaultObject.GetSettings(true));
             AssetDatabase.SaveAssets();
-            if (problem != null) Debug.LogWarning("[Maze] " + problem);
-            Debug.Log($"[Maze] Damage numbers: {glyphs.Count} glyphs from '{font.name}' → {TexturePath}, {width}×{height}.");
+            if (problem != null) Debug.LogWarning("[Purge] " + problem);
+            Debug.Log($"[Purge] Damage numbers: {glyphs.Count} glyphs from '{font.name}' → {TexturePath}, {width}×{height}.");
         }
 
         /// <summary>The font atlas read back through a render texture (static atlases are not readable).</summary>

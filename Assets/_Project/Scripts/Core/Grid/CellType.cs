@@ -1,4 +1,4 @@
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>
     /// Logical cell type. Defines gameplay semantics (movement, LOS, bullets, navigation);

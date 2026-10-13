@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Application.Services;
-using Maze.Core.Audio;
-using Maze.Presentation.UI;
+using Purge.Application.Flow;
+using Purge.Application.Services;
+using Purge.Core.Audio;
+using Purge.Presentation.UI;
 using UnityEngine;
 
-namespace Maze.Presentation.Audio
+namespace Purge.Presentation.Audio
 {
     /// <summary>
     /// Application-wide sound (project scope): music by <see cref="GameFlow.State"/> (menu track in the menu, level

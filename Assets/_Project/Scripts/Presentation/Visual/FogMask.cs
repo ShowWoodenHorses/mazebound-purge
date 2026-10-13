@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Per-cell fog values (0 = hidden, 255 = visible) with a one-cell hidden border around the grid, so the fog

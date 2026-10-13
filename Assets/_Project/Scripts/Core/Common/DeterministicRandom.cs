@@ -1,6 +1,6 @@
 using System;
 
-namespace Maze.Core.Common
+namespace Purge.Core.Common
 {
     /// <summary>
     /// Platform-independent seeded PRNG (SplitMix64). Integer-only, so the same seed yields the same

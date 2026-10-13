@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Maze.Presentation.Map;
+using Purge.Presentation.Map;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Fullscreen map (ТЗ §60). The level's <c>MapPresenter</c> supplies the texture (one pixel per cell) and the icons;

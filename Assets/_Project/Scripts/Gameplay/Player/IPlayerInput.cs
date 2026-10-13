@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Gameplay.Player
+namespace Purge.Gameplay.Player
 {
     /// <summary>Button actions of the input abstraction (ТЗ §64).</summary>
     public enum PlayerAction

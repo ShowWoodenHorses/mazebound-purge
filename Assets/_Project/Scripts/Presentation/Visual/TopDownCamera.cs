@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Top-down game camera in the Game scene. Looks almost straight down and never rotates around Y, so screen up

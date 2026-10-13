@@ -1,4 +1,4 @@
-namespace Maze.Core.Validation
+namespace Purge.Core.Validation
 {
     public static class ValidationCodes
     {

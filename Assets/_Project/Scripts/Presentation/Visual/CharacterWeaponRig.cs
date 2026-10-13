@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Where a character holds weapons (display only, set up by Maze → Dev → Build Weapons from the animation poses):
+    /// Where a character holds weapons (display only, set up by Purge → Dev → Build Weapons from the animation poses):
     /// <list type="bullet">
     /// <item><see cref="MeleeSocket"/> — child of the right hand; a melee weapon's grip pivot goes here, blade along
     /// its +Z (the sword clips grip consistently, so the weapon stays rigid in the hand);</item>

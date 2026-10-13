@@ -4,21 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Maze.Core.Definitions;
-using Maze.Core.Level;
-using Maze.Core.Localization;
-using Maze.Core.Visual;
-using Maze.Presentation.Localization;
+using Purge.Core.Definitions;
+using Purge.Core.Level;
+using Purge.Core.Localization;
+using Purge.Core.Visual;
+using Purge.Presentation.Localization;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Localization: turns the translation table <c>Data/Localization/Strings.tsv</c> (key + a
+    /// Purge → Dev → Build Localization: turns the translation table <c>Data/Localization/Strings.tsv</c> (key + a
     /// column per language) into a <see cref="LocalizationTable"/> per language and the <see cref="LanguageCatalog"/>
-    /// (all Addressable, group Maze Shared), checks it (<see cref="LocalizationCheck"/>: keys of <see cref="TextKeys"/>
+    /// (all Addressable, group Purge Shared), checks it (<see cref="LocalizationCheck"/>: keys of <see cref="TextKeys"/>
     /// missing from the table, unused keys, untranslated texts, placeholders; names of weapons and messages for key
     /// colours of the content) and rebuilds the font atlases for the characters of all languages.
     /// Run after editing the table.
@@ -29,11 +29,11 @@ namespace Maze.Editor.Dev
         public const string SourcePath = Folder + "/Strings.tsv";
         public const string CatalogPath = Folder + "/Languages.asset";
 
-        [MenuItem("Maze/Dev/Build Localization")]
+        [MenuItem("Purge/Dev/Build Localization")]
         public static void BuildMenu()
         {
             var problems = Build(out var report);
-            Debug.Log("[Maze] Build Localization:\n" + report);
+            Debug.Log("[Purge] Build Localization:\n" + report);
             if (problems > 0)
                 EditorUtility.DisplayDialog("Build Localization", $"{problems} error(s), see the console.", "OK");
         }

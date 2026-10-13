@@ -2,17 +2,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Maze.Core.Localization;
-using Maze.Presentation.UI.Style;
+using Purge.Core.Localization;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.LowLevel;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build UI Style: the shared <c>Maze/UIShape</c> material, the text fonts and the <see cref="UiStyle"/>
+    /// Purge → Dev → Build UI Style: the shared <c>Purge/UIShape</c> material, the text fonts and the <see cref="UiStyle"/>
     /// asset (palette, line widths). Fonts are static TextMeshPro SDF atlases (mobile SDF shader) with only the
     /// characters the game shows: printable ASCII plus every character of the translation table
     /// (<see cref="LocalizationBuilder.SourcePath"/>). Rajdhani SemiBold / Bold take what they have (Latin of all
@@ -25,7 +25,7 @@ namespace Maze.Editor.Dev
     {
         public const string StylePath = "Assets/_Project/Data/UI/UiStyle.asset";
         public const string MaterialPath = "Assets/_Project/Art/UI/UIShape.mat";
-        private const string ShaderName = "Maze/UIShape";
+        private const string ShaderName = "Purge/UIShape";
         private const string FontFolder = "Assets/_Project/Art/Fonts/Rajdhani";
         private const string FallbackFolder = "Assets/_Project/Art/Fonts/Exo2";
         private const string TmpSettingsPath = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
@@ -45,7 +45,7 @@ namespace Maze.Editor.Dev
             "Assets/TextMesh Pro/Sprites",
         };
 
-        [MenuItem("Maze/Dev/Build UI Style")]
+        [MenuItem("Purge/Dev/Build UI Style")]
         public static void BuildMenu()
         {
             var style = Build();
@@ -86,7 +86,7 @@ namespace Maze.Editor.Dev
             EditorUtility.SetDirty(style);
             ConfigureTextMeshPro(style.Font);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] UI style built: {StylePath}.");
+            Debug.Log($"[Purge] UI style built: {StylePath}.");
             return style;
         }
 
@@ -125,7 +125,7 @@ namespace Maze.Editor.Dev
                 var fallbackSource = LoadFont(fallbackFolder, fallbackName);
                 var missing = rest.ToString().Where(c => !HasGlyph(fallbackSource, c)).ToArray();
                 if (missing.Length > 0)
-                    Debug.LogWarning($"[Maze] {name} and {fallbackName} have no glyphs for '{new string(missing)}'.");
+                    Debug.LogWarning($"[Purge] {name} and {fallbackName} have no glyphs for '{new string(missing)}'.");
                 fallback = BuildFont(fallbackFolder, fallbackName, rest.ToString(), FallbackScale);
             }
 
@@ -133,7 +133,7 @@ namespace Maze.Editor.Dev
             main.fallbackFontAssetTable = fallback != null ? new List<TMP_FontAsset> { fallback } : new List<TMP_FontAsset>();
             EditorUtility.SetDirty(main);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Font {name}: {own.Length} characters" +
+            Debug.Log($"[Purge] Font {name}: {own.Length} characters" +
                       (fallback != null ? $"; {fallbackName}: {rest.Length} ({rest})." : "."));
             return main;
         }
@@ -168,7 +168,7 @@ namespace Maze.Editor.Dev
                     AtlasPopulationMode.Dynamic, false);
                 if (fresh.TryAddCharacters(characters, out var missing) || string.IsNullOrEmpty(missing)) break;
                 if (size == AtlasSizes[AtlasSizes.Length - 1])
-                    Debug.LogWarning($"[Maze] {name}: missing characters '{missing}'.");
+                    Debug.LogWarning($"[Purge] {name}: missing characters '{missing}'.");
             }
 
             var faceInfo = fresh.faceInfo;
@@ -232,7 +232,7 @@ namespace Maze.Editor.Dev
             var settings = AssetDatabase.LoadAssetAtPath<TMP_Settings>(TmpSettingsPath);
             if (settings == null)
             {
-                Debug.LogWarning("[Maze] TMP Settings not found: import TMP Essential Resources.");
+                Debug.LogWarning("[Purge] TMP Settings not found: import TMP Essential Resources.");
                 return;
             }
 

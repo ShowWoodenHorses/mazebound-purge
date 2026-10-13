@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Analytic two-bone IK (upper arm → forearm → hand) on final, already animated transforms (call after the

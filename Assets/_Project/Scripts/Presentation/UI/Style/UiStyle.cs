@@ -1,16 +1,16 @@
-using Maze.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Shapes;
 using TMPro;
 using UnityEngine;
 
-namespace Maze.Presentation.UI.Style
+namespace Purge.Presentation.UI.Style
 {
     /// <summary>
     /// The one place for the look of the UI (thin light lines over translucent dark fills, colour only where it
-    /// matters): palette, line widths and the shared <c>Maze/UIShape</c> material. Screens are built from it by
+    /// matters): palette, line widths and the shared <c>Purge/UIShape</c> material. Screens are built from it by
     /// <c>RuntimeScenesBuilder</c>; runtime presenters use it for state colours (accent, danger, key colours come
-    /// from <c>VisualColorTags</c>). Created by Maze → Dev → Build UI Style.
+    /// from <c>VisualColorTags</c>). Created by Purge → Dev → Build UI Style.
     /// </summary>
-    [CreateAssetMenu(menuName = "Maze/UI/Style", fileName = "UiStyle")]
+    [CreateAssetMenu(menuName = "Purge/UI/Style", fileName = "UiStyle")]
     public sealed class UiStyle : ScriptableObject
     {
         [Header("Palette (sRGB)")]
@@ -46,7 +46,7 @@ namespace Maze.Presentation.UI.Style
         [Min(0f)] public float ThinStroke = 1f;
 
         [Header("Assets")]
-        [Tooltip("Shared material with the Maze/UIShape shader (all UiShape use it, so they batch).")]
+        [Tooltip("Shared material with the Purge/UIShape shader (all UiShape use it, so they batch).")]
         public Material ShapeMaterial;
 
         [Tooltip("Text: Rajdhani SemiBold (static SDF atlas, ASCII only — see CLAUDE.md).")]

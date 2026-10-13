@@ -1,13 +1,13 @@
 using System.Linq;
-using Maze.Core.Authoring;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Core.Visual;
-using Maze.Tests.EditMode.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Core.Visual;
+using Purge.Tests.EditMode.Visual;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Authoring
+namespace Purge.Tests.EditMode.Authoring
 {
     public class LevelEditingTests
     {

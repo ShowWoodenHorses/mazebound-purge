@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace Maze.Editor.Build
+namespace Purge.Editor.Build
 {
     /// <summary>The store an Android build is made for (Docs/Progress.md «Площадки публикации»).</summary>
     internal enum AndroidStore
@@ -20,18 +20,18 @@ namespace Maze.Editor.Build
         public const string CompanyName = "BGames";
 
         /// <summary>The Android package: never changes once the app is published (the store ties updates to it).</summary>
-        public const string PackageName = "ru.bgames.mazebound";
+        public const string PackageName = "ru.bgames.mazebound.purge";
 
         /// <summary>The scripting symbol of the store's build (<c>ProjectLifetimeScope</c> registers its adapters).</summary>
         public static string Define(AndroidStore store) => store switch
         {
-            AndroidStore.RuStore => "MAZE_RUSTORE",
+            AndroidStore.RuStore => "PURGE_RUSTORE",
             _ => null,
         };
 
-        /// <summary>The APK in <c>Builds/Android</c>: Mazebound[-RuStore][-dev].apk.</summary>
+        /// <summary>The APK in <c>Builds/Android</c>: MazeboundPurge[-RuStore][-dev].apk.</summary>
         public static string FileName(AndroidStore store, bool development) =>
-            "Mazebound" + (store == AndroidStore.Generic ? "" : "-" + store) + (development ? "-dev" : "") + ".apk";
+            "MazeboundPurge" + (store == AndroidStore.Generic ? "" : "-" + store) + (development ? "-dev" : "") + ".apk";
 
         /// <summary>
         /// Android versionCode from the version "major.minor.patch" (Player Settings → Version): major·10000 +
@@ -51,10 +51,10 @@ namespace Maze.Editor.Build
         }
 
         /// <summary>
-        /// The release signing key, kept out of the repository: <c>UserSettings/MazeAndroidSigning.json</c>
+        /// The release signing key, kept out of the repository: <c>UserSettings/PurgeAndroidSigning.json</c>
         /// (UserSettings is git-ignored). Passwords never go into ProjectSettings.
         /// </summary>
-        public const string SigningFile = "UserSettings/MazeAndroidSigning.json";
+        public const string SigningFile = "UserSettings/PurgeAndroidSigning.json";
 
         [Serializable]
         public sealed class Signing

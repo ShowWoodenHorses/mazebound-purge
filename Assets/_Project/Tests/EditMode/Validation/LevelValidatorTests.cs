@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Maze.Core.Authoring;
-using Maze.Core.Common;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
-using Maze.Core.Visual;
-using Maze.Tests.EditMode.Visual;
+using Purge.Core.Authoring;
+using Purge.Core.Common;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
+using Purge.Core.Visual;
+using Purge.Tests.EditMode.Visual;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Validation
+namespace Purge.Tests.EditMode.Validation
 {
     public class LevelValidatorTests
     {

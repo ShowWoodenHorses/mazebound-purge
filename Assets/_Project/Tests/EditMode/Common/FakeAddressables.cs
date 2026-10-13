@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Application.Assets;
+using Purge.Application.Assets;
 using Object = UnityEngine.Object;
 
-namespace Maze.Tests.EditMode.Common
+namespace Purge.Tests.EditMode.Common
 {
     /// <summary>In-memory <see cref="IAddressablesService"/>: assets by address (or AssetReference GUID), handles counted per owner.</summary>
     internal sealed class FakeAddressables : IAddressablesService

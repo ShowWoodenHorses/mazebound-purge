@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maze.Core.Visual;
-using Maze.Presentation.Visual;
+using Purge.Core.Visual;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Prepares object models for the main theme (<see cref="ThemePath"/>) and fills its sets; variant ids are the
     /// prefab names, weights of existing variants stay. Every prefab loses physics (colliders, rigidbodies) and shadow
-    /// casting; materials switch to Maze/Lit (<see cref="LitMaterialsConverter"/>). Run after adding models, then
+    /// casting; materials switch to Purge/Lit (<see cref="LitMaterialsConverter"/>). Run after adding models, then
     /// Collect Used Third-Party Assets.
     /// <list type="bullet">
     /// <item><b>Build Light Fixtures</b> — torches in <c>Art/Lighting</c> (mount plate at the origin, wall at −Z,
@@ -44,13 +44,13 @@ namespace Maze.Editor.Dev
         private static readonly Color FlameWarm = new Color(1f, 0.62f, 0.22f);
         private static readonly Color EmberColor = new Color(1f, 0.7f, 0.3f);
 
-        [MenuItem("Maze/Dev/Build Light Fixtures")]
+        [MenuItem("Purge/Dev/Build Light Fixtures")]
         public static void BuildLightFixtures()
         {
             var flameMaterial = AssetDatabase.LoadAssetAtPath<Material>(FlameMaterialPath);
             if (flameMaterial == null)
             {
-                Debug.LogError($"[Maze] {FlameMaterialPath} not found: run Maze → Dev → Build Combat Effects first.");
+                Debug.LogError($"[Purge] {FlameMaterialPath} not found: run Purge → Dev → Build Combat Effects first.");
                 return;
             }
 
@@ -67,10 +67,10 @@ namespace Maze.Editor.Dev
             AssignSet(ThemePath, VisualKind.Light, set);
             AssignSet(PlaceholderThemePath, VisualKind.Light, set);
             LitMaterialsConverter.Convert();
-            Debug.Log($"[Maze] Light fixtures built: {set.Variants.Count} variant(s) in {LightSetPath}.");
+            Debug.Log($"[Purge] Light fixtures built: {set.Variants.Count} variant(s) in {LightSetPath}.");
         }
 
-        [MenuItem("Maze/Dev/Build Exits")]
+        [MenuItem("Purge/Dev/Build Exits")]
         public static void BuildExits()
         {
             var prefabs = Prefabs(ExitFolder);
@@ -85,7 +85,7 @@ namespace Maze.Editor.Dev
             var set = FillSet(ExitSetPath, VisualKind.Exit, prefabs);
             AssignSet(ThemePath, VisualKind.Exit, set);
             LitMaterialsConverter.Convert();
-            Debug.Log($"[Maze] Exits built: {set.Variants.Count} variant(s) in {ExitSetPath}.");
+            Debug.Log($"[Purge] Exits built: {set.Variants.Count} variant(s) in {ExitSetPath}.");
         }
 
         // ---- Light fixtures ----

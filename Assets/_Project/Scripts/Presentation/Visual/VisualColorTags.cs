@@ -1,8 +1,8 @@
-using Maze.Core.Level;
-using Maze.Core.Visual;
+using Purge.Core.Level;
+using Purge.Core.Visual;
 using UnityEngine;
 
-namespace Maze.Presentation.Visual
+namespace Purge.Presentation.Visual
 {
     /// <summary>Colour of an object's saved visual (key/door pair colour, <see cref="VisualVariant.ColorTag"/>).</summary>
     internal static class VisualColorTags

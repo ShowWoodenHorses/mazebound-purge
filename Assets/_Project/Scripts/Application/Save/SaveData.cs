@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Maze.Gameplay.Combat;
+using Purge.Gameplay.Combat;
 
-namespace Maze.Application.Save
+namespace Purge.Application.Save
 {
     /// <summary>
     /// Everything that persists between sessions (ТЗ §85). Serialized with <c>JsonUtility</c>, hence public fields.

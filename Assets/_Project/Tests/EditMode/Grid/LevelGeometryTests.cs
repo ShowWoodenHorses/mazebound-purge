@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Maze.Core.Grid;
+using Purge.Core.Grid;
 using NUnit.Framework;
 
-namespace Maze.Tests.EditMode.Grid
+namespace Purge.Tests.EditMode.Grid
 {
     public class LevelGeometryTests
     {

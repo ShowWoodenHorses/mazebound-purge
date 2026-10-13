@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4059f11680f60145b7d0f9b59619e3b, type: 3}
   m_Name: CastleBlockDoorSet
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Visual.VisualSet
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.VisualSet
   _kind: 2
   _defaultVariantId: 
   _variants:

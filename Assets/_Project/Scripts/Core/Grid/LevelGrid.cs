@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Maze.Core.Grid
+namespace Purge.Core.Grid
 {
     /// <summary>
     /// Runtime read-only cell layout built from <see cref="LevelGeometry"/>.

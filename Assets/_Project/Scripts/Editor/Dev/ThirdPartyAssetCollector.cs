@@ -4,10 +4,10 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Collect Used Third-Party Assets. Asset packs are downloaded into Assets/_Project/Import, which is
+    /// Purge → Dev → Collect Used Third-Party Assets. Asset packs are downloaded into Assets/_Project/Import, which is
     /// git-ignored (hundreds of MB, mostly unused). This keeps the project self-contained:
     /// <list type="number">
     /// <item>strips physics (colliders, rigidbodies — forbidden in this project; packs add them by default) from every
@@ -44,7 +44,7 @@ namespace Maze.Editor.Dev
         /// <summary>Folders (under <see cref="TargetRoot"/>) of objects only a few centimetres on screen, and their size cap.</summary>
         private static readonly (string Folder, int Size)[] SmallObjectFolders = { ("Gabies_Assets/Keys", 256) };
 
-        [MenuItem("Maze/Dev/Collect Used Third-Party Assets")]
+        [MenuItem("Purge/Dev/Collect Used Third-Party Assets")]
         public static void Collect()
         {
             var stripped = StripPhysics();
@@ -68,11 +68,11 @@ namespace Maze.Editor.Dev
 
             var remaining = FindUsedImportAssets();
             foreach (var error in failed)
-                Debug.LogError("[Maze] Move failed: " + error);
+                Debug.LogError("[Purge] Move failed: " + error);
             foreach (var path in remaining)
-                Debug.LogError("[Maze] Still referenced from Import: " + path);
+                Debug.LogError("[Purge] Still referenced from Import: " + path);
 
-            Debug.Log($"[Maze] Third-party assets: physics stripped from {stripped} prefab(s), {moved} file(s) moved to " +
+            Debug.Log($"[Purge] Third-party assets: physics stripped from {stripped} prefab(s), {moved} file(s) moved to " +
                       $"{TargetRoot}, {capped} texture(s) capped for mobile, {remaining.Count} still in Import" +
                       (remaining.Count == 0 ? " — Import is unused and can be deleted." : "."));
         }
@@ -123,9 +123,9 @@ namespace Maze.Editor.Dev
             return count;
         }
 
-        [MenuItem("Maze/Dev/Cap Third-Party Texture Sizes")]
+        [MenuItem("Purge/Dev/Cap Third-Party Texture Sizes")]
         public static void CapTextureSizesMenu() =>
-            Debug.Log($"[Maze] {CapTextureSizes()} third-party texture(s) capped for {string.Join(", ", MobilePlatforms)}.");
+            Debug.Log($"[Purge] {CapTextureSizes()} third-party texture(s) capped for {string.Join(", ", MobilePlatforms)}.");
 
         /// <summary>Overrides for <see cref="MobilePlatforms"/>; returns how many textures were changed.</summary>
         private static int CapTextureSizes()

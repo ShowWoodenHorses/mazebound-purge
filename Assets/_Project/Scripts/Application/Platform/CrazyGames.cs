@@ -2,12 +2,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Maze.Core.Common;
+using Purge.Core.Common;
 
-namespace Maze.Application.Platform
+namespace Purge.Application.Platform
 {
     /// <summary>
-    /// Calls into the CrazyGames HTML5 SDK v3 (<c>Plugins/WebGL/MazeCrazy.jslib</c>). Only a WebGL player on CrazyGames
+    /// Calls into the CrazyGames HTML5 SDK v3 (<c>Plugins/WebGL/PurgeCrazy.jslib</c>). Only a WebGL player on CrazyGames
     /// (or localhost, the SDK's local mode) has it: elsewhere every call throws, so the game works as
     /// <see cref="GenericPlatform"/>.
     /// </summary>
@@ -97,40 +97,40 @@ namespace Maze.Application.Platform
         private static class Native
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_Init")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_Init")]
             public static extern void Init(ReplyCallback callback, int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_MuteAudio")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_MuteAudio")]
             public static extern int MuteAudio();
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_AccountAvailable")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_AccountAvailable")]
             public static extern int AccountAvailable();
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_IsSignedIn")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_IsSignedIn")]
             public static extern int IsSignedIn();
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_SignIn")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_SignIn")]
             public static extern void SignIn(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_GetData")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_GetData")]
             public static extern void GetData(int id);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_SetData")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_SetData")]
             public static extern void SetData(int id, string json);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_ShowAd")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_ShowAd")]
             public static extern void ShowAd(int id, int rewarded);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_LoadingStop")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_LoadingStop")]
             public static extern void LoadingStop();
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_Gameplay")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_Gameplay")]
             public static extern void Gameplay(int start);
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_HappyTime")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_HappyTime")]
             public static extern void HappyTime();
 
-            [DllImport("__Internal", EntryPoint = "MazeCrazy_GameProgress")]
+            [DllImport("__Internal", EntryPoint = "PurgeCrazy_GameProgress")]
             public static extern void GameProgress(int percent);
 #else
             private static Exception NoSdk() => new PlatformNotSupportedException("The CrazyGames SDK exists only in a WebGL build.");
@@ -151,7 +151,7 @@ namespace Maze.Application.Platform
     }
 
     /// <summary>
-    /// CrazyGames (build symbol <c>MAZE_CRAZYGAMES</c>): the player's locale, saves in the Data module (local for a
+    /// CrazyGames (build symbol <c>PURGE_CRAZYGAMES</c>): the player's locale, saves in the Data module (local for a
     /// guest; the SDK moves them to the account at sign-in and keeps them in sync), sign-in on request, the site's mute,
     /// loading/gameplay events and happy time. Site rules: a new player lands in gameplay; pauses for focus are the
     /// site's business.

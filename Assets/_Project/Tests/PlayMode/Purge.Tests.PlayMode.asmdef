@@ -1,0 +1,30 @@
+{
+    "name": "Purge.Tests.PlayMode",
+    "rootNamespace": "Purge.Tests.PlayMode",
+    "references": [
+        "Purge.Core",
+        "Purge.Gameplay",
+        "Purge.Application",
+        "Purge.Presentation",
+        "Purge.Composition",
+        "VContainer",
+        "UniTask",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,11 +1,11 @@
 using System;
-using Maze.Application.Services;
-using Maze.Presentation.Localization;
-using Maze.Presentation.UI.Touch;
+using Purge.Application.Services;
+using Purge.Presentation.Localization;
+using Purge.Presentation.UI.Touch;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>Application UI canvas in the Bootstrap scene: references to every screen, wired in the scene.</summary>
     public sealed class UIRoot : MonoBehaviour

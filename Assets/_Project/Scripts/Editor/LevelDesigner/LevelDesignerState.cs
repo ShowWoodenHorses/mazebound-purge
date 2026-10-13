@@ -1,9 +1,9 @@
 using System.Linq;
-using Maze.Core.Grid;
-using Maze.Core.Level;
-using Maze.Core.Validation;
+using Purge.Core.Grid;
+using Purge.Core.Level;
+using Purge.Core.Validation;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>Shared editing state of the Level Designer window: current level, selection, last validation.</summary>
     internal sealed class LevelDesignerState

@@ -1,15 +1,15 @@
 using Cysharp.Threading.Tasks;
-using Maze.Application.Flow;
-using Maze.Composition;
-using Maze.Core.Level;
-using Maze.Editor.Dev;
-using Maze.Gameplay.Level;
+using Purge.Application.Flow;
+using Purge.Composition;
+using Purge.Core.Level;
+using Purge.Editor.Dev;
+using Purge.Gameplay.Level;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using VContainer;
 
-namespace Maze.Editor.LevelDesigner
+namespace Purge.Editor.LevelDesigner
 {
     /// <summary>
     /// Test / Play from the Level Designer (ТЗ §16, §61 "Test from Start #N"): validates and syncs the level, enters
@@ -21,9 +21,9 @@ namespace Maze.Editor.LevelDesigner
     [InitializeOnLoad]
     internal static class LevelPlayLauncher
     {
-        private const string LevelKey = "Maze.LevelPlayLauncher.Level";
-        private const string StartKey = "Maze.LevelPlayLauncher.Start";
-        private const string StartSceneKey = "Maze.LevelPlayLauncher.StartSceneSet";
+        private const string LevelKey = "Purge.LevelPlayLauncher.Level";
+        private const string StartKey = "Purge.LevelPlayLauncher.Start";
+        private const string StartSceneKey = "Purge.LevelPlayLauncher.StartSceneSet";
         private const int RandomStart = -1;
         private const double TimeoutSeconds = 30d;
 
@@ -67,7 +67,7 @@ namespace Maze.Editor.LevelDesigner
             var bootstrap = AssetDatabase.LoadAssetAtPath<SceneAsset>(RuntimeScenesBuilder.BootstrapPath);
             if (bootstrap == null)
             {
-                problem = "No Bootstrap scene: run Maze → Dev → Build Runtime Scenes.";
+                problem = "No Bootstrap scene: run Purge → Dev → Build Runtime Scenes.";
                 return false;
             }
 
@@ -79,7 +79,7 @@ namespace Maze.Editor.LevelDesigner
                 SessionState.SetBool(StartSceneKey, true);
             }
 
-            Debug.Log($"[Maze] Test level '{level.name}' from " + (startIndex.HasValue ? $"start #{startIndex}." : "a random start."));
+            Debug.Log($"[Purge] Test level '{level.name}' from " + (startIndex.HasValue ? $"start #{startIndex}." : "a random start."));
             EditorApplication.isPlaying = true;
             return true;
         }
@@ -119,7 +119,7 @@ namespace Maze.Editor.LevelDesigner
             {
                 if (EditorApplication.timeSinceStartup > _deadline)
                 {
-                    Debug.LogError("[Maze] Test level: the application did not reach the main menu.");
+                    Debug.LogError("[Purge] Test level: the application did not reach the main menu.");
                     Cancel();
                 }
 
@@ -131,7 +131,7 @@ namespace Maze.Editor.LevelDesigner
             Cancel();
             if (flow.State != GameFlowState.MainMenu)
             {
-                Debug.LogError($"[Maze] Test level: the application is in state {flow.State}, not in the main menu.");
+                Debug.LogError($"[Purge] Test level: the application is in state {flow.State}, not in the main menu.");
                 return;
             }
 

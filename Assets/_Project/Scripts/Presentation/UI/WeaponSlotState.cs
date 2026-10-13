@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>What a weapon slot shows (touch cluster, desktop HUD). Filled by the HUD presenter.</summary>
     public struct WeaponSlotState

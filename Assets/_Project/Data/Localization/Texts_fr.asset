@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2440f53a5c7a5764999ebb8b0ba4a2e4, type: 3}
   m_Name: Texts_fr
-  m_EditorClassIdentifier: Maze.Core::Maze.Core.Localization.LocalizationTable
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Localization.LocalizationTable
   _language: fr
   _keys:
   - language.name

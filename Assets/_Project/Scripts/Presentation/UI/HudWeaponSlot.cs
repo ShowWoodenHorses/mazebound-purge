@@ -1,10 +1,10 @@
-using Maze.Presentation.UI.Shapes;
-using Maze.Presentation.UI.Style;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Maze.Presentation.UI
+namespace Purge.Presentation.UI
 {
     /// <summary>
     /// A weapon slot of the HUD where the on-screen controls are not shown (desktop): a frame (accent when active,

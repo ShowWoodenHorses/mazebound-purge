@@ -1,15 +1,15 @@
 using System.IO;
-using Maze.Core.Visual;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Maze.Editor.Dev
+namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Maze → Dev → Build Footprints: the print atlas (left half — the player's boot, right half — a zombie's bare
+    /// Purge → Dev → Build Footprints: the print atlas (left half — the player's boot, right half — a zombie's bare
     /// foot; right feet, toes up, white with alpha — tinted by <see cref="FootprintKind.Color"/>), its material
-    /// (<c>Maze/Particle</c>, alpha, queue right after opaque geometry and before the blob shadows, so the fog covers
+    /// (<c>Purge/Particle</c>, alpha, queue right after opaque geometry and before the blob shadows, so the fog covers
     /// it) and the theme's <see cref="ThemeFootprints"/> materials: prints and dust (the combat effects' dust,
     /// Build Combat Effects). The atlas and material are overwritten (GUIDs kept); the tuned numbers of the theme stay.
     /// </summary>
@@ -26,13 +26,13 @@ namespace Maze.Editor.Dev
 
         private const int CellSize = 128;
 
-        [MenuItem("Maze/Dev/Build Footprints")]
+        [MenuItem("Purge/Dev/Build Footprints")]
         public static void Build()
         {
-            var shader = Shader.Find("Maze/Particle");
+            var shader = Shader.Find("Purge/Particle");
             if (shader == null)
             {
-                Debug.LogError("[Maze] Shader 'Maze/Particle' not found.");
+                Debug.LogError("[Purge] Shader 'Purge/Particle' not found.");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace Maze.Editor.Dev
 
             var dust = AssetDatabase.LoadAssetAtPath<Material>(DustPath);
             if (dust == null)
-                Debug.LogWarning($"[Maze] {DustPath} not found (Maze → Dev → Build Combat Effects): no step dust.");
+                Debug.LogWarning($"[Purge] {DustPath} not found (Purge → Dev → Build Combat Effects): no step dust.");
 
             var theme = AssetDatabase.LoadAssetAtPath<VisualTheme>(ThemePath);
             if (theme != null)
@@ -69,7 +69,7 @@ namespace Maze.Editor.Dev
             }
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Maze] Footprints built in {Folder}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
+            Debug.Log($"[Purge] Footprints built in {Folder}" + (theme != null ? ", assigned to PlaceholderTheme." : "."));
         }
 
         private static Texture2D SaveAtlas()

@@ -3,11 +3,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 
-namespace Maze.Editor.Build
+namespace Purge.Editor.Build
 {
     /// <summary>
     /// Keeps the Android SDKs' scripts (VK Ad Network, MyTracker) out of every non-Android player: nothing uses
-    /// them there (they and <c>Maze.Application.Android</c> are compiled only for Android and the editor; a filter in
+    /// them there (they and <c>Purge.Application.Android</c> are compiled only for Android and the editor; a filter in
     /// case that changes: the web download must not grow).
     /// </summary>
     internal sealed class AndroidSdkAssemblyFilter : IFilterBuildAssemblies

@@ -1,5 +1,14 @@
 // The page around the game (Purge.Application.Platform.WebPage).
 mergeInto(LibraryManager.library, {
+  // Render resolution: the page's device pixel ratio (as the template chose it at start) × scale. Unity sizes the
+  // canvas backing store by Module.devicePixelRatio on its next resize check (stress test: fill-rate cost).
+  PurgePage_SetPixelRatioScale: function (scale) {
+    if (Module.purgeBaseDpr === undefined)
+      Module.purgeBaseDpr = Module.devicePixelRatio || window.devicePixelRatio || 1;
+    Module.devicePixelRatio = Module.purgeBaseDpr * scale;
+    window.dispatchEvent(new Event('resize'));
+  },
+
   // Calls back with 1 when the tab becomes visible and 0 when it is hidden.
   PurgePage_ListenVisibility: function (callback) {
     document.addEventListener('visibilitychange', function () {

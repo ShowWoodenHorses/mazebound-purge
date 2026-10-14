@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3489b509720531c4b87349f0912159e7, type: 3}
+  m_Name: StressTest
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.StressTestDefinition
+  _visual: {fileID: 11400000, guid: fbd9bed12ffae374180fb7eeb1d78e96, type: 2}
+  _monster:
+    MaxHp: 30
+    Speed: 2.2
+    Radius: 0.3
+    AttackReach: 0.8
+    Damage: 5
+    AttackInterval: 1.2
+    TurnSpeed: 540
+    Separation: 0.5
+    CorpseTime: 2
+  _weapons:
+    GunRate: 12
+    BulletSpeed: 28
+    BulletDamage: 12
+    BulletRange: 14
+    GunSpread: 3
+    ShotgunRate: 1.5
+    Pellets: 8
+    ShotgunSpread: 24
+    PelletDamage: 10
+    FlameRange: 3.5
+    FlameAngle: 30
+    FlameDps: 45
+    FireLifetime: 4
+    FireDps: 20
+    FireCellsTarget: 30
+  _monsterCounts: 320000006400000096000000c80000002c010000f4010000
+  _startCount: 150
+  _cameraHalfExtents:
+  - 4
+  - 6
+  - 8
+  - 10
+  _startCameraHalfExtent: 8
+  _visibilityRadius: 10
+  _spawnMinDistance: 12
+  _spawnMaxDistance: 22
+  _autopilotRadius: 10
+  _tracerMaterial: {fileID: 2100000, guid: 88deccef97c722f4fbd231c83d3c6c02, type: 2}
+  _particleMaterial: {fileID: 2100000, guid: 299be5c1d954e8d4d8b9a9ccdb0da1d6, type: 2}
+  _fireMaterial: {fileID: 2100000, guid: b49e1a135b417a04e8cd8d77ca43aef2, type: 2}
+  _benchmarkWarmup: 3
+  _benchmarkSample: 12

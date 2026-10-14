@@ -49,6 +49,10 @@ namespace Purge.Composition
         public async UniTask StartAsync(CancellationToken cancellation)
         {
             GameLog.Info(LogChannel.Bootstrap, "Bootstrap started.");
+#if UNITY_ANDROID
+            // Unity caps mobile players at 30 FPS by default (decision 2026-10-14: 60 on Android, see Docs/StressTest.md).
+            UnityEngine.Application.targetFrameRate = 60;
+#endif
             _localization.Initialize();
             _screens.Initialize();
             _settings.Initialize();

@@ -5,7 +5,10 @@ using Purge.Application.Assets;
 using Purge.Application.Flow;
 using Purge.Core.Common;
 using Purge.Core.Level;
+using Purge.Application.Services;
+using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -54,6 +57,11 @@ namespace Purge.Composition
                            builder.RegisterInstance(level);
                            builder.RegisterInstance(levelAssets);
                            builder.RegisterInstance(options ?? LevelLaunchOptions.Default);
+                           // Stress test levels: the autopilot wraps the player's input.
+                           if (level.StressTest != null)
+                               builder.Register(resolver => new StressAutopilotInput(
+                                       (IPlayerInput)resolver.Resolve<IInputService>(), level), Lifetime.Singleton)
+                                   .As<IPlayerInput>();
                        }))
                 {
                     scope.Build();

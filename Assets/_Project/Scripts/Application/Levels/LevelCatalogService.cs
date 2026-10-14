@@ -38,7 +38,11 @@ namespace Purge.Application.Levels
         public LevelCatalogService(IAddressablesService addressables)
         {
             _addressables = addressables;
+#if PURGE_DEV_LEVELS
+            _loadDevLevels = true; // stress test build: release, but with the development levels
+#else
             _loadDevLevels = UnityEngine.Debug.isDebugBuild;
+#endif
         }
 
         public string Name => "Level Catalog";

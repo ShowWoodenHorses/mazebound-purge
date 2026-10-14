@@ -58,7 +58,20 @@ namespace Purge.Gameplay.Visibility
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeVisibility;
 
-        public int Radius => FieldOfView.DefaultRadius;
+        /// <summary>View radius in cells (window 2·radius+1).</summary>
+        public int Radius { get; private set; } = FieldOfView.DefaultRadius;
+
+        /// <summary>Cost of the last recalculation, milliseconds (diagnostics, stress test).</summary>
+        public float LastComputeMs { get; private set; }
+
+        /// <summary>Changes the view radius (stress test; later — view upgrades) and recalculates.</summary>
+        public void SetRadius(int radius)
+        {
+            if (radius < 1) throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
+            if (radius == Radius) return;
+            Radius = radius;
+            Recalculate();
+        }
 
         /// <summary>False until the player spawned: then nothing is visible.</summary>
         public bool HasResult => _fieldOfView.HasResult;
@@ -100,7 +113,10 @@ namespace Purge.Gameplay.Visibility
             if (!_player.IsSpawned)
                 return;
 
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
             _fieldOfView.Compute(_player.Cell, Radius, new LevelOpacity(_grid, _doors));
+            LastComputeMs = (float)((System.Diagnostics.Stopwatch.GetTimestamp() - started) * 1000.0 /
+                                    System.Diagnostics.Stopwatch.Frequency);
             RecalculationCount++;
             Changed?.Invoke();
         }

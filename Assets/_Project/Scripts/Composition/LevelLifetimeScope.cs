@@ -5,6 +5,7 @@ using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
+using Purge.Gameplay.Horde;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
@@ -17,8 +18,10 @@ using Purge.Gameplay.Weapons;
 using Purge.Gameplay.Zombies;
 using Purge.Presentation.Audio;
 using Purge.Presentation.Map;
+using Purge.Presentation.Stress;
 using Purge.Presentation.UI;
 using Purge.Presentation.Visual;
+using Purge.Presentation.Visual.Horde;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -75,6 +78,9 @@ namespace Purge.Composition
             builder.Register<BulletSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<NavigationSystem>(Lifetime.Singleton);
             builder.Register<ZombieSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Mass monsters and the stress test weapons (inactive unless the level has StressTest settings).
+            builder.Register<HordeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
@@ -106,6 +112,12 @@ namespace Purge.Composition
             // After the weapon presenter: the late tick reads the muzzle of the posed gun.
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<StressEffectsView>(Lifetime.Singleton).AsSelf()
+                .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
+            // After the horde views: measures them and drives the stress test overlay.
+            builder.Register<StressController>(Lifetime.Singleton).AsSelf()
+                .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             // After the gameplay systems and the zombie views: it listens to them and ticks after the simulation.
             builder.Register<LevelAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<FootprintsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();

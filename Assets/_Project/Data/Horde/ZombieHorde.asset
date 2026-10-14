@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceea47192e4d1b44cac2a7150177ea20, type: 3}
+  m_Name: ZombieHorde
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.HordeVisualDefinition
+  _mesh: {fileID: 4300000, guid: 6942bfca36f9d1a4ead6432bfe3b52cb, type: 2}
+  _variants:
+  - {fileID: 2100000, guid: e51aac46b0625d74cb5f1b8c8f559659, type: 2}
+  - {fileID: 2100000, guid: 038fec33bdbea444692815e279ba7dba, type: 2}
+  - {fileID: 2100000, guid: 6d85dd73d5b594b4ca8d61b7c9f9ee00, type: 2}
+  - {fileID: 2100000, guid: 0a6b5655207272444a481cce7b4cd524, type: 2}
+  - {fileID: 2100000, guid: 19abcc13babf608418af5774e5e3f8c3, type: 2}
+  - {fileID: 2100000, guid: 469afaf6d60280841bb229758a5df13c, type: 2}
+  _vertexAnimation: {fileID: 2800000, guid: 032e1316bfa25f1409c1d1f6077f5a9c, type: 2}
+  _boneAnimation: {fileID: 2800000, guid: 6ee55e543bc842f4c977a4167ddb40c1, type: 2}
+  _boneCount: 50
+  _frameRate: 30
+  _clips:
+  - Name: Zombie_attack_1
+    Kind: 3
+    FirstFrame: 0
+    FrameCount: 80
+    Length: 2.6333334
+    Loop: 0
+  - Name: Zombie_attack_2
+    Kind: 3
+    FirstFrame: 80
+    FrameCount: 80
+    Length: 2.6000001
+    Loop: 0
+  - Name: Zombie_attack_3
+    Kind: 3
+    FirstFrame: 160
+    FrameCount: 141
+    Length: 4.6333337
+    Loop: 0
+  - Name: Zombie_death
+    Kind: 4
+    FirstFrame: 301
+    FrameCount: 91
+    Length: 2.966667
+    Loop: 0
+  - Name: Zombie_idle_1
+    Kind: 0
+    FirstFrame: 392
+    FrameCount: 120
+    Length: 4
+    Loop: 1
+  - Name: Zombie_idle_2
+    Kind: 0
+    FirstFrame: 512
+    FrameCount: 130
+    Length: 4.3333335
+    Loop: 1
+  - Name: Zombie_run
+    Kind: 2
+    FirstFrame: 642
+    FrameCount: 24
+    Length: 0.8000001
+    Loop: 1
+  - Name: Zombie_walk
+    Kind: 1
+    FirstFrame: 666
+    FrameCount: 46
+    Length: 1.5333334
+    Loop: 1
+  _scale: 0.75
+  _sourceVertexCount: 4779

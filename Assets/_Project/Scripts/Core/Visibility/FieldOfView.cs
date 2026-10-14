@@ -9,7 +9,11 @@ namespace Purge.Core.Visibility
     /// limited by line of sight. Reused between computations, so recalculation does not allocate.
     /// <para>
     /// Rules. The player stands somewhere in their cell, so rays are cast from sample points of the origin cell
-    /// (centre and four inset corners) to the same sample points of every cell of the window. Every cell a ray
+    /// (centre and four inset corners): to the five sample points of every cell up to <see cref="NearRadius"/> away
+    /// (peeking round a near corner), a ray from the centre to the centre of every farther cell of the window, and
+    /// rays from all five sample points to the centre of every edge cell of the window (the fan that sweeps the
+    /// whole window). Several times fewer ray steps than five-to-five rays to every cell (stage 2: radius 10 cost
+    /// 13–35 ms on a budget phone). Every cell a ray
     /// passes through before it is blocked is visible, including the opaque cell that blocks it (the wall is seen) —
     /// so a far cell is never seen while a nearer cell on the same line is not.
     /// An opaque cell (wall, closed door) is also visible when it shares a side with a visible transparent cell
@@ -30,6 +34,9 @@ namespace Purge.Core.Visibility
     {
         /// <summary>5 cells in every direction → 11×11 (ТЗ §53).</summary>
         public const int DefaultRadius = 5;
+
+        /// <summary>Cells up to this many cells away (Chebyshev) get rays between all sample points.</summary>
+        public const int NearRadius = 4;
 
         /// <summary>Sample points are this far from the cell centre: inside the cell, off its exact corners.</summary>
         private const float Inset = 0.45f;
@@ -106,13 +113,31 @@ namespace Purge.Core.Visibility
             var marker = new WindowMarker(this, window);
             marker.Visit(origin);
 
-            // Rays to sample points of every cell of the window; every cell a ray passes through is visible, so
-            // visibility has no holes along a line (a far cell seen while a nearer cell on the same line is not).
+            // Every cell a ray passes through is visible, so visibility has no holes along a line (a far cell seen
+            // while a nearer cell on the same line is not). Near cells: all sample points; far ones: centre to centre.
             for (var y = window.Y; y < window.YMax; y++)
             for (var x = window.X; x < window.XMax; x++)
             {
                 if (x == origin.X && y == origin.Y) continue;
-                CastRays(origin, new GridPosition(x, y), opacity, ref marker);
+                if (Math.Abs(x - origin.X) <= NearRadius && Math.Abs(y - origin.Y) <= NearRadius)
+                    CastRays(origin, new GridPosition(x, y), opacity, ref marker);
+                else
+                    GridLineOfSight.Trace(origin.X, origin.Y, x, y, opacity, ref marker);
+            }
+
+            // ...and the fan from the whole origin cell to the edge of the window (peeking round corners).
+            for (var x = window.X; x < window.XMax; x++)
+            {
+                CastEdgeRays(origin, new GridPosition(x, window.Y), opacity, ref marker);
+                if (window.YMax - 1 > window.Y)
+                    CastEdgeRays(origin, new GridPosition(x, window.YMax - 1), opacity, ref marker);
+            }
+
+            for (var y = window.Y + 1; y < window.YMax - 1; y++)
+            {
+                CastEdgeRays(origin, new GridPosition(window.X, y), opacity, ref marker);
+                if (window.XMax - 1 > window.X)
+                    CastEdgeRays(origin, new GridPosition(window.XMax - 1, y), opacity, ref marker);
             }
 
             // Walls bordering visible floor: checked against the transparent cells found by rays only.
@@ -214,6 +239,15 @@ namespace Purge.Core.Visibility
                 GridLineOfSight.Trace(
                     from.X + SampleX[i], from.Y + SampleY[i],
                     to.X + SampleX[j], to.Y + SampleY[j], opacity, ref marker);
+        }
+
+        /// <summary>Rays from the five sample points of <paramref name="from"/> to the centre of <paramref name="to"/>.</summary>
+        private static void CastEdgeRays<T>(GridPosition from, GridPosition to, in T opacity, ref WindowMarker marker)
+            where T : IGridOpacity
+        {
+            if (from == to) return;
+            for (var i = 0; i < SampleX.Length; i++)
+                GridLineOfSight.Trace(from.X + SampleX[i], from.Y + SampleY[i], to.X, to.Y, opacity, ref marker);
         }
 
         /// <summary>Marks cells crossed by rays as visible, ignoring anything outside the window.</summary>

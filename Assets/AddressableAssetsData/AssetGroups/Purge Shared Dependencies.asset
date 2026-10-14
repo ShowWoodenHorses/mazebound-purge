@@ -125,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dcf5e56081e49c47ab257f79f5e5cca
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_02_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e85d085836cfbc418b37c26a35b3385
     m_Address: Assets/_Project/Art/Animations/Zombie_scream.fbx
     m_ReadOnly: 0
@@ -302,6 +307,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 822402f846727b24890cc7d5f5430675
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88deccef97c722f4fbd231c83d3c6c02
+    m_Address: Assets/_Project/Art/Effects/fx_tracer.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -530,6 +540,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efd5730912d744e4fbfa7c03bfabae51
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_03_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f27b134fb56d17341899f871cca56d03
     m_Address: Assets/_Project/Art/Effects/fx_noise_ring.mat
     m_ReadOnly: 0
@@ -542,6 +557,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f49a2f304f01b9f4292f3a57c14bd4ab
     m_Address: Assets/_Project/Art/Shaders/PurgeRing.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f932dc705e6143a4daf475d0957bca78
+    m_Address: Assets/_Project/Art/Effects/fx_tracer.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

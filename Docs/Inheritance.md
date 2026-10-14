@@ -58,8 +58,8 @@
 | Visual: `CellLayer`, `CellVisualContext` | 🔧 | категории стен (Corner/T…) нужны меньше: стены в основном у зданий |
 | Visual: `ThemeLighting`, `ThemeWeather`, `LightFixtures`, `VisualColors`, `LevelVisualUsage`, `PlayerVisualDefinition` | ✅ | |
 | Visual: `CombatFeedback`, `CombatVisualDefinition`, `WeaponVisualCatalog` | 🔧 | новые эффекты; каталог — по папкам и редкости |
-| Visual: `ThemeAwareness` (зоны зрения) | ❓ | на 100+ монстров не годится; может, только для офицеров/элиты |
-| Visual: `ThemeFootprints` | ❓ | следы 100+ монстров — нагрузка; может, только игрок |
+| Visual: `ThemeAwareness` (зоны зрения) | ♻️ | только офицеры, элита, боссы (не рядовые) — решение 2026-10-14 по стресс-тесту |
+| Visual: `ThemeFootprints` | ♻️ | только игрок, офицеры, элита, боссы (не рядовые) — решение 2026-10-14 |
 | Visual: `ThemeRoute` | ❌ | подсказки маршрута нет |
 
 ## Gameplay
@@ -127,10 +127,10 @@
 | `ZombieViewPresenter`, `ZombieAnimatorParameters` | ♻️ | рядовые — запечённая анимация + GPU instancing; офицеры/элита/боссы — Animator |
 | Двери: `DoorViewPresenter`, `DoorVisual`, `FrozenDoorsView`, `FrozenDoorIce` | ✅ | |
 | `PickupViewPresenter` | 🔧 | много дропа, пул |
-| Погода: `SnowfallView`, `BreathView` | ✅❓ | пар изо рта на 100 монстров — ограничить |
+| Погода: `SnowfallView`, `BreathView` | ✅♻️ | пар изо рта — только игрок, офицеры, элита, боссы — решение 2026-10-14 |
 | `RouteLineView`, `RouteLineMesh` | ❌ | |
-| `VisionZonesView`, `VisionZoneShape` | ❓ | см. `ThemeAwareness` |
-| `FootprintsView`, `FootprintField` | ❓ | см. `ThemeFootprints` |
+| `VisionZonesView`, `VisionZoneShape` | ♻️ | см. `ThemeAwareness` |
+| `FootprintsView`, `FootprintField` | ♻️ | см. `ThemeFootprints` |
 | UI: `UiShape`, `UiStyle`, `UiButton`, `UiSwitch`, `UiAppear`, `UiIconSet`, `UiSound`, шейдер `Maze/UIShape` | ✅ | + палитра редкостей |
 | UI: тач (`TouchControls`, `TouchStick`, `TouchLayoutEditor`, `SafeAreaFitter`…) | ✅ | |
 | UI: `TouchAttackCluster` | 🔧 | сектор метательного, долгое нажатие, запас патронов |
@@ -156,8 +156,8 @@
 | Dev: `CombatEffectsBuilder`, `DecorBuilder`, `MapIconsBuilder`, `LevelPropsBuilder` (светильники ✅, выходы ❌) | 🔧 | |
 | Dev: `RuntimeScenesBuilder` | ♻️ | новые экраны |
 | Dev: `RouteLineBuilder` | ❌ | |
-| Dev: `AwarenessVisualsBuilder`, `FootprintsBuilder` | ❓ | |
-| Dev: `TempLevelBuilder` | ❓ | проверить, нужен ли |
+| Dev: `AwarenessVisualsBuilder`, `FootprintsBuilder` | ✅ | системы остаются (не для рядовых) |
+| Dev: `TempLevelBuilder` | ❌ | удалён на этапе 1 |
 
 ## Ассеты и данные
 - ✅ Шейдеры: `Maze/Geometry`, `Maze/Lit` (+ вариант с запечённой анимацией), `Maze/Fog`, `Maze/UIShape`, `Maze/Particle`, `Maze/SwingArc`, `Maze/Ring`, `Maze/Overhead`, `Maze/BlobShadow`, `MazeLighting.cginc`. Имена `Maze/*` → новый префикс.

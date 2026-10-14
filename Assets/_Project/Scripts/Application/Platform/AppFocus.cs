@@ -166,6 +166,30 @@ namespace Purge.Application.Platform
             return xMax > xMin && yMax > yMin ? Rect.MinMaxRect(xMin, yMin, xMax, yMax) : safeArea;
         }
 
+        /// <summary>
+        /// Render resolution relative to the start (1 = as the page chose it). Web: the page's pixel ratio × scale;
+        /// Android: screen resolution × scale; elsewhere nothing (stress test: fill-rate cost).
+        /// </summary>
+        public static void SetResolutionScale(float scale)
+        {
+            scale = Mathf.Clamp(scale, 0.25f, 1f);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            PurgePage_SetPixelRatioScale(scale);
+#elif UNITY_ANDROID && !UNITY_EDITOR
+            if (_nativeWidth == 0)
+            {
+                _nativeWidth = Screen.width;
+                _nativeHeight = Screen.height;
+            }
+
+            Screen.SetResolution(Mathf.RoundToInt(_nativeWidth * scale), Mathf.RoundToInt(_nativeHeight * scale), true);
+#endif
+        }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        private static int _nativeWidth, _nativeHeight;
+#endif
+
         /// <summary>Sets the insets (left, top, right, bottom in RectInt's x, y, width, height); tests and the page.</summary>
         public static void SetInsets(int left, int top, int right, int bottom) =>
             Insets = new RectInt(Mathf.Max(0, left), Mathf.Max(0, top), Mathf.Max(0, right), Mathf.Max(0, bottom));
@@ -180,6 +204,9 @@ namespace Purge.Application.Platform
 
         [DllImport("__Internal")]
         private static extern void PurgePage_ListenInsets(InsetsCallback callback);
+
+        [DllImport("__Internal")]
+        private static extern void PurgePage_SetPixelRatioScale(float scale);
 
         [AOT.MonoPInvokeCallback(typeof(IntCallback))]
         private static void OnVisibility(int visible) => Raise(visible != 0);

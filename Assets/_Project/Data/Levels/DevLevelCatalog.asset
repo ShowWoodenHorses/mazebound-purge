@@ -22,6 +22,12 @@ MonoBehaviour:
   - _levelId: Level_light
     _address: Levels/Level_light
     _displayName: New Level
+  - _levelId: Level_Stress64
+    _address: Levels/Level_Stress64
+    _displayName: Stress64
+  - _levelId: Level_Stress100
+    _address: Levels/Level_Stress100
+    _displayName: Stress100
   _tutorial:
     _levelId: 
     _address: 

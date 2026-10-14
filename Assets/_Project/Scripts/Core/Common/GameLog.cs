@@ -17,6 +17,8 @@ namespace Purge.Core.Common
         Visual,
         Localization,
         Analytics,
+        /// <summary>Stress test and benchmark results.</summary>
+        Performance,
     }
 
     /// <summary>

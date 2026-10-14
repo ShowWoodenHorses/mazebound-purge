@@ -178,6 +178,8 @@
 | **WebGL GameDistribution (Release)** | WebGL для GameDistribution → `Builds/WebGL-GameDistribution` + `WebGL-GameDistribution.zip` (его загружать в панель GD, вкладка Upload) |
 | **Android APK (Development)** | APK без магазина (реклама-заглушка, аналитика в лог), dev-сборка → `Builds/Android/Mazebound-dev.apk` |
 | **Android APK (Release)** | то же, релиз (подписан ключом, см. ниже) |
+| **WebGL Stress Test (Release + Dev Levels)** | WebGL с release-оптимизациями, но с dev-уровнями (symbol `PURGE_DEV_LEVELS`) — замеры стресс-теста на скорости релиза → `Builds/WebGL-stress` |
+| **Android APK Stress Test (Release + Dev Levels)** | то же для Android → `Builds/Android/Stress-<имя APK>` |
 | **Android RuStore APK (Development)** | APK для RuStore, dev-сборка (отладочный ключ) → `Builds/Android/Mazebound-RuStore-dev.apk` |
 | **Android RuStore APK (Release)** | APK для RuStore, релиз → `Builds/Android/Mazebound-RuStore.apk` (его загружать в консоль RuStore) |
 
@@ -275,6 +277,20 @@ Addressables не поддерживает — остаётся LZ4. Музык�
 автоматически с предупреждением (см. рецепт), варианты удалённых моделей убираются; префабы Addressable;
 переназначает визуал зомби в уровнях; предупреждает о типах без вида.
 Запускать: после смены/добавления моделей или клипов зомби. Контроллер пересобирается на месте — **не удалять его ассет**.
+
+#### Build Horde Visuals
+Массовые монстры (стресс-тест, этап 2): модель первого префаба в `Art/Zombie` сваривается по позиции+UV (Synty плоские —
+вершин ~в 3 раза меньше, нормали считает шейдер), клипы `Zombie_*` (idle/walk/run/attack/death по имени) запекаются в
+две текстуры — матрицы костей и позиции вершин (VAT) → `Art/Horde` (меш, текстуры, материал на каждый вид зомби,
+`FireCells.mat`), `Data/Horde/ZombieHorde.asset` (`HordeVisualDefinition`); создаёт `Data/Horde/StressTest.asset`
+(настройки стресс-теста, значения сохраняются) и подставляет в него визуал и материалы эффектов.
+Запускать: после смены моделей или клипов зомби. Ассеты обновляются на месте (GUID те же).
+
+#### Build Stress Test Levels
+Уровни стресс-теста `Level_Stress64` и `Level_Stress100` (лесная площадка со столбами, dev-каталог, ссылка на
+`StressTest.asset`) — Generate New + Build / Sync. Запускать после Build Horde Visuals; повторный запуск перегенерирует их.
+В игре: страница DEV в выборе уровней; слева — оверлей (FPS, мс по системам, кнопки нагрузки, RUN BENCH — автобенчмарк,
+результаты в консоль, канал `Performance`).
 
 #### Build Player Animations
 Модель игрока (единственный префаб прямо в `Art/Player`) + клипы Mixamo `Player_*` → префаб игрока: импорт клипов (Humanoid, root motion запечён), контроллер

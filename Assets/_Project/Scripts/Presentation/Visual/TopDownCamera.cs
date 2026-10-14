@@ -37,6 +37,13 @@ namespace Purge.Presentation.Visual
             _camera.farClipPlane = Mathf.Max(_camera.farClipPlane, distance + radius * 2f);
         }
 
+        /// <summary>Half-size (cells) of the square around the player that always fits the screen.</summary>
+        public float FollowHalfExtent
+        {
+            get => _followHalfExtent;
+            set => _followHalfExtent = Mathf.Max(1f, value);
+        }
+
         /// <summary>Distance at which a square of ±<see cref="_followHalfExtent"/> around the target fits the view.</summary>
         public float FollowDistance => _followHalfExtent / Mathf.Tan(NarrowHalfFov());
 

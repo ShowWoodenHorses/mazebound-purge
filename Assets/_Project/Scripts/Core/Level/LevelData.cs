@@ -30,12 +30,18 @@ namespace Purge.Core.Level
         [Tooltip("Steps of the tutorial: set only on the tutorial level (Build / Sync lists it apart from the numbered levels).")]
         [SerializeField] private TutorialScript _tutorial;
 
+        [Tooltip("Stage 2 stress test (dev levels only): horde, stress weapons, autopilot, measuring overlay.")]
+        [SerializeField] private Horde.StressTestDefinition _stressTest;
+
         public LevelSettings Settings => _settings;
         public VisualTheme VisualTheme { get => _visualTheme; internal set => _visualTheme = value; }
         public VisualData VisualData => _visualData;
 
         /// <summary>Tutorial steps; null for every level but the tutorial.</summary>
         public TutorialScript Tutorial { get => _tutorial; internal set => _tutorial = value; }
+
+        /// <summary>Stress test settings; null for every level but the stress test levels.</summary>
+        public Horde.StressTestDefinition StressTest { get => _stressTest; internal set => _stressTest = value; }
 
         /// <summary>A placed object by id (doors, starts, zombies, pickups); null when there is none.</summary>
         public LevelEntityData FindEntity(string id)

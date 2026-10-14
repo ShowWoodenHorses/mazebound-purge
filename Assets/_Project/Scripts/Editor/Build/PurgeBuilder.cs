@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Purge.Core.Level;
@@ -59,6 +60,12 @@ namespace Purge.Editor.Build
         [MenuItem("Purge/Build/Android APK (Release)")]
         public static void AndroidRelease() => Build(BuildTarget.Android, development: false);
 
+        [MenuItem("Purge/Build/WebGL Stress Test (Release + Dev Levels)")]
+        public static void WebGLStress() => Build(BuildTarget.WebGL, development: false, stress: true);
+
+        [MenuItem("Purge/Build/Android APK Stress Test (Release + Dev Levels)")]
+        public static void AndroidStress() => Build(BuildTarget.Android, development: false, stress: true);
+
         [MenuItem("Purge/Build/Android RuStore APK (Development)")]
         public static void AndroidRuStoreDevelopment() => Build(BuildTarget.Android, development: true, store: AndroidStore.RuStore);
 
@@ -71,9 +78,11 @@ namespace Purge.Editor.Build
         /// (the editor keeps compiling without it), its SDK script into the page, the build into its own folder.
         /// <paramref name="store"/> — the same for an Android build (its symbol, its APK name). An Android release
         /// build is signed with the key from <see cref="AndroidStores.SigningFile"/>.
+        /// <paramref name="stress"/> — a release build that still ships the development levels (symbol
+        /// <see cref="DevLevelsDefine"/>): measuring the stress test at release speed. Own folder / APK name.
         /// </summary>
         public static string Build(BuildTarget target, bool development, WebPlatform web = WebPlatform.Generic,
-            AndroidStore store = AndroidStore.Generic)
+            AndroidStore store = AndroidStore.Generic, bool stress = false)
         {
             if (target != BuildTarget.WebGL) web = WebPlatform.Generic;
             if (target != BuildTarget.Android) store = AndroidStore.Generic;
@@ -94,7 +103,8 @@ namespace Purge.Editor.Build
             if (target == BuildTarget.Android)
             {
                 problem = ConfigureAndroid();
-                if (problem == null && !development) (signing, problem) = AndroidStores.LoadSigning();
+                // Stress test APKs are for measuring only: the debug key is enough.
+                if (problem == null && !development && !stress) (signing, problem) = AndroidStores.LoadSigning();
                 if (problem == null) problem = ResolveAndroidDependencies();
                 if (problem != null) return Fail(problem);
             }
@@ -114,8 +124,8 @@ namespace Purge.Editor.Build
             if (duplicates.Count > 0)
                 return Fail("Assets are still copied into several Addressables bundles: " + string.Join(", ", duplicates.Take(10)));
             AddressableAssetSettings.CleanPlayerContent(settings.ActivePlayerDataBuilder);
-            // Development levels (and their catalog) ship only in development builds.
-            var devIncluded = LevelSync.SetDevLevelsIncluded(settings, development);
+            // Development levels (and their catalog) ship only in development (and stress test) builds.
+            var devIncluded = LevelSync.SetDevLevelsIncluded(settings, development || stress);
             AddressablesPlayerBuildResult content;
             try
             {
@@ -131,7 +141,14 @@ namespace Purge.Editor.Build
             var location = target == BuildTarget.Android
                 ? Path.Combine(Output, "Android", AndroidStores.FileName(store, development))
                 : Path.Combine(Output, WebPlatforms.Folder(web, development));
+            if (stress)
+                location = target == BuildTarget.Android
+                    ? Path.Combine(Output, "Android", "Stress-" + AndroidStores.FileName(store, development))
+                    : location + "-stress";
             var define = target == BuildTarget.Android ? AndroidStores.Define(store) : WebPlatforms.Define(web);
+            var defines = new List<string>();
+            if (define != null) defines.Add(define);
+            if (stress) defines.Add(DevLevelsDefine);
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { RuntimeScenesBuilder.BootstrapPath, RuntimeScenesBuilder.GamePath },
@@ -139,7 +156,7 @@ namespace Purge.Editor.Build
                 target = target,
                 targetGroup = group,
                 options = development ? BuildOptions.Development : BuildOptions.None,
-                extraScriptingDefines = define != null ? new[] { define } : null,
+                extraScriptingDefines = defines.Count > 0 ? defines.ToArray() : null,
                 // Without it the player is built for subtarget 0 (WebGL: Generic — DXT textures in the player's data)
                 // and the editor setting is reset to it: every next build reimported all textures back to ASTC.
                 subtarget = target == BuildTarget.WebGL ? (int)WebGLTextureSubtarget.ASTC : 0,
@@ -162,7 +179,7 @@ namespace Purge.Editor.Build
             var platformName = web != WebPlatform.Generic ? " " + web : store != AndroidStore.Generic ? " " + store : "";
             if (target == BuildTarget.Android)
                 platformName += $" {PlayerSettings.bundleVersion} ({PlayerSettings.Android.bundleVersionCode}){(signing != null ? ", signed" : ", debug key")}";
-            var text = $"{target}{platformName} {(development ? "development" : "release")} build: {summary.result}, " +
+            var text = $"{target}{platformName} {(development ? "development" : stress ? "stress test" : "release")} build: {summary.result}, " +
                        $"{summary.totalErrors} error(s), {summary.totalWarnings} warning(s), " +
                        $"{SizeOf(location) / (1024f * 1024f):0.0} MB, {summary.totalTime.TotalSeconds:0}s → {Path.GetFullPath(location)}";
             if (summary.result == BuildResult.Succeeded && WebPlatforms.NeedsArchive(web))
@@ -173,6 +190,9 @@ namespace Purge.Editor.Build
             else Debug.LogError("[Purge] " + text);
             return text;
         }
+
+        /// <summary>Player symbol: load the development level catalog in a release build (stress test builds).</summary>
+        public const string DevLevelsDefine = "PURGE_DEV_LEVELS";
 
         /// <summary>The page around the WebGL build: <c>Assets/WebGLTemplates/Purge</c>.</summary>
         private const string WebTemplate = "PROJECT:Purge";

@@ -30,6 +30,9 @@ namespace Purge.Editor.LevelDesigner
         private static readonly Color FloorColor = new Color(0.80f, 0.78f, 0.72f);
         private static readonly Color DoorColor = new Color(0.55f, 0.36f, 0.18f);
         private static readonly Color SnowdriftColor = new Color(0.86f, 0.93f, 1f);
+        private static readonly Color VoidColor = new Color(0.08f, 0.08f, 0.1f);
+        private static readonly Color ObstacleBlockingColor = new Color(0.25f, 0.45f, 0.22f);
+        private static readonly Color ObstaclePassableColor = new Color(0.55f, 0.75f, 0.45f);
         private static readonly Color DecorAutoColor = new Color(0.45f, 0.4f, 0.32f);
         private static readonly Color DecorManualColor = new Color(0.2f, 0.6f, 0.25f);
         private static readonly Color SelectedColor = new Color(1f, 0.85f, 0.1f);
@@ -227,7 +230,8 @@ namespace Purge.Editor.LevelDesigner
             EditorGUI.DrawRect(local, Background);
 
             var gap = _cellSize >= 8f ? 1f : 0f;
-            for (var i = 0; i < geometry.CellCount; i++)
+            // The ground floor (switching floors comes with buildings and stairs).
+            for (var i = 0; i < geometry.FloorSize; i++)
             {
                 var cell = geometry.ToPosition(i);
                 var r = CellRect(cell, geometry.Height);
@@ -237,6 +241,14 @@ namespace Purge.Editor.LevelDesigner
                 var type = geometry.GetCell(cell);
                 var color = type == CellType.Floor && geometry.GetSurface(cell) == CellSurface.Snowdrift ? SnowdriftColor : CellColor(type);
                 EditorGUI.DrawRect(new Rect(r.x, r.y, r.width - gap, r.height - gap), color);
+
+                var obstacle = type == CellType.Floor ? geometry.GetObstacle(cell) : null;
+                if (obstacle != null)
+                {
+                    var inset = r.width * 0.2f;
+                    EditorGUI.DrawRect(new Rect(r.x + inset, r.y + inset, r.width - 2f * inset - gap, r.height - 2f * inset - gap),
+                        obstacle.BlocksMovement ? ObstacleBlockingColor : ObstaclePassableColor);
+                }
             }
 
             PaintDecor(level, local);
@@ -268,7 +280,7 @@ namespace Purge.Editor.LevelDesigner
 
             var geometry = level.Geometry;
             var size = Mathf.Max(3f, _cellSize * 0.22f);
-            for (var i = 0; i < geometry.CellCount; i++)
+            for (var i = 0; i < geometry.FloorSize; i++)
             {
                 var cell = geometry.ToPosition(i);
                 var r = CellRect(cell, geometry.Height);
@@ -366,6 +378,7 @@ namespace Purge.Editor.LevelDesigner
             {
                 case CellType.Floor: return FloorColor;
                 case CellType.Door: return DoorColor;
+                case CellType.Void: return VoidColor;
                 default: return WallColor;
             }
         }

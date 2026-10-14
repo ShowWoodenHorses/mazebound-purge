@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674d411ed11e5f341b9cf5fb1faa4947, type: 3}
   m_Name: SnowZombieListener
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ZombieDefinition
-  _id: listener
+  _id: snow_zombie_listener
   _detectionType: 1
   _visionAngle: 45
   _visionRange: 5

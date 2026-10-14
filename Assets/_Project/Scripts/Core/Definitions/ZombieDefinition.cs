@@ -1,3 +1,4 @@
+using Purge.Core.Content;
 using UnityEngine;
 
 namespace Purge.Core.Definitions
@@ -11,9 +12,8 @@ namespace Purge.Core.Definitions
 
     /// <summary>Gameplay behaviour of a zombie type. Appearance is defined by ZombieVisualSet, never here.</summary>
     [CreateAssetMenu(fileName = "ZombieDefinition", menuName = "Purge/Definitions/Zombie")]
-    public sealed class ZombieDefinition : ScriptableObject
+    public sealed class ZombieDefinition : ContentDefinition
     {
-        [SerializeField] private string _id;
         [SerializeField] private ZombieDetectionType _detectionType;
 
         [Header("Vision (VisionOnly)")]
@@ -39,7 +39,6 @@ namespace Purge.Core.Definitions
         [Tooltip("Share of the speed kept while the zombie is in a snowdrift cell.")]
         [SerializeField, Range(0.1f, 1f)] private float _snowdriftSpeed = 0.6f;
 
-        public string Id => _id;
         public ZombieDetectionType DetectionType => _detectionType;
         public float VisionAngle => _visionAngle;
         public float VisionRange => _visionRange;
@@ -57,7 +56,7 @@ namespace Purge.Core.Definitions
             float hearingRadius = 5f, float detectionRadius = 4f, float maxHp = 30f, float damage = 10f,
             float attackInterval = 1f, float moveSpeed = 1.5f, float chaseSpeed = 0f)
         {
-            _id = id;
+            SetId(id);
             _detectionType = detection;
             _visionAngle = visionAngle;
             _visionRange = visionRange;

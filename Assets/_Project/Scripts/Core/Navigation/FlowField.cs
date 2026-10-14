@@ -8,7 +8,8 @@ namespace Purge.Core.Navigation
     /// grid in 8 directions (orthogonal step 2, diagonal 3 ≈ 2·1.41), a diagonal only when both orthogonal cells
     /// beside it are passable (no corner cutting). Every reached cell stores its distance and the neighbour to step
     /// to. Rebuilt on events (the target changed cell, a door changed), never per frame. Allocation-free after
-    /// construction.
+    /// construction. Covers the floor of the target (<see cref="Floor"/>); indices are within that floor
+    /// (y · Width + x).
     /// </summary>
     public sealed class FlowField
     {
@@ -57,6 +58,9 @@ namespace Purge.Core.Navigation
         public GridPosition Target { get; private set; }
         public bool HasResult { get; private set; }
 
+        /// <summary>Floor of the last target: the field leads walkers of that floor only.</summary>
+        public int Floor => Target.Floor;
+
         /// <summary>Incremented by every <see cref="Build{TPass}"/>.</summary>
         public int Version { get; private set; }
 
@@ -75,7 +79,7 @@ namespace Purge.Core.Navigation
             {
                 _distance[i] = Unreachable;
                 _next[i] = -1;
-                _passable[i] = passability.IsPassable(new GridPosition(i % Width, i / Width));
+                _passable[i] = passability.IsPassable(new GridPosition(i % Width, i / Width, target.Floor));
             }
 
             Target = target;

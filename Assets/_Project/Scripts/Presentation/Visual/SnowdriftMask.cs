@@ -32,7 +32,7 @@ namespace Purge.Presentation.Visual
         public Texture2D Texture => _texture;
 
         /// <summary>Mask of the level, or null when no cell shows a drift floor (no snowdrifts or the theme has none).</summary>
-        public static SnowdriftMask Create(LevelData level)
+        public static SnowdriftMask Create(LevelData level, int floor = 0)
         {
             var geometry = level.Geometry;
             var theme = level.VisualTheme;
@@ -46,7 +46,7 @@ namespace Purge.Presentation.Visual
             var any = false;
             for (var i = 0; i < cells.Length; i++)
             {
-                var cell = geometry.ToPosition(i);
+                var cell = new GridPosition(i % width, i / width, floor);
                 if (geometry.GetSurface(cell) != CellSurface.Snowdrift)
                     continue;
 
@@ -64,7 +64,7 @@ namespace Purge.Presentation.Visual
 
             for (var i = 0; i < cells.Length; i++)
             {
-                var cell = geometry.ToPosition(i);
+                var cell = new GridPosition(i % width, i / width, floor);
                 if (geometry.GetCell(cell) != CellType.Floor && NextTo(cells, width, height, cell))
                     cells[i] = NextToDrift;
             }

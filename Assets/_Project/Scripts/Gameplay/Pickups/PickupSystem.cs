@@ -208,7 +208,8 @@ namespace Purge.Gameplay.Pickups
             list.Remove(pickup);
             if (list.Count == 0)
                 _byCell.Remove(pickup.Cell);
-            _sounds.Emit(SoundType.Pickup, new UnityEngine.Vector2(pickup.Cell.X, pickup.Cell.Y), _player.Definition.InteractionSoundRadius);
+            _sounds.Emit(SoundType.Pickup, new UnityEngine.Vector2(pickup.Cell.X, pickup.Cell.Y), _player.Definition.InteractionSoundRadius,
+                pickup.Cell.Floor);
             Removed?.Invoke(pickup);
         }
     }

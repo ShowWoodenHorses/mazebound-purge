@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674d411ed11e5f341b9cf5fb1faa4947, type: 3}
   m_Name: ForestZombieHunter
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ZombieDefinition
-  _id: hunter
+  _id: forest_zombie_hunter
   _detectionType: 2
   _visionAngle: 45
   _visionRange: 5
@@ -23,3 +23,4 @@ MonoBehaviour:
   _attackInterval: 1
   _moveSpeed: 0.5
   _chaseSpeed: 3
+  _snowdriftSpeed: 0.6

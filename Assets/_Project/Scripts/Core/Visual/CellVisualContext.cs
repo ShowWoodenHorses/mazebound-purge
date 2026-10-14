@@ -53,7 +53,7 @@ namespace Purge.Core.Visual
 
         private static CellType Read(LevelGeometry geometry, GridPosition position, int dx, int dy)
         {
-            var p = new GridPosition(position.X + dx, position.Y + dy);
+            var p = new GridPosition(position.X + dx, position.Y + dy, position.Floor);
             return geometry.IsInside(p) ? geometry.GetCell(p) : CellType.Wall;
         }
 
@@ -63,7 +63,7 @@ namespace Purge.Core.Visual
             foreach (var direction in DirectionExtensions.All)
             {
                 var p = position.Neighbour(direction);
-                if (geometry.IsInside(p) && geometry.GetCell(p) != CellType.Floor)
+                if (geometry.IsInside(p) && (geometry.GetCell(p) == CellType.Wall || geometry.GetCell(p) == CellType.Door))
                     mask |= 1 << (int)direction;
             }
 

@@ -32,14 +32,15 @@ namespace Purge.Gameplay.Zombies
                 return false;
             if (distance > 1e-3f && Vector2.Angle(zombie.Facing, offset) > definition.VisionAngle * 0.5f)
                 return false;
-            return spatial.IsClear(zombie.Position, player);
+            return spatial.IsClear(zombie.Position, player, CellFlags.BlocksSight, zombie.Floor);
         }
 
         /// <summary>Vision + hearing: all around within DetectionRadius, walls and closed doors block.</summary>
         public static bool SeesAround(ZombieRuntime zombie, Vector2 player, ISpatialQueryService spatial)
         {
             var radius = zombie.Definition.DetectionRadius;
-            return (player - zombie.Position).sqrMagnitude <= radius * radius && spatial.IsClear(zombie.Position, player);
+            return (player - zombie.Position).sqrMagnitude <= radius * radius &&
+                   spatial.IsClear(zombie.Position, player, CellFlags.BlocksSight, zombie.Floor);
         }
 
         /// <summary>Whether this type hears sounds at all.</summary>
@@ -50,7 +51,7 @@ namespace Purge.Gameplay.Zombies
         public static bool Hears(ZombieRuntime zombie, SoundEvent sound)
         {
             var reach = Mathf.Min(sound.Radius, zombie.Definition.HearingRadius);
-            return (sound.Position - zombie.Position).sqrMagnitude <= reach * reach;
+            return sound.Floor == zombie.Floor && (sound.Position - zombie.Position).sqrMagnitude <= reach * reach;
         }
     }
 
@@ -118,7 +119,7 @@ namespace Purge.Gameplay.Zombies
             if (!Zombie.IsAlive || !ZombieDetection.CanHear(Zombie.Definition))
                 return;
             if (ZombieDetection.Hears(Zombie, sound))
-                Notice(PlayerMovement.CellOf(sound.Position));
+                Notice(PlayerMovement.CellOf(sound.Position, sound.Floor));
         }
 
         public void Tick(float deltaTime)
@@ -334,10 +335,11 @@ namespace Purge.Gameplay.Zombies
             var offset = target - Zombie.Position;
             var distance = offset.magnitude;
             var fullStep = CurrentSpeed * deltaTime;
-            var step = _navigation.IsSnowdrift(Zombie.Cell) ? fullStep * Zombie.Definition.SnowdriftSpeed : fullStep;
+            var step = (_navigation.IsSnowdrift(Zombie.Cell) ? fullStep * Zombie.Definition.SnowdriftSpeed : fullStep) *
+                       _navigation.ObstacleSpeedFactor(Zombie.Cell);
             var newPosition = distance <= step ? target : Zombie.Position + offset / distance * step;
 
-            var newCell = PlayerMovement.CellOf(newPosition);
+            var newCell = PlayerMovement.CellOf(newPosition, Zombie.Floor);
             if (newCell != Zombie.Cell)
             {
                 if (!_occupancy.CanZombieEnter(newCell))

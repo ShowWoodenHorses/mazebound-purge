@@ -22,6 +22,7 @@ namespace Purge.Editor.LevelDesigner
         Medkit,
         Decor,
         Snowdrift,
+        Obstacle,
         Erase,
     }
 
@@ -63,6 +64,7 @@ namespace Purge.Editor.LevelDesigner
         public ZombieDefinition ZombieDefinition { get; set; }
         public Direction ZombieFacing { get; set; } = Direction.South;
         public WeaponDefinition WeaponDefinition { get; set; }
+        public ObstacleDefinition ObstacleDefinition { get; set; }
 
         public DecorBrushMode DecorMode { get; set; }
         public string DecorVariantId { get; set; }
@@ -86,6 +88,8 @@ namespace Purge.Editor.LevelDesigner
                     PaintDecor(cell, DecorBrushMode.None);
                 else if (ActiveTool == EditTool.Snowdrift)
                     PaintSurface(cell, CellSurface.None);
+                else if (ActiveTool == EditTool.Obstacle)
+                    PaintObstacle(cell, null);
                 return;
             }
 
@@ -104,6 +108,10 @@ namespace Purge.Editor.LevelDesigner
                     break;
                 case EditTool.Snowdrift:
                     PaintSurface(cell, CellSurface.Snowdrift);
+                    break;
+                case EditTool.Obstacle:
+                    if (ObstacleDefinition == null) _notify("Choose an obstacle first.");
+                    else PaintObstacle(cell, ObstacleDefinition);
                     break;
                 case EditTool.Erase:
                     Erase(cell);
@@ -125,6 +133,13 @@ namespace Purge.Editor.LevelDesigner
             if (ActiveTool == EditTool.Snowdrift && (e.button == 0 || e.button == 1))
             {
                 PaintSurface(cell, e.button == 1 ? CellSurface.None : CellSurface.Snowdrift);
+                return;
+            }
+
+            if (ActiveTool == EditTool.Obstacle && (e.button == 0 || e.button == 1))
+            {
+                if (e.button == 1 || ObstacleDefinition != null)
+                    PaintObstacle(cell, e.button == 1 ? null : ObstacleDefinition);
                 return;
             }
 
@@ -243,6 +258,21 @@ namespace Purge.Editor.LevelDesigner
 
             Apply(surface == CellSurface.None ? "Remove Snowdrift" : "Paint Snowdrift",
                 () => LevelEditing.SetSurface(Level, cell, surface));
+        }
+
+        /// <summary>Obstacles only on floor cells without objects (an object in a blocked cell is unreachable).</summary>
+        private void PaintObstacle(GridPosition cell, ObstacleDefinition obstacle)
+        {
+            var geometry = Level.Geometry;
+            if (geometry.GetCell(cell) != CellType.Floor || geometry.GetObstacle(cell) == obstacle)
+                return;
+            if (obstacle != null && obstacle.BlocksMovement && Level.AllEntities().Any(e => e.Position == cell))
+            {
+                _notify($"Cell {cell} holds an object: '{obstacle.name}' would block it.");
+                return;
+            }
+
+            Apply(obstacle == null ? "Remove Obstacle" : "Place Obstacle", () => LevelEditing.SetObstacle(Level, cell, obstacle));
         }
 
         private void Place(GridPosition cell)

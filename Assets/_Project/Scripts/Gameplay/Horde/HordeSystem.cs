@@ -26,7 +26,8 @@ namespace Purge.Gameplay.Horde
 
     /// <summary>
     /// Mass monsters in flat arrays (ТЗ: rank-and-file are not MonoBehaviours): positions, facing, HP, state, timers
-    /// per slot. Everyone walks the shared <see cref="FlowField"/> to the player (rebuilt only when the player changes
+    /// per slot. The stress stand lives on the player's floor (walkability, flow field and buckets of that floor);
+    /// monsters of stage 5 keep a floor per slot. Everyone walks the shared <see cref="FlowField"/> to the player (rebuilt only when the player changes
     /// cell or a door changes), keeps spacing through <see cref="CellBuckets"/> (no physics), slides along walls and
     /// attacks in reach. Views read the arrays; nothing here knows about rendering. Allocation-free per tick.
     /// Active only on levels with a <see cref="StressTestDefinition"/> (stage 2); stage 5 builds monsters on it.
@@ -570,7 +571,7 @@ namespace Purge.Gameplay.Horde
             for (var x = 0; x < _grid.Width; x++)
             {
                 var index = y * _grid.Width + x;
-                var walkable = _passability.IsWalkable(new GridPosition(x, y));
+                var walkable = _passability.IsWalkable(new GridPosition(x, y, _player.Floor));
                 _walkable[index] = walkable;
                 if (walkable) _walkableCells[_walkableCount++] = index;
             }
@@ -579,7 +580,7 @@ namespace Purge.Gameplay.Horde
         private void RebuildFlow()
         {
             _flowTarget = _player.Cell;
-            _flow.Build(_flowTarget, new CellMaskPassability(_grid.Width, _grid.Height, _walkable));
+            _flow.Build(_flowTarget, new FloorMask(_grid.Width, _walkable, _flowTarget.Floor));
             _flowDirty = false;
             FlowBuilds++;
         }
@@ -588,6 +589,25 @@ namespace Purge.Gameplay.Horde
         {
             RefreshWalkable();
             _flowDirty = true;
+        }
+
+        /// <summary>Walkability of one floor (the mask is that floor's, y · width + x).</summary>
+        private readonly struct FloorMask : IGridPassability
+        {
+            private readonly int _width;
+            private readonly bool[] _mask;
+            private readonly int _floor;
+
+            public FloorMask(int width, bool[] mask, int floor)
+            {
+                _width = width;
+                _mask = mask;
+                _floor = floor;
+            }
+
+            public bool IsPassable(GridPosition position) =>
+                position.Floor == _floor && position.X >= 0 && position.X < _width && position.Y >= 0 &&
+                position.Y * _width + position.X < _mask.Length && _mask[position.Y * _width + position.X];
         }
 
         private static float Milliseconds(long started) =>

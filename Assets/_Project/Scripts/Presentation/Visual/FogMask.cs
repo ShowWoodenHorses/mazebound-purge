@@ -23,10 +23,12 @@ namespace Purge.Presentation.Visual
         private List<int> _revealed = new List<int>();
         private List<int> _previous = new List<int>();
 
-        public FogMask(int width, int height)
+        /// <summary>Fog of one floor (<paramref name="floor"/>).</summary>
+        public FogMask(int width, int height, int floor = 0)
         {
             Width = width;
             Height = height;
+            Floor = floor;
             TextureWidth = width + 2;
             TextureHeight = height + 2;
             var size = TextureWidth * TextureHeight;
@@ -38,6 +40,7 @@ namespace Purge.Presentation.Visual
 
         public int Width { get; }
         public int Height { get; }
+        public int Floor { get; }
         public int TextureWidth { get; }
         public int TextureHeight { get; }
 
@@ -66,7 +69,7 @@ namespace Purge.Presentation.Visual
             for (var i = 0; i < revealed.Count; i++)
             {
                 var cell = revealed[i];
-                if (cell.X < 0 || cell.Y < 0 || cell.X >= Width || cell.Y >= Height) continue;
+                if (cell.Floor != Floor || cell.X < 0 || cell.Y < 0 || cell.X >= Width || cell.Y >= Height) continue;
                 var index = IndexOf(cell);
                 _target[index] = Visible;
                 _revealed.Add(index);
@@ -112,7 +115,7 @@ namespace Purge.Presentation.Visual
                     _isFading[index] = false;
                     _fading.RemoveAt(i);
                     if (target == 0f)
-                        _covered.Add(new GridPosition(index % TextureWidth - 1, index / TextureWidth - 1));
+                        _covered.Add(new GridPosition(index % TextureWidth - 1, index / TextureWidth - 1, Floor));
                 }
             }
 

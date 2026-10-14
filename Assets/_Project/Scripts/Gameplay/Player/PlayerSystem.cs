@@ -74,6 +74,9 @@ namespace Purge.Gameplay.Player
 
         public GridPosition Cell { get; private set; }
 
+        /// <summary>Floor the player is on (the start's; stairs come with buildings).</summary>
+        public int Floor => Cell.Floor;
+
         /// <summary>
         /// Unit look direction: the last movement direction (ТЗ §65). When the player stops it snaps to the aim
         /// directions (<see cref="IAimSettings.AimMode"/>), so standing still shows where an attack would go.
@@ -134,13 +137,13 @@ namespace Purge.Gameplay.Player
             Facing = move.normalized;
             _moved = true;
             var maxDistance = _definition.MoveSpeed * deltaTime;
-            var slow = _passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f;
+            var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell);
             var target = PlayerMovement.Move(Position, move * (maxDistance * slow), _definition.BodyHalfSize, _definition.CornerAssist, this);
             // Of the full speed: in a snowdrift the walk animation slows down too.
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);
             Position = target;
 
-            var cell = PlayerMovement.CellOf(Position);
+            var cell = PlayerMovement.CellOf(Position, Floor);
             if (cell != Cell)
             {
                 var previous = Cell;
@@ -153,6 +156,8 @@ namespace Purge.Gameplay.Player
         bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell);
 
         bool IPlayerBlockers.CanEnter(GridPosition cell) => _occupancy.CanPlayerEnter(cell);
+
+        int IPlayerBlockers.Floor => Floor;
 
         private void Spawn(int startIndex)
         {

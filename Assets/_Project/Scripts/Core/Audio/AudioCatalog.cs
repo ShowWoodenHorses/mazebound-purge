@@ -27,7 +27,8 @@ namespace Purge.Core.Audio
     [Serializable]
     public sealed class ZombieVoice
     {
-        [Tooltip("ZombieDefinition id (walker, listener, hunter).")]
+        [Tooltip("The zombie type (its stable id).")]
+        [Content.ContentRef(typeof(Definitions.ZombieDefinition))]
         public string ZombieId;
 
         [Range(0.5f, 1.5f)] public float Pitch = 1f;

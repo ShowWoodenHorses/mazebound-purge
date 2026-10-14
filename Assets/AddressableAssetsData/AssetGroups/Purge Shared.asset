@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2626798c10c144b41942bbfd4cdf5ae3
+    m_Address: Content/Catalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28e42837255a8cc418b9fb2162ecb882
     m_Address: Assets/_Project/Art/Weapons/Rifle/SM_Wep_Hybrid_03.prefab
     m_ReadOnly: 0

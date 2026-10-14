@@ -50,6 +50,9 @@ namespace Purge.Gameplay.Zombies
 
         public Vector2 Position { get; internal set; }
         public GridPosition Cell { get; internal set; }
+
+        /// <summary>Floor of the zombie (its spawn's).</summary>
+        public int Floor => Cell.Floor;
         public Vector2 Facing { get; internal set; }
         public float Radius => BodyRadius;
         public float Health { get; private set; }

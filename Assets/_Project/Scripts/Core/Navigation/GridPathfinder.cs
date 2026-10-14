@@ -5,7 +5,7 @@ using Purge.Core.Grid;
 namespace Purge.Core.Navigation
 {
     /// <summary>
-    /// 4-directional A* on the level grid (ТЗ §52). All buffers are allocated once per grid size and reused,
+    /// 4-directional A* on the level grid (ТЗ §52), on the floor of the start (a goal on another floor is not found). All buffers are allocated once per grid size and reused,
     /// so a search does not allocate. Never call it every frame: only when target, doors or AI task change.
     /// Not thread-safe: one instance per caller.
     /// </summary>
@@ -19,6 +19,7 @@ namespace Purge.Core.Navigation
         private readonly int[] _closedStamp;
         private readonly MinHeap _open;
         private int _stamp;
+        private int _floor;
 
         public GridPathfinder(int width, int height)
         {
@@ -51,8 +52,9 @@ namespace Purge.Core.Navigation
             TCost cost, List<GridPosition> path) where TPassability : IGridPassability where TCost : IGridCost
         {
             path.Clear();
-            if (!IsInside(start) || !IsInside(goal) || !passability.IsPassable(goal))
+            if (!IsInside(start) || !IsInside(goal) || start.Floor != goal.Floor || !passability.IsPassable(goal))
                 return false;
+            _floor = start.Floor;
 
             if (start == goal)
             {
@@ -129,7 +131,7 @@ namespace Purge.Core.Navigation
 
         private bool IsInside(GridPosition p) => p.X >= 0 && p.X < _width && p.Y >= 0 && p.Y < _height;
         private int ToIndex(GridPosition p) => p.Y * _width + p.X;
-        private GridPosition ToPosition(int index) => new GridPosition(index % _width, index / _width);
+        private GridPosition ToPosition(int index) => new GridPosition(index % _width, index / _width, _floor);
 
         /// <summary>Binary min-heap ordered by (f, h); duplicates allowed, stale entries skipped by the caller.</summary>
         private sealed class MinHeap

@@ -11,6 +11,9 @@ namespace Purge.Gameplay.Player
 
         /// <summary>Occupancy (ТЗ §51): the player's centre may not enter a cell with zombies.</summary>
         bool CanEnter(GridPosition cell);
+
+        /// <summary>Floor the walker is on: the cells asked about are on it.</summary>
+        int Floor => 0;
     }
 
     /// <summary>
@@ -38,8 +41,9 @@ namespace Purge.Gameplay.Player
             return position;
         }
 
-        public static GridPosition CellOf(Vector2 position) =>
-            new GridPosition(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
+        /// <summary>The cell of a position in grid units on <paramref name="floor"/>.</summary>
+        public static GridPosition CellOf(Vector2 position, int floor = 0) =>
+            new GridPosition(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f), floor);
 
         /// <summary>True when the footprint at <paramref name="center"/> overlaps a non-walkable cell.</summary>
         public static bool Overlaps(Vector2 center, float halfSize, IPlayerBlockers blockers)
@@ -50,7 +54,7 @@ namespace Purge.Gameplay.Player
             var maxY = Mathf.FloorToInt(center.y + halfSize - Skin + 0.5f);
             for (var y = minY; y <= maxY; y++)
             for (var x = minX; x <= maxX; x++)
-                if (!blockers.IsWalkable(new GridPosition(x, y)))
+                if (!blockers.IsWalkable(new GridPosition(x, y, blockers.Floor)))
                     return true;
 
             return false;
@@ -83,7 +87,7 @@ namespace Purge.Gameplay.Player
             var candidate = position;
             candidate[axis] += delta;
             var overlaps = Overlaps(candidate, halfSize, blockers);
-            if (!overlaps && blockers.CanEnter(CellOf(candidate)))
+            if (!overlaps && blockers.CanEnter(CellOf(candidate, blockers.Floor)))
             {
                 position = candidate;
                 return true;
@@ -108,7 +112,7 @@ namespace Purge.Gameplay.Player
             {
                 var clamped = position;
                 clamped[axis] = limit;
-                if (!Overlaps(clamped, halfSize, blockers) && blockers.CanEnter(CellOf(clamped)))
+                if (!Overlaps(clamped, halfSize, blockers) && blockers.CanEnter(CellOf(clamped, blockers.Floor)))
                     position = clamped;
             }
 
@@ -130,8 +134,8 @@ namespace Purge.Gameplay.Player
 
             var ahead = Mathf.Round(position[axis]) + direction;
             var target = axis == 0
-                ? new GridPosition((int)ahead, (int)lane)
-                : new GridPosition((int)lane, (int)ahead);
+                ? new GridPosition((int)ahead, (int)lane, blockers.Floor)
+                : new GridPosition((int)lane, (int)ahead, blockers.Floor);
             if (!blockers.IsWalkable(target))
                 return;
 

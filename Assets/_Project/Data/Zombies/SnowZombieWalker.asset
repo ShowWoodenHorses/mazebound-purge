@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674d411ed11e5f341b9cf5fb1faa4947, type: 3}
   m_Name: SnowZombieWalker
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ZombieDefinition
-  _id: walker
+  _id: snow_zombie_walker
   _detectionType: 0
   _visionAngle: 60
   _visionRange: 7

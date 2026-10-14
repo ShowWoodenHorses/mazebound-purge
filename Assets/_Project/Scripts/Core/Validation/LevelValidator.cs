@@ -58,6 +58,8 @@ namespace Purge.Core.Validation
             ValidatePlacement(level, report);
             ValidateReferences(level, report);
             ValidateSurfaces(level, report);
+            ValidateObstacles(level, report);
+            ValidateFloors(level, report);
             ValidateTutorial(level, report);
 
             foreach (var door in level.Doors.Where(d => d.IsFrozen && d.IsInitiallyOpen))
@@ -131,6 +133,63 @@ namespace Purge.Core.Validation
                 if (surface != CellSurface.None && geometry.GetCell(p) != CellType.Floor)
                     report.Add(Warning, Structural, ValidationCodes.SurfaceNotOnFloor,
                         $"{surface} at {p} is on a {geometry.GetCell(p)} cell and is ignored.", p);
+            }
+        }
+
+        /// <summary>
+        /// Obstacles: the array matches the size and refers to existing kinds; only on Floor cells; no object (but doors)
+        /// stands in a cell whose obstacle blocks movement — the player could not reach it, a spawn would be stuck.
+        /// </summary>
+        private static void ValidateObstacles(LevelData level, ValidationReport report)
+        {
+            var geometry = level.Geometry;
+            if (!geometry.ObstaclesConsistent)
+            {
+                report.Add(Error, Structural, ValidationCodes.ObstaclesOutOfSync,
+                    "Cell obstacles do not match the level size or refer to a missing obstacle; they are ignored.");
+                return;
+            }
+
+            for (var i = 0; i < geometry.CellCount; i++)
+            {
+                var p = geometry.ToPosition(i);
+                var obstacle = geometry.GetObstacle(p);
+                if (obstacle != null && geometry.GetCell(p) != CellType.Floor)
+                    report.Add(Warning, Structural, ValidationCodes.ObstacleNotOnFloor,
+                        $"Obstacle '{obstacle.name}' at {p} is on a {geometry.GetCell(p)} cell and is ignored.", p);
+            }
+
+            foreach (var entity in level.AllEntities())
+            {
+                if (entity is DoorData || !geometry.IsInside(entity.Position)) continue;
+                var obstacle = geometry.GetObstacle(entity.Position);
+                if (obstacle != null && obstacle.BlocksMovement)
+                    report.Add(Error, Structural, ValidationCodes.ObjectInBlockedCell,
+                        $"'{entity.Id}' at {entity.Position} stands in obstacle '{obstacle.name}' that blocks movement.",
+                        entity.Position, entity.Id);
+            }
+        }
+
+        /// <summary>An upper floor does not stick out of the floor below: its ground stands above ground (ТЗ: «Этажи»).</summary>
+        private static void ValidateFloors(LevelData level, ValidationReport report)
+        {
+            var geometry = level.Geometry;
+            for (var floor = 1; floor < geometry.FloorCount; floor++)
+            {
+                var overhang = 0;
+                var first = default(GridPosition);
+                for (var y = 0; y < geometry.Height; y++)
+                for (var x = 0; x < geometry.Width; x++)
+                {
+                    var p = new GridPosition(x, y, floor);
+                    if (geometry.GetCell(p) == CellType.Void || geometry.GetCell(p.OnFloor(floor - 1)) != CellType.Void)
+                        continue;
+                    if (overhang++ == 0) first = p;
+                }
+
+                if (overhang > 0)
+                    report.Add(Warning, Structural, ValidationCodes.FloorOverhang,
+                        $"Floor {floor}: {overhang} cell(s) stand over Void of floor {floor - 1} (first at {first}).", first);
             }
         }
 
@@ -464,6 +523,7 @@ namespace Purge.Core.Validation
 
             ValidateDecor(level, theme, report);
             ValidateObjectPlacements(level, report);
+            ValidateObstacleVisuals(level, theme, report);
 
             var staleWalls = 0;
             var wallCategoriesWithoutVariants = new Dictionary<VisualCategory, int>();
@@ -551,6 +611,16 @@ namespace Purge.Core.Validation
             }
         }
 
+        /// <summary>Every obstacle kind used by the level has a look: a Decor variant of the theme bound to it.</summary>
+        private static void ValidateObstacleVisuals(LevelData level, VisualTheme theme, ValidationReport report)
+        {
+            var decor = theme.GetSet(VisualKind.Decor);
+            foreach (var obstacle in level.Geometry.ObstacleTypes)
+                if (obstacle != null && (decor == null || !decor.Variants.Any(v => v.Weight > 0 && v.Definition == obstacle)))
+                    report.Add(Warning, Visual, ValidationCodes.ObstacleWithoutVisual,
+                        $"Obstacle '{obstacle.name}' has no Decor variant in the theme: it stands invisible.");
+        }
+
         private static bool HasAutoVariant(VisualSet set, VisualCategory category) =>
             set.Variants.Any(v => v.Weight > 0 && v.Category == category);
 
@@ -628,7 +698,7 @@ namespace Purge.Core.Validation
         private static void ValidateDoorPassages(LevelData level, ValidationReport report)
         {
             var geometry = level.Geometry;
-            bool Open(GridPosition p) => geometry.IsInside(p) && geometry.GetCell(p) != CellType.Wall;
+            bool Open(GridPosition p) => geometry.IsInside(p) && (geometry.GetFlags(p) & CellFlags.BlocksMovement) == 0;
 
             foreach (var door in level.Doors)
             {

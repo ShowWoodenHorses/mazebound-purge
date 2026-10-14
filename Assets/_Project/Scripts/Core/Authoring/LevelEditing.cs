@@ -43,7 +43,8 @@ namespace Purge.Core.Authoring
             if (type != CellType.Floor)
             {
                 level.VisualData.ClearCellOverride(position, CellLayer.Decor);
-                geometry.SetSurface(position, CellSurface.None); // only floor has a surface
+                geometry.SetSurface(position, CellSurface.None); // only floor has a surface and an obstacle
+                geometry.SetObstacle(position, null);
             }
 
             VisualAssigner.ReassignAround(level, position);
@@ -74,6 +75,64 @@ namespace Purge.Core.Authoring
                 level.VisualData.SetCellAssignment(CellLayer.Floor, geometry.ToIndex(position),
                     VisualAssigner.ChooseCell(level, position, CellLayer.Floor));
             VisualAssigner.AssignDecor(level, position);
+            return true;
+        }
+
+        /// <summary>
+        /// Puts an obstacle in a Floor cell (null removes it). The cell shows the obstacle as its decor (a Decor variant
+        /// bound to the obstacle's definition): manual decor there is dropped; without an obstacle the cell gets its auto
+        /// decor back. False when not a Floor cell or nothing changed.
+        /// </summary>
+        public static bool SetObstacle(LevelData level, GridPosition position, ObstacleDefinition obstacle)
+        {
+            var geometry = level.Geometry;
+            if (!geometry.IsInside(position) || geometry.GetCell(position) != CellType.Floor ||
+                geometry.GetObstacle(position) == obstacle)
+                return false;
+
+            geometry.SetObstacle(position, obstacle);
+            level.VisualData.ClearCellOverride(position, CellLayer.Decor);
+            level.VisualData.ClearDecorPlacement(position);
+            VisualAssigner.AssignDecor(level, position);
+            return true;
+        }
+
+        // ------------------------------------------------------------ Floors
+
+        /// <summary>Adds an empty top floor (all Void: no ground until painted); returns its number.</summary>
+        public static int AddFloor(LevelData level)
+        {
+            var geometry = level.Geometry;
+            var hadAssignments = level.VisualData.HasCellAssignments(geometry.CellCount);
+            var floor = geometry.AddFloor(CellType.Void);
+            if (hadAssignments)
+                level.VisualData.ResizeCellAssignments(geometry.CellCount); // Void cells have no visual layers
+            return floor;
+        }
+
+        /// <summary>
+        /// Removes the top floor with everything on it (objects, light sources, overrides). The only floor cannot be
+        /// removed: false.
+        /// </summary>
+        public static bool RemoveTopFloor(LevelData level)
+        {
+            var geometry = level.Geometry;
+            if (geometry.FloorCount <= 1)
+                return false;
+
+            var top = geometry.FloorCount - 1;
+            foreach (var entity in level.AllEntities().Where(e => e.Position.Floor == top).ToList())
+            {
+                if (entity is DoorData door) RemoveDoorData(level, door);
+                else Remove(level, entity);
+            }
+
+            level.MutableLights.RemoveAll(light => light.Cell.Floor == top);
+            level.VisualData.ClearFloor(top);
+            var hadAssignments = level.VisualData.HasCellAssignments(geometry.CellCount);
+            geometry.RemoveTopFloor();
+            if (hadAssignments)
+                level.VisualData.ResizeCellAssignments(geometry.CellCount);
             return true;
         }
 
@@ -146,7 +205,7 @@ namespace Purge.Core.Authoring
 
         /// <summary>
         /// Erase brush: the cell becomes empty floor — its objects (a door opens the passage), light sources, surface
-        /// (snowdrift) and decor ("no decor here", so auto placement leaves it empty) are removed, a wall becomes floor.
+        /// (snowdrift), obstacle and decor ("no decor here", so auto placement leaves it empty) are removed, a wall becomes floor.
         /// False when there was nothing to erase.
         /// </summary>
         public static bool ClearCell(LevelData level, GridPosition position)
@@ -164,10 +223,12 @@ namespace Purge.Core.Authoring
             if (level.MutableLights.RemoveAll(light => light.Cell == position) > 0)
                 changed = true;
 
-            if (level.Geometry.GetCell(position) == CellType.Wall)
+            var type = level.Geometry.GetCell(position);
+            if (type == CellType.Wall || type == CellType.Void)
                 changed |= SetCellType(level, position, CellType.Floor);
 
             changed |= SetSurface(level, position, CellSurface.None);
+            changed |= SetObstacle(level, position, null);
 
             if (!VisualResolver.ResolveDecor(level, position).IsEmpty)
             {

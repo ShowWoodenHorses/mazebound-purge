@@ -80,7 +80,7 @@ namespace Purge.Tests.EditMode.Progress
             _catalogAsset.Remove("third");
             _progress.RecordCompletion("first", Completed());
             _progress.RecordCompletion("second", Completed());
-            Assert.IsFalse(_save.Data.UnlockedLevels.Contains("third"), "Not in the catalog when 'second' was completed.");
+            Assert.IsNull(_save.Data.FindLevel("third"), "Not in the catalog when 'second' was completed.");
 
             _catalogAsset.AddOrUpdate("third", "Levels/third", "Third"); // An update brings a new level.
             Assert.IsTrue(_progress.IsUnlocked("third"), "The previous level is completed: the new one is open.");
@@ -154,18 +154,22 @@ namespace Purge.Tests.EditMode.Progress
 
             _save.Load();
 
-            Assert.IsNotNull(_save.Data.UnlockedLevels);
-            Assert.AreEqual(0, _save.Data.TotalKills);
+            Assert.IsNotNull(_save.Data.Levels);
+            Assert.AreEqual(0, _save.Data.Stats.TotalKills);
         }
 
         [Test]
         public void MissingFields_AreFilledIn()
         {
-            _storage.Json = "{\"TotalKills\":5}";
+            _storage.Json = "{\"SaveVersion\":1,\"Money\":5}";
             _save.Load();
 
-            Assert.AreEqual(5, _save.Data.TotalKills);
-            Assert.IsNotNull(_save.Data.LevelStars);
+            Assert.AreEqual(5, _save.Data.Money);
+            Assert.IsNotNull(_save.Data.Levels);
+            Assert.IsNotNull(_save.Data.Arsenal);
+            Assert.IsNotNull(_save.Data.Stats);
+            Assert.IsNotNull(_save.Data.Run);
+            Assert.IsFalse(_save.Data.HasRun);
             Assert.IsNotNull(_save.Data.Settings);
         }
 
@@ -304,34 +308,117 @@ namespace Purge.Tests.EditMode.Progress
         }
 
         [Test]
-        public void Version2Save_AttackClusterAndUsePlacesReset_StickKept()
+        public void MazeFormatSave_KeepsSettings_DropsProgress()
         {
             const string moved = "{\"Moved\":true,\"Position\":{\"x\":0.3,\"y\":0.4},\"Scale\":1.2}";
-            _storage.Json = "{\"Version\":2,\"Settings\":{\"Controls\":{\"Size\":1,\"Opacity\":0.6,\"Layout\":{" +
-                            $"\"Stick\":{moved},\"Attack\":{moved},\"Use\":{moved},\"Melee\":{moved},\"Ranged\":{moved}" + "}}}}";
+            _storage.Json = "{\"Version\":4,\"UnlockedLevels\":[\"first\",\"second\"],\"TotalKills\":40," +
+                            "\"Settings\":{\"MusicVolume\":0.25,\"Controls\":{\"Size\":1,\"Opacity\":0.6,\"Layout\":{" +
+                            $"\"Stick\":{moved}" + "}}}}";
             _save.Load();
 
-            var layout = _save.Data.Settings.Controls.Layout;
-            Assert.AreEqual(TouchPlacement.Default, layout.Attack, "The cluster starts at its built-in place.");
-            Assert.AreEqual(TouchPlacement.Default, layout.Melee);
-            Assert.AreEqual(TouchPlacement.Default, layout.Ranged);
-            Assert.IsTrue(layout.Stick.Moved);
-            Assert.AreEqual(TouchPlacement.Default, layout.Use, "v4: Use has a new built-in place.");
-            Assert.AreEqual(SaveData.CurrentVersion, _save.Data.Version);
+            Assert.AreEqual(SaveData.CurrentVersion, _save.Data.SaveVersion);
+            Assert.AreEqual(0.25f, _save.Data.Settings.MusicVolume, 1e-5f, "Settings are kept.");
+            Assert.IsTrue(_save.Data.Settings.Controls.Layout.Stick.Moved);
+            Assert.IsEmpty(_save.Data.Levels, "Maze progress has no place in the new format.");
+            Assert.AreEqual(0, _save.Data.Stats.TotalKills);
+            Assert.IsFalse(_progress.IsUnlocked("second"));
         }
 
         [Test]
-        public void Version3Save_OnlyUsePlaceReset()
+        public void Normalize_DropsBrokenAndRepeatedEntries_ClampsNumbers()
         {
-            const string moved = "{\"Moved\":true,\"Position\":{\"x\":0.3,\"y\":0.4},\"Scale\":1.2}";
-            _storage.Json = "{\"Version\":3,\"Settings\":{\"Controls\":{\"Size\":1,\"Opacity\":0.6,\"Layout\":{" +
-                            $"\"Stick\":{moved},\"Attack\":{moved},\"Use\":{moved}" + "}}}}";
+            var data = new SaveData { Money = -5 };
+            data.Levels.Add(new LevelRecord { LevelId = "a", CompletedMask = 1 });
+            data.Levels.Add(new LevelRecord { LevelId = "a", CompletedMask = 2 });
+            data.Levels.Add(null);
+            data.Levels.Add(new LevelRecord { LevelId = "" });
+            data.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 0, Mark = (PoolMark)9 });
+            data.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 4 });
+            data.CharacterNodes.Add("n");
+            data.CharacterNodes.Add("n");
+            data.CharacterNodes.Add(null);
+            data.Run.Active = true; // a run of no level
+            data.Run.Cards.Add("card");
+
+            data.Normalize();
+
+            Assert.AreEqual(0, data.Money);
+            Assert.AreEqual(1, data.Levels.Count);
+            Assert.AreEqual(1, data.Levels[0].CompletedMask, "The first record wins.");
+            Assert.AreEqual(1, data.Arsenal.Count);
+            Assert.AreEqual(1, data.Arsenal[0].Level);
+            Assert.AreEqual(PoolMark.Normal, data.Arsenal[0].Mark);
+            CollectionAssert.AreEqual(new[] { "n" }, data.CharacterNodes);
+            Assert.IsFalse(data.HasRun);
+            Assert.IsEmpty(data.Run.Cards);
+        }
+
+        [Test]
+        public void RunSave_SurvivesTheRoundTrip_AndClears()
+        {
+            _save.Data.Run.Active = true;
+            _save.Data.Run.Mode = RunMode.Level;
+            _save.Data.Run.LevelId = "first";
+            _save.Data.Run.Difficulty = 2;
+            _save.Data.Run.Wave = 7;
+            _save.Data.Run.WaveInProgress = true;
+            _save.Data.Run.Score = 123456789012L;
+            _save.Data.Run.Cards.Add("card_a");
+            _save.Data.Run.Weapons.Add(new RunWeapon { Id = "ak_74", Ammo = 12 });
+            _save.Data.Run.Weapons.Add(new RunWeapon());
+            _save.Data.Run.ThrowableId = "grenade";
+            _save.Data.Run.ThrowableCount = 3;
+            _save.Data.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 3, Forks = 2, Mark = PoolMark.Excluded });
+            _save.Save();
+
             _save.Load();
 
-            var layout = _save.Data.Settings.Controls.Layout;
-            Assert.IsTrue(layout.Attack.Moved, "The cluster's place (v3) is kept.");
-            Assert.IsTrue(layout.Stick.Moved);
-            Assert.AreEqual(TouchPlacement.Default, layout.Use);
+            var run = _save.Data.Run;
+            Assert.IsTrue(_save.Data.HasRun);
+            Assert.AreEqual("first", run.LevelId);
+            Assert.AreEqual(2, run.Difficulty);
+            Assert.AreEqual(7, run.Wave);
+            Assert.IsTrue(run.WaveInProgress);
+            Assert.AreEqual(123456789012L, run.Score);
+            CollectionAssert.AreEqual(new[] { "card_a" }, run.Cards);
+            Assert.AreEqual(2, run.Weapons.Count);
+            Assert.AreEqual(12, run.Weapons[0].Ammo);
+            Assert.AreEqual(3, run.ThrowableCount);
+            Assert.AreEqual(PoolMark.Excluded, _save.Data.FindItem("ak_74").Mark);
+            Assert.AreEqual(2, _save.Data.FindItem("ak_74").Forks);
+
+            run.Clear();
+            Assert.IsFalse(_save.Data.HasRun);
+            Assert.IsEmpty(run.Weapons);
+            Assert.IsNull(run.ThrowableId);
+        }
+
+        [Test]
+        public void Completion_MarksTheDifficulty_AnyDifficultyOpensTheNext()
+        {
+            _progress.RecordCompletion("first", Completed(), difficulty: 2);
+
+            Assert.IsTrue(_save.Data.FindLevel("first").IsCompletedOn(2));
+            Assert.IsFalse(_save.Data.FindLevel("first").IsCompletedOn(0));
+            Assert.IsTrue(_progress.IsCompleted("first"));
+            Assert.IsTrue(_progress.IsUnlocked("second"));
+            Assert.IsFalse(_progress.IsCompleted("second"));
+        }
+
+        [Test]
+        public void ResetProgress_KeepsSettings()
+        {
+            _save.Data.Settings.MusicVolume = 0.4f;
+            _save.Data.Money = 50;
+            _save.Data.Arsenal.Add(new OwnedItem { Id = "bat" });
+            _progress.RecordCompletion("first", Completed());
+
+            _progress.ResetProgress();
+
+            Assert.AreEqual(0, _save.Data.Money);
+            Assert.IsEmpty(_save.Data.Arsenal);
+            Assert.IsEmpty(_save.Data.Levels);
+            Assert.AreEqual(0.4f, _save.Data.Settings.MusicVolume, 1e-5f);
         }
 
         [Test]

@@ -429,9 +429,10 @@ namespace Purge.Tests.EditMode.Flow
 
             public int TotalKills => 0;
             public bool IsUnlocked(string levelId) => true;
+            public bool IsCompleted(string levelId) => false;
             public int GetStars(string levelId) => 0;
             public float GetBestTime(string levelId) => 0f;
-            public void RecordCompletion(string levelId, LevelResult result) =>
+            public void RecordCompletion(string levelId, LevelResult result, int difficulty = 0) =>
                 Recorded.Add(new KeyValuePair<string, LevelResult>(levelId, result));
             public void ResetProgress() => Recorded.Clear();
         }

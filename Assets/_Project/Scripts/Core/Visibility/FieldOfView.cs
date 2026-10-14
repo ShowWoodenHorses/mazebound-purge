@@ -20,7 +20,7 @@ namespace Purge.Core.Visibility
     /// (the walls enclosing visible floor), or when it closes a corner of visible floor: touches it diagonally with
     /// both cells in between being such visible walls. A wall touching visible floor only diagonally, across hidden
     /// floor, stays hidden — it is the far wall of a space the player does not see.
-    /// Cells outside the grid are never visible.
+    /// Cells outside the grid and on other floors than the origin's are never visible (floors do not see each other).
     /// </para>
     /// <para>
     /// Revealed cells (<see cref="IsRevealed"/>) are for static geometry only: the visible cells plus single hidden
@@ -50,6 +50,7 @@ namespace Purge.Core.Visibility
         private readonly List<GridPosition> _corners = new List<GridPosition>();
         private readonly bool[] _revealed;
         private readonly List<GridPosition> _revealedCells = new List<GridPosition>();
+        private int _floor;
 
         public FieldOfView(int width, int height)
         {
@@ -69,19 +70,22 @@ namespace Purge.Core.Visibility
         public bool HasResult { get; private set; }
 
         public GridPosition Origin { get; private set; }
+
+        /// <summary>Floor of the origin: visibility covers it only.</summary>
+        public int Floor => _floor;
         public int Radius { get; private set; }
 
         /// <summary>Visible cells of the last computation, in no particular order.</summary>
         public IReadOnlyList<GridPosition> VisibleCells => _cells;
 
         public bool IsVisible(GridPosition cell) =>
-            cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height && _visible[cell.Y * Width + cell.X];
+            cell.Floor == _floor && cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height && _visible[cell.Y * Width + cell.X];
 
         /// <summary>Cells whose static geometry is shown: visible cells plus filled one-cell gaps.</summary>
         public IReadOnlyList<GridPosition> RevealedCells => _revealedCells;
 
         public bool IsRevealed(GridPosition cell) =>
-            cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height && _revealed[cell.Y * Width + cell.X];
+            cell.Floor == _floor && cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height && _revealed[cell.Y * Width + cell.X];
 
         /// <summary>Square window around <paramref name="origin"/>, clipped to the grid.</summary>
         public static GridRect Window(GridPosition origin, int radius, int width, int height)
@@ -106,6 +110,7 @@ namespace Purge.Core.Visibility
             _opaqueCandidates.Clear();
 
             Origin = origin;
+            _floor = origin.Floor;
             Radius = radius;
             HasResult = true;
 
@@ -120,31 +125,31 @@ namespace Purge.Core.Visibility
             {
                 if (x == origin.X && y == origin.Y) continue;
                 if (Math.Abs(x - origin.X) <= NearRadius && Math.Abs(y - origin.Y) <= NearRadius)
-                    CastRays(origin, new GridPosition(x, y), opacity, ref marker);
+                    CastRays(origin, new GridPosition(x, y, _floor), opacity, ref marker);
                 else
-                    GridLineOfSight.Trace(origin.X, origin.Y, x, y, opacity, ref marker);
+                    GridLineOfSight.Trace(origin.X, origin.Y, x, y, opacity, ref marker, _floor);
             }
 
             // ...and the fan from the whole origin cell to the edge of the window (peeking round corners).
             for (var x = window.X; x < window.XMax; x++)
             {
-                CastEdgeRays(origin, new GridPosition(x, window.Y), opacity, ref marker);
+                CastEdgeRays(origin, new GridPosition(x, window.Y, _floor), opacity, ref marker);
                 if (window.YMax - 1 > window.Y)
-                    CastEdgeRays(origin, new GridPosition(x, window.YMax - 1), opacity, ref marker);
+                    CastEdgeRays(origin, new GridPosition(x, window.YMax - 1, _floor), opacity, ref marker);
             }
 
             for (var y = window.Y + 1; y < window.YMax - 1; y++)
             {
-                CastEdgeRays(origin, new GridPosition(window.X, y), opacity, ref marker);
+                CastEdgeRays(origin, new GridPosition(window.X, y, _floor), opacity, ref marker);
                 if (window.XMax - 1 > window.X)
-                    CastEdgeRays(origin, new GridPosition(window.XMax - 1, y), opacity, ref marker);
+                    CastEdgeRays(origin, new GridPosition(window.XMax - 1, y, _floor), opacity, ref marker);
             }
 
             // Walls bordering visible floor: checked against the transparent cells found by rays only.
             for (var y = window.Y; y < window.YMax; y++)
             for (var x = window.X; x < window.XMax; x++)
             {
-                var cell = new GridPosition(x, y);
+                var cell = new GridPosition(x, y, _floor);
                 if (!IsVisible(cell) && opacity.IsOpaque(cell))
                     _opaqueCandidates.Add(cell);
             }
@@ -170,7 +175,7 @@ namespace Purge.Core.Visibility
             for (var y = window.Y; y < window.YMax; y++)
             for (var x = window.X; x < window.XMax; x++)
             {
-                var cell = new GridPosition(x, y);
+                var cell = new GridPosition(x, y, _floor);
                 if (!IsVisible(cell) && IsGap(cell, opacity))
                     MarkRevealed(cell);
             }
@@ -182,8 +187,8 @@ namespace Purge.Core.Visibility
         /// </summary>
         private bool IsGap<T>(GridPosition cell, in T opacity) where T : IGridOpacity
         {
-            return IsSeenThrough(new GridPosition(cell.X - 1, cell.Y), opacity) && IsSeenThrough(new GridPosition(cell.X + 1, cell.Y), opacity) ||
-                   IsSeenThrough(new GridPosition(cell.X, cell.Y - 1), opacity) && IsSeenThrough(new GridPosition(cell.X, cell.Y + 1), opacity);
+            return IsSeenThrough(new GridPosition(cell.X - 1, cell.Y, _floor), opacity) && IsSeenThrough(new GridPosition(cell.X + 1, cell.Y, _floor), opacity) ||
+                   IsSeenThrough(new GridPosition(cell.X, cell.Y - 1, _floor), opacity) && IsSeenThrough(new GridPosition(cell.X, cell.Y + 1, _floor), opacity);
         }
 
         private bool IsSeenThrough<T>(GridPosition cell, in T opacity) where T : IGridOpacity =>
@@ -205,10 +210,10 @@ namespace Purge.Core.Visibility
 
         /// <summary>The wall shares a side with a visible transparent cell (it encloses that floor).</summary>
         private bool BordersVisibleTransparent<T>(GridPosition cell, in T opacity) where T : IGridOpacity =>
-            IsSeenThrough(new GridPosition(cell.X - 1, cell.Y), opacity) ||
-            IsSeenThrough(new GridPosition(cell.X + 1, cell.Y), opacity) ||
-            IsSeenThrough(new GridPosition(cell.X, cell.Y - 1), opacity) ||
-            IsSeenThrough(new GridPosition(cell.X, cell.Y + 1), opacity);
+            IsSeenThrough(new GridPosition(cell.X - 1, cell.Y, _floor), opacity) ||
+            IsSeenThrough(new GridPosition(cell.X + 1, cell.Y, _floor), opacity) ||
+            IsSeenThrough(new GridPosition(cell.X, cell.Y - 1, _floor), opacity) ||
+            IsSeenThrough(new GridPosition(cell.X, cell.Y + 1, _floor), opacity);
 
         /// <summary>
         /// The wall closes the corner of visible floor: it touches a visible transparent cell diagonally and both cells
@@ -220,9 +225,9 @@ namespace Purge.Core.Visibility
             for (var dy = -1; dy <= 1; dy += 2)
             for (var dx = -1; dx <= 1; dx += 2)
             {
-                var sideX = new GridPosition(cell.X + dx, cell.Y);
-                var sideY = new GridPosition(cell.X, cell.Y + dy);
-                if (IsSeenThrough(new GridPosition(cell.X + dx, cell.Y + dy), opacity) &&
+                var sideX = new GridPosition(cell.X + dx, cell.Y, _floor);
+                var sideY = new GridPosition(cell.X, cell.Y + dy, _floor);
+                if (IsSeenThrough(new GridPosition(cell.X + dx, cell.Y + dy, _floor), opacity) &&
                     IsVisible(sideX) && opacity.IsOpaque(sideX) &&
                     IsVisible(sideY) && opacity.IsOpaque(sideY))
                     return true;
@@ -238,7 +243,7 @@ namespace Purge.Core.Visibility
             for (var j = 0; j < SampleX.Length; j++)
                 GridLineOfSight.Trace(
                     from.X + SampleX[i], from.Y + SampleY[i],
-                    to.X + SampleX[j], to.Y + SampleY[j], opacity, ref marker);
+                    to.X + SampleX[j], to.Y + SampleY[j], opacity, ref marker, from.Floor);
         }
 
         /// <summary>Rays from the five sample points of <paramref name="from"/> to the centre of <paramref name="to"/>.</summary>
@@ -247,7 +252,7 @@ namespace Purge.Core.Visibility
         {
             if (from == to) return;
             for (var i = 0; i < SampleX.Length; i++)
-                GridLineOfSight.Trace(from.X + SampleX[i], from.Y + SampleY[i], to.X, to.Y, opacity, ref marker);
+                GridLineOfSight.Trace(from.X + SampleX[i], from.Y + SampleY[i], to.X, to.Y, opacity, ref marker, from.Floor);
         }
 
         /// <summary>Marks cells crossed by rays as visible, ignoring anything outside the window.</summary>

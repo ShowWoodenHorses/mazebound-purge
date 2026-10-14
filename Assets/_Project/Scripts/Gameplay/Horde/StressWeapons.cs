@@ -204,14 +204,14 @@ namespace Purge.Gameplay.Horde
 
         private void TickBullets(float deltaTime)
         {
-            var opacity = new LevelOpacity(_grid, _doors);
+            var opacity = LevelOpacity.ForBullets(_grid, _doors);
             var step = _settings.BulletSpeed * deltaTime;
             for (var i = BulletCount - 1; i >= 0; i--)
             {
                 var from = _bulletPositions[i];
                 var distance = Mathf.Min(step, _bulletLeft[i]);
                 var to = from + _bulletDirections[i] * distance;
-                var blocked = GridRaycast.Cast(from, to, opacity, out var wallT, out _);
+                var blocked = GridRaycast.Cast(from, to, opacity, out var wallT, out _, _player.Floor);
                 var agent = _horde.QuerySegment(from, to, out var agentT);
                 if (agent >= 0 && (!blocked || agentT <= wallT))
                 {

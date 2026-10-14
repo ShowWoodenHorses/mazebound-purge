@@ -5,100 +5,162 @@ using Purge.Gameplay.Combat;
 namespace Purge.Application.Save
 {
     /// <summary>
-    /// Everything that persists between sessions (ТЗ §85). Serialized with <c>JsonUtility</c>, hence public fields.
-    /// The current unfinished run is never stored.
+    /// Everything that persists between sessions (ТЗ: прогрессия, экономика, продолжение забега). Serialized with
+    /// <c>JsonUtility</c>, hence public fields. Content is referred to by stable ids (<c>ContentDefinition.Id</c>); an id
+    /// the game no longer has is kept and ignored. One document: the local copy, the cloud and the VK slots carry it whole.
     /// </summary>
     [Serializable]
     public sealed class SaveData
     {
-        /// <summary>
-        /// 2: aim settings in <see cref="ControlsSettings"/>. 3: Attack, Melee and Ranged are one cluster on screen
-        /// (placed as <see cref="TouchElement.Attack"/>); their old separate places are dropped. 4: Use got a new
-        /// built-in place left of the cluster; a place saved near the old Attack button would overlap it — dropped.
-        /// </summary>
-        public const int CurrentVersion = 4;
+        /// <summary>1: the first Purge format. 0 (field missing): a Maze-format save of an early dev build.</summary>
+        public const int CurrentVersion = 1;
 
-        public int Version = CurrentVersion;
+        public int SaveVersion = CurrentVersion;
 
-        /// <summary>Levels opened by completing the previous one. The first catalog level is always open.</summary>
-        public List<string> UnlockedLevels = new List<string>();
+        /// <summary>The one currency, between runs.</summary>
+        public int Money;
 
-        /// <summary>Best stars per completed level.</summary>
-        public List<LevelStarsRecord> LevelStars = new List<LevelStarsRecord>();
+        /// <summary>Opened levels and completed difficulties.</summary>
+        public List<LevelRecord> Levels = new List<LevelRecord>();
 
-        /// <summary>Zombies killed in completed runs.</summary>
-        public int TotalKills;
+        /// <summary>Best survival results per location.</summary>
+        public List<SurvivalRecord> Survival = new List<SurvivalRecord>();
+
+        /// <summary>Bought weapons and throwables: upgrade level, chosen forks, drop pool mark.</summary>
+        public List<OwnedItem> Arsenal = new List<OwnedItem>();
+
+        /// <summary>Bought nodes of the character tree (stable ids).</summary>
+        public List<string> CharacterNodes = new List<string>();
+
+        public SaveStats Stats = new SaveStats();
+
+        /// <summary>The unfinished run (Continue); <see cref="RunSave.Active"/> false = none.</summary>
+        public RunSave Run = new RunSave();
 
         public SettingsData Settings = new SettingsData();
 
-        /// <summary>Replaces lists and objects missing in old or hand-edited JSON.</summary>
+        public bool HasRun => Run != null && Run.Active;
+
+        /// <summary>
+        /// Replaces lists and objects missing in old or hand-edited JSON, drops broken and repeated entries, clamps
+        /// numbers. A Maze-format save (no <see cref="SaveVersion"/>) keeps only its settings: its progress fields are gone.
+        /// </summary>
         public void Normalize()
         {
-            UnlockedLevels ??= new List<string>();
-            LevelStars ??= new List<LevelStarsRecord>();
+            Levels ??= new List<LevelRecord>();
+            Survival ??= new List<SurvivalRecord>();
+            Arsenal ??= new List<OwnedItem>();
+            CharacterNodes ??= new List<string>();
+            Stats ??= new SaveStats();
+            Run ??= new RunSave();
             Settings ??= new SettingsData();
             Settings.Language ??= string.Empty;
             // Saves made before the controls settings existed have zeros there (a valid size is never zero).
             if (!(Settings.Controls.Size > 0f)) Settings.Controls = ControlsSettings.Default;
-            if (Version < 2)
+            SaveVersion = CurrentVersion;
+
+            if (Money < 0) Money = 0;
+            Levels.RemoveAll(record => record == null || string.IsNullOrEmpty(record.LevelId));
+            Distinct(Levels, record => record.LevelId);
+            foreach (var record in Levels)
             {
-                var defaults = ControlsSettings.Default;
-                Settings.Controls.AimMode = defaults.AimMode;
-                Settings.Controls.AimAssist = defaults.AimAssist;
+                if (record.CompletedMask < 0) record.CompletedMask = 0;
+                if (record.ClosedArenaMask < 0) record.ClosedArenaMask = 0;
+                if (record.Stars < 0) record.Stars = 0;
+                if (!(record.BestTime > 0f)) record.BestTime = 0f; // negative or NaN from a hand-edited save
             }
-            if (Version < 3)
+
+            Survival.RemoveAll(record => record == null || string.IsNullOrEmpty(record.LocationId));
+            Distinct(Survival, record => record.LocationId);
+            foreach (var record in Survival)
             {
-                Settings.Controls.Layout.Attack = TouchPlacement.Default;
-                Settings.Controls.Layout.Melee = TouchPlacement.Default;
-                Settings.Controls.Layout.Ranged = TouchPlacement.Default;
+                if (record.BestScore < 0) record.BestScore = 0;
+                if (record.BestWave < 0) record.BestWave = 0;
             }
-            if (Version < 4) Settings.Controls.Layout.Use = TouchPlacement.Default;
-            Version = CurrentVersion;
-            UnlockedLevels.RemoveAll(string.IsNullOrEmpty);
-            LevelStars.RemoveAll(record => record == null || string.IsNullOrEmpty(record.LevelId));
-            if (TotalKills < 0) TotalKills = 0;
-            foreach (var record in LevelStars)
-                if (!(record.BestTime > 0f)) record.BestTime = 0f; // Negative or NaN from a hand-edited save.
+
+            Arsenal.RemoveAll(item => item == null || string.IsNullOrEmpty(item.Id));
+            Distinct(Arsenal, item => item.Id);
+            foreach (var item in Arsenal)
+            {
+                if (item.Level < 1) item.Level = 1;
+                if (!Enum.IsDefined(typeof(PoolMark), item.Mark)) item.Mark = PoolMark.Normal;
+            }
+
+            CharacterNodes.RemoveAll(string.IsNullOrEmpty);
+            Distinct(CharacterNodes, node => node);
+            Stats.Normalize();
+            Run.Normalize();
         }
 
+        public LevelRecord FindLevel(string levelId) => Levels.Find(record => record.LevelId == levelId);
+
+        public OwnedItem FindItem(string id) => Arsenal.Find(item => item.Id == id);
+
         /// <summary>
-        /// Adds the progress of another save (the same player on another device, before signing in): opened levels,
-        /// best stars and times; kills — the larger count. Settings stay these.
-        /// Both saves must be normalized.
+        /// Adds the progress of another save (the same player on another device, before signing in): opened levels and
+        /// completed difficulties, records, purchases (the higher upgrade with its forks), tree nodes, statistics and money
+        /// — the larger value (money is not summed: the same coins would count twice). Settings and the unfinished run
+        /// stay these (the other device's run is taken only when this one has none). Both saves must be normalized.
         /// </summary>
         public void MergeFrom(SaveData other)
         {
             if (other == null) return;
-            foreach (var level in other.UnlockedLevels)
-                if (!UnlockedLevels.Contains(level))
-                    UnlockedLevels.Add(level);
+            Money = Math.Max(Money, other.Money);
 
-            foreach (var theirs in other.LevelStars)
+            foreach (var theirs in other.Levels)
             {
-                var mine = LevelStars.Find(record => record.LevelId == theirs.LevelId);
+                var mine = FindLevel(theirs.LevelId);
                 if (mine == null)
                 {
-                    LevelStars.Add(new LevelStarsRecord { LevelId = theirs.LevelId, Stars = theirs.Stars, BestTime = theirs.BestTime });
+                    Levels.Add(theirs.Clone());
                     continue;
                 }
 
-                if (theirs.Stars > mine.Stars) mine.Stars = theirs.Stars;
+                mine.CompletedMask |= theirs.CompletedMask;
+                mine.ClosedArenaMask |= theirs.ClosedArenaMask;
+                mine.Stars = Math.Max(mine.Stars, theirs.Stars);
                 if (theirs.BestTime > 0f && (mine.BestTime <= 0f || theirs.BestTime < mine.BestTime))
                     mine.BestTime = theirs.BestTime;
             }
 
-            if (other.TotalKills > TotalKills) TotalKills = other.TotalKills;
+            foreach (var theirs in other.Survival)
+            {
+                var mine = Survival.Find(record => record.LocationId == theirs.LocationId);
+                if (mine == null)
+                {
+                    Survival.Add(new SurvivalRecord { LocationId = theirs.LocationId, BestScore = theirs.BestScore, BestWave = theirs.BestWave });
+                    continue;
+                }
+
+                mine.BestScore = Math.Max(mine.BestScore, theirs.BestScore);
+                mine.BestWave = Math.Max(mine.BestWave, theirs.BestWave);
+            }
+
+            foreach (var theirs in other.Arsenal)
+            {
+                var mine = FindItem(theirs.Id);
+                if (mine == null)
+                    Arsenal.Add(new OwnedItem { Id = theirs.Id, Level = theirs.Level, Forks = theirs.Forks, Mark = theirs.Mark });
+                else if (theirs.Level > mine.Level)
+                {
+                    mine.Level = theirs.Level;
+                    mine.Forks = theirs.Forks;
+                }
+            }
+
+            foreach (var node in other.CharacterNodes)
+                if (!CharacterNodes.Contains(node))
+                    CharacterNodes.Add(node);
+
+            Stats.MergeFrom(other.Stats);
+            if (!HasRun && other.HasRun) Run = other.Run;
         }
-    }
 
-    [Serializable]
-    public sealed class LevelStarsRecord
-    {
-        public string LevelId;
-        public int Stars;
-
-        /// <summary>Best time of a completed run, seconds; 0 = none (records made before the timer).</summary>
-        public float BestTime;
+        private static void Distinct<T>(List<T> list, Func<T, string> key)
+        {
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            list.RemoveAll(item => !seen.Add(key(item)));
+        }
     }
 
     [Serializable]

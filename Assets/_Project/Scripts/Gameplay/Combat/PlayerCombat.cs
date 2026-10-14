@@ -164,7 +164,7 @@ namespace Purge.Gameplay.Combat
             var range = definition.Slot == WeaponSlot.Melee ? definition.MeleeRange : AssistRange;
             var minCos = Mathf.Cos(AssistAngle * Mathf.Deg2Rad);
             var bestScore = float.MaxValue;
-            _spatial.QueryRadius(origin, range, _candidates);
+            _spatial.QueryRadius(origin, range, _candidates, _player.Floor);
 
             foreach (var candidate in _candidates)
             {
@@ -182,7 +182,7 @@ namespace Purge.Gameplay.Combat
 
                 var offAxis = Mathf.Acos(Mathf.Clamp(cos, -1f, 1f)) * Mathf.Rad2Deg / AssistAngle;
                 var score = distance * (1f + offAxis);
-                if (score >= bestScore || !_spatial.IsClear(origin, target.Position))
+                if (score >= bestScore || !_spatial.IsClear(origin, target.Position, CellFlags.BlocksBullets, _player.Floor))
                     continue;
 
                 bestScore = score;
@@ -229,12 +229,12 @@ namespace Purge.Gameplay.Combat
             if (weapon.Slot == WeaponSlot.Melee)
             {
                 Melee(definition, direction);
-                _sounds.Emit(SoundType.Melee, _player.Position, definition.SoundRadius);
+                _sounds.Emit(SoundType.Melee, _player.Position, definition.SoundRadius, _player.Floor);
             }
             else
             {
-                _bullets.Spawn(_player.Position, direction, definition.ProjectileSpeed, definition.Damage);
-                _sounds.Emit(SoundType.Ranged, _player.Position, definition.SoundRadius);
+                _bullets.Spawn(_player.Position, direction, definition.ProjectileSpeed, definition.Damage, _player.Floor);
+                _sounds.Emit(SoundType.Ranged, _player.Position, definition.SoundRadius, _player.Floor);
                 weapon.Ammo--;
                 if (weapon.Ammo <= 0)
                 {
@@ -252,7 +252,7 @@ namespace Purge.Gameplay.Combat
             _hits.Clear();
             var origin = _player.Position;
             var halfArcCos = Mathf.Cos(definition.MeleeArc * 0.5f * Mathf.Deg2Rad);
-            _spatial.QueryRadius(origin, definition.MeleeRange, _candidates);
+            _spatial.QueryRadius(origin, definition.MeleeRange, _candidates, _player.Floor);
 
             foreach (var candidate in _candidates)
             {
@@ -264,7 +264,7 @@ namespace Purge.Gameplay.Combat
                 // A target overlapping the player is always in front; otherwise check the sector.
                 if (distance > target.Radius && Vector2.Dot(offset / distance, direction) < halfArcCos)
                     continue;
-                if (!_spatial.IsClear(origin, target.Position))
+                if (!_spatial.IsClear(origin, target.Position, CellFlags.BlocksBullets, _player.Floor))
                     continue;
 
                 _hits.Add(target);
@@ -279,7 +279,7 @@ namespace Purge.Gameplay.Combat
             {
                 LastIceHit = door;
                 _doors.HitIce(door.Id);
-                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), definition.SoundRadius);
+                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), definition.SoundRadius, door.Position.Floor);
             }
         }
 

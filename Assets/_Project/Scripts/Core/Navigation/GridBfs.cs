@@ -6,7 +6,8 @@ namespace Purge.Core.Navigation
 {
     /// <summary>
     /// Breadth-first search over the grid (4 directions) from one cell: the path length to every reachable cell at once,
-    /// and the parents to walk any of those paths back. Buffers are allocated once per grid size; a run allocates
+    /// and the parents to walk any of those paths back. Works on the floor of the start cell (floors do not connect
+    /// here: a cell of another floor is never reached). Buffers are allocated once per grid size; a run allocates
     /// nothing. The start cell is always reached, whatever <typeparamref name="TPassability"/> says about it.
     /// </summary>
     public sealed class GridBfs
@@ -59,7 +60,7 @@ namespace Purge.Core.Navigation
                     var ny = y + StepY[d];
                     if (nx < 0 || ny < 0 || nx >= _width || ny >= _height) continue;
                     var neighbour = ny * _width + nx;
-                    if (_distance[neighbour] >= 0 || !passability.IsPassable(new GridPosition(nx, ny))) continue;
+                    if (_distance[neighbour] >= 0 || !passability.IsPassable(new GridPosition(nx, ny, start.Floor))) continue;
                     _distance[neighbour] = next;
                     _parent[neighbour] = index;
                     _queue[tail++] = neighbour;
@@ -68,7 +69,8 @@ namespace Purge.Core.Navigation
         }
 
         /// <summary>Steps from the start of the last run to <paramref name="cell"/>; −1 when it was not reached.</summary>
-        public int DistanceTo(GridPosition cell) => IsInside(cell) ? _distance[cell.Y * _width + cell.X] : -1;
+        public int DistanceTo(GridPosition cell) =>
+            IsInside(cell) && cell.Floor == Start.Floor ? _distance[cell.Y * _width + cell.X] : -1;
 
         public bool IsReachable(GridPosition cell) => DistanceTo(cell) >= 0;
 
@@ -83,7 +85,7 @@ namespace Purge.Core.Navigation
             var index = goal.Y * _width + goal.X;
             for (var i = length; i >= 0; i--)
             {
-                path[i] = new GridPosition(index % _width, index / _width);
+                path[i] = new GridPosition(index % _width, index / _width, Start.Floor);
                 index = _parent[index];
             }
 

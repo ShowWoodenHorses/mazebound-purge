@@ -26,9 +26,13 @@ namespace Purge.Core.Navigation
 
         public IReadOnlyCollection<string> CollectedKeyIds { get; }
 
-        public bool IsReachable(GridPosition position) =>
-            position.X >= 0 && position.X < Width && position.Y >= 0 && position.Y < Height &&
-            _reachable[position.Y * Width + position.X];
+        /// <summary>Same indexing as the grid (all floors).</summary>
+        public bool IsReachable(GridPosition position)
+        {
+            if (position.X < 0 || position.X >= Width || position.Y < 0 || position.Y >= Height || position.Floor < 0) return false;
+            var index = (position.Floor * Height + position.Y) * Width + position.X;
+            return index < _reachable.Length && _reachable[index];
+        }
     }
 
     /// <summary>
@@ -37,7 +41,8 @@ namespace Purge.Core.Navigation
     /// stays unlocked. Since a key is only ever useful at its own door, consumption cannot block anything else,
     /// so "reach the key, then its door opens" is exact. The validator enforces the one-key-one-door rule
     /// (KeySharedByDoors); for levels breaking it this solver is optimistic.
-    /// Doors without a key or initially open are passable. Repeats a flood fill until no new key is found.
+    /// Doors without a key or initially open are passable; cells whose flags block movement (walls, void, obstacles)
+    /// are not. Repeats a flood fill until no new key is found. Stays on the floor of the start (no stairs yet).
     /// </summary>
     public static class KeyDoorSolver
     {
@@ -74,7 +79,7 @@ namespace Purge.Core.Navigation
                 for (var i = 0; i < count; i++)
                 {
                     var lockKey = requiredKey[i];
-                    passable[i] = geometry.GetCell(geometry.ToPosition(i)) != CellType.Wall &&
+                    passable[i] = (geometry.GetFlags(geometry.ToPosition(i)) & CellFlags.BlocksMovement) == 0 &&
                                   (lockKey == null || collected.Contains(lockKey));
                 }
 

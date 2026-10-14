@@ -98,7 +98,8 @@ namespace Purge.Gameplay.Player
 
             var result = UseDoor(door);
             if (result == InteractionResult.DoorOpened || result == InteractionResult.DoorClosed || result == InteractionResult.DoorUnlocked)
-                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), _player.Definition.InteractionSoundRadius);
+                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), _player.Definition.InteractionSoundRadius,
+                    door.Position.Floor);
             Interacted?.Invoke(result, door);
             return true;
         }

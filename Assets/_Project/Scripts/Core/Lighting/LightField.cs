@@ -28,14 +28,21 @@ namespace Purge.Core.Lighting
         private readonly float[] _flicker; // flickering part (luminance) per texel
         private readonly float[] _total;   // all light (luminance) per texel
 
-        public LightField(int width, int height, IReadOnlyList<LightSourceData> lights)
+        /// <summary>Light of the sources standing on <paramref name="floor"/> (floors do not light each other).</summary>
+        public LightField(int width, int height, IReadOnlyList<LightSourceData> lights, int floor = 0)
         {
             if (width <= 0 || height <= 0) throw new ArgumentOutOfRangeException(nameof(width));
             Width = width;
             Height = height;
+            Floor = floor;
             TextureWidth = width * TexelsPerCell;
             TextureHeight = height * TexelsPerCell;
-            _lights = lights ?? Array.Empty<LightSourceData>();
+            var onFloor = new List<LightSourceData>();
+            if (lights != null)
+                foreach (var light in lights)
+                    if (light != null && light.Cell.Floor == floor)
+                        onFloor.Add(light);
+            _lights = onFloor;
             var count = TextureWidth * TextureHeight;
             _light = new float[count * 3];
             _flicker = new float[count];
@@ -45,6 +52,7 @@ namespace Purge.Core.Lighting
 
         public int Width { get; }
         public int Height { get; }
+        public int Floor { get; }
         public int TextureWidth { get; }
         public int TextureHeight { get; }
 
@@ -66,6 +74,7 @@ namespace Purge.Core.Lighting
         {
             var region = new RectInt();
             var any = false;
+            if (cell.Floor != Floor) return region;
             foreach (var light in _lights)
             {
                 var point = light.Point;
@@ -140,7 +149,7 @@ namespace Purge.Core.Lighting
                     var dy = y - point.y;
                     var distance = Mathf.Sqrt(dx * dx + dy * dy);
                     if (distance >= radius) continue;
-                    if (!GridLineOfSight.IsClear(point.x, point.y, x, y, opacity)) continue;
+                    if (!GridLineOfSight.IsClear(point.x, point.y, x, y, opacity, Floor)) continue;
 
                     var falloff = 1f - distance / radius;
                     falloff *= falloff;

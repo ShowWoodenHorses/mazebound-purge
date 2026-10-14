@@ -67,25 +67,38 @@ namespace Purge.Core.Visual
         /// (stable per cell and VisualSeed), a weighted General variant not taller than
         /// <see cref="LevelGenerationSettings.MaxAutoDecorHeight"/>, a stable quarter turn. No set default.
         /// Never in a key's cell — a small key gets lost in a pile of props; only decor placed by hand may be there.
-        /// Never on a snowdrift either (the drift is the cell's look).
+        /// Never on a snowdrift either (the drift is the cell's look). Variants bound to a definition (obstacles) are
+        /// never auto decor. A cell with an obstacle always shows it: a weighted Decor variant bound to the obstacle's
+        /// definition (none in the theme = nothing shown, the validator warns).
         /// </summary>
         public static VisualChoice ChooseDecor(LevelData level, GridPosition position)
         {
             var theme = level.VisualTheme;
             var geometry = level.Geometry;
-            if (theme == null || !CellLayers.Exists(geometry.GetCell(position), CellLayer.Decor) || HasKey(level, position) ||
-                geometry.GetSurface(position) != CellSurface.None)
+            if (theme == null || !CellLayers.Exists(geometry.GetCell(position), CellLayer.Decor))
                 return VisualChoice.None;
 
             var settings = level.Generation;
             var key = VisualSelector.CellKey(settings.VisualSeed, VisualKind.Decor, geometry.ToIndex(position));
+            var obstacle = geometry.GetObstacle(position);
+            if (obstacle != null)
+            {
+                var look = VisualSelector.Pick(theme.GetSet(VisualKind.Decor), VisualCategory.General, obstacle, key,
+                    v => v.Definition == obstacle);
+                return look == null ? VisualChoice.None
+                    : new VisualChoice(look.Id, (int)(StableHash.Mix(key ^ DecorRotationSalt) & 3UL));
+            }
+
+            if (HasKey(level, position) || geometry.GetSurface(position) != CellSurface.None)
+                return VisualChoice.None;
+
             var roll = (StableHash.Mix(key ^ DecorChanceSalt) >> 40) / (float)(1UL << 24);
             if (roll >= settings.DecorDensity)
                 return VisualChoice.None;
 
             var maxHeight = settings.MaxAutoDecorHeight;
             var variant = VisualSelector.Pick(theme.GetSet(VisualKind.Decor), VisualCategory.General, null, key,
-                v => v.Height <= maxHeight);
+                v => v.Definition == null && v.Height <= maxHeight);
             if (variant == null)
                 return VisualChoice.None;
 

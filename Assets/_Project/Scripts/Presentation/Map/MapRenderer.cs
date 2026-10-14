@@ -15,16 +15,19 @@ namespace Purge.Presentation.Map
         public static readonly Color32 Floor = new Color32(196, 188, 168, 255);
         public static readonly Color32 Wall = new Color32(64, 66, 74, 255);
 
-        /// <param name="pixels">Width × Height of the grid.</param>
-        public static void Render(LevelGrid grid, Color32[] pixels)
+        /// <summary>Void cells of upper floors: nothing there.</summary>
+        public static readonly Color32 Empty = new Color32(0, 0, 0, 0);
+
+        /// <param name="pixels">Width × Height of the grid: one floor.</param>
+        public static void Render(LevelGrid grid, Color32[] pixels, int floor = 0)
         {
-            if (pixels == null || pixels.Length != grid.CellCount)
-                throw new ArgumentException($"Expected {grid.CellCount} pixels.", nameof(pixels));
+            if (pixels == null || pixels.Length != grid.FloorSize)
+                throw new ArgumentException($"Expected {grid.FloorSize} pixels.", nameof(pixels));
 
             for (var i = 0; i < pixels.Length; i++)
-                pixels[i] = ColorOf(grid.GetCell(grid.ToPosition(i)));
+                pixels[i] = ColorOf(grid.GetCell(new GridPosition(i % grid.Width, i / grid.Width, floor)));
         }
 
-        public static Color32 ColorOf(CellType type) => type == CellType.Wall ? Wall : Floor;
+        public static Color32 ColorOf(CellType type) => type == CellType.Wall ? Wall : type == CellType.Void ? Empty : Floor;
     }
 }

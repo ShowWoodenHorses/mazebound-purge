@@ -170,14 +170,6 @@ MonoBehaviour:
     _range: 0
     _maxVoices: 1
     _minInterval: 0
-  _pickupMapFragment:
-    _clips:
-    - {fileID: 8300000, guid: fa2437653f6a43447bdb481c0a51a6cc, type: 3}
-    _volume: 0.6
-    _pitch: {x: 1, y: 1}
-    _range: 0
-    _maxVoices: 1
-    _minInterval: 0
   _doorOpen:
     _clips:
     - {fileID: 8300000, guid: ae72fd96744f5cb4e970b9a761af28ff, type: 3}
@@ -300,11 +292,23 @@ MonoBehaviour:
     _maxVoices: 3
     _minInterval: 0
   _zombieVoices:
-  - ZombieId: walker
+  - ZombieId: zombie_walker
     Pitch: 1
-  - ZombieId: listener
+  - ZombieId: zombie_listener
     Pitch: 1.12
-  - ZombieId: hunter
+  - ZombieId: zombie_hunter
+    Pitch: 0.88
+  - ZombieId: forest_zombie_walker
+    Pitch: 1
+  - ZombieId: forest_zombie_listener
+    Pitch: 1.12
+  - ZombieId: forest_zombie_hunter
+    Pitch: 0.88
+  - ZombieId: snow_zombie_walker
+    Pitch: 1
+  - ZombieId: snow_zombie_listener
+    Pitch: 1.12
+  - ZombieId: snow_zombie_hunter
     Pitch: 0.88
   _groanInterval: {x: 6, y: 14}
   _zombieWalkStep: 0.7
@@ -380,22 +384,6 @@ MonoBehaviour:
     _clips:
     - {fileID: 8300000, guid: f42daf8abc0c6ad46b901024ed93f953, type: 3}
     _volume: 0.7
-    _pitch: {x: 1, y: 1}
-    _range: 0
-    _maxVoices: 1
-    _minInterval: 0
-  _exitReached:
-    _clips:
-    - {fileID: 8300000, guid: e97a1cf936649e54eacdb3c7591fec38, type: 3}
-    _volume: 0.8
-    _pitch: {x: 1, y: 1}
-    _range: 0
-    _maxVoices: 1
-    _minInterval: 0
-  _confirmExit:
-    _clips:
-    - {fileID: 8300000, guid: 49745ffc6f97dec438b653ba1191ceae, type: 3}
-    _volume: 1
     _pitch: {x: 1, y: 1}
     _range: 0
     _maxVoices: 1

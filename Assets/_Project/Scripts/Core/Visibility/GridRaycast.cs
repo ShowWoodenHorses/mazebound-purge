@@ -7,7 +7,7 @@ namespace Purge.Core.Visibility
     /// <summary>
     /// Where a segment first enters an opaque cell (bullets, melee reach — ТЗ §70: Wall and closed Door block,
     /// open Door does not). Same traversal and corner rule as <see cref="GridLineOfSight"/>: a segment passing exactly
-    /// through a grid corner is blocked only when both cells beside it are opaque. Allocation-free.
+    /// through a grid corner is blocked only when both cells beside it are opaque. Stays on one floor. Allocation-free.
     /// </summary>
     public static class GridRaycast
     {
@@ -17,10 +17,11 @@ namespace Purge.Core.Visibility
         /// True when the segment is blocked. <paramref name="hitT"/> is the fraction 0..1 of the segment where it
         /// enters the blocking cell (0 when it starts inside one); 1 when not blocked.
         /// </summary>
-        public static bool Cast<T>(Vector2 from, Vector2 to, in T opacity, out float hitT, out GridPosition hitCell)
+        public static bool Cast<T>(Vector2 from, Vector2 to, in T opacity, out float hitT, out GridPosition hitCell,
+            int floor = 0)
             where T : IGridOpacity
         {
-            var cell = GridLineOfSight.CellOf(from.x, from.y);
+            var cell = GridLineOfSight.CellOf(from.x, from.y, floor);
             hitT = 1f;
             hitCell = cell;
             if (opacity.IsOpaque(cell))
@@ -29,7 +30,7 @@ namespace Purge.Core.Visibility
                 return true;
             }
 
-            var end = GridLineOfSight.CellOf(to.x, to.y);
+            var end = GridLineOfSight.CellOf(to.x, to.y, floor);
             int x = cell.X, y = cell.Y;
             var dx = to.x - from.x;
             var dy = to.y - from.y;
@@ -46,10 +47,10 @@ namespace Purge.Core.Visibility
                 if (Math.Abs(tMaxX - tMaxY) < CornerEpsilon)
                 {
                     t = tMaxX;
-                    if (opacity.IsOpaque(new GridPosition(x + stepX, y)) && opacity.IsOpaque(new GridPosition(x, y + stepY)))
+                    if (opacity.IsOpaque(new GridPosition(x + stepX, y, floor)) && opacity.IsOpaque(new GridPosition(x, y + stepY, floor)))
                     {
                         hitT = Mathf.Clamp01(t);
-                        hitCell = new GridPosition(x + stepX, y + stepY);
+                        hitCell = new GridPosition(x + stepX, y + stepY, floor);
                         return true;
                     }
 
@@ -72,7 +73,7 @@ namespace Purge.Core.Visibility
                 }
 
                 if (t > 1f) break;
-                var entered = new GridPosition(x, y);
+                var entered = new GridPosition(x, y, floor);
                 if (opacity.IsOpaque(entered))
                 {
                     hitT = Mathf.Clamp01(t);

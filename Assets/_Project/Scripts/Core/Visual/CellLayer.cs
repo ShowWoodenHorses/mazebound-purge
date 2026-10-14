@@ -4,9 +4,10 @@ namespace Purge.Core.Visual
 {
     /// <summary>
     /// Visual layers of a cell. Every cell (wall, floor, door) has a Floor layer, so the floor is visually
-    /// continuous under thin walls; Wall cells additionally have a Wall layer on top. Floor cells may have one
-    /// optional Decor item (empty is normal, unlike the other layers).
-    /// Purely visual: gameplay semantics come from <see cref="CellType"/> only.
+    /// continuous under thin walls; Wall cells additionally have a Wall layer on top; Void cells have none. Floor cells
+    /// may have one optional Decor item (empty is normal, unlike the other layers); a cell with an obstacle shows the
+    /// obstacle as its decor (a Decor variant bound to the obstacle's definition).
+    /// Purely visual: gameplay semantics come from the cell's flags only.
     /// </summary>
     public enum CellLayer
     {
@@ -24,7 +25,7 @@ namespace Purge.Core.Visual
         {
             switch (layer)
             {
-                case CellLayer.Floor: return true;
+                case CellLayer.Floor: return cellType != CellType.Void;
                 case CellLayer.Wall: return cellType == CellType.Wall;
                 default: return cellType == CellType.Floor; // Decor: not in walls and doors.
             }

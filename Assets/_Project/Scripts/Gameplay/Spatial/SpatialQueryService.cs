@@ -19,6 +19,9 @@ namespace Purge.Gameplay.Spatial
 
         /// <summary>Hit radius in cells.</summary>
         float Radius { get; }
+
+        /// <summary>Floor the object is on: queries find objects of their own floor only.</summary>
+        int Floor => 0;
     }
 
     /// <summary>A target of attacks and bullets.</summary>
@@ -69,21 +72,28 @@ namespace Purge.Gameplay.Spatial
     /// </summary>
     public interface ISpatialQueryService
     {
+        /// <summary>Objects in the cell (its floor included).</summary>
         void GetObjectsInCell(GridPosition cell, List<ISpatialObject> results);
 
-        /// <summary>Objects whose cell is within <paramref name="range"/> cells (square) of <paramref name="cell"/>.</summary>
+        /// <summary>Objects of the cell's floor whose cell is within <paramref name="range"/> cells (square) of it.</summary>
         void GetObjectsAroundCell(GridPosition cell, int range, List<ISpatialObject> results);
 
-        /// <summary>Objects whose circle overlaps the circle (<paramref name="center"/>, <paramref name="radius"/>).</summary>
-        void QueryRadius(Vector2 center, float radius, List<ISpatialObject> results);
+        /// <summary>Objects of <paramref name="floor"/> whose circle overlaps the circle (<paramref name="center"/>, <paramref name="radius"/>).</summary>
+        void QueryRadius(Vector2 center, float radius, List<ISpatialObject> results, int floor = 0);
 
-        /// <summary>First wall/closed door or object the segment hits (bullets: previous → current position).</summary>
-        SegmentHit QuerySegment(Vector2 from, Vector2 to);
+        /// <summary>
+        /// First bullet blocker (cell flag <see cref="CellFlags.BlocksBullets"/>, closed door) or object of the floor the
+        /// segment hits (bullets: previous → current position).
+        /// </summary>
+        SegmentHit QuerySegment(Vector2 from, Vector2 to, int floor = 0);
 
-        SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance);
+        SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance, int floor = 0);
 
-        /// <summary>True when no wall or closed door lies between the points (objects ignored).</summary>
-        bool IsClear(Vector2 from, Vector2 to);
+        /// <summary>
+        /// True when no cell with any of <paramref name="blockers"/> (sight by default; bullets for shots and melee) and no
+        /// closed door lies between the points on the floor (objects ignored).
+        /// </summary>
+        bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0);
     }
 
     public sealed class SpatialQueryService : ISpatialQueryService
@@ -113,7 +123,7 @@ namespace Purge.Gameplay.Spatial
         {
             results.Clear();
             foreach (var item in _objects)
-                if (PlayerMovement.CellOf(item.Position) == cell)
+                if (PlayerMovement.CellOf(item.Position, item.Floor) == cell)
                     results.Add(item);
         }
 
@@ -122,34 +132,35 @@ namespace Purge.Gameplay.Spatial
             results.Clear();
             foreach (var item in _objects)
             {
-                var other = PlayerMovement.CellOf(item.Position);
-                if (Math.Abs(other.X - cell.X) <= range && Math.Abs(other.Y - cell.Y) <= range)
+                var other = PlayerMovement.CellOf(item.Position, item.Floor);
+                if (other.Floor == cell.Floor && Math.Abs(other.X - cell.X) <= range && Math.Abs(other.Y - cell.Y) <= range)
                     results.Add(item);
             }
         }
 
-        public void QueryRadius(Vector2 center, float radius, List<ISpatialObject> results)
+        public void QueryRadius(Vector2 center, float radius, List<ISpatialObject> results, int floor = 0)
         {
             results.Clear();
             foreach (var item in _objects)
             {
+                if (item.Floor != floor) continue;
                 var reach = radius + item.Radius;
                 if ((item.Position - center).sqrMagnitude <= reach * reach)
                     results.Add(item);
             }
         }
 
-        public SegmentHit QuerySegment(Vector2 from, Vector2 to)
+        public SegmentHit QuerySegment(Vector2 from, Vector2 to, int floor = 0)
         {
-            var opacity = new LevelOpacity(_grid, _doors);
-            var blocked = GridRaycast.Cast(from, to, opacity, out var wallT, out var wallCell);
+            var opacity = LevelOpacity.ForBullets(_grid, _doors);
+            var blocked = GridRaycast.Cast(from, to, opacity, out var wallT, out var wallCell, floor);
             var delta = to - from;
 
             ISpatialObject nearest = null;
             var nearestT = blocked ? wallT : float.PositiveInfinity;
             foreach (var item in _objects)
             {
-                if (item is IDamageable damageable && !damageable.IsAlive)
+                if (item.Floor != floor || item is IDamageable damageable && !damageable.IsAlive)
                     continue;
                 if (SegmentCircle(from, delta, item.Position, item.Radius, out var t) && t <= nearestT && t <= 1f)
                 {
@@ -160,17 +171,17 @@ namespace Purge.Gameplay.Spatial
 
             if (nearest != null)
                 return new SegmentHit(SegmentHitKind.Object, nearestT, from + delta * nearestT,
-                    PlayerMovement.CellOf(nearest.Position), nearest);
+                    PlayerMovement.CellOf(nearest.Position, floor), nearest);
             if (blocked)
                 return new SegmentHit(SegmentHitKind.Blocker, wallT, from + delta * wallT, wallCell, null);
-            return new SegmentHit(SegmentHitKind.None, 1f, to, PlayerMovement.CellOf(to), null);
+            return new SegmentHit(SegmentHitKind.None, 1f, to, PlayerMovement.CellOf(to, floor), null);
         }
 
-        public SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance) =>
-            QuerySegment(origin, origin + direction.normalized * distance);
+        public SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance, int floor = 0) =>
+            QuerySegment(origin, origin + direction.normalized * distance, floor);
 
-        public bool IsClear(Vector2 from, Vector2 to) =>
-            !GridRaycast.Cast(from, to, new LevelOpacity(_grid, _doors), out _, out _);
+        public bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0) =>
+            !GridRaycast.Cast(from, to, new LevelOpacity(_grid, _doors, blockers), out _, out _, floor);
 
         /// <summary>Smallest t in [0, 1] where the segment from + delta·t touches the circle; inside counts as t = 0.</summary>
         private static bool SegmentCircle(Vector2 from, Vector2 delta, Vector2 center, float radius, out float t)

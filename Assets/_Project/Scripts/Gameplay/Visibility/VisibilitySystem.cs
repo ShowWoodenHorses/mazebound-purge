@@ -11,26 +11,32 @@ using Purge.Gameplay.Player;
 
 namespace Purge.Gameplay.Visibility
 {
-    /// <summary>Sight blockers of the running level (ТЗ §55): Wall and closed Door; open Door and Floor are see-through.</summary>
+    /// <summary>
+    /// Blockers of the running level for lines (ТЗ §55, §70): cells with any of the given <see cref="CellFlags"/>
+    /// (sight by default: walls and sight-blocking obstacles; bullets: walls and obstacles that stop bullets) and
+    /// closed doors; outside the grid blocks.
+    /// </summary>
     public readonly struct LevelOpacity : IGridOpacity
     {
         private readonly LevelGrid _grid;
         private readonly DoorSystem _doors;
+        private readonly CellFlags _blockers;
 
-        public LevelOpacity(LevelGrid grid, DoorSystem doors)
+        public LevelOpacity(LevelGrid grid, DoorSystem doors, CellFlags blockers = CellFlags.BlocksSight)
         {
             _grid = grid;
             _doors = doors;
+            _blockers = blockers;
         }
+
+        /// <summary>What stops bullets, grenades and melee reach.</summary>
+        public static LevelOpacity ForBullets(LevelGrid grid, DoorSystem doors) => new LevelOpacity(grid, doors, CellFlags.BlocksBullets);
 
         public bool IsOpaque(GridPosition position)
         {
-            switch (_grid.GetCellOrWall(position))
-            {
-                case CellType.Floor: return false;
-                case CellType.Door: return !_doors.IsOpenAt(position);
-                default: return true;
-            }
+            if (!_grid.IsInside(position)) return true;
+            if (_grid.Has(position, _blockers)) return true;
+            return _grid.GetCell(position) == CellType.Door && !_doors.IsOpenAt(position);
         }
     }
 

@@ -15,11 +15,12 @@ namespace Purge.Gameplay.Sound
     /// <summary>A gameplay sound (ТЗ §71): heard within <see cref="Radius"/> cells, not blocked by walls or doors.</summary>
     public readonly struct SoundEvent
     {
-        public SoundEvent(SoundType type, Vector2 position, float radius)
+        public SoundEvent(SoundType type, Vector2 position, float radius, int floor = 0)
         {
             Type = type;
             Position = position;
             Radius = radius;
+            Floor = floor;
         }
 
         public SoundType Type { get; }
@@ -28,6 +29,9 @@ namespace Purge.Gameplay.Sound
         public Vector2 Position { get; }
 
         public float Radius { get; }
+
+        /// <summary>Floor it sounds on (not heard on others).</summary>
+        public int Floor { get; }
 
         public bool IsHeardAt(Vector2 point) => (point - Position).sqrMagnitude <= Radius * Radius;
     }
@@ -40,10 +44,10 @@ namespace Purge.Gameplay.Sound
     {
         public event Action<SoundEvent> Emitted;
 
-        public void Emit(SoundType type, Vector2 position, float radius)
+        public void Emit(SoundType type, Vector2 position, float radius, int floor = 0)
         {
             if (radius <= 0f) return;
-            Emitted?.Invoke(new SoundEvent(type, position, radius));
+            Emitted?.Invoke(new SoundEvent(type, position, radius, floor));
         }
     }
 }

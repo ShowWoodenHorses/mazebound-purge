@@ -26,6 +26,9 @@ namespace Purge.Gameplay.Combat
         public Vector2 Position { get; internal set; }
 
         public Vector2 PreviousPosition { get; internal set; }
+
+        /// <summary>Floor the bullet flies on (it never leaves it).</summary>
+        public int Floor { get; internal set; }
         public Vector2 Direction { get; internal set; }
         public float Speed { get; internal set; }
         public float Damage { get; internal set; }
@@ -61,12 +64,13 @@ namespace Purge.Gameplay.Combat
         /// <summary>(target, damage, direction) — raised after a bullet damaged a target.</summary>
         public event Action<IDamageable, float, Vector2> TargetHit;
 
-        public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage)
+        public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0)
         {
             var bullet = _pool.Count > 0 ? _pool.Pop() : new Bullet();
             bullet.Id = ++_nextId;
             bullet.Position = origin;
             bullet.PreviousPosition = origin;
+            bullet.Floor = floor;
             bullet.Direction = direction.normalized;
             bullet.Speed = speed;
             bullet.Damage = damage;
@@ -85,7 +89,7 @@ namespace Purge.Gameplay.Combat
                 bullet.Age += deltaTime;
                 var next = bullet.Position + bullet.Direction * (bullet.Speed * deltaTime);
 
-                var hit = _spatial.QuerySegment(bullet.PreviousPosition, next);
+                var hit = _spatial.QuerySegment(bullet.PreviousPosition, next, bullet.Floor);
                 switch (hit.Kind)
                 {
                     case SegmentHitKind.Object:

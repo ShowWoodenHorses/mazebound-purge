@@ -20,6 +20,10 @@ namespace Purge.Core.Validation
         public const string FrozenDoorInitiallyOpen = "FrozenDoorInitiallyOpen";
         public const string SurfacesOutOfSync = "SurfacesOutOfSync";
         public const string SurfaceNotOnFloor = "SurfaceNotOnFloor";
+        public const string ObstaclesOutOfSync = "ObstaclesOutOfSync";
+        public const string ObstacleNotOnFloor = "ObstacleNotOnFloor";
+        public const string ObjectInBlockedCell = "ObjectInBlockedCell";
+        public const string FloorOverhang = "FloorOverhang";
 
         // Visual
         public const string NoVisualTheme = "NoVisualTheme";
@@ -52,6 +56,7 @@ namespace Purge.Core.Validation
         public const string RepeatedKeyColor = "RepeatedKeyColor";
         public const string UnlockedDoorWithColor = "UnlockedDoorWithColor";
         public const string FrozenDoorWithoutIceVisual = "FrozenDoorWithoutIceVisual";
+        public const string ObstacleWithoutVisual = "ObstacleWithoutVisual";
 
         public const string TutorialEmpty = "TutorialEmpty";
         public const string TutorialStepInvalid = "TutorialStepInvalid";

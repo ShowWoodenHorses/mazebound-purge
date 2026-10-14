@@ -274,6 +274,24 @@ namespace Purge.Core.Visual
             _decorAssignments = new VisualChoice[cellCount];
         }
 
+        /// <summary>
+        /// Keeps the assignments of the first <paramref name="cellCount"/> cells (a top floor added or removed: cell
+        /// indices of the floors below do not change); new cells have none until assigned.
+        /// </summary>
+        internal void ResizeCellAssignments(int cellCount)
+        {
+            Array.Resize(ref _floorAssignments, cellCount);
+            Array.Resize(ref _wallAssignments, cellCount);
+            if (_decorAssignments.Length > 0) Array.Resize(ref _decorAssignments, cellCount);
+        }
+
+        /// <summary>Drops overrides and decor placements of the cells of <paramref name="floor"/> (a removed floor).</summary>
+        internal void ClearFloor(int floor)
+        {
+            _cellOverrides.RemoveAll(entry => entry.Position.Floor == floor);
+            _decorPlacements.RemoveAll(placement => placement.Cell.Floor == floor);
+        }
+
         /// <summary>Decor assignments are created on demand (levels made before decor have none).</summary>
         internal void SetCellAssignment(CellLayer layer, int cellIndex, VisualChoice choice)
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Purge.Core.Audio;
+using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Core.Localization;
@@ -143,7 +144,8 @@ namespace Purge.Editor.LevelDesigner
         /// Keeps the definitions shared by all levels Addressable at their fixed addresses: <see cref="PlayerDefinition"/>,
         /// <see cref="PlayerVisualDefinition"/> and its prefab, <see cref="CombatVisualDefinition"/> and its prefabs,
         /// <see cref="WeaponVisualCatalog"/> and the held weapon prefabs, <see cref="AudioCatalog"/> and its music clips,
-        /// <see cref="LanguageCatalog"/> and the language tables.
+        /// <see cref="LanguageCatalog"/> and the language tables, <see cref="ContentCatalog"/> (rebuilt from the content
+        /// folders).
         /// Returns a problem description or null.
         /// </summary>
         public static string SyncShared(AddressableAssetSettings settings)
@@ -185,6 +187,10 @@ namespace Purge.Editor.LevelDesigner
             PackSeparately(musicGroup);
             MoveToGroup(settings, musicGroup, audio.MenuMusic.Clip);
             MoveToGroup(settings, musicGroup, audio.LevelMusic.Clip);
+
+            Content.ContentCatalogBuilder.Build(log: false);
+            if (EnsureSingleAddressable<ContentCatalog>(settings, sharedGroup, ContentCatalog.Address) == null)
+                return "Content catalog is missing: run Purge → Dev → Build Content Catalog. The game cannot start without it.";
 
             var languages = EnsureSingleAddressable<LanguageCatalog>(settings, sharedGroup, LanguageCatalog.Address);
             if (languages == null)

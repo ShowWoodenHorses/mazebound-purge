@@ -1,4 +1,5 @@
 using Purge.Core.Audio;
+using Purge.Core.Content;
 using UnityEngine;
 
 namespace Purge.Core.Definitions
@@ -20,9 +21,8 @@ namespace Purge.Core.Definitions
     /// (WeaponVisualDefinition), never here.
     /// </summary>
     [CreateAssetMenu(fileName = "WeaponDefinition", menuName = "Purge/Definitions/Weapon")]
-    public sealed class WeaponDefinition : ScriptableObject
+    public sealed class WeaponDefinition : ContentDefinition
     {
-        [SerializeField] private string _id;
         [SerializeField] private WeaponSlot _slot;
         [SerializeField, Min(0f)] private float _damage = 10f;
 
@@ -52,11 +52,10 @@ namespace Purge.Core.Definitions
         [Tooltip("Bullet speed, cells per second.")]
         [SerializeField, Min(1f)] private float _projectileSpeed = 20f;
 
-        public string Id => _id;
         public WeaponSlot Slot => _slot;
 
         /// <summary>Sound group of the weapon (AudioCatalog): the set one, otherwise the id.</summary>
-        public string SoundGroup => string.IsNullOrEmpty(_sound) ? _id : _sound;
+        public string SoundGroup => string.IsNullOrEmpty(_sound) ? Id : _sound;
 
         /// <summary>The group set by hand (empty = none).</summary>
         internal string Sound => _sound;
@@ -77,7 +76,7 @@ namespace Purge.Core.Definitions
         /// <summary>For tests and tools.</summary>
         internal void Configure(string id, WeaponSlot slot, int magazineSize = 10)
         {
-            _id = id;
+            SetId(id);
             _slot = slot;
             _magazineSize = magazineSize;
         }

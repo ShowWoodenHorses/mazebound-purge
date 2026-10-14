@@ -10,6 +10,7 @@ namespace Purge.Presentation.Visual
     /// Builds the static level geometry (ТЗ §82): saved cell visuals → exact prefabs → their meshes combined
     /// per <see cref="VisibilityChunk"/> (one mesh, one sub-mesh per material) → static batching.
     /// Every vertex stores its cell, so the shader can hide single cells. No GameObject per cell or wall.
+    /// Builds one floor (the ground until buildings with stairs show the others).
     /// </summary>
     public sealed class GeometryBuilder
     {
@@ -26,7 +27,7 @@ namespace Purge.Presentation.Visual
             _chunkSize = Mathf.Max(1, chunkSize);
         }
 
-        public LevelGeometryView Build(LevelData level, Transform parent, bool staticBatching)
+        public LevelGeometryView Build(LevelData level, Transform parent, bool staticBatching, int floor = 0)
         {
             var geometry = level.Geometry;
             var root = new GameObject("Geometry").transform;
@@ -38,7 +39,7 @@ namespace Purge.Presentation.Visual
             for (var x = 0; x < geometry.Width; x += _chunkSize)
             {
                 var rect = new GridRect(x, y, Mathf.Min(_chunkSize, geometry.Width - x), Mathf.Min(_chunkSize, geometry.Height - y));
-                var chunk = BuildChunk(level, rect, root, ref missing);
+                var chunk = BuildChunk(level, rect, floor, root, ref missing);
                 if (chunk != null)
                     chunks.Add(chunk);
             }
@@ -46,13 +47,13 @@ namespace Purge.Presentation.Visual
             if (staticBatching && chunks.Count > 0)
                 StaticBatchingUtility.Combine(root.gameObject);
 
-            var view = new LevelGeometryView(root, chunks, new CellVisibilityMask(geometry.Width, geometry.Height), missing,
-                SnowdriftMask.Create(level));
+            var view = new LevelGeometryView(root, chunks, new CellVisibilityMask(geometry.Width, geometry.Height, floor), missing,
+                SnowdriftMask.Create(level, floor));
             view.ApplyVisibility();
             return view;
         }
 
-        private VisibilityChunk BuildChunk(LevelData level, GridRect rect, Transform root, ref int missing)
+        private VisibilityChunk BuildChunk(LevelData level, GridRect rect, int floor, Transform root, ref int missing)
         {
             var geometry = level.Geometry;
             _accumulator.Clear();
@@ -60,7 +61,7 @@ namespace Purge.Presentation.Visual
             for (var y = rect.Y; y < rect.YMax; y++)
             for (var x = rect.X; x < rect.XMax; x++)
             {
-                var cell = new GridPosition(x, y);
+                var cell = new GridPosition(x, y, floor);
                 var cellType = geometry.GetCell(cell);
                 foreach (var layer in CellLayers.All)
                 {

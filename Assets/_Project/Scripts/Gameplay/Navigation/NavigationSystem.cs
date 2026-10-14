@@ -68,6 +68,9 @@ namespace Purge.Gameplay.Navigation
 
         public bool IsSnowdrift(GridPosition cell) => _passability.IsSnowdrift(cell);
 
+        /// <summary>Share of the speed kept in the cell because of its obstacle (1 = none).</summary>
+        public float ObstacleSpeedFactor(GridPosition cell) => _passability.ObstacleSpeedFactor(cell);
+
         /// <summary>Cells from <paramref name="start"/> to <paramref name="goal"/> inclusive; false when unreachable.</summary>
         public bool TryFindPath(GridPosition start, GridPosition goal, List<GridPosition> path)
         {

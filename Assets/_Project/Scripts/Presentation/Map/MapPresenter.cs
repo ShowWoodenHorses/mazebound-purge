@@ -84,7 +84,7 @@ namespace Purge.Presentation.Map
                     filterMode = FilterMode.Point,
                     wrapMode = TextureWrapMode.Clamp,
                 };
-                _pixels = new Color32[_grid.CellCount];
+                _pixels = new Color32[_grid.FloorSize];
                 CollectPairColors();
             }
 

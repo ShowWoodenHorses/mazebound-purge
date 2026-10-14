@@ -44,7 +44,7 @@ namespace Purge.Gameplay.Sound
 
             _walked -= definition.StepDistance;
             if (_walked > definition.StepDistance) _walked = 0f; // a teleport is not a run of steps
-            _sounds.Emit(SoundType.Step, position, definition.StepSoundRadius);
+            _sounds.Emit(SoundType.Step, position, definition.StepSoundRadius, _player.Floor);
         }
     }
 }

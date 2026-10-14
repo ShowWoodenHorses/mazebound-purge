@@ -294,8 +294,9 @@ namespace Purge.Application.Save
             {
                 var data = JsonUtility.FromJson<SaveData>(json);
                 if (data == null) throw new FormatException("Empty save.");
-                GameLog.Info(LogChannel.Save, $"Save loaded: {data.UnlockedLevels?.Count ?? 0} unlocked level(s), " +
-                                              $"{data.LevelStars?.Count ?? 0} with stars, {data.TotalKills} kill(s).");
+                GameLog.Info(LogChannel.Save, $"Save loaded (v{data.SaveVersion}): {data.Levels?.Count ?? 0} level(s), " +
+                                              $"{data.Arsenal?.Count ?? 0} item(s), {data.Money} money" +
+                                              (data.Run != null && data.Run.Active ? ", a run to continue." : "."));
                 return data;
             }
             catch (Exception e)

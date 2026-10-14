@@ -43,10 +43,10 @@ namespace Purge.Presentation.Map
         /// </summary>
         public static float DoorRotation(LevelGrid grid, GridPosition cell)
         {
-            var north = grid.GetCellOrWall(new GridPosition(cell.X, cell.Y + 1)) == CellType.Wall;
-            var south = grid.GetCellOrWall(new GridPosition(cell.X, cell.Y - 1)) == CellType.Wall;
-            var east = grid.GetCellOrWall(new GridPosition(cell.X + 1, cell.Y)) == CellType.Wall;
-            var west = grid.GetCellOrWall(new GridPosition(cell.X - 1, cell.Y)) == CellType.Wall;
+            var north = grid.GetCellOrWall(new GridPosition(cell.X, cell.Y + 1, cell.Floor)) == CellType.Wall;
+            var south = grid.GetCellOrWall(new GridPosition(cell.X, cell.Y - 1, cell.Floor)) == CellType.Wall;
+            var east = grid.GetCellOrWall(new GridPosition(cell.X + 1, cell.Y, cell.Floor)) == CellType.Wall;
+            var west = grid.GetCellOrWall(new GridPosition(cell.X - 1, cell.Y, cell.Floor)) == CellType.Wall;
             return north && south && !(east && west) ? 90f : 0f;
         }
 

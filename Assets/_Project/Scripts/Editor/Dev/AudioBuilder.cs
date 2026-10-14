@@ -91,9 +91,15 @@ namespace Purge.Editor.Dev
         /// <summary>Default voice pitch per zombie type (set when the list is empty).</summary>
         private static readonly (string Id, float Pitch)[] ZombieVoices =
         {
-            ("walker", 1f),
-            ("listener", 1.12f),
-            ("hunter", 0.88f),
+            ("zombie_walker", 1f),
+            ("zombie_listener", 1.12f),
+            ("zombie_hunter", 0.88f),
+            ("forest_zombie_walker", 1f),
+            ("forest_zombie_listener", 1.12f),
+            ("forest_zombie_hunter", 0.88f),
+            ("snow_zombie_walker", 1f),
+            ("snow_zombie_listener", 1.12f),
+            ("snow_zombie_hunter", 0.88f),
         };
 
         [MenuItem("Purge/Dev/Build Audio")]

@@ -11,7 +11,10 @@ namespace Purge.Core.Navigation
         bool IsPassable(GridPosition position);
     }
 
-    /// <summary>Passability backed by a per-cell mask (row-major, same indexing as the grid).</summary>
+    /// <summary>
+    /// Passability backed by a per-cell mask with the grid's indexing: (floor · height + y) · width + x; the mask's
+    /// length says how many floors it covers (width · height for one).
+    /// </summary>
     public readonly struct CellMaskPassability : IGridPassability
     {
         private readonly bool[] _passable;
@@ -26,7 +29,8 @@ namespace Purge.Core.Navigation
         }
 
         public bool IsPassable(GridPosition position) =>
-            position.X >= 0 && position.X < _width && position.Y >= 0 && position.Y < _height &&
-            _passable[position.Y * _width + position.X];
+            position.X >= 0 && position.X < _width && position.Y >= 0 && position.Y < _height && position.Floor >= 0 &&
+            (position.Floor * _height + position.Y) * _width + position.X < _passable.Length &&
+            _passable[(position.Floor * _height + position.Y) * _width + position.X];
     }
 }

@@ -2,13 +2,15 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Assets;
+using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Visual;
 
 namespace Purge.Application.Services
 {
     /// <summary>
-    /// Definitions shared by every level (player parameters and look, combat visuals, held weapon looks), loaded once and kept resident
+    /// Definitions shared by every level (player parameters and look, combat visuals, held weapon looks, the content
+    /// catalog that resolves stable ids of saves), loaded once and kept resident
     /// for the application lifetime (ТЗ §84: shared assets may stay resident).
     /// </summary>
     public sealed class SharedDefinitionsService : IApplicationService, IDisposable
@@ -28,14 +30,18 @@ namespace Purge.Application.Services
         public CombatVisualDefinition CombatVisual { get; private set; }
         public WeaponVisualCatalog WeaponVisuals { get; private set; }
 
+        /// <summary>Every content asset by stable id (purchases, upgrades and runs in the save refer to them).</summary>
+        public ContentCatalog Content { get; private set; }
+
         public async UniTask InitializeAsync(CancellationToken cancellation)
         {
             _assets = _addressables.CreateOwner("Application: Shared Definitions");
-            (Player, PlayerVisual, CombatVisual, WeaponVisuals) = await UniTask.WhenAll(
+            (Player, PlayerVisual, CombatVisual, WeaponVisuals, Content) = await UniTask.WhenAll(
                 _assets.LoadAsync<PlayerDefinition>(PlayerDefinition.Address, cancellation),
                 _assets.LoadAsync<PlayerVisualDefinition>(PlayerVisualDefinition.Address, cancellation),
                 _assets.LoadAsync<CombatVisualDefinition>(CombatVisualDefinition.Address, cancellation),
-                _assets.LoadAsync<WeaponVisualCatalog>(WeaponVisualCatalog.Address, cancellation));
+                _assets.LoadAsync<WeaponVisualCatalog>(WeaponVisualCatalog.Address, cancellation),
+                _assets.LoadAsync<ContentCatalog>(ContentCatalog.Address, cancellation));
         }
 
         public void Dispose()
@@ -46,6 +52,7 @@ namespace Purge.Application.Services
             PlayerVisual = null;
             CombatVisual = null;
             WeaponVisuals = null;
+            Content = null;
         }
     }
 }

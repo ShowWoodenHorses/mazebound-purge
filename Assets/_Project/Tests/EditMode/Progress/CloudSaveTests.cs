@@ -18,7 +18,7 @@ namespace Purge.Tests.EditMode.Progress
             var cloud = new FakeCloud { Json = Json(kills: 7) };
             using var save = Start(local, cloud);
 
-            Assert.AreEqual(7, save.Data.TotalKills);
+            Assert.AreEqual(7, save.Data.Stats.TotalKills);
             Assert.IsTrue(save.UsesCloud);
             StringAssert.Contains("\"TotalKills\":7", local.Json, "The browser's copy is replaced by the cloud save.");
             Assert.AreEqual(0, cloud.Writes);
@@ -31,7 +31,7 @@ namespace Purge.Tests.EditMode.Progress
             var cloud = new FakeCloud();
             using var save = Start(local, cloud);
 
-            Assert.AreEqual(3, save.Data.TotalKills);
+            Assert.AreEqual(3, save.Data.Stats.TotalKills);
             Assert.AreEqual(1, cloud.Writes);
             StringAssert.Contains("\"TotalKills\":3", cloud.Json);
         }
@@ -44,9 +44,9 @@ namespace Purge.Tests.EditMode.Progress
             using var save = Start(local, cloud);
             save.CloudDelay = 3600f; // only the flush writes in this test
 
-            save.Data.TotalKills = 1;
+            save.Data.Stats.TotalKills = 1;
             save.Save();
-            save.Data.TotalKills = 2;
+            save.Data.Stats.TotalKills = 2;
             save.Save();
 
             Assert.AreEqual(2, local.Writes);
@@ -68,7 +68,7 @@ namespace Purge.Tests.EditMode.Progress
             var cloud = new FakeCloud { FailRead = true };
             using var save = Start(local, cloud);
 
-            Assert.AreEqual(3, save.Data.TotalKills);
+            Assert.AreEqual(3, save.Data.Stats.TotalKills);
             Assert.IsFalse(save.UsesCloud);
             save.Save();
             save.FlushCloudAsync().GetAwaiter().GetResult();
@@ -82,7 +82,7 @@ namespace Purge.Tests.EditMode.Progress
             using var save = new SaveService(local, new PlatformService(new GenericPlatform()));
             save.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
 
-            Assert.AreEqual(5, save.Data.TotalKills);
+            Assert.AreEqual(5, save.Data.Stats.TotalKills);
             Assert.IsFalse(save.UsesCloud);
         }
 
@@ -90,9 +90,9 @@ namespace Purge.Tests.EditMode.Progress
         public void SignIn_MergesTheAccountSave_IntoTheCurrentOne()
         {
             var local = new MemoryStorage();
-            var guest = new SaveData { TotalKills = 3 };
-            guest.LevelStars.Add(new LevelStarsRecord { LevelId = "L1", Stars = 2, BestTime = 40f });
-            guest.UnlockedLevels.Add("L2");
+            var guest = new SaveData { Stats = new SaveStats { TotalKills = 3 } };
+            guest.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 1, Stars = 2, BestTime = 40f });
+            guest.Levels.Add(new LevelRecord { LevelId = "L2" });
             var cloud = new FakeCloud { Json = JsonUtility.ToJson(guest) };
             var site = new CloudPlatform(cloud);
             using var save = Start(local, cloud, site);
@@ -100,22 +100,24 @@ namespace Purge.Tests.EditMode.Progress
             Assert.IsTrue(account.CanSignIn);
 
             // The account's save, made on another device.
-            var other = new SaveData { TotalKills = 5 };
-            other.LevelStars.Add(new LevelStarsRecord { LevelId = "L1", Stars = 3, BestTime = 55f });
-            other.LevelStars.Add(new LevelStarsRecord { LevelId = "L3", Stars = 1, BestTime = 90f });
-            other.UnlockedLevels.Add("L4");
+            var other = new SaveData { Stats = new SaveStats { TotalKills = 5 } };
+            other.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 4, Stars = 3, BestTime = 55f });
+            other.Levels.Add(new LevelRecord { LevelId = "L3", CompletedMask = 1, Stars = 1, BestTime = 90f });
+            other.Levels.Add(new LevelRecord { LevelId = "L4" });
             cloud.Json = JsonUtility.ToJson(other);
             var changes = 0;
             account.Changed += () => changes++;
 
             Assert.IsTrue(account.SignInAsync(CancellationToken.None).GetAwaiter().GetResult());
 
-            Assert.AreEqual(5, save.Data.TotalKills);
-            var l1 = save.Data.LevelStars.Find(r => r.LevelId == "L1");
+            Assert.AreEqual(5, save.Data.Stats.TotalKills);
+            var l1 = save.Data.FindLevel("L1");
             Assert.AreEqual(3, l1.Stars);
             Assert.AreEqual(40f, l1.BestTime, "The better time of the two.");
-            Assert.IsNotNull(save.Data.LevelStars.Find(r => r.LevelId == "L3"));
-            CollectionAssert.IsSupersetOf(save.Data.UnlockedLevels, new[] { "L2", "L4" });
+            Assert.AreEqual(5, l1.CompletedMask, "Difficulties of both.");
+            Assert.IsNotNull(save.Data.FindLevel("L3"));
+            Assert.IsNotNull(save.Data.FindLevel("L2"));
+            Assert.IsNotNull(save.Data.FindLevel("L4"));
             StringAssert.Contains("\"TotalKills\":5", cloud.Json, "The merged save goes to the account.");
             StringAssert.Contains("\"LevelId\":\"L3\"", local.Json);
             Assert.IsFalse(account.CanSignIn, "Signed in: no more offer.");
@@ -134,7 +136,7 @@ namespace Purge.Tests.EditMode.Progress
 
             Assert.IsFalse(account.SignInAsync(CancellationToken.None).GetAwaiter().GetResult());
 
-            Assert.AreEqual(3, save.Data.TotalKills);
+            Assert.AreEqual(3, save.Data.Stats.TotalKills);
             Assert.AreEqual(0, cloud.Writes);
             Assert.IsTrue(account.CanSignIn, "The offer stays.");
         }
@@ -151,7 +153,7 @@ namespace Purge.Tests.EditMode.Progress
 
             site.SignInOnTheSite();
 
-            Assert.AreEqual(8, save.Data.TotalKills);
+            Assert.AreEqual(8, save.Data.Stats.TotalKills);
             Assert.IsFalse(account.CanSignIn);
         }
 
@@ -180,18 +182,39 @@ namespace Purge.Tests.EditMode.Progress
         [Test]
         public void Merge_KeepsTheBestOfBoth()
         {
-            var mine = new SaveData { TotalKills = 10 };
-            mine.LevelStars.Add(new LevelStarsRecord { LevelId = "A", Stars = 3, BestTime = 0f });
+            var mine = new SaveData { Money = 100, Stats = new SaveStats { TotalKills = 10 } };
+            mine.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 1, Stars = 3, BestTime = 0f });
+            mine.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 2, Forks = 1, Mark = PoolMark.Favorite });
+            mine.CharacterNodes.Add("shooter_1");
+            mine.Run.Active = true;
+            mine.Run.LevelId = "A";
             mine.Settings.MusicVolume = 0.3f;
-            var theirs = new SaveData { TotalKills = 4 };
-            theirs.LevelStars.Add(new LevelStarsRecord { LevelId = "A", Stars = 1, BestTime = 70f });
+            var theirs = new SaveData { Money = 250, Stats = new SaveStats { TotalKills = 4, RunsStarted = 9 } };
+            theirs.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 2, Stars = 1, BestTime = 70f });
+            theirs.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 5, Forks = 2 });
+            theirs.Arsenal.Add(new OwnedItem { Id = "bat" });
+            theirs.Survival.Add(new SurvivalRecord { LocationId = "forest", BestScore = 1200, BestWave = 7 });
+            theirs.CharacterNodes.Add("shooter_1");
+            theirs.CharacterNodes.Add("survivor_1");
+            theirs.Run.Active = true;
+            theirs.Run.LevelId = "B";
             theirs.Settings.MusicVolume = 1f;
 
             mine.MergeFrom(theirs);
 
-            Assert.AreEqual(10, mine.TotalKills);
-            Assert.AreEqual(3, mine.LevelStars[0].Stars);
-            Assert.AreEqual(70f, mine.LevelStars[0].BestTime, "A time where there was none.");
+            Assert.AreEqual(250, mine.Money, "The larger amount, not the sum.");
+            Assert.AreEqual(10, mine.Stats.TotalKills);
+            Assert.AreEqual(9, mine.Stats.RunsStarted);
+            Assert.AreEqual(3, mine.Levels[0].Stars);
+            Assert.AreEqual(3, mine.Levels[0].CompletedMask);
+            Assert.AreEqual(70f, mine.Levels[0].BestTime, "A time where there was none.");
+            Assert.AreEqual(5, mine.FindItem("ak_74").Level, "The higher upgrade, with its forks.");
+            Assert.AreEqual(2, mine.FindItem("ak_74").Forks);
+            Assert.AreEqual(PoolMark.Favorite, mine.FindItem("ak_74").Mark, "The mark stays this device's.");
+            Assert.IsNotNull(mine.FindItem("bat"));
+            Assert.AreEqual(1200, mine.Survival[0].BestScore);
+            CollectionAssert.AreEqual(new[] { "shooter_1", "survivor_1" }, mine.CharacterNodes);
+            Assert.AreEqual("A", mine.Run.LevelId, "This device's run stays.");
             Assert.AreEqual(0.3f, mine.Settings.MusicVolume, "Settings stay these.");
         }
 
@@ -241,7 +264,7 @@ namespace Purge.Tests.EditMode.Progress
             return save;
         }
 
-        private static string Json(int kills) => JsonUtility.ToJson(new SaveData { TotalKills = kills });
+        private static string Json(int kills) => JsonUtility.ToJson(new SaveData { Stats = new SaveStats { TotalKills = kills } });
 
         private sealed class MemoryStorage : ISaveStorage
         {

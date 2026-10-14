@@ -7,7 +7,8 @@ namespace Purge.Presentation.Visual
     /// <summary>
     /// Per-cell visibility for the "Purge/Geometry" shader: a Width x Height R8 texture (255 = visible), bound
     /// globally while the level is active. Changes are written to a CPU buffer and uploaded by <see cref="Apply"/>,
-    /// once per visibility update, never per frame.
+    /// once per visibility update, never per frame. Covers one floor (<see cref="Floor"/>): cells of other floors are
+    /// never visible here.
     /// </summary>
     public sealed class CellVisibilityMask : IDisposable
     {
@@ -18,10 +19,11 @@ namespace Purge.Presentation.Visual
         private Texture2D _texture;
         private bool _dirty;
 
-        public CellVisibilityMask(int width, int height)
+        public CellVisibilityMask(int width, int height, int floor = 0)
         {
             Width = width;
             Height = height;
+            Floor = floor;
             _cells = new byte[width * height];
             _texture = new Texture2D(width, height, TextureFormat.R8, false, true)
             {
@@ -36,12 +38,14 @@ namespace Purge.Presentation.Visual
 
         public int Width { get; }
         public int Height { get; }
+        public int Floor { get; }
         public Texture2D Texture => _texture;
 
-        public bool IsVisible(GridPosition cell) => _cells[cell.Y * Width + cell.X] == Visible;
+        public bool IsVisible(GridPosition cell) => cell.Floor == Floor && _cells[cell.Y * Width + cell.X] == Visible;
 
         public void SetVisible(GridPosition cell, bool visible)
         {
+            if (cell.Floor != Floor) return;
             var value = visible ? Visible : Hidden;
             var index = cell.Y * Width + cell.X;
             if (_cells[index] == value) return;

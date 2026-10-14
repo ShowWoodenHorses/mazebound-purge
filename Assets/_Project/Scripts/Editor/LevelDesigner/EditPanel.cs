@@ -38,6 +38,11 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Decor:
                     DecorOptions(state, tools);
                     break;
+                case EditTool.Obstacle:
+                    tools.ObstacleDefinition = (ObstacleDefinition)EditorGUILayout.ObjectField("Obstacle", tools.ObstacleDefinition, typeof(ObstacleDefinition), false);
+                    if (tools.ObstacleDefinition != null)
+                        EditorGUILayout.LabelField("Blocks", Blocks(tools.ObstacleDefinition), EditorStyles.miniLabel);
+                    break;
                 case EditTool.Key when tools.PendingKeyDoorId != null:
                     EditorGUILayout.HelpBox($"The next key you place opens '{tools.PendingKeyDoorId}'.", MessageType.Info);
                     break;
@@ -70,6 +75,17 @@ namespace Purge.Editor.LevelDesigner
             tools.DecorRotation = EditorGUILayout.Popup("Rotation", tools.DecorRotation, RotationNames);
         }
 
+        private static string Blocks(ObstacleDefinition obstacle)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (obstacle.BlocksMovement) parts.Add("movement");
+            if (obstacle.BlocksBullets) parts.Add("bullets");
+            if (obstacle.BlocksSight) parts.Add("sight");
+            if (obstacle.SpeedFactor < 1f) parts.Add($"slows ×{obstacle.SpeedFactor:0.##}");
+            if (obstacle.Flammable) parts.Add("burns");
+            return parts.Count == 0 ? "nothing" : string.Join(", ", parts);
+        }
+
         private static string Label(EditTool tool)
         {
             switch (tool)
@@ -90,7 +106,8 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Key: return "Click a floor cell to place a key. Link it to a door from the door's inspector (one key = one door).";
                 case EditTool.Decor: return "Click or drag on floor cells to paint decor (Paint: a variant, None = no decor, Automatic = back to auto placement). Right-click or right-drag removes decor. Decor is only visual.";
                 case EditTool.Snowdrift: return "Click or drag on floor cells to make snowdrifts: the player and zombies move slower there, zombie routes go around them when the detour is short. Right-click or right-drag removes them. The cell gets a drift floor of the theme (if it has one) and no auto decor.";
-                case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts and decor are removed, walls and doors become floor.";
+                case EditTool.Obstacle: return "Click or drag on floor cells to place the obstacle (Data/Obstacles: what it blocks — movement, bullets, sight — is set in its asset). Right-click or right-drag removes obstacles. The cell shows a Decor variant of the theme bound to the obstacle.";
+                case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts, obstacles and decor are removed, walls, void and doors become floor.";
                 default: return "Click a floor cell to place.";
             }
         }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 813339066762873734}
   - component: {fileID: 4388287276670927907}
   - component: {fileID: 1946297547606110441}
-  - component: {fileID: 1752613792}
   m_Layer: 0
   m_Name: Gate_02
   m_TagString: Untagged
@@ -94,28 +93,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1752613792
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 667673988501820}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 29567836186033220, guid: 20ead121b08addb499c569b46625646d, type: 2}
 --- !u!1 &4285272640716299818
 GameObject:
   m_ObjectHideFlags: 0

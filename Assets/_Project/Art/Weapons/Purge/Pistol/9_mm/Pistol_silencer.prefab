@@ -281,7 +281,6 @@ GameObject:
   - component: {fileID: 4869858097322388}
   - component: {fileID: 33897307396637770}
   - component: {fileID: 23378889594743194}
-  - component: {fileID: 64538157798578532}
   m_Layer: 0
   m_Name: Pistol_silencer
   m_TagString: Untagged
@@ -365,28 +364,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64538157798578532
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643153634518648}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43260915479693258, guid: dfc537ca394c7ed45992e70cb94a9445, type: 2}
 --- !u!1001 &2380072986820784018
 PrefabInstance:
   m_ObjectHideFlags: 0

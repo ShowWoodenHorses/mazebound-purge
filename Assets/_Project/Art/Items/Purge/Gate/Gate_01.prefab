@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4632188838345984}
   - component: {fileID: 33662084100649858}
   - component: {fileID: 23643837393001634}
-  - component: {fileID: 64612678025592002}
   m_Layer: 0
   m_Name: SM_Bld_Castle_Wall_Gate_Door_L_01
   m_TagString: Untagged
@@ -91,28 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64612678025592002
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629976476874234}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43091475134911724, guid: a221aa3d5972b0049be9c2a9fa82214c, type: 2}
 --- !u!1 &1643572010562178
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +101,6 @@ GameObject:
   - component: {fileID: 4321771328951606}
   - component: {fileID: 33439795418751614}
   - component: {fileID: 23519773903171114}
-  - component: {fileID: 64332297801632960}
   m_Layer: 0
   m_Name: Gate_01
   m_TagString: Untagged
@@ -207,28 +183,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64332297801632960
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643572010562178}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 6727978945cc9f144ae06af32ec3485e, type: 3}
 --- !u!1 &1668009924744278
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +194,6 @@ GameObject:
   - component: {fileID: 4624892713828200}
   - component: {fileID: 33254046760324868}
   - component: {fileID: 23075701579112974}
-  - component: {fileID: 64610952023434784}
   m_Layer: 0
   m_Name: SM_Bld_Castle_Wall_Gate_Door_R_01
   m_TagString: Untagged
@@ -320,28 +273,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64610952023434784
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668009924744278}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43596034512649482, guid: a128dde8d0fad204cabba80dc71f9876, type: 2}
 --- !u!1 &1873637781813318
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +284,6 @@ GameObject:
   - component: {fileID: 4663044622253654}
   - component: {fileID: 33284090774508020}
   - component: {fileID: 23654550844180310}
-  - component: {fileID: 64949691734151320}
   m_Layer: 0
   m_Name: SM_Bld_Castle_Wall_Gate_Portcullis_01
   m_TagString: Untagged
@@ -433,25 +363,3 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64949691734151320
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873637781813318}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43603933662495724, guid: 4bc020c28b843db46936a3d1f271d578, type: 2}

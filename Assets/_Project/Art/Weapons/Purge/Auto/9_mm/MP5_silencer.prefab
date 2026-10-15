@@ -552,7 +552,6 @@ GameObject:
   - component: {fileID: 4556199279185090}
   - component: {fileID: 33066465729544214}
   - component: {fileID: 23405579078178050}
-  - component: {fileID: 64352829548150678}
   m_Layer: 0
   m_Name: MP5_silencer
   m_TagString: Untagged
@@ -638,28 +637,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64352829548150678
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940089934359856}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43724545069757062, guid: 2f0fcfd109299f94e9cc4638c750e5f8, type: 2}
 --- !u!1 &3640101813827654819
 GameObject:
   m_ObjectHideFlags: 0

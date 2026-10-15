@@ -101,7 +101,6 @@ GameObject:
   - component: {fileID: 4833889617908870}
   - component: {fileID: 33308710324914954}
   - component: {fileID: 23938630180220904}
-  - component: {fileID: 64718029032811846}
   m_Layer: 0
   m_Name: AWM
   m_TagString: Untagged
@@ -185,28 +184,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64718029032811846
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1619436894274318}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43154356243295658, guid: 065711f6d50649046b8aed1f0a800ac5, type: 2}
 --- !u!1 &1645298540226796
 GameObject:
   m_ObjectHideFlags: 0

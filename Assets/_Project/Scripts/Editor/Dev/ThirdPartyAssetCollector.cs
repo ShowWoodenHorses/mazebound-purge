@@ -10,8 +10,8 @@ namespace Purge.Editor.Dev
     /// Purge → Dev → Collect Used Third-Party Assets. Asset packs are downloaded into Assets/_Project/Import, which is
     /// git-ignored (hundreds of MB, mostly unused). This keeps the project self-contained:
     /// <list type="number">
-    /// <item>strips physics (colliders, rigidbodies — forbidden in this project; packs add them by default) from every
-    /// prefab outside Import;</item>
+    /// <item>strips physics (colliders, rigidbodies) and LODs (LODGroup + lower-LOD renderers, LOD0 stays) — both
+    /// forbidden in this project, packs add them by default — from every prefab outside Import;</item>
     /// <item>moves everything the project uses from Import/&lt;Pack&gt;/… to Art/ThirdParty/&lt;Pack&gt;/… —
     /// <see cref="AssetDatabase.MoveAsset"/> keeps GUIDs, so prefabs, levels and Addressables stay linked;</item>
     /// <item>checks that nothing outside Import references Import any more;</item>
@@ -47,7 +47,7 @@ namespace Purge.Editor.Dev
         [MenuItem("Purge/Dev/Collect Used Third-Party Assets")]
         public static void Collect()
         {
-            var stripped = StripPhysics();
+            var stripped = StripForbidden();
             AssetDatabase.SaveAssets();
 
             var used = FindUsedImportAssets();
@@ -72,7 +72,7 @@ namespace Purge.Editor.Dev
             foreach (var path in remaining)
                 Debug.LogError("[Purge] Still referenced from Import: " + path);
 
-            Debug.Log($"[Purge] Third-party assets: physics stripped from {stripped} prefab(s), {moved} file(s) moved to " +
+            Debug.Log($"[Purge] Third-party assets: physics/LODs stripped from {stripped} prefab(s), {moved} file(s) moved to " +
                       $"{TargetRoot}, {capped} texture(s) capped for mobile, {remaining.Count} still in Import" +
                       (remaining.Count == 0 ? " — Import is unused and can be deleted." : "."));
         }
@@ -91,7 +91,11 @@ namespace Purge.Editor.Dev
                 .ToList();
         }
 
-        private static int StripPhysics()
+        /// <summary>
+        /// Removes physics and LODs (both forbidden) from every prefab outside Import. Geometry merging takes every
+        /// enabled MeshRenderer of a prefab (<c>PrefabMeshParts</c>), so a kept LOD1 would be drawn over LOD0.
+        /// </summary>
+        private static int StripForbidden()
         {
             var count = 0;
             foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets" }))
@@ -101,7 +105,8 @@ namespace Purge.Editor.Dev
 
                 var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 if (asset == null || (asset.GetComponentsInChildren<Collider>(true).Length == 0 &&
-                                      asset.GetComponentsInChildren<Rigidbody>(true).Length == 0))
+                                      asset.GetComponentsInChildren<Rigidbody>(true).Length == 0 &&
+                                      asset.GetComponentsInChildren<LODGroup>(true).Length == 0))
                     continue;
 
                 var root = PrefabUtility.LoadPrefabContents(path);
@@ -111,8 +116,15 @@ namespace Purge.Editor.Dev
                         UnityEngine.Object.DestroyImmediate(body);
                     foreach (var collider in root.GetComponentsInChildren<Collider>(true))
                         UnityEngine.Object.DestroyImmediate(collider);
+                    foreach (var group in root.GetComponentsInChildren<LODGroup>(true))
+                        StripLods(group);
                     PrefabUtility.SaveAsPrefabAsset(root, path);
                     count++;
+                }
+                catch (Exception exception)
+                {
+                    // E.g. an object of a nested prefab or a variant's base can't be removed here: fix its source prefab.
+                    Debug.LogError($"[Purge] Could not strip physics/LODs from {path}: {exception.Message}");
                 }
                 finally
                 {
@@ -121,6 +133,42 @@ namespace Purge.Editor.Dev
             }
 
             return count;
+        }
+
+        /// <summary>Keeps LOD0: deletes renderers used only by lower LODs (with their objects, if nothing else is on them) and the group.</summary>
+        private static void StripLods(LODGroup group)
+        {
+            var lods = group.GetLODs();
+            var keep = new HashSet<Renderer>();
+            if (lods.Length > 0)
+                foreach (var renderer in lods[0].renderers)
+                    if (renderer != null) keep.Add(renderer);
+
+            for (var i = 1; i < lods.Length; i++)
+            foreach (var renderer in lods[i].renderers)
+            {
+                if (renderer == null || keep.Contains(renderer)) continue;
+                var go = renderer.gameObject;
+                if (go.transform != group.transform && go.transform.childCount == 0 && OnlyMeshComponents(go))
+                {
+                    UnityEngine.Object.DestroyImmediate(go);
+                    continue;
+                }
+
+                var filter = go.GetComponent<MeshFilter>();
+                UnityEngine.Object.DestroyImmediate(renderer);
+                if (filter != null) UnityEngine.Object.DestroyImmediate(filter);
+            }
+
+            UnityEngine.Object.DestroyImmediate(group);
+        }
+
+        private static bool OnlyMeshComponents(GameObject go)
+        {
+            foreach (var component in go.GetComponents<Component>())
+                if (!(component is Transform || component is Renderer || component is MeshFilter))
+                    return false;
+            return true;
         }
 
         [MenuItem("Purge/Dev/Cap Third-Party Texture Sizes")]

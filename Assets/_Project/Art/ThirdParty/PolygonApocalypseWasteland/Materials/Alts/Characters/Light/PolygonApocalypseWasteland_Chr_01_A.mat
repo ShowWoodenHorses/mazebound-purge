@@ -8,7 +8,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PolygonApocalypseWasteland_Chr_01_A
-  m_Shader: {fileID: 4800000, guid: 727250bf31164c444addd21e37856938, type: 3}
+  m_Shader: {fileID: 4800000, guid: 17964ef0678f5d14385a3e458f62ade4, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 0
@@ -17,6 +19,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -37,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 1e6b7fce7c117e04690bf3609a377c07, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7022d254909acf94a9b32351c48eea5a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emissive:
@@ -109,6 +112,7 @@ Material:
     - _DstBlend: 0
     - _EmissiveAmount: 1
     - _EnvironmentReflections: 1
+    - _Frost: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.2
     - _GlossyReflections: 1
@@ -131,8 +135,10 @@ Material:
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0.93697757, g: 1.7207954, b: 0, a: 1}
+    - _EmissionColor: {r: 0, g: 2.297397, b: 0.53566986, a: 1}
     - _EmissiveTint: {r: 1, g: 1, b: 1, a: 0}
+    - _HitFlash: {r: 1, g: 1, b: 1, a: 0}
     - _SkinColour: {r: 0.7803922, g: 0.59607846, b: 0.4156863, a: 0}
     - _TattooTint: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

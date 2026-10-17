@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
@@ -15,11 +16,14 @@ using UnityEngine.Rendering;
 namespace Purge.Presentation.Visual.Horde
 {
     /// <summary>
-    /// Draws the horde (<see cref="HordeSystem"/>) with GPU instancing: no GameObject per monster. Every late tick
-    /// the monsters on screen and in the player's view (hidden ones keep simulating, ТЗ §57) are packed per look
-    /// variant into batches of <see cref="BatchSize"/>: a matrix and the animation frame per instance
-    /// (shader Purge/Horde reads the baked animation). Blob shadows — the same batches with a quad.
-    /// Allocation-free per frame.
+    /// Draws the horde (<see cref="HordeSystem"/>) with GPU instancing: no GameObject per monster. Every kind of
+    /// monster has its look (<see cref="HordeVisualDefinition"/> by monster id, <see cref="StressTestDefinition.VisualOf"/>);
+    /// every late tick the monsters on screen and in the player's view (hidden ones keep simulating, ТЗ §57) are packed
+    /// per look (kind × material variant) into batches of <see cref="BatchSize"/>: a matrix and the animation frame per
+    /// instance (shader Purge/Horde reads the baked animation). The clip follows the gameplay state: walk/run at the
+    /// monster's speed, attack, hit reaction while staggered, stun, climbing out of the ground, death by the side the
+    /// killing push came from. Submeshes past the body (glued equipment) — one more draw per batch. Blob shadows — the
+    /// same batches with a quad. Allocation-free per frame.
     /// </summary>
     public sealed class HordeRenderer : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -29,6 +33,14 @@ namespace Purge.Presentation.Visual.Horde
         private const float FlashTime = 0.12f;
         private const float ShadowHeight = 0.02f;
         private const float CullMargin = 1.5f;
+        private const float MinPlayback = 0.5f;
+        private const float MaxPlayback = 2f;
+
+        /// <summary>A killing push weaker than this (cells/s) picks any death clip; stronger — by its side.</summary>
+        private const float SidePush = 1.5f;
+
+        /// <summary>A new hit restarts the hit reaction once this much of it has played (seconds).</summary>
+        private const float ReactRestart = 0.3f;
 
         private static readonly int FrameProperty = Shader.PropertyToID("_HordeFrame");
 
@@ -38,16 +50,24 @@ namespace Purge.Presentation.Visual.Horde
         private readonly TopDownCamera _camera;
         private readonly List<GameObject> _warmupObjects = new List<GameObject>();
 
-        private HordeVisualDefinition _visual;
-        private Material[] _materials;
+        private Look[] _looks;
+        private Clips[] _kindClips;    // per kind (null = not drawn)
+        private int[] _kindLookStart;  // per kind: its first look
+        private int[] _kindLookCount;  // per kind: its material variants
         private Material _shadowMaterial;
         private float _shadowSize;
         private Mesh _shadowMesh;
         private Batch[] _batches;
-        private int[] _batchFill; // per variant: instances in its current batch
-        private int[] _batchOf;   // per variant: index of its current batch in _batches
+        private int[] _batchFill; // per look: instances in its current batch
+        private int[] _batchOf;   // per look: index of its current batch in _batches
         private float[] _flash;   // per slot: strength of the hit flash (the last weapon's feel; 1 until set)
         private float[] _dent;    // per slot: squash of the last hit, share of the size
+        private float[] _phase;   // per slot: seconds into the locomotion clip at its playback
+        private float[] _reactStart; // per slot: when the hit reaction began (-1 = not reacting)
+        private int[] _deathClip; // per slot: the chosen death clip
+        private int[] _seenGeneration; // per slot: generation the per-slot look state belongs to
+        private bool[] _seenDying;
+        private float _lastTime;
 
         /// <summary>Seconds a hit's dent lasts (squash, then back).</summary>
         public const float DentTime = 0.16f;
@@ -62,9 +82,9 @@ namespace Purge.Presentation.Visual.Horde
             _flash[agent] = Mathf.Clamp01(flash);
             _dent[agent] = Mathf.Clamp(dent, 0f, 0.5f);
         }
+
         private int _batchesUsed;
         private Bounds _worldBounds;
-        private int _runClip, _walkClip, _deathClip, _idleClip = -1, _firstAttack, _attackCount;
         private bool _useVat, _interpolate;
 
         public HordeRenderer(LevelData level, HordeSystem horde, VisibilitySystem visibility, TopDownCamera camera)
@@ -79,8 +99,8 @@ namespace Purge.Presentation.Visual.Horde
 
         public bool IsActive => _batches != null;
 
-        /// <summary>The horde's look (null until loaded or without a horde).</summary>
-        public HordeVisualDefinition Visual => _visual;
+        /// <summary>The first kind's look (null until loaded or without a horde): the stress overlay's numbers.</summary>
+        public HordeVisualDefinition Visual { get; private set; }
 
         /// <summary>Draw the monsters at all (off = measure the simulation alone).</summary>
         public bool Enabled { get; set; } = true;
@@ -90,7 +110,7 @@ namespace Purge.Presentation.Visual.Horde
         /// <summary>Skip monsters outside the player's view (as the game does); off = draw everyone on screen.</summary>
         public bool CullByVisibility { get; set; } = true;
 
-        /// <summary>Vertex animation texture instead of bone skinning in the shader.</summary>
+        /// <summary>Vertex animation texture instead of bone skinning in the shader (stress test; looks without one break).</summary>
         public bool UseVat
         {
             get => _useVat;
@@ -112,32 +132,68 @@ namespace Purge.Presentation.Visual.Horde
             }
         }
 
-        /// <summary>Animation playback speed of the run clip.</summary>
+        /// <summary>Playback of the walk/run clip of looks without a measured ground speed.</summary>
         public float RunPlayback { get; set; } = 1f;
 
         public int DrawnCount { get; private set; }
         public int DrawCalls { get; private set; }
         public float RenderMs { get; private set; }
 
-        /// <summary>Vertices of one monster as drawn (welded mesh) and in the source model.</summary>
-        public int MeshVertexCount => _visual != null && _visual.Mesh != null ? _visual.Mesh.vertexCount : 0;
-        public int SourceVertexCount => _visual != null ? _visual.SourceVertexCount : 0;
+        /// <summary>Vertices of one monster as drawn (welded mesh) and in the source model (first kind).</summary>
+        public int MeshVertexCount => Visual != null && Visual.Mesh != null ? Visual.Mesh.vertexCount : 0;
+        public int SourceVertexCount => Visual != null ? Visual.SourceVertexCount : 0;
+
+        /// <summary>Colour of the splashes of the monster in <paramref name="agent"/> (its look's).</summary>
+        public Color SplashColorOf(int agent)
+        {
+            if (_kindClips != null && _horde.IsActive && (uint)agent < (uint)_horde.Capacity)
+            {
+                var clips = _kindClips[_horde.Kinds[agent]];
+                if (clips != null) return clips.Visual.SplashColor;
+            }
+
+            return Visual != null ? Visual.SplashColor : new Color(0.55f, 0.85f, 0.25f, 1f);
+        }
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var settings = _level.StressTest;
-            _visual = settings != null ? settings.Visual : null;
-            if (!_horde.IsActive || _visual == null || _visual.Mesh == null || _visual.Variants.Length == 0)
+            if (!_horde.IsActive || settings == null)
                 return UniTask.CompletedTask;
 
-            _materials = _visual.Variants;
-            _runClip = _visual.FindClip(HordeClipKind.Run);
-            _walkClip = _visual.FindClip(HordeClipKind.Walk);
-            if (_runClip < 0) _runClip = _walkClip;
-            _deathClip = _visual.FindClip(HordeClipKind.Death);
-            _idleClip = _visual.FindClip(HordeClipKind.Idle);
-            _firstAttack = _visual.FindClip(HordeClipKind.Attack);
-            _attackCount = _visual.CountClips(HordeClipKind.Attack);
+            var kinds = _horde.KindList;
+            var looks = new List<Look>();
+            var byVisual = new Dictionary<HordeVisualDefinition, Clips>();
+            _kindClips = new Clips[kinds.Count];
+            _kindLookStart = new int[kinds.Count];
+            _kindLookCount = new int[kinds.Count];
+            for (var k = 0; k < kinds.Count; k++)
+            {
+                var visual = settings.VisualOf(kinds[k].Definition);
+                if (visual == null || visual.Mesh == null || visual.Variants.Length == 0)
+                {
+                    GameLog.Warning(LogChannel.Gameplay,
+                        $"Horde: no look for monster '{kinds[k].Definition?.Id ?? "built-in"}' (Build Monsters) — not drawn.");
+                    continue;
+                }
+
+                if (!byVisual.TryGetValue(visual, out var clips))
+                {
+                    clips = new Clips(visual);
+                    byVisual.Add(visual, clips);
+                }
+
+                Visual ??= visual;
+                _kindClips[k] = clips;
+                _kindLookStart[k] = looks.Count;
+                _kindLookCount[k] = visual.Variants.Length;
+                foreach (var material in visual.Variants)
+                    looks.Add(new Look(visual, material));
+            }
+
+            if (looks.Count == 0)
+                return UniTask.CompletedTask;
+            _looks = looks.ToArray();
 
             var lighting = _level.VisualTheme != null ? _level.VisualTheme.Lighting : null;
             if (lighting != null && lighting.BlobShadowMaterial != null)
@@ -147,16 +203,27 @@ namespace Purge.Presentation.Visual.Horde
                 _shadowMesh = CreateQuad();
             }
 
-            var variants = _materials.Length;
-            var perVariant = (_horde.Capacity + BatchSize - 1) / BatchSize;
-            _batches = new Batch[variants * perVariant];
+            var capacity = _horde.Capacity;
+            var perLook = (capacity + BatchSize - 1) / BatchSize;
+            _batches = new Batch[_looks.Length * perLook];
             for (var i = 0; i < _batches.Length; i++)
                 _batches[i] = new Batch();
-            _batchFill = new int[variants];
-            _batchOf = new int[variants];
-            _flash = new float[_horde.Capacity];
-            _dent = new float[_horde.Capacity];
-            for (var i = 0; i < _flash.Length; i++) _flash[i] = 1f;
+            _batchFill = new int[_looks.Length];
+            _batchOf = new int[_looks.Length];
+            _flash = new float[capacity];
+            _dent = new float[capacity];
+            _phase = new float[capacity];
+            _reactStart = new float[capacity];
+            _deathClip = new int[capacity];
+            _seenGeneration = new int[capacity];
+            _seenDying = new bool[capacity];
+            for (var i = 0; i < capacity; i++)
+            {
+                _flash[i] = 1f;
+                _phase[i] = i * 0.377f; // the crowd does not step in sync
+                _reactStart[i] = -1f;
+                _seenGeneration[i] = -1;
+            }
 
             var size = new Vector3(_level.Geometry.Width + 4f, 6f, _level.Geometry.Height + 4f);
             _worldBounds = new Bounds(new Vector3(_level.Geometry.Width * 0.5f, 1f, _level.Geometry.Height * 0.5f), size);
@@ -168,12 +235,16 @@ namespace Purge.Presentation.Visual.Horde
         public void CollectWarmup(List<GameObject> objects)
         {
             if (!IsActive) return;
-            foreach (var material in _materials)
+            var center = new Vector3(_level.Geometry.Width * 0.5f, 0f, _level.Geometry.Height * 0.5f);
+            foreach (var look in _looks)
             {
                 var go = new GameObject("Horde Warmup");
-                go.transform.position = new Vector3(_level.Geometry.Width * 0.5f, 0f, _level.Geometry.Height * 0.5f);
-                go.AddComponent<MeshFilter>().sharedMesh = _visual.Mesh;
-                go.AddComponent<MeshRenderer>().sharedMaterial = material;
+                go.transform.position = center;
+                go.AddComponent<MeshFilter>().sharedMesh = look.Visual.Mesh;
+                var materials = new Material[look.Visual.Mesh.subMeshCount];
+                for (var s = 0; s < materials.Length; s++)
+                    materials[s] = s == 0 ? look.Material : look.Extra(s);
+                go.AddComponent<MeshRenderer>().sharedMaterials = materials;
                 go.SetActive(false);
                 _warmupObjects.Add(go);
                 objects.Add(go);
@@ -188,6 +259,9 @@ namespace Purge.Presentation.Visual.Horde
             var started = Stopwatch.GetTimestamp();
             DrawnCount = 0;
             DrawCalls = 0;
+            var time = _horde.Time;
+            var step = Mathf.Max(0f, time - _lastTime);
+            _lastTime = time;
             if (!Enabled)
             {
                 RenderMs = 0f;
@@ -203,73 +277,125 @@ namespace Purge.Presentation.Visual.Horde
             var hitTime = _horde.HitTime;
             var stunned = _horde.Stunned;
             var variants = _horde.Variants;
-            var time = _horde.Time;
-            var scale = Vector3.one * _visual.Scale;
-            var interval = _horde.Stats.AttackInterval;
+            var kinds = _horde.Kinds;
+            var generations = _horde.Generations;
+            var speeds = _horde.Speeds;
+            var speedFactors = _horde.SpeedFactors;
+            var pushes = _horde.PushVelocities;
             var count = _horde.HighWater;
-            var variantCount = _materials.Length;
 
             _batchesUsed = 0;
-            for (var v = 0; v < variantCount; v++)
-                _batchOf[v] = -1;
+            for (var l = 0; l < _looks.Length; l++)
+                _batchOf[l] = -1;
 
             for (var i = 0; i < count; i++)
             {
                 var state = states[i];
                 if (state == HordeAgentState.Inactive) continue;
+                var kind = kinds[i];
+                var clips = _kindClips[kind];
+                if (clips == null) continue;
+
+                if (_seenGeneration[i] != generations[i])
+                {
+                    // A new monster in the slot: its own look state.
+                    _seenGeneration[i] = generations[i];
+                    _seenDying[i] = false;
+                    _reactStart[i] = -1f;
+                }
+
+                var stats = _horde.KindList[kind].Stats;
+                var moving = state == HordeAgentState.Moving && !stunned[i];
+                if (moving)
+                {
+                    // The phase runs at the monster's speed: the feet do not slide.
+                    var playback = clips.LocomotionSpeed > 0f
+                        ? Mathf.Clamp(speeds[i] * speedFactors[i] / clips.LocomotionSpeed, MinPlayback, MaxPlayback)
+                        : RunPlayback;
+                    _phase[i] += step * playback;
+                }
+
                 var p = positions[i];
                 if (p.x < rect.x || p.x > rect.z || p.y < rect.y || p.y > rect.w) continue;
                 if (CullByVisibility && _visibility.HasResult &&
                     !_visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f))))
                     continue;
 
+                var reacting = state != HordeAgentState.Dying && !stunned[i] && clips.HitReact.Length > 0 &&
+                               _horde.IsStaggered(i);
+                if (!reacting) _reactStart[i] = -1f;
+                else if (_reactStart[i] < 0f || (time - _reactStart[i] >= ReactRestart && hitTime[i] > _reactStart[i]))
+                    _reactStart[i] = time;
+
                 int clip;
                 float clipTime;
-                switch (state)
+                if (state == HordeAgentState.Dying)
                 {
-                    case HordeAgentState.Moving when stunned[i] && _idleClip >= 0:
-                    case HordeAgentState.Attacking when stunned[i] && _idleClip >= 0:
-                        // Stunned (a state): stands still.
-                        clip = _idleClip;
-                        clipTime = time + i * 0.377f;
-                        break;
-                    case HordeAgentState.Attacking when _attackCount > 0:
-                        clip = _firstAttack + i % _attackCount;
-                        clipTime = (time - attackStart[i]) / interval * _visual.Clips[clip].Length;
-                        break;
-                    case HordeAgentState.Dying when _deathClip >= 0:
-                        clip = _deathClip;
-                        clipTime = time - stateStart[i];
-                        break;
-                    default:
-                        clip = _runClip;
-                        // Phase per slot: the crowd does not step in sync.
-                        clipTime = (time - stateStart[i]) * RunPlayback + i * 0.377f;
-                        break;
+                    if (!_seenDying[i])
+                    {
+                        _seenDying[i] = true;
+                        _deathClip[i] = clips.DeathFor(pushes[i], facing[i], i + generations[i]);
+                    }
+
+                    clip = _deathClip[i];
+                    clipTime = time - stateStart[i];
+                }
+                else if (state == HordeAgentState.Emerging && clips.Emerge >= 0)
+                {
+                    // Fits the clip into the emerge time.
+                    clip = clips.Emerge;
+                    var length = clips.Visual.Clips[clip].Length;
+                    clipTime = (time - stateStart[i]) * (stats.EmergeTime > 0f ? length / stats.EmergeTime : 1f);
+                }
+                else if (stunned[i] && (clips.Stun >= 0 || clips.Idle >= 0))
+                {
+                    clip = clips.Stun >= 0 ? clips.Stun : clips.Idle;
+                    clipTime = time + i * 0.377f;
+                }
+                else if (reacting)
+                {
+                    clip = clips.HitReact[(i + generations[i] + (int)(_reactStart[i] * 7f)) % clips.HitReact.Length];
+                    clipTime = time - _reactStart[i];
+                }
+                else if (state == HordeAgentState.Attacking && clips.Attack.Length > 0)
+                {
+                    clip = clips.Attack[(i + generations[i]) % clips.Attack.Length];
+                    clipTime = (time - attackStart[i]) / stats.AttackInterval * clips.Visual.Clips[clip].Length;
+                }
+                else if (clips.Locomotion.Length > 0)
+                {
+                    clip = clips.Locomotion[(i + generations[i]) % clips.Locomotion.Length];
+                    clipTime = _phase[i];
+                }
+                else
+                {
+                    clip = clips.Idle;
+                    clipTime = time + i * 0.377f;
                 }
 
-                var frame = FrameOf(clip, clipTime);
+                var frame = FrameOf(clips.Visual, clip, clipTime);
                 var sinceHit = time - hitTime[i];
                 frame.w = Mathf.Clamp01(1f - sinceHit / FlashTime) * _flash[i];
-                var size = scale;
+                var scale = clips.Visual.Scale;
+                var size = new Vector3(scale, scale, scale);
                 if (state == HordeAgentState.Dying) frame.w = 0f;
                 else if (sinceHit < DentTime && _dent[i] > 0f)
                 {
                     // Squashed at once, back in a smooth bulge: lower and wider, as if punched.
                     var dent = _dent[i] * Mathf.Sin((1f - sinceHit / DentTime) * Mathf.PI * 0.5f);
-                    size = new Vector3(scale.x * (1f + dent * 0.5f), scale.y * (1f - dent), scale.z * (1f + dent * 0.5f));
+                    size = new Vector3(scale * (1f + dent * 0.5f), scale * (1f - dent), scale * (1f + dent * 0.5f));
                 }
 
-                var variant = variants[i] % variantCount;
-                var batch = CurrentBatch(variant);
-                var slot = _batchFill[variant]++;
+                var look = _kindLookStart[kind] + variants[i] % _kindLookCount[kind];
+                var batch = CurrentBatch(look);
+                var slot = _batchFill[look]++;
                 var world = new Vector3(p.x, 0f, p.y);
                 batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), size);
                 batch.Frames[slot] = frame;
                 if (_shadowMaterial != null && state != HordeAgentState.Dying)
                 {
                     batch.Shadows[batch.ShadowCount++] = Matrix4x4.TRS(new Vector3(p.x, ShadowHeight, p.y),
-                        Quaternion.identity, Vector3.one * _shadowSize);
+                        Quaternion.identity, Vector3.one * (_shadowSize * stats.Radius / 0.3f));
                 }
 
                 batch.Count = slot + 1;
@@ -295,17 +421,17 @@ namespace Purge.Presentation.Visual.Horde
             _shadowMesh = null;
         }
 
-        private Batch CurrentBatch(int variant)
+        private Batch CurrentBatch(int look)
         {
-            var index = _batchOf[variant];
-            if (index >= 0 && _batchFill[variant] < BatchSize)
+            var index = _batchOf[look];
+            if (index >= 0 && _batchFill[look] < BatchSize)
                 return _batches[index];
 
             index = _batchesUsed++;
-            _batchOf[variant] = index;
-            _batchFill[variant] = 0;
+            _batchOf[look] = index;
+            _batchFill[look] = 0;
             var batch = _batches[index];
-            batch.Variant = variant;
+            batch.Look = look;
             batch.Count = 0;
             batch.ShadowCount = 0;
             return batch;
@@ -314,18 +440,25 @@ namespace Purge.Presentation.Visual.Horde
         private void Draw(Batch batch)
         {
             if (batch.Count == 0) return;
+            var look = _looks[batch.Look];
+            var mesh = look.Visual.Mesh;
             batch.Properties.SetVectorArray(FrameProperty, batch.Frames);
-            var renderParams = new RenderParams(_materials[batch.Variant])
+            for (var s = 0; s < mesh.subMeshCount; s++)
             {
-                worldBounds = _worldBounds,
-                shadowCastingMode = ShadowCastingMode.Off,
-                receiveShadows = false,
-                lightProbeUsage = LightProbeUsage.Off,
-                reflectionProbeUsage = ReflectionProbeUsage.Off,
-                matProps = batch.Properties,
-            };
-            Graphics.RenderMeshInstanced(renderParams, _visual.Mesh, 0, batch.Matrices, batch.Count);
-            DrawCalls++;
+                var material = s == 0 ? look.Material : look.Extra(s);
+                if (material == null) continue;
+                var renderParams = new RenderParams(material)
+                {
+                    worldBounds = _worldBounds,
+                    shadowCastingMode = ShadowCastingMode.Off,
+                    receiveShadows = false,
+                    lightProbeUsage = LightProbeUsage.Off,
+                    reflectionProbeUsage = ReflectionProbeUsage.Off,
+                    matProps = batch.Properties,
+                };
+                Graphics.RenderMeshInstanced(renderParams, mesh, s, batch.Matrices, batch.Count);
+                DrawCalls++;
+            }
 
             if (!Shadows || _shadowMaterial == null || batch.ShadowCount == 0) return;
             var shadowParams = new RenderParams(_shadowMaterial)
@@ -341,11 +474,11 @@ namespace Purge.Presentation.Visual.Horde
         }
 
         /// <summary>(frame A, frame B, blend, 0) of the clip at <paramref name="time"/> seconds.</summary>
-        private Vector4 FrameOf(int clipIndex, float time)
+        private Vector4 FrameOf(HordeVisualDefinition visual, int clipIndex, float time)
         {
             if (clipIndex < 0) return Vector4.zero;
-            var clip = _visual.Clips[clipIndex];
-            var position = time * _visual.FrameRate;
+            var clip = visual.Clips[clipIndex];
+            var position = time * (clip.FrameRate > 0f ? clip.FrameRate : visual.FrameRate);
             int a, b;
             float blend;
             if (clip.Loop)
@@ -415,13 +548,96 @@ namespace Purge.Presentation.Visual.Horde
             return mesh;
         }
 
+        /// <summary>A material variant of a look: one instanced draw per batch (plus the equipment's submeshes).</summary>
+        private readonly struct Look
+        {
+            public readonly HordeVisualDefinition Visual;
+            public readonly Material Material;
+
+            public Look(HordeVisualDefinition visual, Material material)
+            {
+                Visual = visual;
+                Material = material;
+            }
+
+            /// <summary>Material of submesh <paramref name="submesh"/> ≥ 1 (null = not drawn).</summary>
+            public Material Extra(int submesh)
+            {
+                var extra = Visual.ExtraMaterials;
+                return submesh - 1 < extra.Length ? extra[submesh - 1] : null;
+            }
+        }
+
+        /// <summary>A look's clips by what they show.</summary>
+        private sealed class Clips
+        {
+            public readonly HordeVisualDefinition Visual;
+            public readonly int[] Locomotion;
+            public readonly int[] Attack;
+            public readonly int[] HitReact;
+            public readonly int Idle;
+            public readonly int Stun;
+            public readonly int Emerge;
+            public readonly float LocomotionSpeed;
+            private readonly int[] _deaths;
+            private readonly int[][] _deathsBySide;
+
+            public Clips(HordeVisualDefinition visual)
+            {
+                Visual = visual;
+                Locomotion = visual.ClipsOf(HordeClipKind.Run);
+                if (Locomotion.Length == 0) Locomotion = visual.ClipsOf(HordeClipKind.Walk);
+                Attack = visual.ClipsOf(HordeClipKind.Attack);
+                HitReact = visual.ClipsOf(HordeClipKind.HitReact);
+                Idle = visual.FindClip(HordeClipKind.Idle);
+                Stun = visual.FindClip(HordeClipKind.Stun);
+                Emerge = visual.FindClip(HordeClipKind.Emerge);
+                LocomotionSpeed = visual.LocomotionSpeed;
+                _deaths = visual.ClipsOf(HordeClipKind.Death);
+                _deathsBySide = new int[5][];
+                var sides = new List<int>();
+                for (var side = 0; side < _deathsBySide.Length; side++)
+                {
+                    sides.Clear();
+                    foreach (var death in _deaths)
+                        if ((int)visual.Clips[death].Side == side)
+                            sides.Add(death);
+                    _deathsBySide[side] = sides.ToArray();
+                }
+            }
+
+            /// <summary>
+            /// The death clip: a strong killing push picks the side it came from (pushed backwards = hit in the front);
+            /// otherwise any, by slot.
+            /// </summary>
+            public int DeathFor(Vector2 push, float facing, int seed)
+            {
+                if (_deaths.Length == 0) return -1;
+                if (push.sqrMagnitude >= SidePush * SidePush)
+                {
+                    var from = -push; // the hit came from the opposite side of the push
+                    var forward = new Vector2(Mathf.Sin(facing), Mathf.Cos(facing));
+                    var right = new Vector2(forward.y, -forward.x);
+                    var f = Vector2.Dot(from, forward);
+                    var r = Vector2.Dot(from, right);
+                    var side = Mathf.Abs(f) >= Mathf.Abs(r)
+                        ? f >= 0f ? HordeClipSide.Front : HordeClipSide.Back
+                        : r >= 0f ? HordeClipSide.Right : HordeClipSide.Left;
+                    var matching = _deathsBySide[(int)side];
+                    if (matching.Length > 0) return matching[seed % matching.Length];
+                }
+
+                return _deaths[(seed & int.MaxValue) % _deaths.Length];
+            }
+        }
+
         private sealed class Batch
         {
             public readonly Matrix4x4[] Matrices = new Matrix4x4[BatchSize];
             public readonly Vector4[] Frames = new Vector4[BatchSize];
             public readonly Matrix4x4[] Shadows = new Matrix4x4[BatchSize];
             public readonly MaterialPropertyBlock Properties = new MaterialPropertyBlock();
-            public int Variant;
+            public int Look;
             public int Count;
             public int ShadowCount;
         }

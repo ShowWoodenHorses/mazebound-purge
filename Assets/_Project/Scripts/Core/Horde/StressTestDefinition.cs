@@ -1,27 +1,28 @@
 using System;
+using Purge.Core.Monsters;
 using UnityEngine;
 
 namespace Purge.Core.Horde
 {
-    /// <summary>Stats of a mass monster (stage 2 draft; stage 5 turns them into monster definitions).</summary>
+    /// <summary>A monster the horde spawns and how often (weights are relative).</summary>
     [Serializable]
-    public sealed class HordeMonsterStats
+    public sealed class HordeSpawn
     {
-        [Min(1f)] public float MaxHp = 30f;
-        [Tooltip("Cells per second.")]
-        [Min(0.1f)] public float Speed = 2.2f;
-        [Tooltip("Body radius in cells (crowd spacing, hits).")]
-        [Range(0.1f, 0.5f)] public float Radius = 0.3f;
-        [Tooltip("Attacks when the distance between centres is at most this.")]
-        [Min(0.3f)] public float AttackReach = 0.8f;
-        [Min(0f)] public int Damage = 5;
-        [Min(0.1f)] public float AttackInterval = 1.2f;
-        [Tooltip("Degrees per second.")]
-        [Min(30f)] public float TurnSpeed = 540f;
-        [Tooltip("Share of the overlap pushed apart per tick (0 = no crowd spacing).")]
-        [Range(0f, 1f)] public float Separation = 0.5f;
-        [Tooltip("Seconds from death until the corpse disappears (the death clip plays first, then holds).")]
-        [Min(0f)] public float CorpseTime = 3f;
+        [SerializeField] private MonsterDefinition _monster;
+        [SerializeField, Min(0f)] private float _weight = 1f;
+
+        public MonsterDefinition Monster => _monster;
+        public float Weight => _weight;
+
+        public HordeSpawn()
+        {
+        }
+
+        public HordeSpawn(MonsterDefinition monster, float weight)
+        {
+            _monster = monster;
+            _weight = weight;
+        }
     }
 
     /// <summary>Weapons of the stress test (stub; stage 4 rebuilds weapons from modules).</summary>
@@ -65,8 +66,14 @@ namespace Purge.Core.Horde
     [CreateAssetMenu(menuName = "Purge/Stress Test", fileName = "StressTest")]
     public sealed class StressTestDefinition : ScriptableObject
     {
+        [Tooltip("Look of the built-in monster (used when Monsters is empty: the stress test's zombie).")]
         [SerializeField] private HordeVisualDefinition _visual;
-        [SerializeField] private HordeMonsterStats _monster = new HordeMonsterStats();
+        [Tooltip("Stats of the built-in monster (used when Monsters is empty).")]
+        [SerializeField] private MonsterStats _monster = new MonsterStats();
+        [Tooltip("Monsters the horde spawns, by weight (stage 5); empty = the built-in monster above.")]
+        [SerializeField] private HordeSpawn[] _monsters = Array.Empty<HordeSpawn>();
+        [Tooltip("Looks of the monsters (by monster id; Build Monsters fills it).")]
+        [SerializeField] private HordeVisualDefinition[] _monsterVisuals = Array.Empty<HordeVisualDefinition>();
         [SerializeField] private StressWeaponSettings _weapons = new StressWeaponSettings();
 
         [Header("Combat sandbox")]
@@ -113,7 +120,19 @@ namespace Purge.Core.Horde
         public Definitions.WeaponDefinition[] SandboxWeapons => _sandboxWeapons;
         public Definitions.ThrowableDefinition[] SandboxThrowables => _sandboxThrowables ??= new Definitions.ThrowableDefinition[0];
         public Drops.DropTable Drop => _drop;
-        public HordeMonsterStats Monster => _monster;
+        public MonsterStats Monster => _monster;
+        public HordeSpawn[] Monsters => _monsters ??= Array.Empty<HordeSpawn>();
+        public HordeVisualDefinition[] MonsterVisuals => _monsterVisuals ??= Array.Empty<HordeVisualDefinition>();
+
+        /// <summary>Look of <paramref name="monster"/> among <see cref="MonsterVisuals"/> (null = none).</summary>
+        public HordeVisualDefinition VisualOf(MonsterDefinition monster)
+        {
+            if (monster == null) return _visual;
+            foreach (var visual in MonsterVisuals)
+                if (visual != null && visual.MonsterId == monster.Id)
+                    return visual;
+            return null;
+        }
         public StressWeaponSettings Weapons => _weapons;
         public int[] MonsterCounts => _monsterCounts;
         public int StartCount => _startCount;
@@ -153,6 +172,10 @@ namespace Purge.Core.Horde
             _drop = drop;
             _sandboxThrowables = throwables;
         }
+
+        internal void ConfigureMonsters(HordeSpawn[] monsters) => _monsters = monsters ?? Array.Empty<HordeSpawn>();
+
+        internal void SetMonsterVisuals(HordeVisualDefinition[] visuals) => _monsterVisuals = visuals ?? Array.Empty<HordeVisualDefinition>();
 
         internal void Configure(HordeVisualDefinition visual, Material tracer, Material particles, Material fire)
         {

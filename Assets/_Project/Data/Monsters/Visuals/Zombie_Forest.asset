@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceea47192e4d1b44cac2a7150177ea20, type: 3}
+  m_Name: Zombie_Forest
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.HordeVisualDefinition
+  _monsterId: zombie_forest
+  _equipment: []
+  _mesh: {fileID: 4300000, guid: a61495f01a79a1d42b297964e2dc735c, type: 2}
+  _variants:
+  - {fileID: 2100000, guid: 9eb76cfcfbd19974d81df5a6e1634472, type: 2}
+  _extraMaterials: []
+  _locomotionSpeed: 2.1104155
+  _vertexAnimation: {fileID: 0}
+  _boneAnimation: {fileID: 2800000, guid: e736c7c91cc7060488b56c0a5a01769b, type: 2}
+  _boneCount: 50
+  _frameRate: 30
+  _clips:
+  - Name: Idle
+    Kind: 0
+    FirstFrame: 0
+    FrameCount: 65
+    Length: 4.3333335
+    Loop: 1
+    Side: 0
+    FrameRate: 14.999999
+  - Name: Walk_1
+    Kind: 1
+    FirstFrame: 65
+    FrameCount: 27
+    Length: 1.7666668
+    Loop: 1
+    Side: 0
+    FrameRate: 15.283018
+  - Name: Walk_Fast
+    Kind: 1
+    FirstFrame: 92
+    FrameCount: 23
+    Length: 0.7666667
+    Loop: 1
+    Side: 0
+    FrameRate: 29.999998
+  - Name: Run_1
+    Kind: 2
+    FirstFrame: 115
+    FrameCount: 15
+    Length: 0.5
+    Loop: 1
+    Side: 0
+    FrameRate: 30
+  - Name: Attack_1
+    Kind: 3
+    FirstFrame: 130
+    FrameCount: 37
+    Length: 2.3333335
+    Loop: 0
+    Side: 0
+    FrameRate: 15.428571
+  - Name: Attack_2
+    Kind: 3
+    FirstFrame: 167
+    FrameCount: 37
+    Length: 2.3333335
+    Loop: 0
+    Side: 0
+    FrameRate: 15.428571
+  - Name: Attack_3
+    Kind: 3
+    FirstFrame: 204
+    FrameCount: 36
+    Length: 2.3000002
+    Loop: 0
+    Side: 0
+    FrameRate: 15.21739
+  - Name: Hit_Head
+    Kind: 5
+    FirstFrame: 240
+    FrameCount: 25
+    Length: 0.8
+    Loop: 0
+    Side: 0
+    FrameRate: 30
+  - Name: Hit_LeftArm
+    Kind: 5
+    FirstFrame: 265
+    FrameCount: 25
+    Length: 0.8
+    Loop: 0
+    Side: 0
+    FrameRate: 30
+  - Name: Hit_RightArm
+    Kind: 5
+    FirstFrame: 290
+    FrameCount: 25
+    Length: 0.8
+    Loop: 0
+    Side: 0
+    FrameRate: 30
+  - Name: Stunned
+    Kind: 6
+    FirstFrame: 315
+    FrameCount: 30
+    Length: 2
+    Loop: 1
+    Side: 0
+    FrameRate: 15
+  - Name: Death_Front
+    Kind: 4
+    FirstFrame: 345
+    FrameCount: 45
+    Length: 2.9
+    Loop: 0
+    Side: 1
+    FrameRate: 15.172413
+  - Name: Death_Back
+    Kind: 4
+    FirstFrame: 390
+    FrameCount: 49
+    Length: 3.1666667
+    Loop: 0
+    Side: 2
+    FrameRate: 15.157894
+  - Name: Death_Left
+    Kind: 4
+    FirstFrame: 439
+    FrameCount: 50
+    Length: 3.2000003
+    Loop: 0
+    Side: 3
+    FrameRate: 15.312499
+  - Name: Death_Right
+    Kind: 4
+    FirstFrame: 489
+    FrameCount: 39
+    Length: 2.5000002
+    Loop: 0
+    Side: 4
+    FrameRate: 15.199999
+  - Name: Emerge
+    Kind: 7
+    FirstFrame: 528
+    FrameCount: 60
+    Length: 13.333334
+    Loop: 0
+    Side: 0
+    FrameRate: 4.4249997
+  _scale: 0.75
+  _sourceVertexCount: 6899
+  _splashColor: {r: 0.55, g: 0.85, b: 0.25, a: 1}

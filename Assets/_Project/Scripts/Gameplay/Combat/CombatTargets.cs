@@ -109,7 +109,7 @@ namespace Purge.Gameplay.Combat
             target.Agent >= 0 ? _horde.Positions[target.Agent] : target.Object?.Position ?? default;
 
         public float RadiusOf(in CombatTarget target) =>
-            target.Agent >= 0 ? _horde.Stats.Radius : target.Object?.Radius ?? 0f;
+            target.Agent >= 0 ? _horde.RadiusOf(target.Agent) : target.Object?.Radius ?? 0f;
 
         /// <summary>
         /// The first target or blocker on the segment (a bullet's flight this tick); <paramref name="ignore"/> is passed

@@ -86,10 +86,17 @@ namespace Purge.Gameplay.Effects
 
         public float Left(int agent, StatusDefinition status) => Left(agent, IndexOf(status));
 
-        /// <summary>Puts the state on a target for <paramref name="duration"/> (or keeps its longer one). Horde monsters only.</summary>
+        /// <summary>
+        /// Puts the state on a target for <paramref name="duration"/> × the monster's resistance (or keeps its longer
+        /// one). Horde monsters only.
+        /// </summary>
         public void Apply(in CombatTarget target, StatusDefinition status, float duration)
         {
             if (!IsActive || status == null || duration <= 0f || target.Agent < 0 || !_targets.IsAlive(target)) return;
+            // The monster's resistance (0 = immune).
+            var definition = _horde.DefinitionOf(target.Agent);
+            if (definition != null) duration *= definition.DurationFactor(status);
+            if (duration <= 0f) return;
             var kind = Register(status);
             if (kind < 0) return;
             var agent = target.Agent;

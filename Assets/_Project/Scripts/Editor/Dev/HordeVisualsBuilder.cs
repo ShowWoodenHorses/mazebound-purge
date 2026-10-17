@@ -231,7 +231,7 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>Source vertex index → welded index; <paramref name="welded"/> — first source vertex of each welded one.</summary>
-        private static int[] Weld(Mesh source, out List<int> welded)
+        internal static int[] Weld(Mesh source, out List<int> welded)
         {
             var vertices = source.vertices;
             var uvs = source.uv;
@@ -305,7 +305,7 @@ namespace Purge.Editor.Dev
             return mesh;
         }
 
-        private static Vector4 TopTwoBones(BoneWeight w)
+        internal static Vector4 TopTwoBones(BoneWeight w)
         {
             var entries = new[]
             {
@@ -318,7 +318,7 @@ namespace Purge.Editor.Dev
             return new Vector4(entries[0].Item1, entries[1].Item1, entries[0].Item2 / sum, entries[1].Item2 / sum);
         }
 
-        private static Texture2D SaveTexture(string path, int width, int height, Color[] pixels)
+        internal static Texture2D SaveTexture(string path, int width, int height, Color[] pixels)
         {
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (texture == null)
@@ -389,7 +389,7 @@ namespace Purge.Editor.Dev
             return material;
         }
 
-        private static void EnsureFolder(string path)
+        internal static void EnsureFolder(string path)
         {
             if (AssetDatabase.IsValidFolder(path))
                 return;

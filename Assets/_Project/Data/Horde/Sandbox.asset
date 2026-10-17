@@ -23,6 +23,24 @@ MonoBehaviour:
     TurnSpeed: 540
     Separation: 0.5
     CorpseTime: 2
+    EmergeTime: 0
+  _monsters:
+  - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+    _weight: 3
+  - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+    _weight: 2
+  - _monster: {fileID: 11400000, guid: 64b9eac41c25e444ba0287326c01fb16, type: 2}
+    _weight: 1
+  - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+    _weight: 1
+  - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+    _weight: 1
+  _monsterVisuals:
+  - {fileID: 11400000, guid: 28f6f9adee1d7b94c91d68fbe6c65dff, type: 2}
+  - {fileID: 11400000, guid: 5686e5b3387d13f4bb04489b4f047bb6, type: 2}
+  - {fileID: 11400000, guid: 32d9b60a0adf11f49aa052fce6ae2c45, type: 2}
+  - {fileID: 11400000, guid: 53edea5b7886e02478f6d18c6ddb84ad, type: 2}
+  - {fileID: 11400000, guid: 3a23457ea1daefd498d9554229c96a02, type: 2}
   _weapons:
     GunRate: 12
     BulletSpeed: 28

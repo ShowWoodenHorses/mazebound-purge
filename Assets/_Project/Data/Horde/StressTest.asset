@@ -23,6 +23,9 @@ MonoBehaviour:
     TurnSpeed: 540
     Separation: 0.5
     CorpseTime: 2
+    EmergeTime: 0
+  _monsters: []
+  _monsterVisuals: []
   _weapons:
     GunRate: 12
     BulletSpeed: 28
@@ -39,6 +42,11 @@ MonoBehaviour:
     FireLifetime: 4
     FireDps: 20
     FireCellsTarget: 30
+  _sandbox: 0
+  _sandboxAmmo: 500
+  _sandboxWeapons: []
+  _sandboxThrowables: []
+  _drop: {fileID: 0}
   _monsterCounts: 320000006400000096000000c80000002c010000f4010000
   _startCount: 150
   _cameraHalfExtents:

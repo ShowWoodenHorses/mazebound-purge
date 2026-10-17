@@ -6,6 +6,7 @@ using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Core.Navigation;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
@@ -20,13 +21,31 @@ namespace Purge.Gameplay.Horde
         Inactive = 0,
         Moving = 1,
         Attacking = 2,
-        /// <summary>Killed: the corpse stays for <see cref="HordeMonsterStats.CorpseTime"/>, then the slot is free.</summary>
+        /// <summary>Killed: the corpse stays for <see cref="MonsterStats.CorpseTime"/>, then the slot is free.</summary>
         Dying = 3,
+        /// <summary>Climbs out of the ground (<see cref="MonsterStats.EmergeTime"/>): can be hit, neither walks nor attacks.</summary>
+        Emerging = 4,
+    }
+
+    /// <summary>A kind of monster the horde has: its definition (null = the stress test's built-in one) and stats.</summary>
+    public sealed class HordeKind
+    {
+        public HordeKind(MonsterDefinition definition, MonsterStats stats, float weight)
+        {
+            Definition = definition;
+            Stats = stats;
+            Weight = weight;
+        }
+
+        public MonsterDefinition Definition { get; }
+        public MonsterStats Stats { get; }
+        public float Weight { get; }
     }
 
     /// <summary>
     /// Mass monsters in flat arrays (ТЗ: rank-and-file are not MonoBehaviours): positions, facing, HP, state, timers
-    /// per slot. The stress stand lives on the player's floor (walkability, flow field and buckets of that floor);
+    /// and the kind (<see cref="HordeKind"/>: definition and stats — <see cref="StressTestDefinition.Monsters"/> by
+    /// weight, or the built-in monster) per slot. The stress stand lives on the player's floor (walkability, flow field and buckets of that floor);
     /// monsters of stage 5 keep a floor per slot. Everyone walks the shared <see cref="FlowField"/> to the player (rebuilt only when the player changes
     /// cell or a door changes), keeps spacing through <see cref="CellBuckets"/> (no physics), slides along walls and
     /// attacks in reach. Views read the arrays; nothing here knows about rendering. Allocation-free per tick.
@@ -44,7 +63,9 @@ namespace Purge.Gameplay.Horde
         private readonly DoorSystem _doors;
         private readonly PlayerSystem _player;
         private readonly PlayerHealth _playerHealth;
-        private readonly HordeMonsterStats _stats;
+        private readonly HordeKind[] _kinds;
+        private readonly float _maxRadius;
+        private readonly float _totalWeight;
 
         private Vector2[] _positions;
         private float[] _facing; // radians, 0 = North (+Y), clockwise
@@ -55,6 +76,7 @@ namespace Purge.Gameplay.Horde
         private float[] _attackStart;
         private float[] _hitTime;
         private byte[] _variant;
+        private byte[] _kind;
         private float[] _speed;
         private int[] _generation; // + 1 on every spawn into the slot: states of the previous monster are not carried over
         private float[] _speedFactor; // states (StatusSystem): slow
@@ -83,14 +105,47 @@ namespace Purge.Gameplay.Horde
             _player = player;
             _playerHealth = playerHealth;
             Settings = level.StressTest;
-            _stats = Settings != null ? Settings.Monster : new HordeMonsterStats();
+            _kinds = CreateKinds(Settings);
+            foreach (var kind in _kinds)
+            {
+                _maxRadius = Mathf.Max(_maxRadius, kind.Stats.Radius);
+                _totalWeight += kind.Weight;
+            }
+        }
+
+        private static HordeKind[] CreateKinds(StressTestDefinition settings)
+        {
+            if (settings == null)
+                return new[] { new HordeKind(null, new MonsterStats(), 1f) };
+
+            var kinds = new System.Collections.Generic.List<HordeKind>();
+            foreach (var spawn in settings.Monsters)
+                if (spawn != null && spawn.Monster != null && spawn.Weight > 0f && kinds.Count < byte.MaxValue)
+                    kinds.Add(new HordeKind(spawn.Monster, spawn.Monster.Stats, spawn.Weight));
+            if (kinds.Count == 0)
+                kinds.Add(new HordeKind(null, settings.Monster ?? new MonsterStats(), 1f));
+            return kinds.ToArray();
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
         public StressTestDefinition Settings { get; }
         public bool IsActive => Settings != null && _positions != null;
-        public HordeMonsterStats Stats => _stats;
+
+        /// <summary>Kinds of monsters this horde has (slots refer to them by <see cref="Kinds"/>).</summary>
+        public System.Collections.Generic.IReadOnlyList<HordeKind> KindList => _kinds;
+
+        public HordeKind KindOf(int agent) => _kinds[_kind != null && (uint)agent < (uint)_kind.Length ? _kind[agent] : 0];
+
+        public MonsterStats StatsOf(int agent) => KindOf(agent).Stats;
+
+        /// <summary>The monster's definition (null = the stress test's built-in monster).</summary>
+        public MonsterDefinition DefinitionOf(int agent) => KindOf(agent).Definition;
+
+        public float RadiusOf(int agent) => StatsOf(agent).Radius;
+
+        /// <summary>The widest body of all kinds (queries look this far around).</summary>
+        public float MaxRadius => _maxRadius;
 
         /// <summary>Game time of the horde (seconds of ticking; stops on pause).</summary>
         public float Time { get; private set; }
@@ -133,6 +188,15 @@ namespace Purge.Gameplay.Horde
         public ReadOnlySpan<float> AttackStart => _attackStart;
         public ReadOnlySpan<float> HitTime => _hitTime;
         public ReadOnlySpan<byte> Variants => _variant;
+
+        /// <summary>Index into <see cref="KindList"/> per slot.</summary>
+        public ReadOnlySpan<byte> Kinds => _kind;
+
+        /// <summary>Walking speed per slot, cells per second (before states).</summary>
+        public ReadOnlySpan<float> Speeds => _speed;
+
+        /// <summary>× speed of the states per slot (1 = none).</summary>
+        public ReadOnlySpan<float> SpeedFactors => _speedFactor;
         public ReadOnlySpan<float> Health => _health;
 
         /// <summary>Changes every time a new monster takes the slot.</summary>
@@ -179,7 +243,9 @@ namespace Purge.Gameplay.Horde
 
         public bool IsStaggered(int agent) => (uint)agent < (uint)_highWater && Time < _staggerUntil[agent];
 
-        public static bool IsAlive(HordeAgentState state) => state == HordeAgentState.Moving || state == HordeAgentState.Attacking;
+        /// <summary>Takes hits and counts as present: walking, attacking or climbing out of the ground.</summary>
+        public static bool IsAlive(HordeAgentState state) =>
+            state == HordeAgentState.Moving || state == HordeAgentState.Attacking || state == HordeAgentState.Emerging;
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
@@ -196,6 +262,7 @@ namespace Purge.Gameplay.Horde
             _attackStart = new float[capacity];
             _hitTime = new float[capacity];
             _variant = new byte[capacity];
+            _kind = new byte[capacity];
             _speed = new float[capacity];
             _generation = new int[capacity];
             _speedFactor = new float[capacity];
@@ -224,7 +291,7 @@ namespace Purge.Gameplay.Horde
             RebuildFlow();
             SetTargetCount(Settings.StartCount);
             // The first wave appears at once, spread over the level.
-            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue)) { }
+            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
             GameLog.Info(LogChannel.Gameplay, $"Horde: {AliveCount} monster(s), capacity {capacity}.");
             return UniTask.CompletedTask;
         }
@@ -264,7 +331,7 @@ namespace Purge.Gameplay.Horde
                 _states[i] = HordeAgentState.Inactive;
             AliveCount = 0;
             _highWater = 0;
-            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue)) { }
+            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
         }
 
         public void Tick(float deltaTime)
@@ -286,7 +353,7 @@ namespace Purge.Gameplay.Horde
             {
                 var present = CountPresent();
                 for (var n = 0; n < SpawnsPerTick && present < TargetCount; n++, present++)
-                    if (!SpawnOne(Settings.SpawnMinDistance, Settings.SpawnMaxDistance))
+                    if (!SpawnOne(Settings.SpawnMinDistance, Settings.SpawnMaxDistance, true))
                         break;
             }
 
@@ -305,8 +372,16 @@ namespace Purge.Gameplay.Horde
                         if (!Frozen)
                             TickAlive(i, playerPosition, deltaTime);
                         break;
+                    case HordeAgentState.Emerging:
+                        if (!Frozen && Time - _stateStart[i] >= StatsOf(i).EmergeTime)
+                        {
+                            _states[i] = HordeAgentState.Moving;
+                            _stateStart[i] = Time;
+                        }
+
+                        break;
                     case HordeAgentState.Dying:
-                        if (Time - _stateStart[i] >= _stats.CorpseTime)
+                        if (Time - _stateStart[i] >= StatsOf(i).CorpseTime)
                             _states[i] = HordeAgentState.Inactive;
                         else
                             _positions[i] = ApplyPush(i, _positions[i], deltaTime);
@@ -350,7 +425,7 @@ namespace Purge.Gameplay.Horde
             t = 1f;
             if (!IsActive) return -1;
 
-            var reach = _stats.Radius + 0.5f; // buckets are a tick old: monsters may have left their cell a little
+            var reach = _maxRadius + 0.5f; // buckets are a tick old: monsters may have left their cell a little
             var minX = Mathf.FloorToInt(Mathf.Min(from.x, to.x) - reach + 0.5f);
             var maxX = Mathf.FloorToInt(Mathf.Max(from.x, to.x) + reach + 0.5f);
             var minY = Mathf.FloorToInt(Mathf.Min(from.y, to.y) - reach + 0.5f);
@@ -362,7 +437,7 @@ namespace Purge.Gameplay.Horde
             for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
             {
                 if (agent == ignore || !IsAlive(_states[agent])) continue;
-                if (SegmentCircle(from, delta, _positions[agent], _stats.Radius, out var hit) && hit < t)
+                if (SegmentCircle(from, delta, _positions[agent], _kinds[_kind[agent]].Stats.Radius, out var hit) && hit < t)
                 {
                     t = hit;
                     best = agent;
@@ -389,7 +464,7 @@ namespace Purge.Gameplay.Horde
                 if (!IsAlive(_states[agent])) continue;
                 var offset = _positions[agent] - origin;
                 var distance = offset.magnitude;
-                if (distance > range + _stats.Radius) continue;
+                if (distance > range + _kinds[_kind[agent]].Stats.Radius) continue;
                 if (distance > 0.5f && Vector2.Dot(offset / distance, direction) < cosHalfAngle) continue;
                 results[count++] = agent;
             }
@@ -435,12 +510,13 @@ namespace Purge.Gameplay.Horde
 
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
         {
+            var stats = _kinds[_kind[i]].Stats;
             var position = ApplyPush(i, _positions[i], deltaTime);
             if (_stunned[i] || Time < _staggerUntil[i])
             {
                 // Neither walks nor attacks (its attack waits); only the crowd and hits push it.
-                var push = Separation(i, position, playerPosition);
-                if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push);
+                var push = Separation(i, position, playerPosition, stats);
+                if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push, stats.Radius);
                 _positions[i] = position;
                 return;
             }
@@ -451,7 +527,7 @@ namespace Purge.Gameplay.Horde
 
             if (_states[i] == HordeAgentState.Attacking)
             {
-                if (distance > _stats.AttackReach * 1.25f)
+                if (distance > stats.AttackReach * 1.25f)
                 {
                     _states[i] = HordeAgentState.Moving;
                     _stateStart[i] = Time;
@@ -461,20 +537,20 @@ namespace Purge.Gameplay.Horde
                     _attackTimer[i] -= deltaTime;
                     if (_attackTimer[i] <= 0f)
                     {
-                        _attackTimer[i] += _stats.AttackInterval;
+                        _attackTimer[i] += stats.AttackInterval;
                         _attackStart[i] = Time;
                         PlayerHits++;
-                        if (!GodMode && _stats.Damage > 0)
-                            _playerHealth.Damage(_stats.Damage);
+                        if (!GodMode && stats.Damage > 0)
+                            _playerHealth.Damage(stats.Damage);
                     }
                 }
             }
-            else if (distance <= _stats.AttackReach)
+            else if (distance <= stats.AttackReach)
             {
                 _states[i] = HordeAgentState.Attacking;
                 _stateStart[i] = Time;
-                _attackTimer[i] = _stats.AttackInterval * 0.5f;
-                _attackStart[i] = Time - _stats.AttackInterval * 0.5f;
+                _attackTimer[i] = stats.AttackInterval * 0.5f;
+                _attackStart[i] = Time - stats.AttackInterval * 0.5f;
             }
 
             var desired = toPlayerDirection;
@@ -491,14 +567,14 @@ namespace Purge.Gameplay.Horde
             }
 
             var step = _states[i] == HordeAgentState.Moving ? desired * (_speed[i] * _speedFactor[i] * deltaTime) : Vector2.zero;
-            step += Separation(i, position, playerPosition);
+            step += Separation(i, position, playerPosition, stats);
             if (step.sqrMagnitude > 1e-10f)
-                position = MoveWithWalls(position, step);
+                position = MoveWithWalls(position, step, stats.Radius);
             _positions[i] = position;
 
             // Turn towards where it is going (attackers face the player).
             var targetAngle = Mathf.Atan2(desired.x, desired.y);
-            var maxTurn = _stats.TurnSpeed * Mathf.Deg2Rad * deltaTime;
+            var maxTurn = stats.TurnSpeed * Mathf.Deg2Rad * deltaTime;
             var difference = Mathf.DeltaAngle(_facing[i] * Mathf.Rad2Deg, targetAngle * Mathf.Rad2Deg) * Mathf.Deg2Rad;
             _facing[i] += Mathf.Clamp(difference, -maxTurn, maxTurn);
         }
@@ -513,17 +589,15 @@ namespace Purge.Gameplay.Horde
             }
 
             _push[i] = push * Mathf.Exp(-PushDamping * deltaTime);
-            return MoveWithWalls(position, push * deltaTime);
+            return MoveWithWalls(position, push * deltaTime, _kinds[_kind[i]].Stats.Radius);
         }
 
-        private Vector2 Separation(int i, Vector2 position, Vector2 playerPosition)
+        private Vector2 Separation(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats)
         {
             var push = Vector2.zero;
-            var radius = _stats.Radius;
-            if (_stats.Separation > 0f)
+            var radius = stats.Radius;
+            if (stats.Separation > 0f)
             {
-                var minDistance = radius * 2f;
-                var minSquared = minDistance * minDistance;
                 var cx = Mathf.FloorToInt(position.x + 0.5f);
                 var cy = Mathf.FloorToInt(position.y + 0.5f);
                 for (var y = cy - 1; y <= cy + 1; y++)
@@ -531,6 +605,8 @@ namespace Purge.Gameplay.Horde
                 for (var other = _buckets.First(x, y); other >= 0; other = _buckets.Next(other))
                 {
                     if (other == i) continue;
+                    var minDistance = radius + _kinds[_kind[other]].Stats.Radius;
+                    var minSquared = minDistance * minDistance;
                     var offset = position - _positions[other];
                     var squared = offset.sqrMagnitude;
                     if (squared >= minSquared) continue;
@@ -543,7 +619,7 @@ namespace Purge.Gameplay.Horde
                     }
 
                     var length = Mathf.Sqrt(squared);
-                    push += offset / length * ((minDistance - length) * 0.5f * _stats.Separation);
+                    push += offset / length * ((minDistance - length) * 0.5f * stats.Separation);
                 }
             }
 
@@ -559,18 +635,18 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>Moves by axis so the square footprint never enters an unwalkable cell (slides along walls).</summary>
-        private Vector2 MoveWithWalls(Vector2 position, Vector2 step)
+        private Vector2 MoveWithWalls(Vector2 position, Vector2 step, float radius)
         {
             var x = new Vector2(position.x + step.x, position.y);
-            if (FootprintFree(x)) position = x;
+            if (FootprintFree(x, radius)) position = x;
             var y = new Vector2(position.x, position.y + step.y);
-            if (FootprintFree(y)) position = y;
+            if (FootprintFree(y, radius)) position = y;
             return position;
         }
 
-        private bool FootprintFree(Vector2 center)
+        private bool FootprintFree(Vector2 center, float radius)
         {
-            var r = _stats.Radius * 0.9f;
+            var r = radius * 0.9f;
             return IsWalkableAt(center.x - r, center.y - r) && IsWalkableAt(center.x + r, center.y - r) &&
                    IsWalkableAt(center.x - r, center.y + r) && IsWalkableAt(center.x + r, center.y + r);
         }
@@ -593,7 +669,8 @@ namespace Purge.Gameplay.Horde
             return count;
         }
 
-        private bool SpawnOne(float minDistance, float maxDistance)
+        /// <param name="emerge">A replacement climbs out of the ground (its kind's emerge time); the first wave stands.</param>
+        private bool SpawnOne(float minDistance, float maxDistance, bool emerge)
         {
             var slot = -1;
             for (var i = 0; i < _positions.Length; i++)
@@ -631,11 +708,14 @@ namespace Purge.Gameplay.Horde
             if (cell < 0)
                 return false;
 
+            var kind = PickKind();
+            var stats = _kinds[kind].Stats;
             var jitter = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 0.6f;
             _positions[slot] = new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
-            _health[slot] = _stats.MaxHp;
-            _states[slot] = HordeAgentState.Moving;
+            _kind[slot] = (byte)kind;
+            _health[slot] = stats.MaxHp;
+            _states[slot] = emerge && stats.EmergeTime > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
             _stateStart[slot] = Time;
             _attackTimer[slot] = 0f;
             _attackStart[slot] = -100f;
@@ -647,10 +727,23 @@ namespace Purge.Gameplay.Horde
             _push[slot] = Vector2.zero;
             _staggerUntil[slot] = 0f;
             // ±10 % speed: the crowd spreads out instead of marching in step.
-            _speed[slot] = _stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
+            _speed[slot] = stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
             return true;
+        }
+
+        private int PickKind()
+        {
+            if (_kinds.Length == 1) return 0;
+            var roll = (float)_random.NextDouble() * _totalWeight;
+            for (var k = 0; k < _kinds.Length; k++)
+            {
+                roll -= _kinds[k].Weight;
+                if (roll < 0f) return k;
+            }
+
+            return _kinds.Length - 1;
         }
 
         private void RefreshWalkable()

@@ -257,6 +257,7 @@ namespace Purge.Presentation.Visual
 
         private void ShowHit(int agent, Vector2 at, Vector2 direction, FeelModule feel, bool killed)
         {
+            if (_hordeView != null && _hordeView.IsActive) _splashColor = _hordeView.SplashColorOf(agent);
             if (killed)
             {
                 _camera?.Shake(feel.KillShake * _channels[FeelChannel.CameraShake]);

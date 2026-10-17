@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Zombie_2_Common
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: zombie_2_common
+  _rank: 0
+  _biome: 0
+  _perception: 2
+  _stats:
+    MaxHp: 18
+    Speed: 3.4
+    Radius: 0.28
+    AttackReach: 0.8
+    Damage: 4
+    AttackInterval: 0.9
+    TurnSpeed: 540
+    Separation: 0.5
+    CorpseTime: 3
+    EmergeTime: 2
+  _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
+  _resistances: []
+  _deathEffects: []
+  references:
+    version: 2
+    RefIds: []

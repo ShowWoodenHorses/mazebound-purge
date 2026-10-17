@@ -15,8 +15,8 @@ using UnityEngine;
 namespace Purge.Gameplay.Drops
 {
     /// <summary>
-    /// A killed horde monster (by anything — ТЗ: смерть от чего угодно даёт дроп) rolls the pool's table
-    /// (<see cref="DropRoller"/>) and the item lies where it died (<see cref="PickupSystem"/>: for the table's lifetime,
+    /// A killed horde monster (by anything — ТЗ: смерть от чего угодно даёт дроп) rolls its definition's table (the
+    /// rank's), or the pool's (<see cref="DropRoller"/>) and the item lies where it died (<see cref="PickupSystem"/>: for the table's lifetime,
     /// at most its <see cref="Core.Drops.DropTable.MaxLying"/> at once). Inactive without a table or a horde.
     /// </summary>
     public sealed class DropSystem : ILevelLoadStep, IDisposable
@@ -93,11 +93,13 @@ namespace Purge.Gameplay.Drops
 
         private void OnKilled(int agent, Vector2 position)
         {
-            var roll = DropRoller.Roll(_pool.Table, _pool, Context(), _random);
+            // ТЗ: ранг определяет дроп — the monster's table (its rank's), else the level's.
+            var table = _horde.DefinitionOf(agent)?.Drop ?? _pool.Table;
+            var roll = DropRoller.Roll(table, _pool, Context(), _random);
             if (roll.Kind == DropKind.Nothing) return;
 
             var floor = _player.Floor; // the horde lives on the player's floor
-            var lifetime = _pool.Table.Lifetime;
+            var lifetime = table.Lifetime;
             var pickup = roll.Kind switch
             {
                 DropKind.Ammo => _pickups.DropAmmo(position, floor, (AmmoDefinition)roll.Item, roll.Amount, lifetime),

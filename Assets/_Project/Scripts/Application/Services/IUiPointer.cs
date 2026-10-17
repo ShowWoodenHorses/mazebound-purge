@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Purge.Application.Services
 {
     /// <summary>
@@ -8,5 +10,8 @@ namespace Purge.Application.Services
     {
         /// <summary>Call from regular frame code, not from input callbacks (the UI state there is a frame old).</summary>
         bool IsOverUi { get; }
+
+        /// <summary>A raycast target of the UI (on-screen controls too) is at the screen point.</summary>
+        bool IsOverUiAt(Vector2 screenPosition);
     }
 }

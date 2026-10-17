@@ -76,6 +76,10 @@ namespace Purge.Core.Horde
         [SerializeField, Min(0)] private int _sandboxAmmo = 500;
         [Tooltip("Weapons Build Stress Test Levels lays out around the start of the sandbox level.")]
         [SerializeField] private Definitions.WeaponDefinition[] _sandboxWeapons = new Definitions.WeaponDefinition[0];
+        [Tooltip("Throwables of the sandbox: the drop pool's and the player's at the start (a full stack of the first).")]
+        [SerializeField] private Definitions.ThrowableDefinition[] _sandboxThrowables = new Definitions.ThrowableDefinition[0];
+        [Tooltip("What the horde's monsters drop (empty = nothing). Weapons and throwables — from the sandbox's lists.")]
+        [SerializeField] private Drops.DropTable _drop;
 
         [Header("Run")]
         [SerializeField] private int[] _monsterCounts = { 50, 100, 150, 200, 300, 500 };
@@ -107,6 +111,8 @@ namespace Purge.Core.Horde
         public bool IsSandbox => _sandbox;
         public int SandboxAmmo => _sandboxAmmo;
         public Definitions.WeaponDefinition[] SandboxWeapons => _sandboxWeapons;
+        public Definitions.ThrowableDefinition[] SandboxThrowables => _sandboxThrowables ??= new Definitions.ThrowableDefinition[0];
+        public Drops.DropTable Drop => _drop;
         public HordeMonsterStats Monster => _monster;
         public StressWeaponSettings Weapons => _weapons;
         public int[] MonsterCounts => _monsterCounts;
@@ -140,6 +146,12 @@ namespace Purge.Core.Horde
             _sandbox = sandbox;
             _sandboxAmmo = ammo;
             _startCount = startCount;
+        }
+
+        internal void ConfigureDrops(Drops.DropTable drop, params Definitions.ThrowableDefinition[] throwables)
+        {
+            _drop = drop;
+            _sandboxThrowables = throwables;
         }
 
         internal void Configure(HordeVisualDefinition visual, Material tracer, Material particles, Material fire)

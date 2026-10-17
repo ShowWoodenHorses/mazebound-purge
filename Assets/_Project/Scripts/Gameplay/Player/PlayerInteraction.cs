@@ -23,6 +23,8 @@ namespace Purge.Gameplay.Player
         DoorBlocked = 5,
         /// <summary>Frozen: the ice must be broken with melee hits first.</summary>
         DoorFrozen = 6,
+        /// <summary>A throwable of another kind replaced the stack (which dropped).</summary>
+        ThrowableTaken = 7,
     }
 
     /// <summary>What Interact would act on now (for the Use button).</summary>
@@ -31,12 +33,14 @@ namespace Purge.Gameplay.Player
         None = 0,
         Weapon = 1,
         Door = 2,
+        Throwable = 3,
     }
 
     /// <summary>
     /// The Interact action (ТЗ §63 Interaction, §64 "door" button, §67 weapon pickup). Order:
     /// 1) a weapon lying in the player's cell is picked up;
-    /// 2) otherwise the door next to the player (the one they face first) is used: a locked door is unlocked with
+    /// 2) otherwise a throwable of another kind lying there replaces the stack (the same kind is picked up by walking);
+    /// 3) otherwise the door next to the player (the one they face first) is used: a locked door is unlocked with
     ///    its key (the door stays closed, the key is spent); an unlocked door opens or closes. A door is never closed
     ///    on the player or on a zombie.
     /// Must be registered after <see cref="PlayerSystem"/> (it reads the player's cell of this tick).
@@ -80,6 +84,7 @@ namespace Purge.Gameplay.Player
             for (var i = 0; i < here.Count; i++)
                 if (here[i].Kind == PickupKind.Weapon)
                     return InteractionTarget.Weapon;
+            if (_pickups.ThrowableToSwap(_player.Cell) != null) return InteractionTarget.Throwable;
             return FindDoor() != null ? InteractionTarget.Door : InteractionTarget.None;
         }
 
@@ -89,6 +94,12 @@ namespace Purge.Gameplay.Player
             if (_pickups.TryTakeWeapon(_player.Cell))
             {
                 Interacted?.Invoke(InteractionResult.WeaponTaken, null);
+                return true;
+            }
+
+            if (_pickups.TryTakeThrowable(_player.Cell))
+            {
+                Interacted?.Invoke(InteractionResult.ThrowableTaken, null);
                 return true;
             }
 

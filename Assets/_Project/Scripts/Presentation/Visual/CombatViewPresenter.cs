@@ -252,7 +252,7 @@ namespace Purge.Presentation.Visual
 
         private void OnBulletSpawned(Bullet bullet)
         {
-            if (_tracerPool == null) return;
+            if (_tracerPool == null || bullet.Throwable != null) return; // thrown items: DropViewPresenter
             var tracer = _tracerPool.Get();
             tracer.Spawn = bullet.Position;
             tracer.Origin = new Vector3(bullet.Position.x, ShotHeight, bullet.Position.y);
@@ -264,6 +264,7 @@ namespace Purge.Presentation.Visual
 
         private void OnBulletEnded(Bullet bullet, Vector2 point, BulletEnd reason)
         {
+            if (bullet.Throwable != null) return;
             var height = ShotHeight;
             if (_tracers.TryGetValue(bullet, out var tracer))
             {

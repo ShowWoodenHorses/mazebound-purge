@@ -65,6 +65,9 @@ namespace Purge.Editor.Dev
                 .Polyline(false, 14, 11.2f, 13.6f, 13.6f, 11.6f, 13.6f));
             set.Attack = Draw("ui_attack", new Icon().Circle(12, 12, 5).Segment(12, 2.5f, 12, 6).Segment(12, 18, 12, 21.5f)
                 .Segment(2.5f, 12, 6, 12).Segment(18, 12, 21.5f, 12));
+            // A grenade: round body, the fuse on top, the pin's ring beside it (the throwable slot).
+            set.Grenade = Draw("ui_grenade", new Icon().Circle(12, 14.5f, 6f).Polyline(false, 10, 8.5f, 10, 6, 14, 6, 14, 8.5f)
+                .Polyline(false, 14, 6, 18, 4.5f).Circle(18.5f, 7.5f, 2f));
             set.Star = Draw("ui_star", new Icon().Polyline(true, StarPoints));
             set.StarFilled = Draw("ui_star_filled", new Icon().Polyline(true, StarPoints).Fill(StarPoints));
             set.Lock = Draw("ui_lock", new Icon().Polyline(true, 5, 10.5f, 19, 10.5f, 19, 20.5f, 5, 20.5f)

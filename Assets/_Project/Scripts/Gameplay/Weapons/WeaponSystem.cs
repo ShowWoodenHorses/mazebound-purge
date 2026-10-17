@@ -13,9 +13,11 @@ namespace Purge.Gameplay.Weapons
     /// </summary>
     public sealed class WeaponRuntime
     {
-        public WeaponRuntime(WeaponPickupData source)
+        /// <param name="dropped">Dropped by a monster: not an object of the level (no saved visual).</param>
+        public WeaponRuntime(WeaponPickupData source, bool dropped = false)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
+            IsDropped = dropped;
             Definition = source.Definition ?? throw new ArgumentException($"Weapon pickup '{source.Id}' has no definition.", nameof(source));
             Id = source.Id;
             Ammo = Definition.MagazineSize;
@@ -38,6 +40,9 @@ namespace Purge.Gameplay.Weapons
 
         /// <summary>The base pistol of an empty slot: replaced by a picked weapon, never dropped.</summary>
         public bool IsBase => Source == null;
+
+        /// <summary>Came from a monster's drop: its <see cref="Source"/> is not an object of the level.</summary>
+        public bool IsDropped { get; }
 
         /// <summary>Rounds in the magazine.</summary>
         public int Ammo { get; internal set; }

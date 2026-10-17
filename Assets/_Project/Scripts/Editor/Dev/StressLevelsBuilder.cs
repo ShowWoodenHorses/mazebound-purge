@@ -1,5 +1,6 @@
 using System;
 using Purge.Core.Authoring;
+using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
@@ -16,7 +17,8 @@ namespace Purge.Editor.Dev
     /// (<c>Data/Horde/StressTest.asset</c>, made by Build Horde Visuals), Build / Sync. Also the stage 4 combat sandbox
     /// <c>Level_Sandbox</c> (40×40) with its settings <c>Data/Horde/Sandbox.asset</c> (made once as a copy of the stress
     /// test's, sandbox on; then tuned by hand): its <see cref="StressTestDefinition.SandboxWeapons"/> lie in a row south
-    /// of the start. Re-running regenerates them (same seeds) and keeps the assets' GUIDs.
+    /// of the start; hedges of bushes north and east of it (fire spreads along them — stage 4б).
+    /// Re-running regenerates them (same seeds) and keeps the assets' GUIDs.
     /// </summary>
     internal static class StressLevelsBuilder
     {
@@ -25,6 +27,7 @@ namespace Purge.Editor.Dev
         private const string StressTestPath = "Assets/_Project/Data/Horde/StressTest.asset";
         private const string SandboxPath = "Assets/_Project/Data/Horde/Sandbox.asset";
         private const float ObstacleDensity = 0.12f;
+        private const string BushPath = "Assets/_Project/Data/Obstacles/Bush.asset";
 
         private static readonly (string Name, int Size, int Seed, bool Sandbox)[] Levels =
         {
@@ -68,7 +71,11 @@ namespace Purge.Editor.Dev
                 level.Generation.VisualSeed = seed;
                 level.Generation.ObstacleDensity = isSandbox ? ObstacleDensity * 0.5f : ObstacleDensity;
                 LevelAuthoring.GenerateNew(level);
-                if (isSandbox) LayOutWeapons(level, sandbox);
+                if (isSandbox)
+                {
+                    LayOutWeapons(level, sandbox);
+                    PlantBushes(level);
+                }
                 EditorUtility.SetDirty(level);
                 AssetDatabase.SaveAssets();
 
@@ -83,6 +90,30 @@ namespace Purge.Editor.Dev
                     LevelSync.SetDevLevel(level, true);
                 LevelSync.Sync(level);
             }
+        }
+
+        /// <summary>
+        /// Two hedges of bushes (flammable): a line five cells north of the start and an L to the east, with gaps to walk
+        /// through — a molotov there shows the fire spreading.
+        /// </summary>
+        private static void PlantBushes(LevelData level)
+        {
+            var bush = AssetDatabase.LoadAssetAtPath<ObstacleDefinition>(BushPath);
+            if (bush == null)
+            {
+                Debug.LogWarning($"[Purge] No bush at {BushPath}: the sandbox has no hedges.");
+                return;
+            }
+
+            var start = level.PlayerStarts[0].Position;
+            for (var dx = -7; dx <= 7; dx++)
+                if (Mathf.Abs(dx) != 3)
+                    LevelEditing.SetObstacle(level, new GridPosition(start.X + dx, start.Y + 5, start.Floor), bush);
+            for (var dy = -2; dy <= 6; dy++)
+                if (dy != 2)
+                    LevelEditing.SetObstacle(level, new GridPosition(start.X + 9, start.Y + dy, start.Floor), bush);
+            for (var dx = 9; dx <= 13; dx++)
+                LevelEditing.SetObstacle(level, new GridPosition(start.X + dx, start.Y - 3, start.Floor), bush);
         }
 
         /// <summary>The sandbox's weapons in a row two cells south of the start, on free cells.</summary>

@@ -9,7 +9,7 @@ namespace Purge.Editor.Dev
     /// <summary>
     /// Purge → Dev → Convert Object Materials to Purge/Lit: every opaque Standard material of the prefabs the game shows
     /// besides floor and walls — themes' object sets (doors, exits, keys, pickups, zombies...), the player, weapons in
-    /// hands — switches to the shared lit shader (lantern and level lights, no shadows). Property names match, so
+    /// hands, dropped and thrown items — switches to the shared lit shader (lantern and level lights, no shadows). Property names match, so
     /// colors and textures are kept. Transparent and cutout materials are left as they are (reported).
     /// Run after adding new models (Build Weapons, Build Zombie/Player Animations create prefabs).
     /// </summary>
@@ -81,6 +81,14 @@ namespace Purge.Editor.Dev
             foreach (var catalog in Load<WeaponVisualCatalog>())
             foreach (var weapon in catalog.Weapons)
                 Add(prefabs, weapon.HeldPrefab?.editorAsset as GameObject);
+
+            // Dropped and thrown items (Build Items).
+            foreach (var catalog in Load<ItemVisualCatalog>())
+            foreach (var item in catalog.Items)
+            {
+                Add(prefabs, item.Pickup?.editorAsset as GameObject);
+                Add(prefabs, item.Flying?.editorAsset as GameObject);
+            }
 
             return prefabs
                 .SelectMany(prefab => prefab.GetComponentsInChildren<Renderer>(true))

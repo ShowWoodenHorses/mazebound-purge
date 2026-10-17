@@ -79,5 +79,6 @@ namespace Purge.Gameplay.Horde
         public bool AttackHeld => _inner.AttackHeld;
         public bool WasPressed(PlayerAction action) => _inner.WasPressed(action);
         public bool IsHeld(PlayerAction action) => _inner.IsHeld(action);
+        public bool TryGetGroundTap(out Vector2 screenPosition) => _inner.TryGetGroundTap(out screenPosition);
     }
 }

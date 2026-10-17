@@ -88,9 +88,9 @@ namespace Purge.Tests.PlayMode
             var catalog = _container.Resolve<ILevelCatalog>();
             Assert.Greater(catalog.Levels.Count, 0, "Run Build / Sync for at least one level.");
             var devCatalog = catalog.DevLevels.Count > 0 ? 1 : 0; // Editor and development builds.
-            Assert.AreEqual(9 + devCatalog, AppHandles,
+            Assert.AreEqual(10 + devCatalog, AppHandles,
                 "Only application-wide assets are resident in the menu: level catalog (+ development levels catalog), " +
-                "player definition, player visual, combat visual, weapon visuals, content catalog, audio catalog, language catalog, " +
+                "player definition, player visual, combat visual, weapon visuals, item visuals, content catalog, audio catalog, language catalog, " +
                 "texts of one language (music is counted apart).");
             Assert.IsNotNull(_audio.Catalog, "Audio catalog loaded.");
             Assert.AreSame(_audio.Catalog.MenuMusic, _audio.CurrentMusic, "Menu music in the menu.");
@@ -273,12 +273,15 @@ namespace Purge.Tests.PlayMode
             Assert.Greater(container.Resolve<LevelWarmup>().WarmedCount, views.Count, "Views plus held weapons and effects.");
             Assert.IsTrue(Child(views, plain.Id, "Closed").activeSelf);
             Assert.IsFalse(Child(views, plain.Id, "Open").activeSelf);
-            Assert.IsNull(container.Resolve<PlayerWeaponPresenter>().Shown);
+            var baseWeapon = container.Resolve<PlayerDefinition>().BaseWeapon;
+            Assert.AreEqual("Weapon " + baseWeapon.Id, container.Resolve<PlayerWeaponPresenter>().Shown.name,
+                "The base pistol of the empty slot is in hands.");
             var hands = container.Resolve<PlayerViewPresenter>().View.GetComponentsInChildren<Transform>(true)
                 .Where(t => t.name.StartsWith("Weapon ")).ToList();
-            Assert.AreEqual(level.Weapons.Select(w => w.Definition.Id).Distinct().Count(), hands.Count,
-                "Every weapon of the level is created in hands while loading.");
-            Assert.IsTrue(hands.All(t => !t.gameObject.activeSelf), "Not held yet: hidden.");
+            Assert.AreEqual(level.Weapons.Select(w => w.Definition.Id).Append(baseWeapon.Id).Distinct().Count(), hands.Count,
+                "Every weapon of the level and the base pistol are created in hands while loading.");
+            Assert.IsTrue(hands.All(t => !t.gameObject.activeSelf || t.name == "Weapon " + baseWeapon.Id),
+                "Not held yet: hidden (only the base pistol is in hands).");
 
             doors.SetOpen(plain.Id, true);
             Assert.IsFalse(Child(views, plain.Id, "Closed").activeSelf);
@@ -429,6 +432,83 @@ namespace Purge.Tests.PlayMode
 
             await _flow.ExitToMenu();
             Assert.AreEqual(handlesInMenu, AppHandles, "The sandbox's assets released with the level.");
+        });
+
+        [UnityTest]
+        public IEnumerator CombatSandbox_Throwables_Zones_AndDrops() => Async(async () =>
+        {
+            const string sandboxLevel = "Level_Sandbox";
+            var catalog = _container.Resolve<ILevelCatalog>();
+            if (catalog.Find(sandboxLevel) == null)
+                Assert.Ignore($"Dev level '{sandboxLevel}' is not in the catalog.");
+
+            var handlesInMenu = AppHandles;
+            await _flow.StartLevel(sandboxLevel, new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var horde = container.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            var player = container.Resolve<PlayerSystem>();
+            var throwing = container.Resolve<Purge.Gameplay.Throwing.PlayerThrowing>();
+            var sandbox = container.Resolve<Purge.Gameplay.Horde.CombatSandbox>();
+            var zones = container.Resolve<Purge.Gameplay.Effects.ZoneSystem>();
+            var drops = container.Resolve<Purge.Gameplay.Drops.DropSystem>();
+            var targets = container.Resolve<Purge.Gameplay.Combat.CombatTargets>();
+            var dropViews = container.Resolve<Purge.Presentation.Visual.DropViewPresenter>();
+            horde.GodMode = true;
+            Assert.IsFalse(throwing.Slot.IsEmpty, "The sandbox gives a stack of throwables.");
+            Assert.IsTrue(drops.IsActive, "The sandbox's horde drops items.");
+
+            var hits = 0;
+            Action<Purge.Gameplay.Combat.CombatTarget, Vector2, float, Vector2, bool> count = (target, _, _, _, _) =>
+            {
+                if (target.Agent >= 0) hits++;
+            };
+            targets.Damaged += count;
+            try
+            {
+                // A grenade at the nearest monster hurts the horde.
+                var until = Time.realtimeSinceStartup + 12f;
+                while (hits == 0 && Time.realtimeSinceStartup < until)
+                {
+                    var nearest = horde.FindNearest(player.Position, 7f);
+                    if (nearest >= 0 && throwing.Cooldown <= 0f)
+                    {
+                        if (throwing.Slot.IsEmpty) sandbox.Refill();
+                        throwing.TryThrow(AgentPosition(horde, nearest));
+                    }
+
+                    await UniTask.Yield();
+                }
+
+                Assert.Greater(hits, 0, "The grenade hurts the horde.");
+
+                // A molotov puts fire on cells.
+                sandbox.NextThrowable();
+                Assert.AreEqual("molotov", throwing.Slot.Definition.Id);
+                await WaitFor(() => throwing.Cooldown <= 0f);
+                Assert.IsTrue(throwing.TryThrow(player.Position + Vector2.up * 3f));
+                await WaitFor(() => zones.Count > 0);
+
+                // Killed monsters drop items (40 % of the table is something).
+                until = Time.realtimeSinceStartup + 15f;
+                while (drops.Dropped == 0 && Time.realtimeSinceStartup < until)
+                {
+                    var nearest = horde.FindNearest(player.Position, 40f);
+                    if (nearest >= 0) targets.Damage(Purge.Gameplay.Combat.CombatTarget.OfAgent(nearest), 1000f, Vector2.up);
+                    await UniTask.Yield();
+                }
+
+                Assert.Greater(drops.Dropped, 0, "Something dropped.");
+                await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+                Assert.Greater(dropViews.LyingCount, 0, "Dropped items are shown from the pool.");
+            }
+            finally
+            {
+                targets.Damaged -= count;
+            }
+
+            await _flow.ExitToMenu();
+            Assert.AreEqual(handlesInMenu, AppHandles, "The items' looks released with the level.");
         });
 
         private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];

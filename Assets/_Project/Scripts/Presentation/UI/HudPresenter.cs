@@ -11,6 +11,7 @@ using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Weapons;
 using Purge.Gameplay.Zombies;
@@ -42,6 +43,8 @@ namespace Purge.Presentation.UI
         private readonly LocalizationService _texts;
         private readonly LevelProgress _progress;
         private readonly PlatformService _platform;
+        private readonly PlayerThrowing _throwing;
+        private readonly ItemVisualCatalog _items;
         private readonly List<Color> _keyColors = new List<Color>();
         private int _lastHealth;
         private bool _bound;
@@ -49,8 +52,10 @@ namespace Purge.Presentation.UI
         public HudPresenter(UIRoot ui, LevelData level, PlayerHealth health, PlayerInventory inventory,
             WeaponSystem weapons, PlayerInteraction interaction, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, WeaponVisualCatalog visuals, LocalizationService texts,
-            LevelProgress progress, PlatformService platform = null)
+            LevelProgress progress, PlatformService platform = null, PlayerThrowing throwing = null, ItemVisualCatalog items = null)
         {
+            _throwing = throwing;
+            _items = items;
             _platform = platform;
             _progress = progress;
             _texts = texts;
@@ -111,16 +116,35 @@ namespace Purge.Presentation.UI
             var melee = SlotState(WeaponSlot.First);
             var ranged = SlotState(WeaponSlot.Second);
             _ui.Hud.SetWeapons(melee, ranged);
+            var throwable = ThrowableState();
+            _ui.Hud.SetThrowable(throwable);
 
             var touch = _ui.TouchControls;
             if (touch == null) return;
             touch.SetWeapons(melee, ranged);
+            touch.SetThrowable(throwable);
             touch.SetUse(_interaction.CurrentTarget() switch
             {
                 InteractionTarget.Weapon => UseTarget.PickUp,
+                InteractionTarget.Throwable => UseTarget.PickUp,
                 InteractionTarget.Door => UseTarget.Door,
                 _ => UseTarget.None,
             });
+        }
+
+        /// <summary>The throwable slot as a weapon slot: the stack's max as the magazine, the count as rounds.</summary>
+        private WeaponSlotState ThrowableState()
+        {
+            var slot = _throwing?.Slot;
+            if (slot == null || slot.IsEmpty) return WeaponSlotState.Empty;
+            return new WeaponSlotState
+            {
+                Equipped = true,
+                Active = _throwing.IsAiming,
+                Icon = _items?.Find(slot.Definition)?.Icon,
+                Magazine = slot.Definition.MaxStack,
+                Ammo = slot.Count,
+            };
         }
 
         private WeaponSlotState SlotState(WeaponSlot slot)

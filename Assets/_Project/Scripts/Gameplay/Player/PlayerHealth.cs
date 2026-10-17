@@ -22,6 +22,9 @@ namespace Purge.Gameplay.Player
 
         public void HealToFull() => Set(Max);
 
+        /// <summary>Restores <paramref name="amount"/> (0 or less — to full).</summary>
+        public void Heal(int amount) => Set(amount <= 0 ? Max : Math.Min(Max, Current + amount));
+
         public void Damage(int amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);

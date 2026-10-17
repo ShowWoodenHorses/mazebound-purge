@@ -57,8 +57,10 @@ namespace Purge.Presentation.Visual
 
         public PlayerViewPresenter(PlayerSystem player, PlayerVisualDefinition visual, IAssetOwner assets,
             LevelViewRoot root, TopDownCamera camera, PlayerCombat combat, WeaponSystem weapons, PlayerHealth health,
-            PlayerInteraction interaction, BlobShadows shadows, CombatVisualDefinition combatVisual, LevelData level)
+            PlayerInteraction interaction, BlobShadows shadows, CombatVisualDefinition combatVisual, LevelData level,
+            Gameplay.Throwing.PlayerThrowing throwing = null)
         {
+            _throwing = throwing;
             _level = level;
             _combatVisual = combatVisual;
             _shadows = shadows;
@@ -72,6 +74,8 @@ namespace Purge.Presentation.Visual
             _health = health;
             _interaction = interaction;
         }
+
+        private readonly Gameplay.Throwing.PlayerThrowing _throwing;
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnPlayer;
 
@@ -115,6 +119,7 @@ namespace Purge.Presentation.Visual
             _combat.ReloadChanged += OnReloadChanged;
             _health.Changed += OnHealthChanged;
             _interaction.Interacted += OnInteracted;
+            if (_throwing != null) _throwing.Thrown += OnThrown;
             _subscribed = true;
             Sync(0f, snap: true);
         }
@@ -133,6 +138,7 @@ namespace Purge.Presentation.Visual
                 _combat.ReloadChanged -= OnReloadChanged;
                 _health.Changed -= OnHealthChanged;
                 _interaction.Interacted -= OnInteracted;
+                if (_throwing != null) _throwing.Thrown -= OnThrown;
                 _subscribed = false;
             }
 
@@ -222,6 +228,8 @@ namespace Purge.Presentation.Visual
             if (_upperBodyLayer >= 0)
                 _animator.SetLayerWeight(_upperBodyLayer, 0f);
         }
+
+        private void OnThrown(Core.Definitions.ThrowableDefinition throwable, Vector2 direction) => SetTrigger(P.ThrowHash);
 
         private void OnInteracted(InteractionResult result, DoorData door)
         {

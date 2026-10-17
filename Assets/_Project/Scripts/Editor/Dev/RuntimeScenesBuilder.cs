@@ -510,6 +510,8 @@ namespace Purge.Editor.Dev
                 new Vector2(316f, 110f));
             var meleeSlot = WeaponSlot(weaponPanel, "MeleeSlot", new Vector2(-79f, 0f), "1", icons.Melee);
             var rangedSlot = WeaponSlot(weaponPanel, "RangedSlot", new Vector2(79f, 0f), "2", icons.Ranged, "R");
+            // The throwable (key G) left of the weapons: kind and count of the stack's max.
+            var throwSlot = WeaponSlot(weaponPanel, "ThrowSlot", new Vector2(-79f - 158f, 0f), "G", icons.Grenade);
 
             SetReference(screen, "_style", _style);
             SetReference(screen, "_levelName", levelName);
@@ -530,6 +532,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_weaponPanel", weaponPanel.gameObject);
             SetReference(screen, "_meleeSlot", meleeSlot);
             SetReference(screen, "_rangedSlot", rangedSlot);
+            SetReference(screen, "_throwSlot", throwSlot);
             SetReference(screen, "_damageFlash", damageFlash);
             return screen;
         }
@@ -878,6 +881,15 @@ namespace Purge.Editor.Dev
             AddTouchButton(useShape.gameObject, "<Gamepad>/buttonWest");
             var useIcon = Icon(useShape.transform, "Icon", icons.Door, Center, Vector2.zero, 54f);
 
+            // Throw (temporary until the cluster's throwable sector, stage 4в): a circle above Use, moved with it.
+            // A press — aim (a touch on the game throws there), held and released — throw at the aim.
+            var throwShape = Shape(useShape.transform, "ThrowButton", Center, new Vector2(0f, 150f), new Vector2(100f, 100f), true);
+            throwShape.Kind = UiShapeKind.Capsule;
+            AddTouchButton(throwShape.gameObject, "<Gamepad>/leftTrigger");
+            var throwIcon = Icon(throwShape.transform, "Icon", icons.Grenade, Center, new Vector2(-6f, 4f), 52f);
+            var throwCount = Text(throwShape.transform, "Count", "", 30f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
+                new Vector2(-8f, 4f), new Vector2(40f, 34f), TextAlignmentOptions.BottomRight);
+
             var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
             SetReference(cluster, "_style", _style);
             SetReference(cluster, "_content", content);
@@ -890,6 +902,10 @@ namespace Purge.Editor.Dev
             SetReferences(cluster, "_ticks", ticks);
             SetReference(cluster, "_use", useShape);
             SetReference(cluster, "_useIcon", useIcon);
+            SetReference(cluster, "_throw", throwShape);
+            SetReference(cluster, "_throwIcon", throwIcon);
+            SetReference(cluster, "_throwCount", throwCount);
+            SetReference(cluster, "_throwIconFallback", icons.Grenade);
             SetReference(cluster, "_doorIcon", icons.Door);
             SetReference(cluster, "_pickUpIcon", icons.PickUp);
             SetReference(cluster, "_meleeIconFallback", icons.Melee);

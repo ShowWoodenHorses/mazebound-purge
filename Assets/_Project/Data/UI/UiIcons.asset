@@ -23,6 +23,7 @@ MonoBehaviour:
   Melee: {fileID: 21300000, guid: 2671744ca19a81d41baf5898089bb4e6, type: 3}
   Ranged: {fileID: 21300000, guid: 97c2650b6057a4e4f9b3e9b9d8206727, type: 3}
   Attack: {fileID: 21300000, guid: 12f062668088f884a8b729eb6c4f9c79, type: 3}
+  Grenade: {fileID: 21300000, guid: d1191361335654c49b4e0ae4c2f671ce, type: 3}
   Star: {fileID: 21300000, guid: 7fa2b25d92ebff9448473b615f341c09, type: 3}
   StarFilled: {fileID: 21300000, guid: 20ee0c7df878671418454d88e53690bb, type: 3}
   Lock: {fileID: 21300000, guid: dc49ac5eba0bb74439e5931e18455d0e, type: 3}

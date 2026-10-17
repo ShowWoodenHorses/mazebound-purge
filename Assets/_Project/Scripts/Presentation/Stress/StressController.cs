@@ -136,6 +136,9 @@ namespace Purge.Presentation.Stress
         /// <summary>Combat sandbox: every ammo type back to the sandbox amount.</summary>
         public void RefillAmmo() => _sandbox?.Refill();
 
+        /// <summary>Sandbox: a full stack of the next throwable kind.</summary>
+        public void NextThrowable() => _sandbox?.NextThrowable();
+
         public void SetCamera(float halfExtent)
         {
             if (_camera != null) _camera.FollowHalfExtent = halfExtent;

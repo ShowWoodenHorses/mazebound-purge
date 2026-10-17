@@ -237,7 +237,7 @@ namespace Purge.Presentation.Map
             var added = 0;
             foreach (var pickup in _lying)
             {
-                if (pickup.Kind != kind) continue;
+                if (pickup.Kind != kind || pickup.IsDropped) continue; // monsters' drops: not on the map (icon count fixed)
                 var color = kind switch
                 {
                     PickupKind.Key => _keyColors.TryGetValue(pickup.Id, out var pair) ? pair : set.KeyColor,

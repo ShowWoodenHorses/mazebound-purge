@@ -13,6 +13,7 @@ namespace Purge.Presentation.Visual
     /// Keeps pickup views in sync with <see cref="PickupSystem"/>: removes the view of a taken item and creates the
     /// view of a dropped weapon with its own saved visual (never a new choice). Visibility picks up new views
     /// through <see cref="EntityViewRegistry.Added"/>. Must be registered after <see cref="LevelVisualSystem"/>.
+    /// Monsters' drops (<see cref="Pickup.IsDropped"/>) are shown by <see cref="DropViewPresenter"/>.
     /// </summary>
     public sealed class PickupViewPresenter : ILevelLoadStep, IDisposable
     {
@@ -55,11 +56,14 @@ namespace Purge.Presentation.Visual
             _subscribed = false;
         }
 
-        private void OnRemoved(Pickup pickup) => _views.Remove(pickup.Id);
+        private void OnRemoved(Pickup pickup)
+        {
+            if (!pickup.IsDropped) _views.Remove(pickup.Id);
+        }
 
         private void OnAdded(Pickup pickup)
         {
-            if (_visuals.EntityViews == null || !VisualKinds.TryGetForEntity(pickup.Source, out var kind, out _))
+            if (pickup.IsDropped || _visuals.EntityViews == null || !VisualKinds.TryGetForEntity(pickup.Source, out var kind, out _))
                 return;
 
             var view = _visuals.EntityViews.Create(pickup.Id, kind, VisualResolver.ResolveObject(_level, pickup.Source),

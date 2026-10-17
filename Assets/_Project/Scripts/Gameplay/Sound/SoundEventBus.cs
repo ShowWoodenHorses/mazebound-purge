@@ -10,6 +10,12 @@ namespace Purge.Gameplay.Sound
         Door = 2,
         Melee = 3,
         Ranged = 4,
+
+        /// <summary>A blast (grenade, barrel).</summary>
+        Explosion = 5,
+
+        /// <summary>Something thrown (a grenade leaving the hand).</summary>
+        Throw = 6,
     }
 
     /// <summary>A gameplay sound (ТЗ §71): heard within <see cref="Radius"/> cells, not blocked by walls or doors.</summary>

@@ -56,6 +56,9 @@ namespace Purge.Gameplay.Horde
         private float[] _hitTime;
         private byte[] _variant;
         private float[] _speed;
+        private int[] _generation; // + 1 on every spawn into the slot: states of the previous monster are not carried over
+        private float[] _speedFactor; // states (StatusSystem): slow
+        private bool[] _stunned; // states: neither moves nor attacks
 
         private bool[] _walkable;
         private int[] _walkableCells;
@@ -130,6 +133,22 @@ namespace Purge.Gameplay.Horde
         public ReadOnlySpan<byte> Variants => _variant;
         public ReadOnlySpan<float> Health => _health;
 
+        /// <summary>Changes every time a new monster takes the slot.</summary>
+        public ReadOnlySpan<int> Generations => _generation;
+
+        public ReadOnlySpan<bool> Stunned => _stunned;
+
+        /// <summary>(slot, where) a monster was killed (by anything: weapons, zones, states).</summary>
+        public event Action<int, Vector2> Killed;
+
+        /// <summary>States of a monster for this tick on (<c>StatusSystem</c>): speed × factor; stunned stands still.</summary>
+        public void SetModifiers(int agent, float speedFactor, bool stunned)
+        {
+            if ((uint)agent >= (uint)_highWater) return;
+            _speedFactor[agent] = speedFactor;
+            _stunned[agent] = stunned;
+        }
+
         public static bool IsAlive(HordeAgentState state) => state == HordeAgentState.Moving || state == HordeAgentState.Attacking;
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
@@ -148,8 +167,14 @@ namespace Purge.Gameplay.Horde
             _hitTime = new float[capacity];
             _variant = new byte[capacity];
             _speed = new float[capacity];
+            _generation = new int[capacity];
+            _speedFactor = new float[capacity];
+            _stunned = new bool[capacity];
             for (var i = 0; i < capacity; i++)
+            {
                 _hitTime[i] = -100f;
+                _speedFactor[i] = 1f;
+            }
 
             _walkable = new bool[_grid.Width * _grid.Height];
             _walkableCells = new int[_walkable.Length];
@@ -274,8 +299,10 @@ namespace Purge.Gameplay.Horde
 
             _states[agent] = HordeAgentState.Dying;
             _stateStart[agent] = Time;
+            _stunned[agent] = false;
             AliveCount--;
             Kills++;
+            Killed?.Invoke(agent, _positions[agent]);
             return true;
         }
 
@@ -375,6 +402,14 @@ namespace Purge.Gameplay.Horde
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
         {
             var position = _positions[i];
+            if (_stunned[i])
+            {
+                // Neither walks nor attacks (its attack waits); only the crowd pushes it.
+                var push = Separation(i, position, playerPosition);
+                if (push.sqrMagnitude > 1e-10f) _positions[i] = MoveWithWalls(position, push);
+                return;
+            }
+
             var toPlayer = playerPosition - position;
             var distance = toPlayer.magnitude;
             var toPlayerDirection = distance > 1e-4f ? toPlayer / distance : Vector2.up;
@@ -420,7 +455,7 @@ namespace Purge.Gameplay.Horde
                 }
             }
 
-            var step = _states[i] == HordeAgentState.Moving ? desired * (_speed[i] * deltaTime) : Vector2.zero;
+            var step = _states[i] == HordeAgentState.Moving ? desired * (_speed[i] * _speedFactor[i] * deltaTime) : Vector2.zero;
             step += Separation(i, position, playerPosition);
             if (step.sqrMagnitude > 1e-10f)
                 position = MoveWithWalls(position, step);
@@ -558,6 +593,9 @@ namespace Purge.Gameplay.Horde
             _attackStart[slot] = -100f;
             _hitTime[slot] = -100f;
             _variant[slot] = (byte)_random.NextInt(256);
+            _generation[slot]++;
+            _speedFactor[slot] = 1f;
+            _stunned[slot] = false;
             // ±10 % speed: the crowd spreads out instead of marching in step.
             _speed[slot] = _stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
             _highWater = Math.Max(_highWater, slot + 1);

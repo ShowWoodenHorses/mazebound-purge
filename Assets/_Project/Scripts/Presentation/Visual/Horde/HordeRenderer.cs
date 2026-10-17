@@ -48,7 +48,7 @@ namespace Purge.Presentation.Visual.Horde
         private int[] _batchOf;   // per variant: index of its current batch in _batches
         private int _batchesUsed;
         private Bounds _worldBounds;
-        private int _runClip, _walkClip, _deathClip, _firstAttack, _attackCount;
+        private int _runClip, _walkClip, _deathClip, _idleClip = -1, _firstAttack, _attackCount;
         private bool _useVat, _interpolate;
 
         public HordeRenderer(LevelData level, HordeSystem horde, VisibilitySystem visibility, TopDownCamera camera)
@@ -116,6 +116,7 @@ namespace Purge.Presentation.Visual.Horde
             _walkClip = _visual.FindClip(HordeClipKind.Walk);
             if (_runClip < 0) _runClip = _walkClip;
             _deathClip = _visual.FindClip(HordeClipKind.Death);
+            _idleClip = _visual.FindClip(HordeClipKind.Idle);
             _firstAttack = _visual.FindClip(HordeClipKind.Attack);
             _attackCount = _visual.CountClips(HordeClipKind.Attack);
 
@@ -178,6 +179,7 @@ namespace Purge.Presentation.Visual.Horde
             var stateStart = _horde.StateStart;
             var attackStart = _horde.AttackStart;
             var hitTime = _horde.HitTime;
+            var stunned = _horde.Stunned;
             var variants = _horde.Variants;
             var time = _horde.Time;
             var scale = Vector3.one * _visual.Scale;
@@ -203,6 +205,12 @@ namespace Purge.Presentation.Visual.Horde
                 float clipTime;
                 switch (state)
                 {
+                    case HordeAgentState.Moving when stunned[i] && _idleClip >= 0:
+                    case HordeAgentState.Attacking when stunned[i] && _idleClip >= 0:
+                        // Stunned (a state): stands still.
+                        clip = _idleClip;
+                        clipTime = time + i * 0.377f;
+                        break;
                     case HordeAgentState.Attacking when _attackCount > 0:
                         clip = _firstAttack + i % _attackCount;
                         clipTime = (time - attackStart[i]) / interval * _visual.Clips[clip].Length;

@@ -4,6 +4,8 @@ using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Doors;
+using Purge.Gameplay.Drops;
+using Purge.Gameplay.Effects;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Navigation;
@@ -12,6 +14,7 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Tutorial;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Weapons;
@@ -59,6 +62,7 @@ namespace Purge.Composition
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().CombatVisual, Lifetime.Singleton);
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().WeaponVisuals, Lifetime.Singleton);
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().Content, Lifetime.Singleton);
+            builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().ItemVisuals, Lifetime.Singleton);
 
             // Gameplay
             builder.Register(resolver => new LevelGrid(resolver.Resolve<LevelData>().Geometry), Lifetime.Singleton);
@@ -71,18 +75,28 @@ namespace Purge.Composition
             builder.Register<PlayerInventory>(Lifetime.Singleton);
             builder.Register<AmmoStock>(Lifetime.Singleton);
             builder.Register<CombatTargets>(Lifetime.Singleton);
-            // Tick order: weapon switching → attack (sets this tick's aim and speed) → movement → steps → interaction → bullets.
+            builder.Register<ThrowableSlot>(Lifetime.Singleton);
+            builder.Register<EffectSystem>(Lifetime.Singleton);
+            // What monsters may drop: known at load (InitializeSystems), before the views load the items' looks.
+            builder.Register<DropPool>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            // Tick order: weapon switching → throwing (a click that throws is not a shot) → attack (sets this tick's aim
+            // and speed) → movement → steps → pickups (lifetimes) → interaction → bullets.
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
+            builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<PlayerFootsteps>(Lifetime.Singleton).As<ILevelTickable>();
-            builder.Register<PickupSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<PickupSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<PlayerInteraction>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<BulletSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<NavigationSystem>(Lifetime.Singleton);
             builder.Register<ZombieSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Mass monsters and the stress test weapons (inactive unless the level has StressTest settings).
             builder.Register<HordeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // After the horde: sized by it, tick on its fresh buckets (states act on the monsters from the next tick).
+            builder.Register<StatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<ZoneSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<DropSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -108,6 +122,9 @@ namespace Purge.Composition
             builder.Register<DoorViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<FrozenDoorsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<PickupViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<DropViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()

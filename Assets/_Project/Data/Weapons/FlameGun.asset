@@ -21,6 +21,7 @@ MonoBehaviour:
   - rid: 1763807262009983058
   - rid: 1763807262009983059
   - rid: 1763807262009983060
+  - rid: 1763807262009983161
   references:
     version: 2
     RefIds:
@@ -46,3 +47,9 @@ MonoBehaviour:
       data:
         _inHands: 0.75
         _whileFiring: 1
+    - rid: 1763807262009983161
+      type: {class: StatusOnHitModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
+        _duration: 3
+        _chance: 0.3

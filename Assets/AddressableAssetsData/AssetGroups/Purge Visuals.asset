@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 029c41e9247469c41947dd4158838113
+    m_Address: Assets/_Project/Art/Items/Pickups/MedicalBox_small_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 049b0a329261d1b4d9a593610ea82861
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_cyan.prefab
     m_ReadOnly: 0
@@ -32,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 086988b3054a1da499ddf4e0b981f3b6
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0969523e43002f0448a3d9a338299470
+    m_Address: Assets/_Project/Art/Items/Pickups/Shotgun_ammo_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -90,6 +100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21fab3fec1bb8904dbdfed3279c43727
+    m_Address: Assets/_Project/Art/Items/Pickups/Mine_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 228d362ddec8bb7479d312437ec801fe
     m_Address: Assets/_Project/Art/Keys/key_blue.prefab
     m_ReadOnly: 0
@@ -135,8 +150,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d0e59b93fe7ec94dbb4b201d4880013
+    m_Address: Assets/_Project/Art/Items/Pickups/Grenade_Smoke_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2eaa1a91a240c274c9ed9ed3aacf499b
     m_Address: Assets/_Project/Art/Weapons/Pickups/Star_sword_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f9c07b289d44024c84d564bc600f354
+    m_Address: Assets/_Project/Art/Items/Pickups/Medical_big_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 300132d104272624d860dbc0eb5a5ed6
+    m_Address: Assets/_Project/Art/Items/Pickups/Flashbang_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -200,8 +230,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f98ae964c6dcba429009f416a1b548e
+    m_Address: Assets/_Project/Art/Items/Pickups/Energy_ammo_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42ebc84ac539e0749aa91a37e048b6a7
     m_Address: Assets/_Project/Art/Placeholders/floor_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43eab822f2c6f7b4c983d79f11cc4390
+    m_Address: Assets/_Project/Art/Decor/SM_Env_Bush_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -262,6 +302,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52bf82913080d784ab4e73fc851ad61d
     m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_flagstones.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5328deb8869f7ca4fb76c8b0e1314dec
+    m_Address: Assets/_Project/Art/Items/Pickups/Grenade_Flying.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -340,6 +385,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 720a780d029e25548a234ca30ee7483c
+    m_Address: Assets/_Project/Art/Items/Pickups/Gas_ammo_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 742ec294e32feff4cbe94b12b28e7939
     m_Address: Assets/_Project/Art/Weapons/Pickups/Plasmometer_Pickup.prefab
     m_ReadOnly: 0
@@ -355,8 +405,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7956f62c1692d6543a8af23ca0f1a2cc
+    m_Address: Assets/_Project/Art/Items/Pickups/Medical_Crate_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7a0f877c535701940b8c80ce9cf6da4e
     m_Address: Assets/_Project/Art/Weapons/Pickups/AcidCannon_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a1701e33facde843bcab01aa9552a41
+    m_Address: Assets/_Project/Art/Items/Pickups/9_ammo_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -400,6 +460,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8af45239847e50647a435ddb7e209afe
+    m_Address: Assets/_Project/Art/Items/Pickups/Grenade_Smoke_Flying.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b3ad0b31d4acb54eb31040339252903
     m_Address: Assets/_Project/Art/Placeholders/floor_special_blood.prefab
     m_ReadOnly: 0
@@ -407,6 +472,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 929067955a537b44e9c33dd534ebdb10
     m_Address: Assets/_Project/Art/Weapons/Pickups/Shock_cannon_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93073e9d0800188418357026892de61c
+    m_Address: Assets/_Project/Art/Items/Pickups/Molotov_Flying.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -490,8 +560,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab2b1f65a41391342ad08c00716a55d2
+    m_Address: Assets/_Project/Art/Items/Pickups/Flashbang_Flying.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b12c1a0a575595c44830c7cc2b2dea1e
     m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_Books_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2209bacf767f6d4ab0e61c32073092f
+    m_Address: Assets/_Project/Art/Items/Pickups/Grenade_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -500,8 +580,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2c65431a7dac904b84236ac2a7b3406
+    m_Address: Assets/_Project/Art/Items/Pickups/Another_ammo_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b385154d477cea544a658c86a860b4cb
+    m_Address: Assets/_Project/Art/Items/Pickups/MedicalBox_middle_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b400df8eb5de99349899eb79c6ee9dda
     m_Address: Assets/_Project/Art/Weapons/Pickups/Pistol_silencer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5249e70e4268bd4fb5ce182083b52c8
+    m_Address: Assets/_Project/Art/Items/Pickups/7x62_ammo_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b671e244a012ac0469c1da825c552060
+    m_Address: Assets/_Project/Art/Items/Pickups/Mine_Flying.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -560,6 +660,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca44ed419126d7c41a11830d1585211c
+    m_Address: Assets/_Project/Art/Items/Pickups/Molotov_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbbc307ac2c9b30478769a23a53df34f
     m_Address: Assets/_Project/Art/Floors/SM_Bld_Bunker_Floor_Wood_02.prefab
     m_ReadOnly: 0
@@ -597,6 +702,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d8edb8760195c5842ade3b3708c73605
     m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d902398338f8a9c4eb9af38308572593
+    m_Address: Assets/_Project/Art/Items/Pickups/5x45_ammo_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

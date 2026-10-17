@@ -49,6 +49,16 @@ namespace Purge.Core.Visual
 
         [SerializeField, Min(0.02f)] private float _hitFlashTime = 0.15f;
 
+        [Header("Throwing and zones")]
+        [Tooltip("Dots of the throw arc (Purge/Particle, a soft round texture), drawn over everything.")]
+        [SerializeField] private Material _throwArc;
+
+        [Tooltip("Ring on the ground where the throwable will land, as wide as its effect (Purge/Ring).")]
+        [SerializeField] private Material _throwTarget;
+
+        [Tooltip("Cells of a zone (Purge/FireCells: its colours come from the zone definition).")]
+        [SerializeField] private Material _zoneCells;
+
         [Header("Health bars and numbers")]
         [SerializeField] private CombatFeedback _feedback = new CombatFeedback();
 
@@ -63,6 +73,9 @@ namespace Purge.Core.Visual
         public Color HitFlashColor => _hitFlashColor;
         public Color PlayerHitFlashColor => _playerHitFlashColor;
         public float HitFlashTime => _hitFlashTime;
+        public Material ThrowArc { get => _throwArc; internal set => _throwArc = value; }
+        public Material ThrowTarget { get => _throwTarget; internal set => _throwTarget = value; }
+        public Material ZoneCells { get => _zoneCells; internal set => _zoneCells = value; }
         public CombatFeedback Feedback => _feedback ??= new CombatFeedback();
 
         /// <summary>Every prefab reference (some may be empty).</summary>

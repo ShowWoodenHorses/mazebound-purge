@@ -21,6 +21,7 @@ namespace Purge.Presentation.UI.Style
         public Sprite Melee;
         public Sprite Ranged;
         public Sprite Attack;
+        public Sprite Grenade;
         public Sprite Star;
         public Sprite StarFilled;
         public Sprite Lock;

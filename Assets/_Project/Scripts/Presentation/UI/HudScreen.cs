@@ -71,6 +71,9 @@ namespace Purge.Presentation.UI
         [SerializeField] private HudWeaponSlot _meleeSlot;
         [SerializeField] private HudWeaponSlot _rangedSlot;
 
+        [Tooltip("The throwable slot (key G): kind, count of max, accent while aiming.")]
+        [SerializeField] private HudWeaponSlot _throwSlot;
+
         [Header("Damage pulse")]
         [Tooltip("Full-screen image under the HUD: red at the screen edges when the player is hurt. Its texture is made on start.")]
         [SerializeField] private RawImage _damageFlash;
@@ -249,6 +252,13 @@ namespace Purge.Presentation.UI
             if (_weaponPanel == null || !_weaponPanel.activeSelf) return;
             _meleeSlot.Set(melee);
             _rangedSlot.Set(ranged);
+        }
+
+        /// <summary>The throwable slot where there are no on-screen controls (Magazine = the stack's max, Ammo = count).</summary>
+        public void SetThrowable(in WeaponSlotState state)
+        {
+            if (_weaponPanel == null || !_weaponPanel.activeSelf || _throwSlot == null) return;
+            _throwSlot.Set(state);
         }
 
         /// <summary>A short message (e.g. "Locked: needs the red key") that disappears by itself.</summary>

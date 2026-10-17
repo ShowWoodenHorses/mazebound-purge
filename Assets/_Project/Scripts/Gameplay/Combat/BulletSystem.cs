@@ -43,8 +43,20 @@ namespace Purge.Gameplay.Combat
         /// <summary>Explodes where it ends (grenade launcher); null for a plain bullet.</summary>
         public ExplosiveAttack Explosive { get; internal set; }
 
-        /// <summary>Weapon that fired it (views pick the look); null in tests.</summary>
+        /// <summary>Weapon that fired it (views pick the look); null in tests and for throwables.</summary>
         public WeaponDefinition Weapon { get; internal set; }
+
+        /// <summary>
+        /// A thrown item flying along an arc to its cell: over monsters (it never hits them), stopped only by what stops
+        /// bullets; its effects happen where it ends (<see cref="BulletSystem.Ended"/>). Null for bullets.
+        /// </summary>
+        public ThrowableDefinition Throwable { get; internal set; }
+
+        /// <summary>Cells it was to fly in all.</summary>
+        public float Travel { get; internal set; }
+
+        /// <summary>0 at the start, 1 at the end of its flight (the arc of a throwable).</summary>
+        public float Progress => Travel > 0f ? Mathf.Clamp01(1f - RangeLeft / Travel) : 1f;
 
         internal CombatTarget Ignore { get; set; }
     }
@@ -54,6 +66,8 @@ namespace Purge.Gameplay.Combat
     /// is queried (<see cref="CombatTargets.Segment"/>): the first wall, closed door or target ends it (open doors let it
     /// through); a target takes the damage, a piercing bullet flies on; an explosive one explodes where it ends
     /// (also at the end of its range) — every target in the radius not behind a wall takes damage, less towards the edge.
+    /// A thrown item (<see cref="Bullet.Throwable"/>) flies over every target to the end of its range unless a wall,
+    /// closed door or obstacle that stops bullets is in the way (it falls just short of it).
     /// No physics, no per-bullet allocations (pooled).
     /// </summary>
     public sealed class BulletSystem : ILevelTickable, IDisposable
@@ -63,7 +77,6 @@ namespace Purge.Gameplay.Combat
         private readonly CombatTargets _targets;
         private readonly List<Bullet> _active = new List<Bullet>();
         private readonly Stack<Bullet> _pool = new Stack<Bullet>();
-        private readonly List<CombatTarget> _inBlast = new List<CombatTarget>();
         private int _nextId;
 
         public BulletSystem(CombatTargets targets)
@@ -82,7 +95,7 @@ namespace Purge.Gameplay.Combat
         public event Action<Vector2, float> Exploded;
 
         public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0, float range = DefaultRange,
-            int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null)
+            int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null)
         {
             var bullet = _pool.Count > 0 ? _pool.Pop() : new Bullet();
             bullet.Id = ++_nextId;
@@ -94,9 +107,11 @@ namespace Purge.Gameplay.Combat
             bullet.Damage = damage;
             bullet.Age = 0f;
             bullet.RangeLeft = range;
+            bullet.Travel = range;
             bullet.Pierce = pierce;
             bullet.Explosive = explosive;
             bullet.Weapon = weapon;
+            bullet.Throwable = throwable;
             bullet.Ignore = CombatTarget.None;
             _active.Add(bullet);
             Spawned?.Invoke(bullet);
@@ -112,13 +127,18 @@ namespace Purge.Gameplay.Combat
                 bullet.Age += deltaTime;
                 var distance = Mathf.Min(bullet.Speed * deltaTime, bullet.RangeLeft);
                 var next = bullet.Position + bullet.Direction * distance;
+                if (bullet.Throwable != null)
+                {
+                    TickThrown(i, bullet, next, distance);
+                    continue;
+                }
 
                 var hit = _targets.Segment(bullet.PreviousPosition, next, bullet.Floor, bullet.Ignore);
                 switch (hit.Kind)
                 {
                     case CombatHitKind.Target:
                         bullet.Position = hit.Point;
-                        _targets.Damage(hit.Target, bullet.Damage, bullet.Direction);
+                        _targets.Damage(hit.Target, bullet.Damage, bullet.Direction, bullet.Weapon);
                         if (bullet.Explosive != null)
                         {
                             Explode(bullet, hit.Point);
@@ -164,20 +184,23 @@ namespace Purge.Gameplay.Combat
         /// <summary>Damage of an explosion at <paramref name="at"/> to every target in the radius not behind a wall.</summary>
         public void Explode(Vector2 at, ExplosiveAttack explosive, int floor)
         {
-            var radius = explosive.Radius;
-            _targets.Collect(at, radius, floor, _inBlast);
-            foreach (var target in _inBlast)
+            _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor);
+            Exploded?.Invoke(at, explosive.Radius);
+        }
+
+        private void TickThrown(int index, Bullet bullet, Vector2 next, float distance)
+        {
+            if (!_targets.IsClear(bullet.PreviousPosition, next, bullet.Floor))
             {
-                var position = _targets.PositionOf(target);
-                if (!_targets.IsClear(at, position, floor)) continue;
-                var offset = position - at;
-                var share = Mathf.Clamp01((offset.magnitude - _targets.RadiusOf(target)) / radius);
-                var damage = explosive.ExplosionDamage * Mathf.Lerp(1f, explosive.EdgeDamage, share);
-                _targets.Damage(target, damage, offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up);
+                // Falls where it is, just short of the wall.
+                End(index, BulletEnd.Blocked);
+                return;
             }
 
-            _inBlast.Clear();
-            Exploded?.Invoke(at, radius);
+            bullet.Position = next;
+            bullet.RangeLeft -= distance;
+            if (bullet.RangeLeft <= 1e-4f)
+                End(index, BulletEnd.Expired);
         }
 
         private void Explode(Bullet bullet, Vector2 at)
@@ -193,6 +216,7 @@ namespace Purge.Gameplay.Combat
             Ended?.Invoke(bullet, bullet.Position, reason);
             bullet.Explosive = null;
             bullet.Weapon = null;
+            bullet.Throwable = null;
             bullet.Ignore = CombatTarget.None;
             _pool.Push(bullet);
         }

@@ -21,6 +21,15 @@ namespace Purge.Tests.EditMode.Player
 
         public void Press(PlayerAction action) => _pressed.Add(action);
 
+        /// <summary>A touch on the game this "frame" (<see cref="TryGetGroundTap"/>).</summary>
+        public Vector2? Tap { get; set; }
+
+        public bool TryGetGroundTap(out Vector2 screenPosition)
+        {
+            screenPosition = Tap ?? default;
+            return Tap.HasValue;
+        }
+
         /// <summary>Holds (true) or releases a button until changed.</summary>
         public void Hold(PlayerAction action, bool held)
         {
@@ -29,6 +38,10 @@ namespace Purge.Tests.EditMode.Player
         }
 
         /// <summary>Ends the "frame": pressed buttons are released.</summary>
-        public void EndFrame() => _pressed.Clear();
+        public void EndFrame()
+        {
+            _pressed.Clear();
+            Tap = null;
+        }
     }
 }

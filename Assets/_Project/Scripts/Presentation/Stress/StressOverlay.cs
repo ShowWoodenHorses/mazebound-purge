@@ -59,7 +59,10 @@ namespace Purge.Presentation.Stress
             var header = Row(panel);
             Button(header, sandbox ? "SANDBOX  [-/+]" : "STRESS  [-/+]", () => _body.SetActive(!_body.activeSelf), null, 260f);
             if (sandbox)
-                Button(header, "AMMO", controller.RefillAmmo, null, 220f);
+            {
+                Button(header, "AMMO", controller.RefillAmmo, null, 160f);
+                Button(header, "THROW", controller.NextThrowable, null, 160f);
+            }
             else
                 _benchLabel = Button(header, "RUN BENCH", ToggleBenchmark, () => _controller.BenchmarkRunning, 220f);
 

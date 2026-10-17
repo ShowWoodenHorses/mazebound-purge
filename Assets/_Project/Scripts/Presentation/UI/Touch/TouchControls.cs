@@ -87,6 +87,12 @@ namespace Purge.Presentation.UI.Touch
             if (_cluster != null) _cluster.SetWeapons(melee, ranged);
         }
 
+        /// <summary>The throwable button (temporary, stage 4б): kind, count, aiming.</summary>
+        public void SetThrowable(in WeaponSlotState state)
+        {
+            if (_cluster != null) _cluster.SetThrowable(state);
+        }
+
         /// <summary>What Use would do now (lights the button).</summary>
         public void SetUse(UseTarget target)
         {

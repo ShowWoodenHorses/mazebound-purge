@@ -30,6 +30,9 @@ namespace Purge.Application.Services
         public CombatVisualDefinition CombatVisual { get; private set; }
         public WeaponVisualCatalog WeaponVisuals { get; private set; }
 
+        /// <summary>Looks of dropped and thrown items; null until Build Items has made it (they are then not shown).</summary>
+        public ItemVisualCatalog ItemVisuals { get; private set; }
+
         /// <summary>Every content asset by stable id (purchases, upgrades and runs in the save refer to them).</summary>
         public ContentCatalog Content { get; private set; }
 
@@ -42,6 +45,8 @@ namespace Purge.Application.Services
                 _assets.LoadAsync<CombatVisualDefinition>(CombatVisualDefinition.Address, cancellation),
                 _assets.LoadAsync<WeaponVisualCatalog>(WeaponVisualCatalog.Address, cancellation),
                 _assets.LoadAsync<ContentCatalog>(ContentCatalog.Address, cancellation));
+            if (await _addressables.ExistsAsync(ItemVisualCatalog.Address, cancellation))
+                ItemVisuals = await _assets.LoadAsync<ItemVisualCatalog>(ItemVisualCatalog.Address, cancellation);
         }
 
         public void Dispose()
@@ -52,6 +57,7 @@ namespace Purge.Application.Services
             PlayerVisual = null;
             CombatVisual = null;
             WeaponVisuals = null;
+            ItemVisuals = null;
             Content = null;
         }
     }

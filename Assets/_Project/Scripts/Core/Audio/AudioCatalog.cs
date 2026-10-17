@@ -102,10 +102,22 @@ namespace Purge.Core.Audio
         [Tooltip("A bullet hits a wall or a closed door.")]
         [SerializeField] private SoundCue _bulletImpact = new SoundCue(0.5f, 10f, 3, new Vector2(0.9f, 1.1f));
 
+        [Header("Throwables (empty: draft stand-ins until stage 4в)")]
+        [Tooltip("A throw leaving the hand (empty: the melee swing).")]
+        [SerializeField] private SoundCue _throw = new SoundCue(0.6f, 0f, 2, new Vector2(0.95f, 1.1f));
+        [Tooltip("A blast (empty: the shot).")]
+        [SerializeField] private SoundCue _explosion = new SoundCue(1f, 25f, 4, new Vector2(0.9f, 1.05f));
+        [Tooltip("A zone catching on the ground: a molotov breaking, fire (empty: the bullet impact).")]
+        [SerializeField] private SoundCue _ignite = new SoundCue(0.8f, 15f, 3, new Vector2(0.9f, 1.1f));
+
         [Header("Pickups")]
         [SerializeField] private SoundCue _pickupKey = new SoundCue(0.45f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _pickupMedkit = new SoundCue(0.9f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _pickupWeapon = new SoundCue(0.5f, 0f, 1, Vector2.one);
+        [Tooltip("Ammo picked up (empty: the weapon pickup). Often: keep it short and soft.")]
+        [SerializeField] private SoundCue _pickupAmmo = new SoundCue(0.4f, 0f, 2, new Vector2(0.95f, 1.08f), 0.05f);
+        [Tooltip("A throwable picked up (empty: the weapon pickup).")]
+        [SerializeField] private SoundCue _pickupThrowable = new SoundCue(0.5f, 0f, 1, Vector2.one);
 
         [Header("Doors")]
         [SerializeField] private SoundCue _doorOpen = new SoundCue(0.9f, 10f, 2, new Vector2(0.95f, 1.05f));
@@ -193,6 +205,11 @@ namespace Purge.Core.Audio
         public SoundCue DoorClose => _doorClose;
         public SoundCue DoorUnlock => _doorUnlock;
         public SoundCue DoorLocked => _doorLocked;
+        public SoundCue Throw => NonEmpty(_throw) ?? _meleeSwing;
+        public SoundCue Explosion => NonEmpty(_explosion) ?? _shot;
+        public SoundCue Ignite => NonEmpty(_ignite) ?? _bulletImpact;
+        public SoundCue PickupAmmo => NonEmpty(_pickupAmmo) ?? _pickupWeapon;
+        public SoundCue PickupThrowable => NonEmpty(_pickupThrowable) ?? _pickupWeapon;
         public SoundCue IceHit => NonEmpty(_iceHit) ?? _bulletImpact;
         public SoundCue IceBreak => NonEmpty(_iceBreak) ?? _doorUnlock;
 
@@ -229,6 +246,11 @@ namespace Purge.Core.Audio
 
         /// <summary>The cues themselves (the builder fills them); <see cref="IceHit"/> / <see cref="IceBreak"/> fall back.</summary>
         internal SoundCue IceHitCue => _iceHit;
+        internal SoundCue ThrowCue => _throw;
+        internal SoundCue ExplosionCue => _explosion;
+        internal SoundCue IgniteCue => _ignite;
+        internal SoundCue PickupAmmoCue => _pickupAmmo;
+        internal SoundCue PickupThrowableCue => _pickupThrowable;
         internal SoundCue IceBreakCue => _iceBreak;
 
         internal List<WeaponSound> MutableWeaponSounds => _weaponSounds;

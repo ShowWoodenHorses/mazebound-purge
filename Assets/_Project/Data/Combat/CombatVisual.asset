@@ -53,6 +53,9 @@ MonoBehaviour:
   _hitFlashColor: {r: 1, g: 1, b: 1, a: 0.85}
   _playerHitFlashColor: {r: 1, g: 0.25, b: 0.2, a: 0.7}
   _hitFlashTime: 0.15
+  _throwArc: {fileID: 2100000, guid: 2c48e9cd3c56ef9408107d95f6285a04, type: 2}
+  _throwTarget: {fileID: 2100000, guid: 6cbd22851da2c974388e9c9a2e35a5b3, type: 2}
+  _zoneCells: {fileID: 2100000, guid: 26d447c4ad0621f488b472f35a32bae0, type: 2}
   _feedback:
     _material: {fileID: 2100000, guid: 8dbdd91a73f593e4ea71141a79c1f228, type: 2}
     _barShowTime: 3

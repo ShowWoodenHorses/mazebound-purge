@@ -87,3 +87,15 @@ MonoBehaviour:
     _definition: {fileID: 0}
     _colorTag: 
     _height: 0.03
+  - _id: SM_Env_Bush_01
+    _prefab:
+      m_AssetGUID: 43eab822f2c6f7b4c983d79f11cc4390
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 47e074f3cf2dcae47a6996b7f3a181ad, type: 2}
+    _colorTag: 
+    _height: 0.03

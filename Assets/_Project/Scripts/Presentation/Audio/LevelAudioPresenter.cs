@@ -8,6 +8,8 @@ using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
+using Purge.Gameplay.Effects;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
@@ -68,11 +70,16 @@ namespace Purge.Presentation.Audio
         private float _reloadDelay = -1f;
         private float _reloadPitch = 1f;
         private bool _subscribed;
+        private readonly PlayerThrowing _throwing;
+        private readonly EffectSystem _effects;
 
         public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health, PlayerCombat combat,
             PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups, ZombieSystem zombies,
-            ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors)
+            ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
+            EffectSystem effects = null)
         {
+            _throwing = throwing;
+            _effects = effects;
             _frozenDoors = frozenDoors;
             _audio = audio;
             _level = level;
@@ -121,6 +128,12 @@ namespace Purge.Presentation.Audio
                 _zombieViews.DeathShown += OnZombieDeathShown;
                 _frozenDoors.IceHitShown += OnIceHitShown;
                 _frozenDoors.IceBrokenShown += OnIceBrokenShown;
+                if (_throwing != null) _throwing.Thrown += OnThrown;
+                if (_effects != null)
+                {
+                    _effects.Exploded += OnExploded;
+                    _effects.ZonePlaced += OnZonePlaced;
+                }
             }
 
             return UniTask.CompletedTask;
@@ -156,6 +169,12 @@ namespace Purge.Presentation.Audio
                 _zombieViews.DeathShown -= OnZombieDeathShown;
                 _frozenDoors.IceHitShown -= OnIceHitShown;
                 _frozenDoors.IceBrokenShown -= OnIceBrokenShown;
+                if (_throwing != null) _throwing.Thrown -= OnThrown;
+                if (_effects != null)
+                {
+                    _effects.Exploded -= OnExploded;
+                    _effects.ZonePlaced -= OnZonePlaced;
+                }
             }
 
             foreach (var slot in _torchSlots)
@@ -188,12 +207,21 @@ namespace Purge.Presentation.Audio
 
         private void OnSwitched(WeaponSlot slot) => PlayAt(Catalog.SwitchWeapon, _player.Position);
 
+        private void OnThrown(ThrowableDefinition throwable, Vector2 direction) => PlayAt(Catalog.Throw, _player.Position);
+
+        private void OnExploded(Vector2 at, float radius) => PlayAt(Catalog.Explosion, at);
+
+        private void OnZonePlaced(Vector2 at, Core.Effects.ZoneDefinition zone, float radius) => PlayAt(Catalog.Ignite, at);
+
         private void OnPickupRemoved(Pickup pickup)
         {
+            if (!pickup.WasTaken) return; // expired
             var cue = pickup.Kind switch
             {
                 PickupKind.Key => Catalog.PickupKey,
                 PickupKind.Medkit => Catalog.PickupMedkit,
+                PickupKind.Ammo => Catalog.PickupAmmo,
+                PickupKind.Throwable => Catalog.PickupThrowable,
                 _ => Catalog.PickupWeapon,
             };
             PlayAt(cue, new Vector2(pickup.Cell.X, pickup.Cell.Y));
@@ -221,7 +249,7 @@ namespace Purge.Presentation.Audio
 
         private void OnBulletEnded(Bullet bullet, Vector2 point, BulletEnd end)
         {
-            if (end == BulletEnd.Blocked)
+            if (end == BulletEnd.Blocked && bullet.Throwable == null)
                 PlayAt(Catalog.BulletImpact, point);
         }
 

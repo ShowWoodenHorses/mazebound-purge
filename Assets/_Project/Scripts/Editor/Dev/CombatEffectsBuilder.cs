@@ -57,6 +57,11 @@ namespace Purge.Editor.Dev
             var swing = SaveMaterial("fx_swing", "Purge/SwingArc", null, Blend.Alpha, new Color(1f, 1f, 1f, 0.75f));
             swing.SetFloat("_Inner", 0.7f); // a crescent, not a wedge
             var tracerMesh = SaveTracerMesh();
+            // Throwing and zones (stage 4б): arc dots over everything, the landing ring, cells of a zone.
+            var throwArc = SaveMaterial("fx_throw_arc", "Purge/Particle", soft, Blend.Alpha, new Color(1f, 1f, 1f, 0.85f), overModels: true);
+            var throwTarget = SaveMaterial("fx_throw_target", "Purge/Ring", null, Blend.Alpha, new Color(1f, 0.85f, 0.45f, 0.65f));
+            throwTarget.SetFloat("_Fill", 0.2f);
+            var zoneCells = SaveMaterial("fx_zone_cells", "Purge/FireCells", null, Blend.Alpha, Color.white);
 
             var visual = AssetDatabase.LoadAssetAtPath<CombatVisualDefinition>(CombatVisualPath);
             if (visual == null)
@@ -72,6 +77,9 @@ namespace Purge.Editor.Dev
             visual.Impact = Reference(BuildWallImpact(additive, dust));
             visual.TargetHit = Reference(BuildTargetHit(stars));
             visual.MeleeSwing = Reference(BuildSwing(swing));
+            visual.ThrowArc = throwArc;
+            visual.ThrowTarget = throwTarget;
+            visual.ZoneCells = zoneCells;
             EditorUtility.SetDirty(visual);
 
             // The first placeholders (cubes and spheres) are replaced.

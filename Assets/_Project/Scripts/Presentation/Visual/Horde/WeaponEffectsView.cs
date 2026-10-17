@@ -6,6 +6,8 @@ using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
+using Purge.Gameplay.Effects;
+using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Visibility;
@@ -18,7 +20,8 @@ namespace Purge.Presentation.Visual.Horde
     /// <summary>
     /// Draft looks of the player's attacks that have no effect prefabs yet (stage 4а; the feel comes with 4в): the flame
     /// of a stream, the bolts of chain lightning (one dynamic mesh of jagged quads), explosions and sparks where the horde
-    /// is hit. Particles are fed by <c>Emit</c>, only in visible cells; nothing is created per effect. Uses the materials
+    /// is hit, the blasts of thrown items (<see cref="EffectSystem.Exploded"/>), flames on burning monsters and stars over
+    /// stunned ones (<see cref="StatusSystem"/>, in the states' colours). Particles are fed by <c>Emit</c>, only in visible cells; nothing is created per effect. Uses the materials
     /// of the level's stress test settings (the combat sandbox) and stays off without them.
     /// </summary>
     public sealed class WeaponEffectsView : ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup, IDisposable
@@ -28,6 +31,7 @@ namespace Purge.Presentation.Visual.Horde
         private const float BoltTime = 0.12f;
         private const float BoltWidth = 0.09f;
         private const float GunHeight = 0.75f;
+        private const float StatusInterval = 0.12f;
 
         private readonly LevelData _level;
         private readonly PlayerCombat _combat;
@@ -38,6 +42,10 @@ namespace Purge.Presentation.Visual.Horde
         private readonly LevelViewRoot _root;
         private readonly List<GameObject> _objects = new List<GameObject>();
         private readonly Vector2[] _bolt = new Vector2[PlayerCombat.MaxChainPoints];
+        private readonly EffectSystem _effects;
+        private readonly StatusSystem _statuses;
+        private readonly HordeSystem _horde;
+        private float _statusTimer;
 
         private Material _boltMaterial;
         private Mesh _boltMesh;
@@ -52,8 +60,12 @@ namespace Purge.Presentation.Visual.Horde
         private float _boltLeft;
 
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
-            CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root)
+            CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
+            StatusSystem statuses = null, HordeSystem horde = null)
         {
+            _effects = effects;
+            _statuses = statuses;
+            _horde = horde;
             _level = level;
             _combat = combat;
             _player = player;
@@ -118,6 +130,7 @@ namespace Purge.Presentation.Visual.Horde
 
             _combat.Attacked += OnAttacked;
             _bullets.Exploded += OnExploded;
+            if (_effects != null) _effects.Exploded += OnExploded;
             _targets.Damaged += OnDamaged;
             _bound = true;
             return UniTask.CompletedTask;
@@ -136,6 +149,52 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             if (_boltLeft > 0f) _boltLeft -= deltaTime;
+            _statusTimer -= deltaTime;
+            if (_statusTimer <= 0f)
+            {
+                _statusTimer += StatusInterval;
+                EmitStatuses();
+            }
+        }
+
+        /// <summary>A flame over every visible monster with damage over time, a spark circling a stunned one.</summary>
+        private void EmitStatuses()
+        {
+            if (_statuses == null || _horde == null || !_statuses.IsActive || _sparks == null) return;
+            var kinds = _statuses.Kinds;
+            var positions = _horde.Positions;
+            var states = _horde.States;
+            var emit = new ParticleSystem.EmitParams();
+            for (var agent = 0; agent < _horde.HighWater; agent++)
+            {
+                if (!HordeSystem.IsAlive(states[agent])) continue;
+                for (var kind = 0; kind < kinds.Count; kind++)
+                {
+                    if (_statuses.Left(agent, kind) <= 0f) continue;
+                    var at = positions[agent];
+                    if (!Visible(at)) break;
+                    var status = kinds[kind];
+                    emit.startColor = status.Color;
+                    if (status.Stuns)
+                    {
+                        var angle = Time.time * 8f + agent;
+                        emit.position = new Vector3(at.x + Mathf.Cos(angle) * 0.3f, 1.5f, at.y + Mathf.Sin(angle) * 0.3f);
+                        emit.velocity = Vector3.zero;
+                        emit.startLifetime = 0.2f;
+                        emit.startSize = 0.14f;
+                        _sparks.Emit(emit, 1);
+                    }
+                    else if (_flame != null && status.DamagePerSecond > 0f)
+                    {
+                        emit.position = new Vector3(at.x + UnityEngine.Random.Range(-0.2f, 0.2f), 0.6f,
+                            at.y + UnityEngine.Random.Range(-0.2f, 0.2f));
+                        emit.velocity = Vector3.up * 1.6f;
+                        emit.startLifetime = 0.35f;
+                        emit.startSize = 0.35f;
+                        _flame.Emit(emit, 1);
+                    }
+                }
+            }
         }
 
         public void LateTick(float deltaTime)
@@ -181,6 +240,7 @@ namespace Purge.Presentation.Visual.Horde
             {
                 _combat.Attacked -= OnAttacked;
                 _bullets.Exploded -= OnExploded;
+                if (_effects != null) _effects.Exploded -= OnExploded;
                 _targets.Damaged -= OnDamaged;
                 _bound = false;
             }

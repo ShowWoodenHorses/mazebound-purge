@@ -16,3 +16,4 @@ MonoBehaviour:
   _soundRadius: 5
   _modelFolders:
   - Ballons
+  - Gas

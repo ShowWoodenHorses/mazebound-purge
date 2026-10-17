@@ -1,5 +1,6 @@
 using Purge.Presentation.UI.Shapes;
 using Purge.Presentation.UI.Style;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,6 +48,12 @@ namespace Purge.Presentation.UI.Touch
         [SerializeField] private Sprite _doorIcon;
         [SerializeField] private Sprite _pickUpIcon;
 
+        [Header("Throw (temporary until the cluster's throwable sector, stage 4в)")]
+        [SerializeField] private UiShape _throw;
+        [SerializeField] private Image _throwIcon;
+        [SerializeField] private TMP_Text _throwCount;
+        [SerializeField] private Sprite _throwIconFallback;
+
         [Header("Generic slot icons")]
         [SerializeField] private Sprite _meleeIconFallback;
         [SerializeField] private Sprite _rangedIconFallback;
@@ -54,6 +61,8 @@ namespace Purge.Presentation.UI.Touch
         private WeaponSlotState _meleeState;
         private WeaponSlotState _rangedState;
         private UseTarget _useTarget;
+        private WeaponSlotState _throwState;
+        private TouchPress _throwPress;
         private int _placedTicks = -1;
         private bool _mirrored;
         private TouchPress _attackPress;
@@ -67,6 +76,7 @@ namespace Purge.Presentation.UI.Touch
             _meleePress = Watch(_melee);
             _rangedPress = Watch(_ranged);
             _usePress = Watch(_use);
+            _throwPress = Watch(_throw);
             Refresh();
         }
 
@@ -101,6 +111,14 @@ namespace Purge.Presentation.UI.Touch
             Refresh();
         }
 
+        /// <summary>The throwable: Icon, Ammo = count, Active = aiming.</summary>
+        public void SetThrowable(in WeaponSlotState state)
+        {
+            if (state.Same(_throwState)) return;
+            _throwState = state;
+            Refresh();
+        }
+
         public void SetUse(UseTarget target)
         {
             if (_useTarget == target) return;
@@ -116,7 +134,31 @@ namespace Purge.Presentation.UI.Touch
             PaintSlot(_ranged, _rangedIcon, _rangedState, _rangedIconFallback, _rangedPress);
             PaintAmmo();
             PaintUse();
+            PaintThrow();
         }
+
+        private void PaintThrow()
+        {
+            if (_throw == null) return;
+            PaintButton(_throw, _throwState.Equipped, _throwState.Active, _throwPress);
+            if (_throwIcon != null)
+            {
+                _throwIcon.sprite = _throwState.Icon != null ? _throwState.Icon : _throwIconFallback;
+                var color = _throwState.Active ? _style.Accent : _style.Text;
+                if (!_throwState.Equipped) color.a *= _style.DisabledAlpha;
+                _throwIcon.color = color;
+            }
+
+            if (_throwCount != null)
+            {
+                _throwCount.enabled = _throwState.Equipped;
+                if (_throwState.Equipped) _throwCount.text = CountText(_throwState.Ammo);
+            }
+        }
+
+        private static readonly string[] Counts = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+        private static string CountText(int count) => count >= 0 && count < Counts.Length ? Counts[count] : count.ToString();
 
         private void PaintButton(UiShape shape, bool enabled, bool accent, TouchPress press)
         {

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2470ae14496522d4ca6d16bb5f8c9c43, type: 3}
+  m_Name: Grenade
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
+  _id: grenade
+  _rarity: 0
+  _maxStack: 3
+  _range: 8
+  _speed: 12
+  _arcHeight: 0.3
+  _cooldown: 0.6
+  _soundRadius: 3
+  _effects:
+  - rid: 1763807262009983158
+  - rid: 1763807262009983159
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983158
+      type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damage: 80
+        _radius: 2.5
+        _edgeDamage: 0.35
+        _soundRadius: 12
+    - rid: 1763807262009983159
+      type: {class: AreaStatusEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: 0aa7530f0d5b5ce4daf704fd3c40b6f4, type: 2}
+        _radius: 3
+        _duration: 1.2

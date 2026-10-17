@@ -48,9 +48,11 @@ namespace Purge.Editor.Dev
 
         private const float UseDuration = 0.8f;
         private const float HitDuration = 0.6f;
+        private const float ThrowDuration = 0.65f;
 
         private const string Use = "Player_use";
         private const string Hit = "Player_Hit";
+        private const string Throw = "Player_Throw";
         private const string Death = "Player_Die";
 
         /// <summary>The 8 run directions: UAC's name part and the direction relative to the body (x right, y forward).</summary>
@@ -121,6 +123,7 @@ namespace Purge.Editor.Dev
         private static readonly (string Name, string Uac)[] Singles =
         {
             (Hit, "GetHitFrontLightAssaultRifle"),
+            (Throw, "ThrowGrenade1Standing2HandedGun"),
             (Death, "DeathBackAssaultRifle"),
         };
 
@@ -283,6 +286,7 @@ namespace Purge.Editor.Dev
             AddFloat(controller, P.ReloadSpeed, 1f);
             controller.AddParameter(P.Hit, AnimatorControllerParameterType.Trigger);
             controller.AddParameter(P.Use, AnimatorControllerParameterType.Trigger);
+            controller.AddParameter(P.Throw, AnimatorControllerParameterType.Trigger);
             controller.AddParameter(P.Dead, AnimatorControllerParameterType.Bool);
 
             BuildBaseLayer(controller, prefabPath);
@@ -413,6 +417,12 @@ namespace Purge.Editor.Dev
             use.speed = use.motion.averageDuration / UseDuration;
             use.tag = P.NoHandIK;
             AddEnter(machine, use, P.Use, 0.1f);
+
+            // A throw over the run (stage 4б): the free hand throws, the gun leaves the left hand.
+            var thrown = AddAction(machine, empty, "Throw", LoadClip(Throw), new Vector3(0f, 300f));
+            thrown.speed = thrown.motion.averageDuration / ThrowDuration;
+            thrown.tag = P.NoHandIK;
+            AddEnter(machine, thrown, P.Throw, 0.08f);
         }
 
         /// <summary>A one-shot state that returns to <paramref name="empty"/> when it ends.</summary>

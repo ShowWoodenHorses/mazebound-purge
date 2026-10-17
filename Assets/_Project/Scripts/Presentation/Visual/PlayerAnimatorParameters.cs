@@ -49,6 +49,8 @@ namespace Purge.Presentation.Visual
         public const string Hit = "Hit";
         /// <summary>Trigger: a successful Interact (door, weapon pickup).</summary>
         public const string Use = "Use";
+        /// <summary>Trigger: a throw (grenade, molotov).</summary>
+        public const string Throw = "Throw";
         /// <summary>Bool: the player is dead.</summary>
         public const string Dead = "Dead";
 
@@ -92,6 +94,7 @@ namespace Purge.Presentation.Visual
         public static readonly int ReloadSpeedHash = Animator.StringToHash(ReloadSpeed);
         public static readonly int HitHash = Animator.StringToHash(Hit);
         public static readonly int UseHash = Animator.StringToHash(Use);
+        public static readonly int ThrowHash = Animator.StringToHash(Throw);
         public static readonly int DeadHash = Animator.StringToHash(Dead);
     }
 }

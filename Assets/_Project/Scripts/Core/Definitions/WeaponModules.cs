@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Purge.Core.Effects;
 using Purge.Core.Modules;
 using UnityEngine;
 
@@ -226,5 +227,27 @@ namespace Purge.Core.Definitions
 
         public float InHands { get => _inHands; internal set => _inHands = value; }
         public float WhileFiring { get => _whileFiring; internal set => _whileFiring = value; }
+    }
+
+    /// <summary>
+    /// Every monster the attack damages may get a state (flamethrower — burning, a heavy blow — stun). The chance is per
+    /// hit: per bullet, pellet, stream tick, bolt or swing target.
+    /// </summary>
+    [Serializable, ModuleInfo("Status on hit", Category = "Effect", AllowMultiple = true)]
+    public sealed class StatusOnHitModule : WeaponModule
+    {
+        [SerializeField] private StatusDefinition _status;
+        [Tooltip("Seconds.")]
+        [SerializeField, Min(0.1f)] private float _duration = 3f;
+        [SerializeField, Range(0f, 1f)] private float _chance = 1f;
+
+        public StatusDefinition Status { get => _status; internal set => _status = value; }
+        public float Duration { get => _duration; internal set => _duration = value; }
+        public float Chance { get => _chance; internal set => _chance = value; }
+
+        public override void Validate(List<string> problems)
+        {
+            if (_status == null) problems.Add("no status.");
+        }
     }
 }

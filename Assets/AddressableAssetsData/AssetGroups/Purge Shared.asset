@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 678197a25c062b04ca75113fafcd0cc1
+    m_Address: Items/Visual
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6de025a2d6916da40b99eb76a04e78e7
     m_Address: Assets/_Project/Data/Localization/Texts_be.asset
     m_ReadOnly: 0

@@ -15,6 +15,9 @@ namespace Purge.Gameplay.Player
 
         /// <summary>Reload the ranged weapon in hands before its magazine is empty.</summary>
         Reload = 5,
+
+        /// <summary>The throwable: press — aim (hold and release — throw; a quick press — aim until a tap or click).</summary>
+        Throw = 6,
     }
 
     /// <summary>
@@ -41,5 +44,11 @@ namespace Purge.Gameplay.Player
 
         /// <summary>True while the button is held.</summary>
         bool IsHeld(PlayerAction action);
+
+        /// <summary>
+        /// A touch that began this frame on the game itself (not on the on-screen controls or any UI): its screen
+        /// position. False without one.
+        /// </summary>
+        bool TryGetGroundTap(out Vector2 screenPosition);
     }
 }

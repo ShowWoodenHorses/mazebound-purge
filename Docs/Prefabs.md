@@ -84,6 +84,12 @@
   - на префабе игрока — `CharacterWeaponRig`: `WeaponSocket_Melee` в правой кисти и `Palm_R`/`Palm_L` (центры ладоней).
 - **Новое оружие:** префаб модели в `Art/Weapons/Purge/<класс>/[<калибр>/]` (`Pistol`, `Auto`, `Shotgun`, `Sniper_rifle`, `Ballons`, `Energy`, `Another`, `Melee`) → меню; определение `Data/Weapons/<имя префаба>` создаётся с черновыми модулями класса и типом патронов по папке (подробно — [PurgeMenu.md](PurgeMenu.md)). Как держать (набор анимаций игрока) — поле `Hold` определения: пистолет, винтовка, дробовик, тяжёлое у бедра, на плече, ближнее.
 
+### Дроп и метательное (этап 4б)
+Модели метательного — `Art/Weapons/Purge/Throw/` (pivot любой), аптечек — `Art/Items/Purge/Medical/`, патронов на земле —
+`Art/Items/Purge/Ammo/<X>_ammo`. Префабы для игры делает **Build Items** (`Art/Items/Pickups`: `_Pickup` — уменьшен до
+~0,45 клетки, стоит на полу; `_Flying` — летящий, по центру); материалы — `Purge/Lit` (Convert Object Materials to Purge Lit),
+без коллайдеров. Оружие с орды лежит пикапом из Weapon Set.
+
 ### Зомби (Zombie)
 - В варианте заполнить **Definition** ссылкой на `ZombieDefinition` (Walker, Listener, Hunter), чтобы тип был виден.
 - Лицом по **+Z**, пивот у ног.

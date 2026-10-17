@@ -7,6 +7,7 @@ using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Core.Visual;
+using Purge.Gameplay.Drops;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Weapons;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// The weapon in the player's hands (ТЗ §39: WeaponRuntime → WeaponView). On load, the held prefabs of the
-    /// weapons lying in this level are loaded (<see cref="WeaponVisualCatalog"/>, level asset owner) and instantiated
+    /// weapons lying in this level, of the drop pool's and of the base pistol are loaded (<see cref="WeaponVisualCatalog"/>, level asset owner) and instantiated
     /// hidden in the hands — nothing is loaded or created during play (and <see cref="LevelWarmup"/> draws them once). The active weapon is shown, the other slot hidden. A melee weapon sits rigidly in the
     /// right hand (<see cref="CharacterWeaponRig.MeleeSocket"/>); a gun is posed every frame after animation by
     /// <see cref="CharacterWeaponRig.PoseGun"/>: grip in the right palm, barrel where the clip points it, chest turned
@@ -31,6 +32,9 @@ namespace Purge.Presentation.Visual
         private readonly IAssetOwner _assets;
         private readonly Dictionary<WeaponDefinition, GameObject> _prefabs = new Dictionary<WeaponDefinition, GameObject>();
         private readonly Dictionary<WeaponDefinition, GameObject> _instances = new Dictionary<WeaponDefinition, GameObject>();
+        private readonly List<WeaponDefinition> _wanted = new List<WeaponDefinition>();
+        private readonly DropPool _drops;
+        private readonly PlayerDefinition _player;
 
         private CharacterWeaponRig _rig;
         private GameObject _shown;
@@ -40,8 +44,10 @@ namespace Purge.Presentation.Visual
         private bool _subscribed;
 
         public PlayerWeaponPresenter(LevelData level, PlayerViewPresenter playerView, WeaponSystem weapons,
-            WeaponVisualCatalog catalog, IAssetOwner assets)
+            WeaponVisualCatalog catalog, IAssetOwner assets, DropPool drops = null, PlayerDefinition player = null)
         {
+            _drops = drops;
+            _player = player;
             _level = level;
             _playerView = playerView;
             _weapons = weapons;
@@ -66,9 +72,12 @@ namespace Purge.Presentation.Visual
                 return;
             }
 
-            foreach (var pickup in _level.Weapons)
+            _wanted.Clear();
+            foreach (var pickup in _level.Weapons) _wanted.Add(pickup.Definition);
+            if (_drops != null) _wanted.AddRange(_drops.Weapons);
+            if (_player != null) _wanted.Add(_player.BaseWeapon);
+            foreach (var definition in _wanted)
             {
-                var definition = pickup.Definition;
                 if (definition == null || _prefabs.ContainsKey(definition)) continue;
 
                 var visual = _catalog != null ? _catalog.Find(definition) : null;

@@ -1,0 +1,813 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79b472df36a9fa14ea12bd4ac441ccba, type: 3}
+  m_Name: ItemVisuals
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.ItemVisualCatalog
+  _items:
+  - _item: {fileID: 11400000, guid: 296e66b85abbec645ac43742bb9d50d9, type: 2}
+    _pickup:
+      m_AssetGUID: 300132d104272624d860dbc0eb5a5ed6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: ab2b1f65a41391342ad08c00716a55d2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 825d87ccc3a2b514ea82f2032258dca3, type: 2}
+    _pickup:
+      m_AssetGUID: b2209bacf767f6d4ab0e61c32073092f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 5328deb8869f7ca4fb76c8b0e1314dec
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 83e03865f42011d468dfc95aa8e3b1e4, type: 2}
+    _pickup:
+      m_AssetGUID: 2d0e59b93fe7ec94dbb4b201d4880013
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 8af45239847e50647a435ddb7e209afe
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 4e8ffa81618ff1d46aa6deea7e425321, type: 2}
+    _pickup:
+      m_AssetGUID: 21fab3fec1bb8904dbdfed3279c43727
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: b671e244a012ac0469c1da825c552060
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 86d08ce4919207443b702b55cd54856d, type: 2}
+    _pickup:
+      m_AssetGUID: ca44ed419126d7c41a11830d1585211c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 93073e9d0800188418357026892de61c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: b30e8ff6ee506b044a04c08f8af7ed5f, type: 2}
+    _pickup:
+      m_AssetGUID: b385154d477cea544a658c86a860b4cb
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: c6ecd50e8b76e4d46bb203c062686a20, type: 2}
+    _pickup:
+      m_AssetGUID: 029c41e9247469c41947dd4158838113
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 3b459a29526607844979d91f913da4a6, type: 2}
+    _pickup:
+      m_AssetGUID: 7956f62c1692d6543a8af23ca0f1a2cc
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: d7f78c6ef74dfeb40bca4e03e9602875, type: 2}
+    _pickup:
+      m_AssetGUID: 2f9c07b289d44024c84d564bc600f354
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 50942deae0b84f444b7c4caf61824f12, type: 2}
+    _pickup:
+      m_AssetGUID: d902398338f8a9c4eb9af38308572593
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: eafdf1935eb98494e85039d52d9b1be6, type: 2}
+    _pickup:
+      m_AssetGUID: b5249e70e4268bd4fb5ce182083b52c8
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ee423f1a7685a68489acd93156535d4e, type: 2}
+    _pickup:
+      m_AssetGUID: 7a1701e33facde843bcab01aa9552a41
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: aa5d75d61099ae648b7757c7c71a6062, type: 2}
+    _pickup:
+      m_AssetGUID: 3f98ae964c6dcba429009f416a1b548e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: f8e702f46f833fe48883f8c075ad39be, type: 2}
+    _pickup:
+      m_AssetGUID: b2c65431a7dac904b84236ac2a7b3406
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 0bffdff29c7372f43ab717527e694720, type: 2}
+    _pickup:
+      m_AssetGUID: 720a780d029e25548a234ca30ee7483c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: c8722ddf12087de4085adb7c8fffb51a, type: 2}
+    _pickup:
+      m_AssetGUID: 0969523e43002f0448a3d9a338299470
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 76b8c7a0810f2314fa7a0c655af14c95, type: 2}
+    _pickup:
+      m_AssetGUID: 01b1a5ed646cfb54cbb6d4b183544254
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ab4973c6dd2d6a7448107e6b5f7afe05, type: 2}
+    _pickup:
+      m_AssetGUID: e3b74c471b2a1f04c9cffc622e2c7301
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 1c00ee934ec43bc44bc378611abd5826, type: 2}
+    _pickup:
+      m_AssetGUID: 668a0012b5f3eaa4e8a880ad48e79b38
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: b7d977faf4f9e524ba1da41e3e1ebbc3, type: 2}
+    _pickup:
+      m_AssetGUID: c75572203087ab34aaa404250516c2a8
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 3493d85149291cd41ac4d077cc3ec857, type: 2}
+    _pickup:
+      m_AssetGUID: a05c2a59196271e49b4c1dc0bc5218af
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: acd75803b4be04249818df536c89ce1c, type: 2}
+    _pickup:
+      m_AssetGUID: 749744a03d2fb244c91de35c663973ba
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 20dd5a241858cd643b2b0deab0f98ac4, type: 2}
+    _pickup:
+      m_AssetGUID: 5164ba6fc08bedf4a882f0f78fdffc0d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: bd948e954d146054e87e4bd8308c40a7, type: 2}
+    _pickup:
+      m_AssetGUID: 633ac703239145a4aabc8c6fcb719390
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ca06ed6064d72ff43ab67fd46b222ad1, type: 2}
+    _pickup:
+      m_AssetGUID: 39fd3cfb7786e014bb88464d3c2395c7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 139d8d84876ecc446a2736ba5b40c135, type: 2}
+    _pickup:
+      m_AssetGUID: 4f9e67a5f2e5e774bace1b8477c5175b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: d2de461987c562246aa949bb2a1b541c, type: 2}
+    _pickup:
+      m_AssetGUID: e853e0de3908cc944986727b1d25b5cf
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ae39286d1e1e5cc478180880b436bbf7, type: 2}
+    _pickup:
+      m_AssetGUID: e8c1a9af907f86a48aeedaea8220d0d3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: b533728f76bd55a4eba225e3efe2f30b, type: 2}
+    _pickup:
+      m_AssetGUID: 55e8b5015a6f05a40ad63cecb8586d52
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 3906e604f9611094db30aa3ac5760e8f, type: 2}
+    _pickup:
+      m_AssetGUID: 7a0f877c535701940b8c80ce9cf6da4e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ed3306fa68b49484694c79eae24ae359, type: 2}
+    _pickup:
+      m_AssetGUID: a7bafbe4a8d32db4080ffad3ad1e462e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 412634dc9363aea4089aa253cbcd76c3, type: 2}
+    _pickup:
+      m_AssetGUID: 87fa22766db244e41af9e84b59eb3d70
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ac9cc208cf6d40a4294e1c32863de00f, type: 2}
+    _pickup:
+      m_AssetGUID: d95aa9e71ef5d584ca9af06c71b856f4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: a8baa349ff450ee48aedd7446827aea5, type: 2}
+    _pickup:
+      m_AssetGUID: c82a6ec3d1b13a442bf8dbb3d126b668
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 764dc223f664b7245a8eacb204554f66, type: 2}
+    _pickup:
+      m_AssetGUID: e1e8f161ee4d0a942992ec7f20bd0ef7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 11eea5431b2761b4bbb2180f7cdb6eff, type: 2}
+    _pickup:
+      m_AssetGUID: 742ec294e32feff4cbe94b12b28e7939
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ee57852e624141a47884aaee6822c53c, type: 2}
+    _pickup:
+      m_AssetGUID: 0c349a22058d0db44a3c862408ac2820
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: ceec1fe9f5ec65848973ff21c3ec4673, type: 2}
+    _pickup:
+      m_AssetGUID: 929067955a537b44e9c33dd534ebdb10
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 1d02df5d75461c74194583253809b84e, type: 2}
+    _pickup:
+      m_AssetGUID: a79b171b0284bc543995f57189b4ba3f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: c633bed7d52d4aa479714d4f7d85066f, type: 2}
+    _pickup:
+      m_AssetGUID: 63d12878aa1b38740904bf7eee0911c1
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: be6fbe3a9d9585144a2c63dabe6829b0, type: 2}
+    _pickup:
+      m_AssetGUID: 24d9f9aded300664bb8a3e02d1ce09b6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 9dafb61b2802e594c875d2c37791f6c4, type: 2}
+    _pickup:
+      m_AssetGUID: f1c61448d5464854a845b826236a6a6c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: fd4af4d42ec3d2a48a69a0d03d147f0d, type: 2}
+    _pickup:
+      m_AssetGUID: 2eaa1a91a240c274c9ed9ed3aacf499b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 878d5680bba93904db246aaf61a82ab9, type: 2}
+    _pickup:
+      m_AssetGUID: 5abd8e03bc94202478f20bd1afbd081a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: db71b45850691d5418ea6621795ea264, type: 2}
+    _pickup:
+      m_AssetGUID: 1d80c4f45caec4546aceeff57c37e888
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 4a16c246594e3744e831582bb7bba278, type: 2}
+    _pickup:
+      m_AssetGUID: 1d75ce9ba243a394e9da0b5b3197ae53
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 889569c13d8462d41a6b1e0d58f2a72d, type: 2}
+    _pickup:
+      m_AssetGUID: bb47bacf5e2851b4484b16d6d33a0819
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: c54e06cf12c71ef49b6735cd5f683934, type: 2}
+    _pickup:
+      m_AssetGUID: b400df8eb5de99349899eb79c6ee9dda
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 55599f2eb6845e14084afedcc2a9a368, type: 2}
+    _pickup:
+      m_AssetGUID: 458c4be2b24b6e44a9b5800b25ffbb52
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: fd78076e662a14f4491112eb45f1d2a4, type: 2}
+    _pickup:
+      m_AssetGUID: efafa478f802de64d88b5192f2bbbb38
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: db57b92dc0989394bb7548675045912c, type: 2}
+    _pickup:
+      m_AssetGUID: d3f8655b41fae6a4ebf6bf6476fc1525
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: d7fce842847a0834489b763fdefb1426, type: 2}
+    _pickup:
+      m_AssetGUID: a2a3a8d13c69b8c44836e245a8ea84f4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 033d75e7ef3e80a42bd46c84029aff49, type: 2}
+    _pickup:
+      m_AssetGUID: 3527d16881d3d1940aae51fe5182773f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 0696755178a39f1478e1d5e4a861821a, type: 2}
+    _pickup:
+      m_AssetGUID: 4ebd9d19932b48e4a9c42b4a58c387a2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: df613feed41681a428080f4dad1862ef, type: 2}
+    _pickup:
+      m_AssetGUID: e319b932091f61444b2d4571c97945eb
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: fbd9cdc105cf4a7489a848bea2177126, type: 2}
+    _pickup:
+      m_AssetGUID: 70cc74d86e903df418f952c7542b5455
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 19edee8a04eb91045a9ccacef0ae3c99, type: 2}
+    _pickup:
+      m_AssetGUID: 65cb953b8c1bf1442bcc55ba7064c22a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}

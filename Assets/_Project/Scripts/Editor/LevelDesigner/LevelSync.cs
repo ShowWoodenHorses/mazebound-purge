@@ -143,7 +143,8 @@ namespace Purge.Editor.LevelDesigner
         /// <summary>
         /// Keeps the definitions shared by all levels Addressable at their fixed addresses: <see cref="PlayerDefinition"/>,
         /// <see cref="PlayerVisualDefinition"/> and its prefab, <see cref="CombatVisualDefinition"/> and its prefabs,
-        /// <see cref="WeaponVisualCatalog"/> and the held weapon prefabs, <see cref="AudioCatalog"/> and its music clips,
+        /// <see cref="WeaponVisualCatalog"/> and the held weapon prefabs, <see cref="ItemVisualCatalog"/> (its prefabs in
+        /// Purge Visuals), <see cref="AudioCatalog"/> and its music clips,
         /// <see cref="LanguageCatalog"/> and the language tables, <see cref="ContentCatalog"/> (rebuilt from the content
         /// folders).
         /// Returns a problem description or null.
@@ -176,6 +177,19 @@ namespace Purge.Editor.LevelDesigner
             foreach (var weapon in weapons.Weapons)
                 if (weapon != null)
                     EnsurePrefabAddressable(settings, sharedGroup, weapon.HeldPrefab);
+
+            // Optional (Build Items): without it dropped and thrown items are not shown. Its prefabs stay in Purge Visuals.
+            var items = EnsureSingleAddressable<ItemVisualCatalog>(settings, sharedGroup, ItemVisualCatalog.Address);
+            if (items != null)
+            {
+                var visualsGroup = GetOrCreateGroup(settings, VisualsGroup);
+                foreach (var item in items.Items)
+                {
+                    if (item == null) continue;
+                    EnsurePrefabAddressable(settings, visualsGroup, item.Pickup);
+                    EnsurePrefabAddressable(settings, visualsGroup, item.Flying);
+                }
+            }
 
             var audio = EnsureSingleAddressable<AudioCatalog>(settings, sharedGroup, AudioCatalog.Address);
             if (audio == null)

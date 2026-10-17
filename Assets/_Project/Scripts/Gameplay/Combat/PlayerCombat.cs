@@ -9,6 +9,7 @@ using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Weapons;
 using UnityEngine;
 
@@ -69,6 +70,7 @@ namespace Purge.Gameplay.Combat
         private readonly DoorSystem _doors;
         private readonly AmmoStock _ammo;
         private readonly IAimPointer _pointer;
+        private readonly PlayerThrowing _throwing;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly List<CombatTarget> _meleeTargets = new List<CombatTarget>();
         private readonly List<IDamageable> _meleeHits = new List<IDamageable>();
@@ -80,7 +82,7 @@ namespace Purge.Gameplay.Combat
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
-            IAimPointer pointer = null)
+            IAimPointer pointer = null, PlayerThrowing throwing = null)
         {
             _input = input;
             _player = player;
@@ -92,6 +94,7 @@ namespace Purge.Gameplay.Combat
             _doors = doors;
             _ammo = ammo;
             _pointer = pointer;
+            _throwing = throwing;
         }
 
         /// <summary>(weapon, direction) after every attack — for views, animation and HUD.</summary>
@@ -285,6 +288,7 @@ namespace Purge.Gameplay.Combat
 
         private bool WantsToAttack(WeaponRuntime weapon)
         {
+            if (_throwing != null && _throwing.ConsumedAttack) return false; // that click threw
             if (_input.WasPressed(PlayerAction.Attack)) return true;
             return _input.AttackHeld && weapon.Definition.Attack != null && weapon.Definition.Attack.Automatic;
         }
@@ -335,13 +339,13 @@ namespace Purge.Gameplay.Combat
                         explosive: explosive, weapon: definition);
                     break;
                 case StreamAttack stream:
-                    Stream(stream, origin, direction, floor);
+                    Stream(definition, stream, origin, direction, floor);
                     break;
                 case ChainAttack chain:
-                    Chain(chain, origin, direction, floor);
+                    Chain(definition, chain, origin, direction, floor);
                     break;
                 case MeleeAttack melee:
-                    Melee(melee, origin, direction, floor);
+                    Melee(definition, melee, origin, direction, floor);
                     break;
             }
 
@@ -378,16 +382,16 @@ namespace Purge.Gameplay.Combat
             }
         }
 
-        private void Stream(StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
+        private void Stream(WeaponDefinition weapon, StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
         {
             _targets.Collect(origin, stream.Range, floor, _found, direction, Mathf.Cos(stream.Angle * 0.5f * Mathf.Deg2Rad));
             foreach (var target in _found)
                 if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
-                    _targets.Damage(target, stream.DamagePerTick, direction);
+                    _targets.Damage(target, stream.DamagePerTick, direction, weapon);
             _found.Clear();
         }
 
-        private void Chain(ChainAttack chain, Vector2 origin, Vector2 direction, int floor)
+        private void Chain(WeaponDefinition weapon, ChainAttack chain, Vector2 origin, Vector2 direction, int floor)
         {
             ChainCount = 0;
             _chainPoints[ChainCount++] = origin;
@@ -409,7 +413,7 @@ namespace Purge.Gameplay.Combat
                 var at = _targets.PositionOf(target);
                 _chainTargets[hits++] = target;
                 _chainPoints[ChainCount++] = at;
-                _targets.Damage(target, damage, (at - from).normalized);
+                _targets.Damage(target, damage, (at - from).normalized, weapon);
                 if (hits > chain.Jumps || ChainCount >= MaxChainPoints) break;
                 damage *= chain.JumpFalloff;
                 from = at;
@@ -439,7 +443,7 @@ namespace Purge.Gameplay.Combat
             return best;
         }
 
-        private void Melee(MeleeAttack melee, Vector2 origin, Vector2 direction, int floor)
+        private void Melee(WeaponDefinition weapon, MeleeAttack melee, Vector2 origin, Vector2 direction, int floor)
         {
             _meleeTargets.Clear();
             _meleeHits.Clear();
@@ -452,7 +456,7 @@ namespace Purge.Gameplay.Combat
             foreach (var target in _meleeTargets)
             {
                 if (target.Object != null) _meleeHits.Add(target.Object);
-                _targets.Damage(target, melee.Damage, direction);
+                _targets.Damage(target, melee.Damage, direction, weapon);
             }
 
             LastIceHit = null;

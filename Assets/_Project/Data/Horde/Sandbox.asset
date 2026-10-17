@@ -49,6 +49,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1d02df5d75461c74194583253809b84e, type: 2}
   - {fileID: 11400000, guid: ab4973c6dd2d6a7448107e6b5f7afe05, type: 2}
   - {fileID: 11400000, guid: 878d5680bba93904db246aaf61a82ab9, type: 2}
+  _sandboxThrowables:
+  - {fileID: 11400000, guid: 825d87ccc3a2b514ea82f2032258dca3, type: 2}
+  - {fileID: 11400000, guid: 86d08ce4919207443b702b55cd54856d, type: 2}
+  _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
   _monsterCounts: 000000001e0000003c0000006400000096000000c8000000
   _startCount: 60
   _cameraHalfExtents:

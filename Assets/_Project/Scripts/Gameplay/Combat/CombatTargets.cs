@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Spatial;
@@ -78,6 +79,7 @@ namespace Purge.Gameplay.Combat
         private readonly HordeSystem _horde;
         private readonly List<ISpatialObject> _objects = new List<ISpatialObject>();
         private readonly int[] _agents = new int[MaxAgents];
+        private readonly List<CombatTarget> _blast = new List<CombatTarget>();
 
         public CombatTargets(ISpatialQueryService spatial, HordeSystem horde = null)
         {
@@ -89,6 +91,9 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>(target, where, damage, direction, killed) after every damage dealt by the player.</summary>
         public event Action<CombatTarget, Vector2, float, Vector2, bool> Damaged;
+
+        /// <summary>(target, weapon) after a weapon's attack damaged a target that is still alive.</summary>
+        public event Action<CombatTarget, WeaponDefinition> WeaponHit;
 
         private bool HordeActive => _horde != null && _horde.IsActive;
 
@@ -187,6 +192,38 @@ namespace Purge.Gameplay.Combat
 
             Damaged?.Invoke(target, at, amount, direction, killed);
             return killed;
+        }
+
+        /// <summary>
+        /// Damage of a weapon's attack: as <see cref="Damage(in CombatTarget, float, Vector2)"/>, then
+        /// <see cref="WeaponHit"/> for a target that survived (states on hit).
+        /// </summary>
+        public bool Damage(in CombatTarget target, float amount, Vector2 direction, WeaponDefinition weapon)
+        {
+            if (amount <= 0f || !IsAlive(target)) return false;
+            var killed = Damage(target, amount, direction);
+            if (!killed && weapon != null) WeaponHit?.Invoke(target, weapon);
+            return killed;
+        }
+
+        /// <summary>
+        /// Damage to every living target whose body reaches into the circle and is not behind something that stops
+        /// bullets: <paramref name="damage"/> at the centre, × <paramref name="edgeShare"/> at the edge.
+        /// </summary>
+        public void Blast(Vector2 at, float damage, float radius, float edgeShare, int floor)
+        {
+            Collect(at, radius, floor, _blast);
+            foreach (var target in _blast)
+            {
+                var position = PositionOf(target);
+                if (!IsClear(at, position, floor)) continue;
+                var offset = position - at;
+                var share = Mathf.Clamp01((offset.magnitude - RadiusOf(target)) / radius);
+                Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
+                    offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up);
+            }
+
+            _blast.Clear();
         }
     }
 }

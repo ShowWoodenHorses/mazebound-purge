@@ -108,7 +108,7 @@ namespace Purge.Application.Platform
 
         private void OnPickupRemoved(Pickup pickup)
         {
-            if (pickup.Kind != PickupKind.Weapon || pickup.Weapon == null) return;
+            if (pickup.Kind != PickupKind.Weapon || pickup.Weapon == null || !pickup.WasTaken) return;
             _stats.WeaponsPicked++;
             var parameters = _analytics.Begin();
             parameters["level"] = _levelId;

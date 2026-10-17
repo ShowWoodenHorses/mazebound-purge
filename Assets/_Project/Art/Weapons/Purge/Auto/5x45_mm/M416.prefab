@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 4687971008595054}
   - component: {fileID: 33974472452233308}
   - component: {fileID: 23534246219926244}
+  - component: {fileID: 5428793545298129403}
   m_Layer: 0
   m_Name: M416
   m_TagString: Untagged
@@ -397,6 +398,8 @@ Transform:
   - {fileID: 4562167241893192}
   - {fileID: 4567113214387454}
   - {fileID: 4109271723540088}
+  - {fileID: 6483129634439992455}
+  - {fileID: 3565772753903981725}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33974472452233308
@@ -456,6 +459,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5428793545298129403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464271373217014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4fbabd530c09a4fad00710940dbbf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.WeaponModel
+  _muzzle: {fileID: 6483129634439992455}
+  _tip: {fileID: 0}
+  _gripLeft: {fileID: 3565772753903981725}
+  _gripRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!1 &1655006058520924
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,3 +655,65 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1909640900607747230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6483129634439992455}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6483129634439992455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909640900607747230}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0008039549, y: 0.044588074, z: 0.72014266}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4687971008595054}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8511774856589384561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3565772753903981725}
+  m_Layer: 0
+  m_Name: Grip_L
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3565772753903981725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8511774856589384561}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.08974307, y: 0.34838095, z: 0.92968863, w: -0.07909503}
+  m_LocalPosition: {x: 0.000000230968, y: -0.000000115484, z: 0.3091935}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4687971008595054}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

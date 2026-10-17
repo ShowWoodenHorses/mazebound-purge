@@ -7,8 +7,10 @@ namespace Purge.Gameplay.Player
     {
         Attack = 0,
         Interact = 1,
-        SwitchMelee = 2,
-        SwitchRanged = 3,
+        /// <summary>Choose weapon slot 1 (again — reload; hold — drop the weapon).</summary>
+        Slot1 = 2,
+        /// <summary>Choose weapon slot 2 (again — reload; hold — drop the weapon).</summary>
+        Slot2 = 3,
         OpenMap = 4,
 
         /// <summary>Reload the ranged weapon in hands before its magazine is empty.</summary>
@@ -36,5 +38,8 @@ namespace Purge.Gameplay.Player
 
         /// <summary>True during the frame the button was pressed.</summary>
         bool WasPressed(PlayerAction action);
+
+        /// <summary>True while the button is held.</summary>
+        bool IsHeld(PlayerAction action);
     }
 }

@@ -11,7 +11,14 @@ namespace Purge.Presentation.Visual
     {
         /// <summary>Float 0..1: movement speed relative to the maximum.</summary>
         public const string Speed = "Speed";
-        /// <summary>Int: weapon in hands, see <see cref="WeaponNone"/>, <see cref="WeaponMelee"/>, <see cref="WeaponRanged"/>.</summary>
+        /// <summary>
+        /// Floats −1..1: movement relative to the body (x = right, y = forward) × speed — the legs' 8-way run while the
+        /// body faces the aim.
+        /// </summary>
+        public const string MoveX = "MoveX";
+        public const string MoveY = "MoveY";
+
+        /// <summary>Int: animation set of the weapon in hands — <see cref="WeaponNone"/> or <see cref="SetOf"/>.</summary>
         public const string Weapon = "Weapon";
         /// <summary>Trigger: melee attack.</summary>
         public const string Attack = "Attack";
@@ -32,8 +39,8 @@ namespace Purge.Presentation.Visual
         public const string AttackSweep = "AttackSweep";
         /// <summary>Trigger: a shot.</summary>
         public const string Shoot = "Shoot";
-        /// <summary>Bool: the ranged weapon in hands is automatic.</summary>
-        public const string Automatic = "Automatic";
+        /// <summary>Float: playback multiplier of shots (shot states last 1 s at 1): faster for fast-firing weapons.</summary>
+        public const string ShootSpeed = "ShootSpeed";
         /// <summary>Bool: the weapon in hands is reloading.</summary>
         public const string Reloading = "Reloading";
         /// <summary>Float: playback multiplier of the reload, 1 / reload time (the reload state lasts 1 s at 1).</summary>
@@ -46,8 +53,10 @@ namespace Purge.Presentation.Visual
         public const string Dead = "Dead";
 
         public const int WeaponNone = 0;
-        public const int WeaponMelee = 1;
-        public const int WeaponRanged = 2;
+
+        /// <summary>Animation set of a way of holding a weapon (heavy melee uses the melee set until it has its own).</summary>
+        public static int SetOf(Core.Definitions.WeaponHold hold) =>
+            1 + (int)(hold == Core.Definitions.WeaponHold.MeleeHeavy ? Core.Definitions.WeaponHold.Melee : hold);
 
         public const int AttackVariants = 3;
 
@@ -76,7 +85,9 @@ namespace Purge.Presentation.Visual
             Animator.StringToHash(AttackSweep + 0), Animator.StringToHash(AttackSweep + 1), Animator.StringToHash(AttackSweep + 2),
         };
         public static readonly int ShootHash = Animator.StringToHash(Shoot);
-        public static readonly int AutomaticHash = Animator.StringToHash(Automatic);
+        public static readonly int ShootSpeedHash = Animator.StringToHash(ShootSpeed);
+        public static readonly int MoveXHash = Animator.StringToHash(MoveX);
+        public static readonly int MoveYHash = Animator.StringToHash(MoveY);
         public static readonly int ReloadingHash = Animator.StringToHash(Reloading);
         public static readonly int ReloadSpeedHash = Animator.StringToHash(ReloadSpeed);
         public static readonly int HitHash = Animator.StringToHash(Hit);

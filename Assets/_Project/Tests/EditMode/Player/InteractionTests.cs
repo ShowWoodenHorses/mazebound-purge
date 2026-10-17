@@ -54,9 +54,9 @@ namespace Purge.Tests.EditMode.Player
             geometry.SetCell(new GridPosition(8, 1), CellType.Door);
             _level.ReplaceGeometry(geometry);
 
-            _knife = Weapon("knife", WeaponSlot.Melee);
-            _bat = Weapon("bat", WeaponSlot.Melee);
-            _pistol = Weapon("pistol", WeaponSlot.Ranged);
+            _knife = Weapon("knife", melee: true);
+            _bat = Weapon("bat", melee: true);
+            _pistol = Weapon("pistol", melee: false);
             _level.MutablePlayerStarts.Add(new PlayerStartData("start_1", new GridPosition(1, 1)));
             _level.MutableDoors.Add(new DoorData("door_plain", new GridPosition(2, 1)));
             _level.MutableDoors.Add(new DoorData("door_locked", new GridPosition(8, 1), keyId: "key_1"));
@@ -76,7 +76,7 @@ namespace Purge.Tests.EditMode.Player
             _occupancy = new OccupancyMap(grid);
             _health = new PlayerHealth(_definition);
             _inventory = new PlayerInventory();
-            _weapons = new WeaponSystem(_input);
+            _weapons = new WeaponSystem(_input, _definition);
             _sounds = new SoundEventBus();
             _player = new PlayerSystem(_level, _definition, _input, _passability, _occupancy, new LevelLaunchOptions(startIndex: 0),
                 Aim.FreeNoAssist);
@@ -101,10 +101,11 @@ namespace Purge.Tests.EditMode.Player
             Object.DestroyImmediate(_pistol);
         }
 
-        private static WeaponDefinition Weapon(string id, WeaponSlot slot)
+        private static WeaponDefinition Weapon(string id, bool melee)
         {
             var weapon = ScriptableObject.CreateInstance<WeaponDefinition>();
-            weapon.Configure(id, slot, magazineSize: 6);
+            if (melee) weapon.Configure(id, new MeleeAttack());
+            else weapon.Configure(id, new BulletAttack(), new AmmoModule { Magazine = 6, InfiniteReserve = true });
             return weapon;
         }
 
@@ -220,7 +221,7 @@ namespace Purge.Tests.EditMode.Player
         }
 
         [Test]
-        public void Weapons_PickedByInteract_BecomeActive_SameSlotDropsOld()
+        public void Weapons_PickedByInteract_FillEmptySlots_ThenReplaceTheOneInHands()
         {
             var added = new List<Pickup>();
             _pickups.Added += added.Add;
@@ -229,36 +230,42 @@ namespace Purge.Tests.EditMode.Player
 
             Assert.AreEqual(InteractionResult.WeaponTaken, Interact());
             Assert.AreSame(_knife, _weapons.Active.Definition);
-            Assert.AreEqual(WeaponSlot.Melee, _weapons.ActiveSlot);
+            Assert.AreEqual(WeaponSlot.First, _weapons.ActiveSlot);
 
             Assert.AreEqual(InteractionResult.WeaponTaken, Interact());
-            Assert.AreSame(_bat, _weapons.Get(WeaponSlot.Melee).Definition, "The new one takes the slot.");
-            Assert.AreEqual(1, added.Count, "The old one drops…");
-            Assert.AreEqual("weapon_1", added[0].Id);
-            Assert.AreEqual(new GridPosition(6, 1), added[0].Cell, "…into the player's cell.");
+            Assert.AreSame(_bat, _weapons.Get(WeaponSlot.Second).Definition, "The empty slot takes it.");
+            Assert.AreEqual(WeaponSlot.Second, _weapons.ActiveSlot);
+            Assert.AreEqual(0, added.Count, "Nothing dropped.");
 
             WalkTo(7);
             Interact();
             Assert.AreSame(_pistol, _weapons.Active.Definition);
-            Assert.AreSame(_bat, _weapons.Get(WeaponSlot.Melee).Definition, "Other slot is kept.");
+            Assert.AreEqual(1, added.Count, "The one in hands drops…");
+            Assert.AreSame(_bat, added[0].Weapon.Definition);
+            Assert.AreEqual(new GridPosition(7, 1), added[0].Cell, "…into the player's cell.");
+            Assert.AreSame(_knife, _weapons.Get(WeaponSlot.First).Definition, "Other slot is kept.");
 
-            _input.Press(PlayerAction.SwitchMelee);
+            _input.Press(PlayerAction.Slot1);
             _weapons.Tick(Dt);
             _input.EndFrame();
-            Assert.AreEqual(WeaponSlot.Melee, _weapons.ActiveSlot);
+            Assert.AreEqual(WeaponSlot.First, _weapons.ActiveSlot);
         }
 
         [Test]
-        public void DroppedWeapon_IsFullyReady_WhenPickedAgain()
+        public void DroppedWeapon_KeepsItsMagazine_AndLiesInThePlayersCell()
         {
             var weapon = new WeaponRuntime(_level.Weapons[2]);
-            Assert.AreEqual(6, weapon.Ammo);
+            Assert.AreEqual(6, weapon.Ammo, "A lying weapon is loaded.");
 
             _weapons.Equip(weapon);
-            var other = new WeaponRuntime(new WeaponPickupData("weapon_9", new GridPosition(1, 1), _pistol));
-            var dropped = _weapons.Equip(other);
-            Assert.AreSame(weapon, dropped);
-            Assert.AreEqual(_pistol.MagazineSize, dropped.Ammo, "Reset when dropped (ТЗ §67).");
+            var added = new List<Pickup>();
+            _pickups.Added += added.Add;
+            Assert.IsTrue(_pickups.DropWeapon(WeaponSlot.First));
+            Assert.AreSame(weapon, added[0].Weapon);
+            Assert.AreEqual(6, added[0].Weapon.Ammo, "The same weapon with its magazine (not reset).");
+            Assert.AreEqual(_player.Cell, added[0].Cell);
+            Assert.IsNull(_weapons.Get(WeaponSlot.First), "No base weapon in this test.");
+            Assert.IsFalse(_pickups.DropWeapon(WeaponSlot.First));
         }
 
         [Test]

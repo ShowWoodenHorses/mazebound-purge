@@ -371,6 +371,7 @@ GameObject:
   - component: {fileID: 4796996375664330}
   - component: {fileID: 33643275604535902}
   - component: {fileID: 23627881058843572}
+  - component: {fileID: 2856362314942900861}
   m_Layer: 0
   m_Name: Sniper_silencer
   m_TagString: Untagged
@@ -396,6 +397,8 @@ Transform:
   - {fileID: 4666196476193734}
   - {fileID: 4816484623673262}
   - {fileID: 4843559629523988}
+  - {fileID: 3554903339427242389}
+  - {fileID: 1688403232878138784}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33643275604535902
@@ -455,6 +458,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2856362314942900861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459817418512180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4fbabd530c09a4fad00710940dbbf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.WeaponModel
+  _muzzle: {fileID: 3554903339427242389}
+  _tip: {fileID: 0}
+  _gripLeft: {fileID: 1688403232878138784}
+  _gripRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!1 &1605199924850282
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,3 +655,65 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &571383153428469386
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1688403232878138784}
+  m_Layer: 0
+  m_Name: Grip_L
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1688403232878138784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571383153428469386}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.08974307, y: 0.34838095, z: 0.92968863, w: -0.07909503}
+  m_LocalPosition: {x: 0.000000230968, y: -0.000000115484, z: 0.3091935}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4796996375664330}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7977120278867896925
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3554903339427242389}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3554903339427242389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7977120278867896925}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0008039549, y: 0.09015074, z: 1.1484413}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4796996375664330}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

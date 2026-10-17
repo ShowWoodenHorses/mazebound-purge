@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b50615c978853148ac821b2ced6756b, type: 3}
+  m_Name: Auto_Shotgun
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
+  _id: auto_shotgun
+  _rarity: 0
+  _noUpgrades: 0
+  _hold: 2
+  _sound: 
+  _modules:
+  - rid: 1763807262009983112
+  - rid: 1763807262009983113
+  - rid: 1763807262009983114
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983112
+      type: {class: BulletAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _interval: 0.8
+        _automatic: 0
+        _damage: 8
+        _speed: 24
+        _range: 7
+        _pellets: 8
+        _spread: 26
+        _pierce: 0
+    - rid: 1763807262009983113
+      type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _ammo: {fileID: 11400000, guid: c8722ddf12087de4085adb7c8fffb51a, type: 2}
+        _magazine: 6
+        _reloadTime: 2.5
+        _perAttack: 1
+        _infiniteReserve: 0
+        _soundRadius: 0
+    - rid: 1763807262009983114
+      type: {class: MobilityModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _inHands: 0.9
+        _whileFiring: 1

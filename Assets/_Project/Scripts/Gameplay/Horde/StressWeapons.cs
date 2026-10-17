@@ -108,7 +108,7 @@ namespace Purge.Gameplay.Horde
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (_level.StressTest == null || !_horde.IsActive)
+            if (_level.StressTest == null || _level.StressTest.IsSandbox || !_horde.IsActive)
                 return UniTask.CompletedTask;
             _settings = _level.StressTest.Weapons;
             Fire = new FireField(_grid.Width, _grid.Height);

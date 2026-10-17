@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using Purge.Core.Audio;
 using Purge.Core.Content;
+using Purge.Core.Modules;
 using UnityEngine;
 
 namespace Purge.Core.Definitions
 {
+    /// <summary>One of the player's two weapon slots (ТЗ: firearm or melee in any combination).</summary>
     public enum WeaponSlot
     {
-        Melee = 0,
-        Ranged = 1,
+        First = 0,
+        Second = 1,
     }
 
     public enum FireMode
@@ -17,85 +20,170 @@ namespace Purge.Core.Definitions
     }
 
     /// <summary>
-    /// Gameplay parameters of a weapon. Visual representation is defined separately
-    /// (WeaponVisualDefinition), never here.
+    /// How the character holds the weapon: picks the animation set (stance, locomotion, attack, reload) and the hand
+    /// pose. Display only.
+    /// </summary>
+    public enum WeaponHold
+    {
+        /// <summary>Pistols, revolvers: two hands, short.</summary>
+        Pistol = 0,
+        /// <summary>Rifles, submachine guns, sniper rifles.</summary>
+        Rifle = 1,
+        Shotgun = 2,
+        /// <summary>Heavy weapons at the hip: minigun, flamethrower, tesla.</summary>
+        Heavy = 3,
+        /// <summary>On the shoulder: grenade launcher, RPG.</summary>
+        Shoulder = 4,
+        /// <summary>One-handed melee: knife, machete, sword.</summary>
+        Melee = 5,
+        /// <summary>Two-handed heavy melee: axe, sledgehammer.</summary>
+        MeleeHeavy = 6,
+    }
+
+    /// <summary>
+    /// A weapon kind (ТЗ «Оружие и снаряжение»): rarity, upgradability, how it is held and what it does — a list of
+    /// <see cref="WeaponModule"/>s (exactly one <see cref="WeaponAttack"/>; ranged attacks need
+    /// <see cref="AmmoModule"/>). Visual representation is defined separately (WeaponVisualDefinition), never here.
     /// </summary>
     [CreateAssetMenu(fileName = "WeaponDefinition", menuName = "Purge/Definitions/Weapon")]
     public sealed class WeaponDefinition : ContentDefinition
     {
-        [SerializeField] private WeaponSlot _slot;
-        [SerializeField, Min(0f)] private float _damage = 10f;
+        private const float DefaultSoundRadius = 4f;
 
-        [Tooltip("How far the attack is heard by zombies, in cells (ТЗ §71).")]
-        [SerializeField, Min(0f)] private float _soundRadius = 4f;
+        [SerializeField] private Rarity _rarity;
+
+        [Tooltip("Cannot be upgraded in the arsenal: strong at once (about an upgraded weapon of the same rarity at " +
+                 "level 6–7).")]
+        [SerializeField] private bool _noUpgrades;
+
+        [Tooltip("How the character holds it: the animation set and hand pose.")]
+        [SerializeField] private WeaponHold _hold = WeaponHold.Rifle;
 
         [Tooltip("Sound group the player hears (display only): a folder Sounds/Weapon/<group>/ (attack*, reload*). " +
                  "Default = the folder named by the weapon's id, if any. No sound in the group = the common melee / " +
                  "shot / reload sounds.")]
         [SerializeField, WeaponSoundGroup] private string _sound;
 
-        [Header("Melee")]
-        [Tooltip("Attacks per second.")]
-        [SerializeField, Min(0.01f)] private float _attackSpeed = 1f;
-        [Tooltip("Reach from the player's centre to the target's edge, in cells.")]
-        [SerializeField, Min(0.1f)] private float _meleeRange = 1.2f;
-        [Tooltip("Width of the hit sector in front of the player, degrees.")]
-        [SerializeField, Range(10f, 360f)] private float _meleeArc = 100f;
+        [SerializeReference, ModuleList] private List<WeaponModule> _modules = new List<WeaponModule>();
 
-        [Header("Ranged")]
-        [Tooltip("Seconds between shots.")]
-        [SerializeField, Min(0.01f)] private float _fireInterval = 0.3f;
-        [SerializeField, Min(1)] private int _magazineSize = 10;
-        [Tooltip("Automatic reload time in seconds when the magazine is empty. Ammo reserve is infinite.")]
-        [SerializeField, Min(0f)] private float _reloadTime = 1.5f;
-        [SerializeField] private FireMode _fireMode;
-        [Tooltip("Bullet speed, cells per second.")]
-        [SerializeField, Min(1f)] private float _projectileSpeed = 20f;
+        // Module lookups, cached: definitions are read every tick.
+        [System.NonSerialized] private bool _cached;
+        [System.NonSerialized] private WeaponAttack _attack;
+        [System.NonSerialized] private AmmoModule _ammo;
+        [System.NonSerialized] private SilencerModule _silencer;
+        [System.NonSerialized] private MobilityModule _mobility;
 
-        public WeaponSlot Slot => _slot;
+        public Rarity Rarity => _rarity;
+        public bool Upgradable => !_noUpgrades;
+        public WeaponHold Hold => _hold;
+        public IReadOnlyList<WeaponModule> Modules => _modules;
 
         /// <summary>Sound group of the weapon (AudioCatalog): the set one, otherwise the id.</summary>
         public string SoundGroup => string.IsNullOrEmpty(_sound) ? Id : _sound;
 
         /// <summary>The group set by hand (empty = none).</summary>
         internal string Sound => _sound;
-        public float Damage => _damage;
-        public float SoundRadius => _soundRadius;
-        public float AttackSpeed => _attackSpeed;
-        public float MeleeRange => _meleeRange;
-        public float MeleeArc => _meleeArc;
-        public float FireInterval => _fireInterval;
-        public int MagazineSize => _magazineSize;
-        public float ReloadTime => _reloadTime;
-        public FireMode FireMode => _fireMode;
-        public float ProjectileSpeed => _projectileSpeed;
 
-        /// <summary>Seconds between attacks: melee 1 / AttackSpeed, ranged FireInterval.</summary>
-        public float Cooldown => _slot == WeaponSlot.Melee ? 1f / _attackSpeed : _fireInterval;
+        /// <summary>The attack; null only in a broken asset (<see cref="Validate"/>).</summary>
+        public WeaponAttack Attack => Cache()._attack;
 
-        /// <summary>For tests and tools.</summary>
-        internal void Configure(string id, WeaponSlot slot, int magazineSize = 10)
+        /// <summary>Magazine and ammo type; null for melee.</summary>
+        public AmmoModule Ammo => Cache()._ammo;
+
+        public bool IsMelee => Attack == null || Attack.IsMelee;
+        public bool UsesAmmo => !IsMelee && Ammo != null;
+        public int MagazineSize => UsesAmmo ? Ammo.Magazine : 0;
+        public float ReloadTime => UsesAmmo ? Ammo.ReloadTime : 0f;
+
+        /// <summary>Seconds between attacks.</summary>
+        public float Cooldown => Attack != null ? Attack.Interval : 1f;
+
+        public FireMode FireMode => Attack != null && Attack.Automatic ? FireMode.Automatic : FireMode.Single;
+
+        /// <summary>
+        /// How far an attack is heard by monsters, cells: melee — the swing's; a gun — the weapon's own override or its
+        /// ammo type's, × silencer.
+        /// </summary>
+        public float SoundRadius
+        {
+            get
+            {
+                Cache();
+                if (_attack is MeleeAttack melee) return melee.SoundRadius;
+                var radius = _ammo == null ? DefaultSoundRadius
+                    : _ammo.SoundRadius > 0f ? _ammo.SoundRadius
+                    : _ammo.Ammo != null ? _ammo.Ammo.SoundRadius : DefaultSoundRadius;
+                return _silencer != null ? radius * _silencer.Noise : radius;
+            }
+        }
+
+        /// <summary>Speed multiplier while in hands (<see cref="MobilityModule"/>; 1 without it).</summary>
+        public float SpeedInHands => Cache()._mobility != null ? _mobility.InHands : 1f;
+
+        /// <summary>Extra speed multiplier while firing.</summary>
+        public float SpeedWhileFiring => Cache()._mobility != null ? _mobility.WhileFiring : 1f;
+
+        public bool TryGet<T>(out T module) where T : WeaponModule => Purge.Core.Modules.Modules.TryGet(_modules, out module);
+
+        /// <summary>Problems of the weapon's setup, in English (editor checks).</summary>
+        public void Validate(List<string> problems)
+        {
+            var owner = $"Weapon '{name}'";
+            Purge.Core.Modules.Modules.Validate(_modules, owner, problems);
+            var attacks = 0;
+            foreach (var module in _modules)
+                if (module is WeaponAttack) attacks++;
+            if (attacks != 1) problems.Add($"{owner}: needs exactly one attack module, has {attacks}.");
+            if (attacks == 1 && !IsMelee && Ammo == null) problems.Add($"{owner}: a ranged attack needs 'Ammo and magazine'.");
+        }
+
+        private void OnValidate() => _cached = false;
+
+        private WeaponDefinition Cache()
+        {
+            if (_cached) return this;
+            _attack = null;
+            _ammo = null;
+            _silencer = null;
+            _mobility = null;
+            foreach (var module in _modules)
+                switch (module)
+                {
+                    case WeaponAttack attack when _attack == null: _attack = attack; break;
+                    case AmmoModule ammo when _ammo == null: _ammo = ammo; break;
+                    case SilencerModule silencer when _silencer == null: _silencer = silencer; break;
+                    case MobilityModule mobility when _mobility == null: _mobility = mobility; break;
+                }
+
+            _cached = true;
+            return this;
+        }
+
+        /// <summary>For tests and tools: replaces the modules.</summary>
+        internal void Configure(string id, params WeaponModule[] modules)
         {
             SetId(id);
-            _slot = slot;
-            _magazineSize = magazineSize;
+            _modules = new List<WeaponModule>(modules);
+            _cached = false;
+        }
+
+        internal void ConfigureLook(Rarity rarity, WeaponHold hold, bool noUpgrades = false)
+        {
+            _rarity = rarity;
+            _hold = hold;
+            _noUpgrades = noUpgrades;
+        }
+
+        /// <summary>Tools: the modules after editing them in place.</summary>
+        internal List<WeaponModule> MutableModules
+        {
+            get
+            {
+                _cached = false;
+                return _modules;
+            }
         }
 
         internal void SetSound(string group) => _sound = group;
-
-        internal void ConfigureCombat(float damage, float attackSpeed = 1f, float fireInterval = 0.3f, float reloadTime = 1.5f,
-            FireMode fireMode = FireMode.Single, float projectileSpeed = 20f, float meleeRange = 1.2f, float meleeArc = 100f,
-            float soundRadius = 4f)
-        {
-            _damage = damage;
-            _attackSpeed = attackSpeed;
-            _fireInterval = fireInterval;
-            _reloadTime = reloadTime;
-            _fireMode = fireMode;
-            _projectileSpeed = projectileSpeed;
-            _meleeRange = meleeRange;
-            _meleeArc = meleeArc;
-            _soundRadius = soundRadius;
-        }
     }
 }

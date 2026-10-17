@@ -111,6 +111,7 @@ MonoBehaviour:
   _muzzle: {fileID: 7169402353038949846}
   _tip: {fileID: 0}
   _gripLeft: {fileID: 6509299298905419377}
+  _gripRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!1 &1110461034046764
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,8 +1043,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536437194150093240}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.056569412, y: -0.954468, z: -0.09955889, w: -0.27546108}
-  m_LocalPosition: {x: 0.00000023469329, y: 0.00000008940697, z: 0.3514728}
+  m_LocalRotation: {x: 0.019886987, y: 0.07025607, z: 0.9434163, w: 0.32347226}
+  m_LocalPosition: {x: 0.00000014156103, y: -0.00000014901161, z: 0.48714843}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1074,7 +1075,7 @@ Transform:
   m_GameObject: {fileID: 5587508254466550191}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.000000007450581, y: -0.02444473, z: 0.5137638}
+  m_LocalPosition: {x: -0.0000000055879354, y: -0.02444473, z: 0.5137638}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

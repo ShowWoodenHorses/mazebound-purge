@@ -78,5 +78,6 @@ namespace Purge.Gameplay.Horde
         public bool LookIsPointer => _inner.LookIsPointer;
         public bool AttackHeld => _inner.AttackHeld;
         public bool WasPressed(PlayerAction action) => _inner.WasPressed(action);
+        public bool IsHeld(PlayerAction action) => _inner.IsHeld(action);
     }
 }

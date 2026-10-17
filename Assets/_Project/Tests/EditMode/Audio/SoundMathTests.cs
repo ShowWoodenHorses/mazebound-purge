@@ -74,7 +74,7 @@ namespace Purge.Tests.EditMode.Audio
                 catalog.MutableWeaponSounds.Add(new WeaponSound("silenced", attack, new SoundCue()));
                 catalog.MutableZombieVoices.Add(new ZombieVoice { ZombieId = "hunter", Pitch = 0.9f });
 
-                weapon.Configure("hunting_rifle", WeaponSlot.Ranged);
+                weapon.Configure("hunting_rifle", new BulletAttack(), new AmmoModule());
                 Assert.AreEqual("hunting_rifle", weapon.SoundGroup, "No group set = the id.");
                 Assert.IsNull(catalog.WeaponAttack(weapon.SoundGroup), "No such group = the common sound.");
                 weapon.SetSound("Silenced");

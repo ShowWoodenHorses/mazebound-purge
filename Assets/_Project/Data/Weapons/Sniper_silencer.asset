@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b50615c978853148ac821b2ced6756b, type: 3}
+  m_Name: Sniper_silencer
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
+  _id: sniper_silencer
+  _rarity: 0
+  _noUpgrades: 0
+  _hold: 1
+  _sound: 
+  _modules:
+  - rid: 1763807262009983073
+  - rid: 1763807262009983074
+  - rid: 1763807262009983075
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983073
+      type: {class: BulletAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _interval: 1
+        _automatic: 0
+        _damage: 45
+        _speed: 40
+        _range: 22
+        _pellets: 1
+        _spread: 0
+        _pierce: 2
+    - rid: 1763807262009983074
+      type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _ammo: {fileID: 11400000, guid: 50942deae0b84f444b7c4caf61824f12, type: 2}
+        _magazine: 5
+        _reloadTime: 2.5
+        _perAttack: 1
+        _infiniteReserve: 0
+        _soundRadius: 0
+    - rid: 1763807262009983075
+      type: {class: MobilityModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _inHands: 0.85
+        _whileFiring: 1

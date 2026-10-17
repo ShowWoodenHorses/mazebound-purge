@@ -47,7 +47,9 @@ namespace Purge.Gameplay.Pickups
     /// <summary>
     /// Items on the ground (ТЗ §67, §72). On entering a cell the player picks up keys automatically and uses a
     /// medkit only when hurt (it heals to full and disappears; at full HP it stays). Weapons are picked up by the
-    /// Interact action (<see cref="TryTakeWeapon"/>): the new one becomes active, a replaced one drops into the cell.
+    /// Interact action (<see cref="TryTakeWeapon"/>): the new one becomes active, a replaced one drops into the cell
+    /// (a slot with the base pistol is filled first). A weapon the player drops (<see cref="WeaponSystem.DropRequested"/>,
+    /// <see cref="DropWeapon"/>) lies in the player's cell.
     /// </summary>
     public sealed class PickupSystem : ILevelLoadStep, IDisposable
     {
@@ -123,10 +125,23 @@ namespace Purge.Gameplay.Pickups
             {
                 _player.Spawned += OnSpawned;
                 _player.CellChanged += OnCellChanged;
+                _weapons.DropRequested += OnDropRequested;
                 _subscribed = true;
             }
 
             return UniTask.CompletedTask;
+        }
+
+        /// <summary>Drops the weapon of the slot into the player's cell (the base pistol stays). False when nothing was dropped.</summary>
+        public bool DropWeapon(Core.Definitions.WeaponSlot slot)
+        {
+            var weapon = _weapons.Drop(slot);
+            if (weapon == null) return false;
+            var drop = new Pickup(PickupKind.Weapon, _player.Cell, weapon: weapon);
+            Place(drop);
+            Added?.Invoke(drop);
+            GameLog.Info(LogChannel.Gameplay, $"Dropped weapon '{weapon.Id}'.");
+            return true;
         }
 
         /// <summary>Picks up the first weapon lying in <paramref name="cell"/>. False when there is none.</summary>
@@ -159,8 +174,11 @@ namespace Purge.Gameplay.Pickups
             if (!_subscribed) return;
             _player.Spawned -= OnSpawned;
             _player.CellChanged -= OnCellChanged;
+            _weapons.DropRequested -= OnDropRequested;
             _subscribed = false;
         }
+
+        private void OnDropRequested(Core.Definitions.WeaponSlot slot) => DropWeapon(slot);
 
         private void OnSpawned() => Enter(_player.Cell);
 

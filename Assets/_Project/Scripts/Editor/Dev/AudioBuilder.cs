@@ -192,7 +192,7 @@ namespace Purge.Editor.Dev
                 var sound = catalog.FindWeaponSound(name);
                 if (sound == null)
                 {
-                    var melee = users.Count > 0 && users.All(d => d.Slot == WeaponSlot.Melee);
+                    var melee = users.Count > 0 && users.All(d => d.IsMelee);
                     var automatic = users.Count > 0 && users.All(d => d.FireMode == FireMode.Automatic);
                     sound = new WeaponSound(name, (melee ? catalog.MeleeSwing : catalog.Shot).CopyTuning(),
                         (automatic ? catalog.ReloadMagazine : catalog.ReloadSingle).CopyTuning());

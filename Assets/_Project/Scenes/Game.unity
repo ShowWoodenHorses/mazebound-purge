@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.TopDownCamera
   _pitch: 88
   _margin: 1.05
-  _followHalfExtent: 4
+  _followHalfExtent: 7
   _followSmoothTime: 0.12
   _camera: {fileID: 6351158}
 --- !u!20 &6351158

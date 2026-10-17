@@ -52,6 +52,7 @@ namespace Purge.Tests.EditMode.Visibility
             _player = new PlayerSystem(_level, _definition, _input, new LevelPassability(_grid, _doors), occupancy,
                 new LevelLaunchOptions(startIndex: 0), Aim.FreeNoAssist);
             _visibility = new VisibilitySystem(_grid, _doors, _player);
+            _visibility.SetRadius(Purge.Core.Visibility.FieldOfView.DefaultRadius); // the tests' 11×11 window
 
             // Load order of the real level: InitializeVisibility before SpawnPlayer.
             _visibility.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();

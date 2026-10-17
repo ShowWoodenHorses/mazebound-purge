@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
@@ -14,61 +15,83 @@ using UnityEngine;
 namespace Purge.Gameplay.Combat
 {
     /// <summary>
-    /// The player's attacks (ТЗ §66, §68, §69). Attack = Attack button; the direction is the facing (movement
-    /// direction, ТЗ §65), or the stick direction pressed in the same frame. The player stands while attacking
-    /// (ТЗ §66): for <see cref="StandTime"/> after every attack, and all the time the button is held with a weapon
-    /// that repeats on hold (melee, automatic; not while reloading). Standing, the stick only turns the player (aims).
-    /// The weapon's cooldown blocks only the next attack.
+    /// The player's attacks with the weapon in hands, written once per attack module (<see cref="WeaponAttack"/>):
     /// <list type="bullet">
-    /// <item>Melee: every living target in a sector in front of the player (range, arc) with no wall or closed
-    /// door in between takes the damage. Repeats while the button is held. A frozen door next to the player in the
-    /// attack direction, within reach, takes one hit on its ice (<see cref="DoorSystem.HitIce"/>) — heard by zombies as
-    /// a door sound. Bullets do not break ice.</item>
-    /// <item>Ranged: a bullet (<see cref="BulletSystem"/>). Single fires once per press, Automatic while held.
-    /// An empty magazine reloads automatically (ReloadTime); reload runs only while the weapon is in hands.
-    /// Reload (or SwitchRanged again, <see cref="WeaponSystem.ReloadRequested"/>) starts it earlier.</item>
+    /// <item><see cref="BulletAttack"/> — bullets or a fan of pellets (<see cref="BulletSystem"/>);
+    /// <see cref="ExplosiveAttack"/> — a projectile that explodes where it ends.</item>
+    /// <item><see cref="StreamAttack"/> — every target in a cone in front, each tick of the stream.</item>
+    /// <item><see cref="ChainAttack"/> — the first target in a cone, then jumps to the nearest ones
+    /// (<see cref="ChainPoints"/> for views).</item>
+    /// <item><see cref="MeleeAttack"/> — every target in a sector; also one hit on a frozen door in front.</item>
     /// </list>
-    /// Aiming (<see cref="IAimSettings"/>): with aim assist the attack turns to the best living target within
-    /// <see cref="AssistAngle"/> of the wanted direction, in reach and not behind a wall or closed door; otherwise
-    /// the wanted direction is snapped (<see cref="Aim.Snap"/>).
-    /// Must be registered before <see cref="PlayerSystem"/> (it stops this tick's movement).
+    /// Targets — the horde and damageable objects (<see cref="CombatTargets"/>); walls and closed doors cover.
+    /// <para>Shooting on the move (decision 2026-10-14): the player keeps walking; the body turns to the aim
+    /// (<see cref="PlayerSystem.AimAt"/>) while attacking and for <see cref="StanceTime"/> after the last attack (combat
+    /// stance: no turning back and forth between shots); on a computer it always faces the mouse. The weapon in hands
+    /// sets the walking speed (<see cref="MobilityModule"/>: in hands, and while firing).</para>
+    /// <para>Aim: the mouse on a computer (exactly at the pointer), the right stick of a gamepad, otherwise the movement
+    /// stick or the facing — the latter two with aim assist (<see cref="IAimSettings"/>: the best living target within
+    /// <see cref="AssistAngle"/>, in the attack's reach, not behind a wall; for the movement stick then the nearest one
+    /// all around) or snapped (<see cref="Aim.Snap"/>).</para>
+    /// <para>Ammo (<see cref="AmmoModule"/>): an attack takes rounds from the magazine; an empty magazine reloads
+    /// itself from the reserve (<see cref="AmmoStock"/>; the base pistol's is infinite). Reload (or the active slot's key
+    /// again) reloads earlier. No rounds left anywhere — the attack only clicks (<see cref="DryFired"/>).</para>
+    /// Must be registered before <see cref="PlayerSystem"/> (it sets this tick's aim and speed).
     /// </summary>
     public sealed class PlayerCombat : ILevelTickable
     {
         private const float DeadZone = 0.1f;
 
-        /// <summary>Seconds the player stands after an attack.</summary>
-        public const float StandTime = 0.25f;
-
         /// <summary>Half-angle of the aim assist cone, degrees.</summary>
         public const float AssistAngle = 30f;
 
-        /// <summary>Aim assist reach of ranged weapons, cells (about the view window).</summary>
-        public const float AssistRange = 6f;
+        /// <summary>Seconds after the last attack the player still counts as firing (weapon speed).</summary>
+        public const float FiringLinger = 0.25f;
+
+        /// <summary>
+        /// Seconds after the last attack the body keeps facing the aim (combat stance, decision 2026-10-17): no turning
+        /// to the run direction and back between shots while retreating.
+        /// </summary>
+        public const float StanceTime = 1f;
+
+        public const int MaxChainPoints = 16;
+
+        /// <summary>Most of a frame's remainder the next attack keeps (no double shot after a long frame).</summary>
+        private const float MaxCooldownCarry = 0.05f;
 
         private readonly IPlayerInput _input;
         private readonly PlayerSystem _player;
         private readonly WeaponSystem _weapons;
-        private readonly ISpatialQueryService _spatial;
+        private readonly CombatTargets _targets;
         private readonly BulletSystem _bullets;
         private readonly SoundEventBus _sounds;
         private readonly IAimSettings _aim;
         private readonly DoorSystem _doors;
-        private readonly List<ISpatialObject> _candidates = new List<ISpatialObject>();
-        private readonly List<IDamageable> _hits = new List<IDamageable>();
-        private float _standLeft;
+        private readonly AmmoStock _ammo;
+        private readonly IAimPointer _pointer;
+        private readonly List<CombatTarget> _found = new List<CombatTarget>();
+        private readonly List<CombatTarget> _meleeTargets = new List<CombatTarget>();
+        private readonly List<IDamageable> _meleeHits = new List<IDamageable>();
+        private readonly Vector2[] _chainPoints = new Vector2[MaxChainPoints];
+        private readonly CombatTarget[] _chainTargets = new CombatTarget[MaxChainPoints];
+        private readonly DeterministicRandom _random = new DeterministicRandom(0x5eed);
+        private float _firingLeft;
+        private float _stanceLeft;
 
-        public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, ISpatialQueryService spatial,
-            BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors)
+        public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
+            BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
+            IAimPointer pointer = null)
         {
-            _doors = doors;
-            _aim = aim;
             _input = input;
             _player = player;
             _weapons = weapons;
-            _spatial = spatial;
+            _targets = targets;
             _bullets = bullets;
             _sounds = sounds;
+            _aim = aim;
+            _doors = doors;
+            _ammo = ammo;
+            _pointer = pointer;
         }
 
         /// <summary>(weapon, direction) after every attack — for views, animation and HUD.</summary>
@@ -77,51 +100,79 @@ namespace Purge.Gameplay.Combat
         /// <summary>(weapon) when a reload starts or ends.</summary>
         public event Action<WeaponRuntime> ReloadChanged;
 
-        /// <summary>Targets hit by the last melee attack.</summary>
-        public IReadOnlyList<IDamageable> LastMeleeHits => _hits;
+        /// <summary>(weapon) an attack was wanted, but there are no rounds left at all (the click of an empty gun).</summary>
+        public event Action<WeaponRuntime> DryFired;
+
+        /// <summary>Damageable objects hit by the last melee attack (the horde's monsters are in <see cref="LastMeleeTargets"/>).</summary>
+        public IReadOnlyList<IDamageable> LastMeleeHits => _meleeHits;
+
+        /// <summary>Every target hit by the last melee attack.</summary>
+        public IReadOnlyList<CombatTarget> LastMeleeTargets => _meleeTargets;
 
         /// <summary>Frozen door whose ice the last melee attack hit; null if none.</summary>
         public DoorData LastIceHit { get; private set; }
 
-        /// <summary>The player stands this tick because of attacking (see the class remarks).</summary>
-        public bool IsStanding { get; private set; }
+        /// <summary>
+        /// Path of the last chain lightning: the player's position, then every target it hit (or where a miss ended).
+        /// Valid until the next chain attack.
+        /// </summary>
+        public ReadOnlySpan<Vector2> ChainPoints => new ReadOnlySpan<Vector2>(_chainPoints, 0, ChainCount);
+
+        public int ChainCount { get; private set; }
+
+        /// <summary>The player attacked within <see cref="FiringLinger"/> (or holds an automatic attack).</summary>
+        public bool IsFiring => _firingLeft > 0f;
+
+        /// <summary>The body faces the aim: within <see cref="StanceTime"/> after an attack.</summary>
+        public bool InStance => _stanceLeft > 0f;
+
+        /// <summary>Direction of the last attack (or of the aim while the attack is held).</summary>
+        public Vector2 AimDirection { get; private set; } = Vector2.up;
 
         public void Tick(float deltaTime)
         {
-            _standLeft = Mathf.Max(0f, _standLeft - deltaTime);
-            IsStanding = false;
+            _firingLeft = Mathf.Max(0f, _firingLeft - deltaTime);
+            _stanceLeft = Mathf.Max(0f, _stanceLeft - deltaTime);
+            // A computer: the body always faces the mouse, the legs walk where the keys say (decision 2026-10-17).
+            var pointerAim = TryPointerAim(out var toPointer);
             var weapon = _weapons.Active;
             if (weapon == null || !_player.IsSpawned)
+            {
+                if (pointerAim) _player.AimAt(toPointer);
+                _player.WeaponSpeed = 1f;
                 return;
+            }
 
             UpdateTimers(weapon, deltaTime);
             if (_input.WasPressed(PlayerAction.Reload) || _weapons.ReloadRequested)
                 TryReload();
-            var move = _input.Move;
-            var stick = move.sqrMagnitude >= DeadZone * DeadZone;
-            if (WantsToAttack(weapon) && weapon.Cooldown <= 0f && !weapon.IsReloading)
+
+            var definition = weapon.Definition;
+            var wantsToAttack = WantsToAttack(weapon);
+            if (wantsToAttack || _stanceLeft > 0f || pointerAim)
             {
-                Attack(weapon, AimDirection(weapon.Definition, stick ? move.normalized : _player.Facing));
-                return;
+                // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
+                // right stick aims): the body does not follow the run direction.
+                var direction = wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
+                if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading)
+                {
+                    if (HasRounds(weapon)) Attack(weapon, direction);
+                    else if (!TryReload() && _input.WasPressed(PlayerAction.Attack)) DryFired?.Invoke(weapon);
+                }
+
+                AimDirection = direction;
+                _player.AimAt(direction);
             }
 
-            // Between attacks: still standing, the stick turns the player.
-            if (_standLeft > 0f || HoldsRepeatingAttack(weapon))
-            {
-                _player.HoldStill(stick ? move.normalized : Vector2.zero);
-                IsStanding = true;
-            }
+            var firing = IsFiring || (wantsToAttack && definition.Attack != null && definition.Attack.Automatic);
+            _player.WeaponSpeed = definition.SpeedInHands * (firing ? definition.SpeedWhileFiring : 1f);
         }
 
-        private bool HoldsRepeatingAttack(WeaponRuntime weapon) =>
-            _input.AttackHeld && !weapon.IsReloading &&
-            (weapon.Slot == WeaponSlot.Melee || weapon.Definition.FireMode == FireMode.Automatic);
-
-        /// <summary>Performs an attack with the active weapon now, ignoring input (tests, tools).</summary>
+        /// <summary>Performs an attack with the active weapon now, ignoring input and aim (tests, tools).</summary>
         public bool TryAttack(Vector2 direction)
         {
             var weapon = _weapons.Active;
-            if (weapon == null || !_player.IsSpawned || weapon.Cooldown > 0f || weapon.IsReloading)
+            if (weapon == null || !_player.IsSpawned || weapon.Cooldown > 0f || weapon.IsReloading || !HasRounds(weapon))
                 return false;
 
             Attack(weapon, direction.normalized);
@@ -129,13 +180,14 @@ namespace Purge.Gameplay.Combat
         }
 
         /// <summary>
-        /// Starts reloading the active ranged weapon unless its magazine is full or it is reloading already.
+        /// Starts reloading the weapon in hands unless it needs no ammo, its magazine is full, it is reloading already or
+        /// there is nothing in the reserve.
         /// </summary>
         public bool TryReload()
         {
             var weapon = _weapons.Active;
-            if (weapon == null || !_player.IsSpawned || weapon.Slot != WeaponSlot.Ranged || weapon.IsReloading ||
-                weapon.Ammo >= weapon.Definition.MagazineSize)
+            if (weapon == null || !_player.IsSpawned || !weapon.Definition.UsesAmmo || weapon.IsReloading ||
+                weapon.Ammo >= weapon.Definition.MagazineSize || !HasReserve(weapon.Definition))
                 return false;
 
             weapon.ReloadRemaining = Mathf.Max(weapon.Definition.ReloadTime, 1e-4f);
@@ -143,143 +195,273 @@ namespace Purge.Gameplay.Combat
             return true;
         }
 
-        /// <summary>Direction of an attack the player wants to make towards <paramref name="wanted"/>.</summary>
-        public Vector2 AimDirection(WeaponDefinition definition, Vector2 wanted)
+        /// <summary>Rounds in the reserve for this weapon (int.MaxValue — infinite).</summary>
+        public int ReserveOf(WeaponDefinition definition)
         {
-            if (_aim.AimAssist && TryFindAssistTarget(definition, wanted, out var toTarget))
+            var ammo = definition.Ammo;
+            if (ammo == null) return 0;
+            return ammo.InfiniteReserve ? int.MaxValue : _ammo.Get(ammo.Ammo);
+        }
+
+        /// <summary>A gun with no rounds in the magazine and none in the reserve (ТЗ: красная обводка).</summary>
+        public bool IsOutOfAmmo(WeaponRuntime weapon) =>
+            weapon != null && weapon.Definition.UsesAmmo && !weapon.IsReloading && !HasRounds(weapon) &&
+            !HasReserve(weapon.Definition);
+
+        /// <summary>Direction of an attack the player wants to make towards <paramref name="wanted"/> (assist or snap).</summary>
+        public Vector2 AssistedDirection(WeaponDefinition definition, Vector2 wanted)
+        {
+            if (_aim.AimAssist && TryFindAssistTarget(definition, wanted, AssistAngle, out var toTarget))
                 return toTarget;
             return Aim.Snap(wanted, _aim.AimMode);
         }
 
-        /// <summary>
-        /// Best target in the cone: nearest, with off-axis targets counted farther (up to twice at the cone edge).
-        /// </summary>
-        private bool TryFindAssistTarget(WeaponDefinition definition, Vector2 wanted, out Vector2 direction)
+        private Vector2 AimFor(WeaponDefinition definition)
+        {
+            if (TryPointerAim(out var toPointer)) return toPointer;
+
+            var look = RightStick();
+            if (look.sqrMagnitude > 0f) return AssistedDirection(definition, look.normalized);
+
+            // The movement stick (a phone): the cone ahead first, then the nearest target all around — a player running
+            // from the crowd shoots at it, not ahead.
+            var move = _input.Move;
+            var wanted = move.sqrMagnitude >= DeadZone * DeadZone ? move.normalized : _player.Facing;
+            if (_aim.AimAssist && (TryFindAssistTarget(definition, wanted, AssistAngle, out var toTarget) ||
+                                   TryFindAssistTarget(definition, wanted, 180f, out toTarget)))
+                return toTarget;
+            return Aim.Snap(wanted, _aim.AimMode);
+        }
+
+        /// <summary>Direction to the mouse on the floor; false without a mouse (touch, gamepad) or right at the player.</summary>
+        private bool TryPointerAim(out Vector2 direction)
         {
             direction = default;
-            if (wanted.sqrMagnitude <= 0f) return false;
+            if (_pointer == null || !_input.LookIsPointer || !_player.IsSpawned ||
+                !_pointer.TryGetGroundPoint(_input.Look, out var point))
+                return false;
+            var offset = point - _player.Position;
+            if (offset.sqrMagnitude <= 0.01f) return false;
+            direction = offset.normalized;
+            return true;
+        }
+
+        /// <summary>The gamepad's right stick past the dead zone; zero otherwise (and for a mouse).</summary>
+        private Vector2 RightStick() =>
+            !_input.LookIsPointer && _input.Look.sqrMagnitude >= DeadZone * DeadZone ? _input.Look : Vector2.zero;
+
+        /// <summary>
+        /// Best target within <paramref name="halfAngle"/> of <paramref name="wanted"/>: nearest, with off-axis targets
+        /// counted farther (up to twice at the cone edge).
+        /// </summary>
+        private bool TryFindAssistTarget(WeaponDefinition definition, Vector2 wanted, float halfAngle, out Vector2 direction)
+        {
+            direction = default;
+            if (wanted.sqrMagnitude <= 0f || definition.Attack == null) return false;
             wanted.Normalize();
 
             var origin = _player.Position;
-            var range = definition.Slot == WeaponSlot.Melee ? definition.MeleeRange : AssistRange;
-            var minCos = Mathf.Cos(AssistAngle * Mathf.Deg2Rad);
+            var floor = _player.Floor;
+            var minCos = halfAngle >= 180f ? -1f : Mathf.Cos(halfAngle * Mathf.Deg2Rad);
             var bestScore = float.MaxValue;
-            _spatial.QueryRadius(origin, range, _candidates, _player.Floor);
-
-            foreach (var candidate in _candidates)
+            _targets.Collect(origin, definition.Attack.AimRange, floor, _found, wanted, minCos);
+            foreach (var target in _found)
             {
-                if (!(candidate is IDamageable target) || !target.IsAlive)
-                    continue;
-
-                var offset = target.Position - origin;
+                var offset = _targets.PositionOf(target) - origin;
                 var distance = offset.magnitude;
-                if (distance <= 1e-4f)
-                    continue;
+                if (distance <= 1e-4f) continue;
                 var toTarget = offset / distance;
                 var cos = Vector2.Dot(toTarget, wanted);
-                if (cos < minCos)
-                    continue;
-
-                var offAxis = Mathf.Acos(Mathf.Clamp(cos, -1f, 1f)) * Mathf.Rad2Deg / AssistAngle;
+                var offAxis = Mathf.Acos(Mathf.Clamp(cos, -1f, 1f)) * Mathf.Rad2Deg / halfAngle;
                 var score = distance * (1f + offAxis);
-                if (score >= bestScore || !_spatial.IsClear(origin, target.Position, CellFlags.BlocksBullets, _player.Floor))
-                    continue;
-
+                if (score >= bestScore || !_targets.IsClear(origin, origin + offset, floor)) continue;
                 bestScore = score;
                 direction = toTarget;
             }
 
-            _candidates.Clear();
+            _found.Clear();
             return bestScore < float.MaxValue;
         }
 
         private bool WantsToAttack(WeaponRuntime weapon)
         {
-            if (_input.WasPressed(PlayerAction.Attack))
-                return true;
-            if (!_input.AttackHeld)
-                return false;
-            return weapon.Slot == WeaponSlot.Melee || weapon.Definition.FireMode == FireMode.Automatic;
+            if (_input.WasPressed(PlayerAction.Attack)) return true;
+            return _input.AttackHeld && weapon.Definition.Attack != null && weapon.Definition.Attack.Automatic;
         }
+
+        private static bool HasRounds(WeaponRuntime weapon) =>
+            !weapon.Definition.UsesAmmo || weapon.Ammo >= weapon.Definition.Ammo.PerAttack;
+
+        private bool HasReserve(WeaponDefinition definition) => ReserveOf(definition) > 0;
 
         private void UpdateTimers(WeaponRuntime weapon, float deltaTime)
         {
-            if (weapon.Cooldown > 0f)
-                weapon.Cooldown = Mathf.Max(0f, weapon.Cooldown - deltaTime);
+            // May go a frame below zero: the next attack keeps the remainder, so the fire rate does not depend on the
+            // frame rate (0.1 s at 60 FPS would otherwise be 7 frames).
+            var carry = Mathf.Min(deltaTime, MaxCooldownCarry);
+            if (weapon.Cooldown > -carry)
+                weapon.Cooldown = Mathf.Max(-carry, weapon.Cooldown - deltaTime);
 
             if (!weapon.IsReloading)
                 return;
 
             weapon.ReloadRemaining = Mathf.Max(0f, weapon.ReloadRemaining - deltaTime);
-            if (!weapon.IsReloading)
-            {
-                weapon.Ammo = weapon.Definition.MagazineSize;
-                ReloadChanged?.Invoke(weapon);
-            }
+            if (weapon.IsReloading) return;
+
+            var definition = weapon.Definition;
+            var need = definition.MagazineSize - weapon.Ammo;
+            weapon.Ammo += definition.Ammo.InfiniteReserve ? need : _ammo.Take(definition.Ammo.Ammo, need);
+            ReloadChanged?.Invoke(weapon);
         }
 
         private void Attack(WeaponRuntime weapon, Vector2 direction)
         {
-            _player.HoldStill(direction);
-            _standLeft = StandTime;
-            IsStanding = true;
             var definition = weapon.Definition;
-            weapon.Cooldown = definition.Cooldown;
+            weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + definition.Cooldown;
+            _firingLeft = FiringLinger;
+            _stanceLeft = StanceTime;
+            AimDirection = direction;
+            _player.AimAt(direction);
 
-            if (weapon.Slot == WeaponSlot.Melee)
+            var origin = _player.Position;
+            var floor = _player.Floor;
+            switch (definition.Attack)
             {
-                Melee(definition, direction);
-                _sounds.Emit(SoundType.Melee, _player.Position, definition.SoundRadius, _player.Floor);
+                case BulletAttack bullets:
+                    FireBullets(definition, bullets, origin, direction, floor);
+                    break;
+                case ExplosiveAttack explosive:
+                    _bullets.Spawn(origin, direction, explosive.Speed, explosive.DirectDamage, floor, explosive.Range,
+                        explosive: explosive, weapon: definition);
+                    break;
+                case StreamAttack stream:
+                    Stream(stream, origin, direction, floor);
+                    break;
+                case ChainAttack chain:
+                    Chain(chain, origin, direction, floor);
+                    break;
+                case MeleeAttack melee:
+                    Melee(melee, origin, direction, floor);
+                    break;
             }
-            else
+
+            _sounds.Emit(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius, floor);
+            if (definition.UsesAmmo)
             {
-                _bullets.Spawn(_player.Position, direction, definition.ProjectileSpeed, definition.Damage, _player.Floor);
-                _sounds.Emit(SoundType.Ranged, _player.Position, definition.SoundRadius, _player.Floor);
-                weapon.Ammo--;
-                if (weapon.Ammo <= 0)
-                {
-                    weapon.Ammo = 0;
-                    weapon.ReloadRemaining = Mathf.Max(definition.ReloadTime, 1e-4f);
-                    ReloadChanged?.Invoke(weapon);
-                }
+                weapon.Ammo = Mathf.Max(0, weapon.Ammo - definition.Ammo.PerAttack);
+                if (!HasRounds(weapon)) TryReload();
             }
 
             Attacked?.Invoke(weapon, direction);
         }
 
-        private void Melee(WeaponDefinition definition, Vector2 direction)
+        private void FireBullets(WeaponDefinition definition, BulletAttack attack, Vector2 origin, Vector2 direction, int floor)
         {
-            _hits.Clear();
-            var origin = _player.Position;
-            var halfArcCos = Mathf.Cos(definition.MeleeArc * 0.5f * Mathf.Deg2Rad);
-            _spatial.QueryRadius(origin, definition.MeleeRange, _candidates, _player.Floor);
-
-            foreach (var candidate in _candidates)
+            var pellets = Mathf.Max(1, attack.Pellets);
+            var spread = attack.Spread;
+            for (var i = 0; i < pellets; i++)
             {
-                if (!(candidate is IDamageable target) || !target.IsAlive)
-                    continue;
+                float degrees;
+                if (pellets == 1)
+                {
+                    degrees = ((float)_random.NextDouble() - 0.5f) * spread;
+                }
+                else
+                {
+                    // An even fan, each pellet shaken within its share.
+                    var share = spread / pellets;
+                    degrees = -spread * 0.5f + share * (i + 0.5f) + ((float)_random.NextDouble() - 0.5f) * share * 0.6f;
+                }
 
-                var offset = target.Position - origin;
-                var distance = offset.magnitude;
-                // A target overlapping the player is always in front; otherwise check the sector.
-                if (distance > target.Radius && Vector2.Dot(offset / distance, direction) < halfArcCos)
-                    continue;
-                if (!_spatial.IsClear(origin, target.Position, CellFlags.BlocksBullets, _player.Floor))
-                    continue;
+                _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage, floor,
+                    attack.Range, attack.Pierce, weapon: definition);
+            }
+        }
 
-                _hits.Add(target);
+        private void Stream(StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
+        {
+            _targets.Collect(origin, stream.Range, floor, _found, direction, Mathf.Cos(stream.Angle * 0.5f * Mathf.Deg2Rad));
+            foreach (var target in _found)
+                if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
+                    _targets.Damage(target, stream.DamagePerTick, direction);
+            _found.Clear();
+        }
+
+        private void Chain(ChainAttack chain, Vector2 origin, Vector2 direction, int floor)
+        {
+            ChainCount = 0;
+            _chainPoints[ChainCount++] = origin;
+            var hits = 0;
+            var from = origin;
+            var damage = chain.Damage;
+            var target = Nearest(from, chain.Range, floor, direction, Mathf.Cos(chain.AimAngle * Mathf.Deg2Rad), hits);
+            if (!target.IsValid)
+            {
+                // A miss: the bolt goes straight until a wall or its reach.
+                var end = origin + direction * chain.Range;
+                var hit = _targets.Segment(origin, end, floor);
+                _chainPoints[ChainCount++] = hit.Kind == CombatHitKind.Blocker ? hit.Point : end;
+                return;
             }
 
-            foreach (var target in _hits)
-                target.ApplyDamage(definition.Damage, direction);
+            while (target.IsValid)
+            {
+                var at = _targets.PositionOf(target);
+                _chainTargets[hits++] = target;
+                _chainPoints[ChainCount++] = at;
+                _targets.Damage(target, damage, (at - from).normalized);
+                if (hits > chain.Jumps || ChainCount >= MaxChainPoints) break;
+                damage *= chain.JumpFalloff;
+                from = at;
+                target = Nearest(from, chain.JumpRange, floor, Vector2.zero, -1f, hits);
+            }
+        }
+
+        /// <summary>The nearest living target in the cone, not behind a wall and not among the first <paramref name="skip"/> chain targets.</summary>
+        private CombatTarget Nearest(Vector2 from, float range, int floor, Vector2 direction, float cosHalfAngle, int skip)
+        {
+            _targets.Collect(from, range, floor, _found, direction, cosHalfAngle);
+            var best = CombatTarget.None;
+            var bestDistance = float.MaxValue;
+            foreach (var candidate in _found)
+            {
+                var already = false;
+                for (var i = 0; i < skip; i++)
+                    if (_chainTargets[i].Equals(candidate)) already = true;
+                if (already || !_targets.IsAlive(candidate)) continue;
+                var distance = (_targets.PositionOf(candidate) - from).sqrMagnitude;
+                if (distance >= bestDistance || !_targets.IsClear(from, _targets.PositionOf(candidate), floor)) continue;
+                bestDistance = distance;
+                best = candidate;
+            }
+
+            _found.Clear();
+            return best;
+        }
+
+        private void Melee(MeleeAttack melee, Vector2 origin, Vector2 direction, int floor)
+        {
+            _meleeTargets.Clear();
+            _meleeHits.Clear();
+            _targets.Collect(origin, melee.Range, floor, _found, direction, Mathf.Cos(melee.Arc * 0.5f * Mathf.Deg2Rad));
+            foreach (var target in _found)
+                if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
+                    _meleeTargets.Add(target);
+            _found.Clear();
+
+            foreach (var target in _meleeTargets)
+            {
+                if (target.Object != null) _meleeHits.Add(target.Object);
+                _targets.Damage(target, melee.Damage, direction);
+            }
 
             LastIceHit = null;
-            var door = FrozenDoorInFront(definition, direction);
+            var door = FrozenDoorInFront(melee, direction);
             if (door != null)
             {
                 LastIceHit = door;
                 _doors.HitIce(door.Id);
-                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), definition.SoundRadius, door.Position.Floor);
+                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), melee.SoundRadius, door.Position.Floor);
             }
         }
 
@@ -287,10 +469,10 @@ namespace Purge.Gameplay.Combat
         /// The frozen door in a neighbouring cell the attack points at (within the melee arc), whose near face is in
         /// melee range.
         /// </summary>
-        private DoorData FrozenDoorInFront(WeaponDefinition definition, Vector2 direction)
+        private DoorData FrozenDoorInFront(MeleeAttack melee, Vector2 direction)
         {
             DoorData best = null;
-            var bestDot = Mathf.Max(Mathf.Cos(definition.MeleeArc * 0.5f * Mathf.Deg2Rad), 0.1f);
+            var bestDot = Mathf.Max(Mathf.Cos(melee.Arc * 0.5f * Mathf.Deg2Rad), 0.1f);
             var origin = _player.Position;
             foreach (var side in DirectionExtensions.All)
             {
@@ -301,7 +483,7 @@ namespace Purge.Gameplay.Combat
                 var offset = new Vector2(cell.X, cell.Y) - origin;
                 var face = Mathf.Max(Mathf.Abs(offset.x), Mathf.Abs(offset.y)) - 0.5f;
                 var dot = Vector2.Dot(offset.normalized, direction);
-                if (face > definition.MeleeRange || dot < bestDot)
+                if (face > melee.Range || dot < bestDot)
                     continue;
 
                 best = door;
@@ -309,6 +491,13 @@ namespace Purge.Gameplay.Combat
             }
 
             return best;
+        }
+
+        private static Vector2 Rotate(Vector2 v, float radians)
+        {
+            var cos = Mathf.Cos(radians);
+            var sin = Mathf.Sin(radians);
+            return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
         }
     }
 }

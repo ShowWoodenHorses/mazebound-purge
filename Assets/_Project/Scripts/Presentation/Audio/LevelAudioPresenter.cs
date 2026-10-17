@@ -175,7 +175,7 @@ namespace Purge.Presentation.Audio
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
             var cue = Catalog.WeaponAttack(weapon.Definition.SoundGroup) ??
-                      (weapon.Slot == WeaponSlot.Melee ? Catalog.MeleeSwing : Catalog.Shot);
+                      (weapon.Definition.IsMelee ? Catalog.MeleeSwing : Catalog.Shot);
             PlayAt(cue, _player.Position);
         }
 

@@ -58,7 +58,7 @@ namespace Purge.Composition
                            builder.RegisterInstance(levelAssets);
                            builder.RegisterInstance(options ?? LevelLaunchOptions.Default);
                            // Stress test levels: the autopilot wraps the player's input.
-                           if (level.StressTest != null)
+                           if (level.StressTest != null && !level.StressTest.IsSandbox)
                                builder.Register(resolver => new StressAutopilotInput(
                                        (IPlayerInput)resolver.Resolve<IInputService>(), level), Lifetime.Singleton)
                                    .As<IPlayerInput>();

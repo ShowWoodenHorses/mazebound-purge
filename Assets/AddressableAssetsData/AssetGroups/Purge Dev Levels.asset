@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e5535d4397758a4db64cd67783cb7f7
+    m_Address: Levels/Level_Sandbox
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83b5aa64504d7ca429fec1144bdb53fd
     m_Address: Levels/Level_Items
     m_ReadOnly: 0

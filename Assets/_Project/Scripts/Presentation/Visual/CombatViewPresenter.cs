@@ -281,7 +281,7 @@ namespace Purge.Presentation.Visual
 
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
-            if (weapon.Slot == WeaponSlot.Ranged)
+            if (!weapon.Definition.IsMelee)
             {
                 // The gun is posed for this frame only in the late tick: the flash and shell wait for it.
                 _shotPending = true;
@@ -344,7 +344,8 @@ namespace Purge.Presentation.Visual
             if (swing.Component != null && swing.Component.Swing != null)
             {
                 var leftToRight = _meleeSweep != 0f ? _meleeSweep > 0f : _swingCount++ % 2 == 0;
-                swing.Component.Swing.Setup(_meleeWeapon.MeleeArc, _meleeWeapon.MeleeRange, leftToRight);
+                var melee = _meleeWeapon.Attack as MeleeAttack;
+                swing.Component.Swing.Setup(melee != null ? melee.Arc : 100f, melee != null ? melee.Range : 1.2f, leftToRight);
             }
             swing.Play();
         }

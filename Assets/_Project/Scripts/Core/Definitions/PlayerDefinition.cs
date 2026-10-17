@@ -26,6 +26,10 @@ namespace Purge.Core.Definitions
 
         [SerializeField, Min(1)] private int _maxHealth = 100;
 
+        [Tooltip("The weapon of an empty slot (ТЗ: базовый пистолет, бесконечные патроны): a picked weapon replaces it " +
+                 "and is never dropped for it; a dropped weapon brings it back.")]
+        [SerializeField] private WeaponDefinition _baseWeapon;
+
         [Header("Sounds (ТЗ §71), radii in cells")]
         [Tooltip("A step sound is emitted every this many cells walked.")]
         [SerializeField, Min(0.1f)] private float _stepDistance = 0.8f;
@@ -38,6 +42,7 @@ namespace Purge.Core.Definitions
         public float BodyHalfSize => _bodyHalfSize;
         public float CornerAssist => _cornerAssist;
         public int MaxHealth => _maxHealth;
+        public WeaponDefinition BaseWeapon { get => _baseWeapon; internal set => _baseWeapon = value; }
         public float StepDistance => _stepDistance;
         public float StepSoundRadius => _stepSoundRadius;
         public float InteractionSoundRadius => _interactionSoundRadius;

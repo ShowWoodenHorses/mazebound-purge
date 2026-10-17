@@ -449,7 +449,7 @@ namespace Purge.Editor.Dev
                     try
                     {
                         // Barrel / blade along +Z, up +Y. Seen from +X: +Z goes right. Melee leans up-right.
-                        var melee = weapon.Definition.Slot == Core.Definitions.WeaponSlot.Melee;
+                        var melee = weapon.Definition.IsMelee;
                         instance.transform.SetPositionAndRotation(Vector3.zero,
                             melee ? Quaternion.AngleAxis(-45f, Vector3.right) : Quaternion.identity);
                         if (!TryBounds(instance, out var bounds)) continue;

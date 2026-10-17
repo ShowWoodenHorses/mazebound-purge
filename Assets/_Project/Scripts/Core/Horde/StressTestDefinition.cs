@@ -58,6 +58,9 @@ namespace Purge.Core.Horde
     /// Stage 2 stress test (dev levels only): referenced by <c>LevelData.StressTest</c>. Turns on the horde, the
     /// stress weapons, the autopilot and the measuring overlay; the numbers here are the starting point, the overlay
     /// changes them at run time.
+    /// <para>With <see cref="IsSandbox"/> it is the combat sandbox of stage 4 instead: the horde fights the player's own
+    /// weapons (picked up on the level), the player gets <see cref="SandboxAmmo"/> rounds of every ammo type; no stress
+    /// weapons, autopilot or benchmark (the overlay keeps the counts, god mode and the metrics).</para>
     /// </summary>
     [CreateAssetMenu(menuName = "Purge/Stress Test", fileName = "StressTest")]
     public sealed class StressTestDefinition : ScriptableObject
@@ -65,6 +68,14 @@ namespace Purge.Core.Horde
         [SerializeField] private HordeVisualDefinition _visual;
         [SerializeField] private HordeMonsterStats _monster = new HordeMonsterStats();
         [SerializeField] private StressWeaponSettings _weapons = new StressWeaponSettings();
+
+        [Header("Combat sandbox")]
+        [Tooltip("The combat sandbox (stage 4): the player's own weapons against the horde.")]
+        [SerializeField] private bool _sandbox;
+        [Tooltip("Rounds of every ammo type the player starts with in the sandbox.")]
+        [SerializeField, Min(0)] private int _sandboxAmmo = 500;
+        [Tooltip("Weapons Build Stress Test Levels lays out around the start of the sandbox level.")]
+        [SerializeField] private Definitions.WeaponDefinition[] _sandboxWeapons = new Definitions.WeaponDefinition[0];
 
         [Header("Run")]
         [SerializeField] private int[] _monsterCounts = { 50, 100, 150, 200, 300, 500 };
@@ -93,6 +104,9 @@ namespace Purge.Core.Horde
         [SerializeField, Min(1f)] private float _benchmarkSample = 12f;
 
         public HordeVisualDefinition Visual => _visual;
+        public bool IsSandbox => _sandbox;
+        public int SandboxAmmo => _sandboxAmmo;
+        public Definitions.WeaponDefinition[] SandboxWeapons => _sandboxWeapons;
         public HordeMonsterStats Monster => _monster;
         public StressWeaponSettings Weapons => _weapons;
         public int[] MonsterCounts => _monsterCounts;
@@ -119,6 +133,13 @@ namespace Purge.Core.Horde
                     max = Math.Max(max, count);
                 return Math.Max(1, max);
             }
+        }
+
+        internal void ConfigureSandbox(bool sandbox, int ammo, int startCount)
+        {
+            _sandbox = sandbox;
+            _sandboxAmmo = ammo;
+            _startCount = startCount;
         }
 
         internal void Configure(HordeVisualDefinition visual, Material tracer, Material particles, Material fire)

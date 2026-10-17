@@ -12,6 +12,9 @@ namespace Purge.Presentation.Visual
         [SerializeField] private Transform _tip;
         [SerializeField] private Transform _gripLeft;
 
+        [Tooltip("Turns the model to point along +Z in the hand (models of packs that point elsewhere; Build Weapons).")]
+        [SerializeField] private Quaternion _gripRotation = Quaternion.identity;
+
         /// <summary>End of the barrel, facing along it; null for melee.</summary>
         public Transform Muzzle => _muzzle;
 
@@ -23,5 +26,11 @@ namespace Purge.Presentation.Visual
         /// melee. Can be moved by hand in the prefab — Build Weapons overwrites it, though.
         /// </summary>
         public Transform GripLeft => _gripLeft;
+
+        /// <summary>Local rotation of the model in the hand socket.</summary>
+        public Quaternion GripRotation =>
+            _gripRotation.x == 0f && _gripRotation.y == 0f && _gripRotation.z == 0f && _gripRotation.w == 0f
+                ? Quaternion.identity
+                : _gripRotation;
     }
 }

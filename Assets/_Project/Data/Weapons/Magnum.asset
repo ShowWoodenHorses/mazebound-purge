@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b50615c978853148ac821b2ced6756b, type: 3}
+  m_Name: Magnum
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
+  _id: magnum
+  _rarity: 0
+  _noUpgrades: 0
+  _hold: 0
+  _sound: 
+  _modules:
+  - rid: 1763807262009983143
+  - rid: 1763807262009983144
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983143
+      type: {class: BulletAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _interval: 0.28
+        _automatic: 0
+        _damage: 12
+        _speed: 28
+        _range: 12
+        _pellets: 1
+        _spread: 3
+        _pierce: 0
+    - rid: 1763807262009983144
+      type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _ammo: {fileID: 11400000, guid: eafdf1935eb98494e85039d52d9b1be6, type: 2}
+        _magazine: 12
+        _reloadTime: 1.2
+        _perAttack: 1
+        _infiniteReserve: 0
+        _soundRadius: 0

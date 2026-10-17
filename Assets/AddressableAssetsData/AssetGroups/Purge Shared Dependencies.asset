@@ -25,11 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 05592bd23d54afc4fa8f4f31f4a5f45b
-    m_Address: Assets/_Project/Data/Weapons/MP5.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 058a571248af9cd46bdb6ec9b1e6c67f
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_FF800D.mat
     m_ReadOnly: 0
@@ -107,11 +102,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 299be5c1d954e8d4d8b9a9ccdb0da1d6
     m_Address: Assets/_Project/Art/Effects/fx_additive.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2bb7dc9d0eb49d94aa908e133bb58da9
-    m_Address: Assets/_Project/Data/Weapons/Crowbar.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -295,11 +285,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7ca6f9caabab14249976bf0a5ceda6ef
-    m_Address: Assets/_Project/Data/Weapons/HuntingRifle.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81b5bd9bb854c674fb9ed9598003a2cd
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_FireAxe_01.fbx
     m_ReadOnly: 0
@@ -360,18 +345,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9f444227525d435499517b13b3b00da1
-    m_Address: Assets/_Project/Data/Weapons/Katana.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5899f9817b81e8419c56ebfc3aa1ce3
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_1AD9D9.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a63bb30920a56754d8f8a5188eea4139
-    m_Address: Assets/_Project/Data/Weapons/Bat.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -392,11 +367,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b33f17226115b1949a44373d62d754bd
     m_Address: Assets/_Project/Art/Biomes/Snow/Textures/wall_snow_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b648aac8a8cb44c45a97d41297b31aba
-    m_Address: Assets/_Project/Data/Weapons/FireAxe.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -422,11 +392,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c798c01d46f63bb4299d10b91436a6c7
     m_Address: Assets/_Project/Art/Effects/fx_footprints.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7e9ec95b3da8ad40a670cc1a1994bf7
-    m_Address: Assets/_Project/Data/Weapons/RevolverRifle.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -532,11 +497,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee4ca7d229aa8f04cab686907c5f3396
     m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/Misc/PolygonFantasyKingdom_Texture_Normal_01.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eed7f5fc0ce713d418f2014e9021fd8b
-    m_Address: Assets/_Project/Data/Weapons/SniperRifle.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

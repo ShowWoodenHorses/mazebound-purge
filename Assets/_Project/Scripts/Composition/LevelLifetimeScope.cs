@@ -58,6 +58,7 @@ namespace Purge.Composition
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().PlayerVisual, Lifetime.Singleton);
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().CombatVisual, Lifetime.Singleton);
             builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().WeaponVisuals, Lifetime.Singleton);
+            builder.Register(resolver => resolver.Resolve<SharedDefinitionsService>().Content, Lifetime.Singleton);
 
             // Gameplay
             builder.Register(resolver => new LevelGrid(resolver.Resolve<LevelData>().Geometry), Lifetime.Singleton);
@@ -68,7 +69,9 @@ namespace Purge.Composition
             builder.Register<SpatialQueryService>(Lifetime.Singleton).AsSelf().As<ISpatialQueryService>();
             builder.Register<PlayerHealth>(Lifetime.Singleton);
             builder.Register<PlayerInventory>(Lifetime.Singleton);
-            // Tick order: weapon switching → attack (stops this tick's movement) → movement → steps → interaction → bullets.
+            builder.Register<AmmoStock>(Lifetime.Singleton);
+            builder.Register<CombatTargets>(Lifetime.Singleton);
+            // Tick order: weapon switching → attack (sets this tick's aim and speed) → movement → steps → interaction → bullets.
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -81,6 +84,7 @@ namespace Purge.Composition
             // Mass monsters and the stress test weapons (inactive unless the level has StressTest settings).
             builder.Register<HordeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
@@ -94,6 +98,7 @@ namespace Purge.Composition
             // Presentation
             builder.RegisterComponent(_viewRoot);
             builder.RegisterComponent(_camera);
+            builder.Register<CameraAimPointer>(Lifetime.Singleton).As<IAimPointer>();
             builder.Register<EntityViewRegistry>(Lifetime.Singleton);
             builder.Register<LevelVisualSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LightFixturesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
@@ -113,6 +118,8 @@ namespace Purge.Composition
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<WeaponEffectsView>(Lifetime.Singleton).AsSelf()
+                .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
             builder.Register<StressEffectsView>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
             // After the horde views: measures them and drives the stress test overlay.

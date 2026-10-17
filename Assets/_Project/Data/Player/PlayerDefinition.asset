@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: PlayerDefinition
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.PlayerDefinition
   _moveSpeed: 3.5
+  _snowdriftSpeed: 0.6
   _bodyHalfSize: 0.3
   _cornerAssist: 0.35
   _maxHealth: 100
+  _baseWeapon: {fileID: 11400000, guid: 55599f2eb6845e14084afedcc2a9a368, type: 2}
+  _stepDistance: 0.8
+  _stepSoundRadius: 2
+  _interactionSoundRadius: 3

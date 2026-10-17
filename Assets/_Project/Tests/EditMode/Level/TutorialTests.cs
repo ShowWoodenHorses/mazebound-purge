@@ -75,7 +75,7 @@ namespace Purge.Tests.EditMode.Level
             var occupancy = new OccupancyMap(grid);
             var inventory = new PlayerInventory();
             var health = _health = new PlayerHealth(_definition);
-            var weapons = new WeaponSystem(_input);
+            var weapons = new WeaponSystem(_input, _definition);
             var sounds = new SoundEventBus();
             _player = new PlayerSystem(_level, _definition, _input, passability, occupancy,
                 new LevelLaunchOptions(startIndex: 0), Aim.FreeNoAssist);

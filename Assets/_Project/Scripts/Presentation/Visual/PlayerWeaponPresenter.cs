@@ -131,7 +131,7 @@ namespace Purge.Presentation.Visual
 
             if (_shown != null) _shown.SetActive(false);
             _shown = next;
-            _shownIsGun = weapon != null && weapon.Slot == WeaponSlot.Ranged;
+            _shownIsGun = weapon != null && !weapon.Definition.IsMelee;
             _shownGrip = null;
             _shownModel = null;
             if (_shown == null) return;
@@ -156,11 +156,12 @@ namespace Purge.Presentation.Visual
                 return null;
             }
 
-            var parent = definition.Slot == WeaponSlot.Ranged ? _rig.PalmRight : _rig.MeleeSocket;
+            var parent = !definition.IsMelee ? _rig.PalmRight : _rig.MeleeSocket;
             instance = UnityEngine.Object.Instantiate(prefab, parent, false);
             instance.name = "Weapon " + definition.Id;
             instance.transform.localPosition = Vector3.zero;
-            instance.transform.localRotation = Quaternion.identity;
+            var model = instance.GetComponent<WeaponModel>();
+            instance.transform.localRotation = model != null ? model.GripRotation : Quaternion.identity;
             _instances[definition] = instance;
             return instance;
         }

@@ -108,8 +108,8 @@ namespace Purge.Presentation.UI
         public void LateTick(float deltaTime)
         {
             _ui.Hud.SetTime(_progress.Elapsed);
-            var melee = SlotState(WeaponSlot.Melee);
-            var ranged = SlotState(WeaponSlot.Ranged);
+            var melee = SlotState(WeaponSlot.First);
+            var ranged = SlotState(WeaponSlot.Second);
             _ui.Hud.SetWeapons(melee, ranged);
 
             var touch = _ui.TouchControls;
@@ -132,7 +132,7 @@ namespace Purge.Presentation.UI
                 Equipped = true,
                 Active = _weapons.ActiveSlot == slot,
                 Icon = _visuals != null ? _visuals.Find(weapon.Definition)?.Icon : null,
-                Magazine = slot == WeaponSlot.Ranged ? weapon.Definition.MagazineSize : 0,
+                Magazine = weapon.Definition.MagazineSize,
                 Ammo = weapon.Ammo,
                 Reloading = weapon.IsReloading,
                 Reload = weapon.ReloadProgress,

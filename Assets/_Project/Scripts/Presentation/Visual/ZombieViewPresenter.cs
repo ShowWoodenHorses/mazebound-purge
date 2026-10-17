@@ -242,7 +242,7 @@ namespace Purge.Presentation.Visual
         /// <summary>Raised after the melee damage was dealt (this tick): those reactions wait for the clip's hit.</summary>
         private void OnPlayerAttacked(WeaponRuntime weapon, Vector2 direction)
         {
-            if (weapon.Slot != WeaponSlot.Melee) return;
+            if (!weapon.Definition.IsMelee) return;
             for (var i = 0; i < _reactions.Count; i++)
             {
                 var reaction = _reactions[i];

@@ -48,9 +48,9 @@ namespace Purge.Gameplay.Player
         private readonly OccupancyMap _occupancy;
         private readonly LevelLaunchOptions _options;
         private readonly IAimSettings _aim;
-        private bool _holdStill;
+        private bool _aiming;
         private bool _moved;
-        private Vector2 _holdFacing;
+        private Vector2 _aimFacing;
 
         public PlayerSystem(LevelData level, PlayerDefinition definition, IPlayerInput input, LevelPassability passability,
             OccupancyMap occupancy, LevelLaunchOptions options, IAimSettings aim)
@@ -78,11 +78,23 @@ namespace Purge.Gameplay.Player
         public int Floor => Cell.Floor;
 
         /// <summary>
-        /// Unit look direction: the last movement direction (ТЗ §65). When the player stops it snaps to the aim
-        /// directions (<see cref="IAimSettings.AimMode"/>), so standing still shows where an attack would go.
-        /// An attack sets it exactly (it may aim at a target).
+        /// Unit look direction of the body: where the player attacks while attacking (<see cref="AimAt"/>), otherwise the
+        /// last movement direction (ТЗ §65). When the player stops it snaps to the aim directions
+        /// (<see cref="IAimSettings.AimMode"/>), so standing still shows where an attack would go.
         /// </summary>
         public Vector2 Facing { get; private set; } = Vector2.up;
+
+        /// <summary>The body faced the aim this tick (<see cref="AimAt"/>), not the walk.</summary>
+        public bool IsAiming { get; private set; }
+
+        /// <summary>Unit direction the legs walk this tick; zero when standing.</summary>
+        public Vector2 MoveDirection { get; private set; }
+
+        /// <summary>
+        /// Speed multiplier of the weapon in hands (ТЗ «Подвижность»), set by PlayerCombat every tick before this one;
+        /// 0 = stands (a mortar while firing).
+        /// </summary>
+        public float WeaponSpeed { get; set; } = 1f;
 
         /// <summary>Actual speed this tick relative to <see cref="PlayerDefinition.MoveSpeed"/>, 0..1 (for animation).</summary>
         public float SpeedFactor { get; private set; }
@@ -101,13 +113,14 @@ namespace Purge.Gameplay.Player
         }
 
         /// <summary>
-        /// The player attacks this tick (ТЗ §66): no movement during this tick, facing turns to
-        /// <paramref name="facing"/>. Movement is allowed again on the next tick.
+        /// The player attacks this tick: the body faces <paramref name="direction"/> while the legs keep walking where
+        /// the stick says (shooting on the move, decision 2026-10-14).
         /// </summary>
-        public void HoldStill(Vector2 facing)
+        public void AimAt(Vector2 direction)
         {
-            _holdStill = true;
-            _holdFacing = facing;
+            if (direction.sqrMagnitude <= 0f) return;
+            _aiming = true;
+            _aimFacing = direction.normalized;
         }
 
         public void Tick(float deltaTime)
@@ -115,29 +128,26 @@ namespace Purge.Gameplay.Player
             if (!IsSpawned)
                 return;
 
-            if (_holdStill)
-            {
-                _holdStill = false;
-                if (_holdFacing.sqrMagnitude > 0f)
-                    Facing = _holdFacing.normalized;
-                SpeedFactor = 0f;
-                _moved = false;
-                return;
-            }
-
+            var aiming = _aiming;
+            _aiming = false;
+            IsAiming = aiming;
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
-            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f)
+            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f)
             {
-                if (_moved) Facing = Aim.Snap(Facing, _aim.AimMode);
+                if (aiming) Facing = _aimFacing;
+                else if (_moved) Facing = Aim.Snap(Facing, _aim.AimMode);
                 _moved = false;
                 SpeedFactor = 0f;
+                MoveDirection = Vector2.zero;
                 return;
             }
 
-            Facing = move.normalized;
+            MoveDirection = move.normalized;
+            Facing = aiming ? _aimFacing : MoveDirection;
             _moved = true;
             var maxDistance = _definition.MoveSpeed * deltaTime;
-            var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell);
+            var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell) *
+                       WeaponSpeed;
             var target = PlayerMovement.Move(Position, move * (maxDistance * slow), _definition.BodyHalfSize, _definition.CornerAssist, this);
             // Of the full speed: in a snowdrift the walk animation slows down too.
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);
@@ -169,6 +179,7 @@ namespace Purge.Gameplay.Player
             Facing = InitialFacing(start.Position);
             _moved = false;
             SpeedFactor = 0f;
+            MoveDirection = Vector2.zero;
             IsSpawned = true;
 
             GameLog.Info(LogChannel.Gameplay, $"Player spawned at start #{startIndex} {start.Position}.");

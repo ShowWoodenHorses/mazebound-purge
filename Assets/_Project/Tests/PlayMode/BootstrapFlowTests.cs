@@ -286,14 +286,15 @@ namespace Purge.Tests.PlayMode
             doors.Unlock(locked.Id);
             Assert.IsFalse(Child(views, locked.Id, "Lock").activeSelf, "Padlock gone after unlocking.");
 
-            var melee = level.Weapons.Where(w => w.Definition.Slot == WeaponSlot.Melee).ToList();
+            var melee = level.Weapons.Where(w => w.Definition.IsMelee).ToList();
             Assert.GreaterOrEqual(melee.Count, 2, "Needs two melee weapons to test dropping.");
             Assert.IsTrue(pickups.TryTakeWeapon(melee[0].Position));
             Assert.IsFalse(views.TryGet(melee[0].Id, out _), "Taken weapon's view is removed.");
 
-            Assert.IsTrue(pickups.TryTakeWeapon(melee[1].Position));
+            Assert.IsTrue(pickups.TryTakeWeapon(melee[1].Position)); // the second slot
+            Assert.IsTrue(pickups.DropWeapon(WeaponSlot.First));
             Assert.IsTrue(views.TryGet(melee[0].Id, out var dropped), "Dropped weapon gets a view again.");
-            Assert.AreEqual(melee[1].Position, dropped.Cell);
+            Assert.AreEqual(container.Resolve<Purge.Gameplay.Player.PlayerSystem>().Cell, dropped.Cell);
             Assert.IsNotNull(dropped.GameObject);
 
             var held = container.Resolve<PlayerWeaponPresenter>().Shown;
@@ -323,7 +324,7 @@ namespace Purge.Tests.PlayMode
             var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
             var views = container.Resolve<CombatViewPresenter>();
 
-            var gun = level.Weapons.First(w => w.Definition.Slot == WeaponSlot.Ranged);
+            var gun = level.Weapons.First(w => !w.Definition.IsMelee);
             Assert.IsTrue(container.Resolve<PickupSystem>().TryTakeWeapon(gun.Position));
             var held = container.Resolve<PlayerWeaponPresenter>().Shown;
             Assert.IsNotNull(held, "The gun in hands is shown.");
@@ -369,6 +370,68 @@ namespace Purge.Tests.PlayMode
             Assert.AreEqual(handlesInMenu, AppHandles, "Combat and held weapon prefabs released with the level.");
             Assert.AreEqual(0, _audio.PlayingCount(SoundChannel.Level), "Level sounds stop with the level.");
         });
+
+        [UnityTest]
+        public IEnumerator CombatSandbox_EveryWeapon_HurtsTheHorde() => Async(async () =>
+        {
+            const string sandboxLevel = "Level_Sandbox";
+            var catalog = _container.Resolve<ILevelCatalog>();
+            if (catalog.Find(sandboxLevel) == null)
+                Assert.Ignore($"Dev level '{sandboxLevel}' is not in the catalog.");
+
+            var handlesInMenu = AppHandles;
+            await _flow.StartLevel(sandboxLevel, new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var level = container.Resolve<LevelData>();
+            var horde = container.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            var pickups = container.Resolve<PickupSystem>();
+            var weapons = container.Resolve<Purge.Gameplay.Weapons.WeaponSystem>();
+            var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
+            var targets = container.Resolve<Purge.Gameplay.Combat.CombatTargets>();
+            var player = container.Resolve<PlayerSystem>();
+            Assert.IsTrue(horde.IsActive, "The sandbox has a horde.");
+            Assert.IsTrue(weapons.Active != null && weapons.Active.IsBase, "The base pistol is in hands.");
+            Assert.Greater(level.Weapons.Count, 0);
+            horde.GodMode = true;
+
+            var hits = 0;
+            Action<Purge.Gameplay.Combat.CombatTarget, Vector2, float, Vector2, bool> count = (target, _, _, _, _) =>
+            {
+                if (target.Agent >= 0) hits++;
+            };
+            targets.Damaged += count;
+            try
+            {
+                foreach (var pickup in level.Weapons)
+                {
+                    var name = pickup.Definition.name;
+                    Assert.IsTrue(pickups.TryTakeWeapon(pickup.Position), $"Takes {name}.");
+                    Assert.AreSame(pickup.Definition, weapons.Active.Definition);
+                    hits = 0;
+                    // At the nearest monster until one is hurt: the horde comes to the player, so melee reaches too.
+                    var until = Time.realtimeSinceStartup + 12f;
+                    while (hits == 0 && Time.realtimeSinceStartup < until)
+                    {
+                        var nearest = horde.FindNearest(player.Position, 40f);
+                        if (nearest >= 0)
+                            combat.TryAttack((AgentPosition(horde, nearest) - player.Position).normalized);
+                        await UniTask.Yield();
+                    }
+
+                    Assert.Greater(hits, 0, $"{name} hurts the horde.");
+                }
+            }
+            finally
+            {
+                targets.Damaged -= count;
+            }
+
+            await _flow.ExitToMenu();
+            Assert.AreEqual(handlesInMenu, AppHandles, "The sandbox's assets released with the level.");
+        });
+
+        private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];
 
         [UnityTest]
         public IEnumerator Zombies_HaveViews_FollowGameplay_AndDisappearWhenKilled() => Async(async () =>

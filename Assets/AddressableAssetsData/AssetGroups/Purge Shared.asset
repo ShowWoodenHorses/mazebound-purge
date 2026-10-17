@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Purge Shared
   m_GUID: 3103d1cbfedb1f14f8c9d647de458c62
   m_SerializeEntries:
+  - m_GUID: 0083d3abfda7d054cadff3860e611898
+    m_Address: Assets/_Project/Art/Weapons/Purge/Ballons/Flamer_Pistol.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 010d6d85fdd40ed40b76615b05508bef
     m_Address: Assets/_Project/Data/Localization/Texts_it.asset
     m_ReadOnly: 0
@@ -25,8 +30,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 139846930a2304646b19292bd89b84ec
+    m_Address: Assets/_Project/Art/Weapons/Purge/Energy/Pistol_laser.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15114fc7bfeb57844b15b052997714d3
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/9_mm/MP5_silencer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 15c71a35b72204541a7c5d9edd3e323a
     m_Address: Assets/_Project/Data/Localization/Texts_fr.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 165ed3d6b9da9574da37be2e6e1132d1
+    m_Address: Assets/_Project/Art/Weapons/Purge/Sniper_rifle/Auto_sniper_rifle/7x62/Dragunov.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -35,8 +55,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1cfdd2c63a48a83439ad28bb6e96db45
+    m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Sword.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ef373babc8e1a342bff0537d85420dd
     m_Address: Weapons/Visual
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2215bfc4b81541944908c3ebee5922e9
+    m_Address: Assets/_Project/Art/Weapons/Purge/Sniper_rifle/5x45/Hunter_sniper.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 222fb201a1e53464aa96d6f6e2ca35b5
+    m_Address: Assets/_Project/Art/Weapons/Purge/Energy/Tesla.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22c54e3b1dde3574f96355963767be73
+    m_Address: Assets/_Project/Art/Weapons/Purge/Ballons/FlameGun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -50,13 +90,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 28e42837255a8cc418b9fb2162ecb882
-    m_Address: Assets/_Project/Art/Weapons/Rifle/SM_Wep_Hybrid_03.prefab
+  - m_GUID: 26a5113e5f020914d97e1dbb2c4d523f
+    m_Address: Assets/_Project/Art/Weapons/Purge/Pistol/9_mm/Pistol_silencer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2faff85800dfcf0428ba06ac642dd270
+    m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Knife.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3028039187233b14186282895b133e1b
     m_Address: Assets/_Project/Data/Localization/Texts_tr.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3202995cabb388e4cb6f46bb65d98514
+    m_Address: Assets/_Project/Art/Weapons/Purge/Pistol/5x45_mm/Desert.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -70,8 +120,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ffa80dff3dfcc45a01577395c00339
+    m_Address: Assets/_Project/Art/Weapons/Purge/Sniper_rifle/7x62/AWM.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 373f07124d1c81d4b8e32b798c9db6ea
     m_Address: Assets/_Project/Data/Localization/Texts_ru.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44638ec25a5a9654fb840c57dda49718
+    m_Address: Assets/_Project/Art/Weapons/Purge/Energy/Railgun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a83c002d8d59ca4db69919556675cbb
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/5x45_mm/M416.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54b445ff2b726d5488b16fc7d84b30b2
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/5x45_mm/SCAR-L.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54dae0370a9ff8e4cba5e9f908568416
+    m_Address: Assets/_Project/Art/Weapons/Purge/Energy/Shock_cannon.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -80,8 +155,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67d413abe225d2d47a78fb336374d015
-    m_Address: Assets/_Project/Art/Weapons/Rifle/Auto/SM_Wep_AssaultRifle_01.prefab
+  - m_GUID: 57ad9b7b30ab405438c54cde7d44226f
+    m_Address: Assets/_Project/Art/Weapons/Purge/Pistol/7x62_mm/Magnum.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58dfc673c0b17f34694ce3921e98e380
+    m_Address: Assets/_Project/Art/Weapons/Purge/Pistol/7x62_mm/Revolver.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5973d22b3b71019499dc3fd91f201692
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/9_mm/Vector_silencer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60d2b5913f2e894478519490270ae15d
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/7x62_mm/MachineGun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 639382a26cb160e42b27cb59bbbcc54c
+    m_Address: Assets/_Project/Art/Weapons/Purge/Another/RPG.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -105,8 +200,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73f4610c63649654db53d40153c2e0a2
+    m_Address: Assets/_Project/Art/Weapons/Purge/Another/Mortar.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 740c49c56bd0a924999b433a0c99d7d1
     m_Address: Assets/_Project/Art/Effects/fx_tracer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79142db22e52be844ab718910a4b9a24
+    m_Address: Assets/_Project/Art/Weapons/Purge/Ballons/GasGun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c3ddde10a9e0d64e828333278a67e4f
+    m_Address: Assets/_Project/Art/Weapons/Purge/Pistol/Glock_base.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 855f719f64c79304faed7b9cb4ff791c
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/9_mm/P90.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -115,8 +230,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8e692d55281b90b43a27979a894927c2
-    m_Address: Assets/_Project/Art/Weapons/Rifle/SM_Wep_SniperRifle_01.prefab
+  - m_GUID: 87a038de700d70a49906dae6029e6dc2
+    m_Address: Assets/_Project/Art/Weapons/Purge/Shotgun/Hard_Auto_Shotgun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e6646d47ab34b84597dec92c362e491
+    m_Address: Assets/_Project/Art/Weapons/Purge/Shotgun/Auto_Shotgun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -125,8 +245,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9dca697e99b490c43a892a09177b038d
-    m_Address: Assets/_Project/Art/Weapons/Melee/SM_Wep_Crowbar_01.prefab
+  - m_GUID: 9760cffc7d8102b48b419e0aa1d25142
+    m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Machete.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a96ec79a567a164992b8e53c4f42e5c
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/5x45_mm/Minigun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -135,13 +260,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac7df8dd6096f9843ac70b8b5dd341de
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/7x62_mm/Groza.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b1e99142f56fa3c40af00df3d0b91fea
     m_Address: Player/Visual
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b68cdd3552a07f643aca1595689f96a4
-    m_Address: Assets/_Project/Art/Weapons/Rifle/Auto/SM_Wep_SubMGun_02.prefab
+  - m_GUID: b31b2bd7a13faf54db93b927fcd5e72c
+    m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Star_sword.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b42149937f9239d458f9db3434ee03a9
+    m_Address: Assets/_Project/Art/Weapons/Purge/Another/Grenade_Launcher.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -150,8 +285,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: be28daa0667386f4ab1d6e0ae1ac59dc
-    m_Address: Assets/_Project/Art/Weapons/Melee/SM_Wep_FireAxe_01.prefab
+  - m_GUID: c056da541f8a7994b9b48e849812d907
+    m_Address: Assets/_Project/Art/Weapons/Purge/Ballons/AcidCannon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1345f32eb94d7c44bf2394de1fe803f
+    m_Address: Assets/_Project/Art/Weapons/Purge/Ballons/FreezeGun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -160,8 +300,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ce3b93c2ff9f6f644890d8abcb3a5749
-    m_Address: Assets/_Project/Art/Weapons/Melee/SM_Wep_Bat_Wood_01.prefab
+  - m_GUID: d00c857df31eecf4c921b584a74d78c4
+    m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Hammer.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -170,8 +310,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d7fd9fdf4a2cc10458a5b98d0da75977
-    m_Address: Assets/_Project/Art/Weapons/Rifle/Auto/SM_Wep_AssaultRifle_03.prefab
+  - m_GUID: d631ac80466aed64183196ba7ea3b01a
+    m_Address: Assets/_Project/Art/Weapons/Purge/Another/CrossBow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d907860c5bbb6f04cb68b658805feef3
+    m_Address: Assets/_Project/Art/Weapons/Purge/Shotgun/Pomp_Shotgun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dca1e130d970eb34f81562d3fbe3a776
+    m_Address: Assets/_Project/Art/Weapons/Purge/Auto/7x62_mm/AK-74.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -180,13 +330,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e28f1d16de9bd0a4b80abb0b08b53d94
-    m_Address: Assets/_Project/Art/Weapons/Rifle/SM_Wep_HuntingRifle_Clean_01.prefab
+  - m_GUID: ec443fb14ec671d42a86785643f6b010
+    m_Address: Assets/_Project/Art/Weapons/Purge/Energy/Plasmometer.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6e89d136fb41ad488c4568853260c9f
-    m_Address: Assets/_Project/Art/Weapons/Melee/SM_Wep_Katana_01.prefab
+  - m_GUID: ec989251e239fa6498ce4b9782a171cf
+    m_Address: Assets/_Project/Art/Weapons/Purge/Sniper_rifle/Auto_sniper_rifle/5x45/Sniper_silencer.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -197,6 +347,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcb1f63709928a34283a2ae26fa21f77
     m_Address: Assets/_Project/Data/Localization/Texts_uz.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd1a5fa57bc321d418f5fb8f87f33852
+    m_Address: Assets/_Project/Art/Weapons/Purge/Sniper_rifle/Auto_sniper_rifle/7x62/Lynx.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Core.Visual;
@@ -14,34 +14,37 @@ using UnityEngine.AddressableAssets;
 namespace Purge.Editor.Dev
 {
     /// <summary>
-    /// Purge → Dev → Build Weapons: the weapons of the game from the models in Art/Weapons (Synty: pivot at the grip,
-    /// pointing along +Z). Every prefab there (except Pickups) is a weapon; its folders tell the kind: under a
-    /// <c>Melee</c> folder — melee, otherwise a gun, automatic when a folder on its path is <c>Auto</c>.
+    /// Purge → Dev → Build Weapons: the player's weapons from the models in Art/Weapons/Purge (pivot at the grip). The
+    /// folder under it is the weapon's class (<see cref="Classes"/>: draft modules and how it is held), a deeper folder is
+    /// its caliber: the ammo type is the <see cref="AmmoDefinition"/> that lists the deepest folder of the model's path in
+    /// its <see cref="AmmoDefinition.ModelFolders"/>. Not weapons: <c>For_monsters</c> (monster equipment), <c>Throw</c>
+    /// (throwables — stage 4б) and <c>*_Ammo</c> models (projectiles).
     /// <list type="number">
     /// <item><see cref="WeaponDefinition"/> per model in Data/Weapons. A model already in <see cref="WeaponVisualCatalog"/>
-    /// keeps its definition; a new one gets <c>Data/Weapons/&lt;name&gt;.asset</c> (name = prefab name without
-    /// <c>SM_Wep_</c>) with draft values of its kind (<see cref="DraftFor"/>). Values are tuned in the asset and never
-    /// overwritten.</item>
+    /// keeps its definition; a new one gets <c>Data/Weapons/&lt;name&gt;.asset</c> with the draft modules of its class
+    /// (<see cref="DraftFor"/>). Values are tuned in the asset and never overwritten.</item>
     /// <item>Held prefab = the model + <see cref="WeaponModel"/> with a Muzzle (guns) or Tip (melee) mark at the far
-    /// end of the mesh; <see cref="WeaponVisualCatalog"/> (Data/Weapons/WeaponVisuals, "Weapons/Visual") maps
-    /// definitions to them.</item>
+    /// end of the mesh; a melee model that is not long along +Z gets a grip rotation that turns it there.
+    /// <see cref="WeaponVisualCatalog"/> (Data/Weapons/WeaponVisuals, "Weapons/Visual") maps definitions to them.</item>
     /// <item>Pickup prefab (Art/Weapons/Pickups) = the model lying on its side, so its silhouette is seen from above,
     /// diagonal in the cell, on the floor; the placeholder theme's Weapon set gets one variant per definition, and
     /// saved levels whose weapon visuals no longer fit are reassigned.</item>
     /// <item><see cref="CharacterWeaponRig"/> on the player prefab: palm centres and the melee socket, from the hand
     /// and finger bones (independent of any pose).</item>
     /// <item>Gun's <see cref="WeaponModel.GripLeft"/> (Grip_L): where the left palm is on the gun in the shooting pose
-    /// (<see cref="GripPoseClip"/>), posed as in game — the left hand IK pulls the hand there in every other pose.</item>
+    /// of its <see cref="WeaponHold"/> (<see cref="PlayerAnimationsBuilder.GripPoseClip"/>), posed as in game — the left hand IK pulls the hand there in every other pose.</item>
     /// </list>
+    /// Run Convert Object Materials to Purge Lit after new models.
     /// </summary>
     internal static class WeaponsBuilder
     {
-        private const string ModelsPath = "Assets/_Project/Art/Weapons";
-        private const string PickupsPath = ModelsPath + "/Pickups";
-        private const string MeleeFolder = "Melee";
-        private const string AutomaticFolder = "Auto";
-        private const string ModelPrefix = "SM_Wep_";
+        private const string ArtPath = "Assets/_Project/Art/Weapons";
+        private const string ModelsPath = ArtPath + "/Purge";
+        private const string PickupsPath = ArtPath + "/Pickups";
+        private const string ProjectileSuffix = "_Ammo";
+        private static readonly string[] NotWeapons = { "For_monsters", "Throw" };
         private const string DataPath = "Assets/_Project/Data/Weapons";
+        private const string AmmoPath = "Assets/_Project/Data/Ammo";
         private const string CatalogPath = DataPath + "/WeaponVisuals.asset";
         private const string WeaponSetPath = "Assets/_Project/Data/Themes/PlaceholderWeaponSet.asset";
 
@@ -50,15 +53,72 @@ namespace Purge.Editor.Dev
 
         private const float PickupYaw = 45f; // diagonal: the longest guns fit the cell
 
-        /// <summary>Pose where the clip holds a gun properly with both hands: the left grip mark is taken from it.</summary>
-        private const string GripPoseClip = "Player_rifle_weapon_shoot";
-        private const float GripPoseTime = 0.5f; // normalized
+        /// <summary>Moment of the hold's aiming idle the left grip mark is taken from (normalized).</summary>
+        private const float GripPoseTime = 0.5f;
 
         private sealed class Weapon
         {
             public string ModelPath;
             public WeaponDefinition Definition;
         }
+
+        /// <summary>A class folder: how its weapons are held and their draft attack.</summary>
+        private sealed class WeaponClass
+        {
+            public WeaponHold Hold;
+            public Func<WeaponAttack> Attack;
+            public int Magazine;
+            public float ReloadTime;
+            public float Speed = 1f;
+        }
+
+        /// <summary>
+        /// Class folders of Art/Weapons/Purge and the draft of a new weapon of the class (tuned in the asset afterwards).
+        /// A new class folder needs a line here (a new kind of weapon is code: how it is held, its attack module).
+        /// </summary>
+        private static readonly Dictionary<string, WeaponClass> Classes = new Dictionary<string, WeaponClass>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Pistol"] = new WeaponClass
+            {
+                Hold = WeaponHold.Pistol, Magazine = 12, ReloadTime = 1.2f,
+                Attack = () => new BulletAttack { Damage = 12f, Interval = 0.28f, Spread = 3f, Range = 12f },
+            },
+            ["Auto"] = new WeaponClass
+            {
+                Hold = WeaponHold.Rifle, Magazine = 30, ReloadTime = 2f, Speed = 0.9f,
+                Attack = () => new BulletAttack { Damage = 9f, Interval = 0.1f, Automatic = true, Spread = 4f, Range = 14f },
+            },
+            ["Shotgun"] = new WeaponClass
+            {
+                Hold = WeaponHold.Shotgun, Magazine = 6, ReloadTime = 2.5f, Speed = 0.9f,
+                Attack = () => new BulletAttack { Damage = 8f, Interval = 0.8f, Pellets = 8, Spread = 26f, Range = 7f, Speed = 24f },
+            },
+            ["Sniper_rifle"] = new WeaponClass
+            {
+                Hold = WeaponHold.Rifle, Magazine = 5, ReloadTime = 2.5f, Speed = 0.85f,
+                Attack = () => new BulletAttack { Damage = 45f, Interval = 1f, Spread = 0f, Range = 22f, Speed = 40f, Pierce = 2 },
+            },
+            ["Ballons"] = new WeaponClass
+            {
+                Hold = WeaponHold.Heavy, Magazine = 100, ReloadTime = 2.5f, Speed = 0.75f,
+                Attack = () => new StreamAttack { DamagePerSecond = 45f, Range = 3.5f, Angle = 30f },
+            },
+            ["Energy"] = new WeaponClass
+            {
+                Hold = WeaponHold.Heavy, Magazine = 20, ReloadTime = 2f, Speed = 0.85f,
+                Attack = () => new ChainAttack { Damage = 25f, Interval = 0.45f, Automatic = true },
+            },
+            ["Another"] = new WeaponClass
+            {
+                Hold = WeaponHold.Shoulder, Magazine = 4, ReloadTime = 2.5f, Speed = 0.8f,
+                Attack = () => new ExplosiveAttack(),
+            },
+            ["Melee"] = new WeaponClass
+            {
+                Hold = WeaponHold.Melee,
+                Attack = () => new MeleeAttack(),
+            },
+        };
 
         [MenuItem("Purge/Dev/Build Weapons")]
         public static void Build()
@@ -85,7 +145,7 @@ namespace Purge.Editor.Dev
                 foreach (var weapon in weapons)
                 {
                     var definition = weapon.Definition;
-                    MarkModel(weapon.ModelPath, definition.Slot);
+                    MarkModel(weapon.ModelPath, definition.IsMelee);
                     icons.TryGetValue(definition, out var icon);
                     catalog.MutableWeapons.Add(new WeaponVisualDefinition(definition, Reference(weapon.ModelPath), icon));
 
@@ -111,6 +171,7 @@ namespace Purge.Editor.Dev
                 AssetDatabase.SaveAssets();
                 UiIconsBuilder.BuildWeaponIcons(catalog); // Models may have changed.
                 WarnUnusedDefinitions(weapons);
+                ReportProblems(weapons);
                 var news = created.Count > 0 ? $" ({string.Join(", ", created)}: draft values, tune them in {DataPath})" : "";
                 var removed = removedPickups > 0 ? $", {removedPickups} unused removed" : "";
                 Debug.Log($"[Purge] Weapons built: {weapons.Count} weapon(s), {created.Count} new{news}; held and pickup " +
@@ -124,8 +185,8 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>
-        /// Every prefab under <see cref="ModelsPath"/> except pickups: the catalog's ones first in its order, new ones
-        /// after them by path. A model in the catalog keeps its definition; a new one gets one by its name.
+        /// Every weapon model under <see cref="ModelsPath"/>: the catalog's ones first in its order, new ones after them
+        /// by path. A model in the catalog keeps its definition; a new one gets one by its name.
         /// </summary>
         private static List<Weapon> CollectWeapons(WeaponVisualCatalog catalog, out List<string> created)
         {
@@ -147,28 +208,30 @@ namespace Purge.Editor.Dev
 
             var models = AssetDatabase.FindAssets("t:Prefab", new[] { ModelsPath })
                 .Select(AssetDatabase.GUIDToAssetPath)
-                .Where(path => !path.StartsWith(PickupsPath + "/", StringComparison.Ordinal))
+                .Where(IsWeaponModel)
                 .OrderBy(Rank)
                 .ThenBy(path => path, StringComparer.Ordinal)
                 .ToList();
             if (models.Count == 0)
                 throw new InvalidOperationException($"No weapon models in {ModelsPath}.");
 
+            var ammo = AssetDatabase.FindAssets("t:" + nameof(AmmoDefinition), new[] { AmmoPath })
+                .Select(guid => AssetDatabase.LoadAssetAtPath<AmmoDefinition>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Where(definition => definition != null)
+                .ToList();
+
             created = new List<string>();
             var weapons = new List<Weapon>();
             var ids = new Dictionary<string, string>();
             foreach (var path in models)
             {
-                var slot = SlotOf(path);
                 if (!known.TryGetValue(AssetDatabase.AssetPathToGUID(path), out var definition))
                 {
-                    definition = DefinitionFor(path, slot, out var isNew);
+                    definition = DefinitionFor(path, ammo, out var isNew);
+                    if (definition == null) continue;
                     if (isNew) created.Add(definition.name);
                 }
 
-                if (definition.Slot != slot)
-                    Debug.LogWarning($"[Purge] Weapon '{definition.name}' is {definition.Slot}, but its model '{path}' lies in " +
-                                     $"a {slot} folder: the definition stays {definition.Slot}.");
                 if (ids.TryGetValue(definition.Id, out var other))
                     throw new InvalidOperationException($"Weapons '{other}' and '{path}' have the same id '{definition.Id}': " +
                                                         "change the id in one of the definitions.");
@@ -179,108 +242,85 @@ namespace Purge.Editor.Dev
             return weapons;
         }
 
-        private static WeaponSlot SlotOf(string modelPath) =>
-            HasFolder(modelPath, MeleeFolder) ? WeaponSlot.Melee : WeaponSlot.Ranged;
+        private static bool IsWeaponModel(string path)
+        {
+            if (System.IO.Path.GetFileNameWithoutExtension(path).EndsWith(ProjectileSuffix, StringComparison.OrdinalIgnoreCase))
+                return false;
+            var folders = FoldersOf(path);
+            return folders.Length > 0 && !NotWeapons.Any(folder => string.Equals(folders[0], folder, StringComparison.OrdinalIgnoreCase));
+        }
 
-        /// <summary>Whether a folder between <see cref="ModelsPath"/> and the file is <paramref name="folder"/>.</summary>
-        private static bool HasFolder(string modelPath, string folder)
+        /// <summary>Folders between <see cref="ModelsPath"/> and the file, outermost first.</summary>
+        private static string[] FoldersOf(string modelPath)
         {
             var parts = modelPath.Substring(ModelsPath.Length + 1).Split('/');
-            for (var i = 0; i < parts.Length - 1; i++)
-                if (string.Equals(parts[i], folder, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            return false;
+            return parts.Take(parts.Length - 1).ToArray();
         }
 
         /// <summary>
         /// Data/Weapons/&lt;name&gt;.asset for a model not in the catalog. An existing asset of that name is used as it
-        /// is (only an empty id is filled in); a new one gets the draft values of the model's kind.
+        /// is; a new one gets the draft of the model's class. Null (with a warning) for a model outside any class folder.
         /// </summary>
-        private static WeaponDefinition DefinitionFor(string modelPath, WeaponSlot slot, out bool isNew)
+        private static WeaponDefinition DefinitionFor(string modelPath, List<AmmoDefinition> ammo, out bool isNew)
         {
+            isNew = false;
             var name = System.IO.Path.GetFileNameWithoutExtension(modelPath);
-            if (name.StartsWith(ModelPrefix, StringComparison.Ordinal)) name = name.Substring(ModelPrefix.Length);
             var path = $"{DataPath}/{name}.asset";
             var definition = AssetDatabase.LoadAssetAtPath<WeaponDefinition>(path);
-            isNew = definition == null;
-            if (!isNew && !string.IsNullOrEmpty(definition.Id))
+            if (definition != null)
                 return definition;
 
-            if (isNew)
+            var folders = FoldersOf(modelPath);
+            if (folders.Length == 0 || !Classes.TryGetValue(folders[0], out var weaponClass))
             {
-                definition = ScriptableObject.CreateInstance<WeaponDefinition>();
-                AssetDatabase.CreateAsset(definition, path);
+                Debug.LogWarning($"[Purge] Weapon model '{modelPath}' is not in a known class folder ({string.Join(", ", Classes.Keys)}): skipped.");
+                return null;
             }
 
-            var draft = DraftFor(slot, HasFolder(modelPath, AutomaticFolder));
-            definition.Configure(IdOf(name), slot, draft.Magazine);
-            definition.ConfigureCombat(draft.Damage, draft.AttackSpeed, draft.FireInterval, draft.ReloadTime, draft.Mode,
-                draft.ProjectileSpeed, draft.MeleeRange, draft.MeleeArc, draft.SoundRadius);
+            isNew = true;
+            definition = ScriptableObject.CreateInstance<WeaponDefinition>();
+            AssetDatabase.CreateAsset(definition, path); // ContentIdAssigner gives it its id
+            DraftFor(definition, weaponClass, AmmoFor(folders, ammo));
             EditorUtility.SetDirty(definition);
             return definition;
         }
 
-        private struct Draft
+        /// <summary>The ammo type listing the deepest folder of the path; null when none does.</summary>
+        private static AmmoDefinition AmmoFor(string[] folders, List<AmmoDefinition> ammo)
         {
-            public float Damage, AttackSpeed, MeleeRange, MeleeArc, FireInterval, ReloadTime, ProjectileSpeed, SoundRadius;
-            public int Magazine;
-            public FireMode Mode;
+            for (var i = folders.Length - 1; i >= 0; i--)
+                foreach (var type in ammo)
+                    if (type.ModelFolders != null && type.ModelFolders.Any(folder => string.Equals(folder, folders[i], StringComparison.OrdinalIgnoreCase)))
+                        return type;
+            return null;
         }
 
-        /// <summary>Starting values of a new weapon by kind: zombies have 30 HP; the player's anims fit any cooldown.</summary>
-        private static Draft DraftFor(WeaponSlot slot, bool automatic)
+        /// <summary>Draft modules of a new weapon of the class.</summary>
+        private static void DraftFor(WeaponDefinition definition, WeaponClass weaponClass, AmmoDefinition ammo)
         {
-            var draft = new Draft
+            var modules = new List<WeaponModule> { weaponClass.Attack() };
+            if (weaponClass.Hold != WeaponHold.Melee && weaponClass.Hold != WeaponHold.MeleeHeavy)
             {
-                AttackSpeed = 1f, MeleeRange = 1.2f, MeleeArc = 100f, FireInterval = 0.3f, ReloadTime = 2f,
-                ProjectileSpeed = 25f, Magazine = 10, Mode = FireMode.Single,
-            };
-            if (slot == WeaponSlot.Melee)
-            {
-                draft.Damage = 12f;
-                draft.AttackSpeed = 1.2f;
-                draft.MeleeRange = 1.3f;
-                draft.SoundRadius = 4f;
-            }
-            else if (automatic)
-            {
-                draft.Mode = FireMode.Automatic;
-                draft.Damage = 8f;
-                draft.FireInterval = 0.12f;
-                draft.Magazine = 30;
-                draft.SoundRadius = 7f;
-            }
-            else
-            {
-                draft.Damage = 20f;
-                draft.FireInterval = 0.7f;
-                draft.Magazine = 6;
-                draft.ProjectileSpeed = 28f;
-                draft.SoundRadius = 8f;
+                modules.Add(new AmmoModule { Ammo = ammo, Magazine = weaponClass.Magazine, ReloadTime = weaponClass.ReloadTime });
+                if (ammo == null)
+                    Debug.LogWarning($"[Purge] No ammo type lists a folder of weapon '{definition.name}': set its ammo by hand.");
             }
 
-            return draft;
+            if (!Mathf.Approximately(weaponClass.Speed, 1f))
+                modules.Add(new MobilityModule { InHands = weaponClass.Speed });
+            var id = definition.Id;
+            definition.Configure(string.IsNullOrEmpty(id) ? ContentIds.FromName(definition.name) : id, modules.ToArray());
+            definition.ConfigureLook(Rarity.Common, weaponClass.Hold);
         }
 
-        /// <summary>Weapon id from an asset name: "FireAxe_01" → "fire_axe_01".</summary>
-        internal static string IdOf(string name)
+        /// <summary>Setup problems of every weapon (modules), as warnings.</summary>
+        private static void ReportProblems(List<Weapon> weapons)
         {
-            var id = new StringBuilder();
-            for (var i = 0; i < name.Length; i++)
-            {
-                var c = name[i];
-                if (!char.IsLetterOrDigit(c))
-                {
-                    if (id.Length > 0 && id[id.Length - 1] != '_') id.Append('_');
-                    continue;
-                }
-
-                if (char.IsUpper(c) && i > 0 && char.IsLower(name[i - 1]) && id.Length > 0 && id[id.Length - 1] != '_')
-                    id.Append('_');
-                id.Append(char.ToLowerInvariant(c));
-            }
-
-            return id.ToString().Trim('_');
+            var problems = new List<string>();
+            foreach (var weapon in weapons)
+                weapon.Definition.Validate(problems);
+            foreach (var problem in problems)
+                Debug.LogWarning("[Purge] " + problem);
         }
 
         /// <summary>
@@ -313,14 +353,17 @@ namespace Purge.Editor.Dev
             }
         }
 
-        /// <summary>Adds <see cref="WeaponModel"/> with a mark at the far (+Z) end of the mesh: Muzzle for guns, Tip for melee.</summary>
-        private static void MarkModel(string path, WeaponSlot slot)
+        /// <summary>
+        /// Adds <see cref="WeaponModel"/> with a mark at the far end of the mesh: Muzzle for guns, Tip for melee. A melee
+        /// model longer along another axis than along Z (packs differ) gets the grip rotation that turns that axis to +Z.
+        /// </summary>
+        private static void MarkModel(string path, bool melee)
         {
             var root = PrefabUtility.LoadPrefabContents(path);
             try
             {
-                var markName = slot == WeaponSlot.Ranged ? "Muzzle" : "Tip";
-                var obsoleteName = slot == WeaponSlot.Ranged ? "Tip" : "Muzzle";
+                var markName = melee ? "Tip" : "Muzzle";
+                var obsoleteName = melee ? "Muzzle" : "Tip";
                 var obsolete = root.transform.Find(obsoleteName);
                 if (obsolete != null) UnityEngine.Object.DestroyImmediate(obsolete.gameObject);
 
@@ -331,13 +374,15 @@ namespace Purge.Editor.Dev
                     mark.SetParent(root.transform, false);
                 }
 
-                mark.localPosition = FarEnd(root);
-                mark.localRotation = Quaternion.identity;
+                var axis = melee ? LongAxis(root) : Vector3.forward;
+                mark.localPosition = FarEnd(root, axis);
+                mark.localRotation = Quaternion.FromToRotation(Vector3.forward, axis);
 
                 var model = root.GetComponent<WeaponModel>() ?? root.AddComponent<WeaponModel>();
                 var serialized = new SerializedObject(model);
-                serialized.FindProperty("_muzzle").objectReferenceValue = slot == WeaponSlot.Ranged ? mark : null;
-                serialized.FindProperty("_tip").objectReferenceValue = slot == WeaponSlot.Melee ? mark : null;
+                serialized.FindProperty("_muzzle").objectReferenceValue = melee ? null : mark;
+                serialized.FindProperty("_tip").objectReferenceValue = melee ? mark : null;
+                serialized.FindProperty("_gripRotation").quaternionValue = Quaternion.FromToRotation(axis, Vector3.forward);
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 PrefabUtility.SaveAsPrefabAsset(root, path);
             }
@@ -347,8 +392,44 @@ namespace Purge.Editor.Dev
             }
         }
 
-        /// <summary>Centre of the mesh vertices within 3 cm of the farthest +Z point, in the root's space.</summary>
-        private static Vector3 FarEnd(GameObject root)
+        /// <summary>The axis (±X, ±Y, ±Z of the root) the mesh is longest along, towards the side farther from the pivot.</summary>
+        private static Vector3 LongAxis(GameObject root)
+        {
+            var bounds = RootBounds(root);
+            var size = bounds.size;
+            var axis = size.z >= size.x && size.z >= size.y ? Vector3.forward : size.y >= size.x ? Vector3.up : Vector3.right;
+            return Vector3.Dot(bounds.center, axis) < 0f ? -axis : axis;
+        }
+
+        /// <summary>Bounds of every mesh in the root's space.</summary>
+        private static Bounds RootBounds(GameObject root)
+        {
+            var bounds = new Bounds();
+            var first = true;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>())
+            {
+                var mesh = filter.sharedMesh;
+                if (mesh == null) continue;
+                var local = mesh.bounds;
+                for (var corner = 0; corner < 8; corner++)
+                {
+                    var point = local.center + Vector3.Scale(local.extents,
+                        new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1));
+                    point = root.transform.InverseTransformPoint(filter.transform.TransformPoint(point));
+                    if (first) bounds = new Bounds(point, Vector3.zero);
+                    else bounds.Encapsulate(point);
+                    first = false;
+                }
+            }
+
+            return bounds;
+        }
+
+        /// <summary>
+        /// Centre of the mesh vertices within 3 cm of the farthest point along <paramref name="axis"/>, in the root's space
+        /// (not readable meshes: the middle of the bounds' far face).
+        /// </summary>
+        private static Vector3 FarEnd(GameObject root, Vector3 axis)
         {
             var points = new List<Vector3>();
             foreach (var filter in root.GetComponentsInChildren<MeshFilter>())
@@ -361,33 +442,23 @@ namespace Purge.Editor.Dev
 
             if (points.Count == 0)
             {
-                // Not readable: the bounds' far face is close enough.
-                var bounds = new Bounds();
-                var first = true;
-                foreach (var renderer in root.GetComponentsInChildren<Renderer>())
-                {
-                    if (first) bounds = renderer.bounds;
-                    else bounds.Encapsulate(renderer.bounds);
-                    first = false;
-                }
-
-                return root.transform.InverseTransformPoint(new Vector3(bounds.center.x, bounds.center.y, bounds.max.z));
+                var bounds = RootBounds(root);
+                return bounds.center + Vector3.Scale(bounds.extents, axis);
             }
 
-            var maxZ = float.MinValue;
-            foreach (var point in points) maxZ = Mathf.Max(maxZ, point.z);
+            var max = float.MinValue;
+            foreach (var point in points) max = Mathf.Max(max, Vector3.Dot(point, axis));
             var sum = Vector3.zero;
             var count = 0;
             foreach (var point in points)
-                if (point.z >= maxZ - 0.03f)
+                if (Vector3.Dot(point, axis) >= max - 0.03f)
                 {
                     sum += point;
                     count++;
                 }
 
             var end = sum / count;
-            end.z = maxZ;
-            return end;
+            return end + axis * (max - Vector3.Dot(end, axis));
         }
 
         /// <summary>
@@ -478,13 +549,13 @@ namespace Purge.Editor.Dev
             try
             {
                 var rig = player.GetComponent<CharacterWeaponRig>();
-                var clip = CharacterAnimationUtility.LoadClip(GripPoseClip);
-                clip.SampleAnimation(player, clip.length * GripPoseTime);
-
                 foreach (var weapon in weapons)
                 {
-                    if (weapon.Definition.Slot != WeaponSlot.Ranged) continue;
+                    if (weapon.Definition.IsMelee) continue;
                     var path = weapon.ModelPath;
+                    // The pose of the weapon's own hold: a pistol is held otherwise than a minigun.
+                    var clip = CharacterAnimationUtility.LoadClip(PlayerAnimationsBuilder.GripPoseClip(weapon.Definition.Hold));
+                    clip.SampleAnimation(player, clip.length * GripPoseTime);
 
                     var gun = (GameObject)UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(path), rig.PalmRight, false);
                     gun.transform.localPosition = Vector3.zero;

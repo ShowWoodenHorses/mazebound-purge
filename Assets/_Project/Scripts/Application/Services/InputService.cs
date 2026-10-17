@@ -21,7 +21,7 @@ namespace Purge.Application.Services
 
     /// <summary>
     /// Input System (new only) wrapper with the input abstraction of ТЗ §64: Move, Look, Attack, Interact,
-    /// SwitchMelee, SwitchRanged, Reload, OpenMap (+ Pause). Desktop: WASD/arrows, mouse, keys. Gamepad: sticks and buttons.
+    /// Slot1, Slot2, Reload, OpenMap (+ Pause). Desktop: WASD/arrows, mouse, keys. Gamepad: sticks and buttons.
     /// Android: the HUD's on-screen stick and buttons drive the same gamepad controls.
     /// A mouse click that starts over the UI (the HUD's Pause / Map buttons, screens) is not an attack, for as long as
     /// that button stays down (<see cref="IUiPointer"/>; checked when gameplay polls the attack, not in input callbacks).
@@ -74,6 +74,13 @@ namespace Purge.Application.Services
             return _pointerAttack.WasPerformedThisFrame() && !_pointerBlocked;
         }
 
+        public bool IsHeld(PlayerAction action)
+        {
+            if (action == PlayerAction.Attack) return AttackHeld;
+            var button = _buttons[(int)action];
+            return button != null && button.IsPressed();
+        }
+
         /// <summary>
         /// A mouse press decides once, on its first frame, whether it belongs to the UI; it stays so until released.
         /// </summary>
@@ -109,7 +116,7 @@ namespace Purge.Application.Services
             _move.AddBinding("<Gamepad>/leftStick"); // also the on-screen stick
 
             _look = _actions.AddAction("Look", InputActionType.Value, expectedControlLayout: "Vector2");
-            _look.AddBinding("<Pointer>/position");
+            _look.AddBinding("<Mouse>/position"); // not touches: a finger on the stick must not aim
             _look.AddBinding("<Gamepad>/rightStick");
 
             _attack = Button(PlayerAction.Attack, "<Keyboard>/space", "<Gamepad>/buttonSouth");
@@ -117,8 +124,8 @@ namespace Purge.Application.Services
             _pointerAttack = _actions.AddAction("PointerAttack", InputActionType.Button);
             _pointerAttack.AddBinding("<Mouse>/leftButton");
             Button(PlayerAction.Interact, "<Keyboard>/e", "<Gamepad>/buttonWest");
-            Button(PlayerAction.SwitchMelee, "<Keyboard>/1", "<Gamepad>/leftShoulder");
-            Button(PlayerAction.SwitchRanged, "<Keyboard>/2", "<Gamepad>/rightShoulder");
+            Button(PlayerAction.Slot1, "<Keyboard>/1", "<Gamepad>/leftShoulder");
+            Button(PlayerAction.Slot2, "<Keyboard>/2", "<Gamepad>/rightShoulder");
             Button(PlayerAction.Reload, "<Keyboard>/r", "<Gamepad>/buttonNorth");
             // Map and pause also work while gameplay is paused (to close the map), so they are events
             // rather than polled by level ticks. Android Back arrives as Escape.

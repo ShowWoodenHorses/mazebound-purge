@@ -16,9 +16,9 @@ namespace Purge.Tests.EditMode.Visual
         [SetUp]
         public void SetUp()
         {
-            _bat = Definition("bat", WeaponSlot.Melee);
-            _batCopy = Definition("bat", WeaponSlot.Melee);
-            _rifle = Definition("rifle", WeaponSlot.Ranged);
+            _bat = Definition("bat", true);
+            _batCopy = Definition("bat", true);
+            _rifle = Definition("rifle", false);
             _catalog = ScriptableObject.CreateInstance<WeaponVisualCatalog>();
             _catalog.MutableWeapons.Add(new WeaponVisualDefinition(_bat, new AssetReferenceGameObject("bat_held")));
         }
@@ -49,10 +49,10 @@ namespace Purge.Tests.EditMode.Visual
             Assert.IsNull(_catalog.Find(null));
         }
 
-        private static WeaponDefinition Definition(string id, WeaponSlot slot)
+        private static WeaponDefinition Definition(string id, bool melee)
         {
             var definition = ScriptableObject.CreateInstance<WeaponDefinition>();
-            definition.Configure(id, slot);
+            definition.Configure(id, melee ? (WeaponModule)new MeleeAttack() : new BulletAttack());
             return definition;
         }
     }

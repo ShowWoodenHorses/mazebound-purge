@@ -65,7 +65,10 @@ namespace Purge.Gameplay.Visibility
         public LevelLoadStage Stage => LevelLoadStage.InitializeVisibility;
 
         /// <summary>View radius in cells (window 2·radius+1).</summary>
-        public int Radius { get; private set; } = FieldOfView.DefaultRadius;
+        /// <summary>The game's view radius (ТЗ: about 21×21, decision 2026-10-14).</summary>
+        public const int DefaultRadius = 10;
+
+        public int Radius { get; private set; } = DefaultRadius;
 
         /// <summary>Cost of the last recalculation, milliseconds (diagnostics, stress test).</summary>
         public float LastComputeMs { get; private set; }

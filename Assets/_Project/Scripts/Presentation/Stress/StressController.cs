@@ -39,6 +39,7 @@ namespace Purge.Presentation.Stress
         private readonly VisibilitySystem _visibility;
         private readonly TopDownCamera _camera;
         private readonly StressAutopilotInput _autopilot;
+        private readonly CombatSandbox _sandbox;
         private readonly PlayerSystem _player;
         private readonly float[] _live = new float[LiveFrames];
         private readonly float[] _sorted = new float[MaxSampleFrames];
@@ -68,8 +69,9 @@ namespace Purge.Presentation.Stress
 
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
-            PlayerSystem player)
+            PlayerSystem player, CombatSandbox sandbox)
         {
+            _sandbox = sandbox;
             _level = level;
             _horde = horde;
             _renderer = renderer;
@@ -130,6 +132,9 @@ namespace Purge.Presentation.Stress
         }
 
         public void SetCount(int count) => _horde.SetTargetCount(count);
+
+        /// <summary>Combat sandbox: every ammo type back to the sandbox amount.</summary>
+        public void RefillAmmo() => _sandbox?.Refill();
 
         public void SetCamera(float halfExtent)
         {

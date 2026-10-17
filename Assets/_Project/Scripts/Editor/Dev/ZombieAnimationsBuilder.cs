@@ -250,7 +250,7 @@ namespace Purge.Editor.Dev
 
                 var name = System.IO.Path.GetFileNameWithoutExtension(path);
                 var type = types.FirstOrDefault(t => staying.All(v => v.Definition != t) && variants.All(v => v.Definition != t)) ?? types[0];
-                var id = WeaponsBuilder.IdOf(name);
+                var id = Purge.Core.Content.ContentIds.FromName(name);
                 if (!id.StartsWith("zombie", StringComparison.Ordinal)) id = "zombie_" + id;
                 var unique = id;
                 for (var n = 2; variants.Concat(staying).Any(v => v.Id == unique); n++) unique = $"{id}_{n}";

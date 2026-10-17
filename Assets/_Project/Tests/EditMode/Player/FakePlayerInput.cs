@@ -8,15 +8,25 @@ namespace Purge.Tests.EditMode.Player
     public sealed class FakePlayerInput : IPlayerInput
     {
         private readonly HashSet<PlayerAction> _pressed = new HashSet<PlayerAction>();
+        private readonly HashSet<PlayerAction> _held = new HashSet<PlayerAction>();
 
         public Vector2 Move { get; set; }
-        public Vector2 Look => Vector2.zero;
-        public bool LookIsPointer => false;
+        public Vector2 Look { get; set; }
+        public bool LookIsPointer { get; set; }
         public bool AttackHeld { get; set; }
 
         public bool WasPressed(PlayerAction action) => _pressed.Contains(action);
 
+        public bool IsHeld(PlayerAction action) => action == PlayerAction.Attack ? AttackHeld : _held.Contains(action);
+
         public void Press(PlayerAction action) => _pressed.Add(action);
+
+        /// <summary>Holds (true) or releases a button until changed.</summary>
+        public void Hold(PlayerAction action, bool held)
+        {
+            if (held) _held.Add(action);
+            else _held.Remove(action);
+        }
 
         /// <summary>Ends the "frame": pressed buttons are released.</summary>
         public void EndFrame() => _pressed.Clear();

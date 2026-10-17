@@ -281,9 +281,10 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>
         /// Nearest living monster the segment touches (bullets: previous → current position), -1 when none;
-        /// <paramref name="t"/> — fraction 0..1 along the segment.
+        /// <paramref name="t"/> — fraction 0..1 along the segment; <paramref name="ignore"/> is skipped (a piercing bullet
+        /// inside the monster it has just hit).
         /// </summary>
-        public int QuerySegment(Vector2 from, Vector2 to, out float t)
+        public int QuerySegment(Vector2 from, Vector2 to, out float t, int ignore = -1)
         {
             t = 1f;
             if (!IsActive) return -1;
@@ -299,7 +300,7 @@ namespace Purge.Gameplay.Horde
             for (var x = minX; x <= maxX; x++)
             for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
             {
-                if (!IsAlive(_states[agent])) continue;
+                if (agent == ignore || !IsAlive(_states[agent])) continue;
                 if (SegmentCircle(from, delta, _positions[agent], _stats.Radius, out var hit) && hit < t)
                 {
                     t = hit;

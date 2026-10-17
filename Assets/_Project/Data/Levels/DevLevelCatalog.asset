@@ -28,6 +28,9 @@ MonoBehaviour:
   - _levelId: Level_Stress100
     _address: Levels/Level_Stress100
     _displayName: Stress100
+  - _levelId: Level_Sandbox
+    _address: Levels/Level_Sandbox
+    _displayName: Sandbox
   _tutorial:
     _levelId: 
     _address: 

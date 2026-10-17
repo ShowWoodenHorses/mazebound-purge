@@ -55,9 +55,13 @@ namespace Purge.Presentation.Stress
             panel.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             panel.gameObject.AddComponent<Image>().color = Panel;
 
+            var sandbox = controller.Settings.IsSandbox;
             var header = Row(panel);
-            Button(header, "STRESS  [-/+]", () => _body.SetActive(!_body.activeSelf), null, 260f);
-            _benchLabel = Button(header, "RUN BENCH", ToggleBenchmark, () => _controller.BenchmarkRunning, 220f);
+            Button(header, sandbox ? "SANDBOX  [-/+]" : "STRESS  [-/+]", () => _body.SetActive(!_body.activeSelf), null, 260f);
+            if (sandbox)
+                Button(header, "AMMO", controller.RefillAmmo, null, 220f);
+            else
+                _benchLabel = Button(header, "RUN BENCH", ToggleBenchmark, () => _controller.BenchmarkRunning, 220f);
 
             _body = new GameObject("Body", typeof(RectTransform));
             _body.transform.SetParent(panel, false);
@@ -86,24 +90,8 @@ namespace Purge.Presentation.Stress
                     () => Mathf.Approximately(controller.CameraHalfExtent, value));
             }
 
-            var weapons = Row(bodyRect, "Weapon");
-            WeaponButton(weapons, "Gun", StressWeapon.MachineGun);
-            WeaponButton(weapons, "Shotgun", StressWeapon.Shotgun);
-            WeaponButton(weapons, "Flame", StressWeapon.Flamethrower);
-            WeaponButton(weapons, "Off", StressWeapon.None);
-
-            var storm = Row(bodyRect, "Storm");
-            foreach (var multiplier in new[] { 1f, 3f, 5f })
-            {
-                var value = multiplier;
-                Button(storm, "x" + value.ToString("0"), () => controller.Weapons.RateMultiplier = value,
-                    () => Mathf.Approximately(controller.Weapons.RateMultiplier, value));
-            }
-
-            var fireTarget = settings.Weapons.FireCellsTarget;
-            Button(storm, "Fire" + fireTarget,
-                () => controller.Weapons.KeepFireCells = controller.Weapons.KeepFireCells > 0 ? 0 : fireTarget,
-                () => controller.Weapons.KeepFireCells > 0);
+            if (!sandbox)
+                StressWeaponRows(bodyRect, settings);
 
             var render = Row(bodyRect, "Render");
             Toggle(render, "Draw", () => controller.Renderer.Enabled, v => controller.Renderer.Enabled = v);
@@ -120,8 +108,11 @@ namespace Purge.Presentation.Stress
             var sim = Row(bodyRect, "Sim");
             Toggle(sim, "Freeze", () => controller.Horde.Frozen, v => controller.Horde.Frozen = v);
             Toggle(sim, "God", () => controller.Horde.GodMode, v => controller.Horde.GodMode = v);
-            Toggle(sim, "Auto", () => controller.Autopilot, v => controller.Autopilot = v);
-            Toggle(sim, "AutoFire", () => controller.Weapons.AutoFire, v => controller.Weapons.AutoFire = v);
+            if (!sandbox)
+            {
+                Toggle(sim, "Auto", () => controller.Autopilot, v => controller.Autopilot = v);
+                Toggle(sim, "AutoFire", () => controller.Weapons.AutoFire, v => controller.Weapons.AutoFire = v);
+            }
 
             var resolution = Row(bodyRect, "Res");
             foreach (var scale in new[] { 1f, 0.75f, 0.5f })
@@ -141,13 +132,36 @@ namespace Purge.Presentation.Stress
             Refresh();
         }
 
+        private void StressWeaponRows(RectTransform bodyRect, Core.Horde.StressTestDefinition settings)
+        {
+            var weapons = Row(bodyRect, "Weapon");
+            WeaponButton(weapons, "Gun", StressWeapon.MachineGun);
+            WeaponButton(weapons, "Shotgun", StressWeapon.Shotgun);
+            WeaponButton(weapons, "Flame", StressWeapon.Flamethrower);
+            WeaponButton(weapons, "Off", StressWeapon.None);
+
+            var storm = Row(bodyRect, "Storm");
+            foreach (var multiplier in new[] { 1f, 3f, 5f })
+            {
+                var value = multiplier;
+                Button(storm, "x" + value.ToString("0"), () => _controller.Weapons.RateMultiplier = value,
+                    () => Mathf.Approximately(_controller.Weapons.RateMultiplier, value));
+            }
+
+            var fireTarget = settings.Weapons.FireCellsTarget;
+            Button(storm, "Fire" + fireTarget,
+                () => _controller.Weapons.KeepFireCells = _controller.Weapons.KeepFireCells > 0 ? 0 : fireTarget,
+                () => _controller.Weapons.KeepFireCells > 0);
+
+        }
+
         public void SetStats(StringBuilder text) => _stats.SetText(text);
 
         public void Refresh()
         {
             foreach (var (image, isActive) in _states)
                 image.color = isActive() ? Active : Idle;
-            _benchLabel.text = _controller.BenchmarkRunning ? "STOP BENCH" : "RUN BENCH";
+            if (_benchLabel != null) _benchLabel.text = _controller.BenchmarkRunning ? "STOP BENCH" : "RUN BENCH";
         }
 
         public void Dispose()

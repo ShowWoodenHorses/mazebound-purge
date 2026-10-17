@@ -26,6 +26,9 @@ namespace Purge.Presentation.Visual
     public sealed class PlayerViewPresenter : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
         private const float TurnSpeed = 900f; // degrees per second
+
+        /// <summary>Turning while the body faces the aim (combat stance, the mouse): smoother than following the walk.</summary>
+        private const float AimTurnSpeed = 450f;
         private const string PlayerHeadId = "player";
 
         private readonly PlayerSystem _player;
@@ -150,14 +153,18 @@ namespace Purge.Presentation.Visual
             transform.localPosition = position;
             transform.localRotation = snap
                 ? facing
-                : Quaternion.RotateTowards(transform.localRotation, facing, TurnSpeed * deltaTime);
+                : Quaternion.RotateTowards(transform.localRotation, facing, (_player.IsAiming ? AimTurnSpeed : TurnSpeed) * deltaTime);
 
             if (_parameters.Count > 0)
             {
                 var weapon = _weapons.Active;
                 SetFloat(P.SpeedHash, _player.SpeedFactor);
-                SetInt(P.WeaponHash, weapon == null ? P.WeaponNone : weapon.Slot == WeaponSlot.Melee ? P.WeaponMelee : P.WeaponRanged);
-                SetBool(P.AutomaticHash, weapon != null && weapon.Slot == WeaponSlot.Ranged && weapon.Definition.FireMode == FireMode.Automatic);
+                // The walk relative to the body as it is shown (turned smoothly), so the legs match what is seen.
+                var move = Quaternion.Inverse(transform.localRotation) *
+                           new Vector3(_player.MoveDirection.x, 0f, _player.MoveDirection.y) * _player.SpeedFactor;
+                SetFloat(P.MoveXHash, move.x);
+                SetFloat(P.MoveYHash, move.z);
+                SetInt(P.WeaponHash, weapon == null ? P.WeaponNone : P.SetOf(weapon.Definition.Hold));
                 SetBool(P.ReloadingHash, weapon != null && weapon.IsReloading);
             }
 
@@ -166,7 +173,7 @@ namespace Purge.Presentation.Visual
 
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
-            if (weapon.Slot == WeaponSlot.Melee)
+            if (weapon.Definition.IsMelee)
             {
                 var variant = _attackCounter++ % P.AttackVariants;
                 LastMeleeContactDelay = _attackContacts[variant] * weapon.Definition.Cooldown;
@@ -177,6 +184,8 @@ namespace Purge.Presentation.Visual
             }
             else
             {
+                // A shot never lasts longer than the weapon's interval (an automatic recoils on every shot).
+                SetFloat(P.ShootSpeedHash, 1f / Mathf.Clamp(weapon.Definition.Cooldown, 0.08f, 0.6f));
                 SetTrigger(P.ShootHash);
             }
         }

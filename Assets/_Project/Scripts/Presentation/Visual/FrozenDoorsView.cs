@@ -158,7 +158,7 @@ namespace Purge.Presentation.Visual
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
             var door = _combat.LastIceHit;
-            if (weapon.Slot != WeaponSlot.Melee || door == null) return;
+            if (!weapon.Definition.IsMelee || door == null) return;
             _pending.Add(new Pending
             {
                 Door = door,

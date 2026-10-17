@@ -26,66 +26,80 @@ MonoBehaviour:
   _geometry:
     _width: 15
     _height: 27
+    _floorCount: 1
     _cells: 000000000000000000000000000000000101010101010101010001010100000100000000000100010001000000000101010101010100010001010100000100010000000000010001000100000101010001010100010001000100000100010001000000010000000100000100010001010100010101000100000000010001000100000001000100000101010001000101010001000100000100000000000000010001000100000101010101000101010101000100000100000001000100000001000100000101010101000101010101000100000000010000000100000000000100000101010101000101010001010100000100000001000000010001000100000100010101010100010001000100000100010001000000010000000100000100010001010101010001010100000100000000000101000001000100000100010101010101010101000100000100010001010101010000000100000101010001010101010001000100000100000001010101010101000100000101010001010101010101010100000000000000000000000000000000
     _surfaces: 
+    _obstacleTypes: []
+    _obstacles: 
   _doors: []
   _playerStarts:
   - _id: start_1
     _position:
       _x: 11
       _y: 23
+      _floor: 0
   _zombieSpawns: []
   _weapons:
   - _id: weapon_1
     _position:
       _x: 5
       _y: 22
+      _floor: 0
     _definition: {fileID: 11400000, guid: bd948e954d146054e87e4bd8308c40a7, type: 2}
   - _id: weapon_2
     _position:
       _x: 5
       _y: 23
+      _floor: 0
     _definition: {fileID: 11400000, guid: 3493d85149291cd41ac4d077cc3ec857, type: 2}
   - _id: weapon_3
     _position:
       _x: 9
       _y: 22
-    _definition: {fileID: 11400000, guid: a63bb30920a56754d8f8a5188eea4139, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: c633bed7d52d4aa479714d4f7d85066f, type: 2}
   - _id: weapon_4
     _position:
       _x: 9
       _y: 23
-    _definition: {fileID: 11400000, guid: 2bb7dc9d0eb49d94aa908e133bb58da9, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: 9dafb61b2802e594c875d2c37791f6c4, type: 2}
   - _id: weapon_5
     _position:
       _x: 9
       _y: 24
-    _definition: {fileID: 11400000, guid: b648aac8a8cb44c45a97d41297b31aba, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: be6fbe3a9d9585144a2c63dabe6829b0, type: 2}
   - _id: weapon_6
     _position:
       _x: 5
       _y: 24
-    _definition: {fileID: 11400000, guid: 7ca6f9caabab14249976bf0a5ceda6ef, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: 033d75e7ef3e80a42bd46c84029aff49, type: 2}
   - _id: weapon_7
     _position:
       _x: 9
       _y: 25
-    _definition: {fileID: 11400000, guid: 9f444227525d435499517b13b3b00da1, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: 878d5680bba93904db246aaf61a82ab9, type: 2}
   - _id: weapon_8
     _position:
       _x: 5
       _y: 25
-    _definition: {fileID: 11400000, guid: c7e9ec95b3da8ad40a670cc1a1994bf7, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: 889569c13d8462d41a6b1e0d58f2a72d, type: 2}
   - _id: weapon_9
     _position:
       _x: 6
       _y: 25
-    _definition: {fileID: 11400000, guid: eed7f5fc0ce713d418f2014e9021fd8b, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: 0696755178a39f1478e1d5e4a861821a, type: 2}
   - _id: weapon_10
     _position:
       _x: 7
       _y: 25
-    _definition: {fileID: 11400000, guid: 05592bd23d54afc4fa8f4f31f4a5f45b, type: 2}
+      _floor: 0
+    _definition: {fileID: 11400000, guid: d2de461987c562246aa949bb2a1b541c, type: 2}
   _keys: []
   _medkits: []
   _lights:
@@ -93,6 +107,7 @@ MonoBehaviour:
     _cell:
       _x: 12
       _y: 25
+      _floor: 0
     _offset: {x: 0, y: 0.42}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -106,6 +121,7 @@ MonoBehaviour:
     _cell:
       _x: 7
       _y: 8
+      _floor: 0
     _offset: {x: -0.42, y: 0}
     _color: {r: 0.62, g: 0.82, b: 1, a: 1}
     _radius: 5
@@ -119,6 +135,7 @@ MonoBehaviour:
     _cell:
       _x: 11
       _y: 15
+      _floor: 0
     _offset: {x: -0.42, y: 0}
     _color: {r: 0.62, g: 0.82, b: 1, a: 1}
     _radius: 5
@@ -132,6 +149,7 @@ MonoBehaviour:
     _cell:
       _x: 9
       _y: 1
+      _floor: 0
     _offset: {x: 0.42, y: 0}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -145,6 +163,7 @@ MonoBehaviour:
     _cell:
       _x: 3
       _y: 22
+      _floor: 0
     _offset: {x: -0.42, y: 0}
     _color: {r: 0.62, g: 0.82, b: 1, a: 1}
     _radius: 5
@@ -158,6 +177,7 @@ MonoBehaviour:
     _cell:
       _x: 3
       _y: 1
+      _floor: 0
     _offset: {x: 0, y: -0.42}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -171,6 +191,7 @@ MonoBehaviour:
     _cell:
       _x: 3
       _y: 15
+      _floor: 0
     _offset: {x: 0, y: 0.42}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -184,6 +205,7 @@ MonoBehaviour:
     _cell:
       _x: 13
       _y: 7
+      _floor: 0
     _offset: {x: 0.42, y: 0}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -197,6 +219,7 @@ MonoBehaviour:
     _cell:
       _x: 1
       _y: 7
+      _floor: 0
     _offset: {x: -0.42, y: 0}
     _color: {r: 1, g: 0.6, b: 0.28, a: 1}
     _radius: 4
@@ -1837,43 +1860,44 @@ MonoBehaviour:
     _objectAssignments:
     - _entityId: weapon_1
       _choice:
-        _variantId: weapon_assault_rifle_01
+        _variantId: weapon_ak_74
         _rotation: 0
     - _entityId: weapon_2
       _choice:
-        _variantId: weapon_assault_rifle_03
+        _variantId: weapon_m416
         _rotation: 0
     - _entityId: weapon_3
       _choice:
-        _variantId: weapon_bat
+        _variantId: weapon_hammer
         _rotation: 0
     - _entityId: weapon_4
       _choice:
-        _variantId: weapon_crowbar
+        _variantId: weapon_machete
         _rotation: 0
     - _entityId: weapon_5
       _choice:
-        _variantId: weapon_fire_axe
+        _variantId: weapon_knife
         _rotation: 0
     - _entityId: weapon_6
       _choice:
-        _variantId: weapon_hunting_rifle
+        _variantId: weapon_hunter_sniper
         _rotation: 0
     - _entityId: weapon_7
       _choice:
-        _variantId: weapon_katana
+        _variantId: weapon_sword
         _rotation: 0
     - _entityId: weapon_8
       _choice:
-        _variantId: weapon_revolver_rifle
+        _variantId: weapon_revolver
         _rotation: 0
     - _entityId: weapon_9
       _choice:
-        _variantId: weapon_sniper_rifle
+        _variantId: weapon_awm
         _rotation: 0
     - _entityId: weapon_10
       _choice:
-        _variantId: weapon_smg
+        _variantId: weapon_mp5_silencer
         _rotation: 0
     _objectOverrides: []
   _tutorial: {fileID: 0}
+  _stressTest: {fileID: 0}

@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Purge Visuals
   m_GUID: 53448397b8cdb104f8abe7d68a0b8a0a
   m_SerializeEntries:
+  - m_GUID: 01b1a5ed646cfb54cbb6d4b183544254
+    m_Address: Assets/_Project/Art/Weapons/Pickups/CrossBow_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 049b0a329261d1b4d9a593610ea82861
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_cyan.prefab
     m_ReadOnly: 0
@@ -35,8 +40,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0f7960afd8d4fcc419395025c83d109f
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_AssaultRifle_01_Pickup.prefab
+  - m_GUID: 0c349a22058d0db44a3c862408ac2820
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Railgun_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -75,6 +80,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d75ce9ba243a394e9da0b5b3197ae53
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Magnum_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d80c4f45caec4546aceeff57c37e888
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Desert_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 228d362ddec8bb7479d312437ec801fe
     m_Address: Assets/_Project/Art/Keys/key_blue.prefab
     m_ReadOnly: 0
@@ -95,13 +110,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 25b654f452a9c0f42bcc6873bd55b37b
-    m_Address: Assets/_Project/Art/Placeholders/wall_straight_01.prefab
+  - m_GUID: 24d9f9aded300664bb8a3e02d1ce09b6
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Knife_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 264655015b698b545b64f50511a09226
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_AssaultRifle_03_Pickup.prefab
+  - m_GUID: 25b654f452a9c0f42bcc6873bd55b37b
+    m_Address: Assets/_Project/Art/Placeholders/wall_straight_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -117,6 +132,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2bf304437e5febf4ab790bdf8259bd60
     m_Address: Assets/_Project/Art/Placeholders/wall_end.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2eaa1a91a240c274c9ed9ed3aacf499b
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Star_sword_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -145,8 +165,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 356220aeb4abb0049bc95ed688e16a99
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_SniperRifle_01_Pickup.prefab
+  - m_GUID: 3527d16881d3d1940aae51fe5182773f
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Hunter_sniper_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -157,6 +177,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38b2943fcbbd3e04999a3ffe42b0306b
     m_Address: Assets/_Project/Art/Placeholders/floor_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39fd3cfb7786e014bb88464d3c2395c7
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Groza_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -177,6 +202,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42ebc84ac539e0749aa91a37e048b6a7
     m_Address: Assets/_Project/Art/Placeholders/floor_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 458c4be2b24b6e44a9b5800b25ffbb52
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Glock_base_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -205,6 +235,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ebd9d19932b48e4a9c42b4a58c387a2
+    m_Address: Assets/_Project/Art/Weapons/Pickups/AWM_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f9e67a5f2e5e774bace1b8477c5175b
+    m_Address: Assets/_Project/Art/Weapons/Pickups/MachineGun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5164ba6fc08bedf4a882f0f78fdffc0d
+    m_Address: Assets/_Project/Art/Weapons/Pickups/SCAR-L_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 520c66d654da1a646b2469f856ee6122
     m_Address: Assets/_Project/Art/Placeholders/wall_straight_02.prefab
     m_ReadOnly: 0
@@ -230,13 +275,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55e8b5015a6f05a40ad63cecb8586d52
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Vector_silencer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 560f18092b37e2544aab4b08ffca02e8
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_04.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 58150729399d0ab4ab8f198f91ade59a
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_FireAxe_01_Pickup.prefab
+  - m_GUID: 5abd8e03bc94202478f20bd1afbd081a
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Sword_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -250,13 +300,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6f5cd756fd8888a4ebfca0d206e46da2
-    m_Address: Assets/_Project/Art/Keys/key_purple.prefab
+  - m_GUID: 633ac703239145a4aabc8c6fcb719390
+    m_Address: Assets/_Project/Art/Weapons/Pickups/AK-74_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7036cc3cecbd03d44bfd2258a960804b
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Bat_Wood_01_Pickup.prefab
+  - m_GUID: 63d12878aa1b38740904bf7eee0911c1
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Hammer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65cb953b8c1bf1442bcc55ba7064c22a
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Lynx_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 668a0012b5f3eaa4e8a880ad48e79b38
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Mortar_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f5cd756fd8888a4ebfca0d206e46da2
+    m_Address: Assets/_Project/Art/Keys/key_purple.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -265,13 +330,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70cc74d86e903df418f952c7542b5455
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Dragunov_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 70ef0f35b3c7c8b47853e9399130d57b
     m_Address: Assets/_Project/Art/Placeholders/key_yellow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 742ec294e32feff4cbe94b12b28e7939
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Plasmometer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 749744a03d2fb244c91de35c663973ba
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Minigun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 74b4e6258f807744eb65f5231a73b5e4
     m_Address: Assets/_Project/Art/Placeholders/wall_cross.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a0f877c535701940b8c80ce9cf6da4e
+    m_Address: Assets/_Project/Art/Weapons/Pickups/AcidCannon_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -305,6 +390,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87fa22766db244e41af9e84b59eb3d70
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Flamer_Pistol_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8a2c165ad88244b4aa3c8b8bb300a059
     m_Address: Assets/_Project/Art/Decor/Forest_Flowers_11.prefab
     m_ReadOnly: 0
@@ -312,6 +402,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b3ad0b31d4acb54eb31040339252903
     m_Address: Assets/_Project/Art/Placeholders/floor_special_blood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 929067955a537b44e9c33dd534ebdb10
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Shock_cannon_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -350,6 +445,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a05c2a59196271e49b4c1dc0bc5218af
+    m_Address: Assets/_Project/Art/Weapons/Pickups/M416_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2a3a8d13c69b8c44836e245a8ea84f4
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Pomp_Shotgun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a47e8dbbaf3bda04d9258a1b3c1e3776
     m_Address: Assets/_Project/Art/Lighting/SM_Prop_Torch_04.prefab
     m_ReadOnly: 0
@@ -365,6 +470,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a79b171b0284bc543995f57189b4ba3f
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Tesla_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7bafbe4a8d32db4080ffad3ad1e462e
+    m_Address: Assets/_Project/Art/Weapons/Pickups/FlameGun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8c50428a313bb34d8d2b1915ff0a22d
     m_Address: Assets/_Project/Art/Decor/Forest_Ivy.prefab
     m_ReadOnly: 0
@@ -372,11 +487,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a9dc04b5f2ede4d4d9e4c294f51db4de
     m_Address: Assets/_Project/Art/Placeholders/weapon_01.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad1938c236c5e8740aa1d65bc91bc6dc
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_SubMGun_02_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -390,8 +500,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b4ecfabf4ae7e7347a3cf2f8d2f06abf
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Katana_01_Pickup.prefab
+  - m_GUID: b400df8eb5de99349899eb79c6ee9dda
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Pistol_silencer_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -410,13 +520,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba861bc331b687d4080cede81ae6eb73
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_HuntingRifle_Clean_01_Pickup.prefab
+  - m_GUID: bafb9f82f99160c4ea21bc3253958ab4
+    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_02.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bafb9f82f99160c4ea21bc3253958ab4
-    m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_02.prefab
+  - m_GUID: bb47bacf5e2851b4484b16d6d33a0819
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Revolver_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -440,8 +550,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c515cfb27bfa54647ae7cea6bdcff3c1
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Hybrid_03_Pickup.prefab
+  - m_GUID: c75572203087ab34aaa404250516c2a8
+    m_Address: Assets/_Project/Art/Weapons/Pickups/RPG_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c82a6ec3d1b13a442bf8dbb3d126b668
+    m_Address: Assets/_Project/Art/Weapons/Pickups/GasGun_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -470,6 +585,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3f8655b41fae6a4ebf6bf6476fc1525
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Hard_Auto_Shotgun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d4cee775991cd60468668c93d72fb322
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_pink.prefab
     m_ReadOnly: 0
@@ -480,6 +600,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d95aa9e71ef5d584ca9af06c71b856f4
+    m_Address: Assets/_Project/Art/Weapons/Pickups/FreezeGun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: de976f49bdc391747aaf76bcf1de36d7
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/wall_snow_stone.prefab
     m_ReadOnly: 0
@@ -487,6 +612,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e068c4d9df561f942bd10addf004cd1d
     m_Address: Assets/_Project/Art/Walls/SM_Bld_Castle_Wall_Block_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1e8f161ee4d0a942992ec7f20bd0ef7
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Pistol_laser_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e319b932091f61444b2d4571c97945eb
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Sniper_silencer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3b74c471b2a1f04c9cffc622e2c7301
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Grenade_Launcher_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -502,6 +642,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e70302ea4c17d6442b2e7555d6d824bf
     m_Address: Assets/_Project/Art/Placeholders/wall_t.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e853e0de3908cc944986727b1d25b5cf
+    m_Address: Assets/_Project/Art/Weapons/Pickups/MP5_silencer_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8c1a9af907f86a48aeedaea8220d0d3
+    m_Address: Assets/_Project/Art/Weapons/Pickups/P90_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -525,8 +675,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec154b6779a6a27458406f925a7717e0
-    m_Address: Assets/_Project/Art/Weapons/Pickups/SM_Wep_Crowbar_01_Pickup.prefab
+  - m_GUID: efafa478f802de64d88b5192f2bbbb38
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Auto_Shotgun_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1c61448d5464854a845b826236a6a6c
+    m_Address: Assets/_Project/Art/Weapons/Pickups/Machete_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

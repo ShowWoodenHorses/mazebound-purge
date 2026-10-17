@@ -1,5 +1,6 @@
 using System;
 using Purge.Core.Definitions;
+using UnityEngine;
 
 namespace Purge.Gameplay.Player
 {
@@ -20,6 +21,9 @@ namespace Purge.Gameplay.Player
         /// <summary>(current, max) after every change.</summary>
         public event Action<int, int> Changed;
 
+        /// <summary>(damage, where the blow came from) after a hit with a direction (the HUD's damage arc).</summary>
+        public event Action<int, Vector2> Hurt;
+
         public void HealToFull() => Set(Max);
 
         /// <summary>Restores <paramref name="amount"/> (0 or less — to full).</summary>
@@ -29,6 +33,14 @@ namespace Purge.Gameplay.Player
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
             Set(Math.Max(0, Current - amount));
+        }
+
+        /// <summary>Damage of a blow from <paramref name="source"/> (grid units): <see cref="Hurt"/> shows where it came from.</summary>
+        public void Damage(int amount, Vector2 source)
+        {
+            if (amount <= 0 || IsDead) return;
+            Damage(amount);
+            Hurt?.Invoke(amount, source);
         }
 
         private void Set(int value)

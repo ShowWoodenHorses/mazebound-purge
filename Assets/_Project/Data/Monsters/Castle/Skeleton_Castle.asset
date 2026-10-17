@@ -30,9 +30,12 @@ MonoBehaviour:
     WanderSpeed: 0.4
     SightRange: 7
     CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
   _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
   _resistances: []
   _deathEffects: []
+  _abilities: []
   references:
     version: 2
     RefIds: []

@@ -109,7 +109,10 @@ namespace Purge.Editor.Content
                     if (child.NextVisible(true))
                         while (!SerializedProperty.EqualContents(child, end))
                         {
-                            EditorGUILayout.PropertyField(child, true);
+                            // A module may hold its own module list (an ability's impact effects).
+                            var nested = ModuleFamily(value.GetType(), child);
+                            if (nested != null) DrawModuleList(child, nested);
+                            else EditorGUILayout.PropertyField(child, true);
                             if (!child.NextVisible(false)) break;
                         }
                     EditorGUI.indentLevel--;

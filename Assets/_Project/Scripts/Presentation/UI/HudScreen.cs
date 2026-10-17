@@ -78,6 +78,11 @@ namespace Purge.Presentation.UI
         [Tooltip("Full-screen image under the HUD: red at the screen edges when the player is hurt. Its texture is made on start.")]
         [SerializeField] private RawImage _damageFlash;
 
+        [Tooltip("Arcs around the screen centre pointing where a blow came from (ТЗ: дуга у края экрана со стороны удара); textures made on start.")]
+        [SerializeField] private RawImage[] _damageArcs = new RawImage[0];
+        [SerializeField] private Color _damageArcColor = new Color(1f, 0.12f, 0.08f, 0.9f);
+        [SerializeField, Min(0.1f)] private float _damageArcTime = 0.9f;
+
         [SerializeField] private Color _damageColor = new Color(0.85f, 0.04f, 0.04f, 0.5f);
         [SerializeField, Min(0.05f)] private float _damageTime = 0.6f;
 
@@ -88,6 +93,10 @@ namespace Purge.Presentation.UI
         private float _messageHideTime;
         private float _damageElapsed = float.MaxValue;
         private Texture2D _vignette;
+        private Texture2D _arcTexture;
+        private float[] _arcElapsed = new float[0];
+        private int _nextArc;
+        private const int ArcTextureSize = 256;
         private int _health = -1;
         private int _maxHealth = -1;
         private float _healthShare = 1f;
@@ -126,11 +135,23 @@ namespace Purge.Presentation.UI
                 _damageFlash.raycastTarget = false;
                 _damageFlash.enabled = false;
             }
+
+            _arcElapsed = new float[_damageArcs.Length];
+            if (_damageArcs.Length > 0) _arcTexture = CreateArc();
+            for (var a = 0; a < _damageArcs.Length; a++)
+            {
+                _arcElapsed[a] = float.MaxValue;
+                if (_damageArcs[a] == null) continue;
+                _damageArcs[a].texture = _arcTexture;
+                _damageArcs[a].raycastTarget = false;
+                _damageArcs[a].enabled = false;
+            }
         }
 
         private void OnDestroy()
         {
             if (_vignette != null) Destroy(_vignette);
+            if (_arcTexture != null) Destroy(_arcTexture);
         }
 
         private void OnEnable() => RefreshTouchControls();
@@ -157,6 +178,7 @@ namespace Purge.Presentation.UI
 
             UpdateHealthBar(Time.unscaledDeltaTime);
             UpdateDamagePulse();
+            UpdateDamageArcs();
         }
 
         // ---- health ----
@@ -310,6 +332,8 @@ namespace Purge.Presentation.UI
             if (_messageRow != null) _messageRow.SetActive(false);
             _damageElapsed = float.MaxValue;
             if (_damageFlash != null) _damageFlash.enabled = false;
+            foreach (var arc in _damageArcs)
+                if (arc != null) arc.enabled = false;
         }
 
         private void RefreshTouchControls()
@@ -317,6 +341,81 @@ namespace Purge.Presentation.UI
             var touch = isActiveAndEnabled && TouchShown;
             if (_touchControls != null) _touchControls.SetShown(touch);
             if (_weaponPanel != null) _weaponPanel.SetActive(!TouchShown);
+        }
+
+        // ---- damage direction ----
+
+        /// <summary>
+        /// An arc near the screen edge on the side a blow came from: <paramref name="direction"/> on the ground (x = East,
+        /// y = North = up on screen, the camera never turns). Several blows — several arcs (the oldest is reused).
+        /// </summary>
+        public void ShowDamageArc(Vector2 direction)
+        {
+            if (_damageArcs.Length == 0 || direction.sqrMagnitude < 1e-6f) return;
+            var arc = _damageArcs[_nextArc];
+            if (arc == null) return;
+            _arcElapsed[_nextArc] = 0f;
+            _nextArc = (_nextArc + 1) % _damageArcs.Length;
+            var rect = arc.rectTransform;
+            var parent = rect.parent as RectTransform;
+            if (parent != null)
+            {
+                // A square as large as the shorter side of the screen: the arc is round on any aspect.
+                var side = Mathf.Min(parent.rect.width, parent.rect.height) * 0.92f;
+                rect.sizeDelta = new Vector2(side, side);
+            }
+
+            rect.localRotation = Quaternion.Euler(0f, 0f, -Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg);
+            arc.enabled = true;
+            UpdateDamageArcs();
+        }
+
+        private void UpdateDamageArcs()
+        {
+            for (var a = 0; a < _damageArcs.Length; a++)
+            {
+                var arc = _damageArcs[a];
+                if (arc == null || !arc.enabled) continue;
+                var t = _arcElapsed[a] / _damageArcTime;
+                if (t >= 1f)
+                {
+                    arc.enabled = false;
+                    continue;
+                }
+
+                var color = _damageArcColor;
+                color.a *= 1f - t * t;
+                arc.color = color;
+                _arcElapsed[a] += Time.unscaledDeltaTime;
+            }
+        }
+
+        /// <summary>White arc at the top of a square texture (±35° from up, near the edge), soft at its ends.</summary>
+        private static Texture2D CreateArc()
+        {
+            var texture = new Texture2D(ArcTextureSize, ArcTextureSize, TextureFormat.RGBA32, false)
+            {
+                name = "DamageArc",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+            };
+            var pixels = new Color32[ArcTextureSize * ArcTextureSize];
+            for (var y = 0; y < ArcTextureSize; y++)
+            for (var x = 0; x < ArcTextureSize; x++)
+            {
+                var u = (x + 0.5f) / ArcTextureSize * 2f - 1f;
+                var v = (y + 0.5f) / ArcTextureSize * 2f - 1f;
+                var r = Mathf.Sqrt(u * u + v * v);
+                var angle = Mathf.Abs(Mathf.Atan2(u, v)) * Mathf.Rad2Deg;
+                var band = 1f - Mathf.Clamp01(Mathf.Abs(r - 0.93f) / 0.05f);
+                var ends = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(20f, 35f, angle));
+                var alpha = Mathf.SmoothStep(0f, 1f, band) * ends;
+                pixels[y * ArcTextureSize + x] = new Color32(255, 255, 255, (byte)(alpha * 255f));
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            return texture;
         }
 
         // ---- damage pulse ----

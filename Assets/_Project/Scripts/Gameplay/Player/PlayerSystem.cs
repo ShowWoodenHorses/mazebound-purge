@@ -104,6 +104,12 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public float WeaponSpeed { get; set; } = 1f;
 
+        /// <summary>× speed of the states on the player (slow; <c>PlayerStatuses</c> sets it every tick before this one).</summary>
+        public float StatusSpeed { get; set; } = 1f;
+
+        /// <summary>A state holds the player in place (stun): no step, no attack (<c>PlayerStatuses</c>).</summary>
+        public bool Stunned { get; set; }
+
         /// <summary>Actual speed this tick relative to <see cref="PlayerDefinition.MoveSpeed"/>, 0..1 (for animation).</summary>
         public float SpeedFactor { get; private set; }
 
@@ -140,7 +146,7 @@ namespace Purge.Gameplay.Player
             _aiming = false;
             IsAiming = aiming;
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
-            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f)
+            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned)
             {
                 if (aiming) Facing = _aimFacing;
                 else if (_moved) Facing = Aim.Snap(Facing, _aim.AimMode);
@@ -156,7 +162,7 @@ namespace Purge.Gameplay.Player
             _moved = true;
             var maxDistance = _definition.MoveSpeed * deltaTime;
             var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell) *
-                       WeaponSpeed;
+                       WeaponSpeed * StatusSpeed;
             var target = PlayerMovement.Move(Position, move * (maxDistance * slow), _definition.BodyHalfSize, _definition.CornerAssist, this);
             // Of the full speed: in a snowdrift the walk animation slows down too.
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);

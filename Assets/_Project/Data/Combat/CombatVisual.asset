@@ -195,3 +195,5 @@ MonoBehaviour:
   _hitRing: {fileID: 2100000, guid: f6b62a216526e07459c67b69f52fa04e, type: 2}
   _boltMaterial: {fileID: 2100000, guid: 88deccef97c722f4fbd231c83d3c6c02, type: 2}
   _effectParticles: {fileID: 2100000, guid: 299be5c1d954e8d4d8b9a9ccdb0da1d6, type: 2}
+  _abilityWarning: {fileID: 2100000, guid: 9894bcb9b8be812439cb8760096a98f1, type: 2}
+  _statusRing: {fileID: 2100000, guid: caf790f28ec30094f9a5e96ca873e27c, type: 2}

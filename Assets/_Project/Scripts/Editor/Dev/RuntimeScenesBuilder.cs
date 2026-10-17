@@ -437,6 +437,21 @@ namespace Purge.Editor.Dev
             damageFlash.raycastTarget = false;
             damageFlash.enabled = false;
 
+            // Arcs pointing where a blow came from (stage 5c): squares centred on the screen, sized and turned by the screen.
+            var damageArcs = new List<Object>();
+            for (var a = 0; a < 4; a++)
+            {
+                var arcObject = new GameObject("DamageArc" + (a + 1), typeof(RectTransform));
+                arcObject.transform.SetParent(screen.transform, false);
+                var arcRect = arcObject.GetComponent<RectTransform>();
+                arcRect.anchorMin = arcRect.anchorMax = arcRect.pivot = new Vector2(0.5f, 0.5f);
+                arcRect.sizeDelta = new Vector2(900f, 900f);
+                var arc = arcObject.AddComponent<RawImage>();
+                arc.raycastTarget = false;
+                arc.enabled = false;
+                damageArcs.Add(arc);
+            }
+
             var icons = UiIcons();
             var root = screen.transform;
 
@@ -534,6 +549,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_rangedSlot", rangedSlot);
             SetReference(screen, "_throwSlot", throwSlot);
             SetReference(screen, "_damageFlash", damageFlash);
+            SetReferences(screen, "_damageArcs", damageArcs);
             return screen;
         }
 

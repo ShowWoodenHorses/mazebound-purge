@@ -27,8 +27,12 @@ MonoBehaviour:
     WanderSpeed: 0.4
     SightRange: 7
     CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
   _monsters: []
   _monsterVisuals: []
+  _onDemandMonsters: []
+  _monsterViews: []
   _weapons:
     GunRate: 12
     BulletSpeed: 28

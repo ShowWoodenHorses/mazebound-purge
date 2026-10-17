@@ -17,9 +17,12 @@ namespace Purge.Editor.Dev
         /// Imports every "{prefix}*.fbx" in <see cref="AnimationsPath"/> as Humanoid (own avatar per file, retargeted
         /// onto any Humanoid model), one clip per file named after the file, root motion baked into the pose
         /// (gameplay moves and turns characters; root motion is never applied). <paramref name="trim"/> may keep only
-        /// a part of a clip (seconds of the source take).
+        /// a part of a clip (seconds of the source take). <paramref name="inPlace"/> takes a clip's ground drift (an attack's
+        /// lunge, a hit's step back) out of the pose into root motion, which is never applied: the body stays where the
+        /// gameplay puts it (Animator views; baked looks subtract the drift themselves).
         /// </summary>
-        public static void ImportClips(string prefix, Func<string, bool> isLooping, Func<string, (float Start, float End)?> trim = null)
+        public static void ImportClips(string prefix, Func<string, bool> isLooping, Func<string, (float Start, float End)?> trim = null,
+            Func<string, bool> inPlace = null)
         {
             foreach (var guid in AssetDatabase.FindAssets(prefix + " t:Model", new[] { AnimationsPath }))
             {
@@ -51,8 +54,9 @@ namespace Purge.Editor.Dev
                 clip.keepOriginalOrientation = true;
                 clip.lockRootHeightY = true;
                 clip.keepOriginalPositionY = true;
-                clip.lockRootPositionXZ = true;
-                clip.keepOriginalPositionXZ = true;
+                var extract = inPlace != null && inPlace(name);
+                clip.lockRootPositionXZ = !extract;
+                clip.keepOriginalPositionXZ = !extract; // extracted: by the centre of mass
                 if (trim?.Invoke(name) is { } range)
                 {
                     // Seconds of the source take → its frames.

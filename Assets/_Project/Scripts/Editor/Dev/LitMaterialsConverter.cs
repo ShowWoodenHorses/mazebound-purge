@@ -75,6 +75,15 @@ namespace Purge.Editor.Dev
                     Add(prefabs, variant.Prefab?.editorAsset as GameObject);
             }
 
+            // Officers, elite, bosses (Animator) and their equipment (Build Monsters converts them too).
+            foreach (var view in Load<Purge.Core.Horde.MonsterViewDefinition>())
+            {
+                Add(prefabs, view.Prefab);
+                foreach (var item in view.Equipment)
+                    Add(prefabs, item?.Model);
+                Add(prefabs, view.ProjectileModel);
+            }
+
             foreach (var player in Load<PlayerVisualDefinition>())
                 Add(prefabs, player.Prefab?.editorAsset as GameObject);
 

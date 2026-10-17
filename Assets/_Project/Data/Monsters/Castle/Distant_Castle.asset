@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Distant_Castle
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: distant_castle
+  _rank: 1
+  _biome: 1
+  _perception: 0
+  _stats:
+    MaxHp: 70
+    Speed: 2.2
+    Radius: 0.34
+    AttackReach: 0.9
+    Damage: 6
+    AttackInterval: 1.2
+    TurnSpeed: 540
+    Separation: 0.5
+    CorpseTime: 4
+    EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 9
+    CallRadius: 12
+    HoldRange: 7
+    RetreatRange: 3
+  _drop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities:
+  - rid: 1763807262009983223
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983223
+      type: {class: ProjectileAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 2.5
+        _firstDelay: 0.8
+        _minRange: 1.5
+        _maxRange: 9
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.8
+        _recovery: 0.35
+        _form: 0
+        _count: 3
+        _fanAngle: 30
+        _speed: 14
+        _damage: 18
+        _range: 12
+        _arcRadius: 0.9
+        _arcHeight: 0.3
+        _status: {fileID: 0}
+        _statusDuration: 2
+        _impact: []

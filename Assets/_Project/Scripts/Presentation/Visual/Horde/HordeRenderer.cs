@@ -53,6 +53,7 @@ namespace Purge.Presentation.Visual.Horde
 
         private Look[] _looks;
         private Clips[] _kindClips;    // per kind (null = not drawn)
+        private Color[] _kindSplash;   // per kind: colour of its splashes (baked or Animator look)
         private int[] _kindLookStart;  // per kind: its first look
         private int[] _kindLookCount;  // per kind: its material variants
         private Material _shadowMaterial;
@@ -147,11 +148,8 @@ namespace Purge.Presentation.Visual.Horde
         /// <summary>Colour of the splashes of the monster in <paramref name="agent"/> (its look's).</summary>
         public Color SplashColorOf(int agent)
         {
-            if (_kindClips != null && _horde.IsActive && (uint)agent < (uint)_horde.Capacity)
-            {
-                var clips = _kindClips[_horde.Kinds[agent]];
-                if (clips != null) return clips.Visual.SplashColor;
-            }
+            if (_kindSplash != null && _horde.IsActive && (uint)agent < (uint)_horde.Capacity)
+                return _kindSplash[_horde.Kinds[agent]];
 
             return Visual != null ? Visual.SplashColor : new Color(0.55f, 0.85f, 0.25f, 1f);
         }
@@ -168,8 +166,18 @@ namespace Purge.Presentation.Visual.Horde
             _kindClips = new Clips[kinds.Count];
             _kindLookStart = new int[kinds.Count];
             _kindLookCount = new int[kinds.Count];
+            _kindSplash = new Color[kinds.Count];
             for (var k = 0; k < kinds.Count; k++)
             {
+                _kindSplash[k] = new Color(0.55f, 0.85f, 0.25f, 1f);
+                // Officers, elite, bosses: Animator (MonsterViewPresenter).
+                var view = settings.ViewOf(kinds[k].Definition);
+                if (view != null)
+                {
+                    _kindSplash[k] = view.SplashColor;
+                    continue;
+                }
+
                 var visual = settings.VisualOf(kinds[k].Definition);
                 if (visual == null || visual.Mesh == null || visual.Variants.Length == 0)
                 {
@@ -185,6 +193,7 @@ namespace Purge.Presentation.Visual.Horde
                 }
 
                 Visual ??= visual;
+                _kindSplash[k] = visual.SplashColor;
                 _kindClips[k] = clips;
                 _kindLookStart[k] = looks.Count;
                 _kindLookCount[k] = visual.Variants.Length;

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1a01e97fc9a8a408856af072f8de49, type: 3}
+  m_Name: Zone_Acid
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Effects.ZoneDefinition
+  _id: zone_acid
+  _core: {r: 0.75, g: 1, b: 0.3, a: 1}
+  _edge: {r: 0.25, g: 0.7, b: 0.1, a: 1}
+  _modules:
+  - rid: 1763807262009983218
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807262009983218
+      type: {class: ZoneStatus, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: a892e118a3cf81b47af884d2d53b4c30, type: 2}
+        _duration: 1.5

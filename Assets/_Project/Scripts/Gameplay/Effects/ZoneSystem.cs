@@ -108,6 +108,9 @@ namespace Purge.Gameplay.Effects
 
         public float StrengthAt(int index) => _kind[index] != 0 ? _strength[index] : 0f;
 
+        /// <summary>The zone in the cell is the monsters' (it hurts the player and puts its state on them).</summary>
+        public bool IsHostileAt(int index) => _kind != null && (uint)index < (uint)_kind.Length && _kind[index] != 0 && _hostile[index];
+
         /// <summary>The zone on one cell (see the class remarks for overlaps). False when the cell cannot hold it.</summary>
         public bool Place(GridPosition cell, ZoneDefinition zone, float duration, float strength = 1f, bool hostile = false,
             int steps = 0)
@@ -266,7 +269,8 @@ namespace Purge.Gameplay.Effects
         {
             _playerDamage += damage;
             var whole = Mathf.FloorToInt(_playerDamage);
-            if (whole <= 0 || _health.IsDead) return;
+            // The stress test's and the sandbox's god mode spares the player from everything the monsters do.
+            if (whole <= 0 || _health.IsDead || _horde.IsActive && _horde.GodMode) return;
             _playerDamage -= whole;
             _health.Damage(whole);
         }

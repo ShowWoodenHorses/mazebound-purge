@@ -157,7 +157,7 @@ namespace Purge.Gameplay.Combat
                 // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
                 // right stick aims): the body does not follow the run direction.
                 var direction = wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
-                if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading)
+                if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned)
                 {
                     if (HasRounds(weapon)) Attack(weapon, direction);
                     else if (!TryReload() && _input.WasPressed(PlayerAction.Attack)) DryFired?.Invoke(weapon);

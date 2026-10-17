@@ -70,6 +70,12 @@ namespace Purge.Core.Monsters
         [Tooltip("Callers: how far the call carries along the passages, cells (× difficulty).")]
         [Min(0f)] public float CallRadius = 12f;
 
+        [Header("Tactics (stage 5c)")]
+        [Tooltip("Stops closing in this close to the player while it sees them (a ranged monster shoots from here); 0 = closes in.")]
+        [Min(0f)] public float HoldRange;
+        [Tooltip("Steps back while the player is closer than this (unless cornered: then it fights in melee); 0 = never.")]
+        [Min(0f)] public float RetreatRange;
+
         /// <summary>Ground speed of the packs' walk clips at 1× (they shuffle at 0.2–0.6 cells/s).</summary>
         public const float WalkClipSpeed = 0.4f;
 
@@ -102,7 +108,7 @@ namespace Purge.Core.Monsters
     /// A monster kind (ТЗ: «Монстр — данные: ранг, статы, восприятие, способности, сопротивления, эффект смерти,
     /// размер, вид»). Gameplay only: the look (baked mass visual or Animator prefab, equipment) is defined separately
     /// by the monster's id (<c>HordeVisualDefinition.MonsterId</c>), never here — the content catalog loads every
-    /// definition at start and must stay light. Abilities — modules of stage 5c. Built by Purge → Dev → Build Monsters
+    /// definition at start and must stay light. Abilities — <see cref="AbilityModule"/>s (stage 5c). Built by Purge → Dev → Build Monsters
     /// from the folders Art/Monster/&lt;Biome&gt;/&lt;Rank&gt;; the numbers are edited here and kept on rebuilds.
     /// </summary>
     [CreateAssetMenu(fileName = "Monster", menuName = "Purge/Definitions/Monster")]
@@ -122,6 +128,9 @@ namespace Purge.Core.Monsters
         [Tooltip("What happens where it dies (an explosion, a zone…); its zones hurt the player too.")]
         [SerializeReference, ModuleList] private List<EffectModule> _deathEffects = new List<EffectModule>();
 
+        [Tooltip("What it can do besides its plain attack (stage 5c): cast in list order when the conditions hold.")]
+        [SerializeReference, ModuleList] private List<AbilityModule> _abilities = new List<AbilityModule>();
+
         public MonsterRank Rank => _rank;
         public MonsterBiome Biome => _biome;
         public MonsterPerception Perception => _perception;
@@ -129,6 +138,7 @@ namespace Purge.Core.Monsters
         public DropTable Drop => _drop;
         public IReadOnlyList<StatusResistance> Resistances => _resistances;
         public IReadOnlyList<EffectModule> DeathEffects => _deathEffects;
+        public IReadOnlyList<AbilityModule> Abilities => _abilities;
 
         /// <summary>× a state's duration on this monster (1 = no resistance).</summary>
         public float DurationFactor(StatusDefinition status)
@@ -144,6 +154,7 @@ namespace Purge.Core.Monsters
         {
             var owner = $"Monster '{name}'";
             Purge.Core.Modules.Modules.Validate(_deathEffects, owner, problems);
+            Purge.Core.Modules.Modules.Validate(_abilities, owner, problems);
             if (_drop == null) problems.Add($"{owner}: no drop table (drops what the level drops).");
             for (var i = 0; i < _resistances.Count; i++)
                 if (_resistances[i] == null || _resistances[i].Status == null)
@@ -175,6 +186,9 @@ namespace Purge.Core.Monsters
         }
 
         internal void SetDrop(DropTable drop) => _drop = drop;
+
+        /// <summary>For tests and tools.</summary>
+        internal void SetAbilities(params AbilityModule[] abilities) => _abilities = new List<AbilityModule>(abilities);
 
         /// <summary>For tests and tools.</summary>
         internal void SetPerception(MonsterPerception perception) => _perception = perception;

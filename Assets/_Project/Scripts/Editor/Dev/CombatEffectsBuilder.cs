@@ -67,6 +67,11 @@ namespace Purge.Editor.Dev
             var hitRing = SaveMaterial("fx_hit_ring", "Purge/Particle", SaveTexture("fx_ring", 128, 128, RingShape), Blend.Alpha,
                 Color.white);
 
+            // Monsters' abilities (stage 5c): warnings on the floor, the ring of the player's states.
+            var warning = SaveMaterial("fx_ability_warning", "Purge/Warning", null, Blend.Alpha, new Color(1f, 0.12f, 0.08f, 0.85f));
+            var statusRing = SaveMaterial("fx_status_ring", "Purge/Ring", null, Blend.Alpha, Color.white);
+            statusRing.SetFloat("_Fill", 0.25f);
+
             var visual = AssetDatabase.LoadAssetAtPath<CombatVisualDefinition>(CombatVisualPath);
             if (visual == null)
             {
@@ -88,6 +93,8 @@ namespace Purge.Editor.Dev
             visual.BoltMaterial = tracer;
             visual.EffectParticles = additive;
             visual.HitRing = hitRing;
+            visual.AbilityWarning = warning;
+            visual.StatusRing = statusRing;
             EditorUtility.SetDirty(visual);
 
             // The first placeholders (cubes and spheres) are replaced.

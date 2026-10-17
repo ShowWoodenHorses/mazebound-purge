@@ -27,6 +27,8 @@ MonoBehaviour:
     WanderSpeed: 0.4
     SightRange: 7
     CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
   _monsters:
   - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
     _weight: 3
@@ -44,6 +46,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 32d9b60a0adf11f49aa052fce6ae2c45, type: 2}
   - {fileID: 11400000, guid: 53edea5b7886e02478f6d18c6ddb84ad, type: 2}
   - {fileID: 11400000, guid: 3a23457ea1daefd498d9554229c96a02, type: 2}
+  _onDemandMonsters:
+  - {fileID: 11400000, guid: 1f8a534da70c88348837cd5089456c5f, type: 2}
+  - {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+  - {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+  - {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+  _monsterViews:
+  - {fileID: 11400000, guid: f252ca0c80f63934a9cc276a2ec2dfed, type: 2}
+  - {fileID: 11400000, guid: 07cc53531cb2bc248ad89fe5dc4f47d7, type: 2}
+  - {fileID: 11400000, guid: 5007ed8e61216874fb3589c8e9f735b1, type: 2}
+  - {fileID: 11400000, guid: e4b37603c2a3baa4daba8a4a59273952, type: 2}
   _weapons:
     GunRate: 12
     BulletSpeed: 28

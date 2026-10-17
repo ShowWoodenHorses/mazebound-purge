@@ -157,6 +157,37 @@ namespace Purge.Presentation.Stress
         public void SpawnCaller() =>
             SpawnAway(Core.Monsters.MonsterPerception.Wanderer, Core.Monsters.MonsterPerception.Caller);
 
+        /// <summary>Sandbox (5c): the officers its buttons call up (<see cref="StressTestDefinition.OnDemandMonsters"/>).</summary>
+        public int OfficerCount => _horde.Settings != null ? _horde.Settings.OnDemandMonsters.Length : 0;
+
+        /// <summary>Short button label of officer <paramref name="index"/> (the asset name without its rank words).</summary>
+        public string OfficerLabel(int index)
+        {
+            var monster = _horde.Settings.OnDemandMonsters[index];
+            return monster == null ? "-" : monster.name.Replace("Distant_", "Dist").Replace("_Common", string.Empty);
+        }
+
+        /// <summary>Sandbox (5c): officer <paramref name="index"/> 7–9 cells from the player (in view when possible).</summary>
+        public void SpawnOfficer(int index)
+        {
+            var monster = _horde.Settings.OnDemandMonsters[index];
+            var kind = _horde.KindIndexOf(monster);
+            if (kind < 0) return;
+            _groupRandom ??= new DeterministicRandom((int)StableHash.Of(_level.name + "/sandbox-groups"));
+            var best = -1;
+            for (var attempt = 0; attempt < 32; attempt++)
+            {
+                var angle = (float)(_groupRandom.NextDouble() * System.Math.PI * 2.0);
+                var at = _player.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (7f + 2f * (float)_groupRandom.NextDouble());
+                var slot = _horde.SpawnAt(at, monster.Perception, kind);
+                if (slot < 0) continue;
+                best = slot;
+                break;
+            }
+
+            GameLog.Info(LogChannel.Gameplay, best >= 0 ? $"Sandbox: officer '{monster.name}' in slot {best}." : $"Sandbox: no room for '{monster.name}'.");
+        }
+
         private const int SandboxGroupSize = 10;
         private const float SandboxGroupMinDistance = 10f;
         private const float SandboxGroupMaxDistance = 20f;

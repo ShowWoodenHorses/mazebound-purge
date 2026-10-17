@@ -81,6 +81,8 @@ namespace Purge.Composition
             builder.Register<DropPool>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // Tick order: weapon switching → throwing (a click that throws is not a shot) → attack (sets this tick's aim
             // and speed) → movement → steps → pickups (lifetimes) → interaction → bullets.
+            // States on the player first: slow and stun act on this tick's attack and movement.
+            builder.Register<PlayerStatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
@@ -94,6 +96,8 @@ namespace Purge.Composition
             builder.Register<ZombieSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Mass monsters and the stress test weapons (inactive unless the level has StressTest settings).
             builder.Register<HordeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Abilities of its monsters (stage 5c): casts on the fresh positions, monster projectiles.
+            builder.Register<MonsterAbilities>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // After the horde: sized by it, tick on its fresh buckets (states act on the monsters from the next tick).
             builder.Register<StatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<ZoneSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -137,6 +141,11 @@ namespace Purge.Composition
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // Officers, elite, bosses (Animator) and what their abilities show.
+            builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<AbilityWarningView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            builder.Register<MonsterProjectileView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<PlayerStatusView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<WeaponFeelView>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup>();
             builder.Register<WeaponEffectsView>(Lifetime.Singleton).AsSelf()

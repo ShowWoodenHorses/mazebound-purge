@@ -73,6 +73,14 @@ namespace Purge.Core.Visual
         [Tooltip("Particles of streams, explosions, sparks on the horde, burning and stunned monsters (additive).")]
         [SerializeField] private Material _effectParticles;
 
+        [Header("Monsters' abilities (stage 5c)")]
+        [Tooltip("Warnings of abilities on the floor: lines, circles, sectors (Purge/Warning).")]
+        [SerializeField] private Material _abilityWarning;
+        [Tooltip("Ring under the player while a state holds them or the immunity to control lasts (Purge/Ring).")]
+        [SerializeField] private Material _statusRing;
+
+        public Material AbilityWarning { get => _abilityWarning; internal set => _abilityWarning = value; }
+        public Material StatusRing { get => _statusRing; internal set => _statusRing = value; }
         public Material BoltMaterial { get => _boltMaterial; internal set => _boltMaterial = value; }
         public Material EffectParticles { get => _effectParticles; internal set => _effectParticles = value; }
         public Material Splash { get => _splash; internal set => _splash = value; }

@@ -114,6 +114,16 @@ namespace Purge.Presentation.Stress
                 Toggle(perception, "AllHunt", () => controller.AllHunters, v => controller.AllHunters = v);
                 Button(perception, "+Wander", controller.SpawnWanderers, null);
                 Button(perception, "+Caller", controller.SpawnCaller, null);
+
+                if (controller.OfficerCount > 0)
+                {
+                    var officers = Row(bodyRect, "Officer");
+                    for (var o = 0; o < controller.OfficerCount; o++)
+                    {
+                        var index = o;
+                        Button(officers, "+" + controller.OfficerLabel(index), () => controller.SpawnOfficer(index), null);
+                    }
+                }
             }
 
             var sim = Row(bodyRect, "Sim");

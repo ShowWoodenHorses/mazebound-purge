@@ -83,6 +83,7 @@ namespace Purge.Presentation.UI
             if (!_bound)
             {
                 _health.Changed += OnHealthChanged;
+                _health.Hurt += OnHurt;
                 _inventory.KeysChanged += RefreshKeys;
                 _interaction.Interacted += OnInteracted;
                 _player.CellChanged += OnPlayerCellChanged;
@@ -105,6 +106,7 @@ namespace Purge.Presentation.UI
         {
             if (!_bound) return;
             _health.Changed -= OnHealthChanged;
+            _health.Hurt -= OnHurt;
             _inventory.KeysChanged -= RefreshKeys;
             _interaction.Interacted -= OnInteracted;
             _player.CellChanged -= OnPlayerCellChanged;
@@ -173,12 +175,21 @@ namespace Purge.Presentation.UI
             };
         }
 
+        private const int PulseMinDamage = 5;
+
         private void OnHealthChanged(int current, int max)
         {
-            if (current < _lastHealth)
+            // A blow pulses; a few points of a state or a zone ticking away do not (the screen would stay red).
+            if (_lastHealth - current >= Math.Max(PulseMinDamage, max / 20))
                 _ui.Hud.PulseDamage();
             _lastHealth = current;
             _ui.Hud.SetHealth(current, max);
+        }
+
+        /// <summary>A blow with a direction: the arc on its side of the screen.</summary>
+        private void OnHurt(int amount, Vector2 source)
+        {
+            if (_player.IsSpawned) _ui.Hud.ShowDamageArc(source - _player.Position);
         }
 
         private void OnZombie(ZombieRuntime zombie) => RefreshCounters();

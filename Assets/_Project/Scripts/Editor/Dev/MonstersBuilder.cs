@@ -13,7 +13,8 @@ namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Purge → Dev → Build Monsters: monsters from the folders <c>Art/Monster/&lt;Biome&gt;/&lt;Rank&gt;/*.prefab</c>
-    /// (Common, Castle, Forest, Snow… × Mass, Officer, Special = elite, Boss). Stage 5a builds the rank-and-file (Mass):
+    /// (Common, Castle, Forest, Snow… × Mass, Officer, Special = elite, Boss). Stage 5a builds the rank-and-file (Mass),
+    /// stage 5c — the officers (Animator: <see cref="OfficersBuilder"/>):
     /// <list type="number">
     /// <item>Clips: the "Monster_*" clips in Art/Animations are copied once from the Zombie_Animations and Ultimate
     /// Animation Collection packs in Import (<see cref="ClipTable"/>) and imported as Humanoid, root motion baked into
@@ -149,16 +150,32 @@ namespace Purge.Editor.Dev
                 var copied = CopyClips();
                 CharacterAnimationUtility.ImportClips(ClipPrefix, IsLooping);
 
+                copied += OfficersBuilder.PrepareClips(UacClips());
+                OfficersBuilder.PrepareAssets();
+
                 var visuals = new List<HordeVisualDefinition>();
+                var officers = new List<(GameObject, MonsterDefinition)>();
                 var problems = new List<string>();
                 var report = new List<string>();
                 foreach (var (prefab, biome, rank) in FindPrefabs())
                 {
-                    if (rank != MonsterRank.Mass) continue; // officers, elite, bosses — Animator, stages 5c–5e
-                    var definition = EnsureDefinition(prefab, biome, rank);
+                    // Elite and bosses — Animator, stages 5e and 7; the Brutes — 5d.
+                    if (rank == MonsterRank.Officer && OfficersBuilder.IsBuilt(prefab.name))
+                    {
+                        var officer = EnsureDefinition(prefab, biome, rank, out var created);
+                        if (created) OfficersBuilder.Seed(officer, prefab.name);
+                        officer.Validate(problems);
+                        officers.Add((prefab, officer));
+                        continue;
+                    }
+
+                    if (rank != MonsterRank.Mass) continue;
+                    var definition = EnsureDefinition(prefab, biome, rank, out _);
                     definition.Validate(problems);
                     visuals.Add(BakeMass(prefab, definition, report));
                 }
+
+                var views = OfficersBuilder.Build(officers, report);
 
                 foreach (var path in StressAssets)
                 {
@@ -168,6 +185,13 @@ namespace Purge.Editor.Dev
                     var used = visuals.FindAll(visual => Array.Exists(stress.Monsters,
                         spawn => spawn?.Monster != null && spawn.Monster.Id == visual.MonsterId));
                     stress.SetMonsterVisuals(used.ToArray());
+                    // The sandbox calls the officers up with its buttons (stage 5c).
+                    if (stress.IsSandbox) stress.SetOnDemandMonsters(officers.ConvertAll(officer => officer.Item2).ToArray());
+                    var shown = views.FindAll(view => Array.Exists(stress.Monsters,
+                                                          spawn => spawn?.Monster != null && spawn.Monster.Id == view.MonsterId) ||
+                                                      Array.Exists(stress.OnDemandMonsters,
+                                                          monster => monster != null && monster.Id == view.MonsterId));
+                    stress.SetMonsterViews(shown.ToArray());
                     EditorUtility.SetDirty(stress);
                 }
 
@@ -175,7 +199,7 @@ namespace Purge.Editor.Dev
                 ContentCatalogBuilder.Build(log: false);
                 foreach (var problem in problems)
                     Debug.LogWarning("[Purge] " + problem);
-                Debug.Log($"[Purge] Monsters built: {visuals.Count} rank-and-file look(s), {copied} clip(s) copied.\n" +
+                Debug.Log($"[Purge] Monsters built: {visuals.Count} rank-and-file look(s), {views.Count} officer(s), {copied} clip(s) copied.\n" +
                           string.Join("\n", report));
             }
             catch (Exception e)
@@ -237,7 +261,7 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>The UAC pack's in-place clips by file name (the root-motion "_RM" ones are left out).</summary>
-        private static Dictionary<string, string> UacClips()
+        internal static Dictionary<string, string> UacClips()
         {
             var clips = new Dictionary<string, string>(StringComparer.Ordinal);
             if (!AssetDatabase.IsValidFolder(UacPath)) return clips;
@@ -294,8 +318,9 @@ namespace Purge.Editor.Dev
             }
         }
 
-        private static MonsterDefinition EnsureDefinition(GameObject prefab, MonsterBiome biome, MonsterRank rank)
+        private static MonsterDefinition EnsureDefinition(GameObject prefab, MonsterBiome biome, MonsterRank rank, out bool created)
         {
+            created = false;
             var folder = $"{DataPath}/{biome}";
             EnsureFolder(folder);
             var path = $"{folder}/{prefab.name}.asset";
@@ -304,6 +329,7 @@ namespace Purge.Editor.Dev
             {
                 definition = ScriptableObject.CreateInstance<MonsterDefinition>();
                 AssetDatabase.CreateAsset(definition, path); // the id comes from the file name (ContentIdAssigner)
+                created = true;
             }
 
             if (definition.Rank != rank || definition.Biome != biome)

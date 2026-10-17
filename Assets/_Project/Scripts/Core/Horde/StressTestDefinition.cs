@@ -74,6 +74,10 @@ namespace Purge.Core.Horde
         [SerializeField] private HordeSpawn[] _monsters = Array.Empty<HordeSpawn>();
         [Tooltip("Looks of the monsters (by monster id; Build Monsters fills it).")]
         [SerializeField] private HordeVisualDefinition[] _monsterVisuals = Array.Empty<HordeVisualDefinition>();
+        [Tooltip("Monsters that appear only when asked (the sandbox's officer buttons, stage 5c), never in the waves.")]
+        [SerializeField] private MonsterDefinition[] _onDemandMonsters = Array.Empty<MonsterDefinition>();
+        [Tooltip("Animator looks of the officers, elite and bosses (by monster id; Build Monsters fills it).")]
+        [SerializeField] private MonsterViewDefinition[] _monsterViews = Array.Empty<MonsterViewDefinition>();
         [SerializeField] private StressWeaponSettings _weapons = new StressWeaponSettings();
 
         [Header("Perception (stage 5b)")]
@@ -131,6 +135,18 @@ namespace Purge.Core.Horde
         public MonsterStats Monster => _monster;
         public HordeSpawn[] Monsters => _monsters ??= Array.Empty<HordeSpawn>();
         public HordeVisualDefinition[] MonsterVisuals => _monsterVisuals ??= Array.Empty<HordeVisualDefinition>();
+        public MonsterDefinition[] OnDemandMonsters => _onDemandMonsters ??= Array.Empty<MonsterDefinition>();
+        public MonsterViewDefinition[] MonsterViews => _monsterViews ??= Array.Empty<MonsterViewDefinition>();
+
+        /// <summary>Animator look of <paramref name="monster"/> among <see cref="MonsterViews"/> (null = none: baked or not drawn).</summary>
+        public MonsterViewDefinition ViewOf(MonsterDefinition monster)
+        {
+            if (monster == null) return null;
+            foreach (var view in MonsterViews)
+                if (view != null && view.MonsterId == monster.Id)
+                    return view;
+            return null;
+        }
 
         /// <summary>Look of <paramref name="monster"/> among <see cref="MonsterVisuals"/> (null = none).</summary>
         public HordeVisualDefinition VisualOf(MonsterDefinition monster)
@@ -194,6 +210,10 @@ namespace Purge.Core.Horde
         }
 
         internal void SetMonsterVisuals(HordeVisualDefinition[] visuals) => _monsterVisuals = visuals ?? Array.Empty<HordeVisualDefinition>();
+
+        internal void SetMonsterViews(MonsterViewDefinition[] views) => _monsterViews = views ?? Array.Empty<MonsterViewDefinition>();
+
+        internal void SetOnDemandMonsters(MonsterDefinition[] monsters) => _onDemandMonsters = monsters ?? Array.Empty<MonsterDefinition>();
 
         internal void Configure(HordeVisualDefinition visual, Material tracer, Material particles, Material fire)
         {

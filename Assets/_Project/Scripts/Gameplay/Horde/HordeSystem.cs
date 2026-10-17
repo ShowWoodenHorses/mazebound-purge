@@ -88,6 +88,11 @@ namespace Purge.Gameplay.Horde
         private Vector2[] _push; // knockback (and a corpse's fling), cells per second, fading
         private float[] _staggerUntil; // a hit stops the monster's step and attack until then
         private HordePace[] _pace;
+        private bool[] _casting; // an ability is being cast (MonsterAbilities): stands, faces _castFace
+        private Vector2[] _castFace;
+        private bool[] _sees; // nothing that stops bullets between it and the player (MonsterAbilities, a few times a second)
+        private float[] _cornerUntil; // a retreating monster with its back to a wall fights in melee until then
+        private float[] _retreatStuck;
 
         private bool[] _walkable;
         private int[] _walkableCells;
@@ -130,6 +135,10 @@ namespace Purge.Gameplay.Horde
                     kinds.Add(new HordeKind(spawn.Monster, spawn.Monster.Stats, spawn.Weight));
             if (kinds.Count == 0)
                 kinds.Add(new HordeKind(null, settings.Monster ?? new MonsterStats(), 1f));
+            // Weight 0: never in the waves, only when asked (SpawnKind — the sandbox's officers).
+            foreach (var monster in settings.OnDemandMonsters)
+                if (monster != null && kinds.Count < byte.MaxValue && kinds.FindIndex(kind => kind.Definition == monster) < 0)
+                    kinds.Add(new HordeKind(monster, monster.Stats, 0f));
             return kinds.ToArray();
         }
 
@@ -154,6 +163,15 @@ namespace Purge.Gameplay.Horde
         public MonsterDefinition DefinitionOf(int agent) => KindOf(agent).Definition;
 
         public float RadiusOf(int agent) => StatsOf(agent).Radius;
+
+        /// <summary>Index of <paramref name="monster"/> in <see cref="KindList"/>, -1 when the horde has no such kind.</summary>
+        public int KindIndexOf(MonsterDefinition monster)
+        {
+            for (var k = 0; k < _kinds.Length; k++)
+                if (_kinds[k].Definition == monster)
+                    return k;
+            return -1;
+        }
 
         /// <summary>The widest body of all kinds (queries look this far around).</summary>
         public float MaxRadius => _maxRadius;
@@ -217,6 +235,28 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>How each monster moved this tick (idle / walk / run look).</summary>
         public ReadOnlySpan<HordePace> Paces => _pace;
+
+        /// <summary>An ability is being cast (the monster stands and faces its aim).</summary>
+        public ReadOnlySpan<bool> Casting => _casting;
+
+        /// <summary>
+        /// The monster casts an ability (<c>MonsterAbilities</c>): it stands still (only the crowd and hits push it) and
+        /// turns to <paramref name="face"/> (unit) until released.
+        /// </summary>
+        public void SetCasting(int agent, bool casting, Vector2 face = default)
+        {
+            if ((uint)agent >= (uint)_highWater) return;
+            _casting[agent] = casting;
+            if (face.sqrMagnitude > 1e-8f) _castFace[agent] = face.normalized;
+        }
+
+        /// <summary>Whether the monster sees the player (nothing that stops bullets between them), kept by <c>MonsterAbilities</c>.</summary>
+        public void SetSeesPlayer(int agent, bool sees)
+        {
+            if ((uint)agent < (uint)_highWater) _sees[agent] = sees;
+        }
+
+        public bool SeesPlayer(int agent) => (uint)agent < (uint)_highWater && _sees[agent];
 
         /// <summary>(slot, where) a monster was killed (by anything: weapons, zones, states).</summary>
         public event Action<int, Vector2> Killed;
@@ -284,6 +324,11 @@ namespace Purge.Gameplay.Horde
             _push = new Vector2[capacity];
             _staggerUntil = new float[capacity];
             _pace = new HordePace[capacity];
+            _casting = new bool[capacity];
+            _castFace = new Vector2[capacity];
+            _sees = new bool[capacity];
+            _cornerUntil = new float[capacity];
+            _retreatStuck = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
@@ -545,6 +590,23 @@ namespace Purge.Gameplay.Horde
                 return;
             }
 
+            if (_casting[i])
+            {
+                // Casts: stands and faces its aim; the plain attack waits.
+                if (_states[i] == HordeAgentState.Attacking)
+                {
+                    _states[i] = HordeAgentState.Moving;
+                    _stateStart[i] = Time;
+                }
+
+                var push = Separation(i, position, playerPosition, stats);
+                if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push, stats.Radius);
+                _positions[i] = position;
+                _pace[i] = HordePace.Still;
+                Turn(i, _castFace[i], stats, deltaTime);
+                return;
+            }
+
             var awareness = Perception.AwarenessOf(i);
             if (awareness != HordeAwareness.Chase)
             {
@@ -584,6 +646,11 @@ namespace Purge.Gameplay.Horde
                 _attackStart[i] = Time - stats.AttackInterval * 0.5f;
             }
 
+            if (_states[i] == HordeAgentState.Moving && distance > stats.AttackReach &&
+                (stats.HoldRange > 0f || stats.RetreatRange > 0f) &&
+                TickRanged(i, position, playerPosition, toPlayerDirection, distance, stats, deltaTime))
+                return;
+
             var desired = toPlayerDirection;
             if (_states[i] == HordeAgentState.Moving && distance > DirectChaseDistance)
             {
@@ -608,6 +675,54 @@ namespace Purge.Gameplay.Horde
             // Turn towards where it is going (attackers face the player).
             Turn(i, desired, stats, deltaTime);
         }
+
+        /// <summary>
+        /// A ranged monster in the chase (stats <see cref="MonsterStats.HoldRange"/> / <see cref="MonsterStats.RetreatRange"/>):
+        /// steps back from a player that is too close (a back to the wall — <see cref="CornerTime"/> s of plain chase and
+        /// melee), stands where it sees the player within the hold range. False — chases as usual.
+        /// </summary>
+        private bool TickRanged(int i, Vector2 position, Vector2 playerPosition, Vector2 toPlayer, float distance, MonsterStats stats,
+            float deltaTime)
+        {
+            if (Time < _cornerUntil[i]) return false;
+            if (stats.RetreatRange > 0f && distance < stats.RetreatRange)
+            {
+                var away = -toPlayer;
+                var want = _speed[i] * _speedFactor[i] * deltaTime;
+                var moved = MoveWithWalls(position, away * want, stats.Radius);
+                // Barely moves away: cornered.
+                _retreatStuck[i] = (moved - position).magnitude < want * 0.3f ? _retreatStuck[i] + deltaTime : 0f;
+                if (_retreatStuck[i] >= StuckTime)
+                {
+                    _retreatStuck[i] = 0f;
+                    _cornerUntil[i] = Time + CornerTime;
+                    return false;
+                }
+
+                var push = Separation(i, moved, playerPosition, stats);
+                if (push.sqrMagnitude > 1e-10f) moved = MoveWithWalls(moved, push, stats.Radius);
+                _positions[i] = moved;
+                _pace[i] = HordePace.Run;
+                Turn(i, away, stats, deltaTime);
+                return true;
+            }
+
+            _retreatStuck[i] = 0f;
+            if (stats.HoldRange <= 0f || distance > stats.HoldRange || !_sees[i]) return false;
+            // In range and in sight: stands and aims.
+            var separation = Separation(i, position, playerPosition, stats);
+            if (separation.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, separation, stats.Radius);
+            _positions[i] = position;
+            _pace[i] = HordePace.Still;
+            Turn(i, toPlayer, stats, deltaTime);
+            return true;
+        }
+
+        /// <summary>Seconds a retreat may barely move before the monster counts as cornered.</summary>
+        private const float StuckTime = 0.4f;
+
+        /// <summary>Seconds a cornered ranged monster chases and fights in melee before it tries to step back again.</summary>
+        public const float CornerTime = 2f;
 
         /// <summary>Does not know about the player (or roars, having just noticed them): never attacks.</summary>
         private void TickUnaware(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, HordeAwareness awareness,
@@ -762,12 +877,36 @@ namespace Purge.Gameplay.Horde
             return spawned;
         }
 
-        /// <summary>Sandbox and tests: one monster exactly at <paramref name="position"/>; its slot, or -1 (no free slot, not walkable).</summary>
-        public int SpawnAt(Vector2 position, MonsterPerception perception)
+        /// <summary>
+        /// Sandbox and tests: one monster exactly at <paramref name="position"/> (of <paramref name="kind"/>, -1 = by
+        /// weight); its slot, or -1 (no free slot, not walkable).
+        /// </summary>
+        public int SpawnAt(Vector2 position, MonsterPerception perception, int kind = -1)
         {
             if (!IsActive) return -1;
             var cell = CellIndex(position);
-            return cell >= 0 && _walkable[cell] ? Place(cell, false, perception, position) : -1;
+            return cell >= 0 && _walkable[cell] ? Place(cell, false, perception, position, kind) : -1;
+        }
+
+        /// <summary>
+        /// Sandbox: a monster of <paramref name="kind"/> (<see cref="KindList"/>) on a reachable cell 2–3 cells around
+        /// <paramref name="center"/>, with its own perception, on top of the target count. Its slot, or -1.
+        /// </summary>
+        public int SpawnKind(Vector2 center, int kind)
+        {
+            if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
+            var definition = _kinds[kind].Definition;
+            var perception = definition != null ? definition.Perception : MonsterPerception.Hunter;
+            for (var attempt = 0; attempt < 24; attempt++)
+            {
+                var angle = (float)(_random.NextDouble() * Math.PI * 2.0);
+                var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (2f + (float)_random.NextDouble());
+                var cell = CellIndex(center + offset);
+                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                return Place(cell, false, perception, null, kind);
+            }
+
+            return -1;
         }
 
         /// <summary>A random walkable cell the player can be reached from (index y · width + x), -1 when none found.</summary>
@@ -829,12 +968,12 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <param name="perception">Overrides the kind's (sandbox groups).</param>
-        private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null)
+        private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null, int forcedKind = -1)
         {
             var slot = FreeSlot();
             if (slot < 0) return -1;
 
-            var kind = PickKind();
+            var kind = forcedKind >= 0 && forcedKind < _kinds.Length ? forcedKind : PickKind();
             var stats = _kinds[kind].Stats;
             var jitter = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 0.6f;
             _positions[slot] = exact ?? new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
@@ -855,6 +994,10 @@ namespace Purge.Gameplay.Horde
             // ±10 % speed: the crowd spreads out instead of marching in step.
             _speed[slot] = stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
             _pace[slot] = HordePace.Still;
+            _casting[slot] = false;
+            _sees[slot] = false;
+            _cornerUntil[slot] = 0f;
+            _retreatStuck[slot] = 0f;
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
             var definition = _kinds[kind].Definition;
@@ -866,13 +1009,16 @@ namespace Purge.Gameplay.Horde
         {
             if (_kinds.Length == 1) return 0;
             var roll = (float)_random.NextDouble() * _totalWeight;
+            var last = 0;
             for (var k = 0; k < _kinds.Length; k++)
             {
+                if (_kinds[k].Weight <= 0f) continue; // only on demand
+                last = k;
                 roll -= _kinds[k].Weight;
                 if (roll < 0f) return k;
             }
 
-            return _kinds.Length - 1;
+            return last;
         }
 
         private void RefreshWalkable()

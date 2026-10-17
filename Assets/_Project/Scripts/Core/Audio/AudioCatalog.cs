@@ -35,7 +35,44 @@ namespace Purge.Core.Audio
     }
 
     /// <summary>
-    /// Own sounds of a group of weapons (<c>WeaponDefinition.SoundGroup</c>): files of <c>Sounds/Weapon/&lt;group&gt;/</c>.
+    /// A shared sound of weapons (<c>Sounds/Weapon/_Parts/&lt;part&gt;/</c>): a reload step, a draw, a shot tail, shells,
+    /// a hit. Groups refer to parts by name (<see cref="WeaponSoundPartAttribute"/>), so one recording serves many guns.
+    /// </summary>
+    [Serializable]
+    public sealed class SoundPart
+    {
+        [SerializeField] private string _name;
+        [SerializeField] private SoundCue _cue = new SoundCue(0.7f, 0f, 2, new Vector2(0.96f, 1.04f));
+
+        public SoundPart(string name, SoundCue cue)
+        {
+            _name = name;
+            _cue = cue ?? new SoundCue();
+        }
+
+        public string Name => _name;
+        public SoundCue Cue => _cue;
+    }
+
+    /// <summary>One step of a reload heard by parts: a shared part at a share of the reload time.</summary>
+    [Serializable]
+    public struct ReloadStep
+    {
+        [WeaponSoundPart] public string Part;
+
+        [Tooltip("When it plays: share of the reload time (1 = the step ends with the reload).")]
+        [Range(0f, 1f)] public float At;
+
+        public ReloadStep(string part, float at)
+        {
+            Part = part;
+            At = at;
+        }
+    }
+
+    /// <summary>
+    /// Own sounds of a group of weapons (<c>WeaponDefinition.SoundGroup</c>): files of <c>Sounds/Weapon/&lt;group&gt;/</c>
+    /// (attack*, start*, loop*, end*, reload*) and shared parts by name (reload steps, draw, tail, shells, hit…).
     /// An empty cue falls back to the common one (melee swing / shot, magazine / single reload).
     /// </summary>
     [Serializable]
@@ -45,8 +82,32 @@ namespace Purge.Core.Audio
         [SerializeField] private string _group;
         [Tooltip("Files attack*: the shot or swing.")]
         [SerializeField] private SoundCue _attack = new SoundCue(0.5f, 0f, 4, new Vector2(0.95f, 1.05f));
-        [Tooltip("Files reload*.")]
+        [Tooltip("Files start*: continuous fire begins (minigun spin-up, flamethrower burst). With a loop only.")]
+        [SerializeField] private SoundCue _start = new SoundCue(0.6f, 0f, 1, Vector2.one);
+        [Tooltip("Files loop*: continuous fire (minigun, flamethrower, beam) — plays while the attack goes on, instead " +
+                 "of the attack sound per shot.")]
+        [SerializeField] private SoundCue _loop = new SoundCue(0.5f, 0f, 1, Vector2.one);
+        [Tooltip("Files end*: continuous fire stops (cool-down).")]
+        [SerializeField] private SoundCue _end = new SoundCue(0.6f, 0f, 1, Vector2.one);
+        [Tooltip("Files reload*: the whole reload in one recording (used when there are no reload steps).")]
         [SerializeField] private SoundCue _reload = new SoundCue(0.7f, 0f, 1, Vector2.one);
+
+        [Tooltip("Reload by parts (magazine out, in, bolt…): each step plays at its share of the reload time.")]
+        [SerializeField] private List<ReloadStep> _reloadSteps = new List<ReloadStep>();
+        [Tooltip("Taking the weapon in hands.")]
+        [SerializeField, WeaponSoundPart] private string _draw;
+        [Tooltip("Echo after a single shot or at the end of a burst (once, not per shot).")]
+        [SerializeField, WeaponSoundPart] private string _tail;
+        [Tooltip("After every shot: pump or bolt action.")]
+        [SerializeField, WeaponSoundPart] private string _cycle;
+        [Tooltip("Seconds after the shot before the cycle sound.")]
+        [SerializeField, Min(0f)] private float _cycleDelay = 0.35f;
+        [Tooltip("Spent shells falling (a moment after the shot).")]
+        [SerializeField, WeaponSoundPart] private string _shells;
+        [Tooltip("The weapon's hit on a monster (melee impact, energy, lightning); none = the common monster hit.")]
+        [SerializeField, WeaponSoundPart] private string _hit;
+        [Tooltip("Loop that follows the weapon's projectile while it flies (rocket).")]
+        [SerializeField, WeaponSoundPart] private string _flight;
 
         public WeaponSound(string group, SoundCue attack, SoundCue reload)
         {
@@ -57,7 +118,36 @@ namespace Purge.Core.Audio
 
         public string Group => _group;
         public SoundCue Attack => _attack;
+        public SoundCue Start => _start;
+        public SoundCue Loop => _loop;
+        public SoundCue End => _end;
         public SoundCue Reload => _reload;
+        public IReadOnlyList<ReloadStep> ReloadSteps => _reloadSteps;
+        public string Draw => _draw;
+        public string Tail => _tail;
+        public string Cycle => _cycle;
+        public float CycleDelay => _cycleDelay;
+        public string Shells => _shells;
+        public string Hit => _hit;
+        public string Flight => _flight;
+
+        /// <summary>Continuous fire: a loop plays instead of a sound per attack.</summary>
+        public bool IsContinuous => _loop != null && !_loop.IsEmpty;
+
+        internal List<ReloadStep> MutableReloadSteps => _reloadSteps;
+
+        /// <summary>Tools: the shared parts of the group.</summary>
+        internal void SetParts(string draw, string tail, string cycle, string shells, string hit, string flight)
+        {
+            _draw = draw;
+            _tail = tail;
+            _cycle = cycle;
+            _shells = shells;
+            _hit = hit;
+            _flight = flight;
+        }
+
+        internal void SetCycleDelay(float delay) => _cycleDelay = delay;
     }
 
     /// <summary>
@@ -86,6 +176,14 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _footstepWalk = new SoundCue(0.6f, 0f, 2, new Vector2(0.92f, 1.08f));
         [SerializeField] private SoundCue _playerHurt = new SoundCue(0.8f, 0f, 1, new Vector2(0.95f, 1.05f), 0.15f);
         [SerializeField] private SoundCue _playerDeath = new SoundCue(1f, 0f, 1, Vector2.one);
+        [Tooltip("The body falls after the death cry.")]
+        [SerializeField] private SoundCue _bodyfall = new SoundCue(0.8f, 0f, 1, new Vector2(0.95f, 1.05f));
+        [Tooltip("Seconds after the death before the body falls.")]
+        [SerializeField, Min(0f)] private float _bodyfallDelay = 0.6f;
+        [Tooltip("Loop while the player's health is low.")]
+        [SerializeField] private SoundCue _heartbeat = new SoundCue(0.6f, 0f, 1, Vector2.one);
+        [Tooltip("Share of the health at or below which the heartbeat plays.")]
+        [SerializeField, Range(0f, 1f)] private float _heartbeatShare = 0.25f;
 
         [Header("Weapons")]
         [Tooltip("Common swing of melee weapons without their own sound group.")]
@@ -101,12 +199,43 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _switchWeapon = new SoundCue(0.6f, 0f, 1, new Vector2(0.97f, 1.03f));
         [Tooltip("A bullet hits a wall or a closed door.")]
         [SerializeField] private SoundCue _bulletImpact = new SoundCue(0.5f, 10f, 3, new Vector2(0.9f, 1.1f));
+        [Tooltip("Attack with an empty magazine and no reserve.")]
+        [SerializeField] private SoundCue _emptyClick = new SoundCue(0.7f, 0f, 1, new Vector2(0.97f, 1.03f), 0.12f);
+        [Tooltip("Each shot while the magazine is low (Low Ammo Share).")]
+        [SerializeField] private SoundCue _lowAmmo = new SoundCue(0.35f, 0f, 1, Vector2.one, 0.2f);
+        [Tooltip("Share of the magazine left at which the low-ammo tick starts (magazines of 4 and more).")]
+        [SerializeField, Range(0f, 0.5f)] private float _lowAmmoShare = 0.25f;
+        [Tooltip("Shared weapon sounds (Sounds/Weapon/_Parts/<part>/): reload steps, draws, tails, shells, hits.")]
+        [SerializeField] private List<SoundPart> _parts = new List<SoundPart>();
+
+        [Header("Hits and kills")]
+        [Tooltip("The player's weapon hits a monster (a weapon with its own Hit part plays that instead).")]
+        [SerializeField] private SoundCue _monsterHit = new SoundCue(0.45f, 12f, 4, new Vector2(0.9f, 1.1f), 0.04f);
+        [Tooltip("A monster dies: a cartoon pop.")]
+        [SerializeField] private SoundCue _killPop = new SoundCue(0.55f, 14f, 4, new Vector2(0.9f, 1.15f), 0.03f);
+        [Tooltip("A monster dies: the splash of its colour, with the pop.")]
+        [SerializeField] private SoundCue _killSplat = new SoundCue(0.4f, 12f, 3, new Vector2(0.9f, 1.1f), 0.05f);
 
         [Header("Throwables (empty: draft stand-ins until stage 4в)")]
         [Tooltip("A throw leaving the hand (empty: the melee swing).")]
         [SerializeField] private SoundCue _throw = new SoundCue(0.6f, 0f, 2, new Vector2(0.95f, 1.1f));
-        [Tooltip("A blast (empty: the shot).")]
-        [SerializeField] private SoundCue _explosion = new SoundCue(1f, 25f, 4, new Vector2(0.9f, 1.05f));
+        [Tooltip("A blast of a medium radius (empty: the shot).")]
+        [UnityEngine.Serialization.FormerlySerializedAs("_explosion")]
+        [SerializeField] private SoundCue _explosionMedium = new SoundCue(1f, 25f, 4, new Vector2(0.9f, 1.05f));
+        [Tooltip("A blast up to Small Radius (empty: the medium one).")]
+        [SerializeField] private SoundCue _explosionSmall = new SoundCue(0.9f, 20f, 4, new Vector2(0.92f, 1.06f));
+        [Tooltip("A blast from Large Radius on (empty: the medium one).")]
+        [SerializeField] private SoundCue _explosionLarge = new SoundCue(1f, 30f, 3, new Vector2(0.92f, 1.04f));
+        [Tooltip("Cells: a blast of at most this radius is small.")]
+        [SerializeField, Min(0f)] private float _smallRadius = 1.5f;
+        [Tooltip("Cells: a blast of at least this radius is large.")]
+        [SerializeField, Min(0f)] private float _largeRadius = 2.8f;
+        [Tooltip("The pin pulled as the throw leaves the hand.")]
+        [SerializeField] private SoundCue _pin = new SoundCue(0.5f, 0f, 1, new Vector2(0.95f, 1.05f));
+        [Tooltip("A throwable lands (before its effect).")]
+        [SerializeField] private SoundCue _land = new SoundCue(0.6f, 12f, 3, new Vector2(0.92f, 1.08f));
+        [Tooltip("Loop of a burning zone: the nearest burning cell is heard.")]
+        [SerializeField] private SoundCue _fireLoop = new SoundCue(0.6f, 9f, 1, Vector2.one);
         [Tooltip("A zone catching on the ground: a molotov breaking, fire (empty: the bullet impact).")]
         [SerializeField] private SoundCue _ignite = new SoundCue(0.8f, 15f, 3, new Vector2(0.9f, 1.1f));
 
@@ -118,6 +247,11 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _pickupAmmo = new SoundCue(0.4f, 0f, 2, new Vector2(0.95f, 1.08f), 0.05f);
         [Tooltip("A throwable picked up (empty: the weapon pickup).")]
         [SerializeField] private SoundCue _pickupThrowable = new SoundCue(0.5f, 0f, 1, Vector2.one);
+        [Tooltip("The player drops a weapon.")]
+        [SerializeField] private SoundCue _weaponDrop = new SoundCue(0.6f, 0f, 1, new Vector2(0.95f, 1.05f));
+        [Tooltip("A rare (or better) item drops from a monster.")]
+        [SerializeField] private SoundCue _rareDrop = new SoundCue(0.6f, 0f, 1, Vector2.one, 0.5f);
+        [SerializeField] private Content.Rarity _rareDropFrom = Content.Rarity.Rare;
 
         [Header("Doors")]
         [SerializeField] private SoundCue _doorOpen = new SoundCue(0.9f, 10f, 2, new Vector2(0.95f, 1.05f));
@@ -188,6 +322,10 @@ namespace Purge.Core.Audio
         public SoundCue FootstepWalk => _footstepWalk;
         public SoundCue PlayerHurt => _playerHurt;
         public SoundCue PlayerDeath => _playerDeath;
+        public SoundCue Bodyfall => _bodyfall;
+        public float BodyfallDelay => _bodyfallDelay;
+        public SoundCue Heartbeat => _heartbeat;
+        public float HeartbeatShare => _heartbeatShare;
 
         public SoundCue MeleeSwing => _meleeSwing;
         public SoundCue Shot => _shot;
@@ -196,6 +334,19 @@ namespace Purge.Core.Audio
         public SoundCue ReloadSingle => _reloadSingle;
         public SoundCue SwitchWeapon => _switchWeapon;
         public SoundCue BulletImpact => _bulletImpact;
+        public SoundCue EmptyClick => _emptyClick;
+        public SoundCue LowAmmo => _lowAmmo;
+        public float LowAmmoShare => _lowAmmoShare;
+        public IReadOnlyList<SoundPart> Parts => _parts;
+        public SoundCue MonsterHit => _monsterHit;
+        public SoundCue KillPop => _killPop;
+        public SoundCue KillSplat => _killSplat;
+        public SoundCue WeaponDrop => _weaponDrop;
+        public SoundCue RareDrop => _rareDrop;
+        public Content.Rarity RareDropFrom => _rareDropFrom;
+        public SoundCue Pin => _pin;
+        public SoundCue Land => _land;
+        public SoundCue FireLoop => _fireLoop;
 
         public SoundCue PickupKey => _pickupKey;
         public SoundCue PickupMedkit => _pickupMedkit;
@@ -206,7 +357,13 @@ namespace Purge.Core.Audio
         public SoundCue DoorUnlock => _doorUnlock;
         public SoundCue DoorLocked => _doorLocked;
         public SoundCue Throw => NonEmpty(_throw) ?? _meleeSwing;
-        public SoundCue Explosion => NonEmpty(_explosion) ?? _shot;
+        public SoundCue Explosion => NonEmpty(_explosionMedium) ?? _shot;
+
+        /// <summary>The blast sound for a radius: small, medium or large (missing ones fall back to the medium).</summary>
+        public SoundCue ExplosionOf(float radius) =>
+            radius <= _smallRadius ? NonEmpty(_explosionSmall) ?? Explosion
+            : radius >= _largeRadius ? NonEmpty(_explosionLarge) ?? Explosion
+            : Explosion;
         public SoundCue Ignite => NonEmpty(_ignite) ?? _bulletImpact;
         public SoundCue PickupAmmo => NonEmpty(_pickupAmmo) ?? _pickupWeapon;
         public SoundCue PickupThrowable => NonEmpty(_pickupThrowable) ?? _pickupWeapon;
@@ -247,7 +404,21 @@ namespace Purge.Core.Audio
         /// <summary>The cues themselves (the builder fills them); <see cref="IceHit"/> / <see cref="IceBreak"/> fall back.</summary>
         internal SoundCue IceHitCue => _iceHit;
         internal SoundCue ThrowCue => _throw;
-        internal SoundCue ExplosionCue => _explosion;
+        internal SoundCue ExplosionCue => _explosionMedium;
+        internal SoundCue ExplosionSmallCue => _explosionSmall;
+        internal SoundCue ExplosionLargeCue => _explosionLarge;
+        internal SoundCue PinCue => _pin;
+        internal SoundCue LandCue => _land;
+        internal SoundCue FireLoopCue => _fireLoop;
+        internal SoundCue EmptyClickCue => _emptyClick;
+        internal SoundCue LowAmmoCue => _lowAmmo;
+        internal SoundCue MonsterHitCue => _monsterHit;
+        internal SoundCue KillPopCue => _killPop;
+        internal SoundCue KillSplatCue => _killSplat;
+        internal SoundCue WeaponDropCue => _weaponDrop;
+        internal SoundCue RareDropCue => _rareDrop;
+        internal SoundCue BodyfallCue => _bodyfall;
+        internal SoundCue HeartbeatCue => _heartbeat;
         internal SoundCue IgniteCue => _ignite;
         internal SoundCue PickupAmmoCue => _pickupAmmo;
         internal SoundCue PickupThrowableCue => _pickupThrowable;
@@ -255,6 +426,17 @@ namespace Purge.Core.Audio
 
         internal List<WeaponSound> MutableWeaponSounds => _weaponSounds;
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
+        internal List<SoundPart> MutableParts => _parts;
+
+        /// <summary>A shared part's sound, or null when there is none (or it has no clips).</summary>
+        public SoundCue Part(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            foreach (var part in _parts)
+                if (part != null && string.Equals(part.Name, name, StringComparison.OrdinalIgnoreCase))
+                    return NonEmpty(part.Cue);
+            return null;
+        }
 
         /// <summary>The group's attack sound, or null when it has none (play the common one).</summary>
         public SoundCue WeaponAttack(string group) => NonEmpty(FindWeaponSound(group)?.Attack);
@@ -293,8 +475,20 @@ namespace Purge.Core.Audio
             {
                 if (sound == null) continue;
                 yield return sound.Attack;
+                yield return sound.Start;
+                yield return sound.Loop;
+                yield return sound.End;
                 yield return sound.Reload;
             }
+            foreach (var part in _parts)
+                if (part != null)
+                    yield return part.Cue;
+            yield return _emptyClick; yield return _lowAmmo; yield return _monsterHit; yield return _killPop;
+            yield return _killSplat; yield return _weaponDrop; yield return _rareDrop; yield return _pin; yield return _land;
+            yield return _fireLoop; yield return _bodyfall; yield return _heartbeat;
+            yield return _throw; yield return _explosionSmall; yield return _explosionMedium; yield return _explosionLarge;
+            yield return _ignite; yield return _pickupAmmo; yield return _pickupThrowable; yield return _iceHit;
+            yield return _iceBreak;
             yield return _pickupKey; yield return _pickupMedkit; yield return _pickupWeapon;
             yield return _doorOpen; yield return _doorClose; yield return _doorUnlock; yield return _doorLocked;
             yield return _zombieGroan; yield return _zombieRoar; yield return _zombieAttack; yield return _zombieHurt;

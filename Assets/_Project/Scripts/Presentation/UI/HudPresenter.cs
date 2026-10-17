@@ -45,6 +45,8 @@ namespace Purge.Presentation.UI
         private readonly PlatformService _platform;
         private readonly PlayerThrowing _throwing;
         private readonly ItemVisualCatalog _items;
+        private readonly AmmoStock _ammo;
+        private readonly PlayerCombat _combat;
         private readonly List<Color> _keyColors = new List<Color>();
         private int _lastHealth;
         private bool _bound;
@@ -52,8 +54,11 @@ namespace Purge.Presentation.UI
         public HudPresenter(UIRoot ui, LevelData level, PlayerHealth health, PlayerInventory inventory,
             WeaponSystem weapons, PlayerInteraction interaction, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, WeaponVisualCatalog visuals, LocalizationService texts,
-            LevelProgress progress, PlatformService platform = null, PlayerThrowing throwing = null, ItemVisualCatalog items = null)
+            LevelProgress progress, PlatformService platform = null, PlayerThrowing throwing = null, ItemVisualCatalog items = null,
+            AmmoStock ammo = null, PlayerCombat combat = null)
         {
+            _ammo = ammo;
+            _combat = combat;
             _throwing = throwing;
             _items = items;
             _platform = platform;
@@ -144,6 +149,7 @@ namespace Purge.Presentation.UI
                 Icon = _items?.Find(slot.Definition)?.Icon,
                 Magazine = slot.Definition.MaxStack,
                 Ammo = slot.Count,
+                Reserve = -1,
             };
         }
 
@@ -151,6 +157,8 @@ namespace Purge.Presentation.UI
         {
             var weapon = _weapons.Get(slot);
             if (weapon == null) return WeaponSlotState.Empty;
+            var definition = weapon.Definition;
+            var endless = !definition.UsesAmmo || definition.Ammo.InfiniteReserve || _ammo == null;
             return new WeaponSlotState
             {
                 Equipped = true,
@@ -160,6 +168,8 @@ namespace Purge.Presentation.UI
                 Ammo = weapon.Ammo,
                 Reloading = weapon.IsReloading,
                 Reload = weapon.ReloadProgress,
+                Reserve = endless ? -1 : _ammo.Get(definition.Ammo.Ammo),
+                OutOfAmmo = _combat != null && _combat.IsOutOfAmmo(weapon),
             };
         }
 

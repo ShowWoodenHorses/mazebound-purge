@@ -230,6 +230,95 @@ namespace Purge.Core.Definitions
     }
 
     /// <summary>
+    /// How the weapon feels (ТЗ «Ощущение стрельбы»): what a shot, a hit and a kill do beyond the damage. Gameplay part —
+    /// knockback and a short stagger of the monster hit, the corpse's fling, the shooter's recoil; display part — camera
+    /// kick and shake, the gun's spring kick, the shot's light, the flash and dent of the monster, splashes of its
+    /// colour, a ring under it, vibration. Per hit = per bullet, pellet, stream tick, bolt or swing target (a shotgun's
+    /// pellets add up). A weapon without the module feels as <see cref="Default"/>. Channel multipliers of the dev stand
+    /// scale everything.
+    /// </summary>
+    [Serializable, ModuleInfo("Feel", Category = "Feel")]
+    public sealed class FeelModule : WeaponModule
+    {
+        /// <summary>The feel of a weapon without the module.</summary>
+        public static readonly FeelModule Default = new FeelModule();
+
+        [Header("Monster hit (gameplay)")]
+        [Tooltip("Knockback of the monster hit, cells per second (fades in ~0.3 s: 4 ≈ a third of a cell).")]
+        [SerializeField, Min(0f)] private float _knockback = 1.5f;
+        [Tooltip("Seconds the monster hit neither steps nor attacks.")]
+        [SerializeField, Min(0f)] private float _stagger = 0.06f;
+        [Tooltip("The killed monster's corpse flies back, cells per second.")]
+        [SerializeField, Min(0f)] private float _killFling = 4f;
+
+        [Header("Shooter (gameplay)")]
+        [Tooltip("The player is pushed back per attack, cells per second.")]
+        [SerializeField, Min(0f)] private float _recoil;
+
+        [Header("Camera (view)")]
+        [Tooltip("The camera jumps back against the shot, cells, and springs back.")]
+        [SerializeField, Min(0f)] private float _cameraKick = 0.06f;
+        [Tooltip("Camera shake per attack, cells.")]
+        [SerializeField, Min(0f)] private float _cameraShake;
+        [Tooltip("Camera shake on a kill by this weapon, cells.")]
+        [SerializeField, Min(0f)] private float _killShake = 0.04f;
+
+        [Header("Weapon and body (view)")]
+        [Tooltip("The gun jumps back in the hands, metres.")]
+        [SerializeField, Min(0f)] private float _gunKick = 0.04f;
+        [Tooltip("The muzzle jumps up, degrees.")]
+        [SerializeField, Min(0f)] private float _gunKickAngle = 6f;
+        [Tooltip("The upper body rocks back, degrees.")]
+        [SerializeField, Min(0f)] private float _bodyKick = 2f;
+
+        [Header("Shot light (view)")]
+        [Tooltip("Brightness of the flash at the muzzle (0 = none).")]
+        [SerializeField, Min(0f)] private float _lightIntensity = 1.2f;
+        [Tooltip("Radius of the flash, cells.")]
+        [SerializeField, Min(0f)] private float _lightRadius = 3f;
+        [SerializeField] private Color _lightColor = new Color(1f, 0.78f, 0.45f);
+
+        [Header("Monster look (view)")]
+        [Tooltip("White flash of the monster hit, 0..1.")]
+        [SerializeField, Range(0f, 1f)] private float _hitFlash = 0.8f;
+        [Tooltip("The monster hit squashes, share of its size.")]
+        [SerializeField, Range(0f, 0.5f)] private float _dent = 0.12f;
+        [Tooltip("Splashes of the monster's colour per hit.")]
+        [SerializeField, Range(0, 16)] private int _hitSplash = 3;
+        [Tooltip("Splashes of the monster's colour on a kill.")]
+        [SerializeField, Range(0, 32)] private int _killSplash = 10;
+        [Tooltip("Ring under the monster hit, cells (0 = none).")]
+        [SerializeField, Min(0f)] private float _hitRing = 0.5f;
+
+        [Header("Vibration (view)")]
+        [Tooltip("Milliseconds per attack (0 = none).")]
+        [SerializeField, Range(0, 100)] private int _vibrateAttack;
+        [Tooltip("Milliseconds per kill (0 = none).")]
+        [SerializeField, Range(0, 100)] private int _vibrateKill = 12;
+
+        public float Knockback { get => _knockback; internal set => _knockback = value; }
+        public float Stagger { get => _stagger; internal set => _stagger = value; }
+        public float KillFling { get => _killFling; internal set => _killFling = value; }
+        public float Recoil { get => _recoil; internal set => _recoil = value; }
+        public float CameraKick { get => _cameraKick; internal set => _cameraKick = value; }
+        public float CameraShake { get => _cameraShake; internal set => _cameraShake = value; }
+        public float KillShake { get => _killShake; internal set => _killShake = value; }
+        public float GunKick { get => _gunKick; internal set => _gunKick = value; }
+        public float GunKickAngle { get => _gunKickAngle; internal set => _gunKickAngle = value; }
+        public float BodyKick { get => _bodyKick; internal set => _bodyKick = value; }
+        public float LightIntensity { get => _lightIntensity; internal set => _lightIntensity = value; }
+        public float LightRadius { get => _lightRadius; internal set => _lightRadius = value; }
+        public Color LightColor { get => _lightColor; internal set => _lightColor = value; }
+        public float HitFlash { get => _hitFlash; internal set => _hitFlash = value; }
+        public float Dent { get => _dent; internal set => _dent = value; }
+        public int HitSplash { get => _hitSplash; internal set => _hitSplash = value; }
+        public int KillSplash { get => _killSplash; internal set => _killSplash = value; }
+        public float HitRing { get => _hitRing; internal set => _hitRing = value; }
+        public int VibrateAttack { get => _vibrateAttack; internal set => _vibrateAttack = value; }
+        public int VibrateKill { get => _vibrateKill; internal set => _vibrateKill = value; }
+    }
+
+    /// <summary>
     /// Every monster the attack damages may get a state (flamethrower — burning, a heavy blow — stun). The chance is per
     /// hit: per bullet, pellet, stream tick, bolt or swing target.
     /// </summary>

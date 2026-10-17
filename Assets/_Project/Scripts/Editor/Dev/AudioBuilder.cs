@@ -28,7 +28,15 @@ namespace Purge.Editor.Dev
 
         /// <summary>Folders right under it are weapon sound groups (see <see cref="FillWeaponSounds"/>).</summary>
         internal const string WeaponGroupsFolder = SoundsFolder + "/Weapon";
+
+        /// <summary>Folders right under it are shared weapon sounds (<see cref="SoundPart"/>), any file names.</summary>
+        internal const string PartsFolderName = "_Parts";
+        internal const string WeaponPartsFolder = WeaponGroupsFolder + "/" + PartsFolderName;
+
         private static readonly Regex AttackFile = new Regex(@"^attack\d*$", RegexOptions.IgnoreCase);
+        private static readonly Regex StartFile = new Regex(@"^start\d*$", RegexOptions.IgnoreCase);
+        private static readonly Regex LoopFile = new Regex(@"^loop\d*$", RegexOptions.IgnoreCase);
+        private static readonly Regex EndFile = new Regex(@"^end\d*$", RegexOptions.IgnoreCase);
         private static readonly Regex ReloadFile = new Regex(@"^reload\d*$", RegexOptions.IgnoreCase);
 
         /// <summary>Clips up to this long are decompressed on load (cheap to play often); longer ones stay compressed.</summary>
@@ -40,7 +48,9 @@ namespace Purge.Editor.Dev
             ("Player", @"^Wood Run \d+$", c => c.Footstep),
             ("Player", @"^Wood Walk \d+$", c => c.FootstepWalk),
             ("Player", @"^hit\d*$", c => c.PlayerHurt),
-            ("Player", @"^death$", c => c.PlayerDeath),
+            ("Player", @"^death\d*$", c => c.PlayerDeath),
+            ("Player", @"^bodyfall\d*$", c => c.BodyfallCue),
+            ("Player", @"^heartbeat_loop\d*$", c => c.HeartbeatCue),
 
             ("Weapon", @"^melee-attack\d*$", c => c.MeleeSwing),
             ("Weapon", @"^rifle_attack\d*$", c => c.Shot),
@@ -49,19 +59,31 @@ namespace Purge.Editor.Dev
             ("Weapon", @"^bullet\d*$", c => c.BulletImpact),
 
             ("Other", @"^switch_weapon$", c => c.SwitchWeapon),
-            ("Other", @"^key_pick_up$", c => c.PickupKey),
-            ("Other", @"^medicine_pick_up$", c => c.PickupMedkit),
-            ("Other", @"^weapon_pick_up$", c => c.PickupWeapon),
+            ("Other", @"^key_pick_up\d*$", c => c.PickupKey),
+            ("Other", @"^medicine_pick_up\d*$", c => c.PickupMedkit),
+            ("Other", @"^weapon_pick_up\d*$", c => c.PickupWeapon),
             ("Other", @"^Door Open \d+$", c => c.DoorOpen),
             ("Other", @"^Door Close \d+$", c => c.DoorClose),
             ("Other", @"^door_unlock$", c => c.DoorUnlock),
             ("Other", @"^door_lock$", c => c.DoorLocked),
             ("Other", @"^ice_hit\d*$", c => c.IceHitCue),
             ("Weapon", @"^throw\d*$", c => c.ThrowCue),
-            ("Weapon", @"^explosion\d*$", c => c.ExplosionCue),
+            ("Weapon", @"^pin\d*$", c => c.PinCue),
+            ("Weapon", @"^land\d*$", c => c.LandCue),
+            ("Weapon", @"^explosion_small\d*$", c => c.ExplosionSmallCue),
+            ("Weapon", @"^explosion_medium\d*$", c => c.ExplosionCue),
+            ("Weapon", @"^explosion_large\d*$", c => c.ExplosionLargeCue),
             ("Weapon", @"^ignite\d*$", c => c.IgniteCue),
+            ("Weapon", @"^empty_click\d*$", c => c.EmptyClickCue),
+            ("Weapon", @"^low_ammo\d*$", c => c.LowAmmoCue),
+            ("Combat", @"^monster_hit\d*$", c => c.MonsterHitCue),
+            ("Combat", @"^kill_pop\d*$", c => c.KillPopCue),
+            ("Combat", @"^kill_splat\d*$", c => c.KillSplatCue),
             ("Other", @"^ammo_pick_up\d*$", c => c.PickupAmmoCue),
             ("Other", @"^throwable_pick_up\d*$", c => c.PickupThrowableCue),
+            ("Other", @"^weapon_drop\d*$", c => c.WeaponDropCue),
+            ("Other", @"^rare_drop\d*$", c => c.RareDropCue),
+            ("Other", @"^fire_loop\d*$", c => c.FireLoopCue),
             ("Other", @"^ice_break\d*$", c => c.IceBreakCue),
             ("Other", @"^detect$", c => c.ChaseStinger),
             ("Other", @"^light_loop$", c => c.TorchLoop),
@@ -132,6 +154,7 @@ namespace Purge.Editor.Dev
                 if (matches.Count == 0) empty.Add($"{folder}/{pattern}");
             }
 
+            FillParts(catalog, sounds, used);
             FillWeaponSounds(catalog, sounds, used);
 
             foreach (var (name, track, volume, overlap) in Music)
@@ -171,10 +194,68 @@ namespace Purge.Editor.Dev
                       $"{reimported} reimported.");
         }
 
+        /// <summary>Names of the weapon sound group folders (right under Sounds/Weapon, without the parts), sorted.</summary>
+        internal static List<string> WeaponGroups() =>
+            SubFolders(WeaponGroupsFolder).Where(name => !string.Equals(name, PartsFolderName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        /// <summary>Names of the shared weapon sound folders (Sounds/Weapon/_Parts/&lt;part&gt;), sorted.</summary>
+        internal static List<string> WeaponParts() => SubFolders(WeaponPartsFolder);
+
+        private static List<string> SubFolders(string folder) =>
+            AssetDatabase.IsValidFolder(folder)
+                ? AssetDatabase.GetSubFolders(folder)
+                    .Select(path => path.Substring(path.LastIndexOf('/') + 1))
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList()
+                : new List<string>();
+
         /// <summary>
-        /// Sound groups of weapons: every folder right under <see cref="WeaponGroupsFolder"/> is a group (its name),
-        /// files <c>attack*</c> its shot or swing, <c>reload*</c> its reload. An existing group keeps its tuning; a new
-        /// one starts from the common sounds of the weapons using it. Groups whose folder is gone are removed.
+        /// Shared weapon sounds: every folder under <see cref="WeaponPartsFolder"/> is a part (its name), all its files are
+        /// variants. A part keeps its tuning; parts whose folder is gone are removed.
+        /// </summary>
+        private static void FillParts(AudioCatalog catalog, List<string> sounds, HashSet<string> used)
+        {
+            var folders = sounds
+                .Where(p => string.Equals(Path.GetDirectoryName(Path.GetDirectoryName(p))?.Replace('\\', '/'),
+                    WeaponPartsFolder, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(p => Path.GetFileName(Path.GetDirectoryName(p)), StringComparer.OrdinalIgnoreCase)
+                .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
+
+            var parts = new List<SoundPart>();
+            foreach (var folder in folders)
+            {
+                var part = catalog.MutableParts.FirstOrDefault(p => p != null &&
+                               string.Equals(p.Name, folder.Key, StringComparison.OrdinalIgnoreCase))
+                           ?? new SoundPart(folder.Key, DefaultPartCue(folder.Key));
+                var files = folder.OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
+                part.Cue.Clips = files.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).ToArray();
+                used.UnionWith(files);
+                parts.Add(part);
+            }
+
+            catalog.MutableParts.Clear();
+            catalog.MutableParts.AddRange(parts);
+        }
+
+        /// <summary>Tuning of a new part by its kind (name prefix): tails and shells are quiet and limited.</summary>
+        private static SoundCue DefaultPartCue(string name)
+        {
+            if (name.StartsWith("tail", StringComparison.OrdinalIgnoreCase))
+                return new SoundCue(0.35f, 0f, 2, new Vector2(0.95f, 1.05f), 0.25f);
+            if (name.StartsWith("shells", StringComparison.OrdinalIgnoreCase))
+                return new SoundCue(0.25f, 0f, 2, new Vector2(0.9f, 1.1f), 0.15f);
+            if (name.StartsWith("hit", StringComparison.OrdinalIgnoreCase))
+                return new SoundCue(0.6f, 12f, 3, new Vector2(0.92f, 1.08f), 0.04f);
+            if (name.EndsWith("flight", StringComparison.OrdinalIgnoreCase))
+                return new SoundCue(0.5f, 14f, 2, Vector2.one);
+            return new SoundCue(0.7f, 0f, 2, new Vector2(0.97f, 1.03f));
+        }
+
+        /// <summary>
+        /// Sound groups of weapons: every folder right under <see cref="WeaponGroupsFolder"/> (but the parts) is a group
+        /// (its name), files <c>attack*</c> its shot or swing, <c>start*/loop*/end*</c> continuous fire, <c>reload*</c>
+        /// a whole reload. An existing group keeps its tuning and parts; a new one starts from the common sounds and
+        /// the parts its weapons' kind suggests (<see cref="DefaultParts"/>). Groups whose folder is gone are removed.
         /// </summary>
         private static void FillWeaponSounds(AudioCatalog catalog, List<string> sounds, HashSet<string> used)
         {
@@ -187,6 +268,7 @@ namespace Purge.Editor.Dev
                 .Where(p => string.Equals(Path.GetDirectoryName(Path.GetDirectoryName(p))?.Replace('\\', '/'),
                     WeaponGroupsFolder, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(p => Path.GetFileName(Path.GetDirectoryName(p)), StringComparer.OrdinalIgnoreCase)
+                .Where(g => !string.Equals(g.Key, PartsFolderName, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
 
             var groups = new List<WeaponSound>();
@@ -199,21 +281,33 @@ namespace Purge.Editor.Dev
                 {
                     var melee = users.Count > 0 && users.All(d => d.IsMelee);
                     var automatic = users.Count > 0 && users.All(d => d.FireMode == FireMode.Automatic);
-                    sound = new WeaponSound(name, (melee ? catalog.MeleeSwing : catalog.Shot).CopyTuning(),
+                    var attackTuning = (melee ? catalog.MeleeSwing : catalog.Shot).CopyTuning();
+                    if (!melee && !automatic) attackTuning.Volume = 0.8f; // Hand-operated guns: one shot sounds big.
+                    if (users.Count > 0 && users.All(d => d.Attack is StreamAttack))
+                        attackTuning.MinInterval = 0.3f; // A stream attacks 10 times a second.
+                    sound = new WeaponSound(name, attackTuning,
                         (automatic ? catalog.ReloadMagazine : catalog.ReloadSingle).CopyTuning());
+                    if (users.Count > 0) DefaultParts(sound, users[0]);
                 }
 
-                var attack = folder.Where(p => AttackFile.IsMatch(Path.GetFileNameWithoutExtension(p))).ToList();
-                var reload = folder.Where(p => ReloadFile.IsMatch(Path.GetFileNameWithoutExtension(p))).ToList();
-                sound.Attack.Clips = attack.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).ToArray();
-                sound.Reload.Clips = reload.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).ToArray();
-                used.UnionWith(attack);
-                used.UnionWith(reload);
+                sound.Attack.Clips = Files(folder, AttackFile, used);
+                sound.Start.Clips = Files(folder, StartFile, used);
+                sound.Loop.Clips = Files(folder, LoopFile, used);
+                sound.End.Clips = Files(folder, EndFile, used);
+                sound.Reload.Clips = Files(folder, ReloadFile, used);
                 groups.Add(sound);
 
                 if (users.Count == 0)
                     Debug.LogWarning($"[Purge] Build Audio: no weapon uses the sound group '{name}' (set it in the Sound field " +
                                      "of a weapon definition, or name the folder by a weapon id).");
+                foreach (var step in sound.ReloadSteps)
+                    WarnMissingPart(catalog, name, step.Part);
+                WarnMissingPart(catalog, name, sound.Draw);
+                WarnMissingPart(catalog, name, sound.Tail);
+                WarnMissingPart(catalog, name, sound.Cycle);
+                WarnMissingPart(catalog, name, sound.Shells);
+                WarnMissingPart(catalog, name, sound.Hit);
+                WarnMissingPart(catalog, name, sound.Flight);
             }
 
             foreach (var definition in definitions)
@@ -223,6 +317,69 @@ namespace Purge.Editor.Dev
 
             catalog.MutableWeaponSounds.Clear();
             catalog.MutableWeaponSounds.AddRange(groups);
+        }
+
+        private static AudioClip[] Files(IEnumerable<string> folder, Regex pattern, HashSet<string> used)
+        {
+            var files = folder.Where(p => pattern.IsMatch(Path.GetFileNameWithoutExtension(p)))
+                .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            used.UnionWith(files);
+            return files.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).ToArray();
+        }
+
+        private static void WarnMissingPart(AudioCatalog catalog, string group, string part)
+        {
+            if (!string.IsNullOrEmpty(part) && catalog.Part(part) == null)
+                Debug.LogWarning($"[Purge] Build Audio: the sound group '{group}' uses the part '{part}', but there is no " +
+                                 $"folder {WeaponPartsFolder}/{part} with sounds.");
+        }
+
+        /// <summary>
+        /// Parts of a new group by the kind of its first weapon (how it is held, its attack and ammo type): reload steps,
+        /// draw, tail, shells, hit. A first guess, kept and tuned in the catalog afterwards; parts missing in
+        /// Sounds/Weapon/_Parts are simply silent.
+        /// </summary>
+        private static void DefaultParts(WeaponSound sound, WeaponDefinition weapon)
+        {
+            var steps = sound.MutableReloadSteps;
+            steps.Clear();
+            if (weapon.IsMelee)
+            {
+                sound.SetParts("draw_blade", null, null, null,
+                    weapon.Hold == WeaponHold.MeleeHeavy ? "hit_heavy" : "hit_blade", null);
+                return;
+            }
+
+            var ammo = weapon.Ammo?.Ammo != null ? weapon.Ammo.Ammo.Id : string.Empty;
+            var bullets = weapon.Attack as BulletAttack;
+            var silenced = weapon.TryGet<SilencerModule>(out _);
+            var draw = weapon.Hold == WeaponHold.Pistol ? "draw_pistol" : ammo == "ammo_battery" ? "draw_energy" : "draw_gun";
+            var tail = bullets != null && !silenced ? "tail" : null;
+            var shells = bullets == null ? null : bullets.Pellets > 1 ? "shells_shotgun" : "shells_brass";
+            var hit = weapon.Attack is ChainAttack ? "hit_energy" : null;
+            sound.SetParts(draw, tail, null, shells, hit, null);
+
+            switch (ammo)
+            {
+                case "ammo_battery": steps.Add(new ReloadStep("battery", 0.3f)); return;
+                case "ammo_fuel": steps.Add(new ReloadStep("canister", 0.25f)); return;
+                case "ammo_charge":
+                    steps.Add(new ReloadStep("gl_open", 0.05f));
+                    steps.Add(new ReloadStep("gl_insert", 0.45f));
+                    steps.Add(new ReloadStep("gl_close", 1f));
+                    return;
+                case "ammo_shells":
+                    steps.Add(new ReloadStep("shotgun_mag_out", 0.1f));
+                    steps.Add(new ReloadStep("shotgun_mag_in", 0.7f));
+                    return;
+            }
+
+            var prefix = weapon.Hold == WeaponHold.Pistol ? "pistol" : "rifle";
+            steps.Add(new ReloadStep(prefix + "_mag_out", 0.05f));
+            steps.Add(new ReloadStep(prefix + "_mag_draw", 0.3f));
+            steps.Add(new ReloadStep(prefix + "_mag_in", 0.6f));
+            steps.Add(new ReloadStep(prefix == "pistol" ? "pistol_slide" : "rifle_charge", 1f));
         }
 
         private static AudioCatalog LoadOrCreateCatalog()

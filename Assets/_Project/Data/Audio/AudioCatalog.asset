@@ -70,12 +70,32 @@ MonoBehaviour:
     _minInterval: 0.15
   _playerDeath:
     _clips:
-    - {fileID: 8300000, guid: 58d7513d5d58de34796b76d308ac39f0, type: 3}
+    - {fileID: 8300000, guid: bd202b661695445418229a4e466eb077, type: 3}
+    - {fileID: 8300000, guid: 273a80edd6d250547b7d0ff3d3640d50, type: 3}
     _volume: 1
     _pitch: {x: 1, y: 1}
     _range: 0
     _maxVoices: 1
     _minInterval: 0
+  _bodyfall:
+    _clips:
+    - {fileID: 8300000, guid: 08ea925be0ea8794384ce1288ec0ffb6, type: 3}
+    - {fileID: 8300000, guid: 04a8e8e1a8c56d44f9ec2c2bd4c24719, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _bodyfallDelay: 0.6
+  _heartbeat:
+    _clips:
+    - {fileID: 8300000, guid: 914b7d6395b7c3c47b25e662df65dad9, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _heartbeatShare: 0.25
   _meleeSwing:
     _clips:
     - {fileID: 8300000, guid: 7a4d25848a621434098aaa29f138c8b9, type: 3}
@@ -97,14 +117,84 @@ MonoBehaviour:
     _maxVoices: 4
     _minInterval: 0
   _weaponSounds:
-  - _group: silenced
+  - _group: acid_cannon
     _attack:
       _clips:
-      - {fileID: 8300000, guid: 5587993326d6a3940afbdaca413a7e4b, type: 3}
+      - {fileID: 8300000, guid: 6f5273ee3af387b409c3eb9ab2abf73e, type: 3}
+      - {fileID: 8300000, guid: bf56d0eebd87ad647beb8232a981267c, type: 3}
       _volume: 0.5
       _pitch: {x: 0.95, y: 1.05}
       _range: 0
       _maxVoices: 4
+      _minInterval: 0.3
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: canister
+      At: 0.25
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: auto_shotgun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: d339fd7921935894693285b9ca206f1e, type: 3}
+      - {fileID: 8300000, guid: 54d7bea417f07a54ca4ff493277cff63, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
       _minInterval: 0
     _reload:
       _clips: []
@@ -113,6 +203,1774 @@ MonoBehaviour:
       _range: 0
       _maxVoices: 1
       _minInterval: 0
+    _reloadSteps:
+    - Part: shotgun_mag_out
+      At: 0.1
+    - Part: shotgun_mag_in
+      At: 0.7
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_shotgun
+    _hit: 
+    _flight: 
+  - _group: awm
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 83721fa814da88249a96bb9d3b7df252, type: 3}
+      - {fileID: 8300000, guid: 04eee7257f7bad640b8909b27345890e, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: sniper_mag_in
+      At: 0.45
+    - Part: sniper_bolt
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: sniper_bolt
+    _cycleDelay: 0.45
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: cross_bow
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 6332a9b4d6343c9479cf524dbbc6c1ee, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: crossbow_draw
+      At: 0.2
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: desert
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 2c70d2551dd1f3d41a74fb5b7cc9fe8e, type: 3}
+      - {fileID: 8300000, guid: d4e6dc487f9a27f4f8f67549e0b80b9a, type: 3}
+      - {fileID: 8300000, guid: f80fc6627dd9df54390e1a43268665cb, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: pistol_mag_out
+      At: 0.05
+    - Part: pistol_mag_draw
+      At: 0.3
+    - Part: pistol_mag_in
+      At: 0.6
+    - Part: pistol_slide
+      At: 1
+    _draw: draw_pistol
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: dragunov
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: dcb0031c2511aa84abad5c300c866313, type: 3}
+      - {fileID: 8300000, guid: 343a1610da44cf749960fcebacf8f28a, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: sniper_mag_in
+      At: 0.45
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: flamer_pistol
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: eca26bc87f487914dbebce623de0ca1c, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0.3
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: canister
+      At: 0.25
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: flame_gun
+    _attack:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0.3
+    _start:
+      _clips:
+      - {fileID: 8300000, guid: 386c032007ad3ce41baef30f9da65c90, type: 3}
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips:
+      - {fileID: 8300000, guid: 3cf0a11c7f103664e88571e923c218d5, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips:
+      - {fileID: 8300000, guid: 0b8d0064ffb72c549a0c0de2cdde4a91, type: 3}
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: canister
+      At: 0.25
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: freeze_gun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 44d36ce19d3dfc84c8444bc6f64d101b, type: 3}
+      - {fileID: 8300000, guid: b5439af7331f40f4fb1ef7c93b578acf, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0.3
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: canister
+      At: 0.25
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: gas_gun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: fa02e58df436de24a86a5d5004d15f94, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0.3
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: canister
+      At: 0.25
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: glock_base
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 8e65bd5c359e0534f91b1b0cb56de7ef, type: 3}
+      - {fileID: 8300000, guid: 3317b81e8e26dd64ebd46a23374e5376, type: 3}
+      - {fileID: 8300000, guid: 6fff49bd6eea4624686f2180727dde63, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: pistol_mag_out
+      At: 0.05
+    - Part: pistol_mag_draw
+      At: 0.3
+    - Part: pistol_mag_in
+      At: 0.6
+    - Part: pistol_slide
+      At: 1
+    _draw: draw_pistol
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: grenade_launcher
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 165dd4ac74a9fd343a71f4b1f55d973d, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: gl_open
+      At: 0.05
+    - Part: gl_extract
+      At: 0.3
+    - Part: gl_insert
+      At: 0.55
+    - Part: gl_close
+      At: 1
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: hard_auto_shotgun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: ee8039c3771c4ba4a81918a9021743af, type: 3}
+      - {fileID: 8300000, guid: 567f8ea9156440c4eb8d9e53e445942e, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: shotgun_mag_out
+      At: 0.1
+    - Part: shotgun_mag_in
+      At: 0.7
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_shotgun
+    _hit: 
+    _flight: 
+  - _group: hunter_sniper
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: a1d4cbb42f2f12840aaae0ed18bfc5c6, type: 3}
+      - {fileID: 8300000, guid: bb9a251eab662ac41b4cfd48ae40cf90, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: sniper_mag_in
+      At: 0.45
+    - Part: sniper_bolt
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: sniper_bolt
+    _cycleDelay: 0.45
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: lynx
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: bc87ab99789d8714eadff90ac49480c7, type: 3}
+      - {fileID: 8300000, guid: 1bc86b92c81db6546b8fe25c73445f6e, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: sniper_mag_in
+      At: 0.45
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: machine_gun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: b3ba7ac60cd170846851f5667848fa36, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: belt
+      At: 0.25
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: magnum
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: cdbbc127238b59f46999f1ef6aa51949, type: 3}
+      - {fileID: 8300000, guid: 296e76f328a07c84da4173116f76b0ce, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: pistol_mag_out
+      At: 0.05
+    - Part: pistol_mag_draw
+      At: 0.3
+    - Part: pistol_mag_in
+      At: 0.6
+    - Part: pistol_slide
+      At: 1
+    _draw: draw_pistol
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: melee_heavy
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: eb2a6e74f1a1a954788936cb11aea45c, type: 3}
+      _volume: 0.9
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps: []
+    _draw: draw_blade
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_heavy
+    _flight: 
+  - _group: melee_light
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: a3fb0cd042fef3f459b9b93596516190, type: 3}
+      - {fileID: 8300000, guid: 93e6be5386031fc48a226bc2bd6c0856, type: 3}
+      _volume: 0.9
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps: []
+    _draw: draw_blade
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_blade
+    _flight: 
+  - _group: melee_medium
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 8904722d566b8b64f89d3b1bc0915b22, type: 3}
+      - {fileID: 8300000, guid: 513ee499868ea164d81e2cc19917977e, type: 3}
+      - {fileID: 8300000, guid: ce3b3fd875c63bb4aba711d42cdf253c, type: 3}
+      _volume: 0.9
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps: []
+    _draw: draw_blade
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_blade
+    _flight: 
+  - _group: minigun
+    _attack:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips:
+      - {fileID: 8300000, guid: 735e4fdf43d7e23468d7d6d0888b9dd8, type: 3}
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips:
+      - {fileID: 8300000, guid: c72c69e4d001b9f48aabf414a7db1a2b, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips:
+      - {fileID: 8300000, guid: 285ccaa8e949b284a8897f0fb94111a6, type: 3}
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: belt
+      At: 0.3
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: mortar
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: d466c89d7c4dd7b4696ad78e4292af6d, type: 3}
+      - {fileID: 8300000, guid: 03039ae837c58c74f85a1ef418ef593c, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: mortar_load
+      At: 0.3
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: 
+  - _group: p90
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 20ced09c639fc0d439c254e42c2b619b, type: 3}
+      - {fileID: 8300000, guid: bb4fab08db17b4440a80fc6c03c23e40, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: rifle_mag_draw
+      At: 0.3
+    - Part: rifle_mag_in
+      At: 0.6
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: pistol_laser
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 68e50526f0b124e44a16ddb738ad0e03, type: 3}
+      - {fileID: 8300000, guid: cbe8c620451eb374080d59e63bca4d46, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: battery
+      At: 0.3
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_energy
+    _flight: 
+  - _group: pistol_silencer
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 74e27de8cd4256c4dabf96b827672078, type: 3}
+      - {fileID: 8300000, guid: 27f79167f759a5145b7136da0b7b5c24, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: pistol_mag_out
+      At: 0.05
+    - Part: pistol_mag_draw
+      At: 0.3
+    - Part: pistol_mag_in
+      At: 0.6
+    - Part: pistol_slide
+      At: 1
+    _draw: draw_pistol
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: plasmometer
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: be927bbfb5ad19d458dc6b5ca02ee7ba, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: battery
+      At: 0.3
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_energy
+    _flight: 
+  - _group: pomp_shotgun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: bbfcabca0eced4942993a2b2e827943d, type: 3}
+      - {fileID: 8300000, guid: c251f96ef44868644a01f700e20757cd, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: shell_draw
+      At: 0.1
+    - Part: shell_insert
+      At: 0.45
+    - Part: pump
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: pump
+    _cycleDelay: 0.35
+    _shells: shells_shotgun
+    _hit: 
+    _flight: 
+  - _group: railgun
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 10ff1da5b84fbe1478ca8dbac1439cf9, type: 3}
+      - {fileID: 8300000, guid: 7c183637f38b4754b89c9779216c91dd, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: battery
+      At: 0.3
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_energy
+    _flight: 
+  - _group: revolver
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: b843bbe606da9974abae5703f0d9a631, type: 3}
+      - {fileID: 8300000, guid: cf69530b4516a5444935ef1cf92ef5e3, type: 3}
+      - {fileID: 8300000, guid: d06140bea0c26a04b94073336bcb7726, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: revolver_open
+      At: 0.05
+    - Part: revolver_load
+      At: 0.35
+    - Part: revolver_close
+      At: 1
+    _draw: draw_pistol
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: rifle_545
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 6a5c81e9d33bdaa479ab1bd66c7f6f63, type: 3}
+      - {fileID: 8300000, guid: 587d07e219980c14aa2a9e432ac64b2a, type: 3}
+      - {fileID: 8300000, guid: 8fafd208bd0e62e47b557af60df1a6a7, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: rifle_mag_draw
+      At: 0.3
+    - Part: rifle_mag_in
+      At: 0.6
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: rifle_762
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 69196f4a7a99aa541a1724f7214248e9, type: 3}
+      - {fileID: 8300000, guid: 3b758dbbb1d134e429ed8fab569e7750, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: rifle_mag_draw
+      At: 0.3
+    - Part: rifle_mag_in
+      At: 0.6
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: tail
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: rpg
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 2bdada2d2557a364ea634a906e653da2, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: gl_insert
+      At: 0.4
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: 
+    _flight: rocket_flight
+  - _group: shock_cannon
+    _attack:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips:
+      - {fileID: 8300000, guid: d7e2e7308babac84da11923196491306, type: 3}
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips:
+      - {fileID: 8300000, guid: 85be6b5fdaf9f224b9b7acf3eda123fb, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: battery
+      At: 0.3
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_lightning
+    _flight: 
+  - _group: smg_silenced
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 9450b5ecee005f0419c245381f6c3f40, type: 3}
+      - {fileID: 8300000, guid: 180e6ec07fd3eb0428819d421de4d4a1, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: rifle_mag_draw
+      At: 0.3
+    - Part: rifle_mag_in
+      At: 0.6
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: sniper_silencer
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: f89f3c7592c0b094c85d486f276fc871, type: 3}
+      - {fileID: 8300000, guid: 8f97fa0061f3ea445a59755972063a24, type: 3}
+      _volume: 0.8
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: rifle_mag_out
+      At: 0.05
+    - Part: sniper_mag_in
+      At: 0.45
+    - Part: rifle_charge
+      At: 1
+    _draw: draw_gun
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: shells_brass
+    _hit: 
+    _flight: 
+  - _group: star_sword
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 8005789a250080e4aa29ceefc4165c72, type: 3}
+      _volume: 0.9
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps: []
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_energy
+    _flight: 
+  - _group: tesla
+    _attack:
+      _clips:
+      - {fileID: 8300000, guid: 43ad6b0d0337a4b48bc7c322eeb190ef, type: 3}
+      - {fileID: 8300000, guid: 727a3669812141b4ca8d87338adc8087, type: 3}
+      _volume: 0.5
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 4
+      _minInterval: 0
+    _start:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _loop:
+      _clips: []
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _end:
+      _clips: []
+      _volume: 0.6
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reload:
+      _clips: []
+      _volume: 0.7
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+    _reloadSteps:
+    - Part: battery
+      At: 0.3
+    _draw: draw_energy
+    _tail: 
+    _cycle: 
+    _cycleDelay: 0.35
+    _shells: 
+    _hit: hit_lightning
+    _flight: 
   _reloadMagazine:
     _clips:
     - {fileID: 8300000, guid: 767e49557b8d23b4dac6b8880d30d303, type: 3}
@@ -146,6 +2004,529 @@ MonoBehaviour:
     _range: 10
     _maxVoices: 3
     _minInterval: 0
+  _emptyClick:
+    _clips:
+    - {fileID: 8300000, guid: d6515f4f572c2e647a7e14257925f2ee, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.97, y: 1.03}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.12
+  _lowAmmo:
+    _clips:
+    - {fileID: 8300000, guid: 756bdde57f1461a42990964eabe32380, type: 3}
+    _volume: 0.35
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.2
+  _lowAmmoShare: 0.25
+  _parts:
+  - _name: aim
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 9efd42904db071447a43e94f13970da1, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: battery
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 7454fe0028465314885bec293c26c529, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: belt
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 246439809f6561141927adafce96313f, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: bolt
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 474c6a27927e3a94599100f428135521, type: 3}
+      - {fileID: 8300000, guid: ddee12662409faa4bbbb03d4fe40971e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: canister
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 17fb8ac7313390949bc32beed6074bb5, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: crossbow_draw
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: bcb14827094258945a4f3992a21ee84a, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: draw_blade
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ab0efe81cc84f414c83873de49f1496e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: draw_energy
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ffdea1d75a5b18f48853892de8a7fafd, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: draw_gun
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: bebd8060899921f4397f7e855353f841, type: 3}
+      - {fileID: 8300000, guid: cb05280499215754ebb2b04fa984b990, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: draw_pistol
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 96c43b03f854d8049a845b9581f55adc, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: gl_close
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: d60ffaad118a8e546865c145f40af551, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: gl_extract
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 40e50701860be6349aada0b50cdf82ab, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: gl_insert
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: c5b4e808897f6274aae8c70182327a07, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: gl_open
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 47618365b9f12f948aa57abf37e805f6, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: hit_blade
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 5f26ca6602c89dd47bef71faaca723ce, type: 3}
+      - {fileID: 8300000, guid: d709488e84461154795c7b68f0e87e6a, type: 3}
+      _volume: 0.6
+      _pitch: {x: 0.92, y: 1.08}
+      _range: 12
+      _maxVoices: 3
+      _minInterval: 0.04
+  - _name: hit_blunt
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: d02396400c1eb8442aa6b22e783e8936, type: 3}
+      - {fileID: 8300000, guid: 4938f2cd1fc3dbc44ac2745840ef12c5, type: 3}
+      _volume: 0.6
+      _pitch: {x: 0.92, y: 1.08}
+      _range: 12
+      _maxVoices: 3
+      _minInterval: 0.04
+  - _name: hit_energy
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: dad39f97a5ec2ff4590ed4745e53dc43, type: 3}
+      _volume: 0.6
+      _pitch: {x: 0.92, y: 1.08}
+      _range: 12
+      _maxVoices: 3
+      _minInterval: 0.04
+  - _name: hit_heavy
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 0ea7b76c43f26874f9d8cde05be9683c, type: 3}
+      _volume: 0.6
+      _pitch: {x: 0.92, y: 1.08}
+      _range: 12
+      _maxVoices: 3
+      _minInterval: 0.04
+  - _name: hit_lightning
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: b3dea86bd404bf44a9c78758ea9fca9d, type: 3}
+      _volume: 0.6
+      _pitch: {x: 0.92, y: 1.08}
+      _range: 12
+      _maxVoices: 3
+      _minInterval: 0.04
+  - _name: holster
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ad8506f15c042f04b803c0bff43ada11, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: mortar_load
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: bd516ed4ee1541e489e8a8a1fb45a6a7, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: pistol_mag_draw
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 1b5addc8f2c5cbc468993dc37bc3c5e6, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: pistol_mag_in
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: db67e6068f84be04ebba29bfc63db539, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: pistol_mag_out
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 9b168c54abd872d4cbd1be254416c060, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: pistol_slide
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: bd43277c8c4e198448fc9648609381f8, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: pump
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: fc12c9e0ae8967441920e71756d85157, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: revolver_close
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 467e5519f7bfbf347899145aab8c688c, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: revolver_load
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: c2541d12d8ba08d4ca58494c6ef3f874, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: revolver_open
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: b514bd9fb73c424448b9006579aa34cf, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: rifle_charge
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ae25b341226b59d4cbf351eeaf53c66d, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: rifle_mag_draw
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 00288b362be67f44e9f860986f6488a5, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: rifle_mag_in
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 552217ed6c411c544a0f2ebf39beb2f7, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: rifle_mag_out
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 21fe6b4b2e76d4140860e63ed260782e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: rocket_flight
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 97c5324eb3cee6345ac186c4a8597b68, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 14
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: shells_brass
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: e8f5317bd0ae4a945902cdf0bdb4d466, type: 3}
+      - {fileID: 8300000, guid: 9bbaac10b81937c4588e0a301ccef7fd, type: 3}
+      - {fileID: 8300000, guid: d8070da5555fa404d94347d041beadac, type: 3}
+      _volume: 0.25
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0.15
+  - _name: shells_shotgun
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 8b33bfb42c32a7945851d376de96d243, type: 3}
+      - {fileID: 8300000, guid: 6019b70bd9358c641958a7e87945068e, type: 3}
+      _volume: 0.25
+      _pitch: {x: 0.9, y: 1.1}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0.15
+  - _name: shell_draw
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: a250bce19e2829b47a5883bb9a3bba4e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: shell_insert
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 8cba60c72776d234f8a0fd61ece021c9, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: shotgun_mag_in
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: e24b1625156370847b91ceed5a5b4336, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: shotgun_mag_out
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 1e4c9ceaec41281408fa4a30f340e39b, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: shot_with_pump
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 7bbff833a3f11fd40a2aa9141435a391, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: sniper_bolt
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 2b46e8e14263b1e45880c17eacb38f54, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: sniper_mag_in
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 7957f73bb5f727e4e960c97457235742, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0
+  - _name: tail
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: c40709493d45a654bbb28776ce57ead7, type: 3}
+      - {fileID: 8300000, guid: 273657229c5668b41ab3ae877d67e98a, type: 3}
+      - {fileID: 8300000, guid: c4cfe38347e7b914790def0971b21f1a, type: 3}
+      _volume: 0.35
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 0
+      _maxVoices: 2
+      _minInterval: 0.25
+  _monsterHit:
+    _clips:
+    - {fileID: 8300000, guid: 6e3031db14be26748b312302caa4d544, type: 3}
+    - {fileID: 8300000, guid: cc4b8f7eb5698d6438b5c23eb405d8fc, type: 3}
+    - {fileID: 8300000, guid: 7aade0676be1c974fbaf9e05d3d47e87, type: 3}
+    - {fileID: 8300000, guid: 27ac64b106e28b349ba56aba6279d4d7, type: 3}
+    _volume: 0.45
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 12
+    _maxVoices: 4
+    _minInterval: 0.04
+  _killPop:
+    _clips:
+    - {fileID: 8300000, guid: 403bdbbb287c16a45859af6dacc77c45, type: 3}
+    - {fileID: 8300000, guid: 31b6571d756d2f647b6f4de9a6853cff, type: 3}
+    - {fileID: 8300000, guid: 16ba768f7019c7e49ac5d724eb921238, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.9, y: 1.15}
+    _range: 14
+    _maxVoices: 4
+    _minInterval: 0.03
+  _killSplat:
+    _clips:
+    - {fileID: 8300000, guid: 3698acb0aa5483a45840664f22ce8344, type: 3}
+    - {fileID: 8300000, guid: e7a463f0b59f92f4cbe1819f67298a9f, type: 3}
+    - {fileID: 8300000, guid: dc85e1daf21b22649aa4e41474f02e79, type: 3}
+    _volume: 0.4
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 12
+    _maxVoices: 3
+    _minInterval: 0.05
+  _throw:
+    _clips:
+    - {fileID: 8300000, guid: fd6080be964e2b74c885f7259427d6e1, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.95, y: 1.1}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _explosionMedium:
+    _clips:
+    - {fileID: 8300000, guid: 9fd98983b820b4447be55a70746c2f0d, type: 3}
+    _volume: 1
+    _pitch: {x: 0.9, y: 1.05}
+    _range: 25
+    _maxVoices: 4
+    _minInterval: 0
+  _explosionSmall:
+    _clips:
+    - {fileID: 8300000, guid: 15b9a1b0755017342886c71039f29c09, type: 3}
+    - {fileID: 8300000, guid: 3c3bde44b49a722429b60bc517fff346, type: 3}
+    _volume: 0.9
+    _pitch: {x: 0.92, y: 1.06}
+    _range: 20
+    _maxVoices: 4
+    _minInterval: 0
+  _explosionLarge:
+    _clips:
+    - {fileID: 8300000, guid: 61f53a6e0aff7e844a36d1ac93ffc2cf, type: 3}
+    - {fileID: 8300000, guid: 6b85f6508e1425c47b082c4ea4bc83ee, type: 3}
+    _volume: 1
+    _pitch: {x: 0.92, y: 1.04}
+    _range: 30
+    _maxVoices: 3
+    _minInterval: 0
+  _smallRadius: 1.5
+  _largeRadius: 2.8
+  _pin:
+    _clips:
+    - {fileID: 8300000, guid: 96e2403c1f30f7d40823042d49a0d581, type: 3}
+    _volume: 0.5
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _land:
+    _clips:
+    - {fileID: 8300000, guid: 3c9809a8c18ee4746ab997840a137dcd, type: 3}
+    - {fileID: 8300000, guid: bbb6938ad7fe31f4ca2824f8f6e3fbaf, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 12
+    _maxVoices: 3
+    _minInterval: 0
+  _fireLoop:
+    _clips:
+    - {fileID: 8300000, guid: 63de8b686d1faad4cb400584b1700a6d, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 9
+    _maxVoices: 1
+    _minInterval: 0
+  _ignite:
+    _clips:
+    - {fileID: 8300000, guid: 1642e66fe9eb47542a9a19beb1e5c7cb, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 15
+    _maxVoices: 3
+    _minInterval: 0
   _pickupKey:
     _clips:
     - {fileID: 8300000, guid: 0997ed0501dd84a4a8815997835c5378, type: 3}
@@ -164,12 +2545,47 @@ MonoBehaviour:
     _minInterval: 0
   _pickupWeapon:
     _clips:
-    - {fileID: 8300000, guid: 5f7de0294b38ab14a900db065f440548, type: 3}
+    - {fileID: 8300000, guid: 8480f333e3f3d9e4c8e511c3a3210b7e, type: 3}
+    - {fileID: 8300000, guid: 93401eceb5909e447b9724a847308b12, type: 3}
     _volume: 0.5
     _pitch: {x: 1, y: 1}
     _range: 0
     _maxVoices: 1
     _minInterval: 0
+  _pickupAmmo:
+    _clips:
+    - {fileID: 8300000, guid: 6a409009228f41346b29bb138e25da26, type: 3}
+    - {fileID: 8300000, guid: 08b1d74347044724f875dace51a6b1bb, type: 3}
+    _volume: 0.4
+    _pitch: {x: 0.95, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0.05
+  _pickupThrowable:
+    _clips:
+    - {fileID: 8300000, guid: 892f0aa146aaaf646bfeb2201ff14ca8, type: 3}
+    _volume: 0.5
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _weaponDrop:
+    _clips:
+    - {fileID: 8300000, guid: 8c08231ab9c250f4a860f64e9d1c9e9d, type: 3}
+    _volume: 0.6
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _rareDrop:
+    _clips:
+    - {fileID: 8300000, guid: 5414912d55459a240861a1fd8a4bd631, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.5
+  _rareDropFrom: 2
   _doorOpen:
     _clips:
     - {fileID: 8300000, guid: ae72fd96744f5cb4e970b9a761af28ff, type: 3}
@@ -212,7 +2628,8 @@ MonoBehaviour:
     _maxVoices: 2
     _minInterval: 0
   _iceBreak:
-    _clips: []
+    _clips:
+    - {fileID: 8300000, guid: 470bdbfb85a06ce4ba74f7b8bade7ea6, type: 3}
     _volume: 0.85
     _pitch: {x: 0.95, y: 1.05}
     _range: 12
@@ -232,6 +2649,7 @@ MonoBehaviour:
     _clips:
     - {fileID: 8300000, guid: 0d54922b9ae42674db9e1681bf5796c9, type: 3}
     - {fileID: 8300000, guid: dddc621eeb700ef48bdf3b6e5c3cc242, type: 3}
+    - {fileID: 8300000, guid: 184460b50443f1a4dbbd607aca12cf38, type: 3}
     _volume: 0.55
     _pitch: {x: 0.95, y: 1.05}
     _range: 12
@@ -272,8 +2690,6 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 6a227a20111f6cf49a29b2f8d2e86b7c, type: 3}
     - {fileID: 8300000, guid: 3d0aebe42460e914fa92812af6ae28d2, type: 3}
     - {fileID: 8300000, guid: b490bcd042ba3934a8632c27f8522d25, type: 3}
-    - {fileID: 8300000, guid: 8e6ecd8cee9c5b74baf093e07f42d4f0, type: 3}
-    - {fileID: 8300000, guid: 402e00d6f5958df4bb174f3e6e48e5d4, type: 3}
     _volume: 0.9
     _pitch: {x: 0.9, y: 1.05}
     _range: 6

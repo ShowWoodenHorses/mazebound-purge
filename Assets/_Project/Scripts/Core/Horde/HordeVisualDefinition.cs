@@ -53,6 +53,10 @@ namespace Purge.Core.Horde
         [SerializeField, Min(0.01f)] private float _scale = 0.75f;
         [Tooltip("Vertex count of the source skinned mesh (before welding), for the report.")]
         [SerializeField] private int _sourceVertexCount;
+        [Tooltip("Colour of the splashes when a monster is hit or killed (cartoon style: no blood), sRGB.")]
+        [SerializeField] private Color _splashColor = new Color(0.55f, 0.85f, 0.25f, 1f);
+
+        public Color SplashColor => _splashColor;
 
         public Mesh Mesh => _mesh;
         public Material[] Variants => _variants;

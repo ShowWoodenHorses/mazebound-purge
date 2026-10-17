@@ -404,6 +404,14 @@ namespace Purge.Tests.PlayMode
                 if (target.Agent >= 0) hits++;
             };
             targets.Damaged += count;
+            // Feel (stage 4в): a weapon's hit knocks the monster back (WeaponFeelSystem handles it first).
+            var pushed = 0;
+            Action<Purge.Gameplay.Combat.CombatTarget, Vector2, Vector2, Purge.Core.Definitions.WeaponDefinition, bool> feel =
+                (target, _, _, _, _) =>
+                {
+                    if (target.Agent >= 0 && horde.PushVelocities[target.Agent].sqrMagnitude > 0f) pushed++;
+                };
+            targets.WeaponDamaged += feel;
             try
             {
                 foreach (var pickup in level.Weapons)
@@ -424,10 +432,13 @@ namespace Purge.Tests.PlayMode
 
                     Assert.Greater(hits, 0, $"{name} hurts the horde.");
                 }
+
+                Assert.Greater(pushed, 0, "Hits knock monsters back.");
             }
             finally
             {
                 targets.Damaged -= count;
+                targets.WeaponDamaged -= feel;
             }
 
             await _flow.ExitToMenu();

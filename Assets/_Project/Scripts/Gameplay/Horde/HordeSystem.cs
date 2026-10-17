@@ -59,6 +59,8 @@ namespace Purge.Gameplay.Horde
         private int[] _generation; // + 1 on every spawn into the slot: states of the previous monster are not carried over
         private float[] _speedFactor; // states (StatusSystem): slow
         private bool[] _stunned; // states: neither moves nor attacks
+        private Vector2[] _push; // knockback (and a corpse's fling), cells per second, fading
+        private float[] _staggerUntil; // a hit stops the monster's step and attack until then
 
         private bool[] _walkable;
         private int[] _walkableCells;
@@ -149,6 +151,34 @@ namespace Purge.Gameplay.Horde
             _stunned[agent] = stunned;
         }
 
+        /// <summary>1/s: how fast a knockback fades (a push of 4 cells/s carries about 0.35 cells).</summary>
+        public const float PushDamping = 11f;
+
+        /// <summary>Strongest knockback, cells per second.</summary>
+        public const float MaxPush = 12f;
+
+        /// <summary>
+        /// Knocks a monster (living, or a fresh corpse — its fling) by <paramref name="velocity"/> cells per second; pushes
+        /// add up to <see cref="MaxPush"/> and fade (<see cref="PushDamping"/>). Walls stop it as a step.
+        /// </summary>
+        public void Push(int agent, Vector2 velocity)
+        {
+            if ((uint)agent >= (uint)_highWater || _states[agent] == HordeAgentState.Inactive) return;
+            var push = _push[agent] + velocity;
+            _push[agent] = push.sqrMagnitude > MaxPush * MaxPush ? push.normalized * MaxPush : push;
+        }
+
+        /// <summary>The hit monster neither steps nor attacks for <paramref name="seconds"/> (its attack waits).</summary>
+        public void Stagger(int agent, float seconds)
+        {
+            if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || seconds <= 0f) return;
+            _staggerUntil[agent] = Mathf.Max(_staggerUntil[agent], Time + seconds);
+        }
+
+        public ReadOnlySpan<Vector2> PushVelocities => _push;
+
+        public bool IsStaggered(int agent) => (uint)agent < (uint)_highWater && Time < _staggerUntil[agent];
+
         public static bool IsAlive(HordeAgentState state) => state == HordeAgentState.Moving || state == HordeAgentState.Attacking;
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
@@ -170,6 +200,8 @@ namespace Purge.Gameplay.Horde
             _generation = new int[capacity];
             _speedFactor = new float[capacity];
             _stunned = new bool[capacity];
+            _push = new Vector2[capacity];
+            _staggerUntil = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
@@ -276,6 +308,8 @@ namespace Purge.Gameplay.Horde
                     case HordeAgentState.Dying:
                         if (Time - _stateStart[i] >= _stats.CorpseTime)
                             _states[i] = HordeAgentState.Inactive;
+                        else
+                            _positions[i] = ApplyPush(i, _positions[i], deltaTime);
                         break;
                 }
             }
@@ -401,12 +435,13 @@ namespace Purge.Gameplay.Horde
 
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
         {
-            var position = _positions[i];
-            if (_stunned[i])
+            var position = ApplyPush(i, _positions[i], deltaTime);
+            if (_stunned[i] || Time < _staggerUntil[i])
             {
-                // Neither walks nor attacks (its attack waits); only the crowd pushes it.
+                // Neither walks nor attacks (its attack waits); only the crowd and hits push it.
                 var push = Separation(i, position, playerPosition);
-                if (push.sqrMagnitude > 1e-10f) _positions[i] = MoveWithWalls(position, push);
+                if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push);
+                _positions[i] = position;
                 return;
             }
 
@@ -466,6 +501,19 @@ namespace Purge.Gameplay.Horde
             var maxTurn = _stats.TurnSpeed * Mathf.Deg2Rad * deltaTime;
             var difference = Mathf.DeltaAngle(_facing[i] * Mathf.Rad2Deg, targetAngle * Mathf.Rad2Deg) * Mathf.Deg2Rad;
             _facing[i] += Mathf.Clamp(difference, -maxTurn, maxTurn);
+        }
+
+        private Vector2 ApplyPush(int i, Vector2 position, float deltaTime)
+        {
+            var push = _push[i];
+            if (push.sqrMagnitude < 1e-4f)
+            {
+                _push[i] = Vector2.zero;
+                return position;
+            }
+
+            _push[i] = push * Mathf.Exp(-PushDamping * deltaTime);
+            return MoveWithWalls(position, push * deltaTime);
         }
 
         private Vector2 Separation(int i, Vector2 position, Vector2 playerPosition)
@@ -596,6 +644,8 @@ namespace Purge.Gameplay.Horde
             _generation[slot]++;
             _speedFactor[slot] = 1f;
             _stunned[slot] = false;
+            _push[slot] = Vector2.zero;
+            _staggerUntil[slot] = 0f;
             // ±10 % speed: the crowd spreads out instead of marching in step.
             _speed[slot] = _stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
             _highWater = Math.Max(_highWater, slot + 1);

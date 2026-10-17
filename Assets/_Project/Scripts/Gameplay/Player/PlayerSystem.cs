@@ -41,6 +41,14 @@ namespace Purge.Gameplay.Player
     {
         private const float DeadZone = 0.1f;
 
+        /// <summary>1/s: how fast a push fades (14 — a recoil is over in about 0.2 s).</summary>
+        private const float PushDamping = 14f;
+
+        /// <summary>Strongest push, cells per second.</summary>
+        private const float MaxPush = 8f;
+
+        private Vector2 _push;
+
         private readonly LevelData _level;
         private readonly PlayerDefinition _definition;
         private readonly IPlayerInput _input;
@@ -139,6 +147,7 @@ namespace Purge.Gameplay.Player
                 _moved = false;
                 SpeedFactor = 0f;
                 MoveDirection = Vector2.zero;
+                ApplyPush(deltaTime);
                 return;
             }
 
@@ -152,7 +161,38 @@ namespace Purge.Gameplay.Player
             // Of the full speed: in a snowdrift the walk animation slows down too.
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);
             Position = target;
+            ApplyPush(deltaTime);
+        }
 
+        /// <summary>
+        /// Pushes the player (recoil of a weapon, cells per second): added to the push in progress, which fades out fast
+        /// (<see cref="PushDamping"/>) and is stopped by walls like a step.
+        /// </summary>
+        public void Push(Vector2 velocity)
+        {
+            _push += velocity;
+            if (_push.sqrMagnitude > MaxPush * MaxPush) _push = _push.normalized * MaxPush;
+        }
+
+        /// <summary>The push in progress, cells per second (views, tests).</summary>
+        public Vector2 PushVelocity => _push;
+
+        private void ApplyPush(float deltaTime)
+        {
+            if (_push.sqrMagnitude < 1e-4f || deltaTime <= 0f)
+            {
+                _push = Vector2.zero;
+                UpdateCell();
+                return;
+            }
+
+            Position = PlayerMovement.Move(Position, _push * deltaTime, _definition.BodyHalfSize, _definition.CornerAssist, this);
+            _push *= Mathf.Exp(-PushDamping * deltaTime);
+            UpdateCell();
+        }
+
+        private void UpdateCell()
+        {
             var cell = PlayerMovement.CellOf(Position, Floor);
             if (cell != Cell)
             {
@@ -178,6 +218,7 @@ namespace Purge.Gameplay.Player
             Position = new Vector2(start.Position.X, start.Position.Y);
             Facing = InitialFacing(start.Position);
             _moved = false;
+            _push = Vector2.zero;
             SpeedFactor = 0f;
             MoveDirection = Vector2.zero;
             IsSpawned = true;

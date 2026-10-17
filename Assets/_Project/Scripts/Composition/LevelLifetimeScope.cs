@@ -84,6 +84,7 @@ namespace Purge.Composition
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
+            builder.Register<WeaponFeelSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<PlayerSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<PlayerFootsteps>(Lifetime.Singleton).As<ILevelTickable>();
             builder.Register<PickupSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -135,6 +136,8 @@ namespace Purge.Composition
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<WeaponFeelView>(Lifetime.Singleton).AsSelf()
+                .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup>();
             builder.Register<WeaponEffectsView>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
             builder.Register<StressEffectsView>(Lifetime.Singleton).AsSelf()
@@ -144,6 +147,7 @@ namespace Purge.Composition
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             // After the gameplay systems and the zombie views: it listens to them and ticks after the simulation.
             builder.Register<LevelAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<WeaponAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<FootprintsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Weather: emitted in the tick (nothing on pause), paused in the late tick.
             builder.Register<SnowfallView>(Lifetime.Singleton).AsSelf()

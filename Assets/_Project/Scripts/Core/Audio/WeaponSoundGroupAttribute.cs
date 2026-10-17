@@ -9,4 +9,12 @@ namespace Purge.Core.Audio
     public sealed class WeaponSoundGroupAttribute : PropertyAttribute
     {
     }
+
+    /// <summary>
+    /// A string field naming a shared weapon sound (<see cref="SoundPart"/>): a dropdown of the part folders
+    /// (Sounds/Weapon/_Parts/&lt;part&gt;).
+    /// </summary>
+    public sealed class WeaponSoundPartAttribute : PropertyAttribute
+    {
+    }
 }

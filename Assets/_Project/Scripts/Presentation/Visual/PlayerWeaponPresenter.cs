@@ -105,8 +105,16 @@ namespace Purge.Presentation.Visual
 
         public void LateTick(float deltaTime)
         {
-            if (_rig != null && _rig.IsValid)
-                _rig.PoseGun(_shownIsGun && _shown != null ? _shown.transform : null, _shownGrip, deltaTime);
+            if (_rig == null || !_rig.IsValid) return;
+            var gun = _shownIsGun && _shown != null ? _shown.transform : null;
+            if (gun != null) gun.localPosition = Vector3.zero; // The recoil moved it last frame.
+            _rig.PoseGun(gun, _shownGrip, deltaTime);
+        }
+
+        /// <summary>A shot's spring recoil of the gun in hands and the chest (<see cref="CharacterWeaponRig.Kick"/>).</summary>
+        public void Kick(float back, float angle, float body)
+        {
+            if (_rig != null && _rig.IsValid && _shownIsGun) _rig.Kick(back, angle, body);
         }
 
         public void CollectWarmup(List<GameObject> objects)

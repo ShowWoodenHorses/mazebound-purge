@@ -1,5 +1,10 @@
 // The page around the game (Purge.Application.Platform.WebPage).
 mergeInto(LibraryManager.library, {
+  // A short vibration (feel of shots and kills); silently nothing where the browser has no vibration (iOS, desktop).
+  PurgePage_Vibrate: function (milliseconds) {
+    try { if (navigator.vibrate) navigator.vibrate(milliseconds); } catch (e) { }
+  },
+
   // Render resolution: the page's device pixel ratio (as the template chose it at start) × scale. Unity sizes the
   // canvas backing store by Module.devicePixelRatio on its next resize check (stress test: fill-rate cost).
   PurgePage_SetPixelRatioScale: function (scale) {

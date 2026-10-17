@@ -6,6 +6,8 @@
 
 float4 _PurgeLanternPosition; // xyz = world position, w = 1 / radius
 float4 _PurgeLanternColor;    // rgb = color * intensity
+float4 _PurgeShotLightPosition; // flash of the player's shot (WeaponFeelView): xyz = world position, w = 1 / radius
+float4 _PurgeShotLightColor;    // rgb = color * intensity, fading to zero in a few frames
 
 sampler2D _PurgeLightMap;     // LightField: rgb = light / max, a = flickering share
 float4 _PurgeLightMapSize;    // xy = 1 / level size in cells, z = max light (0 = no light map)
@@ -22,6 +24,17 @@ float3 PurgeLantern(float3 worldPos, float3 worldNormal)
     falloff *= falloff;
     float wrap = saturate(dot(worldNormal, toLight / max(distance, 1e-4)) * 0.6 + 0.4);
     return _PurgeLanternColor.rgb * (falloff * wrap);
+}
+
+// The flash of a shot at the muzzle: like the lantern, only for a moment (zero colour = nothing).
+float3 PurgeShotLight(float3 worldPos, float3 worldNormal)
+{
+    float3 toLight = _PurgeShotLightPosition.xyz - worldPos;
+    float distance = length(toLight);
+    float falloff = saturate(1 - distance * _PurgeShotLightPosition.w);
+    falloff *= falloff;
+    float wrap = saturate(dot(worldNormal, toLight / max(distance, 1e-4)) * 0.6 + 0.4);
+    return _PurgeShotLightColor.rgb * (falloff * wrap);
 }
 
 // Torch-like flicker, 0.7..1, drifting smoothly over the level so neighbouring lights do not pulse in sync.
@@ -51,13 +64,13 @@ float PurgeLightCeiling(float height)
 // Everything Purge adds; multiplied by albedo and added as emission. Characters and objects (Purge/Lit).
 float3 PurgeExtraLight(float3 worldPos, float3 worldNormal)
 {
-    return PurgeLantern(worldPos, worldNormal) + PurgeGridLight(worldPos, worldNormal);
+    return PurgeLantern(worldPos, worldNormal) + PurgeShotLight(worldPos, worldNormal) + PurgeGridLight(worldPos, worldNormal);
 }
 
 // Same for level geometry (Purge/Geometry): the sources' light fades with height (PurgeLightCeiling).
 float3 PurgeExtraLightGeometry(float3 worldPos, float3 worldNormal)
 {
-    return PurgeLantern(worldPos, worldNormal) +
+    return PurgeLantern(worldPos, worldNormal) + PurgeShotLight(worldPos, worldNormal) +
            PurgeGridLight(worldPos, worldNormal) * PurgeLightCeiling(worldPos.y);
 }
 

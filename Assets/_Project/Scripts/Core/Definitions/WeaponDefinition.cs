@@ -64,6 +64,12 @@ namespace Purge.Core.Definitions
                  "shot / reload sounds.")]
         [SerializeField, WeaponSoundGroup] private string _sound;
 
+        [Tooltip("Pitch of the weapon's sounds: one group sounds heavier on a weapon a bit lower (0.85–0.9).")]
+        [SerializeField, Range(0.5f, 1.5f)] private float _soundPitch = 1f;
+
+        [Tooltip("Volume of the weapon's attack (× the group's).")]
+        [SerializeField, Range(0f, 1.5f)] private float _soundVolume = 1f;
+
         [SerializeReference, ModuleList] private List<WeaponModule> _modules = new List<WeaponModule>();
 
         // Module lookups, cached: definitions are read every tick.
@@ -72,6 +78,7 @@ namespace Purge.Core.Definitions
         [System.NonSerialized] private AmmoModule _ammo;
         [System.NonSerialized] private SilencerModule _silencer;
         [System.NonSerialized] private MobilityModule _mobility;
+        [System.NonSerialized] private FeelModule _feel;
 
         public Rarity Rarity => _rarity;
         public bool Upgradable => !_noUpgrades;
@@ -83,6 +90,12 @@ namespace Purge.Core.Definitions
 
         /// <summary>The group set by hand (empty = none).</summary>
         internal string Sound => _sound;
+
+        /// <summary>Pitch of the weapon's sounds (× the cue's random pitch).</summary>
+        public float SoundPitch => _soundPitch;
+
+        /// <summary>Volume of the weapon's attack (× the cue's).</summary>
+        public float SoundVolume => _soundVolume;
 
         /// <summary>The attack; null only in a broken asset (<see cref="Validate"/>).</summary>
         public WeaponAttack Attack => Cache()._attack;
@@ -123,6 +136,9 @@ namespace Purge.Core.Definitions
         /// <summary>Extra speed multiplier while firing.</summary>
         public float SpeedWhileFiring => Cache()._mobility != null ? _mobility.WhileFiring : 1f;
 
+        /// <summary>How the weapon feels (<see cref="FeelModule"/>; <see cref="FeelModule.Default"/> without it).</summary>
+        public FeelModule Feel => Cache()._feel ?? FeelModule.Default;
+
         public bool TryGet<T>(out T module) where T : WeaponModule => Purge.Core.Modules.Modules.TryGet(_modules, out module);
 
         /// <summary>Problems of the weapon's setup, in English (editor checks).</summary>
@@ -146,9 +162,11 @@ namespace Purge.Core.Definitions
             _ammo = null;
             _silencer = null;
             _mobility = null;
+            _feel = null;
             foreach (var module in _modules)
                 switch (module)
                 {
+                    case FeelModule feel when _feel == null: _feel = feel; break;
                     case WeaponAttack attack when _attack == null: _attack = attack; break;
                     case AmmoModule ammo when _ammo == null: _ammo = ammo; break;
                     case SilencerModule silencer when _silencer == null: _silencer = silencer; break;
@@ -185,5 +203,11 @@ namespace Purge.Core.Definitions
         }
 
         internal void SetSound(string group) => _sound = group;
+
+        internal void SetSoundTone(float pitch, float volume)
+        {
+            _soundPitch = pitch;
+            _soundVolume = volume;
+        }
     }
 }

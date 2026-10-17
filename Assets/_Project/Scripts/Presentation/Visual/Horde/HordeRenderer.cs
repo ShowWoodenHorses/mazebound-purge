@@ -46,6 +46,22 @@ namespace Purge.Presentation.Visual.Horde
         private Batch[] _batches;
         private int[] _batchFill; // per variant: instances in its current batch
         private int[] _batchOf;   // per variant: index of its current batch in _batches
+        private float[] _flash;   // per slot: strength of the hit flash (the last weapon's feel; 1 until set)
+        private float[] _dent;    // per slot: squash of the last hit, share of the size
+
+        /// <summary>Seconds a hit's dent lasts (squash, then back).</summary>
+        public const float DentTime = 0.16f;
+
+        /// <summary>
+        /// How the next flashes and dents of the monster in <paramref name="agent"/> look (the weapon's feel); damage
+        /// without a weapon (zones, states) keeps the last ones.
+        /// </summary>
+        public void SetHitLook(int agent, float flash, float dent)
+        {
+            if (_flash == null || (uint)agent >= (uint)_flash.Length) return;
+            _flash[agent] = Mathf.Clamp01(flash);
+            _dent[agent] = Mathf.Clamp(dent, 0f, 0.5f);
+        }
         private int _batchesUsed;
         private Bounds _worldBounds;
         private int _runClip, _walkClip, _deathClip, _idleClip = -1, _firstAttack, _attackCount;
@@ -62,6 +78,9 @@ namespace Purge.Presentation.Visual.Horde
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
         public bool IsActive => _batches != null;
+
+        /// <summary>The horde's look (null until loaded or without a horde).</summary>
+        public HordeVisualDefinition Visual => _visual;
 
         /// <summary>Draw the monsters at all (off = measure the simulation alone).</summary>
         public bool Enabled { get; set; } = true;
@@ -135,6 +154,9 @@ namespace Purge.Presentation.Visual.Horde
                 _batches[i] = new Batch();
             _batchFill = new int[variants];
             _batchOf = new int[variants];
+            _flash = new float[_horde.Capacity];
+            _dent = new float[_horde.Capacity];
+            for (var i = 0; i < _flash.Length; i++) _flash[i] = 1f;
 
             var size = new Vector3(_level.Geometry.Width + 4f, 6f, _level.Geometry.Height + 4f);
             _worldBounds = new Bounds(new Vector3(_level.Geometry.Width * 0.5f, 1f, _level.Geometry.Height * 0.5f), size);
@@ -227,14 +249,22 @@ namespace Purge.Presentation.Visual.Horde
                 }
 
                 var frame = FrameOf(clip, clipTime);
-                frame.w = Mathf.Clamp01(1f - (time - hitTime[i]) / FlashTime);
+                var sinceHit = time - hitTime[i];
+                frame.w = Mathf.Clamp01(1f - sinceHit / FlashTime) * _flash[i];
+                var size = scale;
                 if (state == HordeAgentState.Dying) frame.w = 0f;
+                else if (sinceHit < DentTime && _dent[i] > 0f)
+                {
+                    // Squashed at once, back in a smooth bulge: lower and wider, as if punched.
+                    var dent = _dent[i] * Mathf.Sin((1f - sinceHit / DentTime) * Mathf.PI * 0.5f);
+                    size = new Vector3(scale.x * (1f + dent * 0.5f), scale.y * (1f - dent), scale.z * (1f + dent * 0.5f));
+                }
 
                 var variant = variants[i] % variantCount;
                 var batch = CurrentBatch(variant);
                 var slot = _batchFill[variant]++;
                 var world = new Vector3(p.x, 0f, p.y);
-                batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), scale);
+                batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), size);
                 batch.Frames[slot] = frame;
                 if (_shadowMaterial != null && state != HordeAgentState.Dying)
                 {

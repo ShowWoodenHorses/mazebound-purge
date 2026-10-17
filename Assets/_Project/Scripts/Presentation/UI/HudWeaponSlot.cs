@@ -8,8 +8,9 @@ namespace Purge.Presentation.UI
 {
     /// <summary>
     /// A weapon slot of the HUD where the on-screen controls are not shown (desktop): a frame (accent when active,
-    /// faint when empty), the weapon silhouette, rounds in the magazine and a reload line along the bottom, the key
-    /// hint in the corner; the ranged slot also shows the reload key while the magazine in hands is not full.
+    /// faint when empty, red when a gun has neither rounds nor reserve), the weapon silhouette, rounds in the magazine and
+    /// the reserve ("12/90"; the endless base pistol — only the rounds), a reload line along the bottom, the key hint in
+    /// the corner; a slot with a reload hint shows the reload key while the magazine in hands is not full.
     /// </summary>
     public sealed class HudWeaponSlot : MonoBehaviour
     {
@@ -41,12 +42,13 @@ namespace Purge.Presentation.UI
         {
             if (_painted && state.Same(_state)) return;
             var ammoChanged = !_painted || state.Ammo != _state.Ammo || state.Magazine != _state.Magazine ||
-                              state.Reloading != _state.Reloading || state.Equipped != _state.Equipped;
+                              state.Reloading != _state.Reloading || state.Equipped != _state.Equipped ||
+                              state.Reserve != _state.Reserve;
             _state = state;
             _painted = true;
             if (_style == null) return;
 
-            var line = state.Active ? _style.Accent : _style.Line;
+            var line = state.Equipped && state.OutOfAmmo ? _style.Danger : state.Active ? _style.Accent : _style.Line;
             var fill = _style.Fill;
             if (!state.Equipped)
             {
@@ -78,8 +80,13 @@ namespace Purge.Presentation.UI
                 var shown = state.Equipped && state.Magazine > 0;
                 _ammo.enabled = shown;
                 if (shown && ammoChanged)
-                    _ammo.text = state.Reloading ? _reloadText : state.Ammo + "/" + state.Magazine;
-                if (shown) _ammo.color = state.Reloading ? _style.Accent : _style.Text;
+                {
+                    if (state.Reloading) _ammo.text = _reloadText;
+                    else if (state.Reserve >= 0) _ammo.SetText("{0}/{1}", state.Ammo, state.Reserve);
+                    else _ammo.SetText("{0}", state.Ammo);
+                }
+
+                if (shown) _ammo.color = state.Reloading ? _style.Accent : state.OutOfAmmo ? _style.Danger : _style.Text;
             }
 
             if (_reloadHint != null)

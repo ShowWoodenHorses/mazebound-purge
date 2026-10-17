@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Horde;
@@ -21,8 +22,10 @@ namespace Purge.Presentation.Visual.Horde
     /// Draft looks of the player's attacks that have no effect prefabs yet (stage 4а; the feel comes with 4в): the flame
     /// of a stream, the bolts of chain lightning (one dynamic mesh of jagged quads), explosions and sparks where the horde
     /// is hit, the blasts of thrown items (<see cref="EffectSystem.Exploded"/>), flames on burning monsters and stars over
-    /// stunned ones (<see cref="StatusSystem"/>, in the states' colours). Particles are fed by <c>Emit</c>, only in visible cells; nothing is created per effect. Uses the materials
-    /// of the level's stress test settings (the combat sandbox) and stays off without them.
+    /// stunned ones (<see cref="StatusSystem"/>, in the states' colours). Particles are fed by <c>Emit</c>, only in visible
+    /// cells; nothing is created per effect. Materials — <see cref="CombatVisualDefinition.BoltMaterial"/> and
+    /// <see cref="CombatVisualDefinition.EffectParticles"/> (Build Combat Effects; on every level since stage 4в), else
+    /// those of the sandbox settings; off without either.
     /// </summary>
     public sealed class WeaponEffectsView : ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -45,6 +48,7 @@ namespace Purge.Presentation.Visual.Horde
         private readonly EffectSystem _effects;
         private readonly StatusSystem _statuses;
         private readonly HordeSystem _horde;
+        private readonly CombatVisualDefinition _visual;
         private float _statusTimer;
 
         private Material _boltMaterial;
@@ -61,8 +65,9 @@ namespace Purge.Presentation.Visual.Horde
 
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
-            StatusSystem statuses = null, HordeSystem horde = null)
+            StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null)
         {
+            _visual = visual;
             _effects = effects;
             _statuses = statuses;
             _horde = horde;
@@ -80,14 +85,17 @@ namespace Purge.Presentation.Visual.Horde
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var settings = _level.StressTest;
-            if (settings == null || !settings.IsSandbox)
+            var sandbox = settings != null && settings.IsSandbox ? settings : null;
+            var boltMaterial = _visual != null && _visual.BoltMaterial != null ? _visual.BoltMaterial : sandbox?.TracerMaterial;
+            var particles = _visual != null && _visual.EffectParticles != null ? _visual.EffectParticles : sandbox?.ParticleMaterial;
+            if (boltMaterial == null && particles == null)
                 return UniTask.CompletedTask;
 
             var width = _level.Geometry.Width;
             var height = _level.Geometry.Height;
             _bounds = new Bounds(new Vector3(width * 0.5f, 1f, height * 0.5f), new Vector3(width + 4f, 4f, height + 4f));
 
-            _boltMaterial = settings.TracerMaterial;
+            _boltMaterial = boltMaterial;
             if (_boltMaterial != null)
             {
                 _boltVertices = new Vector3[MaxBoltQuads * 4];
@@ -120,7 +128,6 @@ namespace Purge.Presentation.Visual.Horde
                 _boltMesh.bounds = _bounds;
             }
 
-            var particles = settings.ParticleMaterial;
             if (particles != null)
             {
                 _sparks = CreateParticles("Hit Sparks", particles, 600, new Color(1f, 0.85f, 0.4f), 0.25f, 0.12f);

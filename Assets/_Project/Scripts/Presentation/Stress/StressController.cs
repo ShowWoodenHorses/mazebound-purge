@@ -49,6 +49,8 @@ namespace Purge.Presentation.Stress
 
         private StressTestDefinition _settings;
         private StressOverlay _overlay;
+        private FeelOverlay _feelOverlay;
+        private readonly Core.Feel.FeelChannels _feel;
         private ProfilerRecorder _drawCalls, _setPass, _triangles, _gcAlloc;
         private int _liveIndex, _liveCount;
         private float _overlayTimer;
@@ -69,8 +71,9 @@ namespace Purge.Presentation.Stress
 
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
-            PlayerSystem player, CombatSandbox sandbox)
+            PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null)
         {
+            _feel = feel;
             _sandbox = sandbox;
             _level = level;
             _horde = horde;
@@ -111,6 +114,7 @@ namespace Purge.Presentation.Stress
             _gcAlloc = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
 
             _overlay = new StressOverlay(this);
+            if (_settings.IsSandbox && _feel != null) _feelOverlay = new FeelOverlay(_feel);
             GameLog.Info(LogChannel.Performance, "Stress test ready. " + DeviceLine());
             return UniTask.CompletedTask;
         }
@@ -217,6 +221,8 @@ namespace Purge.Presentation.Stress
             _gcAlloc.Dispose();
             _overlay?.Dispose();
             _overlay = null;
+            _feelOverlay?.Dispose();
+            _feelOverlay = null;
             if (!Mathf.Approximately(_resolutionScale, 1f))
                 WebPage.SetResolutionScale(1f);
             if (_settings != null)

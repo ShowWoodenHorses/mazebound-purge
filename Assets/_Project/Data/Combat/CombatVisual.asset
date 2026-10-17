@@ -191,3 +191,7 @@ MonoBehaviour:
         height: 0.33962265
       Quad: {x: -0.104555316, y: 0.24208243, z: 0.61735356, w: 0.7418655}
       Advance: 0.48503253
+  _splash: {fileID: 2100000, guid: 929491e1701d25e43acf88b7d9f0b255, type: 2}
+  _hitRing: {fileID: 2100000, guid: f6b62a216526e07459c67b69f52fa04e, type: 2}
+  _boltMaterial: {fileID: 2100000, guid: 88deccef97c722f4fbd231c83d3c6c02, type: 2}
+  _effectParticles: {fileID: 2100000, guid: 299be5c1d954e8d4d8b9a9ccdb0da1d6, type: 2}

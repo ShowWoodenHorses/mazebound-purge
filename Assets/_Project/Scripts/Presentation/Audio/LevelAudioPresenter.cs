@@ -8,6 +8,7 @@ using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
+using Purge.Gameplay.Drops;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Level;
@@ -37,8 +38,11 @@ namespace Purge.Presentation.Audio
         /// <summary>Volume change per second of a torch loop (smooth when the player moves or a torch changes).</summary>
         private const float TorchFadeSpeed = 2f;
 
-        /// <summary>Most a reload sound is sped up to fit a short reload.</summary>
-        private const float MaxReloadPitch = 1.5f;
+        /// <summary>Seconds between searches of the nearest burning cell.</summary>
+        private const float FirePickInterval = 0.25f;
+
+        /// <summary>Volume change per second of the fire loop and the heartbeat.</summary>
+        private const float LoopFadeSpeed = 2.5f;
 
         /// <summary>A move longer than this in one tick is a teleport, not steps.</summary>
         private const float MaxStepJump = 1f;
@@ -47,7 +51,6 @@ namespace Purge.Presentation.Audio
         private readonly LevelData _level;
         private readonly PlayerSystem _player;
         private readonly PlayerHealth _health;
-        private readonly PlayerCombat _combat;
         private readonly PlayerInteraction _interaction;
         private readonly WeaponSystem _weapons;
         private readonly BulletSystem _bullets;
@@ -65,19 +68,28 @@ namespace Purge.Presentation.Audio
         private bool _torchesStarted;
         private int _health0;
         private float _quietTime = float.PositiveInfinity;
-        private WeaponRuntime _reloadWeapon;
-        private int _reloadVoice;
-        private float _reloadDelay = -1f;
-        private float _reloadPitch = 1f;
         private bool _subscribed;
         private readonly PlayerThrowing _throwing;
         private readonly EffectSystem _effects;
+        private readonly ZoneSystem _zones;
+        private readonly DropSystem _drops;
 
-        public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health, PlayerCombat combat,
+        private int _fireVoice;
+        private float _fireVolume;
+        private float _firePick;
+        private Vector2 _firePoint;
+        private bool _fireHeard;
+        private int _heartVoice;
+        private float _heartVolume;
+        private float _bodyfallIn = -1f;
+
+        public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health,
             PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups, ZombieSystem zombies,
             ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
-            EffectSystem effects = null)
+            EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null)
         {
+            _zones = zones;
+            _drops = drops;
             _throwing = throwing;
             _effects = effects;
             _frozenDoors = frozenDoors;
@@ -85,7 +97,6 @@ namespace Purge.Presentation.Audio
             _level = level;
             _player = player;
             _health = health;
-            _combat = combat;
             _interaction = interaction;
             _weapons = weapons;
             _bullets = bullets;
@@ -114,10 +125,7 @@ namespace Purge.Presentation.Audio
             {
                 _subscribed = true;
                 _sounds.Emitted += OnSound;
-                _combat.Attacked += OnAttacked;
-                _combat.ReloadChanged += OnReloadChanged;
-                _weapons.Changed += OnWeaponsChanged;
-                _weapons.Switched += OnSwitched;
+                _weapons.DropRequested += OnDropRequested;
                 _bullets.Ended += OnBulletEnded;
                 _interaction.Interacted += OnInteracted;
                 _pickups.Removed += OnPickupRemoved;
@@ -128,12 +136,17 @@ namespace Purge.Presentation.Audio
                 _zombieViews.DeathShown += OnZombieDeathShown;
                 _frozenDoors.IceHitShown += OnIceHitShown;
                 _frozenDoors.IceBrokenShown += OnIceBrokenShown;
-                if (_throwing != null) _throwing.Thrown += OnThrown;
+                if (_throwing != null)
+                {
+                    _throwing.Thrown += OnThrown;
+                    _throwing.Landed += OnLanded;
+                }
                 if (_effects != null)
                 {
                     _effects.Exploded += OnExploded;
                     _effects.ZonePlaced += OnZonePlaced;
                 }
+                if (_drops != null) _drops.ItemDropped += OnItemDropped;
             }
 
             return UniTask.CompletedTask;
@@ -144,9 +157,11 @@ namespace Purge.Presentation.Audio
             if (!_subscribed || !_player.IsSpawned)
                 return;
 
-            TickReload(deltaTime);
             TickZombies(deltaTime);
             TickTorches(deltaTime);
+            TickFire(deltaTime);
+            TickHeartbeat(deltaTime);
+            TickBodyfall(deltaTime);
         }
 
         public void Dispose()
@@ -155,10 +170,7 @@ namespace Purge.Presentation.Audio
             {
                 _subscribed = false;
                 _sounds.Emitted -= OnSound;
-                _combat.Attacked -= OnAttacked;
-                _combat.ReloadChanged -= OnReloadChanged;
-                _weapons.Changed -= OnWeaponsChanged;
-                _weapons.Switched -= OnSwitched;
+                _weapons.DropRequested -= OnDropRequested;
                 _bullets.Ended -= OnBulletEnded;
                 _interaction.Interacted -= OnInteracted;
                 _pickups.Removed -= OnPickupRemoved;
@@ -169,18 +181,24 @@ namespace Purge.Presentation.Audio
                 _zombieViews.DeathShown -= OnZombieDeathShown;
                 _frozenDoors.IceHitShown -= OnIceHitShown;
                 _frozenDoors.IceBrokenShown -= OnIceBrokenShown;
-                if (_throwing != null) _throwing.Thrown -= OnThrown;
+                if (_throwing != null)
+                {
+                    _throwing.Thrown -= OnThrown;
+                    _throwing.Landed -= OnLanded;
+                }
                 if (_effects != null)
                 {
                     _effects.Exploded -= OnExploded;
                     _effects.ZonePlaced -= OnZonePlaced;
                 }
+                if (_drops != null) _drops.ItemDropped -= OnItemDropped;
             }
 
             foreach (var slot in _torchSlots)
                 _audio.Stop(slot.Voice);
             _torchSlots = Array.Empty<TorchSlot>();
-            _audio.Stop(_reloadVoice);
+            _audio.Stop(_fireVoice);
+            _audio.Stop(_heartVoice);
         }
 
         // ------------------------------------------------------------------ Player
@@ -191,25 +209,35 @@ namespace Purge.Presentation.Audio
                 PlayAt(Catalog.Footstep, sound.Position);
         }
 
-        private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
-        {
-            var cue = Catalog.WeaponAttack(weapon.Definition.SoundGroup) ??
-                      (weapon.Definition.IsMelee ? Catalog.MeleeSwing : Catalog.Shot);
-            PlayAt(cue, _player.Position);
-        }
-
         private void OnHealthChanged(int current, int max)
         {
             if (current < _health0)
+            {
                 PlayAt(current > 0 ? Catalog.PlayerHurt : Catalog.PlayerDeath, _player.Position);
+                if (current <= 0) _bodyfallIn = Catalog.BodyfallDelay;
+            }
             _health0 = current;
         }
 
-        private void OnSwitched(WeaponSlot slot) => PlayAt(Catalog.SwitchWeapon, _player.Position);
+        private void OnThrown(ThrowableDefinition throwable, Vector2 direction)
+        {
+            PlayAt(Catalog.Pin, _player.Position);
+            PlayAt(Catalog.Throw, _player.Position);
+        }
 
-        private void OnThrown(ThrowableDefinition throwable, Vector2 direction) => PlayAt(Catalog.Throw, _player.Position);
+        private void OnLanded(ThrowableDefinition throwable, Vector2 at) => PlayAt(Catalog.Land, at);
 
-        private void OnExploded(Vector2 at, float radius) => PlayAt(Catalog.Explosion, at);
+        private void OnExploded(Vector2 at, float radius) => PlayAt(Catalog.ExplosionOf(radius), at);
+
+        private void OnDropRequested(WeaponSlot slot) => PlayAt(Catalog.WeaponDrop, _player.Position);
+
+        private void OnItemDropped(DropRoll roll, Vector2 at)
+        {
+            var rarity = roll.Item is WeaponDefinition weapon ? weapon.Rarity
+                : roll.Item is ThrowableDefinition throwable ? throwable.Rarity
+                : Core.Content.Rarity.Common;
+            if (roll.Item != null && rarity >= Catalog.RareDropFrom) PlayAt(Catalog.RareDrop, at);
+        }
 
         private void OnZonePlaced(Vector2 at, Core.Effects.ZoneDefinition zone, float radius) => PlayAt(Catalog.Ignite, at);
 
@@ -252,71 +280,6 @@ namespace Purge.Presentation.Audio
             if (end == BulletEnd.Blocked && bullet.Throwable == null)
                 PlayAt(Catalog.BulletImpact, point);
         }
-
-        // ------------------------------------------------------------------ Reload
-
-        private void OnReloadChanged(WeaponRuntime weapon)
-        {
-            if (weapon.IsReloading && weapon == _weapons.Active) StartReload(weapon);
-            else if (!weapon.IsReloading && weapon == _reloadWeapon) _reloadWeapon = null; // Its sound ends by itself.
-        }
-
-        /// <summary>A switch away stops the reload sound; back to a weapon still reloading starts it again.</summary>
-        private void OnWeaponsChanged()
-        {
-            var active = _weapons.Active;
-            if (_reloadWeapon != null && active != _reloadWeapon)
-            {
-                _audio.Stop(_reloadVoice);
-                _reloadVoice = 0;
-                _reloadDelay = -1f;
-                _reloadWeapon = null;
-            }
-
-            if (active != null && active.IsReloading && _reloadWeapon == null)
-                StartReload(active);
-        }
-
-        /// <summary>
-        /// Fits the sound to the reload time left: a shorter sound waits so that it ends with the reload (the gun is
-        /// ready on its last click), a longer one is sped up (at most <see cref="MaxReloadPitch"/>).
-        /// </summary>
-        private void StartReload(WeaponRuntime weapon)
-        {
-            _audio.Stop(_reloadVoice);
-            _reloadVoice = 0;
-            _reloadWeapon = weapon;
-            var cue = ReloadCue(weapon);
-            var length = cue.IsEmpty || cue.Clips[0] == null ? 0f : cue.Clips[0].length;
-            var left = weapon.ReloadRemaining;
-            if (length <= 0f || left <= 0f)
-            {
-                _reloadDelay = -1f;
-                return;
-            }
-
-            _reloadPitch = Mathf.Clamp(length / left, 1f, MaxReloadPitch);
-            _reloadDelay = Mathf.Max(0f, left - length);
-            if (_reloadDelay <= 0f) PlayReload();
-        }
-
-        private void TickReload(float deltaTime)
-        {
-            if (_reloadDelay <= 0f || _reloadWeapon == null) return;
-            _reloadDelay -= deltaTime;
-            if (_reloadDelay <= 0f) PlayReload();
-        }
-
-        private void PlayReload()
-        {
-            _reloadDelay = -1f;
-            if (_reloadWeapon == null) return;
-            _reloadVoice = _audio.Play(ReloadCue(_reloadWeapon), SoundChannel.Level, 1f, 0f, _reloadPitch);
-        }
-
-        private SoundCue ReloadCue(WeaponRuntime weapon) =>
-            Catalog.WeaponReload(weapon.Definition.SoundGroup) ??
-            (weapon.Definition.FireMode == FireMode.Automatic ? Catalog.ReloadMagazine : Catalog.ReloadSingle);
 
         // ------------------------------------------------------------------ Zombies
 
@@ -517,6 +480,75 @@ namespace Purge.Presentation.Audio
                 if (slot.Torch == torch)
                     return true;
             return false;
+        }
+
+        // ------------------------------------------------------------------ Fire, heartbeat, body
+
+        /// <summary>
+        /// One fire loop at the nearest burning cell (a zone that spreads over what burns), picked a few times a second,
+        /// fading in and out.
+        /// </summary>
+        private void TickFire(float deltaTime)
+        {
+            var cue = Catalog.FireLoop;
+            if (_zones == null || cue == null || cue.IsEmpty) return;
+
+            _firePick -= deltaTime;
+            if (_firePick <= 0f)
+            {
+                _firePick = FirePickInterval;
+                _fireHeard = false;
+                var best = cue.Range * cue.Range;
+                var cells = _zones.Cells;
+                for (var i = 0; i < cells.Length; i++)
+                {
+                    var kind = _zones.KindAt(cells[i]);
+                    if (kind < 0 || _zones.Kinds[kind].Spread == null) continue;
+                    var cell = _zones.Grid.ToPosition(cells[i]);
+                    if (cell.Floor != _player.Floor) continue;
+                    var point = new Vector2(cell.X, cell.Y);
+                    var distance = (point - _player.Position).sqrMagnitude;
+                    if (distance >= best) continue;
+                    best = distance;
+                    _firePoint = point;
+                    _fireHeard = true;
+                }
+            }
+
+            var offset = _firePoint - _player.Position;
+            var target = _fireHeard ? cue.Attenuation(offset.magnitude) : 0f;
+            _fireVolume = Mathf.MoveTowards(_fireVolume, target, LoopFadeSpeed * deltaTime);
+            _fireVoice = KeepLoop(cue, _fireVoice, _fireVolume, SoundMath.Pan(offset.x));
+        }
+
+        private void TickHeartbeat(float deltaTime)
+        {
+            var cue = Catalog.Heartbeat;
+            if (cue == null || cue.IsEmpty) return;
+            var low = _health.Current > 0 && _health.Current <= _health.Max * Catalog.HeartbeatShare;
+            _heartVolume = Mathf.MoveTowards(_heartVolume, low ? 1f : 0f, LoopFadeSpeed * deltaTime);
+            _heartVoice = KeepLoop(cue, _heartVoice, _heartVolume, 0f);
+        }
+
+        private void TickBodyfall(float deltaTime)
+        {
+            if (_bodyfallIn < 0f) return;
+            _bodyfallIn -= deltaTime;
+            if (_bodyfallIn < 0f) PlayAt(Catalog.Bodyfall, _player.Position);
+        }
+
+        /// <summary>A loop at a volume: started when heard, stopped when silent, else moved.</summary>
+        private int KeepLoop(SoundCue cue, int voice, float volume, float pan)
+        {
+            if (volume <= 0f)
+            {
+                _audio.Stop(voice);
+                return 0;
+            }
+
+            if (!_audio.IsPlaying(voice)) return _audio.PlayLoop(cue, SoundChannel.Level, volume, pan, (float)_random.NextDouble());
+            _audio.SetVoice(voice, volume, pan);
+            return voice;
         }
 
         // ------------------------------------------------------------------ Helpers

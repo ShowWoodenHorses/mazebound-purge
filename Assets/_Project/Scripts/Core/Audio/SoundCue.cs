@@ -52,7 +52,8 @@ namespace Purge.Core.Audio
         public float PitchMax => Mathf.Max(_pitch.x, _pitch.y);
         public float Range { get => _range; internal set => _range = value; }
         public int MaxVoices => Mathf.Max(1, _maxVoices);
-        public float MinInterval => _minInterval;
+        public float MinInterval { get => _minInterval; internal set => _minInterval = value; }
+        internal void SetMaxVoices(int count) => _maxVoices = Mathf.Max(1, count);
 
         public bool IsEmpty
         {

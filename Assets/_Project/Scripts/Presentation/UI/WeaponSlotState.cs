@@ -24,11 +24,18 @@ namespace Purge.Presentation.UI
 
         public bool Reloading;
 
-        public static WeaponSlotState Empty => default;
+        /// <summary>Rounds in reserve; -1 = endless (the base pistol) or none shown.</summary>
+        public int Reserve;
+
+        /// <summary>A gun with neither rounds in the magazine nor reserve (red outline).</summary>
+        public bool OutOfAmmo;
+
+        public static WeaponSlotState Empty => new WeaponSlotState { Reserve = -1 };
 
         public bool Same(in WeaponSlotState other) =>
             Equipped == other.Equipped && Active == other.Active && Icon == other.Icon && Magazine == other.Magazine &&
-            Ammo == other.Ammo && Reloading == other.Reloading && Mathf.Abs(Reload - other.Reload) < 0.005f;
+            Ammo == other.Ammo && Reloading == other.Reloading && Mathf.Abs(Reload - other.Reload) < 0.005f &&
+            Reserve == other.Reserve && OutOfAmmo == other.OutOfAmmo;
     }
 
     /// <summary>What the Use button would do now.</summary>

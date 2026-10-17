@@ -125,6 +125,7 @@ namespace Purge.Editor.Dev
                 var problem = LevelDesigner.LevelSync.SyncShared(settings);
                 if (problem != null) Debug.LogWarning("[Purge] " + problem);
                 AssetDatabase.SaveAssets();
+                UiIconsBuilder.BuildItemIcons(catalog); // Silhouettes of the throwables for the HUD.
 
                 foreach (var path in AssetDatabase.FindAssets("t:ThrowableDefinition").Select(AssetDatabase.GUIDToAssetPath))
                 {

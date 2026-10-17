@@ -62,6 +62,22 @@ namespace Purge.Core.Visual
         [Header("Health bars and numbers")]
         [SerializeField] private CombatFeedback _feedback = new CombatFeedback();
 
+        [Header("Feel (stage 4в)")]
+        [Tooltip("Splashes of a monster's colour on a hit and a kill (particles, tinted per monster).")]
+        [SerializeField] private Material _splash;
+        [Tooltip("Ring under a monster hit (particle lying on the ground).")]
+        [SerializeField] private Material _hitRing;
+
+        [Tooltip("Bolts of chain lightning (a dynamic mesh of quads).")]
+        [SerializeField] private Material _boltMaterial;
+        [Tooltip("Particles of streams, explosions, sparks on the horde, burning and stunned monsters (additive).")]
+        [SerializeField] private Material _effectParticles;
+
+        public Material BoltMaterial { get => _boltMaterial; internal set => _boltMaterial = value; }
+        public Material EffectParticles { get => _effectParticles; internal set => _effectParticles = value; }
+        public Material Splash { get => _splash; internal set => _splash = value; }
+        public Material HitRing { get => _hitRing; internal set => _hitRing = value; }
+
         public AssetReferenceGameObject Bullet { get => _bullet; internal set => _bullet = value; }
         public float TracerLength { get => _tracerLength; internal set => _tracerLength = value; }
         public AssetReferenceGameObject MuzzleFlash { get => _muzzleFlash; internal set => _muzzleFlash = value; }

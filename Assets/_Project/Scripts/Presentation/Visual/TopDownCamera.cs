@@ -34,6 +34,9 @@ namespace Purge.Presentation.Visual
             var distance = radius / Mathf.Sin(NarrowHalfFov());
 
             transform.position = bounds.center - transform.forward * distance;
+            _base = transform.position;
+            _kick = Vector3.zero;
+            _shake = 0f;
             _camera.farClipPlane = Mathf.Max(_camera.farClipPlane, distance + radius * 2f);
         }
 
@@ -62,13 +65,65 @@ namespace Purge.Presentation.Visual
             var desired = target - transform.forward * FollowDistance;
             if (snap || deltaTime <= 0f || _followSmoothTime <= 0f)
             {
-                transform.position = desired;
+                _base = desired;
                 _velocity = Vector3.zero;
-                return;
+            }
+            else
+            {
+                _base = Vector3.SmoothDamp(_base, desired, ref _velocity, _followSmoothTime, Mathf.Infinity, deltaTime);
             }
 
-            transform.position = Vector3.SmoothDamp(transform.position, desired, ref _velocity, _followSmoothTime,
-                Mathf.Infinity, deltaTime);
+            transform.position = _base + Feel(deltaTime);
+        }
+
+        // ------------------------------------------------------------------ Feel: kick and shake
+
+        /// <summary>1/s: how fast a kick returns (a jump, then ~0.1 s back).</summary>
+        private const float KickReturn = 22f;
+
+        /// <summary>1/s: how fast a shake dies out.</summary>
+        private const float ShakeDamping = 10f;
+
+        /// <summary>Shakes per second.</summary>
+        private const float ShakeFrequency = 28f;
+
+        /// <summary>Largest kick and shake, cells (many shots at once never throw the view away).</summary>
+        private const float MaxOffset = 0.6f;
+
+        private Vector3 _base;
+        private Vector3 _kick;
+        private float _shake;
+        private float _shakeTime;
+
+        /// <summary>The view jumps <paramref name="cells"/> against a shot along <paramref name="direction"/> (grid x, y) and springs back.</summary>
+        public void Kick(Vector2 direction, float cells)
+        {
+            if (cells <= 0f || direction.sqrMagnitude <= 0f) return;
+            var d = direction.normalized;
+            _kick = Vector3.ClampMagnitude(_kick - new Vector3(d.x, 0f, d.y) * cells, MaxOffset);
+        }
+
+        /// <summary>Shakes the view by up to <paramref name="cells"/>; a stronger shake replaces a weaker one.</summary>
+        public void Shake(float cells) => _shake = Mathf.Min(MaxOffset, Mathf.Max(_shake, cells));
+
+        private Vector3 Feel(float deltaTime)
+        {
+            if (deltaTime > 0f)
+            {
+                _kick *= Mathf.Exp(-KickReturn * deltaTime);
+                _shake *= Mathf.Exp(-ShakeDamping * deltaTime);
+                _shakeTime += deltaTime;
+            }
+
+            if (_kick.sqrMagnitude < 1e-8f) _kick = Vector3.zero;
+            if (_shake < 1e-4f) _shake = 0f;
+            if (_shake <= 0f) return _kick;
+
+            // Smooth noise on two axes, not a jitter of random jumps.
+            var t = _shakeTime * ShakeFrequency;
+            var x = Mathf.PerlinNoise(t, 0.37f) * 2f - 1f;
+            var z = Mathf.PerlinNoise(0.71f, t) * 2f - 1f;
+            return _kick + new Vector3(x, 0f, z) * _shake;
         }
     }
 }

@@ -71,6 +71,22 @@ namespace Purge.Tests.EditMode.Player
         }
 
         [Test]
+        public void Push_MovesThePlayerBack_FadesOut_AndStopsAtWalls()
+        {
+            var player = Spawn(new LevelLaunchOptions(startIndex: 0)); // (1,1), a wall at x = 0
+            player.Push(new Vector2(4f, 0f));
+            Run(player, 0.5f);
+            var pushed = player.Position.x - 1f;
+            Assert.Greater(pushed, 0.15f, "a recoil of 4 cells/s moves the player a bit");
+            Assert.Less(pushed, 0.5f);
+            Assert.Less(player.PushVelocity.magnitude, 0.05f, "and is over in half a second");
+
+            player.Push(new Vector2(-8f, 0f)); // Into the wall behind.
+            Run(player, 0.5f);
+            Assert.GreaterOrEqual(player.Position.x - _definition.BodyHalfSize, 0.49f, "never inside the wall");
+        }
+
+        [Test]
         public void Snowdrift_SlowsThePlayer_AndTheWalkAnimation()
         {
             var free = Spawn(new LevelLaunchOptions(startIndex: 0));

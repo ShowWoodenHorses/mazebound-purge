@@ -76,6 +76,8 @@ namespace Purge.Composition
             builder.Register<SimulatedAdProvider>(Lifetime.Singleton).As<IAdProvider>();
 #endif
             builder.Register<SoundSuspension>(Lifetime.Singleton);
+            builder.Register<Purge.Application.Platform.VibrationService>(Lifetime.Singleton);
+            builder.Register<Purge.Core.Feel.FeelChannels>(Lifetime.Singleton);
             builder.Register<AnalyticsService>(Lifetime.Singleton).AsSelf().As<IApplicationService>();
             builder.Register<AdsService>(Lifetime.Singleton).AsSelf().As<IApplicationService>();
             builder.Register<LevelRunStats>(Lifetime.Singleton);

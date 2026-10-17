@@ -16,11 +16,14 @@ MonoBehaviour:
   _rarity: 0
   _noUpgrades: 0
   _hold: 1
-  _sound: 
+  _sound: smg_silenced
+  _soundPitch: 1
+  _soundVolume: 1
   _modules:
   - rid: 1763807262009983088
   - rid: 1763807262009983089
   - rid: 1763807262009983090
+  - rid: 1763807262009983166
   references:
     version: 2
     RefIds:
@@ -49,3 +52,26 @@ MonoBehaviour:
       data:
         _inHands: 0.9
         _whileFiring: 1
+    - rid: 1763807262009983166
+      type: {class: FeelModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _knockback: 0.8
+        _stagger: 0.03
+        _killFling: 3
+        _recoil: 0
+        _cameraKick: 0.03
+        _cameraShake: 0
+        _killShake: 0.03
+        _gunKick: 0.02
+        _gunKickAngle: 3
+        _bodyKick: 0.8
+        _lightIntensity: 0.8
+        _lightRadius: 2.5
+        _lightColor: {r: 1, g: 0.78, b: 0.45, a: 1}
+        _hitFlash: 0.7
+        _dent: 0.08
+        _hitSplash: 2
+        _killSplash: 8
+        _hitRing: 0.35
+        _vibrateAttack: 0
+        _vibrateKill: 10

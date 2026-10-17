@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Purge.Core.Definitions;
 using Purge.Core.Visual;
 using Purge.Presentation.UI.Style;
 using UnityEditor;
@@ -20,6 +21,8 @@ namespace Purge.Editor.Dev
     {
         public const string Folder = "Assets/_Project/Art/UI/Icons";
         public const string WeaponFolder = Folder + "/Weapons";
+        public const string ItemFolder = Folder + "/Items";
+        private const string ItemCatalogPath = "Assets/_Project/Data/Items/ItemVisuals.asset";
         public const string SetPath = "Assets/_Project/Data/UI/UiIcons.asset";
         private const string CatalogPath = "Assets/_Project/Data/Weapons/WeaponVisuals.asset";
 
@@ -35,6 +38,8 @@ namespace Purge.Editor.Dev
             var set = Build();
             var catalog = AssetDatabase.LoadAssetAtPath<WeaponVisualCatalog>(CatalogPath);
             if (catalog != null) BuildWeaponIcons(catalog);
+            var items = AssetDatabase.LoadAssetAtPath<ItemVisualCatalog>(ItemCatalogPath);
+            if (items != null) BuildItemIcons(items);
             EditorGUIUtility.PingObject(set);
         }
 
@@ -422,12 +427,82 @@ namespace Purge.Editor.Dev
         public static void BuildWeaponIcons(WeaponVisualCatalog catalog)
         {
             EnsureFolder(WeaponFolder);
+            var jobs = new List<SilhouetteJob>();
+            foreach (var weapon in catalog.MutableWeapons)
+            {
+                var path = weapon?.HeldPrefab != null ? AssetDatabase.GUIDToAssetPath(weapon.HeldPrefab.AssetGUID) : null;
+                var prefab = string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null || weapon.Definition == null) continue;
+                var visual = weapon;
+                // Barrel / blade along +Z, up +Y. Seen from +X: +Z goes right. Melee leans up-right.
+                jobs.Add(new SilhouetteJob(prefab,
+                    weapon.Definition.IsMelee ? Quaternion.AngleAxis(-45f, Vector3.right) : Quaternion.identity, false,
+                    $"{WeaponFolder}/weapon_{weapon.Definition.Id}.png", sprite => visual.Icon = sprite));
+            }
+
+            var built = RenderSilhouettes(jobs);
+            EditorUtility.SetDirty(catalog);
+            AssetDatabase.SaveAssets();
+            var removed = DeleteUnusedWeaponIcons(catalog);
+            Debug.Log($"[Purge] Weapon icons built: {built}" + (removed > 0 ? $", {removed} unused removed." : "."));
+        }
+
+        /// <summary>
+        /// Silhouettes of the throwables for the HUD (stage 4в): the pickup model of each (lying on its side) seen from
+        /// above, stored in the item catalog. Called by Build Items and Build UI Icons.
+        /// </summary>
+        public static void BuildItemIcons(ItemVisualCatalog catalog)
+        {
+            EnsureFolder(ItemFolder);
+            var jobs = new List<SilhouetteJob>();
+            foreach (var item in catalog.MutableItems)
+            {
+                if (!(item?.Item is ThrowableDefinition throwable) || item.Pickup == null) continue;
+                var path = AssetDatabase.GUIDToAssetPath(item.Pickup.AssetGUID);
+                var prefab = string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null) continue;
+                var visual = item;
+                jobs.Add(new SilhouetteJob(prefab, Quaternion.identity, true, $"{ItemFolder}/item_{throwable.Id}.png",
+                    sprite => visual.Icon = sprite));
+            }
+
+            var built = RenderSilhouettes(jobs);
+            EditorUtility.SetDirty(catalog);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Purge] Throwable icons built: {built}.");
+        }
+
+        private readonly struct SilhouetteJob
+        {
+            public SilhouetteJob(GameObject prefab, Quaternion rotation, bool fromTop, string path, Action<Sprite> store)
+            {
+                Prefab = prefab;
+                Rotation = rotation;
+                FromTop = fromTop;
+                Path = path;
+                Store = store;
+            }
+
+            public GameObject Prefab { get; }
+            public Quaternion Rotation { get; }
+
+            /// <summary>Seen from above (+Y); otherwise from the side (+X, +Z to the right).</summary>
+            public bool FromTop { get; }
+
+            public string Path { get; }
+            public Action<Sprite> Store { get; }
+        }
+
+        /// <summary>Renders each model into a white silhouette (orthographic, unlit) and saves it; returns how many.</summary>
+        private static int RenderSilhouettes(List<SilhouetteJob> jobs)
+        {
             var replacement = Shader.Find("Unlit/Color");
             var scene = EditorSceneManager.NewPreviewScene();
             var renderSize = WeaponSize * WeaponSupersample;
             var target = RenderTexture.GetTemporary(renderSize, renderSize, 24, RenderTextureFormat.ARGB32);
             var read = new Texture2D(renderSize, renderSize, TextureFormat.RGBA32, false);
             var cameraObject = new GameObject("IconCamera");
+            var built = 0;
             try
             {
                 SceneManager_Move(cameraObject, scene);
@@ -441,26 +516,27 @@ namespace Purge.Editor.Dev
                 camera.nearClipPlane = 0.01f;
                 camera.farClipPlane = 20f;
 
-                var built = 0;
-                foreach (var weapon in catalog.MutableWeapons)
+                foreach (var job in jobs)
                 {
-                    var path = weapon?.HeldPrefab != null ? AssetDatabase.GUIDToAssetPath(weapon.HeldPrefab.AssetGUID) : null;
-                    var prefab = string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                    if (prefab == null || weapon.Definition == null) continue;
-
-                    var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
+                    var instance = (GameObject)PrefabUtility.InstantiatePrefab(job.Prefab, scene);
                     try
                     {
-                        // Barrel / blade along +Z, up +Y. Seen from +X: +Z goes right. Melee leans up-right.
-                        var melee = weapon.Definition.IsMelee;
-                        instance.transform.SetPositionAndRotation(Vector3.zero,
-                            melee ? Quaternion.AngleAxis(-45f, Vector3.right) : Quaternion.identity);
+                        instance.transform.SetPositionAndRotation(Vector3.zero, job.Rotation);
                         if (!TryBounds(instance, out var bounds)) continue;
 
-                        var extent = Mathf.Max(bounds.extents.z, bounds.extents.y) * 1.12f;
-                        camera.orthographicSize = extent;
-                        camera.transform.SetPositionAndRotation(bounds.center + Vector3.right * 10f,
-                            Quaternion.LookRotation(Vector3.left, Vector3.up));
+                        if (job.FromTop)
+                        {
+                            camera.orthographicSize = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.12f;
+                            camera.transform.SetPositionAndRotation(bounds.center + Vector3.up * 10f,
+                                Quaternion.LookRotation(Vector3.down, Vector3.forward));
+                        }
+                        else
+                        {
+                            camera.orthographicSize = Mathf.Max(bounds.extents.z, bounds.extents.y) * 1.12f;
+                            camera.transform.SetPositionAndRotation(bounds.center + Vector3.right * 10f,
+                                Quaternion.LookRotation(Vector3.left, Vector3.up));
+                        }
+
                         camera.RenderWithShader(replacement, string.Empty);
 
                         var previous = RenderTexture.active;
@@ -469,8 +545,7 @@ namespace Purge.Editor.Dev
                         read.Apply(false);
                         RenderTexture.active = previous;
 
-                        var sprite = SavePng($"{WeaponFolder}/weapon_{weapon.Definition.Id}.png", Downsample(read), WeaponSize);
-                        weapon.Icon = sprite;
+                        job.Store(SavePng(job.Path, Downsample(read), WeaponSize));
                         built++;
                     }
                     finally
@@ -478,11 +553,6 @@ namespace Purge.Editor.Dev
                         UnityEngine.Object.DestroyImmediate(instance);
                     }
                 }
-
-                EditorUtility.SetDirty(catalog);
-                AssetDatabase.SaveAssets();
-                var removed = DeleteUnusedWeaponIcons(catalog);
-                Debug.Log($"[Purge] Weapon icons built: {built}" + (removed > 0 ? $", {removed} unused removed." : "."));
             }
             finally
             {
@@ -491,6 +561,8 @@ namespace Purge.Editor.Dev
                 RenderTexture.ReleaseTemporary(target);
                 EditorSceneManager.ClosePreviewScene(scene);
             }
+
+            return built;
         }
 
         /// <summary>

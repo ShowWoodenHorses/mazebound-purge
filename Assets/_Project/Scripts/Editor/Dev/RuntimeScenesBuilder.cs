@@ -508,7 +508,7 @@ namespace Purge.Editor.Dev
             // Bottom right (no on-screen controls): weapon slots, keys 1 and 2.
             var weaponPanel = Rect(root, "WeaponPanel", new Vector2(1f, 0f), new Vector2(-40f - 158f, 40f + 55f),
                 new Vector2(316f, 110f));
-            var meleeSlot = WeaponSlot(weaponPanel, "MeleeSlot", new Vector2(-79f, 0f), "1", icons.Melee);
+            var meleeSlot = WeaponSlot(weaponPanel, "MeleeSlot", new Vector2(-79f, 0f), "1", icons.Melee, "R");
             var rangedSlot = WeaponSlot(weaponPanel, "RangedSlot", new Vector2(79f, 0f), "2", icons.Ranged, "R");
             // The throwable (key G) left of the weapons: kind and count of the stack's max.
             var throwSlot = WeaponSlot(weaponPanel, "ThrowSlot", new Vector2(-79f - 158f, 0f), "G", icons.Grenade);
@@ -830,14 +830,16 @@ namespace Purge.Editor.Dev
         private static readonly Vector2 BottomRight = new Vector2(1f, 0f);
 
         /// <summary>
-        /// The attack cluster (design mock-up): Attack is a quarter circle (radius 175, 0.1 mm units) with its right
-        /// angle at the cluster's bottom-right corner, 4 mm from the safe area's corner; Ranged (top) and Melee (left)
-        /// are ring sectors 190–270 along its arc with magazine ticks outside and the reload arc inside; Use is a circle
-        /// apart on the left. Content (shapes, icons) is anchored at the corner and mirrored for left-handers.
+        /// The attack cluster (stage 4в): Attack is a quarter circle (radius 175, 0.1 mm units) with its right angle at
+        /// the cluster's bottom-right corner, 4 mm from the safe area's corner; along its arc three ring sectors 190–270:
+        /// weapon slot 2 (top, RB), weapon slot 1 (LB) — each with magazine ticks outside, the reload arc inside and the
+        /// reserve under its icon — and the throwable (LT). Use is a circle apart on the left. Content (shapes, icons) is
+        /// anchored at the corner and mirrored for left-handers.
         /// </summary>
         private static (TouchAttackCluster Cluster, RectTransform Root, RectTransform Use) BuildAttackCluster(RectTransform area)
         {
-            const float radius = 175f, inner = 190f, outer = 270f, rangedStart = 93f, meleeStart = 137f, sweep = 40f;
+            const float radius = 175f, inner = 190f, outer = 270f, sweep = 26f;
+            const float secondStart = 92f, firstStart = 121f, throwStart = 150f;
             const float tickRadius = 284f, size = 300f;
             var icons = UiIcons();
 
@@ -853,53 +855,28 @@ namespace Purge.Editor.Dev
             arc.Fill = Fade(_style.Line, 0.25f);
             Icon(content, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
 
-            var ranged = SectorShape(content, "RangedButton", BottomRight, Vector2.zero, inner, outer, rangedStart, sweep, true);
-            AddTouchButton(ranged.gameObject, "<Gamepad>/rightShoulder");
-            var melee = SectorShape(content, "MeleeButton", BottomRight, Vector2.zero, inner, outer, meleeStart, sweep, true);
-            AddTouchButton(melee.gameObject, "<Gamepad>/leftShoulder");
-            var rangedIcon = Icon(content, "RangedIcon", icons.Ranged, BottomRight, Polar(rangedStart + sweep * 0.5f, 230f), 86f);
-            var meleeIcon = Icon(content, "MeleeIcon", icons.Melee, BottomRight, Polar(meleeStart + sweep * 0.5f, 230f), 80f);
+            var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
+            ClusterSlot(cluster, "_ranged", content, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
+                icons.Ranged);
+            ClusterSlot(cluster, "_melee", content, "MeleeButton", "<Gamepad>/leftShoulder", firstStart, sweep, inner, outer,
+                icons.Melee);
 
-            var reload = SectorShape(content, "Reload", BottomRight, Vector2.zero, 180f, 184.5f, rangedStart, sweep);
-            reload.StrokeWidth = 0f;
-            reload.Fill = _style.Accent;
-            reload.enabled = false;
+            // The throwable: press — aim (a touch on the game throws there), hold and release — throw at the aim.
+            var throwShape = SectorShape(content, "ThrowButton", BottomRight, Vector2.zero, inner, outer, throwStart, sweep, true);
+            AddTouchButton(throwShape.gameObject, "<Gamepad>/leftTrigger");
+            var throwIcon = Icon(content, "ThrowIcon", icons.Grenade, BottomRight, Polar(throwStart + sweep * 0.5f, 240f), 58f);
+            var throwCount = Text(content, "ThrowCount", "", 22f, true, BottomRight, Center,
+                Polar(throwStart + sweep * 0.5f, 204f), new Vector2(60f, 26f), TextAlignmentOptions.Center);
 
-            var ticks = new List<Object>();
-            for (var i = 0; i < 12; i++)
-            {
-                var tick = Shape(content, "Tick" + i, BottomRight, Vector2.zero, new Vector2(3.5f, 13f));
-                tick.StrokeWidth = 0f;
-                tick.gameObject.SetActive(false);
-                ticks.Add(tick);
-            }
-
-            // Use: a circle on the left of the cluster, its own layout element.
-            // Left of the Melee slot, clear of its icon also when the controls are scaled up.
+            // Use: a circle on the left of the cluster, its own layout element, clear of the throwable sector.
             var useShape = Shape(area, "UseButton", BottomRight, new Vector2(-430f, 140f), new Vector2(110f, 110f), true);
             useShape.Kind = UiShapeKind.Capsule;
             AddTouchButton(useShape.gameObject, "<Gamepad>/buttonWest");
             var useIcon = Icon(useShape.transform, "Icon", icons.Door, Center, Vector2.zero, 54f);
 
-            // Throw (temporary until the cluster's throwable sector, stage 4в): a circle above Use, moved with it.
-            // A press — aim (a touch on the game throws there), held and released — throw at the aim.
-            var throwShape = Shape(useShape.transform, "ThrowButton", Center, new Vector2(0f, 150f), new Vector2(100f, 100f), true);
-            throwShape.Kind = UiShapeKind.Capsule;
-            AddTouchButton(throwShape.gameObject, "<Gamepad>/leftTrigger");
-            var throwIcon = Icon(throwShape.transform, "Icon", icons.Grenade, Center, new Vector2(-6f, 4f), 52f);
-            var throwCount = Text(throwShape.transform, "Count", "", 30f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
-                new Vector2(-8f, 4f), new Vector2(40f, 34f), TextAlignmentOptions.BottomRight);
-
-            var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
             SetReference(cluster, "_style", _style);
             SetReference(cluster, "_content", content);
             SetReference(cluster, "_attack", attack);
-            SetReference(cluster, "_melee", melee);
-            SetReference(cluster, "_ranged", ranged);
-            SetReference(cluster, "_meleeIcon", meleeIcon);
-            SetReference(cluster, "_rangedIcon", rangedIcon);
-            SetReference(cluster, "_reload", reload);
-            SetReferences(cluster, "_ticks", ticks);
             SetReference(cluster, "_use", useShape);
             SetReference(cluster, "_useIcon", useIcon);
             SetReference(cluster, "_throw", throwShape);
@@ -908,15 +885,49 @@ namespace Purge.Editor.Dev
             SetReference(cluster, "_throwIconFallback", icons.Grenade);
             SetReference(cluster, "_doorIcon", icons.Door);
             SetReference(cluster, "_pickUpIcon", icons.PickUp);
-            SetReference(cluster, "_meleeIconFallback", icons.Melee);
-            SetReference(cluster, "_rangedIconFallback", icons.Ranged);
             var serialized = new SerializedObject(cluster);
             serialized.FindProperty("_center").vector2Value = Vector2.zero;
             serialized.FindProperty("_tickRadius").floatValue = tickRadius;
-            serialized.FindProperty("_rangedStart").floatValue = rangedStart;
-            serialized.FindProperty("_rangedSweep").floatValue = sweep;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             return (cluster, root, useShape.rectTransform);
+        }
+
+        /// <summary>A weapon slot sector of the cluster: button, icon, reload arc, 12 magazine ticks, reserve number.</summary>
+        private static void ClusterSlot(TouchAttackCluster cluster, string field, RectTransform content, string name,
+            string control, float start, float sweep, float inner, float outer, Sprite fallback)
+        {
+            var shape = SectorShape(content, name, BottomRight, Vector2.zero, inner, outer, start, sweep, true);
+            AddTouchButton(shape.gameObject, control);
+            var icon = Icon(content, name + "Icon", fallback, BottomRight, Polar(start + sweep * 0.5f, 242f), 62f);
+
+            var reload = SectorShape(content, name + "Reload", BottomRight, Vector2.zero, 180f, 184.5f, start, sweep);
+            reload.StrokeWidth = 0f;
+            reload.Fill = _style.Accent;
+            reload.enabled = false;
+
+            var ticks = new List<Object>();
+            for (var i = 0; i < 12; i++)
+            {
+                var tick = Shape(content, name + "Tick" + i, BottomRight, Vector2.zero, new Vector2(3.5f, 13f));
+                tick.StrokeWidth = 0f;
+                tick.gameObject.SetActive(false);
+                ticks.Add(tick);
+            }
+
+            var reserve = Text(content, name + "Reserve", "", 20f, true, BottomRight, Center, Polar(start + sweep * 0.5f, 204f),
+                new Vector2(60f, 24f), TextAlignmentOptions.Center);
+            reserve.textWrappingMode = TextWrappingModes.NoWrap;
+
+            SetReference(cluster, field + ".Shape", shape);
+            SetReference(cluster, field + ".Icon", icon);
+            SetReference(cluster, field + ".Fallback", fallback);
+            SetReference(cluster, field + ".Reload", reload);
+            SetReferences(cluster, field + ".Ticks", ticks);
+            SetReference(cluster, field + ".Reserve", reserve);
+            var serialized = new SerializedObject(cluster);
+            serialized.FindProperty(field + ".Start").floatValue = start;
+            serialized.FindProperty(field + ".Sweep").floatValue = sweep;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void AddTouchButton(GameObject target, string controlPath)

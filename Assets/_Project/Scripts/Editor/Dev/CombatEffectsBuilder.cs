@@ -62,6 +62,10 @@ namespace Purge.Editor.Dev
             var throwTarget = SaveMaterial("fx_throw_target", "Purge/Ring", null, Blend.Alpha, new Color(1f, 0.85f, 0.45f, 0.65f));
             throwTarget.SetFloat("_Fill", 0.2f);
             var zoneCells = SaveMaterial("fx_zone_cells", "Purge/FireCells", null, Blend.Alpha, Color.white);
+            // Feel (stage 4в): splashes of the monster's colour, the ring under a monster hit.
+            var splash = SaveMaterial("fx_splash", "Purge/Particle", SaveTexture("fx_blob", 64, 64, Blob), Blend.Alpha, Color.white);
+            var hitRing = SaveMaterial("fx_hit_ring", "Purge/Particle", SaveTexture("fx_ring", 128, 128, RingShape), Blend.Alpha,
+                Color.white);
 
             var visual = AssetDatabase.LoadAssetAtPath<CombatVisualDefinition>(CombatVisualPath);
             if (visual == null)
@@ -80,6 +84,10 @@ namespace Purge.Editor.Dev
             visual.ThrowArc = throwArc;
             visual.ThrowTarget = throwTarget;
             visual.ZoneCells = zoneCells;
+            visual.Splash = splash;
+            visual.BoltMaterial = tracer;
+            visual.EffectParticles = additive;
+            visual.HitRing = hitRing;
             EditorUtility.SetDirty(visual);
 
             // The first placeholders (cubes and spheres) are replaced.
@@ -402,6 +410,24 @@ namespace Purge.Editor.Dev
         }
 
         // ---- Texture shapes (u, v in 0..1) ----
+
+        /// <summary>A crisp cartoon drop: solid inside, a thin soft edge, a lighter spot near the top.</summary>
+        private static Color Blob(float u, float v)
+        {
+            var p = new Vector2(u * 2f - 1f, v * 2f - 1f);
+            var a = Mathf.Clamp01((0.92f - p.magnitude) * 14f);
+            var shine = Mathf.Clamp01(1f - (p - new Vector2(-0.3f, 0.35f)).magnitude * 3.5f) * 0.35f;
+            var light = 0.8f + shine * 0.57f; // tinted by the monster's colour: the spot is that colour, lighter
+            return new Color(light, light, light, a);
+        }
+
+        /// <summary>A thin ring with soft edges (the ring under a monster hit).</summary>
+        private static Color RingShape(float u, float v)
+        {
+            var r = new Vector2(u * 2f - 1f, v * 2f - 1f).magnitude;
+            var a = Mathf.Clamp01(1f - Mathf.Abs(r - 0.82f) / 0.1f);
+            return new Color(1f, 1f, 1f, a * a);
+        }
 
         private static Color SoftDot(float u, float v)
         {

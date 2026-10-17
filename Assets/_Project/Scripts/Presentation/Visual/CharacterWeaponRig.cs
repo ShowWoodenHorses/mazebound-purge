@@ -29,6 +29,17 @@ namespace Purge.Presentation.Visual
         private static readonly float[] SpineShares = { 0.3f, 0.35f, 0.35f }; // Spine, Chest, UpperChest
         private const float ReachMargin = 0.98f; // a fully straight arm looks locked
 
+        /// <summary>1/s: how fast the recoil springs back (about 0.15 s).</summary>
+        private const float RecoilReturn = 16f;
+
+        /// <summary>Most recoil shots in a row add up to (an automatic burst does not bend the arms away).</summary>
+        private const float MaxRecoil = 1.6f;
+
+        private float _recoil;
+        private float _kickBack;
+        private float _kickAngle;
+        private float _kickBody;
+
         [SerializeField] private Transform _meleeSocket;
         [SerializeField] private Transform _palmRight;
         [SerializeField] private Transform _palmLeft;
@@ -107,14 +118,27 @@ namespace Purge.Presentation.Visual
             var clipGun = TwoHandedRotation();
             var clipRightHand = _rightHand.rotation;
 
+            if (deltaTime > 0f) _recoil *= Mathf.Exp(-RecoilReturn * deltaTime);
+            if (_recoil < 1e-3f) _recoil = 0f;
+
             if (_poseWeight > 0f)
+            {
                 TurnSpine(_poseWeight);
+                if (_recoil > 0f && _kickBody > 0f) LeanBack(_kickBody * _recoil * _poseWeight);
+            }
             if (gun == null) return;
 
             _rightHand.rotation = Quaternion.Slerp(_rightHand.rotation, clipRightHand, _poseWeight);
             gun.rotation = Quaternion.Slerp(TwoHandedRotation(), clipGun, _poseWeight);
             if (_aimBarrel > 0f)
                 AimBarrel(gun, _aimBarrel * _poseWeight);
+            if (_recoil > 0f)
+            {
+                // The gun jumps back along its barrel and the muzzle up; the left hand follows it below.
+                var kick = _recoil * _poseWeight;
+                gun.position -= gun.forward * (_kickBack * kick);
+                gun.rotation = Quaternion.AngleAxis(-_kickAngle * kick, gun.right) * gun.rotation;
+            }
 
             if (_handWeight <= 0f) return;
             // Hand rotation that puts the palm on the mark, and where the hand must be for that.
@@ -182,6 +206,31 @@ namespace Purge.Presentation.Visual
         }
 
         /// <summary>Turns the chest toward the facing by the part of its yaw beyond <see cref="_bodyYaw"/>.</summary>
+        /// <summary>
+        /// A shot's spring recoil (display only): the gun jumps back <paramref name="back"/> metres along its barrel, the
+        /// muzzle up <paramref name="angle"/> degrees, the chest back <paramref name="body"/> degrees, then all spring back
+        /// (<see cref="RecoilReturn"/>). Shots in a row add up to <see cref="MaxRecoil"/>. The gun must be reset to its
+        /// rest place in the palm every frame before <see cref="PoseGun"/>.
+        /// </summary>
+        public void Kick(float back, float angle, float body)
+        {
+            _kickBack = back;
+            _kickAngle = angle;
+            _kickBody = body;
+            _recoil = Mathf.Min(MaxRecoil, _recoil + 1f);
+        }
+
+        /// <summary>Current recoil, 0 = at rest (tests).</summary>
+        public float Recoil => _recoil;
+
+        private void LeanBack(float degrees)
+        {
+            var axis = transform.right;
+            for (var i = 1; i < _spine.Length; i++) // Chest and upper chest: the hips stay.
+                if (_spine[i] != null)
+                    _spine[i].rotation = Quaternion.AngleAxis(-degrees * 0.5f, axis) * _spine[i].rotation;
+        }
+
         private void TurnSpine(float weight)
         {
             var up = transform.up;

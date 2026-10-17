@@ -182,9 +182,9 @@ namespace Purge.Gameplay.Combat
         public void Dispose() => Clear();
 
         /// <summary>Damage of an explosion at <paramref name="at"/> to every target in the radius not behind a wall.</summary>
-        public void Explode(Vector2 at, ExplosiveAttack explosive, int floor)
+        public void Explode(Vector2 at, ExplosiveAttack explosive, int floor, WeaponDefinition weapon = null)
         {
-            _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor);
+            _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor, weapon);
             Exploded?.Invoke(at, explosive.Radius);
         }
 
@@ -206,7 +206,7 @@ namespace Purge.Gameplay.Combat
         private void Explode(Bullet bullet, Vector2 at)
         {
             // The direct hit's extra damage is the bullet's own (applied before).
-            Explode(at, bullet.Explosive, bullet.Floor);
+            Explode(at, bullet.Explosive, bullet.Floor, bullet.Weapon);
         }
 
         private void End(int index, BulletEnd reason)

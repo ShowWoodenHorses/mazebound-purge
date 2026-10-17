@@ -105,8 +105,8 @@ namespace Purge.Application.Services
         /// Starts the cue looping (a level ambience). <paramref name="startShare"/> 0..1 = where in the clip it begins
         /// (several loops of one clip should not play in step). Change it with <see cref="SetVoice"/>.
         /// </summary>
-        public int PlayLoop(SoundCue cue, SoundChannel channel, float volume, float pan, float startShare) =>
-            Start(cue, channel, volume, pan, 1f, true, startShare);
+        public int PlayLoop(SoundCue cue, SoundChannel channel, float volume, float pan, float startShare, float pitch = 1f) =>
+            Start(cue, channel, volume, pan, pitch, true, startShare);
 
         /// <summary>New volume (scale of the cue's volume) and pan of a playing voice.</summary>
         public void SetVoice(int id, float volume, float pan)

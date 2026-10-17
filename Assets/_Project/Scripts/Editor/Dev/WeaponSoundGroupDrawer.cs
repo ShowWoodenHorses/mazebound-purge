@@ -16,7 +16,21 @@ namespace Purge.Editor.Dev
     {
         private const string DefaultLabel = "Default (by id, else common)";
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) =>
+            FolderPopup.Draw(position, property, label, DefaultLabel, AudioBuilder.WeaponGroups());
+    }
+
+    /// <summary>Dropdown for <see cref="WeaponSoundPartAttribute"/> fields: "None" and every folder under Sounds/Weapon/_Parts.</summary>
+    [CustomPropertyDrawer(typeof(WeaponSoundPartAttribute))]
+    internal sealed class WeaponSoundPartDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) =>
+            FolderPopup.Draw(position, property, label, "None", AudioBuilder.WeaponParts());
+    }
+
+    internal static class FolderPopup
+    {
+        public static void Draw(Rect position, SerializedProperty property, GUIContent label, string emptyLabel, List<string> names)
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
@@ -24,15 +38,14 @@ namespace Purge.Editor.Dev
                 return;
             }
 
-            var groups = Groups();
             var current = property.stringValue ?? string.Empty;
-            var missing = current.Length > 0 && !groups.Contains(current);
+            var missing = current.Length > 0 && !names.Contains(current);
 
-            var options = new List<string> { DefaultLabel };
-            options.AddRange(groups);
+            var options = new List<string> { emptyLabel };
+            options.AddRange(names);
             if (missing) options.Add(current + " (missing folder)");
 
-            var index = current.Length == 0 ? 0 : missing ? options.Count - 1 : groups.IndexOf(current) + 1;
+            var index = current.Length == 0 ? 0 : missing ? options.Count - 1 : names.IndexOf(current) + 1;
             using (new EditorGUI.PropertyScope(position, label, property))
             {
                 var color = GUI.color;
@@ -42,18 +55,9 @@ namespace Purge.Editor.Dev
                 GUI.color = color;
                 if (EditorGUI.EndChangeCheck() && chosen != index)
                     property.stringValue = chosen == 0 ? string.Empty
-                        : chosen <= groups.Count ? groups[chosen - 1]
+                        : chosen <= names.Count ? names[chosen - 1]
                         : current;
             }
         }
-
-        /// <summary>Names of the folders right under Sounds/Weapon, sorted.</summary>
-        private static List<string> Groups() =>
-            AssetDatabase.IsValidFolder(AudioBuilder.WeaponGroupsFolder)
-                ? AssetDatabase.GetSubFolders(AudioBuilder.WeaponGroupsFolder)
-                    .Select(path => path.Substring(path.LastIndexOf('/') + 1))
-                    .OrderBy(name => name, System.StringComparer.OrdinalIgnoreCase)
-                    .ToList()
-                : new List<string>();
     }
 }

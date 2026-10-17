@@ -16,9 +16,15 @@ namespace Purge.Gameplay.Sound
 
         /// <summary>Something thrown (a grenade leaving the hand).</summary>
         Throw = 6,
+
+        /// <summary>A caller's call (stage 5b): monsters that hear it chase the player.</summary>
+        Call = 7,
     }
 
-    /// <summary>A gameplay sound (ТЗ §71): heard within <see cref="Radius"/> cells, not blocked by walls or doors.</summary>
+    /// <summary>
+    /// A gameplay sound (ТЗ §71): <see cref="Radius"/> cells. The horde hears it along the passages (walls stop it, a closed
+    /// door muffles — <c>HordePerception</c>); Maze zombies (<c>ZombieSystem</c>) — by straight distance.
+    /// </summary>
     public readonly struct SoundEvent
     {
         public SoundEvent(SoundType type, Vector2 position, float radius, int floor = 0)
@@ -43,8 +49,8 @@ namespace Purge.Gameplay.Sound
     }
 
     /// <summary>
-    /// Gameplay sounds of the level. Zombie hearing and audio playback listen to <see cref="Emitted"/>; nothing is
-    /// accumulated (no noise meter, ТЗ §71).
+    /// Gameplay sounds of the level. Monster hearing, noise rings and audio playback listen to <see cref="Emitted"/>;
+    /// nothing is accumulated (no noise meter, ТЗ §71).
     /// </summary>
     public sealed class SoundEventBus
     {

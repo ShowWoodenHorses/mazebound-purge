@@ -76,6 +76,14 @@ namespace Purge.Core.Horde
         [SerializeField] private HordeVisualDefinition[] _monsterVisuals = Array.Empty<HordeVisualDefinition>();
         [SerializeField] private StressWeaponSettings _weapons = new StressWeaponSettings();
 
+        [Header("Perception (stage 5b)")]
+        [Tooltip("Difficulty of the horde's perception (empty = every factor 1).")]
+        [SerializeField] private DifficultyDefinition _difficulty;
+        [Tooltip("Wanderers walk in this many groups, each to its own point (until the waves of stage 6).")]
+        [SerializeField, Range(1, 6)] private int _wanderGroups = 3;
+        [Tooltip("Seconds between a group's new points.")]
+        [SerializeField, Min(3f)] private float _wanderRetarget = 25f;
+
         [Header("Combat sandbox")]
         [Tooltip("The combat sandbox (stage 4): the player's own weapons against the horde.")]
         [SerializeField] private bool _sandbox;
@@ -134,6 +142,9 @@ namespace Purge.Core.Horde
             return null;
         }
         public StressWeaponSettings Weapons => _weapons;
+        public DifficultyDefinition Difficulty => _difficulty;
+        public int WanderGroups => Math.Max(1, _wanderGroups);
+        public float WanderRetarget => Math.Max(3f, _wanderRetarget);
         public int[] MonsterCounts => _monsterCounts;
         public int StartCount => _startCount;
         public float[] CameraHalfExtents => _cameraHalfExtents;
@@ -174,6 +185,13 @@ namespace Purge.Core.Horde
         }
 
         internal void ConfigureMonsters(HordeSpawn[] monsters) => _monsters = monsters ?? Array.Empty<HordeSpawn>();
+
+        internal void ConfigurePerception(DifficultyDefinition difficulty, int wanderGroups, float wanderRetarget)
+        {
+            _difficulty = difficulty;
+            _wanderGroups = wanderGroups;
+            _wanderRetarget = wanderRetarget;
+        }
 
         internal void SetMonsterVisuals(HordeVisualDefinition[] visuals) => _monsterVisuals = visuals ?? Array.Empty<HordeVisualDefinition>();
 

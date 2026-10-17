@@ -27,12 +27,20 @@ MonoBehaviour:
     _width: 40
     _height: 40
     _floorCount: 1
-    _cells: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101010101010101000001010100010101010101010101000101010101010101010101010101010001000101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101000101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101000101010101010101010101010101010101000101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010001010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010100010101010101010001010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010001010101010101010101010101000101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010100010101000101010101010100010101010101010101010101010101010101010001010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010001010101010101010101010101000101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010001010101010101010101010101000101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101000101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    _cells: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101010101010101000001010100010101010101010101000101010101010101010101010101010001000101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101000101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101000101010101010101010101010101010101000101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010001010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010100010101010101010001010101010101010101000001010100000000000000010101010101010101010101010101010101010101010101010101010000010101000101010101000101010101010101010001010101010101010101010101000101010100000101010001010101010001010101010101010101010101010101010101010101010101010101000001010100010101010102010101010100010101010101010101010101010101010101010001010000010101000101010101000101010101010101010101010101010101010101010101010101010100000101010001010101010001010101010101010101010101010101010101010101010101010101000001010100000000000000010101010101010101010101010101010101010101010101010101010000010101010101010001010101010101010101010101000101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010001010101010101010101010101000101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101000101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000010101010101010101010101010101010101010101010101010101010101010101010101010100000101010101010101010101010101010101010101010101010101010101010101010101010101000001010101010101010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000
     _surfaces: 
     _obstacleTypes:
     - {fileID: 11400000, guid: 47e074f3cf2dcae47a6996b7f3a181ad, type: 2}
     _obstacles: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101010100000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000101010100010101010100010101010001000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  _doors: []
+  _doors:
+  - _id: door_1
+    _position:
+      _x: 10
+      _y: 20
+      _floor: 0
+    _keyId: 
+    _isInitiallyOpen: 0
+    _iceHits: 0
   _playerStarts:
   - _id: start_1
     _position:
@@ -5022,20 +5030,20 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_corner
       _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 3
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -5102,7 +5110,7 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5114,7 +5122,7 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5182,7 +5190,7 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5194,7 +5202,7 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5262,47 +5270,7 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: wall_forest_logs_isolated
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: wall_forest_logs_isolated
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: wall_forest_logs_isolated
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
+    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5332,118 +5300,6 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -5463,118 +5319,6 @@ MonoBehaviour:
     - _variantId: 
       _rotation: 0
     - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: 
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
-      _rotation: 0
-    - _variantId: wall_forest_logs_straight
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -5592,6 +5336,270 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: wall_forest_logs_isolated
       _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_corner
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_tjunction
+      _rotation: 3
+    - _variantId: wall_forest_logs_straight
+      _rotation: 1
+    - _variantId: wall_forest_logs_corner
+      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: wall_forest_logs_straight
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
+    - _variantId: wall_forest_logs_end
+      _rotation: 2
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -8229,13 +8237,13 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 3
     - _variantId: 
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
       _rotation: 0
     - _variantId: 
       _rotation: 0
@@ -8303,8 +8311,6 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 0
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -8315,8 +8321,10 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 1
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -8383,8 +8391,8 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 3
+    - _variantId: 
+      _rotation: 0
     - _variantId: 
       _rotation: 0
     - _variantId: Forest_Ivy
@@ -8709,12 +8717,12 @@ MonoBehaviour:
       _rotation: 0
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 2
     - _variantId: 
       _rotation: 0
-    - _variantId: Forest_Ivy
-      _rotation: 2
+    - _variantId: 
+      _rotation: 0
+    - _variantId: 
+      _rotation: 0
     - _variantId: 
       _rotation: 0
     - _variantId: 
@@ -10087,6 +10095,10 @@ MonoBehaviour:
       _choice:
         _variantId: weapon_sword
         _rotation: 0
+    - _entityId: door_1
+      _choice:
+        _variantId: door_wood
+        _rotation: 1
     _objectOverrides: []
   _tutorial: {fileID: 0}
   _stressTest: {fileID: 11400000, guid: bc88733bd64205649ad0f68eb28fadb0, type: 2}

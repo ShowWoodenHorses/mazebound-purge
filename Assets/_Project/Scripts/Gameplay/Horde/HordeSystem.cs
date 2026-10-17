@@ -12,6 +12,8 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Sound;
+using Purge.Gameplay.Visibility;
 using UnityEngine;
 
 namespace Purge.Gameplay.Horde
@@ -48,7 +50,9 @@ namespace Purge.Gameplay.Horde
     /// weight, or the built-in monster) per slot. The stress stand lives on the player's floor (walkability, flow field and buckets of that floor);
     /// monsters of stage 5 keep a floor per slot. Everyone walks the shared <see cref="FlowField"/> to the player (rebuilt only when the player changes
     /// cell or a door changes), keeps spacing through <see cref="CellBuckets"/> (no physics), slides along walls and
-    /// attacks in reach. Views read the arrays; nothing here knows about rendering. Allocation-free per tick.
+    /// attacks in reach. Who chases and who wanders or follows a sound — <see cref="Perception"/> (stage 5b): unaware monsters
+    /// walk their group's or the sound's field instead. Views read the arrays; nothing here knows about rendering.
+    /// Allocation-free per tick.
     /// Active only on levels with a <see cref="StressTestDefinition"/> (stage 2); stage 5 builds monsters on it.
     /// </summary>
     public sealed class HordeSystem : ILevelLoadStep, ILevelTickable, IDisposable
@@ -83,6 +87,7 @@ namespace Purge.Gameplay.Horde
         private bool[] _stunned; // states: neither moves nor attacks
         private Vector2[] _push; // knockback (and a corpse's fling), cells per second, fading
         private float[] _staggerUntil; // a hit stops the monster's step and attack until then
+        private HordePace[] _pace;
 
         private bool[] _walkable;
         private int[] _walkableCells;
@@ -96,7 +101,7 @@ namespace Purge.Gameplay.Horde
         private int _highWater;
 
         public HordeSystem(LevelData level, LevelGrid grid, LevelPassability passability, DoorSystem doors,
-            PlayerSystem player, PlayerHealth playerHealth)
+            PlayerSystem player, PlayerHealth playerHealth, SoundEventBus sounds = null, VisibilitySystem visibility = null)
         {
             _level = level;
             _grid = grid;
@@ -106,6 +111,7 @@ namespace Purge.Gameplay.Horde
             _playerHealth = playerHealth;
             Settings = level.StressTest;
             _kinds = CreateKinds(Settings);
+            Perception = new HordePerception(this, grid, doors, sounds, visibility, player);
             foreach (var kind in _kinds)
             {
                 _maxRadius = Mathf.Max(_maxRadius, kind.Stats.Radius);
@@ -130,6 +136,11 @@ namespace Purge.Gameplay.Horde
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
         public StressTestDefinition Settings { get; }
+
+        /// <summary>Who knows about the player (stage 5b).</summary>
+        public HordePerception Perception { get; }
+
+        internal string LevelName => _level.name;
         public bool IsActive => Settings != null && _positions != null;
 
         /// <summary>Kinds of monsters this horde has (slots refer to them by <see cref="Kinds"/>).</summary>
@@ -204,6 +215,9 @@ namespace Purge.Gameplay.Horde
 
         public ReadOnlySpan<bool> Stunned => _stunned;
 
+        /// <summary>How each monster moved this tick (idle / walk / run look).</summary>
+        public ReadOnlySpan<HordePace> Paces => _pace;
+
         /// <summary>(slot, where) a monster was killed (by anything: weapons, zones, states).</summary>
         public event Action<int, Vector2> Killed;
 
@@ -269,6 +283,7 @@ namespace Purge.Gameplay.Horde
             _stunned = new bool[capacity];
             _push = new Vector2[capacity];
             _staggerUntil = new float[capacity];
+            _pace = new HordePace[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
@@ -289,6 +304,7 @@ namespace Purge.Gameplay.Horde
             }
 
             RebuildFlow();
+            Perception.Initialize(capacity, Settings);
             SetTargetCount(Settings.StartCount);
             // The first wave appears at once, spread over the level.
             while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
@@ -362,6 +378,8 @@ namespace Purge.Gameplay.Horde
                 if (IsAlive(_states[i]))
                     _buckets.Insert(i, CellIndex(_positions[i]));
 
+            if (!Frozen) Perception.Tick(Time);
+
             var playerPosition = _player.Position;
             for (var i = 0; i < _highWater; i++)
             {
@@ -404,7 +422,10 @@ namespace Purge.Gameplay.Horde
             _hitTime[agent] = Time;
             _health[agent] -= amount;
             if (_health[agent] > 0f)
+            {
+                Perception.OnHit(agent, Time);
                 return false;
+            }
 
             _states[agent] = HordeAgentState.Dying;
             _stateStart[agent] = Time;
@@ -506,6 +527,8 @@ namespace Purge.Gameplay.Horde
                 _doors.DoorChanged -= OnDoorChanged;
                 _subscribed = false;
             }
+
+            Perception.Dispose();
         }
 
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
@@ -518,6 +541,14 @@ namespace Purge.Gameplay.Horde
                 var push = Separation(i, position, playerPosition, stats);
                 if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push, stats.Radius);
                 _positions[i] = position;
+                _pace[i] = HordePace.Still;
+                return;
+            }
+
+            var awareness = Perception.AwarenessOf(i);
+            if (awareness != HordeAwareness.Chase)
+            {
+                TickUnaware(i, position, playerPosition, stats, awareness, deltaTime);
                 return;
             }
 
@@ -566,13 +597,53 @@ namespace Purge.Gameplay.Horde
                 }
             }
 
-            var step = _states[i] == HordeAgentState.Moving ? desired * (_speed[i] * _speedFactor[i] * deltaTime) : Vector2.zero;
+            var moving = _states[i] == HordeAgentState.Moving;
+            _pace[i] = moving ? HordePace.Run : HordePace.Still;
+            var step = moving ? desired * (_speed[i] * _speedFactor[i] * deltaTime) : Vector2.zero;
             step += Separation(i, position, playerPosition, stats);
             if (step.sqrMagnitude > 1e-10f)
                 position = MoveWithWalls(position, step, stats.Radius);
             _positions[i] = position;
 
             // Turn towards where it is going (attackers face the player).
+            Turn(i, desired, stats, deltaTime);
+        }
+
+        /// <summary>Does not know about the player (or roars, having just noticed them): never attacks.</summary>
+        private void TickUnaware(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, HordeAwareness awareness,
+            float deltaTime)
+        {
+            if (_states[i] == HordeAgentState.Attacking)
+            {
+                _states[i] = HordeAgentState.Moving;
+                _stateStart[i] = Time;
+            }
+
+            Vector2 desired;
+            HordePace pace;
+            if (awareness == HordeAwareness.Alert)
+            {
+                // Stands and roars at the player.
+                var toPlayer = playerPosition - position;
+                desired = toPlayer.sqrMagnitude > 1e-8f ? toPlayer.normalized : Vector2.zero;
+                pace = HordePace.Still;
+            }
+            else
+            {
+                Perception.Steer(i, position, Time, out desired, out pace);
+            }
+
+            var speed = pace == HordePace.Walk ? stats.WanderSpeed : pace == HordePace.Run ? _speed[i] : 0f;
+            _pace[i] = pace;
+            var step = desired * (speed * _speedFactor[i] * deltaTime) + Separation(i, position, playerPosition, stats);
+            if (step.sqrMagnitude > 1e-10f)
+                position = MoveWithWalls(position, step, stats.Radius);
+            _positions[i] = position;
+            if (desired.sqrMagnitude > 0f) Turn(i, desired, stats, deltaTime);
+        }
+
+        private void Turn(int i, Vector2 desired, MonsterStats stats, float deltaTime)
+        {
             var targetAngle = Mathf.Atan2(desired.x, desired.y);
             var maxTurn = stats.TurnSpeed * Mathf.Deg2Rad * deltaTime;
             var difference = Mathf.DeltaAngle(_facing[i] * Mathf.Rad2Deg, targetAngle * Mathf.Rad2Deg) * Mathf.Deg2Rad;
@@ -669,18 +740,56 @@ namespace Purge.Gameplay.Horde
             return count;
         }
 
+        /// <summary>
+        /// Sandbox: <paramref name="count"/> monsters around <paramref name="center"/> (within 3 cells, walkable and
+        /// reachable), all with <paramref name="perception"/> whatever their kind says — the first of them
+        /// <paramref name="leader"/> instead when given (a caller among wanderers). They come on top of the target count
+        /// (replacements wait until it is short again). Returns how many appeared.
+        /// </summary>
+        public int SpawnGroup(Vector2 center, int count, MonsterPerception perception, MonsterPerception? leader = null)
+        {
+            if (!IsActive) return 0;
+            var spawned = 0;
+            for (var attempt = 0; attempt < count * 12 && spawned < count; attempt++)
+            {
+                var offset = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 6f;
+                var cell = CellIndex(center + offset);
+                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                if (Place(cell, false, spawned == 0 && leader.HasValue ? leader.Value : perception) < 0) break;
+                spawned++;
+            }
+
+            return spawned;
+        }
+
+        /// <summary>Sandbox and tests: one monster exactly at <paramref name="position"/>; its slot, or -1 (no free slot, not walkable).</summary>
+        public int SpawnAt(Vector2 position, MonsterPerception perception)
+        {
+            if (!IsActive) return -1;
+            var cell = CellIndex(position);
+            return cell >= 0 && _walkable[cell] ? Place(cell, false, perception, position) : -1;
+        }
+
+        /// <summary>A random walkable cell the player can be reached from (index y · width + x), -1 when none found.</summary>
+        public int RandomReachableCell(DeterministicRandom random)
+        {
+            for (var attempt = 0; attempt < 32 && _walkableCount > 0; attempt++)
+            {
+                var candidate = _walkableCells[random.NextInt(_walkableCount)];
+                if (_flow.DistanceAt(candidate) != FlowField.Unreachable) return candidate;
+            }
+
+            return -1;
+        }
+
+        /// <summary>Builds <paramref name="field"/> towards <paramref name="target"/> over the horde's walkability.</summary>
+        internal void BuildFlow(FlowField field, GridPosition target) =>
+            field.Build(target, new FloorMask(_grid.Width, _walkable, target.Floor));
+
         /// <param name="emerge">A replacement climbs out of the ground (its kind's emerge time); the first wave stands.</param>
         private bool SpawnOne(float minDistance, float maxDistance, bool emerge)
         {
-            var slot = -1;
-            for (var i = 0; i < _positions.Length; i++)
-            {
-                if (_states[i] != HordeAgentState.Inactive) continue;
-                slot = i;
-                break;
-            }
-
-            if (slot < 0 || _walkableCount == 0)
+            if (FreeSlot() < 0 || _walkableCount == 0)
                 return false;
 
             var player = _player.Position;
@@ -708,10 +817,27 @@ namespace Purge.Gameplay.Horde
             if (cell < 0)
                 return false;
 
+            return Place(cell, emerge, null) >= 0;
+        }
+
+        private int FreeSlot()
+        {
+            for (var i = 0; i < _positions.Length; i++)
+                if (_states[i] == HordeAgentState.Inactive)
+                    return i;
+            return -1;
+        }
+
+        /// <param name="perception">Overrides the kind's (sandbox groups).</param>
+        private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null)
+        {
+            var slot = FreeSlot();
+            if (slot < 0) return -1;
+
             var kind = PickKind();
             var stats = _kinds[kind].Stats;
             var jitter = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 0.6f;
-            _positions[slot] = new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
+            _positions[slot] = exact ?? new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
             _health[slot] = stats.MaxHp;
@@ -728,9 +854,12 @@ namespace Purge.Gameplay.Horde
             _staggerUntil[slot] = 0f;
             // ±10 % speed: the crowd spreads out instead of marching in step.
             _speed[slot] = stats.Speed * (0.9f + 0.2f * (float)_random.NextDouble());
+            _pace[slot] = HordePace.Still;
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
-            return true;
+            var definition = _kinds[kind].Definition;
+            Perception.OnSpawn(slot, perception ?? (definition != null ? definition.Perception : MonsterPerception.Hunter), Time);
+            return slot;
         }
 
         private int PickKind()
@@ -771,6 +900,7 @@ namespace Purge.Gameplay.Horde
         {
             RefreshWalkable();
             _flowDirty = true;
+            Perception.OnDoorChanged();
         }
 
         /// <summary>Walkability of one floor (the mask is that floor's, y · width + x).</summary>

@@ -24,6 +24,9 @@ MonoBehaviour:
     Separation: 0.5
     CorpseTime: 2
     EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 7
+    CallRadius: 12
   _monsters:
   - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
     _weight: 3
@@ -57,6 +60,9 @@ MonoBehaviour:
     FireLifetime: 4
     FireDps: 20
     FireCellsTarget: 30
+  _difficulty: {fileID: 11400000, guid: 8e3955f51ef0b7744b39b01e5550619f, type: 2}
+  _wanderGroups: 3
+  _wanderRetarget: 25
   _sandbox: 1
   _sandboxAmmo: 500
   _sandboxWeapons:

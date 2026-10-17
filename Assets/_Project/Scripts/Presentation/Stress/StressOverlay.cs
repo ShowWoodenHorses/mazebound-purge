@@ -108,6 +108,14 @@ namespace Purge.Presentation.Stress
             Toggle(effects, "Partic", () => controller.Effects.Particles, v => controller.Effects.Particles = v);
             Toggle(effects, "FireFx", () => controller.Effects.FireCells, v => controller.Effects.FireCells = v);
 
+            if (sandbox)
+            {
+                var perception = Row(bodyRect, "Percept");
+                Toggle(perception, "AllHunt", () => controller.AllHunters, v => controller.AllHunters = v);
+                Button(perception, "+Wander", controller.SpawnWanderers, null);
+                Button(perception, "+Caller", controller.SpawnCaller, null);
+            }
+
             var sim = Row(bodyRect, "Sim");
             Toggle(sim, "Freeze", () => controller.Horde.Frozen, v => controller.Horde.Frozen = v);
             Toggle(sim, "God", () => controller.Horde.GodMode, v => controller.Horde.GodMode = v);

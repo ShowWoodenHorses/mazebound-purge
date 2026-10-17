@@ -15,20 +15,20 @@ using UnityEngine.Rendering;
 namespace Purge.Presentation.Visual
 {
     /// <summary>
-    /// Noise waves (display only; theme settings <see cref="ThemeAwareness"/>): every sound of the player
-    /// (<see cref="SoundEventBus"/>) shows how far it carries — a ring growing to the sound's radius and fading, not cut by
-    /// walls (sound passes them) and drawn over everything but the UI. Repeating sounds do not flicker: steps and
-    /// automatic fire show one ring when walking / firing starts — it grows out of the player to the step / weapon
-    /// radius (<see cref="ThemeAwareness.RingGrow"/>) following them and fades (<see cref="ThemeAwareness.RingFade"/>)
-    /// while they go on; the next ring only after a quiet pause (<see cref="ThemeAwareness.RingRearm"/>). Single events (a single shot, a melee hit, a door, a pickup) each send a wave. Flat quads with
-    /// the <c>Purge/Ring</c> shader from a small pool made while loading; no allocations during play.
+    /// Noise waves (display only; theme settings <see cref="ThemeAwareness"/>): only shots (stage 5b, решение пользователя
+    /// 2026-10-18 — the ring shows that a silencer works) show how far they carry — a ring growing to the shot's radius
+    /// (caliber × silencer, <see cref="SoundEventBus"/>) and fading, drawn over everything but the UI (not cut by walls:
+    /// the horde hears along the passages, the ring is the radius). Automatic fire does not flicker: one ring when firing
+    /// starts — it grows out of the player (<see cref="ThemeAwareness.RingGrow"/>) following them and fades
+    /// (<see cref="ThemeAwareness.RingFade"/>) while the burst goes on; the next ring only after a quiet pause
+    /// (<see cref="ThemeAwareness.RingRearm"/>). A single shot sends a wave. Flat quads with the <c>Purge/Ring</c> shader
+    /// from a small pool made while loading; no allocations during play.
     /// </summary>
     public sealed class NoiseWavesView : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
         public const int WaveCount = 6;
 
         private const float Height = 0.05f;
-        private const float MovingThreshold = 0.05f;
         private const float AutomaticHold = 0.15f; // seconds the ring stays after the last shot, beyond the cooldown
 
         private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -44,7 +44,6 @@ namespace Purge.Presentation.Visual
         private ThemeAwareness _settings;
         private MaterialPropertyBlock _block;
         private Mesh _quad;
-        private Ring _steps;
         private Ring _automatic;
         private float _automaticLeft;
         private float _automaticRadius;
@@ -75,8 +74,7 @@ namespace Purge.Presentation.Visual
             }
         }
 
-        /// <summary>Whether the start-of-walking / start-of-firing rings are shown now (tests).</summary>
-        public bool StepRingShown => _steps != null && _steps.Renderer.enabled;
+        /// <summary>Whether the start-of-firing ring is shown now (tests).</summary>
         public bool AutomaticRingShown => _automatic != null && _automatic.Renderer.enabled;
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
@@ -89,7 +87,6 @@ namespace Purge.Presentation.Visual
             _quad = CreateQuad();
             for (var i = 0; i < _waves.Length; i++)
                 _waves[i] = new Wave { Renderer = CreateRenderer("NoiseWave") };
-            _steps = new Ring { Renderer = CreateRenderer("NoiseSteps") };
             _automatic = new Ring { Renderer = CreateRenderer("NoiseAutomatic") };
 
             if (!_subscribed)
@@ -122,16 +119,13 @@ namespace Purge.Presentation.Visual
                 Draw(wave.Renderer, wave.Position, Mathf.Max(wave.Radius * grow, 0.05f), 1f - t);
             }
 
-            var moving = _player.IsSpawned && _player.SpeedFactor > MovingThreshold;
-            UpdateRing(_steps, moving, _player.Definition.StepSoundRadius, deltaTime);
-
             _automaticLeft -= deltaTime;
             UpdateRing(_automatic, _automaticLeft > 0f, _automaticRadius, deltaTime);
         }
 
         public void CollectWarmup(List<GameObject> objects)
         {
-            if (_steps != null) objects.Add(_steps.Renderer.gameObject);
+            if (_automatic != null) objects.Add(_automatic.Renderer.gameObject);
         }
 
         public void Dispose()
@@ -147,28 +141,21 @@ namespace Purge.Presentation.Visual
                 if (_waves[i] != null) UnityObjects.DestroyObjectOf(_waves[i].Renderer);
                 _waves[i] = null;
             }
-            if (_steps != null) UnityObjects.DestroyObjectOf(_steps.Renderer);
             if (_automatic != null) UnityObjects.DestroyObjectOf(_automatic.Renderer);
             UnityObjects.Destroy(_quad);
-            _steps = _automatic = null;
+            _automatic = null;
             _quad = null;
         }
 
         private void OnSound(SoundEvent sound)
         {
-            switch (sound.Type)
+            if (sound.Type != SoundType.Ranged) return;
+            var weapon = _weapons.Active;
+            if (weapon != null && weapon.Definition.FireMode == FireMode.Automatic)
             {
-                case SoundType.Step:
-                    return; // the steady step ring
-                case SoundType.Ranged:
-                    var weapon = _weapons.Active;
-                    if (weapon != null && weapon.Definition.FireMode == FireMode.Automatic)
-                    {
-                        _automaticRadius = sound.Radius;
-                        _automaticLeft = weapon.Definition.Cooldown + AutomaticHold;
-                        return;
-                    }
-                    break;
+                _automaticRadius = sound.Radius;
+                _automaticLeft = weapon.Definition.Cooldown + AutomaticHold;
+                return;
             }
 
             // The oldest wave is reused when all are busy.

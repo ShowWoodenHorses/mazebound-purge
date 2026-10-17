@@ -143,6 +143,53 @@ namespace Purge.Presentation.Stress
         /// <summary>Sandbox: a full stack of the next throwable kind.</summary>
         public void NextThrowable() => _sandbox?.NextThrowable();
 
+        /// <summary>Sandbox (5b): every monster hunts / perception by the monsters' data.</summary>
+        public bool AllHunters
+        {
+            get => _horde.Perception.AllHunters;
+            set => _horde.Perception.AllHunters = value;
+        }
+
+        /// <summary>Sandbox (5b): a group of wanderers far from the player, out of view.</summary>
+        public void SpawnWanderers() => SpawnAway(Core.Monsters.MonsterPerception.Wanderer, null);
+
+        /// <summary>Sandbox (5b): a caller among a group of wanderers, far from the player, out of view.</summary>
+        public void SpawnCaller() =>
+            SpawnAway(Core.Monsters.MonsterPerception.Wanderer, Core.Monsters.MonsterPerception.Caller);
+
+        private const int SandboxGroupSize = 10;
+        private const float SandboxGroupMinDistance = 10f;
+        private const float SandboxGroupMaxDistance = 20f;
+
+        private void SpawnAway(Core.Monsters.MonsterPerception perception, Core.Monsters.MonsterPerception? leader)
+        {
+            _groupRandom ??= new DeterministicRandom((int)StableHash.Of(_level.name + "/sandbox-groups"));
+            var width = _level.Geometry.Width;
+            var fallback = -1;
+            for (var attempt = 0; attempt < 64; attempt++)
+            {
+                var cell = _horde.RandomReachableCell(_groupRandom);
+                if (cell < 0) break;
+                var position = new Vector2(cell % width, cell / width);
+                var distance = (position - _player.Position).magnitude;
+                if (distance < SandboxGroupMinDistance || distance > SandboxGroupMaxDistance) continue;
+                fallback = cell;
+                if (_visibility.IsVisible(new Core.Grid.GridPosition(cell % width, cell / width, _player.Floor))) continue;
+                Spawn(cell);
+                return;
+            }
+
+            if (fallback >= 0) Spawn(fallback);
+
+            void Spawn(int cell)
+            {
+                var count = _horde.SpawnGroup(new Vector2(cell % width, cell / width), SandboxGroupSize, perception, leader);
+                GameLog.Info(LogChannel.Gameplay, $"Sandbox: {count} monster(s) at ({cell % width}, {cell / width}), leader {leader?.ToString() ?? "none"}.");
+            }
+        }
+
+        private DeterministicRandom _groupRandom;
+
         public void SetCamera(float halfExtent)
         {
             if (_camera != null) _camera.FollowHalfExtent = halfExtent;
@@ -369,6 +416,25 @@ namespace Purge.Presentation.Stress
                 .Append("  ").Append((1000f / Mathf.Max(fps, 0.01f)).ToString("0.0")).Append(" ms\n");
             t.Append("Monsters ").Append(_horde.AliveCount).Append('/').Append(_horde.TargetCount)
                 .Append("  drawn ").Append(_renderer.DrawnCount).Append("  kills ").Append(_horde.Kills).Append('\n');
+            if (_settings.IsSandbox)
+            {
+                int wander = 0, hear = 0, chase = 0;
+                var awareness = _horde.Perception.Awareness;
+                var states = _horde.States;
+                for (var i = 0; i < _horde.HighWater && i < awareness.Length; i++)
+                {
+                    if (!HordeSystem.IsAlive(states[i])) continue;
+                    switch (awareness[i])
+                    {
+                        case HordeAwareness.Wander: wander++; break;
+                        case HordeAwareness.Investigate: hear++; break;
+                        default: chase++; break;
+                    }
+                }
+
+                t.Append("Wander ").Append(wander).Append("  hear ").Append(hear).Append("  chase ").Append(chase)
+                    .Append("  calls ").Append(_horde.Perception.Calls).Append("  noise ").Append(_horde.Perception.FieldBuilds).Append('\n');
+            }
             t.Append("Sim ").Append(_shownSimAvg.ToString("0.00")).Append('/').Append(_shownSimMax.ToString("0.00"))
                 .Append("  flow ").Append(_horde.FlowMs.ToString("0.00"))
                 .Append("  fov ").Append(_visibility.LastComputeMs.ToString("0.00")).Append(" ms\n");

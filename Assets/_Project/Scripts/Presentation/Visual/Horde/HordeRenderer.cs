@@ -7,6 +7,7 @@ using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Visibility;
@@ -20,8 +21,8 @@ namespace Purge.Presentation.Visual.Horde
     /// monster has its look (<see cref="HordeVisualDefinition"/> by monster id, <see cref="StressTestDefinition.VisualOf"/>);
     /// every late tick the monsters on screen and in the player's view (hidden ones keep simulating, ТЗ §57) are packed
     /// per look (kind × material variant) into batches of <see cref="BatchSize"/>: a matrix and the animation frame per
-    /// instance (shader Purge/Horde reads the baked animation). The clip follows the gameplay state: walk/run at the
-    /// monster's speed, attack, hit reaction while staggered, stun, climbing out of the ground, death by the side the
+    /// instance (shader Purge/Horde reads the baked animation). The clip follows the gameplay state: run at the monster's
+    /// speed, walk (wanderers, <see cref="HordePace.Walk"/>), idle (standing, roaring), attack, hit reaction while staggered, stun, climbing out of the ground, death by the side the
     /// killing push came from. Submeshes past the body (glued equipment) — one more draw per batch. Blob shadows — the
     /// same batches with a quad. Allocation-free per frame.
     /// </summary>
@@ -276,6 +277,7 @@ namespace Purge.Presentation.Visual.Horde
             var attackStart = _horde.AttackStart;
             var hitTime = _horde.HitTime;
             var stunned = _horde.Stunned;
+            var paces = _horde.Paces;
             var variants = _horde.Variants;
             var kinds = _horde.Kinds;
             var generations = _horde.Generations;
@@ -305,14 +307,20 @@ namespace Purge.Presentation.Visual.Horde
                 }
 
                 var stats = _horde.KindList[kind].Stats;
-                var moving = state == HordeAgentState.Moving && !stunned[i];
-                if (moving)
+                var pace = state == HordeAgentState.Moving && !stunned[i] ? paces[i] : HordePace.Still;
+                var walking = pace == HordePace.Walk && clips.Walk.Length > 0;
+                if (pace == HordePace.Run)
                 {
                     // The phase runs at the monster's speed: the feet do not slide.
                     var playback = clips.LocomotionSpeed > 0f
                         ? Mathf.Clamp(speeds[i] * speedFactors[i] / clips.LocomotionSpeed, MinPlayback, MaxPlayback)
                         : RunPlayback;
                     _phase[i] += step * playback;
+                }
+                else if (walking)
+                {
+                    _phase[i] += step * Mathf.Clamp(stats.WanderSpeed * speedFactors[i] / MonsterStats.WalkClipSpeed,
+                        MinPlayback, MaxPlayback);
                 }
 
                 var p = positions[i];
@@ -362,7 +370,12 @@ namespace Purge.Presentation.Visual.Horde
                     clip = clips.Attack[(i + generations[i]) % clips.Attack.Length];
                     clipTime = (time - attackStart[i]) / stats.AttackInterval * clips.Visual.Clips[clip].Length;
                 }
-                else if (clips.Locomotion.Length > 0)
+                else if (walking)
+                {
+                    clip = clips.Walk[(i + generations[i]) % clips.Walk.Length];
+                    clipTime = _phase[i];
+                }
+                else if (clips.Locomotion.Length > 0 && (pace != HordePace.Still || clips.Idle < 0))
                 {
                     clip = clips.Locomotion[(i + generations[i]) % clips.Locomotion.Length];
                     clipTime = _phase[i];
@@ -573,6 +586,7 @@ namespace Purge.Presentation.Visual.Horde
         {
             public readonly HordeVisualDefinition Visual;
             public readonly int[] Locomotion;
+            public readonly int[] Walk;
             public readonly int[] Attack;
             public readonly int[] HitReact;
             public readonly int Idle;
@@ -586,7 +600,8 @@ namespace Purge.Presentation.Visual.Horde
             {
                 Visual = visual;
                 Locomotion = visual.ClipsOf(HordeClipKind.Run);
-                if (Locomotion.Length == 0) Locomotion = visual.ClipsOf(HordeClipKind.Walk);
+                Walk = visual.ClipsOf(HordeClipKind.Walk);
+                if (Locomotion.Length == 0) Locomotion = Walk;
                 Attack = visual.ClipsOf(HordeClipKind.Attack);
                 HitReact = visual.ClipsOf(HordeClipKind.HitReact);
                 Idle = visual.FindClip(HordeClipKind.Idle);

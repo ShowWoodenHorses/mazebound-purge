@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: ghoul_snow
   _rank: 0
   _biome: 3
-  _perception: 2
+  _perception: 0
   _stats:
     MaxHp: 30
     Speed: 2.2
@@ -27,6 +27,9 @@ MonoBehaviour:
     Separation: 0.5
     CorpseTime: 3
     EmergeTime: 2
+    WanderSpeed: 0.4
+    SightRange: 7
+    CallRadius: 12
   _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
   _resistances: []
   _deathEffects: []

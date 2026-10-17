@@ -17,7 +17,8 @@ namespace Purge.Editor.Dev
     /// (<c>Data/Horde/StressTest.asset</c>, made by Build Horde Visuals), Build / Sync. Also the stage 4 combat sandbox
     /// <c>Level_Sandbox</c> (40×40) with its settings <c>Data/Horde/Sandbox.asset</c> (made once as a copy of the stress
     /// test's, sandbox on; then tuned by hand): its <see cref="StressTestDefinition.SandboxWeapons"/> lie in a row south
-    /// of the start; hedges of bushes north and east of it (fire spreads along them — stage 4б).
+    /// of the start; hedges of bushes north and east of it (fire spreads along them — stage 4б); a walled room with a door
+    /// to the west (noise through walls and doors — stage 5б).
     /// Re-running regenerates them (same seeds) and keeps the assets' GUIDs.
     /// </summary>
     internal static class StressLevelsBuilder
@@ -75,6 +76,7 @@ namespace Purge.Editor.Dev
                 {
                     LayOutWeapons(level, sandbox);
                     PlantBushes(level);
+                    BuildRoom(level);
                 }
                 EditorUtility.SetDirty(level);
                 AssetDatabase.SaveAssets();
@@ -114,6 +116,29 @@ namespace Purge.Editor.Dev
                     LevelEditing.SetObstacle(level, new GridPosition(start.X + 9, start.Y + dy, start.Floor), bush);
             for (var dx = 9; dx <= 13; dx++)
                 LevelEditing.SetObstacle(level, new GridPosition(start.X + dx, start.Y - 3, start.Floor), bush);
+        }
+
+        /// <summary>
+        /// A walled room 5×5 inside, ten cells west of the start, with a door in its east wall facing the start (stage 5б):
+        /// a shot inside is heard outside only through the door (× 0.5 while closed), a shot outside — the same way in.
+        /// </summary>
+        private static void BuildRoom(LevelData level)
+        {
+            var start = level.PlayerStarts[0].Position;
+            int x0 = start.X - 16, x1 = start.X - 10, y0 = start.Y - 3, y1 = start.Y + 3;
+            for (var y = y0; y <= y1; y++)
+            for (var x = x0; x <= x1; x++)
+            {
+                var cell = new GridPosition(x, y, start.Floor);
+                var edge = x == x0 || x == x1 || y == y0 || y == y1;
+                var type = !edge ? CellType.Floor : x == x1 && y == start.Y ? CellType.Door : CellType.Wall;
+                LevelEditing.SetCellType(level, cell, type);
+                if (type == CellType.Floor) LevelEditing.SetObstacle(level, cell, null);
+            }
+
+            // In front of the door: free to walk up to it.
+            for (var x = x1 + 1; x <= x1 + 2; x++)
+                LevelEditing.SetObstacle(level, new GridPosition(x, start.Y, start.Floor), null);
         }
 
         /// <summary>The sandbox's weapons in a row two cells south of the start, on free cells.</summary>

@@ -20,7 +20,7 @@ namespace Purge.Core.Monsters
 
     /// <summary>
     /// ТЗ: бродяга (не знает об игроке, идёт в общем направлении, реагирует на шум) / зовущий (зовёт других, заметив
-    /// игрока) / охотник (сразу бежит на игрока). Stage 5b; until then every monster hunts.
+    /// игрока) / охотник (сразу бежит на игрока). The horde's <c>HordePerception</c> (stage 5b).
     /// </summary>
     public enum MonsterPerception
     {
@@ -61,6 +61,17 @@ namespace Purge.Core.Monsters
         [Min(0f)] public float CorpseTime = 3f;
         [Tooltip("Seconds a new monster climbs out of the ground before it walks (it can be hit meanwhile); 0 = none.")]
         [Min(0f)] public float EmergeTime;
+
+        [Header("Perception")]
+        [Tooltip("Cells per second while wandering (the walk clip plays at 1× at 0.4).")]
+        [Min(0.05f)] public float WanderSpeed = WalkClipSpeed;
+        [Tooltip("Notices the player this close, cells — only within the player's view (× difficulty).")]
+        [Min(0f)] public float SightRange = 7f;
+        [Tooltip("Callers: how far the call carries along the passages, cells (× difficulty).")]
+        [Min(0f)] public float CallRadius = 12f;
+
+        /// <summary>Ground speed of the packs' walk clips at 1× (they shuffle at 0.2–0.6 cells/s).</summary>
+        public const float WalkClipSpeed = 0.4f;
 
         public MonsterStats Clone() => (MonsterStats)MemberwiseClone();
     }
@@ -164,5 +175,8 @@ namespace Purge.Core.Monsters
         }
 
         internal void SetDrop(DropTable drop) => _drop = drop;
+
+        /// <summary>For tests and tools.</summary>
+        internal void SetPerception(MonsterPerception perception) => _perception = perception;
     }
 }

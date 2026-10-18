@@ -19,8 +19,8 @@ namespace Purge.Presentation.Visual
     /// <see cref="CombatVisualDefinition.AbilityWarning"/> (shader Purge/Warning) — lines along the shot (one per
     /// projectile of a fan), a circle where an arc lands, a sector in front of a strike, a body-wide line as far as a
     /// charge rushes, a circle around a monster that shoves (stage 5d), a circle under the player for an area strike and
-    /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars); the fill grows
-    /// until it goes off. Drawn whether or not the monster is in view: a shot out of the fog must be seen.
+    /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars), a circle where an
+    /// explosive champion died (<see cref="ChampionSystem"/>, stage 5e2); the fill grows until it goes off. Drawn whether or not the monster is in view: a shot out of the fog must be seen.
     /// Allocation-free per frame.
     /// </summary>
     public sealed class AbilityWarningView : ILevelLoadStep, ILevelLateTickable, IDisposable
@@ -39,13 +39,15 @@ namespace Purge.Presentation.Visual
         private readonly MonsterAbilities _abilities;
         private readonly PlayerSystem _player;
         private readonly CombatVisualDefinition _visual;
+        private readonly ChampionSystem _champions;
         private Mesh _quad;
         private MaterialPropertyBlock _block;
         private Bounds _bounds;
 
         public AbilityWarningView(LevelData level, HordeSystem horde, MonsterAbilities abilities, PlayerSystem player,
-            CombatVisualDefinition visual = null)
+            CombatVisualDefinition visual = null, ChampionSystem champions = null)
         {
+            _champions = champions;
             _level = level;
             _horde = horde;
             _abilities = abilities;
@@ -58,7 +60,8 @@ namespace Purge.Presentation.Visual
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (_visual == null || _visual.AbilityWarning == null || !_abilities.IsActive) return UniTask.CompletedTask;
+            if (_visual == null || _visual.AbilityWarning == null || !_abilities.IsActive && (_champions == null || !_champions.IsActive))
+                return UniTask.CompletedTask;
             var geometry = _level.Geometry;
             _bounds = new Bounds(new Vector3(geometry.Width * 0.5f, 1f, geometry.Height * 0.5f),
                 new Vector3(geometry.Width + 20f, 10f, geometry.Height + 20f));
@@ -76,7 +79,9 @@ namespace Purge.Presentation.Visual
 
         public void LateTick(float deltaTime)
         {
-            if (_quad == null || !_abilities.IsActive) return;
+            if (_quad == null) return;
+            DrawBlasts();
+            if (!_abilities.IsActive) return;
             var phases = _abilities.Phases;
             var starts = _abilities.PhaseStart;
             var origins = _abilities.Origins;
@@ -146,6 +151,20 @@ namespace Purge.Presentation.Visual
                                 new Vector3(strike.Reach * 2f, 1f, strike.Reach * 2f)));
                         break;
                 }
+            }
+        }
+
+        /// <summary>Explosive champions' death blasts: a circle filling until it goes off.</summary>
+        private void DrawBlasts()
+        {
+            if (_champions == null || _champions.BlastCount == 0) return;
+            var height = _player.Floor * GridPosition.FloorHeight + Height;
+            for (var b = 0; b < _champions.BlastCount; b++)
+            {
+                var at = _champions.BlastPosition(b);
+                var radius = _champions.BlastRadius(b);
+                Draw(0f, _champions.BlastProgress(b), 0f, 0.07f / radius,
+                    Matrix4x4.TRS(new Vector3(at.x, height, at.y), Quaternion.identity, new Vector3(radius * 2f, 1f, radius * 2f)));
             }
         }
 

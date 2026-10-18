@@ -14,6 +14,7 @@ namespace Purge.Presentation.Visual
     {
         private static readonly int FlashId = Shader.PropertyToID("_HitFlash");
         private static readonly int FrostId = Shader.PropertyToID("_Frost");
+        private static readonly int GlowId = Shader.PropertyToID("_Glow");
         private static readonly List<Renderer> Found = new List<Renderer>();
         private static readonly List<Material> Materials = new List<Material>();
 
@@ -23,6 +24,7 @@ namespace Purge.Presentation.Visual
         private float _duration;
         private float _left;
         private float _frost;
+        private Color _glow;
 
         private HitFlash(Renderer[] renderers)
         {
@@ -70,6 +72,14 @@ namespace Purge.Presentation.Visual
             Apply(_left > 0f ? _color.a * (_left / _duration) * (_left / _duration) : 0f);
         }
 
+        /// <summary>A champion's glow of the model (alpha = strength, 0 = none); stays until changed.</summary>
+        public void SetGlow(Color glow)
+        {
+            if (glow == _glow) return;
+            _glow = glow;
+            Apply(_left > 0f ? _color.a * (_left / _duration) * (_left / _duration) : 0f);
+        }
+
         /// <summary>Ends the flash at once (the model gets its own colours back).</summary>
         public void Stop()
         {
@@ -90,6 +100,7 @@ namespace Purge.Presentation.Visual
         {
             _block.SetColor(FlashId, new Color(_color.r, _color.g, _color.b, strength));
             _block.SetFloat(FrostId, _frost);
+            _block.SetColor(GlowId, _glow);
             foreach (var renderer in _renderers)
                 if (renderer != null)
                     renderer.SetPropertyBlock(_block);

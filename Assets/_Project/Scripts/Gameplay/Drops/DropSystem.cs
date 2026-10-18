@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
@@ -93,8 +94,10 @@ namespace Purge.Gameplay.Drops
 
         private void OnKilled(int agent, Vector2 position)
         {
-            // ТЗ: ранг определяет дроп — the monster's table (its rank's), else the level's.
-            var table = _horde.DefinitionOf(agent)?.Drop ?? _pool.Table;
+            // ТЗ: ранг определяет дроп — the monster's table (its rank's), else the level's; a champion's — a rank higher.
+            var definition = _horde.DefinitionOf(agent);
+            var table = _horde.IsChampion(agent) ? _horde.Champions.DropOf(definition != null ? definition.Rank : MonsterRank.Mass) : null;
+            if (table == null) table = definition != null && definition.Drop != null ? definition.Drop : _pool.Table;
             var roll = DropRoller.Roll(table, _pool, Context(), _random);
             if (roll.Kind == DropKind.Nothing) return;
 

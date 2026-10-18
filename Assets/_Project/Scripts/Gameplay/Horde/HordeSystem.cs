@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Common;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
@@ -127,6 +128,9 @@ namespace Purge.Gameplay.Horde
         private float[] _emergeTime; // how long this one climbs out (its kind's, or a raise's)
         private float[] _damageFactor; // × its damage (rage)
         private bool[] _enraged;
+        private byte[] _affix; // champion's affix: index in Champions.Affixes + 1; 0 = not a champion
+        private float[] _maxHealth;
+        private float[] _attackRate; // × how often it attacks (champions)
 
         // The fallen (stage 5e, the Shaman's raise): a ring of recent deaths of the rank-and-file and officers — where,
         // which kind, when. Bodies are not kept for it: a corpse still disappears after its CorpseTime.
@@ -369,12 +373,108 @@ namespace Purge.Gameplay.Horde
         /// <summary>Seconds the monster in <paramref name="agent"/> climbs out of the ground (its kind's, or a raise's).</summary>
         public float EmergeTimeOf(int agent) => (uint)agent < (uint)_highWater ? _emergeTime[agent] : 0f;
 
+        /// <summary>Champions of this horde (stage 5e2; null without settings).</summary>
+        public ChampionRules Champions => Settings?.Champions;
+
+        /// <summary>Champions made so far (tests, metrics).</summary>
+        public int ChampionsMade { get; private set; }
+
+        /// <summary>Index into <see cref="ChampionRules.Affixes"/> + 1 per slot; 0 = not a champion.</summary>
+        public ReadOnlySpan<byte> Affixes => _affix;
+
+        /// <summary>The champion's affix of the monster in <paramref name="agent"/> (null = not a champion).</summary>
+        public ChampionAffixDefinition AffixOf(int agent)
+        {
+            if (_affix == null || (uint)agent >= (uint)_affix.Length || _affix[agent] == 0) return null;
+            var affixes = Champions.Affixes;
+            var index = _affix[agent] - 1;
+            return index < affixes.Length ? affixes[index] : null;
+        }
+
+        public bool IsChampion(int agent) => AffixOf(agent) != null;
+
+        /// <summary>Full HP of the monster in <paramref name="agent"/> (its kind's; × <see cref="ChampionRules.HealthFactor"/> for a champion).</summary>
+        public float MaxHealthOf(int agent) =>
+            _maxHealth != null && (uint)agent < (uint)_maxHealth.Length ? _maxHealth[agent] : StatsOf(agent).MaxHp;
+
+        /// <summary>Seconds between its attacks (its kind's; a quick champion's shorter).</summary>
+        public float AttackIntervalOf(int agent)
+        {
+            var interval = StatsOf(agent).AttackInterval;
+            return _attackRate != null && (uint)agent < (uint)_attackRate.Length ? interval / _attackRate[agent] : interval;
+        }
+
+        /// <summary>
+        /// The new monster in <paramref name="agent"/> becomes a champion with affix <paramref name="affix"/> (index into
+        /// <see cref="ChampionRules.Affixes"/>): × HP, the affix's speed and attack rate. Only the rank-and-file and
+        /// officers, once. False when it cannot be one.
+        /// </summary>
+        public bool MakeChampion(int agent, int affix)
+        {
+            var rules = Champions;
+            if (rules == null || (uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || _affix[agent] != 0) return false;
+            if ((uint)affix >= (uint)rules.Affixes.Length || rules.Affixes[affix] == null || affix >= byte.MaxValue) return false;
+            var definition = _kinds[_kind[agent]].Definition;
+            if (definition != null && !ChampionRules.CanBe(definition.Rank)) return false;
+            var data = rules.Affixes[affix];
+            _affix[agent] = (byte)(affix + 1);
+            _maxHealth[agent] *= rules.HealthFactor;
+            _health[agent] = _maxHealth[agent];
+            _speed[agent] *= data.SpeedFactor;
+            _attackRate[agent] = Mathf.Max(0.1f, data.AttackRateFactor);
+            ChampionsMade++;
+            return true;
+        }
+
+        /// <summary>A monster of the waves is a champion now and then (<see cref="ChampionRules.Chance"/>), its affix evenly.</summary>
+        private void RollChampion(int slot)
+        {
+            var rules = Champions;
+            if (rules == null || rules.Chance <= 0f || rules.Affixes.Length == 0) return;
+            if (_random.NextDouble() >= rules.Chance) return;
+            MakeChampion(slot, _random.NextInt(rules.Affixes.Length));
+        }
+
+        /// <summary>Heals a living monster by <paramref name="amount"/>, up to its full HP (a vampire champion).</summary>
+        public void Heal(int agent, float amount)
+        {
+            if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || amount <= 0f) return;
+            _health[agent] = Mathf.Min(_maxHealth[agent], _health[agent] + amount);
+        }
+
+        /// <summary>The monster's affix spares it this zone (its own trail).</summary>
+        public bool IgnoresZone(int agent, ZoneDefinition zone)
+        {
+            var trail = AffixOf(agent)?.Trail;
+            return trail != null && zone != null && trail.Zone == zone;
+        }
+
+        /// <summary>(slot, damage) a monster's attack or ability hurt the player (vampire, a hit's state).</summary>
+        public event Action<int, int> PlayerHurt;
+
+        /// <summary>
+        /// The monster in <paramref name="agent"/> hurt the player by <paramref name="amount"/> — reported only while that
+        /// monster (<paramref name="generation"/>) still lives there (a projectile of a dead shooter heals no one).
+        /// </summary>
+        public void ReportPlayerHit(int agent, int generation, int amount)
+        {
+            if ((uint)agent >= (uint)_highWater || _generation[agent] != generation || !IsAlive(_states[agent])) return;
+            PlayerHurt?.Invoke(agent, amount);
+        }
+
         /// <summary>
         /// × damage of a hit travelling along <paramref name="hitDirection"/> (zero = no direction) — the monster's front
         /// armor (<see cref="MonsterStats.FrontArmor"/>, stage 5e).
         /// </summary>
-        public float ArmorFactor(int agent, Vector2 hitDirection) =>
-            (uint)agent < (uint)_highWater ? _kinds[_kind[agent]].Stats.ArmorFactor(_facing[agent], hitDirection) : 1f;
+        public float ArmorFactor(int agent, Vector2 hitDirection)
+        {
+            if ((uint)agent >= (uint)_highWater) return 1f;
+            var factor = _kinds[_kind[agent]].Stats.ArmorFactor(_facing[agent], hitDirection);
+            // A champion's armor all round (stage 5e2): hits with a direction only.
+            var affix = AffixOf(agent);
+            if (affix != null && hitDirection.sqrMagnitude > 1e-8f) factor *= affix.DamageTaken;
+            return factor;
+        }
 
         /// <summary>
         /// The monster rushes along <paramref name="direction"/> at <paramref name="speed"/> cells per second for up to
@@ -569,12 +669,16 @@ namespace Purge.Gameplay.Horde
             _emergeTime = new float[capacity];
             _damageFactor = new float[capacity];
             _enraged = new bool[capacity];
+            _affix = new byte[capacity];
+            _maxHealth = new float[capacity];
+            _attackRate = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
                 _speedFactor[i] = 1f;
                 _doorAt[i] = -1;
                 _damageFactor[i] = 1f;
+                _attackRate[i] = 1f;
             }
 
             _walkable = new bool[_grid.Width * _grid.Height];
@@ -890,11 +994,15 @@ namespace Purge.Gameplay.Horde
                     _attackTimer[i] -= deltaTime;
                     if (_attackTimer[i] <= 0f)
                     {
-                        _attackTimer[i] += stats.AttackInterval;
+                        _attackTimer[i] += AttackIntervalOf(i);
                         _attackStart[i] = Time;
                         PlayerHits++;
-                        if (!GodMode && stats.Damage > 0)
-                            _playerHealth.Damage(Mathf.RoundToInt(stats.Damage * _damageFactor[i]));
+                        if (!GodMode && stats.Damage > 0 && !_playerHealth.IsDead)
+                        {
+                            var amount = Mathf.RoundToInt(stats.Damage * _damageFactor[i]);
+                            _playerHealth.Damage(amount);
+                            ReportPlayerHit(i, _generation[i], amount);
+                        }
                     }
                 }
             }
@@ -902,8 +1010,8 @@ namespace Purge.Gameplay.Horde
             {
                 _states[i] = HordeAgentState.Attacking;
                 _stateStart[i] = Time;
-                _attackTimer[i] = stats.AttackInterval * 0.5f;
-                _attackStart[i] = Time - stats.AttackInterval * 0.5f;
+                _attackTimer[i] = AttackIntervalOf(i) * 0.5f;
+                _attackStart[i] = Time - AttackIntervalOf(i) * 0.5f;
             }
 
             var doors = _kinds[_kind[i]].Doors;
@@ -1028,13 +1136,13 @@ namespace Purge.Gameplay.Horde
             {
                 // Came up to it: the first blow after half an interval (as a plain attack).
                 _doorAt[i] = next;
-                _doorTimer[i] = stats.AttackInterval * 0.5f;
+                _doorTimer[i] = AttackIntervalOf(i) * 0.5f;
             }
 
             _doorTimer[i] -= deltaTime;
             if (_doorTimer[i] <= 0f)
             {
-                _doorTimer[i] += stats.AttackInterval;
+                _doorTimer[i] += AttackIntervalOf(i);
                 _attackStart[i] = Time;
                 DoorBlows++;
                 _sounds?.Emit(SoundType.Door, at, DoorBlowNoise, doorCell.Floor);
@@ -1339,7 +1447,10 @@ namespace Purge.Gameplay.Horde
             if (cell < 0)
                 return false;
 
-            return Place(cell, emerge, null) >= 0;
+            var slot = Place(cell, emerge, null);
+            if (slot < 0) return false;
+            RollChampion(slot);
+            return true;
         }
 
         private int FreeSlot()
@@ -1365,6 +1476,9 @@ namespace Purge.Gameplay.Horde
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
             _health[slot] = stats.MaxHp;
+            _maxHealth[slot] = stats.MaxHp;
+            _affix[slot] = 0;
+            _attackRate[slot] = 1f;
             _emergeTime[slot] = emerge ? emergeTime >= 0f ? emergeTime : stats.EmergeTime : 0f;
             _states[slot] = _emergeTime[slot] > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
             _damageFactor[slot] = 1f;

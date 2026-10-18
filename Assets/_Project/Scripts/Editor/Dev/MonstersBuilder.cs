@@ -203,6 +203,7 @@ namespace Purge.Editor.Dev
                 }
 
                 var views = OfficersBuilder.Build(officers, report);
+                var affixes = OfficersBuilder.FindChampionAffixes(problems);
 
                 foreach (var path in StressAssets)
                 {
@@ -214,6 +215,8 @@ namespace Purge.Editor.Dev
                     stress.SetMonsterVisuals(used.ToArray());
                     // The sandbox calls the officers up with its buttons (stage 5c).
                     if (stress.IsSandbox) stress.SetOnDemandMonsters(officers.ConvertAll(officer => officer.Item2).ToArray());
+                    // Its champions (stage 5e2): every affix of Data/Monsters/Champions.
+                    if (stress.IsSandbox) OfficersBuilder.SetupChampions(stress, affixes);
                     var shown = views.FindAll(view => Array.Exists(stress.Monsters,
                                                           spawn => spawn?.Monster != null && spawn.Monster.Id == view.MonsterId) ||
                                                       Array.Exists(stress.OnDemandMonsters,

@@ -58,6 +58,13 @@ MonoBehaviour:
   _difficulty: {fileID: 0}
   _wanderGroups: 3
   _wanderRetarget: 25
+  _champions:
+    _chance: 0.04
+    _affixes: []
+    _healthFactor: 2
+    _scale: 1.15
+    _massDrop: {fileID: 0}
+    _officerDrop: {fileID: 0}
   _sandbox: 0
   _sandboxAmmo: 500
   _sandboxWeapons: []

@@ -95,6 +95,18 @@ MonoBehaviour:
   _difficulty: {fileID: 11400000, guid: 8e3955f51ef0b7744b39b01e5550619f, type: 2}
   _wanderGroups: 3
   _wanderRetarget: 25
+  _champions:
+    _chance: 0.04
+    _affixes:
+    - {fileID: 11400000, guid: bec9ae0f1740b8f4cbf40cc4a25ce751, type: 2}
+    - {fileID: 11400000, guid: ccd00858965fed54fb71e911859be19b, type: 2}
+    - {fileID: 11400000, guid: 23d6015ac0e45ff44b6ce65a1a79faa0, type: 2}
+    - {fileID: 11400000, guid: c2842929a64f1164ab14509195ed7dad, type: 2}
+    - {fileID: 11400000, guid: a01dc0a5e18a0f14ca1db1a100f526fa, type: 2}
+    _healthFactor: 2
+    _scale: 1.15
+    _massDrop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
+    _officerDrop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
   _sandbox: 1
   _sandboxAmmo: 500
   _sandboxWeapons:

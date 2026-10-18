@@ -226,7 +226,7 @@ namespace Purge.Gameplay.Effects
                     for (var agent = _horde.FirstInCell(x, y); agent >= 0; agent = _horde.NextInCell(agent))
                     {
                         var target = CombatTarget.OfAgent(agent);
-                        if (!_targets.IsAlive(target)) continue;
+                        if (!_targets.IsAlive(target) || _horde.IgnoresZone(agent, zone)) continue;
                         if (status != null && status.Status != null) _statuses.Apply(target, status.Status, status.Duration);
                         if (damage > 0f) _targets.Damage(target, damage, Vector2.zero); // no direction: armor does not cover
                     }

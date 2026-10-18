@@ -44,6 +44,7 @@ namespace Purge.Presentation.Visual.Horde
         private const float ReactRestart = 0.3f;
 
         private static readonly int FrameProperty = Shader.PropertyToID("_HordeFrame");
+        private static readonly int GlowProperty = Shader.PropertyToID("_HordeGlow");
 
         private readonly LevelData _level;
         private readonly HordeSystem _horde;
@@ -69,6 +70,8 @@ namespace Purge.Presentation.Visual.Horde
         private int[] _deathClip; // per slot: the chosen death clip
         private int[] _seenGeneration; // per slot: generation the per-slot look state belongs to
         private bool[] _seenDying;
+        private Vector4[] _affixGlow; // per affix code (0 = not a champion): colour and strength of the glow
+        private float _championScale = 1f;
         private float _lastTime;
 
         /// <summary>Seconds a hit's dent lasts (squash, then back).</summary>
@@ -235,6 +238,20 @@ namespace Purge.Presentation.Visual.Horde
                 _seenGeneration[i] = -1;
             }
 
+            // Champions (stage 5e2): the affix's glow, a bigger look.
+            var champions = _horde.Champions;
+            var affixes = champions != null ? champions.Affixes : Array.Empty<Core.Monsters.ChampionAffixDefinition>();
+            _affixGlow = new Vector4[affixes.Length + 1];
+            for (var a = 0; a < affixes.Length; a++)
+                if (affixes[a] != null)
+                {
+                    // A vector array is not converted like a colour: into the project's colour space here.
+                    var glow = affixes[a].Glow;
+                    var rgb = QualitySettings.activeColorSpace == ColorSpace.Linear ? glow.linear : glow;
+                    _affixGlow[a + 1] = new Vector4(rgb.r, rgb.g, rgb.b, glow.a);
+                }
+            _championScale = champions != null ? champions.Scale : 1f;
+
             var size = new Vector3(_level.Geometry.Width + 4f, 6f, _level.Geometry.Height + 4f);
             _worldBounds = new Bounds(new Vector3(_level.Geometry.Width * 0.5f, 1f, _level.Geometry.Height * 0.5f), size);
             UseVat = false;
@@ -293,6 +310,7 @@ namespace Purge.Presentation.Visual.Horde
             var speeds = _horde.Speeds;
             var speedFactors = _horde.SpeedFactors;
             var pushes = _horde.PushVelocities;
+            var affixCodes = _horde.Affixes;
             var count = _horde.HighWater;
 
             _batchesUsed = 0;
@@ -378,7 +396,7 @@ namespace Purge.Presentation.Visual.Horde
                 else if (state == HordeAgentState.Attacking && clips.Attack.Length > 0)
                 {
                     clip = clips.Attack[(i + generations[i]) % clips.Attack.Length];
-                    clipTime = (time - attackStart[i]) / stats.AttackInterval * clips.Visual.Clips[clip].Length;
+                    clipTime = (time - attackStart[i]) / _horde.AttackIntervalOf(i) * clips.Visual.Clips[clip].Length;
                 }
                 else if (walking)
                 {
@@ -400,6 +418,19 @@ namespace Purge.Presentation.Visual.Horde
                 var sinceHit = time - hitTime[i];
                 frame.w = Mathf.Clamp01(1f - sinceHit / FlashTime) * _flash[i];
                 var scale = clips.Visual.Scale;
+                var glow = Vector4.zero;
+                var affix = affixCodes[i];
+                if (affix != 0 && affix < _affixGlow.Length)
+                {
+                    scale *= _championScale;
+                    // A slow pulse, out of step between champions.
+                    if (state != HordeAgentState.Dying)
+                    {
+                        glow = _affixGlow[affix];
+                        glow.w *= 0.8f + 0.2f * Mathf.Sin(time * 5f + i);
+                    }
+                }
+
                 var size = new Vector3(scale, scale, scale);
                 if (state == HordeAgentState.Dying) frame.w = 0f;
                 else if (sinceHit < DentTime && _dent[i] > 0f)
@@ -415,10 +446,11 @@ namespace Purge.Presentation.Visual.Horde
                 var world = new Vector3(p.x, 0f, p.y);
                 batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), size);
                 batch.Frames[slot] = frame;
+                batch.Glows[slot] = glow;
                 if (_shadowMaterial != null && state != HordeAgentState.Dying)
                 {
                     batch.Shadows[batch.ShadowCount++] = Matrix4x4.TRS(new Vector3(p.x, ShadowHeight, p.y),
-                        Quaternion.identity, Vector3.one * (_shadowSize * stats.Radius / 0.3f));
+                        Quaternion.identity, Vector3.one * (_shadowSize * stats.Radius / 0.3f * (affix != 0 ? _championScale : 1f)));
                 }
 
                 batch.Count = slot + 1;
@@ -466,6 +498,7 @@ namespace Purge.Presentation.Visual.Horde
             var look = _looks[batch.Look];
             var mesh = look.Visual.Mesh;
             batch.Properties.SetVectorArray(FrameProperty, batch.Frames);
+            batch.Properties.SetVectorArray(GlowProperty, batch.Glows);
             for (var s = 0; s < mesh.subMeshCount; s++)
             {
                 var material = s == 0 ? look.Material : look.Extra(s);
@@ -660,6 +693,7 @@ namespace Purge.Presentation.Visual.Horde
         {
             public readonly Matrix4x4[] Matrices = new Matrix4x4[BatchSize];
             public readonly Vector4[] Frames = new Vector4[BatchSize];
+            public readonly Vector4[] Glows = new Vector4[BatchSize];
             public readonly Matrix4x4[] Shadows = new Matrix4x4[BatchSize];
             public readonly MaterialPropertyBlock Properties = new MaterialPropertyBlock();
             public int Look;

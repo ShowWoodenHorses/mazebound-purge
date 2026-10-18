@@ -103,6 +103,8 @@ namespace Purge.Composition
             builder.Register<ZoneSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<DropSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MonsterDeathEffects>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Champions' affixes (stage 5e2): trails, death blasts, a hit's state, the vampire.
+            builder.Register<ChampionSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();

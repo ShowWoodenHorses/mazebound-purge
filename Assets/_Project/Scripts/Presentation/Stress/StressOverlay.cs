@@ -129,6 +129,7 @@ namespace Purge.Presentation.Stress
 
                 OnDemandRow(bodyRect, "Officer", Core.Monsters.MonsterRank.Officer);
                 OnDemandRow(bodyRect, "Elite", Core.Monsters.MonsterRank.Elite);
+                ChampionRow(bodyRect);
             }
 
             var sim = Row(bodyRect, "Sim");
@@ -191,6 +192,19 @@ namespace Purge.Presentation.Stress
                 row ??= Row(bodyRect, label);
                 var index = o;
                 Button(row, "+" + _controller.OfficerLabel(index), () => _controller.SpawnOfficer(index), null);
+            }
+        }
+
+        /// <summary>A champion per affix (stage 5e2) and the switch rank-and-file / officers (none — no row).</summary>
+        private void ChampionRow(RectTransform bodyRect)
+        {
+            if (_controller.ChampionAffixCount == 0) return;
+            var row = Row(bodyRect, "Champ");
+            Toggle(row, "Offc", () => _controller.ChampionOfficers, v => _controller.ChampionOfficers = v);
+            for (var a = 0; a < _controller.ChampionAffixCount; a++)
+            {
+                var index = a;
+                Button(row, "+" + _controller.ChampionLabel(index), () => _controller.SpawnChampion(index), null);
             }
         }
 

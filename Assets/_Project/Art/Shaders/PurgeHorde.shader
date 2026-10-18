@@ -6,7 +6,8 @@
 // PURGE_HORDE_LERP blends two frames (twice the fetches) instead of snapping to the nearest one.
 // Normals are flat, from screen derivatives (Synty models are flat-shaded; the mesh is welded without normals).
 // Lighting as Purge/Lit: ambient (SH) + shadowless directional light + Purge light (lantern, light map); no
-// shadows. Per instance: _HordeFrame = (frame A, frame B, blend, hit flash).
+// shadows. Per instance: _HordeFrame = (frame A, frame B, blend, hit flash), _HordeGlow = champion's glow (rgb, strength):
+// a tint plus a bright rim where the surface turns away from the camera.
 Shader "Purge/Horde"
 {
     Properties
@@ -51,6 +52,7 @@ Shader "Purge/Horde"
 
             UNITY_INSTANCING_BUFFER_START(HordeProps)
                 UNITY_DEFINE_INSTANCED_PROP(float4, _HordeFrame)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _HordeGlow)
             UNITY_INSTANCING_BUFFER_END(HordeProps)
 
             struct appdata
@@ -143,6 +145,12 @@ Shader "Purge/Horde"
                 albedo = lerp(albedo, _FlashColor.rgb, flash);
                 half3 light = ShadeSH9(float4(normal, 1)) + _LightColor0.rgb * saturate(dot(normal, _WorldSpaceLightPos0.xyz));
                 fixed4 color = fixed4(albedo * (light + PurgeExtraLight(i.worldPos, normal)) + _FlashColor.rgb * flash, 1);
+                float4 glow = UNITY_ACCESS_INSTANCED_PROP(HordeProps, _HordeGlow);
+                if (glow.a > 0)
+                {
+                    half rim = 1 - saturate(dot(normal, normalize(_WorldSpaceCameraPos - i.worldPos)));
+                    color.rgb += glow.rgb * (glow.a * (0.3 + 1.6 * rim * rim));
+                }
                 UNITY_APPLY_FOG(i.fogCoord, color);
                 return color;
             }

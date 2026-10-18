@@ -96,6 +96,9 @@ namespace Purge.Gameplay.Effects
             // The monster's resistance (0 = immune).
             var definition = _horde.DefinitionOf(target.Agent);
             if (definition != null) duration *= definition.DurationFactor(status);
+            // A champion's affix (the fiery does not burn).
+            var affix = _horde.AffixOf(target.Agent);
+            if (affix != null) duration *= affix.DurationFactor(status);
             if (duration <= 0f) return;
             var kind = Register(status);
             if (kind < 0) return;

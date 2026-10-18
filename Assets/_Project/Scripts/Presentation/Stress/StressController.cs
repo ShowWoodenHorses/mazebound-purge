@@ -223,6 +223,56 @@ namespace Purge.Presentation.Stress
             GameLog.Info(LogChannel.Gameplay, best >= 0 ? $"Sandbox: officer '{monster.name}' in slot {best}." : $"Sandbox: no room for '{monster.name}'.");
         }
 
+        /// <summary>Sandbox (5e2): affixes its champion buttons call up (<see cref="StressTestDefinition.Champions"/>).</summary>
+        public int ChampionAffixCount => _horde.Champions?.Affixes.Length ?? 0;
+
+        /// <summary>The champion buttons call up officers instead of the rank-and-file.</summary>
+        public bool ChampionOfficers { get; set; }
+
+        /// <summary>Short button label of affix <paramref name="index"/> ("Affix_Explosive" → "Explo").</summary>
+        public string ChampionLabel(int index)
+        {
+            var affix = _horde.Champions.Affixes[index];
+            if (affix == null) return "-";
+            var name = affix.name.StartsWith("Affix_", System.StringComparison.Ordinal) ? affix.name.Substring(6) : affix.name;
+            return name.Substring(0, Mathf.Min(name.Length, 5));
+        }
+
+        /// <summary>
+        /// Sandbox (5e2): a champion with affix <paramref name="affix"/> 7–9 cells from the player — a hunting
+        /// rank-and-file of the waves' kinds, or a random officer (<see cref="ChampionOfficers"/>).
+        /// </summary>
+        public void SpawnChampion(int affix)
+        {
+            _groupRandom ??= new DeterministicRandom((int)StableHash.Of(_level.name + "/sandbox-groups"));
+            var kind = -1;
+            if (ChampionOfficers)
+            {
+                var officers = new System.Collections.Generic.List<int>();
+                for (var o = 0; o < OfficerCount; o++)
+                    if (OfficerRank(o) == Core.Monsters.MonsterRank.Officer)
+                        officers.Add(_horde.KindIndexOf(_horde.Settings.OnDemandMonsters[o]));
+                officers.RemoveAll(index => index < 0);
+                if (officers.Count == 0) return;
+                kind = officers[_groupRandom.NextInt(officers.Count)];
+            }
+
+            for (var attempt = 0; attempt < 32; attempt++)
+            {
+                var angle = (float)(_groupRandom.NextDouble() * System.Math.PI * 2.0);
+                var at = _player.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (7f + 2f * (float)_groupRandom.NextDouble());
+                var perception = kind >= 0 ? _horde.KindList[kind].Definition.Perception : Core.Monsters.MonsterPerception.Hunter;
+                var slot = _horde.SpawnAt(at, perception, kind);
+                if (slot < 0) continue;
+                var made = _horde.MakeChampion(slot, affix);
+                GameLog.Info(LogChannel.Gameplay,
+                    $"Sandbox: champion '{ChampionLabel(affix)}' {_horde.DefinitionOf(slot)?.name ?? "built-in"} in slot {slot}{(made ? "" : " (not made)")}.");
+                return;
+            }
+
+            GameLog.Info(LogChannel.Gameplay, "Sandbox: no room for a champion.");
+        }
+
         private const int SandboxGroupSize = 10;
         private const float SandboxGroupMinDistance = 10f;
         private const float SandboxGroupMaxDistance = 20f;

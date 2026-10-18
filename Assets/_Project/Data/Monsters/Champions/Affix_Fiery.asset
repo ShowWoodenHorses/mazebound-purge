@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7314f402120426640832f95166c005f3, type: 3}
+  m_Name: Affix_Fiery
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.ChampionAffixDefinition
+  _id: affix_fiery
+  _glow: {r: 1, g: 0.45, b: 0.1, a: 0.8}
+  _modules:
+  - rid: 1763807284696973408
+  - rid: 1763807284696973409
+  - rid: 1763807284696973410
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807284696973408
+      type: {class: HitStatusAffix, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
+        _duration: 3
+    - rid: 1763807284696973409
+      type: {class: TrailAffix, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 83307b75801c02741aa4297c1ce82be8, type: 2}
+        _duration: 3
+        _strength: 1
+    - rid: 1763807284696973410
+      type: {class: ResistAffix, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _resistances:
+        - _status: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
+          _durationFactor: 0

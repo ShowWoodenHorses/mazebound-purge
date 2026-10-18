@@ -2,7 +2,7 @@
 // names as Standard (a material switched from Standard keeps its values), Standard lighting from ambient and the
 // shadowless directional light, plus Purge lighting (PurgeLighting.cginc: lantern, light of the level's sources).
 // No realtime shadows, no per-pixel additional lights. Opaque only. _HitFlash (set from code) flashes the model when hit;
-// _Frost (set from code, per model) whitens it with the theme's frost.
+// _Frost (set from code, per model) whitens it with the theme's frost; _Glow (set from code) — a champion's glow.
 Shader "Purge/Lit"
 {
     Properties
@@ -19,6 +19,8 @@ Shader "Purge/Lit"
         // Set from code (MaterialPropertyBlock) per model: frost of the theme's weather, 0..1. Colour and shape are
         // globals (_PurgeFrostColor, _PurgeFrostParams), set by LevelLighting.
         [HideInInspector] _Frost ("Frost", Range(0, 1)) = 0
+        // Set from code (MaterialPropertyBlock) on champions: a tint plus a bright rim (alpha = strength).
+        [HideInInspector] _Glow ("Glow", Color) = (0, 0, 0, 0)
     }
 
     SubShader
@@ -40,6 +42,7 @@ Shader "Purge/Lit"
         half4 _EmissionColor;
         fixed4 _HitFlash;
         half _Frost;
+        fixed4 _Glow;
         half4 _PurgeFrostColor;  // rgb — frost colour (linear in a linear project)
         half4 _PurgeFrostParams; // x — sharpness (power of the up-facing share), y — rim share
 
@@ -80,6 +83,11 @@ Shader "Purge/Lit"
             o.Emission = tex2D(_EmissionMap, IN.uv_MainTex).rgb * _EmissionColor.rgb +
                          albedo.rgb * PurgeExtraLight(IN.worldPos, normalize(IN.purgeNormal)) +
                          _HitFlash.rgb * _HitFlash.a;
+            if (_Glow.a > 0)
+            {
+                half rim = 1 - saturate(dot(normalize(IN.purgeNormal), normalize(_WorldSpaceCameraPos - IN.worldPos)));
+                o.Emission += _Glow.rgb * (_Glow.a * (0.3 + 1.6 * rim * rim));
+            }
             o.Alpha = 1;
         }
         ENDCG

@@ -88,6 +88,10 @@ namespace Purge.Core.Horde
         [Tooltip("Seconds between a group's new points.")]
         [SerializeField, Min(3f)] private float _wanderRetarget = 25f;
 
+        [Header("Champions (stage 5e)")]
+        [Tooltip("Rank-and-file and officers with an affix: how often, which affixes, HP, size, the rank-up drop.")]
+        [SerializeField] private ChampionRules _champions = new ChampionRules();
+
         [Header("Combat sandbox")]
         [Tooltip("The combat sandbox (stage 4): the player's own weapons against the horde.")]
         [SerializeField] private bool _sandbox;
@@ -159,6 +163,9 @@ namespace Purge.Core.Horde
         }
         public StressWeaponSettings Weapons => _weapons;
         public DifficultyDefinition Difficulty => _difficulty;
+
+        /// <summary>Champions of the horde (until the waves of stage 6).</summary>
+        public ChampionRules Champions => _champions ??= new ChampionRules();
         public int WanderGroups => Math.Max(1, _wanderGroups);
         public float WanderRetarget => Math.Max(3f, _wanderRetarget);
         public int[] MonsterCounts => _monsterCounts;

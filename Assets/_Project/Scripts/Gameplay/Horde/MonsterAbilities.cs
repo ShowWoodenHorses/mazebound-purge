@@ -98,6 +98,8 @@ namespace Purge.Gameplay.Horde
         private readonly int[] _projectileKind = new int[MaxProjectiles];
         private readonly ProjectileAbility[] _projectile = new ProjectileAbility[MaxProjectiles];
         private readonly float[] _projectileFactor = new float[MaxProjectiles]; // × damage (the shooter's rage)
+        private readonly int[] _projectileOwner = new int[MaxProjectiles]; // the shooter's slot and generation
+        private readonly int[] _projectileGeneration = new int[MaxProjectiles];
 
         public MonsterAbilities(HordeSystem horde, CombatTargets targets, PlayerSystem player, PlayerHealth health,
             PlayerStatusSystem statuses = null, EffectSystem effects = null)
@@ -306,7 +308,7 @@ namespace Purge.Gameplay.Horde
             var position = _horde.Positions[i];
             var toPlayer = _player.Position - position;
             var distance = toPlayer.magnitude;
-            var health = _horde.Health[i] / Mathf.Max(1f, _horde.StatsOf(i).MaxHp);
+            var health = _horde.Health[i] / Mathf.Max(1f, _horde.MaxHealthOf(i));
             for (var a = 0; a < abilities.Length; a++)
             {
                 var ability = abilities[a];
@@ -409,7 +411,7 @@ namespace Purge.Gameplay.Horde
             {
                 // Ran into the player: hurt and knocked along the charge (no stun); the rush ends here.
                 ChargeHits++;
-                HurtPlayer(charge.Damage * _horde.DamageFactorOf(i), position, null, 0f);
+                HurtPlayer(i, _horde.Generations[i], charge.Damage * _horde.DamageFactorOf(i), position, null, 0f);
                 // God spares the damage, not the knock (the stand must feel it).
                 if (!_health.IsDead) _player.Knock(_aim[i], charge.Knockback);
                 _horde.EndDash(i);
@@ -427,7 +429,7 @@ namespace Purge.Gameplay.Horde
             var offset = _player.Position - position;
             if (offset.magnitude > push.Radius + PlayerRadius) return;
             if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
-            HurtPlayer(push.Damage * _horde.DamageFactorOf(i), position, push.Status, push.StatusDuration);
+            HurtPlayer(i, _horde.Generations[i], push.Damage * _horde.DamageFactorOf(i), position, push.Status, push.StatusDuration);
             if (!_health.IsDead) _player.Knock(offset.sqrMagnitude > 1e-6f ? offset : Vector2.up, push.Knockback);
         }
 
@@ -463,7 +465,7 @@ namespace Purge.Gameplay.Horde
             var floor = _player.Floor;
             if (_player.IsSpawned && (_player.Position - at).magnitude <= area.Radius + PlayerRadius &&
                 _targets.IsClear(at, _player.Position, floor))
-                HurtPlayer(area.Damage * _horde.DamageFactorOf(i), at, area.Status, area.StatusDuration);
+                HurtPlayer(i, _horde.Generations[i], area.Damage * _horde.DamageFactorOf(i), at, area.Status, area.StatusDuration);
             if (area.Impact.Count > 0) _effects?.Apply(area.Impact, at, floor, hostile: true);
         }
 
@@ -476,7 +478,7 @@ namespace Purge.Gameplay.Horde
             if (strike.Angle < 360f && distance > PlayerRadius &&
                 Vector2.Angle(direction, offset) > strike.Angle * 0.5f) return;
             if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
-            HurtPlayer(strike.Damage * _horde.DamageFactorOf(i), position, strike.Status, strike.StatusDuration);
+            HurtPlayer(i, _horde.Generations[i], strike.Damage * _horde.DamageFactorOf(i), position, strike.Status, strike.StatusDuration);
         }
 
         /// <summary>Where an arc aimed at <paramref name="target"/> lands: walls cut it short (as a throw).</summary>
@@ -502,6 +504,8 @@ namespace Purge.Gameplay.Horde
             _projectile[p] = ability;
             _projectileKind[p] = _horde.Kinds[agent];
             _projectileFactor[p] = _horde.DamageFactorOf(agent);
+            _projectileOwner[p] = agent;
+            _projectileGeneration[p] = _horde.Generations[agent];
             _from[p] = origin;
             _position[p] = origin;
             _to[p] = target;
@@ -540,7 +544,7 @@ namespace Purge.Gameplay.Horde
                     var at = _to[p];
                     _position[p] = at;
                     var hit = _player.IsSpawned && (_player.Position - at).magnitude <= ability.ArcRadius + PlayerRadius;
-                    if (hit) HurtPlayer(ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
+                    if (hit) HurtPlayer(_projectileOwner[p], _projectileGeneration[p], ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, hit);
                     continue;
                 }
@@ -558,7 +562,7 @@ namespace Purge.Gameplay.Horde
                 {
                     var at = Vector2.Lerp(from, next, player);
                     _position[p] = at;
-                    HurtPlayer(ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
+                    HurtPlayer(_projectileOwner[p], _projectileGeneration[p], ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, true);
                     continue;
                 }
@@ -591,19 +595,25 @@ namespace Purge.Gameplay.Horde
             _age[p] = _age[last];
             _projectileKind[p] = _projectileKind[last];
             _projectileFactor[p] = _projectileFactor[last];
+            _projectileOwner[p] = _projectileOwner[last];
+            _projectileGeneration[p] = _projectileGeneration[last];
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
             if (ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);
             ProjectileEnded?.Invoke(at, kind, hitPlayer);
         }
 
-        /// <summary>False when nothing happens to the player (<see cref="HordeSystem.GodMode"/>, dead).</summary>
-        private bool HurtPlayer(float damage, Vector2 source, StatusDefinition status, float duration)
+        /// <summary>
+        /// False when nothing happens to the player (<see cref="HordeSystem.GodMode"/>, dead). The hit is reported as the
+        /// monster's in <paramref name="agent"/> (<paramref name="generation"/>: a dead shooter's projectile is no one's).
+        /// </summary>
+        private bool HurtPlayer(int agent, int generation, float damage, Vector2 source, StatusDefinition status, float duration)
         {
             if (_horde.GodMode || _health.IsDead) return false;
             var amount = Mathf.RoundToInt(damage);
             if (amount > 0) _health.Damage(amount, source);
             if (status != null) _statuses?.Apply(status, duration);
+            if (amount > 0) _horde.ReportPlayerHit(agent, generation, amount);
             return true;
         }
 

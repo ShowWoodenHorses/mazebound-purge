@@ -231,6 +231,8 @@ namespace Purge.Editor.Dev
             EnsureEliteDrop();
             EnsureFreeze();
             EnsurePoisonZone();
+            // The champions' affixes (stage 5e2).
+            EnsureChampionAffixes();
             AssetDatabase.SaveAssets();
         }
 

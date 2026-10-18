@@ -44,8 +44,8 @@ namespace Purge.Gameplay.Effects
             _horde = horde;
         }
 
-        /// <summary>(where, radius) of an explosion.</summary>
-        public event Action<Vector2, float> Exploded;
+        /// <summary>(where, radius, what exploded — its look) of an explosion.</summary>
+        public event Action<Vector2, float, IExplosionLook> Exploded;
 
         /// <summary>(where, zone, radius) a zone was placed.</summary>
         public event Action<Vector2, ZoneDefinition, float> ZonePlaced;
@@ -62,7 +62,7 @@ namespace Purge.Gameplay.Effects
                         _targets.Blast(at, explosion.Damage, explosion.Radius, explosion.EdgeDamage, floor);
                         if (hostile) BlastPlayer(at, explosion, floor);
                         _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
-                        Exploded?.Invoke(at, explosion.Radius);
+                        Exploded?.Invoke(at, explosion.Radius, explosion);
                         break;
                     case PlaceZoneEffect zone when zone.Zone != null:
                         _zones.PlaceArea(at, floor, zone.Radius, zone.Zone, zone.Duration, zone.Strength, hostile);

@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Application.Services;
 using Purge.Core.Audio;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
@@ -283,7 +284,7 @@ namespace Purge.Presentation.Audio
             PlayAt(Catalog.KillSplat, at, 1f);
         }
 
-        private void OnExploded(Vector2 at, float radius) => PlayAt(Catalog.ExplosionOf(radius), at, 1f);
+        private void OnExploded(Vector2 at, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at, 1f);
 
         // ------------------------------------------------------------------ Projectile flight
 

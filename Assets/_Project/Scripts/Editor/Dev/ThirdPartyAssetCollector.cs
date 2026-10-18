@@ -77,11 +77,15 @@ namespace Purge.Editor.Dev
                       (remaining.Count == 0 ? " — Import is unused and can be deleted." : "."));
         }
 
-        /// <summary>Import assets referenced (directly or not) by any asset outside Import.</summary>
+        /// <summary>
+        /// Import assets referenced (directly or not) by any asset outside Import, except the editor-only list of pack
+        /// effects (<see cref="FxImportList"/>): it names the sources in Import, the project uses their cleaned copies.
+        /// </summary>
         private static List<string> FindUsedImportAssets()
         {
             var roots = AssetDatabase.GetAllAssetPaths()
-                .Where(p => p.StartsWith("Assets/", StringComparison.Ordinal) && !IsInImport(p) && !AssetDatabase.IsValidFolder(p))
+                .Where(p => p.StartsWith("Assets/", StringComparison.Ordinal) && !IsInImport(p) && !AssetDatabase.IsValidFolder(p) &&
+                            p != FxImportList.Path)
                 .ToArray();
             return AssetDatabase.GetDependencies(roots, true)
                 .Where(IsInImport)

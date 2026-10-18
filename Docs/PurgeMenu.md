@@ -505,6 +505,20 @@ Collection, набор на способ держать оружие (Unarmed, P
 Цвета и параметры частиц — в коде билдера; цвет брызг — `HordeVisualDefinition.Splash Color`.
 Запускать: после правок эффектов в `CombatEffectsBuilder.cs`.
 
+#### Build Pack Effects
+Эффекты из паков `Import/FX` (PolygonParticleFX, Polygon Arsenal; этап Э). Что брать — список `Art/Effects/FxImport.asset`
+(перетащить исходные префабы из `Import/FX`; у записи: имя копии, масштаб, **Radius** — сколько клеток эффект покрывает
+в своём размере, взрыв масштабируется под свой радиус, 0 — не масштабировать; **Particles** — доля частиц, по умолчанию 0,6).
+Первый запуск без списка создаёт пустой список. Для каждой записи — очищенная копия `Art/Effects/<пак>/<имя>.prefab`
+(GUID при пересборке сохраняется): без Collision, Lights (и ссылки на лампу), Noise, ламп, `AudioSource`, коллайдеров и
+скриптов пака; материалы — копии в `Art/Effects/<пак>/Materials` на `Purge/Particle` (аддитив/альфа/умножение),
+`Purge/ParticleRim` (сферы и кольца Arsenal) и `Purge/Lit` (непрозрачные осколки); не больше 64 частиц на систему,
+всплески и эмиссия × доля; без зацикливания; `CombatEffect` с длительностью по последнему всплеску + время жизни.
+Копии — Addressable (Purge Visuals). Назначаются в модуле оружия **Effects**, в `Look` взрывов (`Explosion` у
+метательного и способностей, «Explosive projectile») и умолчаниями в `Data/Combat/CombatVisual` (раздел **Pack effects**).
+Затем — **Collect Used Third-Party Assets** (перенесёт текстуры и меши; сам список в расчёт не берётся).
+Запускать: после правки списка.
+
 #### Build Damage Numbers
 Атлас цифр для полосок здоровья и всплывающих цифр урона/лечения: вырезает «0–9», «+», «-» из SDF-атласа жирного
 шрифта UI (`UiStyle.BoldFont`, Rajdhani Bold) в маленькую текстуру `Art/Effects/fx_digits.png`, материал
@@ -582,7 +596,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 #### Collect Used Third-Party Assets
 Для паков, скачанных в `Assets/_Project/Import` (не в git):
 1. снимает коллайдеры, Rigidbody и LOD со всех префабов вне `Import` (у LOD остаётся `LOD0`, нижние уровни и `LODGroup` удаляются: склейка геометрии взяла бы все меши и нарисовала их друг поверх друга); префаб, который так не правится (вложенный/вариант), — ошибка в консоли, править его исходник;
-2. переносит всё используемое из `Import/<Пак>/…` в `Art/ThirdParty/<Пак>/…` (GUID сохраняются);
+2. переносит всё используемое из `Import/<Пак>/…` в `Art/ThirdParty/<Пак>/…` (GUID сохраняются); список эффектов `FxImport.asset` не считается (он ссылается на исходники в `Import`, игра берёт очищенные копии);
 3. проверяет, что ссылок на `Import` не осталось;
 4. ограничивает размер текстур для Android/WebGL (≤2048, ключи — 256).
 
@@ -615,6 +629,7 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 
 ## Зависимости между командами
 - **Build Combat Effects** → до Build Light Fixtures (материал пламени) и Build Footprints (пыль).
+- **Build Pack Effects** → затем **Collect Used Third-Party Assets**.
 - **Create Placeholder Theme** → до Build Weapons и Build Zombie Animations (им нужны наборы темы-заглушки).
 - **Build Player Animations** → затем Build Weapons (риг рук по модели игрока).
 - Билдеры персонажей → затем **Extract Character Meshes**.

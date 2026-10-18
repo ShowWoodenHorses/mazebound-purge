@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Purge.Core.Modules;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Purge.Core.Effects
 {
@@ -17,9 +18,19 @@ namespace Purge.Core.Effects
         public abstract float Radius { get; }
     }
 
+    /// <summary>
+    /// Something that explodes and has its own look (display only): an explosion effect, an explosive projectile.
+    /// Gameplay passes it with its explosion events; the view reads the look.
+    /// </summary>
+    public interface IExplosionLook
+    {
+        /// <summary>An effect of Art/Effects scaled to the radius; empty = the default by size.</summary>
+        AssetReferenceGameObject Look { get; }
+    }
+
     /// <summary>Damage to every monster in the radius, less towards the edge.</summary>
     [Serializable, ModuleInfo("Explosion", Category = "Effect", AllowMultiple = true)]
-    public sealed class ExplosionEffect : EffectModule
+    public sealed class ExplosionEffect : EffectModule, IExplosionLook
     {
         [Tooltip("Damage at the centre.")]
         [SerializeField, Min(0f)] private float _damage = 80f;
@@ -29,7 +40,10 @@ namespace Purge.Core.Effects
         [SerializeField, Range(0f, 1f)] private float _edgeDamage = 0.35f;
         [Tooltip("How far the blast is heard by monsters, cells.")]
         [SerializeField, Min(0f)] private float _soundRadius = 12f;
+        [Tooltip("Look of the blast (an effect of Art/Effects, scaled to the radius); empty = by size (Combat Visual).")]
+        [SerializeField] private AssetReferenceGameObject _look;
 
+        public AssetReferenceGameObject Look { get => _look; internal set => _look = value; }
         public float Damage { get => _damage; internal set => _damage = value; }
         public override float Radius => _radius;
         public float EdgeDamage { get => _edgeDamage; internal set => _edgeDamage = value; }

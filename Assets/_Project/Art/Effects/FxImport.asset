@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a235219eb3e2b94faef7b5b93d03bfa, type: 3}
+  m_Name: FxImport
+  m_EditorClassIdentifier: Purge.Editor::Purge.Editor.Dev.FxImportList
+  _effects:
+  - Source: {fileID: 1277314995582460547, guid: a1af3095c408ed84c8e5fb46dde0af6d, type: 3}
+    Name: 
+    Scale: 1
+    Radius: 0
+    Particles: 0.6
+  - Source: {fileID: 5426031798781912364, guid: 12a91f77ed72e8d4388cd5a419e6e464, type: 3}
+    Name: 
+    Scale: 1
+    Radius: 0
+    Particles: 0.6
+  - Source: {fileID: 1879769179923522, guid: 65932b7368590234d8163da03c2055d8, type: 3}
+    Name: 
+    Scale: 1
+    Radius: 1.5
+    Particles: 0.6
+  - Source: {fileID: 1829163952570794, guid: f171ac3dbb620c44e81cd88ddee1cbbd, type: 3}
+    Name: 
+    Scale: 1
+    Radius: 1.2
+    Particles: 0.6

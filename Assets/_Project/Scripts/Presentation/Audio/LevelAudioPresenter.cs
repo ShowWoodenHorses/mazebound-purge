@@ -6,15 +6,16 @@ using Purge.Application.Services;
 using Purge.Core.Audio;
 using Purge.Core.Common;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Drops;
 using Purge.Gameplay.Effects;
-using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Weapons;
 using Purge.Gameplay.Zombies;
 using Purge.Presentation.Visual;
@@ -227,7 +228,7 @@ namespace Purge.Presentation.Audio
 
         private void OnLanded(ThrowableDefinition throwable, Vector2 at) => PlayAt(Catalog.Land, at);
 
-        private void OnExploded(Vector2 at, float radius) => PlayAt(Catalog.ExplosionOf(radius), at);
+        private void OnExploded(Vector2 at, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at);
 
         private void OnDropRequested(WeaponSlot slot) => PlayAt(Catalog.WeaponDrop, _player.Position);
 

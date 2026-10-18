@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Purge.Core.Effects;
 using Purge.Core.Modules;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Purge.Core.Definitions
 {
@@ -122,7 +123,7 @@ namespace Purge.Core.Definitions
     /// monster in the radius not hidden behind a wall, less towards the edge.
     /// </summary>
     [Serializable, ModuleInfo("Explosive projectile", Category = "Attack")]
-    public sealed class ExplosiveAttack : WeaponAttack
+    public sealed class ExplosiveAttack : WeaponAttack, IExplosionLook
     {
         [Tooltip("Cells per second.")]
         [SerializeField, Min(1f)] private float _speed = 14f;
@@ -136,8 +137,12 @@ namespace Purge.Core.Definitions
         [SerializeField, Min(0.3f)] private float _radius = 2f;
         [Tooltip("Share of the damage at the edge of the radius.")]
         [SerializeField, Range(0f, 1f)] private float _edgeDamage = 0.3f;
+        [Tooltip("Look of the explosion (an effect of Art/Effects, scaled to the radius); empty = by size (Combat Visual).")]
+        [SerializeField] private AssetReferenceGameObject _explosionLook;
 
         public ExplosiveAttack() => Interval = 0.9f;
+
+        public AssetReferenceGameObject Look { get => _explosionLook; internal set => _explosionLook = value; }
 
         public float Speed { get => _speed; internal set => _speed = value; }
         public float Range { get => _range; internal set => _range = value; }
@@ -237,6 +242,20 @@ namespace Purge.Core.Definitions
     /// pellets add up). A weapon without the module feels as <see cref="Default"/>. Channel multipliers of the dev stand
     /// scale everything.
     /// </summary>
+    /// <summary>
+    /// Looks of the weapon's attack (stage Э): effects of Art/Effects (pack effects built by Build Pack Effects).
+    /// Display only. An empty one — the default of the weapon's hold or size (<c>CombatVisualDefinition</c>);
+    /// a weapon without the module shows only defaults.
+    /// </summary>
+    [Serializable, ModuleInfo("Effects", Category = "Feel")]
+    public sealed class WeaponEffectsModule : WeaponModule
+    {
+        [Tooltip("Flash at the muzzle on a shot, facing along the barrel (+Z).")]
+        [SerializeField] private AssetReferenceGameObject _muzzleFlash;
+
+        public AssetReferenceGameObject MuzzleFlash { get => _muzzleFlash; internal set => _muzzleFlash = value; }
+    }
+
     [Serializable, ModuleInfo("Feel", Category = "Feel")]
     public sealed class FeelModule : WeaponModule
     {

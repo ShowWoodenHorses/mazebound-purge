@@ -67,6 +67,7 @@ namespace Purge.Presentation.Visual
         private readonly VisibilitySystem _visibility;
         private readonly PlayerWeaponPresenter _weaponView;
         private readonly PlayerViewPresenter _playerView;
+        private readonly PackEffectsPlayer _packEffects;
 
         private readonly Dictionary<Bullet, Tracer> _tracers = new Dictionary<Bullet, Tracer>();
         private readonly List<Tracer> _newTracers = new List<Tracer>();
@@ -82,6 +83,7 @@ namespace Purge.Presentation.Visual
         private EffectPool _swingPool;
         private bool _shotPending;
         private Vector2 _shotDirection;
+        private WeaponDefinition _shotWeapon;
         private int _swingCount;
         private bool _meleePending;
         private bool _meleeTimed;
@@ -95,9 +97,10 @@ namespace Purge.Presentation.Visual
 
         public CombatViewPresenter(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root, BulletSystem bullets,
             PlayerCombat combat, PlayerSystem player, VisibilitySystem visibility, PlayerWeaponPresenter weaponView,
-            PlayerViewPresenter playerView)
+            PlayerViewPresenter playerView, PackEffectsPlayer packEffects = null)
         {
             _playerView = playerView;
+            _packEffects = packEffects;
             _visual = visual;
             _assets = assets;
             _root = root;
@@ -287,6 +290,7 @@ namespace Purge.Presentation.Visual
                 // The gun is posed for this frame only in the late tick: the flash and shell wait for it.
                 _shotPending = true;
                 _shotDirection = direction;
+                _shotWeapon = weapon.Definition;
                 return;
             }
 
@@ -363,14 +367,19 @@ namespace Purge.Presentation.Visual
             if (muzzle == null)
             {
                 var forward = _player.Position + _shotDirection * 0.5f;
-                Show(_flashPool, forward, ShotHeight, _shotDirection);
+                var flat = new Vector3(_shotDirection.x, 0f, _shotDirection.y);
+                if (!PlayPackFlash(new Vector3(forward.x, ShotHeight, forward.y),
+                        flat.sqrMagnitude > 0f ? Quaternion.LookRotation(flat, Vector3.up) : Quaternion.identity))
+                    Show(_flashPool, forward, ShotHeight, _shotDirection);
                 _newTracers.Clear();
                 return;
             }
 
             var muzzlePoint = rootTransform.InverseTransformPoint(muzzle.position);
             var barrel = rootTransform.InverseTransformDirection(muzzle.forward);
-            ShowAt(_flashPool, muzzlePoint, Quaternion.LookRotation(barrel, Vector3.up));
+            var barrelRotation = Quaternion.LookRotation(barrel, Vector3.up);
+            if (!PlayPackFlash(muzzlePoint, barrelRotation))
+                ShowAt(_flashPool, muzzlePoint, barrelRotation);
 
             var gun = model.transform;
             var eject = rootTransform.InverseTransformPoint(Vector3.Lerp(gun.position, muzzle.position, EjectShare));
@@ -384,6 +393,15 @@ namespace Purge.Presentation.Visual
                 tracer.FromMuzzle = true;
             }
             _newTracers.Clear();
+        }
+
+        /// <summary>The weapon's own pack flash, else the default of its hold; false — none (the own flash is shown).</summary>
+        private bool PlayPackFlash(Vector3 position, Quaternion rotation)
+        {
+            if (_packEffects == null || _shotWeapon == null) return false;
+            var own = _shotWeapon.Effects != null ? _shotWeapon.Effects.MuzzleFlash : null;
+            var flash = CombatVisualDefinition.IsSet(own) ? own : _visual.MuzzleFlashOf(_shotWeapon.Hold);
+            return flash != null && _packEffects.Play(flash, position, rotation);
         }
 
         private void PlaceTracer(Bullet bullet, Tracer tracer)

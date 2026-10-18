@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Gameplay.Level;
 using UnityEngine;
 
@@ -91,8 +92,8 @@ namespace Purge.Gameplay.Combat
         /// <summary>(bullet, where it ended, how). Raised before the bullet returns to the pool.</summary>
         public event Action<Bullet, Vector2, BulletEnd> Ended;
 
-        /// <summary>(where, radius) of an explosion.</summary>
-        public event Action<Vector2, float> Exploded;
+        /// <summary>(where, radius, what exploded — its look) of an explosion.</summary>
+        public event Action<Vector2, float, IExplosionLook> Exploded;
 
         public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0, float range = DefaultRange,
             int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null)
@@ -185,7 +186,7 @@ namespace Purge.Gameplay.Combat
         public void Explode(Vector2 at, ExplosiveAttack explosive, int floor, WeaponDefinition weapon = null)
         {
             _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor, weapon);
-            Exploded?.Invoke(at, explosive.Radius);
+            Exploded?.Invoke(at, explosive.Radius, explosive);
         }
 
         private void TickThrown(int index, Bullet bullet, Vector2 next, float distance)

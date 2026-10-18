@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Purge.Core.Definitions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -73,6 +74,15 @@ namespace Purge.Core.Visual
         [Tooltip("Particles of streams, explosions, sparks on the horde, burning and stunned monsters (additive).")]
         [SerializeField] private Material _effectParticles;
 
+        [Header("Pack effects (stage Э): defaults of content without its own look")]
+        [Tooltip("Muzzle flash by the weapon's hold; a hold not listed — Muzzle Flash above.")]
+        [SerializeField] private List<HoldEffect> _muzzleFlashes = new List<HoldEffect>();
+        [Tooltip("Explosion with a radius below Large Explosion Radius (scaled to the radius).")]
+        [SerializeField] private AssetReferenceGameObject _explosionSmall;
+        [Tooltip("Explosion with a radius from Large Explosion Radius (scaled to the radius); empty = the small one.")]
+        [SerializeField] private AssetReferenceGameObject _explosionLarge;
+        [SerializeField, Min(0.3f)] private float _largeExplosionRadius = 2f;
+
         [Header("Monsters' abilities (stage 5c)")]
         [Tooltip("Warnings of abilities on the floor: lines, circles, sectors (Purge/Warning).")]
         [SerializeField] private Material _abilityWarning;
@@ -102,6 +112,27 @@ namespace Purge.Core.Visual
         public Material ZoneCells { get => _zoneCells; internal set => _zoneCells = value; }
         public CombatFeedback Feedback => _feedback ??= new CombatFeedback();
 
+        public List<HoldEffect> MuzzleFlashes => _muzzleFlashes;
+        public AssetReferenceGameObject ExplosionSmall { get => _explosionSmall; internal set => _explosionSmall = value; }
+        public AssetReferenceGameObject ExplosionLarge { get => _explosionLarge; internal set => _explosionLarge = value; }
+        public float LargeExplosionRadius { get => _largeExplosionRadius; internal set => _largeExplosionRadius = value; }
+
+        /// <summary>Default pack muzzle flash of a hold, or null (then <see cref="MuzzleFlash"/>, the own flash).</summary>
+        public AssetReferenceGameObject MuzzleFlashOf(WeaponHold hold)
+        {
+            foreach (var entry in _muzzleFlashes)
+                if (entry != null && entry.Hold == hold && IsSet(entry.Effect)) return entry.Effect;
+            return null;
+        }
+
+        /// <summary>Default look of an explosion of <paramref name="radius"/> cells, or null.</summary>
+        public AssetReferenceGameObject ExplosionOf(float radius) =>
+            radius >= _largeExplosionRadius && IsSet(_explosionLarge) ? _explosionLarge
+            : IsSet(_explosionSmall) ? _explosionSmall
+            : IsSet(_explosionLarge) ? _explosionLarge : null;
+
+        public static bool IsSet(AssetReferenceGameObject reference) => reference != null && reference.RuntimeKeyIsValid();
+
         /// <summary>Every prefab reference (some may be empty).</summary>
         public IEnumerable<AssetReferenceGameObject> Prefabs
         {
@@ -113,7 +144,18 @@ namespace Purge.Core.Visual
                 yield return _impact;
                 yield return _targetHit;
                 yield return _meleeSwing;
+                foreach (var entry in _muzzleFlashes)
+                    if (entry != null) yield return entry.Effect;
+                yield return _explosionSmall;
+                yield return _explosionLarge;
             }
+        }
+
+        [System.Serializable]
+        public sealed class HoldEffect
+        {
+            public WeaponHold Hold;
+            public AssetReferenceGameObject Effect;
         }
     }
 }

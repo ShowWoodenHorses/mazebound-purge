@@ -503,7 +503,7 @@ namespace Purge.Tests.EditMode.Combat
             var side = AddTarget(5f, 3f);
             var behindDoor = AddTarget(8f, 2f);
             var explosions = 0;
-            _bullets.Exploded += (_, _) => explosions++;
+            _bullets.Exploded += (_, _, _) => explosions++;
 
             _combat.TryAttack(Vector2.right);
             FlyBullets();
@@ -520,7 +520,7 @@ namespace Purge.Tests.EditMode.Combat
             var launcher = Weapon("launcher", new ExplosiveAttack { Speed = 20f, Range = 3f, Radius = 1f }, Ammo(4));
             Equip(launcher);
             var points = new List<Vector2>();
-            _bullets.Exploded += (at, _) => points.Add(at);
+            _bullets.Exploded += (at, _, _) => points.Add(at);
             _combat.TryAttack(Vector2.right);
             FlyBullets();
             Assert.AreEqual(5f, points[0].x, 0.01f, "Range 3 from x = 2.");

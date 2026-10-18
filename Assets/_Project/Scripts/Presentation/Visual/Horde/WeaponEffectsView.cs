@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Core.Visual;
@@ -49,6 +50,7 @@ namespace Purge.Presentation.Visual.Horde
         private readonly StatusSystem _statuses;
         private readonly HordeSystem _horde;
         private readonly CombatVisualDefinition _visual;
+        private readonly PackEffectsPlayer _packEffects;
         private float _statusTimer;
 
         private Material _boltMaterial;
@@ -65,9 +67,11 @@ namespace Purge.Presentation.Visual.Horde
 
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
-            StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null)
+            StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
+            PackEffectsPlayer packEffects = null)
         {
             _visual = visual;
+            _packEffects = packEffects;
             _effects = effects;
             _statuses = statuses;
             _horde = horde;
@@ -293,8 +297,13 @@ namespace Purge.Presentation.Visual.Horde
             }
         }
 
-        private void OnExploded(Vector2 at, float radius)
+        private void OnExploded(Vector2 at, float radius, IExplosionLook source)
         {
+            // The pack effect of the source, else the default by size; the draft particles only without both.
+            var look = source != null && CombatVisualDefinition.IsSet(source.Look) ? source.Look : _visual?.ExplosionOf(radius);
+            if (look != null && _packEffects != null &&
+                _packEffects.Play(look, new Vector3(at.x, 0f, at.y), Quaternion.identity, radius))
+                return;
             if (_blast == null || !Visible(at)) return;
             var emit = new ParticleSystem.EmitParams { position = new Vector3(at.x, 0.4f, at.y) };
             var count = Mathf.Clamp(Mathf.RoundToInt(radius * 25f), 20, 120);

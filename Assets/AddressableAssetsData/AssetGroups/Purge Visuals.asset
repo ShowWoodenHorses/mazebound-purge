@@ -340,6 +340,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5db0690004270704a947ab35994b14ef
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Grenade_Explosive_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ef82be4f8bbaff49a8b3c0e403351c6
     m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/wall_forest_mossy_stone.prefab
     m_ReadOnly: 0
@@ -362,6 +367,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 668a0012b5f3eaa4e8a880ad48e79b38
     m_Address: Assets/_Project/Art/Weapons/Pickups/Mortar_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e2c72ff95094e2448471676c582b910
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/RifleMuzzleStandard.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -402,6 +412,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 74b4e6258f807744eb65f5231a73b5e4
     m_Address: Assets/_Project/Art/Placeholders/wall_cross.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 780afce8d708a7e4f8c52e256ad368bb
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Explosion_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -782,6 +797,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb89925d60d019e4ba12a516fffc49b9
     m_Address: Assets/_Project/Art/Decor/SM_Prop_BloodPool_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebb9da8121a42274aa837f2cb813508f
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/PistolMuzzleStandard.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

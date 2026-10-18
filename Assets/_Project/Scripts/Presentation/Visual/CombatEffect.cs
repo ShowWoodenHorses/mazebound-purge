@@ -13,11 +13,15 @@ namespace Purge.Presentation.Visual
         [Tooltip("Seconds until the effect returns to the pool: the longest particle lifetime.")]
         [SerializeField, Min(0.02f)] private float _duration = 0.3f;
 
+        [Tooltip("Cells the effect covers at its own size: an explosion is scaled to its radius by this (0 = never scaled).")]
+        [SerializeField, Min(0f)] private float _radius;
+
         private ParticleSystem[] _particles;
         private SwingArc _swing;
         private bool _cached;
 
         public float Duration { get => _duration; set => _duration = value; }
+        public float Radius { get => _radius; set => _radius = value; }
 
         /// <summary>Melee swing driven by this effect, or null.</summary>
         public SwingArc Swing

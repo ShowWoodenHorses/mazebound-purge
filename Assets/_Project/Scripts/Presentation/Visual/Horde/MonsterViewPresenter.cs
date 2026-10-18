@@ -51,6 +51,7 @@ namespace Purge.Presentation.Visual.Horde
         private static readonly int AlertId = Animator.StringToHash(P.Alert);
         private static readonly int CastId = Animator.StringToHash(P.Cast);
         private static readonly int CastSpeedId = Animator.StringToHash(P.CastSpeed);
+        private static readonly int CastIndexId = Animator.StringToHash(P.CastIndex);
         private static readonly int DeadId = Animator.StringToHash(P.Dead);
         private static readonly int DeathIndexId = Animator.StringToHash(P.DeathIndex);
 
@@ -212,11 +213,14 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             var stats = _horde.StatsOf(i);
-            var pace = state == HordeAgentState.Moving ? _horde.Paces[i] : HordePace.Still;
+            var dashing = _horde.IsDashing(i);
+            var pace = dashing ? HordePace.Run : state == HordeAgentState.Moving ? _horde.Paces[i] : HordePace.Still;
             animator.SetInteger(PaceId, (int)pace);
             var speedFactor = _horde.SpeedFactors[i];
+            // A charge runs at its own speed: the run clip as fast as it goes (up to the cap).
+            var runSpeed = dashing ? ChargeSpeed(i) : _horde.Speeds[i];
             var playback = pace == HordePace.Run
-                ? definition.RunSpeed > 0f ? _horde.Speeds[i] * speedFactor / definition.RunSpeed : 1f
+                ? definition.RunSpeed > 0f ? runSpeed * speedFactor / definition.RunSpeed : 1f
                 : definition.WalkSpeed > 0f ? stats.WanderSpeed * speedFactor / definition.WalkSpeed : 1f;
             animator.SetFloat(PlaybackId, Mathf.Clamp(playback, MinPlayback, MaxPlayback));
             animator.SetBool(StunnedId, _horde.Stunned[i]);
@@ -226,13 +230,17 @@ namespace Purge.Presentation.Visual.Horde
             if (_abilities != null && _abilities.IsActive)
             {
                 var phase = _abilities.Phases[i];
-                casting = phase != AbilityPhase.None;
+                // The rush itself is a run, not the cast clip.
+                casting = phase != AbilityPhase.None && phase != AbilityPhase.Active;
                 if (casting)
                 {
                     var ability = _abilities.CastOf(i);
+                    var index = Mathf.Max(0, (int)_abilities.CastIndices[i]);
+                    animator.SetInteger(CastIndexId, index);
                     // Lets go exactly when the warning ends; after that — the rest of the clip at its own pace.
+                    definition.CastTiming(index, out var moment, out var length);
                     var speed = phase == AbilityPhase.Warning && ability != null
-                        ? definition.CastMoment * definition.CastLength / Mathf.Max(0.05f, ability.Warning)
+                        ? moment * length / Mathf.Max(0.05f, ability.Warning)
                         : 1f;
                     animator.SetFloat(CastSpeedId, speed);
                 }
@@ -240,8 +248,9 @@ namespace Purge.Presentation.Visual.Horde
 
             animator.SetBool(CastId, casting);
 
+            // Attacks on the player and blows on a door (stage 5d) alike.
             var attackStart = _horde.AttackStart[i];
-            if (state == HordeAgentState.Attacking && attackStart != _lastAttack[i] && attackStart <= time)
+            if (!casting && !dashing && attackStart != _lastAttack[i] && attackStart <= time)
             {
                 _lastAttack[i] = attackStart;
                 animator.SetFloat(AttackSpeedId, 1f / Mathf.Max(0.1f, stats.AttackInterval));
@@ -257,6 +266,9 @@ namespace Purge.Presentation.Visual.Horde
                 animator.SetTrigger(HitId);
             }
         }
+
+        private float ChargeSpeed(int agent) =>
+            _abilities != null && _abilities.CastOf(agent) is ChargeAbility charge ? charge.Speed : _horde.Speeds[agent];
 
         private static void KeepInPlace(View view)
         {

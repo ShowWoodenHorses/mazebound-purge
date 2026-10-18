@@ -40,6 +40,22 @@ namespace Purge.Core.Monsters
         Volcano = 5,
     }
 
+    /// <summary>
+    /// What a chasing monster does with a closed door (ТЗ: рядовые не открывают, офицеры открывают, Громила и боссы
+    /// выбивают). Locked and frozen doors stop everyone.
+    /// </summary>
+    public enum MonsterDoorUse
+    {
+        /// <summary>By <see cref="MonsterRank"/>: Mass — <see cref="Never"/>, Officer and Elite — <see cref="Open"/>, Boss — <see cref="Break"/>.</summary>
+        ByRank = 0,
+        /// <summary>A closed door is a wall.</summary>
+        Never = 1,
+        /// <summary>Opens it at once; it stays open.</summary>
+        Open = 2,
+        /// <summary>Breaks it down blow by blow (<see cref="MonsterStats.DoorDamage"/>): it falls flat and stays open for good.</summary>
+        Break = 3,
+    }
+
     /// <summary>Body and fight numbers of a monster (drafts; balance — stage 9).</summary>
     [Serializable]
     public sealed class MonsterStats
@@ -75,6 +91,19 @@ namespace Purge.Core.Monsters
         [Min(0f)] public float HoldRange;
         [Tooltip("Steps back while the player is closer than this (unless cornered: then it fights in melee); 0 = never.")]
         [Min(0f)] public float RetreatRange;
+
+        [Header("Weight (stage 5d)")]
+        [Tooltip("Body mass (the player's is 1); 0 = by rank: rank-and-file 0.15, officers 0.5, elite 4, bosses immovable. " +
+                 "Who gives way when bodies meet (the player, the crowd), how far knockbacks, blasts and charges carry it.")]
+        [Min(0f)] public float Mass;
+        [Tooltip("Nothing moves it: neither the player, nor the crowd, nor knockbacks (bosses by rank).")]
+        public bool Immovable;
+
+        [Header("Doors (stage 5d)")]
+        [Tooltip("What it does with a closed door on its way to the player. By rank: the rank-and-file stop, officers and elite open it, bosses break it.")]
+        public MonsterDoorUse Doors;
+        [Tooltip("Breaks: damage to the door per blow (one blow per attack interval; the door's strength — DoorData).")]
+        [Min(0f)] public float DoorDamage = 20f;
 
         /// <summary>Ground speed of the packs' walk clips at 1× (they shuffle at 0.2–0.6 cells/s).</summary>
         public const float WalkClipSpeed = 0.4f;
@@ -139,6 +168,39 @@ namespace Purge.Core.Monsters
         public IReadOnlyList<StatusResistance> Resistances => _resistances;
         public IReadOnlyList<EffectModule> DeathEffects => _deathEffects;
         public IReadOnlyList<AbilityModule> Abilities => _abilities;
+
+        /// <summary><see cref="MonsterStats.Doors"/> with <see cref="MonsterDoorUse.ByRank"/> resolved.</summary>
+        public MonsterDoorUse DoorUse => DoorUseOf(_rank, _stats != null ? _stats.Doors : MonsterDoorUse.ByRank);
+
+        /// <summary>Mass by rank when <see cref="MonsterStats.Mass"/> is 0 (drafts; the player's is 1).</summary>
+        public const float RankAndFileMass = 0.15f, OfficerMass = 0.5f, EliteMass = 4f;
+
+        /// <summary>The body's mass with the rank resolved; <see cref="float.PositiveInfinity"/> = immovable.</summary>
+        public float BodyMass => MassOf(_rank, _stats);
+
+        public static float MassOf(MonsterRank rank, MonsterStats stats)
+        {
+            if (stats != null && stats.Immovable) return float.PositiveInfinity;
+            if (stats != null && stats.Mass > 0f) return stats.Mass;
+            return rank switch
+            {
+                MonsterRank.Mass => RankAndFileMass,
+                MonsterRank.Officer => OfficerMass,
+                MonsterRank.Elite => EliteMass,
+                _ => float.PositiveInfinity,
+            };
+        }
+
+        public static MonsterDoorUse DoorUseOf(MonsterRank rank, MonsterDoorUse doors)
+        {
+            if (doors != MonsterDoorUse.ByRank) return doors;
+            return rank switch
+            {
+                MonsterRank.Mass => MonsterDoorUse.Never,
+                MonsterRank.Boss => MonsterDoorUse.Break,
+                _ => MonsterDoorUse.Open,
+            };
+        }
 
         /// <summary>× a state's duration on this monster (1 = no resistance).</summary>
         public float DurationFactor(StatusDefinition status)

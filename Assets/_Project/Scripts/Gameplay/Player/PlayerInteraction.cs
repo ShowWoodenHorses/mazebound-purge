@@ -3,6 +3,7 @@ using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
+using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Sound;
@@ -42,7 +43,7 @@ namespace Purge.Gameplay.Player
     /// 2) otherwise a throwable of another kind lying there replaces the stack (the same kind is picked up by walking);
     /// 3) otherwise the door next to the player (the one they face first) is used: a locked door is unlocked with
     ///    its key (the door stays closed, the key is spent); an unlocked door opens or closes. A door is never closed
-    ///    on the player or on a zombie.
+    ///    on the player or on a monster; a broken door (stage 5d) is not offered at all.
     /// Must be registered after <see cref="PlayerSystem"/> (it reads the player's cell of this tick).
     /// </summary>
     public sealed class PlayerInteraction : ILevelTickable
@@ -54,11 +55,13 @@ namespace Purge.Gameplay.Player
         private readonly PlayerInventory _inventory;
         private readonly OccupancyMap _occupancy;
         private readonly SoundEventBus _sounds;
+        private readonly HordeSystem _horde;
 
         public PlayerInteraction(IPlayerInput input, PlayerSystem player, PickupSystem pickups, DoorSystem doors,
-            PlayerInventory inventory, OccupancyMap occupancy, SoundEventBus sounds)
+            PlayerInventory inventory, OccupancyMap occupancy, SoundEventBus sounds, HordeSystem horde = null)
         {
             _sounds = sounds;
+            _horde = horde;
             _input = input;
             _player = player;
             _pickups = pickups;
@@ -123,7 +126,7 @@ namespace Purge.Gameplay.Player
             foreach (var direction in DirectionExtensions.All)
             {
                 var cell = _player.Cell.Neighbour(direction);
-                if (!_doors.TryGetDoor(cell, out var door))
+                if (!_doors.TryGetDoor(cell, out var door) || _doors.IsBroken(door.Id))
                     continue;
 
                 var offset = new Vector2(cell.X, cell.Y) - _player.Position;
@@ -135,7 +138,7 @@ namespace Purge.Gameplay.Player
                 }
             }
 
-            if (best == null && _doors.TryGetDoor(_player.Cell, out var own))
+            if (best == null && _doors.TryGetDoor(_player.Cell, out var own) && !_doors.IsBroken(own.Id))
                 best = own;
             return best;
         }
@@ -167,10 +170,12 @@ namespace Purge.Gameplay.Player
             return InteractionResult.DoorClosed;
         }
 
-        /// <summary>A zombie stands in the door cell or the player's footprint overlaps it.</summary>
+        /// <summary>A zombie or a monster of the horde stands in the door cell or the player's footprint overlaps it.</summary>
         private bool IsDoorwayOccupied(GridPosition cell)
         {
             if (_occupancy.ZombieCount(cell) > 0)
+                return true;
+            if (_horde != null && _horde.AnyBodyInCell(cell))
                 return true;
 
             var reach = 0.5f + _player.Definition.BodyHalfSize;

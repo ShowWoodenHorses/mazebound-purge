@@ -37,11 +37,26 @@ namespace Purge.Gameplay.Horde
             Definition = definition;
             Stats = stats;
             Weight = weight;
+            Doors = definition != null ? definition.DoorUse : MonsterDoorUse.Never;
+            Mass = MonsterDefinition.MassOf(definition != null ? definition.Rank : MonsterRank.Mass, stats);
+            InverseMass = float.IsPositiveInfinity(Mass) ? 0f : 1f / Mass;
         }
+
+        /// <summary>Body mass (rank resolved; infinity = immovable).</summary>
+        public float Mass { get; }
+
+        /// <summary>1 / <see cref="Mass"/>; 0 = immovable.</summary>
+        public float InverseMass { get; }
+
+        /// <summary>× knockbacks, blasts and shoves: 1 up to mass 1, less for the heavy, 0 for the immovable.</summary>
+        public float KnockScale => Mathf.Min(1f, InverseMass);
 
         public MonsterDefinition Definition { get; }
         public MonsterStats Stats { get; }
         public float Weight { get; }
+
+        /// <summary>What it does with a closed door (rank resolved).</summary>
+        public MonsterDoorUse Doors { get; }
     }
 
     /// <summary>
@@ -52,6 +67,12 @@ namespace Purge.Gameplay.Horde
     /// cell or a door changes), keeps spacing through <see cref="CellBuckets"/> (no physics), slides along walls and
     /// attacks in reach. Who chases and who wanders or follows a sound — <see cref="Perception"/> (stage 5b): unaware monsters
     /// walk their group's or the sound's field instead. Views read the arrays; nothing here knows about rendering.
+    /// <para><b>Doors</b> (stage 5d, <see cref="HordeKind.Doors"/>): a closed door is a wall for the rank-and-file; those
+    /// that open or break doors chase along a second field (<see cref="DoorFlow"/>, built only while such kinds and closed
+    /// doors they may pass exist) and, at the door, open it at once or beat it down blow by blow
+    /// (<see cref="DoorSystem.HitDoor"/>). Locked and frozen doors stop everyone.</para>
+    /// <para><b>Dash</b> (<see cref="BeginDash"/>, the charge of <c>MonsterAbilities</c>): rushes straight on, shoving the
+    /// crowd aside (<see cref="CrowdImpulse"/>), until its distance is run, a wall or a closed door stops it, or a stun.</para>
     /// Allocation-free per tick.
     /// Active only on levels with a <see cref="StressTestDefinition"/> (stage 2); stage 5 builds monsters on it.
     /// </summary>
@@ -67,6 +88,7 @@ namespace Purge.Gameplay.Horde
         private readonly DoorSystem _doors;
         private readonly PlayerSystem _player;
         private readonly PlayerHealth _playerHealth;
+        private readonly SoundEventBus _sounds;
         private readonly HordeKind[] _kinds;
         private readonly float _maxRadius;
         private readonly float _totalWeight;
@@ -93,11 +115,21 @@ namespace Purge.Gameplay.Horde
         private bool[] _sees; // nothing that stops bullets between it and the player (MonsterAbilities, a few times a second)
         private float[] _cornerUntil; // a retreating monster with its back to a wall fights in melee until then
         private float[] _retreatStuck;
+        private Vector2[] _dashDirection; // unit
+        private float[] _dashSpeed;
+        private float[] _dashLeft; // cells still to rush; 0 = not dashing
+        private float[] _dashPush;
+        private int[] _doorAt; // cell of the door it is beating down, -1
+        private float[] _doorTimer;
 
         private bool[] _walkable;
+        private bool[] _doorWalkable; // + closed doors monsters may get through (only with door users)
         private int[] _walkableCells;
         private int _walkableCount;
+        private bool _doorUsers;
+        private int _passableDoors; // closed doors in _doorWalkable
         private FlowField _flow;
+        private FlowField _doorFlow;
         private CellBuckets _buckets;
         private DeterministicRandom _random;
         private GridPosition _flowTarget;
@@ -114,6 +146,7 @@ namespace Purge.Gameplay.Horde
             _doors = doors;
             _player = player;
             _playerHealth = playerHealth;
+            _sounds = sounds;
             Settings = level.StressTest;
             _kinds = CreateKinds(Settings);
             Perception = new HordePerception(this, grid, doors, sounds, visibility, player);
@@ -121,6 +154,7 @@ namespace Purge.Gameplay.Horde
             {
                 _maxRadius = Mathf.Max(_maxRadius, kind.Stats.Radius);
                 _totalWeight += kind.Weight;
+                if (kind.Doors == MonsterDoorUse.Open || kind.Doors == MonsterDoorUse.Break) _doorUsers = true;
             }
         }
 
@@ -210,6 +244,85 @@ namespace Purge.Gameplay.Horde
 
         public FlowField Flow => _flow;
 
+        /// <summary>The field of those that open or break doors (closed doors they may pass count as floor); null when not needed.</summary>
+        public FlowField DoorFlow => UsesDoorFlow ? _doorFlow : null;
+
+        private bool UsesDoorFlow => _doorUsers && _passableDoors > 0;
+
+        /// <summary>Doors opened by monsters (tests, metrics).</summary>
+        public int DoorsOpened { get; private set; }
+
+        /// <summary>Blows monsters dealt to doors (tests, metrics).</summary>
+        public int DoorBlows { get; private set; }
+
+        /// <summary>Gameplay noise of a monster opening a door / of a blow on a door, cells.</summary>
+        public const float DoorOpenNoise = 5f;
+        public const float DoorBlowNoise = 9f;
+
+        /// <summary>A monster acts on a closed door this close to its body, cells.</summary>
+        private const float DoorReach = 0.75f;
+
+        /// <summary>
+        /// The monster rushes along <paramref name="direction"/> at <paramref name="speed"/> cells per second for up to
+        /// <paramref name="distance"/> cells (stage 5d, the charge): it does nothing else meanwhile, shoves the crowd aside
+        /// (<paramref name="crowdPush"/> cells per second, <see cref="CrowdImpulse"/>) and stops at a wall or a closed door,
+        /// when stunned or by <see cref="EndDash"/>.
+        /// </summary>
+        public void BeginDash(int agent, Vector2 direction, float speed, float distance, float crowdPush)
+        {
+            if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || direction.sqrMagnitude < 1e-8f) return;
+            _dashDirection[agent] = direction.normalized;
+            _dashSpeed[agent] = speed;
+            _dashLeft[agent] = distance;
+            _dashPush[agent] = crowdPush;
+            _facing[agent] = Mathf.Atan2(direction.x, direction.y);
+        }
+
+        public void EndDash(int agent)
+        {
+            if ((uint)agent < (uint)_highWater) _dashLeft[agent] = 0f;
+        }
+
+        public bool IsDashing(int agent) => (uint)agent < (uint)_highWater && _dashLeft[agent] > 0f;
+
+        /// <summary>
+        /// How far a body of <paramref name="radius"/> can rush from <paramref name="origin"/> along
+        /// <paramref name="direction"/> before a wall or a closed door, at most <paramref name="distance"/> (the charge's
+        /// warning line ends there).
+        /// </summary>
+        public float DashReach(Vector2 origin, Vector2 direction, float distance, float radius)
+        {
+            if (!IsActive || direction.sqrMagnitude < 1e-8f) return 0f;
+            const float step = 0.2f;
+            direction = direction.normalized;
+            var reach = 0f;
+            while (reach < distance)
+            {
+                var next = Mathf.Min(distance, reach + step);
+                if (!FootprintFree(origin + direction * next, radius)) break;
+                reach = next;
+            }
+
+            return reach;
+        }
+
+        /// <summary>A living monster's body overlaps <paramref name="cell"/> (a door is not closed on it).</summary>
+        public bool AnyBodyInCell(GridPosition cell)
+        {
+            if (!IsActive) return false;
+            for (var y = cell.Y - 1; y <= cell.Y + 1; y++)
+            for (var x = cell.X - 1; x <= cell.X + 1; x++)
+            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            {
+                if (!IsAlive(_states[agent])) continue;
+                var reach = 0.5f + _kinds[_kind[agent]].Stats.Radius * 0.9f;
+                var position = _positions[agent];
+                if (Mathf.Abs(position.x - cell.X) < reach && Mathf.Abs(position.y - cell.Y) < reach) return true;
+            }
+
+            return false;
+        }
+
         public ReadOnlySpan<Vector2> Positions => _positions;
         public ReadOnlySpan<float> Facing => _facing;
         public ReadOnlySpan<HordeAgentState> States => _states;
@@ -276,13 +389,17 @@ namespace Purge.Gameplay.Horde
         public const float MaxPush = 12f;
 
         /// <summary>
-        /// Knocks a monster (living, or a fresh corpse — its fling) by <paramref name="velocity"/> cells per second; pushes
-        /// add up to <see cref="MaxPush"/> and fade (<see cref="PushDamping"/>). Walls stop it as a step.
+        /// Knocks a monster (living, or a fresh corpse — its fling) by <paramref name="velocity"/> cells per second, × its
+        /// <see cref="HordeKind.KnockScale"/> (the heavy fly less, the immovable not at all; stage 5d) — weapons, blasts,
+        /// <see cref="CrowdImpulse"/>; pushes add up to <see cref="MaxPush"/> and fade (<see cref="PushDamping"/>). Walls
+        /// stop it as a step.
         /// </summary>
         public void Push(int agent, Vector2 velocity)
         {
             if ((uint)agent >= (uint)_highWater || _states[agent] == HordeAgentState.Inactive) return;
-            var push = _push[agent] + velocity;
+            var scale = _kinds[_kind[agent]].KnockScale;
+            if (scale <= 0f) return;
+            var push = _push[agent] + velocity * scale;
             _push[agent] = push.sqrMagnitude > MaxPush * MaxPush ? push.normalized * MaxPush : push;
         }
 
@@ -329,14 +446,27 @@ namespace Purge.Gameplay.Horde
             _sees = new bool[capacity];
             _cornerUntil = new float[capacity];
             _retreatStuck = new float[capacity];
+            _dashDirection = new Vector2[capacity];
+            _dashSpeed = new float[capacity];
+            _dashLeft = new float[capacity];
+            _dashPush = new float[capacity];
+            _doorAt = new int[capacity];
+            _doorTimer = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
                 _speedFactor[i] = 1f;
+                _doorAt[i] = -1;
             }
 
             _walkable = new bool[_grid.Width * _grid.Height];
             _walkableCells = new int[_walkable.Length];
+            if (_doorUsers)
+            {
+                _doorWalkable = new bool[_walkable.Length];
+                _doorFlow = new FlowField(_grid.Width, _grid.Height);
+            }
+
             RefreshWalkable();
             _flow = new FlowField(_grid.Width, _grid.Height);
             _buckets = new CellBuckets(_grid.Width, _grid.Height, capacity);
@@ -452,6 +582,8 @@ namespace Purge.Gameplay.Horde
                 }
             }
 
+            if (!Frozen) ResolvePlayerContacts();
+
             while (_highWater > 0 && _states[_highWater - 1] == HordeAgentState.Inactive)
                 _highWater--;
 
@@ -475,6 +607,7 @@ namespace Purge.Gameplay.Horde
             _states[agent] = HordeAgentState.Dying;
             _stateStart[agent] = Time;
             _stunned[agent] = false;
+            _dashLeft[agent] = 0f;
             AliveCount--;
             Kills++;
             Killed?.Invoke(agent, _positions[agent]);
@@ -580,6 +713,13 @@ namespace Purge.Gameplay.Horde
         {
             var stats = _kinds[_kind[i]].Stats;
             var position = ApplyPush(i, _positions[i], deltaTime);
+            if (_stunned[i]) _dashLeft[i] = 0f;
+            if (_dashLeft[i] > 0f)
+            {
+                TickDash(i, position, stats, deltaTime);
+                return;
+            }
+
             if (_stunned[i] || Time < _staggerUntil[i])
             {
                 // Neither walks nor attacks (its attack waits); only the crowd and hits push it.
@@ -646,6 +786,13 @@ namespace Purge.Gameplay.Horde
                 _attackStart[i] = Time - stats.AttackInterval * 0.5f;
             }
 
+            var doors = _kinds[_kind[i]].Doors;
+            var flow = UsesDoorFlow && (doors == MonsterDoorUse.Open || doors == MonsterDoorUse.Break) ? _doorFlow : _flow;
+            if (flow == _doorFlow && _states[i] == HordeAgentState.Moving &&
+                TickDoor(i, position, playerPosition, stats, doors, deltaTime))
+                return;
+            _doorAt[i] = -1;
+
             if (_states[i] == HordeAgentState.Moving && distance > stats.AttackReach &&
                 (stats.HoldRange > 0f || stats.RetreatRange > 0f) &&
                 TickRanged(i, position, playerPosition, toPlayerDirection, distance, stats, deltaTime))
@@ -654,7 +801,7 @@ namespace Purge.Gameplay.Horde
             var desired = toPlayerDirection;
             if (_states[i] == HordeAgentState.Moving && distance > DirectChaseDistance)
             {
-                var next = _flow.NextAt(CellIndex(position));
+                var next = flow.NextAt(CellIndex(position));
                 if (next >= 0)
                 {
                     var target = new Vector2(next % _grid.Width, next / _grid.Width);
@@ -715,6 +862,70 @@ namespace Purge.Gameplay.Horde
             _positions[i] = position;
             _pace[i] = HordePace.Still;
             Turn(i, toPlayer, stats, deltaTime);
+            return true;
+        }
+
+        /// <summary>Rushes on (the charge): shoves the crowd aside, a wall or a closed door ends it.</summary>
+        private void TickDash(int i, Vector2 position, MonsterStats stats, float deltaTime)
+        {
+            var direction = _dashDirection[i];
+            var want = Mathf.Min(_dashSpeed[i] * _speedFactor[i] * deltaTime, _dashLeft[i]);
+            var moved = MoveWithWalls(position, direction * want, stats.Radius);
+            CrowdImpulse.Shove(this, position, moved, stats.Radius, _dashPush[i], i);
+            _dashLeft[i] -= want;
+            // Barely moved on: something that stops a step (a wall, a closed door) is in the way.
+            if (Vector2.Dot(moved - position, direction) < want * 0.5f) _dashLeft[i] = 0f;
+            _positions[i] = moved;
+            _pace[i] = HordePace.Run;
+            _facing[i] = Mathf.Atan2(direction.x, direction.y);
+        }
+
+        /// <summary>
+        /// A monster that opens or breaks doors, next to the closed door its field leads through: opens it at once (and
+        /// walks on — false), or stands and beats it down, a blow per attack interval (true: this tick is spent).
+        /// </summary>
+        private bool TickDoor(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, MonsterDoorUse use,
+            float deltaTime)
+        {
+            var cell = CellIndex(position);
+            var next = cell >= 0 ? _doorFlow.NextAt(cell) : -1;
+            if (next < 0 || _walkable[next]) return false; // the way on is floor: not at a closed door
+            var at = new Vector2(next % _grid.Width, next / _grid.Width);
+            var toDoor = at - position;
+            if (toDoor.magnitude > stats.Radius + DoorReach) return false;
+            var doorCell = new GridPosition(next % _grid.Width, next / _grid.Width, _player.Floor);
+            if (!_doors.TryGetDoor(doorCell, out var door) || _doors.IsOpen(door.Id)) return false;
+
+            if (use == MonsterDoorUse.Open)
+            {
+                DoorsOpened++;
+                _doors.SetOpen(door.Id, true);
+                _sounds?.Emit(SoundType.Door, at, DoorOpenNoise, doorCell.Floor);
+                return false;
+            }
+
+            if (_doorAt[i] != next)
+            {
+                // Came up to it: the first blow after half an interval (as a plain attack).
+                _doorAt[i] = next;
+                _doorTimer[i] = stats.AttackInterval * 0.5f;
+            }
+
+            _doorTimer[i] -= deltaTime;
+            if (_doorTimer[i] <= 0f)
+            {
+                _doorTimer[i] += stats.AttackInterval;
+                _attackStart[i] = Time;
+                DoorBlows++;
+                _sounds?.Emit(SoundType.Door, at, DoorBlowNoise, doorCell.Floor);
+                if (_doors.HitDoor(door.Id, stats.DoorDamage, position)) _doorAt[i] = -1;
+            }
+
+            var push = Separation(i, position, playerPosition, stats);
+            if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push, stats.Radius);
+            _positions[i] = position;
+            _pace[i] = HordePace.Still;
+            if (toDoor.sqrMagnitude > 1e-8f) Turn(i, toDoor.normalized, stats, deltaTime);
             return true;
         }
 
@@ -782,7 +993,8 @@ namespace Purge.Gameplay.Horde
         {
             var push = Vector2.zero;
             var radius = stats.Radius;
-            if (stats.Separation > 0f)
+            var ownInverse = _kinds[_kind[i]].InverseMass;
+            if (stats.Separation > 0f && ownInverse > 0f)
             {
                 var cx = Mathf.FloorToInt(position.x + 0.5f);
                 var cy = Mathf.FloorToInt(position.y + 0.5f);
@@ -804,20 +1016,71 @@ namespace Purge.Gameplay.Horde
                         continue;
                     }
 
+                    // The lighter gives way more (equal masses — half each, as before; the immovable never).
+                    var inverse = _kinds[_kind[other]].InverseMass;
+                    var sum = ownInverse + inverse;
+                    var share = sum > 0f ? ownInverse / sum : 0f;
                     var length = Mathf.Sqrt(squared);
-                    push += offset / length * ((minDistance - length) * 0.5f * stats.Separation);
+                    push += offset / length * ((minDistance - length) * share * stats.Separation);
                 }
             }
 
-            // Never inside the player.
-            var fromPlayer = position - playerPosition;
-            var playerReach = radius + PlayerRadius;
-            var playerDistance = fromPlayer.magnitude;
-            if (playerDistance < playerReach && playerDistance > 1e-4f)
-                push += fromPlayer / playerDistance * (playerReach - playerDistance);
-
+            // The player's body — ResolvePlayerContacts, after everyone has moved.
             var maxPush = radius;
             return push.sqrMagnitude > maxPush * maxPush ? push.normalized * maxPush : push;
+        }
+
+        /// <summary>
+        /// Bodies of living monsters overlapping the player's (stage 5d): the overlap is shared by mass — the monster steps
+        /// back by its share (walls may stop it), the player is moved by the rest (<see cref="PlayerSystem.Displace"/>).
+        /// Rank-and-file give way almost entirely, a Brute hardly, the immovable not at all (the player slides round it).
+        /// A crowd does not stack: the player moves at most as far as the deepest single overlap demands.
+        /// </summary>
+        private void ResolvePlayerContacts()
+        {
+            if (!_player.IsSpawned) return;
+            var center = _player.Position;
+            var playerInverse = 1f / _player.Definition.Mass;
+            var reach = PlayerRadius + _maxRadius;
+            var minX = Mathf.FloorToInt(center.x - reach + 0.5f);
+            var maxX = Mathf.FloorToInt(center.x + reach + 0.5f);
+            var minY = Mathf.FloorToInt(center.y - reach + 0.5f);
+            var maxY = Mathf.FloorToInt(center.y + reach + 0.5f);
+            var playerMove = Vector2.zero;
+            var deepest = 0f;
+            for (var y = minY - 1; y <= maxY + 1; y++)
+            for (var x = minX - 1; x <= maxX + 1; x++)
+            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            {
+                if (!IsAlive(_states[agent])) continue;
+                var kind = _kinds[_kind[agent]];
+                var position = _positions[agent];
+                var offset = position - center;
+                var touch = kind.Stats.Radius + PlayerRadius;
+                var squared = offset.sqrMagnitude;
+                if (squared >= touch * touch) continue;
+                var distance = Mathf.Sqrt(squared);
+                // Dead centre: apart along the monster's facing.
+                var away = distance > 1e-4f ? offset / distance : new Vector2(Mathf.Sin(_facing[agent]), Mathf.Cos(_facing[agent]));
+                var overlap = touch - distance;
+                var share = kind.InverseMass / (kind.InverseMass + playerInverse);
+                var stepped = 0f;
+                if (share > 0f)
+                {
+                    var moved = MoveWithWalls(position, away * (overlap * share), kind.Stats.Radius);
+                    stepped = Mathf.Max(0f, Vector2.Dot(moved - position, away));
+                    _positions[agent] = moved;
+                }
+
+                var rest = overlap - stepped;
+                if (rest <= 1e-5f) continue;
+                playerMove -= away * rest;
+                deepest = Mathf.Max(deepest, rest);
+            }
+
+            if (deepest <= 0f) return;
+            if (playerMove.sqrMagnitude > deepest * deepest) playerMove = playerMove.normalized * deepest;
+            _player.Displace(playerMove);
         }
 
         /// <summary>Moves by axis so the square footprint never enters an unwalkable cell (slides along walls).</summary>
@@ -998,6 +1261,8 @@ namespace Purge.Gameplay.Horde
             _sees[slot] = false;
             _cornerUntil[slot] = 0f;
             _retreatStuck[slot] = 0f;
+            _dashLeft[slot] = 0f;
+            _doorAt[slot] = -1;
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
             var definition = _kinds[kind].Definition;
@@ -1024,13 +1289,21 @@ namespace Purge.Gameplay.Horde
         private void RefreshWalkable()
         {
             _walkableCount = 0;
+            _passableDoors = 0;
             for (var y = 0; y < _grid.Height; y++)
             for (var x = 0; x < _grid.Width; x++)
             {
                 var index = y * _grid.Width + x;
-                var walkable = _passability.IsWalkable(new GridPosition(x, y, _player.Floor));
+                var cell = new GridPosition(x, y, _player.Floor);
+                var walkable = _passability.IsWalkable(cell);
                 _walkable[index] = walkable;
                 if (walkable) _walkableCells[_walkableCount++] = index;
+                if (_doorWalkable == null) continue;
+                // A closed door those that open or break doors may get through.
+                var door = !walkable && _grid.GetCell(cell) == CellType.Door && _doors.TryGetDoor(cell, out var data) &&
+                           _doors.IsPassableForMonsters(data.Id);
+                _doorWalkable[index] = walkable || door;
+                if (door) _passableDoors++;
             }
         }
 
@@ -1038,6 +1311,7 @@ namespace Purge.Gameplay.Horde
         {
             _flowTarget = _player.Cell;
             _flow.Build(_flowTarget, new FloorMask(_grid.Width, _walkable, _flowTarget.Floor));
+            if (UsesDoorFlow) _doorFlow.Build(_flowTarget, new FloorMask(_grid.Width, _doorWalkable, _flowTarget.Floor));
             _flowDirty = false;
             FlowBuilds++;
         }

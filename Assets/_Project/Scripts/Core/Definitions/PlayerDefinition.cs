@@ -26,6 +26,9 @@ namespace Purge.Core.Definitions
 
         [SerializeField, Min(1)] private int _maxHealth = 100;
 
+        [Tooltip("Body mass against the monsters' (stage 5d): bumping into one, the lighter gives way more. Rank-and-file 0.15, Brute 6.")]
+        [SerializeField, Min(0.01f)] private float _mass = 1f;
+
         [Tooltip("The weapon of an empty slot (ТЗ: базовый пистолет, бесконечные патроны): a picked weapon replaces it " +
                  "and is never dropped for it; a dropped weapon brings it back.")]
         [SerializeField] private WeaponDefinition _baseWeapon;
@@ -42,6 +45,7 @@ namespace Purge.Core.Definitions
         public float BodyHalfSize => _bodyHalfSize;
         public float CornerAssist => _cornerAssist;
         public int MaxHealth => _maxHealth;
+        public float Mass => _mass > 0f ? _mass : 1f;
         public WeaponDefinition BaseWeapon { get => _baseWeapon; internal set => _baseWeapon = value; }
         public float StepDistance => _stepDistance;
         public float StepSoundRadius => _stepSoundRadius;

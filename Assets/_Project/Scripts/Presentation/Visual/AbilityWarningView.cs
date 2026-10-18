@@ -17,7 +17,8 @@ namespace Purge.Presentation.Visual
     /// Warnings of the monsters' abilities (ТЗ: каждая опасная способность сначала показывает зону/линию, 0,5–1 с): for
     /// every cast in <see cref="AbilityPhase.Warning"/> (<see cref="MonsterAbilities"/>) a flat quad on the floor with
     /// <see cref="CombatVisualDefinition.AbilityWarning"/> (shader Purge/Warning) — lines along the shot (one per
-    /// projectile of a fan), a circle where an arc lands, a sector in front of a strike; the fill grows until it goes
+    /// projectile of a fan), a circle where an arc lands, a sector in front of a strike, a body-wide line as far as a
+    /// charge rushes, a circle around a monster that shoves (stage 5d); the fill grows until it goes
     /// off. Drawn whether or not the monster is in view: a shot out of the fog must be seen. Allocation-free per frame.
     /// </summary>
     public sealed class AbilityWarningView : ILevelLoadStep, ILevelLateTickable, IDisposable
@@ -105,6 +106,19 @@ namespace Purge.Presentation.Visual
                                 new Vector3(LineWidth, 1f, length)));
                         }
 
+                        break;
+                    case PushAbility push:
+                        Draw(0f, progress, 0f, 0.07f / push.Radius,
+                            Matrix4x4.TRS(new Vector3(aims[i].x, height, aims[i].y), Quaternion.identity,
+                                new Vector3(push.Radius * 2f, 1f, push.Radius * 2f)));
+                        break;
+                    case ChargeAbility _:
+                        // As wide as the body, as long as it can rush.
+                        var forwardLine = new Vector3(aims[i].x, 0f, aims[i].y);
+                        var reach = Mathf.Max(0.3f, _abilities.ChargeLength(i));
+                        var width = Mathf.Max(LineWidth, _horde.RadiusOf(i) * 2f);
+                        Draw(1f, progress, 0f, 0.18f, Matrix4x4.TRS(new Vector3(origin.x, height, origin.y) + forwardLine * (reach * 0.5f),
+                            Quaternion.LookRotation(forwardLine), new Vector3(width, 1f, reach)));
                         break;
                     case StrikeAbility strike:
                         var forward = new Vector3(aims[i].x, 0f, aims[i].y);

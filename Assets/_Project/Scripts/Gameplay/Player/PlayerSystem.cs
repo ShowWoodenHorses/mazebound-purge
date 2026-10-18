@@ -180,6 +180,28 @@ namespace Purge.Gameplay.Player
             if (_push.sqrMagnitude > MaxPush * MaxPush) _push = _push.normalized * MaxPush;
         }
 
+        /// <summary>
+        /// Knocks the player <paramref name="distance"/> cells along <paramref name="direction"/> (a monster's charge or
+        /// shove, stage 5d): replaces the push in progress, fades as a push does, walls stop it.
+        /// </summary>
+        public void Knock(Vector2 direction, float distance)
+        {
+            if (distance <= 0f || direction.sqrMagnitude < 1e-8f) return;
+            // A push of v fades to v / damping cells in all.
+            _push = direction.normalized * (distance * PushDamping);
+        }
+
+        /// <summary>
+        /// Moves the player by <paramref name="delta"/> cells at once, walls stop it as a step (stage 5d: a heavy monster's
+        /// body the player bumped into — <c>HordeSystem</c>).
+        /// </summary>
+        public void Displace(Vector2 delta)
+        {
+            if (!IsSpawned || delta.sqrMagnitude < 1e-10f) return;
+            Position = PlayerMovement.Move(Position, delta, _definition.BodyHalfSize, _definition.CornerAssist, this);
+            UpdateCell();
+        }
+
         /// <summary>The push in progress, cells per second (views, tests).</summary>
         public Vector2 PushVelocity => _push;
 

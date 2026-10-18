@@ -153,4 +153,55 @@ namespace Purge.Core.Monsters
 
         public override AbilityWarningShape Shape => AbilityWarningShape.Sector;
     }
+
+    /// <summary>
+    /// A charge (ТЗ «рывок»; the Brute's run-up): after the warning line it rushes along it — up to
+    /// <see cref="Distance"/>, stopping at a wall or a closed door. The player it runs into takes the damage and is
+    /// knocked away (no stun); the rank-and-file in its way are shoved aside unhurt (the crowd impulse).
+    /// </summary>
+    [Serializable, ModuleInfo("Charge", Category = "Ability", AllowMultiple = true)]
+    public sealed class ChargeAbility : AbilityModule
+    {
+        [Tooltip("How far it rushes at most, cells.")]
+        [SerializeField, Min(1f)] private float _distance = 7f;
+        [Tooltip("Cells per second while it rushes.")]
+        [SerializeField, Min(1f)] private float _speed = 10f;
+        [SerializeField, Min(0f)] private float _damage = 20f;
+        [Tooltip("How far the player it hit is knocked, cells.")]
+        [SerializeField, Min(0f)] private float _knockback = 2f;
+        [Tooltip("How hard the monsters in its way are shoved aside, cells per second (no damage).")]
+        [SerializeField, Min(0f)] private float _crowdPush = 7f;
+
+        public float Distance { get => _distance; internal set => _distance = value; }
+        public float Speed { get => _speed; internal set => _speed = value; }
+        public float Damage { get => _damage; internal set => _damage = value; }
+        public float Knockback { get => _knockback; internal set => _knockback = value; }
+        public float CrowdPush { get => _crowdPush; internal set => _crowdPush = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Line;
+    }
+
+    /// <summary>
+    /// A shove all around (ТЗ «отталкивание»): after the warning circle around the monster, the player inside it and not
+    /// behind a wall takes the damage and the state and is knocked away from the monster.
+    /// </summary>
+    [Serializable, ModuleInfo("Push", Category = "Ability", AllowMultiple = true)]
+    public sealed class PushAbility : AbilityModule
+    {
+        [Tooltip("Reach from the monster's centre, cells.")]
+        [SerializeField, Min(0.5f)] private float _radius = 2.2f;
+        [SerializeField, Min(0f)] private float _damage = 10f;
+        [Tooltip("How far the player is knocked, cells.")]
+        [SerializeField, Min(0f)] private float _knockback = 2.5f;
+        [SerializeField] private StatusDefinition _status;
+        [SerializeField, Min(0.1f)] private float _statusDuration = 1f;
+
+        public float Radius { get => _radius; internal set => _radius = value; }
+        public float Damage { get => _damage; internal set => _damage = value; }
+        public float Knockback { get => _knockback; internal set => _knockback = value; }
+        public StatusDefinition Status { get => _status; internal set => _status = value; }
+        public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Circle;
+    }
 }

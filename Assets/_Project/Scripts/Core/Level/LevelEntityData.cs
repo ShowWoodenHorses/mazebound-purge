@@ -33,6 +33,12 @@ namespace Purge.Core.Level
         [Tooltip("Frozen door: melee hits needed to break the ice before it can be opened; 0 = not frozen.")]
         [SerializeField] private int _iceHits;
 
+        [Tooltip("Damage monsters that break doors (the Brute, bosses) deal before it falls; 0 = the default.")]
+        [SerializeField] private int _strength;
+
+        /// <summary>Strength of a door that does not set its own (draft; balance — stage 9).</summary>
+        public const int DefaultStrength = 60;
+
         public DoorData(string id, GridPosition position, string keyId = null, bool isInitiallyOpen = false)
             : base(id, position)
         {
@@ -48,6 +54,9 @@ namespace Purge.Core.Level
         /// <summary>Melee hits that break the door's ice; 0 = not frozen. A frozen door starts closed.</summary>
         public int IceHits { get => _iceHits; internal set => _iceHits = Math.Max(0, value); }
         public bool IsFrozen => _iceHits > 0;
+
+        /// <summary>Damage from monsters that break doors before the door falls (stage 5d).</summary>
+        public int Strength { get => _strength > 0 ? _strength : DefaultStrength; internal set => _strength = Math.Max(0, value); }
     }
 
     [Serializable]

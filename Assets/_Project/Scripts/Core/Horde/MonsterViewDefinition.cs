@@ -3,6 +3,20 @@ using UnityEngine;
 
 namespace Purge.Core.Horde
 {
+    /// <summary>When a cast clip lets go (share of it) and its length at 1×, seconds (measured by Build Monsters).</summary>
+    [Serializable]
+    public struct CastClipTiming
+    {
+        [Range(0.05f, 1f)] public float Moment;
+        [Min(0f)] public float Length;
+
+        public CastClipTiming(float moment, float length)
+        {
+            Moment = moment;
+            Length = length;
+        }
+    }
+
     /// <summary>
     /// Look of an officer, elite or boss (ТЗ: Animator, not baked): a prefab with a Humanoid Animator whose controller
     /// Build Monsters makes, the equipment in sockets on the hand bones (built into the prefab), the measured ground
@@ -27,6 +41,8 @@ namespace Purge.Core.Horde
         [SerializeField, Range(0.05f, 1f)] private float _castMoment = 0.6f;
         [Tooltip("Length of the cast clip at 1×, seconds.")]
         [SerializeField, Min(0.05f)] private float _castLength = 1f;
+        [Tooltip("Casts of the second, third… ability when they have their own clips (stage 5d, the Brute); empty = as the first.")]
+        [SerializeField] private CastClipTiming[] _moreCasts = Array.Empty<CastClipTiming>();
         [Tooltip("Colour of the splashes when it is hit or killed, sRGB.")]
         [SerializeField] private Color _splashColor = new Color(0.55f, 0.85f, 0.25f, 1f);
 
@@ -49,8 +65,22 @@ namespace Purge.Core.Horde
         public Color ProjectileColor => _projectileColor;
         public float ProjectileSize => _projectileSize;
 
+        /// <summary>When the cast clip of ability <paramref name="index"/> lets go (share) and how long it is at 1×, s.</summary>
+        public void CastTiming(int index, out float moment, out float length)
+        {
+            if (index > 0 && _moreCasts != null && index - 1 < _moreCasts.Length && _moreCasts[index - 1].Length > 0f)
+            {
+                moment = _moreCasts[index - 1].Moment;
+                length = _moreCasts[index - 1].Length;
+                return;
+            }
+
+            moment = _castMoment;
+            length = _castLength;
+        }
+
         internal void Configure(string monsterId, GameObject prefab, float runSpeed, float walkSpeed, float castMoment,
-            float castLength)
+            float castLength, params CastClipTiming[] moreCasts)
         {
             _monsterId = monsterId;
             _prefab = prefab;
@@ -58,6 +88,7 @@ namespace Purge.Core.Horde
             _walkSpeed = walkSpeed;
             _castMoment = castMoment;
             _castLength = castLength;
+            _moreCasts = moreCasts ?? Array.Empty<CastClipTiming>();
         }
 
         internal void ConfigureLook(HordeEquipment[] equipment, Color splash, GameObject projectileModel, Color projectileColor,

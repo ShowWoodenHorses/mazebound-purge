@@ -34,7 +34,9 @@ namespace Purge.Editor.Dev
     /// <item>A new definition gets the draft numbers, abilities and the officers' drop (<see cref="Seed"/>); afterwards
     /// they are edited in the asset and kept.</item>
     /// </list>
-    /// The Brutes (Ram_*) come with stage 5d.
+    /// The Brutes (Ram_*, stage 5d) get their own controller (<see cref="BruteControllerPath"/>) on the Creature Animset
+    /// clips "Brute_*" (two casts: the shove and the roar before the charge), a head taller, a weapon in the right hand and
+    /// the draft numbers: shove, charge, they break doors.
     /// </summary>
     internal static class OfficersBuilder
     {
@@ -102,13 +104,80 @@ namespace Purge.Editor.Dev
             (Deaths[2], "Officer_Bow_Death_Left"), (Deaths[3], "Officer_Bow_Death_Right"),
         };
 
-        /// <summary>Officers this stage builds (the Brutes — stage 5d).</summary>
-        public static bool IsBuilt(string prefabName) => !prefabName.StartsWith("Ram_", StringComparison.Ordinal);
+        /// <summary>The Brutes' controller (stage 5d): the same states on the Creature clips, two casts.</summary>
+        public const string BruteControllerPath = "Assets/_Project/Art/Monster/Brute.controller";
+        private const string BrutePrefix = "Brute_";
 
-        /// <summary>Copies the missing "Officer_*" clips and imports them; returns how many were copied.</summary>
+        /// <summary>Head height of a Brute, m: a head taller than the other officers.</summary>
+        public const float BruteHeadHeight = 1.6f;
+
+        /// <summary>"Brute_*" clip → the Ultimate Animation Collection (Creature Animset) file it is copied from.</summary>
+        private static readonly (string Name, string Source)[] BruteClipTable =
+        {
+            ("Brute_Idle", "Humanoid@IdleBreatheCreature"),
+            ("Brute_Walk", "Humanoid@WalkForward1Creature"),
+            ("Brute_Run", "Humanoid@RunForward1Creature"),
+            ("Brute_Attack_1", "Humanoid@AttackRightClaws1Creature"),
+            ("Brute_Attack_2", "Humanoid@AttackLeftClaws1Creature"),
+            ("Brute_Attack_3", "Humanoid@Attack2HitComboCreature"),
+            ("Brute_Hit_Front", "Humanoid@GetHitFront1"),
+            ("Brute_Hit_Left", "Humanoid@GetHitLeft"),
+            ("Brute_Hit_Right", "Humanoid@GetHitRight"),
+            ("Brute_Roar", "Humanoid@Roar1Creature"),
+            ("Brute_Push", "Humanoid@AttackDoubleClawsCreature"),
+            ("Brute_Charge", "Humanoid@Roar2Creature"),
+        };
+
+        private static readonly string[] BruteLooping = { "Brute_Idle", "Brute_Walk", "Brute_Run" };
+
+        /// <summary>The clips a controller of this builder is made of.</summary>
+        private sealed class ClipSet
+        {
+            public string Idle, Walk, Run, Stun, Roar;
+            public string[] Attacks, Hits, Deaths;
+
+            /// <summary>A cast clip per ability index (CastIndex); one = every ability.</summary>
+            public string[] Casts;
+        }
+
+        private static readonly ClipSet OfficerClips = new ClipSet
+        {
+            Idle = Idle, Walk = Walk, Run = Run, Stun = Stun, Roar = Scream, Attacks = Attacks, Hits = Hits, Deaths = Deaths,
+            Casts = new[] { Throw },
+        };
+
+        /// <summary>The Brute: abilities [push, charge] — the shove of both claws, the roar before the run-up.</summary>
+        private static readonly ClipSet BruteClips = new ClipSet
+        {
+            Idle = "Brute_Idle", Walk = "Brute_Walk", Run = "Brute_Run", Stun = Stun, Roar = "Brute_Roar",
+            Attacks = new[] { "Brute_Attack_1", "Brute_Attack_2", "Brute_Attack_3" },
+            Hits = new[] { "Brute_Hit_Front", "Brute_Hit_Left", "Brute_Hit_Right" },
+            Deaths = Deaths,
+            Casts = new[] { "Brute_Push", "Brute_Charge" },
+        };
+
+        public static bool IsBrute(string prefabName) => prefabName.StartsWith("Ram_", StringComparison.Ordinal);
+
+        /// <summary>Copies the missing "Officer_*" and "Brute_*" clips and imports them; returns how many were copied.</summary>
         public static int PrepareClips(Dictionary<string, string> uac)
         {
             var copied = 0;
+            foreach (var (name, source) in BruteClipTable)
+            {
+                var target = $"{AnimationsPath}/{name}.fbx";
+                if (AssetDatabase.LoadMainAssetAtPath(target) != null) continue;
+                if (!uac.TryGetValue(source, out var path))
+                    throw new InvalidOperationException($"Clip '{name}' is missing and '{source}' is not in Import: put the " +
+                                                        "Ultimate Animation Collection pack into Import/Animations.");
+                if (!AssetDatabase.CopyAsset(path, target))
+                    throw new InvalidOperationException($"Could not copy '{path}' to '{target}'.");
+                copied++;
+            }
+
+            // The Creature's attacks and hits lunge and step: in place, as the officers' copies.
+            ImportClips(BrutePrefix, name => Array.IndexOf(BruteLooping, name) >= 0, null,
+                name => Array.IndexOf(BruteLooping, name) < 0);
+
             foreach (var (name, source) in ClipTable)
             {
                 var target = $"{AnimationsPath}/{name}.fbx";
@@ -154,13 +223,60 @@ namespace Purge.Editor.Dev
         {
             var views = new List<MonsterViewDefinition>();
             if (officers.Count == 0) return views;
-            var controller = BuildController();
+            var controller = BuildController(ControllerPath, OfficerClips);
+            var brutes = BuildController(BruteControllerPath, BruteClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
             foreach (var (prefab, definition) in officers)
-                views.Add(Setup(prefab, definition, controller, report));
+                views.Add(IsBrute(prefab.name)
+                    ? SetupBrute(prefab, definition, brutes, report)
+                    : Setup(prefab, definition, controller, report));
             return views;
         }
+
+        /// <summary>
+        /// A Brute (stage 5d): its controller, <see cref="BruteHeadHeight"/>, the weapon in its right hand; cast timings
+        /// per ability — the shove lets go when the claws move fastest, the roar before the charge plays through the
+        /// warning at about its own pace.
+        /// </summary>
+        private static MonsterViewDefinition SetupBrute(GameObject prefab, MonsterDefinition definition, AnimatorController controller,
+            List<string> report)
+        {
+            var viewPath = $"{ViewsPath}/{prefab.name}.asset";
+            var view = AssetDatabase.LoadAssetAtPath<MonsterViewDefinition>(viewPath);
+            if (view == null)
+            {
+                view = ScriptableObject.CreateInstance<MonsterViewDefinition>();
+                AssetDatabase.CreateAsset(view, viewPath);
+                SeedLook(view, prefab.name);
+            }
+
+            var path = AssetDatabase.GetAssetPath(prefab);
+            var scale = SetupPrefab(path, controller, view.Equipment, BruteHeadHeight);
+            prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+            var runSpeed = MeasureGroundSpeed(prefab, LoadClip(BruteClips.Run), scale);
+            var walkSpeed = MeasureGroundSpeed(prefab, LoadClip(BruteClips.Walk), scale);
+            var push = LoadClip(BruteClips.Casts[0]);
+            var roar = LoadClip(BruteClips.Casts[1]);
+            var pushMoment = MeasureSwing(prefab, push).Moment;
+            // The charge's warning is ~0.9 s: the roar plays at about 1× and the run takes over when it ends.
+            var roarMoment = Mathf.Clamp(ChargeWarning / Mathf.Max(0.05f, roar.length), 0.05f, 1f);
+            view.Configure(definition.Id, prefab, runSpeed, walkSpeed, pushMoment, push.length,
+                new CastClipTiming(roarMoment, roar.length));
+            EditorUtility.SetDirty(view);
+            report.Add($"  {prefab.name} ({definition.Id}): brute, scale {scale:0.00}, run {runSpeed:0.00} c/s, walk {walkSpeed:0.00} c/s, " +
+                       $"push lets go at {pushMoment:0.00} of {push.length:0.00} s, roar {roar.length:0.00} s, equipment {view.Equipment.Length}.");
+            return view;
+        }
+
+        private const float MaxRoarSpeed = 2f;
+
+        /// <summary>Draft mass of a Brute (the player's is 1): the player hardly moves it, blasts barely.</summary>
+        public const float BruteMass = 6f;
+
+        /// <summary>Draft warning of the Brute's charge, s.</summary>
+        private const float ChargeWarning = 0.9f;
 
         /// <summary>Draft numbers of a new officer (stage 5c decisions; balance — stage 9).</summary>
         public static void Seed(MonsterDefinition definition, string prefabName)
@@ -172,6 +288,36 @@ namespace Purge.Editor.Dev
             stats.EmergeTime = 0f;
             stats.SightRange = 9f;
             definition.SetDrop(EnsureOfficerDrop());
+            if (IsBrute(prefabName))
+            {
+                // The Brute (stage 5d): slow and heavy, shoves a player that comes close, charges one at a distance,
+                // breaks doors down.
+                definition.SetPerception(MonsterPerception.Wanderer);
+                stats.MaxHp = 400f;
+                stats.Speed = 1.8f;
+                stats.Radius = 0.45f;
+                stats.AttackReach = 1.1f;
+                stats.Damage = 18;
+                stats.AttackInterval = 1.6f;
+                stats.TurnSpeed = 300f;
+                stats.Mass = BruteMass;
+                stats.Doors = MonsterDoorUse.Break;
+                stats.DoorDamage = 20f;
+                var shove = new PushAbility
+                {
+                    Cooldown = 5f, FirstDelay = 0.5f, MinRange = 0f, MaxRange = 1.8f, NeedsSight = true, Warning = 0.7f, Recovery = 0.4f,
+                    Radius = 2.2f, Damage = 12f, Knockback = 2.5f,
+                };
+                var charge = new ChargeAbility
+                {
+                    Cooldown = 7f, FirstDelay = 1f, MinRange = 3f, MaxRange = 9f, NeedsSight = true, Warning = ChargeWarning, Recovery = 0.6f,
+                    Distance = 9f, Speed = 10f, Damage = 25f, Knockback = 2.5f, CrowdPush = 7f,
+                };
+                // Order = priority and the cast clip (BruteClips.Casts): the shove first.
+                definition.SetAbilities(shove, charge);
+                EditorUtility.SetDirty(definition);
+                return;
+            }
             if (prefabName.StartsWith("Shouter", StringComparison.Ordinal))
             {
                 // The caller: notices the player, screams once (the call) and runs at them itself.
@@ -334,6 +480,21 @@ namespace Purge.Editor.Dev
                 case "Shouter_Common":
                     splash = new Color(0.75f, 0.2f, 0.15f, 1f);
                     break;
+                case "Ram_Castle":
+                    // The orc: a two-handed hammer.
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("TwoHand/SM_Wep_Hammer_05") });
+                    splash = new Color(0.45f, 0.6f, 0.25f, 1f);
+                    break;
+                case "Ram_Forest":
+                    // The goat demon: an axe.
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("OneHand/SM_Wep_Axe_02") });
+                    splash = new Color(0.7f, 0.25f, 0.15f, 1f);
+                    break;
+                case "Ram_Snow":
+                    // The yeti: a club.
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("OneHand/SM_Wep_Troll_01") });
+                    splash = new Color(0.75f, 0.85f, 1f, 1f);
+                    break;
             }
 
             equipment.RemoveAll(item => item.Model == null);
@@ -347,7 +508,8 @@ namespace Purge.Editor.Dev
         /// The prefab in place: controller, no root motion, the scale for <see cref="HeadHeight"/>, the equipment on its
         /// bones, Standard → Purge/Lit. Returns the scale.
         /// </summary>
-        private static float SetupPrefab(string path, RuntimeAnimatorController controller, HordeEquipment[] equipment)
+        private static float SetupPrefab(string path, RuntimeAnimatorController controller, HordeEquipment[] equipment,
+            float headHeight = HeadHeight)
         {
             var root = PrefabUtility.LoadPrefabContents(path);
             try
@@ -364,7 +526,7 @@ namespace Purge.Editor.Dev
                 root.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
                 var head = animator.GetBoneTransform(HumanBodyBones.Head);
                 var unscaled = head.position.y / Mathf.Max(1e-3f, root.transform.localScale.x);
-                var scale = HeadHeight / Mathf.Max(0.1f, unscaled);
+                var scale = headHeight / Mathf.Max(0.1f, unscaled);
                 root.transform.localScale = Vector3.one * scale;
 
                 // Equipment: what the look lists, nothing else.
@@ -430,6 +592,19 @@ namespace Purge.Editor.Dev
             foreach (var material in renderer.sharedMaterials)
             {
                 if (material == null || material.shader == lit) continue;
+                if (material.shader != null && material.shader.name == "SyntyStudios/Blood")
+                {
+                    // Synty's bloodied characters (the orc Brute): the clean base texture only — the style has no blood.
+                    var texture = material.GetTexture("_Texture");
+                    material.shader = lit;
+                    material.shaderKeywords = new string[0];
+                    material.renderQueue = -1;
+                    material.mainTexture = texture;
+                    material.color = Color.white;
+                    EditorUtility.SetDirty(material);
+                    continue;
+                }
+
                 if (material.shader == null || material.shader.name != "Standard" ||
                     material.HasProperty("_Mode") && material.GetFloat("_Mode") > 0.5f)
                 {
@@ -450,9 +625,9 @@ namespace Purge.Editor.Dev
         /// The officers' controller (rebuilt in place, same asset): idle / walk / run by Pace (playback by the speed),
         /// from any state — death (by side), stun, cast, roar, attacks, hit reactions.
         /// </summary>
-        private static AnimatorController BuildController()
+        private static AnimatorController BuildController(string path, ClipSet clips)
         {
-            var controller = CreateOrClearController(ControllerPath);
+            var controller = CreateOrClearController(path);
             controller.AddParameter(P.Pace, AnimatorControllerParameterType.Int);
             AddFloat(controller, P.Playback, 1f);
             controller.AddParameter(P.Attack, AnimatorControllerParameterType.Trigger);
@@ -464,15 +639,16 @@ namespace Purge.Editor.Dev
             controller.AddParameter(P.Alert, AnimatorControllerParameterType.Bool);
             controller.AddParameter(P.Cast, AnimatorControllerParameterType.Bool);
             AddFloat(controller, P.CastSpeed, 1f);
+            controller.AddParameter(P.CastIndex, AnimatorControllerParameterType.Int);
             controller.AddParameter(P.Dead, AnimatorControllerParameterType.Bool);
             controller.AddParameter(P.DeathIndex, AnimatorControllerParameterType.Int);
 
             var machine = controller.layers[0].stateMachine;
             var idle = machine.AddState("Idle", new Vector3(300f, 0f));
-            idle.motion = LoadClip(Idle);
+            idle.motion = LoadClip(clips.Idle);
             machine.defaultState = idle;
-            var walk = Locomotion(machine, "Walk", Walk, new Vector3(300f, 120f));
-            var run = Locomotion(machine, "Run", Run, new Vector3(300f, 240f));
+            var walk = Locomotion(machine, "Walk", clips.Walk, new Vector3(300f, 120f));
+            var run = Locomotion(machine, "Run", clips.Run, new Vector3(300f, 240f));
             var paces = new[] { idle, walk, run };
             for (var from = 0; from < paces.Length; from++)
             for (var to = 0; to < paces.Length; to++)
@@ -480,45 +656,51 @@ namespace Purge.Editor.Dev
                     Transition(paces[from], paces[to], 0.2f).AddCondition(AnimatorConditionMode.Equals, to, P.Pace);
 
             // Any state, in priority: death, stun, cast, roar, attack, hit.
-            for (var d = 0; d < Deaths.Length; d++)
+            for (var d = 0; d < clips.Deaths.Length; d++)
             {
                 var death = machine.AddState("Death" + (d + 1), new Vector3(700f, d * 60f));
-                death.motion = LoadClip(Deaths[d]);
+                death.motion = LoadClip(clips.Deaths[d]);
                 var enter = Any(machine, death, 0.1f);
                 enter.AddCondition(AnimatorConditionMode.If, 0f, P.Dead);
                 enter.AddCondition(AnimatorConditionMode.Equals, d, P.DeathIndex);
             }
 
             var stun = machine.AddState("Stun", new Vector3(0f, 0f));
-            stun.motion = LoadClip(Stun);
+            stun.motion = LoadClip(clips.Stun);
             var toStun = Any(machine, stun, 0.15f);
             toStun.AddCondition(AnimatorConditionMode.If, 0f, P.Stunned);
             toStun.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Dead);
             Transition(stun, idle, 0.2f).AddCondition(AnimatorConditionMode.IfNot, 0f, P.Stunned);
 
-            var cast = machine.AddState("Cast", new Vector3(0f, 120f));
-            cast.motion = LoadClip(Throw);
-            cast.speedParameter = P.CastSpeed;
-            cast.speedParameterActive = true;
-            var toCast = Any(machine, cast, 0.1f);
-            toCast.AddCondition(AnimatorConditionMode.If, 0f, P.Cast);
-            toCast.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Dead);
-            toCast.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Stunned);
-            Transition(cast, idle, 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, P.Cast);
+            // A cast clip per ability index (one clip = for every ability).
+            for (var c = 0; c < clips.Casts.Length; c++)
+            {
+                var cast = machine.AddState(clips.Casts.Length > 1 ? "Cast" + (c + 1) : "Cast", new Vector3(0f, 120f + c * 60f));
+                cast.motion = LoadClip(clips.Casts[c]);
+                cast.speedParameter = P.CastSpeed;
+                cast.speedParameterActive = true;
+                var toCast = Any(machine, cast, 0.1f);
+                toCast.AddCondition(AnimatorConditionMode.If, 0f, P.Cast);
+                if (clips.Casts.Length > 1) toCast.AddCondition(AnimatorConditionMode.Equals, c, P.CastIndex);
+                toCast.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Dead);
+                toCast.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Stunned);
+                Transition(cast, idle, 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, P.Cast);
+            }
 
-            // The roar: the scream's roar part squeezed into the alert.
-            var roar = machine.AddState("Roar", new Vector3(0f, 240f));
-            roar.motion = LoadClip(Scream);
-            roar.speed = roar.motion.averageDuration / Purge.Gameplay.Horde.HordePerception.AlertTime;
+            // The roar: squeezed into the alert.
+            var roar = machine.AddState("Roar", new Vector3(0f, 360f));
+            roar.motion = LoadClip(clips.Roar);
+            // A long roar (the Creature's, 2.7 s) is not squeezed past 2×: its start plays, then idle.
+            roar.speed = Mathf.Min(MaxRoarSpeed, roar.motion.averageDuration / Purge.Gameplay.Horde.HordePerception.AlertTime);
             var toRoar = Any(machine, roar, 0.1f);
             toRoar.AddCondition(AnimatorConditionMode.If, 0f, P.Alert);
             toRoar.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Dead);
             Transition(roar, idle, 0.2f).AddCondition(AnimatorConditionMode.IfNot, 0f, P.Alert);
 
-            for (var a = 0; a < Attacks.Length; a++)
+            for (var a = 0; a < clips.Attacks.Length; a++)
             {
                 var attack = machine.AddState("Attack" + (a + 1), new Vector3(1000f, a * 80f));
-                attack.motion = LoadClip(Attacks[a]);
+                attack.motion = LoadClip(clips.Attacks[a]);
                 // At AttackSpeed = 1 the state lasts 1 s; the presenter sets 1 / attack interval.
                 attack.speed = attack.motion.averageDuration;
                 attack.speedParameter = P.AttackSpeed;
@@ -531,10 +713,10 @@ namespace Purge.Editor.Dev
                 Back(attack, idle, 0.9f);
             }
 
-            for (var h = 0; h < Hits.Length; h++)
+            for (var h = 0; h < clips.Hits.Length; h++)
             {
                 var hit = machine.AddState("Hit" + (h + 1), new Vector3(1000f, 300f + h * 80f));
-                hit.motion = LoadClip(Hits[h]);
+                hit.motion = LoadClip(clips.Hits[h]);
                 var enter = Any(machine, hit, 0.08f);
                 enter.canTransitionToSelf = true;
                 enter.AddCondition(AnimatorConditionMode.If, 0f, P.Hit);

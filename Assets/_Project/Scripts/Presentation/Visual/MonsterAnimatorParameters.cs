@@ -31,6 +31,9 @@ namespace Purge.Presentation.Visual
         /// <summary>Float: playback of the cast clip (fitted so it lets go at the end of the warning).</summary>
         public const string CastSpeed = "CastSpeed";
 
+        /// <summary>Int: which ability is cast (its index in the monster's list) — a cast clip per ability (stage 5d).</summary>
+        public const string CastIndex = "CastIndex";
+
         public const string Dead = "Dead";
 
         /// <summary>Int: 0 front (falls back), 1 back, 2 left, 3 right.</summary>

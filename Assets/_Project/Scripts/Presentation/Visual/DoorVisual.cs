@@ -24,6 +24,18 @@ namespace Purge.Presentation.Visual
         [Tooltip("Optional: receives bool parameters \"Open\" and \"Locked\" (if the controller has them).")]
         [SerializeField] private Animator _animator;
 
+        /// <summary>
+        /// Broken down (stage 5d): the closed leaf only (it falls flat — <c>DoorViewPresenter</c>), the Animator stops so
+        /// it does not swing the fallen leaf.
+        /// </summary>
+        public void SetBroken()
+        {
+            if (_closed != null) _closed.SetActive(true);
+            if (_open != null) _open.SetActive(false);
+            if (_locked != null) _locked.SetActive(false);
+            if (_animator != null) _animator.enabled = false;
+        }
+
         public void SetState(bool open, bool locked)
         {
             if (_closed != null) _closed.SetActive(!open);

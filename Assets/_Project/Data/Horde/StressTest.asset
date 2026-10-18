@@ -29,6 +29,8 @@ MonoBehaviour:
     CallRadius: 12
     HoldRange: 0
     RetreatRange: 0
+    Doors: 0
+    DoorDamage: 20
   _monsters: []
   _monsterVisuals: []
   _onDemandMonsters: []

@@ -20,6 +20,8 @@ namespace Purge.Gameplay.Horde
         Warning = 1,
         /// <summary>It went off; the monster still stands for the ability's recovery.</summary>
         Recovery = 2,
+        /// <summary>It goes on after it went off: a charge rushes (<see cref="HordeSystem.IsDashing"/>); then the recovery.</summary>
+        Active = 3,
     }
 
     /// <summary>
@@ -35,9 +37,16 @@ namespace Purge.Gameplay.Horde
     /// arcs land in their cell. The player hit takes the damage (with its direction — the HUD's arc) and the state; the
     /// impact effects happen where it ended (<see cref="EffectSystem"/>, hostile: its zones hurt the player).</item>
     /// <item><b>Strike</b> (<see cref="StrikeAbility"/>): the player in the sector and not behind a wall.</item>
+    /// <item><b>Charge</b> (<see cref="ChargeAbility"/>, stage 5d): the warning line runs as far as the body can rush
+    /// (<see cref="HordeSystem.DashReach"/>); then <see cref="AbilityPhase.Active"/> — <see cref="HordeSystem.BeginDash"/>
+    /// (the crowd shoved aside unhurt); the player it runs into takes the damage and is knocked along the charge (no stun),
+    /// and the rush ends there.</item>
+    /// <item><b>Push</b> (<see cref="PushAbility"/>, stage 5d): the player in the circle around the monster and not
+    /// behind a wall takes the damage and the state and is knocked away from it.</item>
     /// </list>
     /// Also keeps <see cref="HordeSystem.SetSeesPlayer"/> (line of sight, <see cref="SightInterval"/>) for the ranged
-    /// monsters' tactics. Nothing happens to the player in <see cref="HordeSystem.GodMode"/>. Registered after
+    /// monsters' tactics. In <see cref="HordeSystem.GodMode"/> the player takes neither damage nor states — knocks still
+    /// happen (the stand must feel a charge). Registered after
     /// <see cref="HordeSystem"/>; allocation-free per tick.
     /// </summary>
     public sealed class MonsterAbilities : ILevelLoadStep, ILevelTickable
@@ -67,6 +76,8 @@ namespace Purge.Gameplay.Horde
         private float[] _ready; // agent · MaxAbilities + ability: game time it may be cast again
         private float[] _chaseSince; // -1 = not chasing
         private float[] _nextSight;
+        private float[] _length; // a charge: how far it rushes (the warning line)
+        private Vector2[] _dashFrom; // a charge: where the body was last tick
 
         private int _projectileCount;
         private readonly Vector2[] _from = new Vector2[MaxProjectiles];
@@ -104,6 +115,12 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>Casts that went off (tests, metrics).</summary>
         public int Casts { get; private set; }
+
+        /// <summary>Charges that ran into the player (tests, metrics).</summary>
+        public int ChargeHits { get; private set; }
+
+        /// <summary>How far the charge of the monster in <paramref name="agent"/> rushes (its warning line), cells.</summary>
+        public float ChargeLength(int agent) => IsActive && (uint)agent < (uint)_length.Length ? _length[agent] : 0f;
 
         public ReadOnlySpan<sbyte> CastIndices => _cast;
         public ReadOnlySpan<AbilityPhase> Phases => _phase;
@@ -177,6 +194,8 @@ namespace Purge.Gameplay.Horde
             _ready = new float[capacity * MaxAbilities];
             _chaseSince = new float[capacity];
             _nextSight = new float[capacity];
+            _length = new float[capacity];
+            _dashFrom = new Vector2[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _generation[i] = -1;
@@ -237,6 +256,9 @@ namespace Purge.Gameplay.Horde
                         if (stunned[i]) Break(i, time);
                         else if (time - _phaseStart[i] >= casting.Warning) Release(i, casting, time);
                         break;
+                    case AbilityPhase.Active:
+                        TickCharge(i, abilities[_cast[i]] as ChargeAbility, time);
+                        break;
                     case AbilityPhase.Recovery:
                         if (time - _phaseStart[i] >= abilities[_cast[i]].Recovery) Finish(i);
                         break;
@@ -285,7 +307,14 @@ namespace Purge.Gameplay.Horde
             _phase[i] = AbilityPhase.Warning;
             _phaseStart[i] = time;
             _origin[i] = position;
-            _aim[i] = ability is ProjectileAbility { Form: ProjectileForm.Arc } ? LandingPoint(position, _player.Position) : direction;
+            _aim[i] = ability switch
+            {
+                ProjectileAbility { Form: ProjectileForm.Arc } => LandingPoint(position, _player.Position),
+                PushAbility => position,
+                _ => direction,
+            };
+            if (ability is ChargeAbility charge)
+                _length[i] = _horde.DashReach(position, direction, charge.Distance, _horde.RadiusOf(i));
             _horde.SetCasting(i, true, direction);
             CastStarted?.Invoke(i, index);
         }
@@ -318,9 +347,48 @@ namespace Purge.Gameplay.Horde
                 case StrikeAbility strike:
                     Strike(strike, position, _aim[i]);
                     break;
+                case PushAbility push:
+                    Shove(push, position);
+                    break;
+                case ChargeAbility charge:
+                    // Rushes along the warned line (from where it stands now); the recovery begins when it stops.
+                    _phase[i] = AbilityPhase.Active;
+                    _dashFrom[i] = position;
+                    _horde.BeginDash(i, _aim[i], charge.Speed, _length[i], charge.CrowdPush);
+                    break;
             }
 
             Released?.Invoke(i, index);
+        }
+
+        private void TickCharge(int i, ChargeAbility charge, float time)
+        {
+            var position = _horde.Positions[i];
+            if (charge != null && _player.IsSpawned && _horde.IsDashing(i) &&
+                SegmentCircle(_dashFrom[i], position - _dashFrom[i], _player.Position, _horde.RadiusOf(i) + PlayerRadius, out _))
+            {
+                // Ran into the player: hurt and knocked along the charge (no stun); the rush ends here.
+                ChargeHits++;
+                HurtPlayer(charge.Damage, position, null, 0f);
+                // God spares the damage, not the knock (the stand must feel it).
+                if (!_health.IsDead) _player.Knock(_aim[i], charge.Knockback);
+                _horde.EndDash(i);
+            }
+
+            _dashFrom[i] = position;
+            if (_horde.IsDashing(i)) return;
+            _phase[i] = AbilityPhase.Recovery;
+            _phaseStart[i] = time;
+        }
+
+        private void Shove(PushAbility push, Vector2 position)
+        {
+            if (!_player.IsSpawned) return;
+            var offset = _player.Position - position;
+            if (offset.magnitude > push.Radius + PlayerRadius) return;
+            if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
+            HurtPlayer(push.Damage, position, push.Status, push.StatusDuration);
+            if (!_health.IsDead) _player.Knock(offset.sqrMagnitude > 1e-6f ? offset : Vector2.up, push.Knockback);
         }
 
         private void Finish(int i)
@@ -341,6 +409,7 @@ namespace Purge.Gameplay.Horde
                     _ready[i * MaxAbilities + index] = time + Mathf.Min(BrokenCooldown, ability.Cooldown);
             }
 
+            if (_phase[i] == AbilityPhase.Active) _horde.EndDash(i);
             Finish(i);
         }
 
@@ -472,12 +541,14 @@ namespace Purge.Gameplay.Horde
             ProjectileEnded?.Invoke(at, kind, hitPlayer);
         }
 
-        private void HurtPlayer(float damage, Vector2 source, StatusDefinition status, float duration)
+        /// <summary>False when nothing happens to the player (<see cref="HordeSystem.GodMode"/>, dead).</summary>
+        private bool HurtPlayer(float damage, Vector2 source, StatusDefinition status, float duration)
         {
-            if (_horde.GodMode || _health.IsDead) return;
+            if (_horde.GodMode || _health.IsDead) return false;
             var amount = Mathf.RoundToInt(damage);
             if (amount > 0) _health.Damage(amount, source);
             if (status != null) _statuses?.Apply(status, duration);
+            return true;
         }
 
         private static Vector2 Rotate(Vector2 direction, float degrees)

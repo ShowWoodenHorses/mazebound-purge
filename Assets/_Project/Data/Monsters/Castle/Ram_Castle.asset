@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Ram_Castle
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: ram_castle
+  _rank: 1
+  _biome: 1
+  _perception: 0
+  _stats:
+    MaxHp: 400
+    Speed: 1.8
+    Radius: 0.45
+    AttackReach: 1.1
+    Damage: 18
+    AttackInterval: 1.6
+    TurnSpeed: 300
+    Separation: 0.5
+    CorpseTime: 4
+    EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 9
+    CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
+    Mass: 6
+    Immovable: 0
+    Doors: 3
+    DoorDamage: 20
+  _drop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities:
+  - rid: 1763807284696973379
+  - rid: 1763807284696973380
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807284696973379
+      type: {class: PushAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 5
+        _firstDelay: 0.5
+        _minRange: 0
+        _maxRange: 1.8
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.7
+        _recovery: 0.4
+        _radius: 2.2
+        _damage: 12
+        _knockback: 2.5
+        _status: {fileID: 0}
+        _statusDuration: 1
+    - rid: 1763807284696973380
+      type: {class: ChargeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 7
+        _firstDelay: 1
+        _minRange: 3
+        _maxRange: 9
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.9
+        _recovery: 0.6
+        _distance: 9
+        _speed: 10
+        _damage: 25
+        _knockback: 2.5
+        _crowdPush: 7

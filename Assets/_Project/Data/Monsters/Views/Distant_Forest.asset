@@ -19,6 +19,7 @@ MonoBehaviour:
   _walkSpeed: 0.27192828
   _castMoment: 0.7083333
   _castLength: 2.6666667
+  _moreCasts: []
   _splashColor: {r: 0.55, g: 0.85, b: 0.25, a: 1}
   _projectileModel: {fileID: 0}
   _projectileColor: {r: 0.55, g: 1, b: 0.2, a: 1}

@@ -22,6 +22,15 @@ namespace Purge.Presentation.Stress
         public float Resolution;
         /// <summary>Skip monsters outside the player's view (as in play); off = every monster on screen is drawn.</summary>
         public bool Cull;
+
+        /// <summary>Sandbox (stage 5): officers and Brutes on top of the horde (two of each).</summary>
+        public bool Officers;
+        /// <summary>Sandbox: the elite on top (one of each).</summary>
+        public bool Elite;
+        /// <summary>Sandbox: champions called up on top (affixes in turn, every third an officer).</summary>
+        public int Champions;
+        /// <summary>Sandbox: the bench kills the rank-and-file next to the player (drops, deaths' effects, blasts, raises).</summary>
+        public bool Kills;
     }
 
     /// <summary>Measured numbers of one configuration.</summary>
@@ -29,7 +38,7 @@ namespace Purge.Presentation.Stress
     {
         public const string Header =
             "name | count cam weapon storm fire vat lerp shadows render freeze fx res cull | avgFPS 1%low medMs | " +
-            "alive drawn | simMs simMaxMs flowMs fovMaxMs drawMs weapMs fxMs | drawCalls trisK";
+            "alive drawn | simMs simMaxMs flowMs fovMaxMs drawMs weapMs fxMs | drawCalls trisK | officers elite champs kills";
 
         public BenchmarkConfig Config;
         public float AvgFps, Low1Fps, MedianMs;
@@ -42,7 +51,8 @@ namespace Purge.Presentation.Stress
             return $"{c.Name} | {c.Count} {c.Camera:0} {c.Weapon} x{c.Storm:0.#} {c.Fire} {B(c.Vat)} {B(c.Lerp)} " +
                    $"{B(c.Shadows)} {B(c.Render)} {B(c.Freeze)} {B(c.Effects)} {c.Resolution:0.##} {B(c.Cull)} | " +
                    $"{AvgFps:0.0} {Low1Fps:0.0} {MedianMs:0.0} | {Alive:0} {Drawn:0} | " +
-                   $"{SimMs:0.00} {SimMaxMs:0.00} {FlowMs:0.00} {FovMaxMs:0.00} {RenderMs:0.00} {WeaponMs:0.00} {EffectsMs:0.00} | {DrawCalls:0} {Triangles / 1000f:0}";
+                   $"{SimMs:0.00} {SimMaxMs:0.00} {FlowMs:0.00} {FovMaxMs:0.00} {RenderMs:0.00} {WeaponMs:0.00} {EffectsMs:0.00} | {DrawCalls:0} {Triangles / 1000f:0} | " +
+                   $"{B(c.Officers)} {B(c.Elite)} {c.Champions} {B(c.Kills)}";
         }
 
         private static string B(bool value) => value ? "1" : "0";
@@ -176,6 +186,49 @@ namespace Purge.Presentation.Stress
             allStorm.Fire = settings.Weapons.FireCellsTarget;
             plan.Add(allStorm);
             return plan.ToArray();
+        }
+
+        /// <summary>Monsters of the sandbox's benchmark (stage 5): the crowd every step starts from.</summary>
+        public const int SandboxCount = 150;
+
+        /// <summary>
+        /// The combat sandbox's benchmark (stage 5, measured on the reference phone): the autopilot runs its circle, the
+        /// bench kills the rank-and-file next to the player; load grows step by step — <see cref="SandboxCount"/> of
+        /// the waves' kinds, + officers and Brutes (a closed door: the second flow field), + the elite, + champions,
+        /// twice the crowd, and the whole of it on screen.
+        /// </summary>
+        public static BenchmarkConfig[] CreateSandbox(StressTestDefinition settings)
+        {
+            var maxCamera = settings.StartCameraHalfExtent;
+            foreach (var camera in settings.CameraHalfExtents)
+                maxCamera = System.Math.Max(maxCamera, camera);
+            var mass = new BenchmarkConfig
+            {
+                Name = "mass" + SandboxCount,
+                Count = SandboxCount,
+                Camera = settings.StartCameraHalfExtent,
+                Weapon = StressWeapon.None,
+                Storm = 1f,
+                Shadows = true,
+                Render = true,
+                Effects = true,
+                Resolution = 1f,
+                Cull = true,
+                Kills = true,
+            };
+
+            var officers = Named(mass, "+officers");
+            officers.Officers = true;
+            var elite = Named(officers, "+elite");
+            elite.Elite = true;
+            var champions = Named(elite, "+champs");
+            champions.Champions = 12;
+            var double300 = Named(champions, "full300");
+            double300.Count = 300;
+            var all = Named(double300, "all300");
+            all.Camera = maxCamera;
+            all.Cull = false;
+            return new[] { mass, officers, elite, champions, double300, all };
         }
 
         private static BenchmarkConfig Named(BenchmarkConfig baseline, string name)

@@ -71,8 +71,9 @@ namespace Purge.Presentation.Stress
 
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
-            PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null)
+            PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null, Gameplay.Doors.DoorSystem doors = null)
         {
+            _doors = doors;
             _feel = feel;
             _sandbox = sandbox;
             _level = level;
@@ -102,6 +103,8 @@ namespace Purge.Presentation.Stress
             }
 
             _autopilot?.Attach(_player);
+            // The sandbox is played by hand: its autopilot runs only in the benchmark.
+            if (_settings.IsSandbox) Autopilot = false;
             // Unity caps mobile players at 30 FPS by default: measure up to the display's refresh rate.
             _previousFrameRate = UnityEngine.Application.targetFrameRate;
             SetFrameRateCap(MaxFrameRate);
@@ -327,8 +330,17 @@ namespace Purge.Presentation.Stress
         public void StartBenchmark()
         {
             if (!IsActive || BenchmarkRunning) return;
-            _plan = BenchmarkPlan.Create(_settings);
+            _plan = _settings.IsSandbox ? BenchmarkPlan.CreateSandbox(_settings) : BenchmarkPlan.Create(_settings);
             _before = Capture();
+            _beforeHunters = AllHunters;
+            _beforeGod = _horde.GodMode;
+            if (_settings.IsSandbox)
+            {
+                // Everyone comes for the player, nothing hurts them (the bench must run to the end).
+                AllHunters = true;
+                _horde.GodMode = true;
+            }
+
             _results.Clear();
             GameLog.Info(LogChannel.Performance, $"BENCH start: {_plan.Length} configs × " +
                                                  $"({_settings.BenchmarkWarmup:0}+{_settings.BenchmarkSample:0}) s. {DeviceLine()}");
@@ -340,6 +352,7 @@ namespace Purge.Presentation.Stress
             if (!BenchmarkRunning) return;
             _step = -1;
             Apply(_before);
+            RestoreSandbox();
             GameLog.Info(LogChannel.Performance, "BENCH stopped.");
         }
 
@@ -408,11 +421,82 @@ namespace Purge.Presentation.Stress
             if (!_plan[step].Freeze)
                 _horde.Reset();
             _weapons.ClearAll();
+            if (_settings.IsSandbox) SpawnExtras(_plan[step]);
+        }
+
+        // ---- Sandbox benchmark (stage 5) ----
+
+        private readonly Gameplay.Doors.DoorSystem _doors;
+        private bool _beforeHunters, _beforeGod;
+        private float _killTimer;
+
+        /// <summary>Seconds between the sandbox bench's kills (as if the player kept shooting).</summary>
+        private const float KillInterval = 0.25f;
+        private const float KillReach = 8f;
+
+        /// <summary>
+        /// A fresh step of the sandbox bench: doors closed again (officers chase through the second flow field), the
+        /// step's officers, elite and champions on top of the fresh wave.
+        /// </summary>
+        private void SpawnExtras(BenchmarkConfig config)
+        {
+            _killTimer = KillInterval;
+            if (_doors != null)
+                foreach (var door in _doors.Doors)
+                    if (_doors.IsOpen(door.Id) && !_doors.IsBroken(door.Id) && !_horde.AnyBodyInCell(door.Position))
+                        _doors.SetOpen(door.Id, false);
+
+            for (var o = 0; o < OfficerCount; o++)
+            {
+                var rank = OfficerRank(o);
+                var copies = rank == Core.Monsters.MonsterRank.Officer && config.Officers ? 2 :
+                    rank == Core.Monsters.MonsterRank.Elite && config.Elite ? 1 : 0;
+                for (var n = 0; n < copies; n++) SpawnOfficer(o);
+            }
+
+            var officers = ChampionOfficers;
+            for (var c = 0; c < config.Champions && ChampionAffixCount > 0; c++)
+            {
+                ChampionOfficers = c % 3 == 2;
+                SpawnChampion(c % ChampionAffixCount);
+            }
+
+            ChampionOfficers = officers;
+        }
+
+        /// <summary>The bench «shoots»: the nearest of the waves' monsters by the player dies now and then.</summary>
+        private void TickKills(float frame)
+        {
+            _killTimer -= frame;
+            if (_killTimer > 0f) return;
+            _killTimer += KillInterval;
+            var best = -1;
+            var bestDistance = KillReach * KillReach;
+            var positions = _horde.Positions;
+            var states = _horde.States;
+            for (var i = 0; i < _horde.HighWater; i++)
+            {
+                if (!HordeSystem.IsAlive(states[i]) || _horde.KindOf(i).Weight <= 0f) continue;
+                var distance = (positions[i] - _player.Position).sqrMagnitude;
+                if (distance >= bestDistance) continue;
+                bestDistance = distance;
+                best = i;
+            }
+
+            if (best >= 0) _horde.Damage(best, _horde.MaxHealthOf(best) * 10f);
+        }
+
+        private void RestoreSandbox()
+        {
+            if (!_settings.IsSandbox) return;
+            AllHunters = _beforeHunters;
+            _horde.GodMode = _beforeGod;
         }
 
         private void TickBenchmark(float frame)
         {
             _stepTime += frame;
+            if (_plan[_step].Kills) TickKills(frame);
             if (_stepTime < _settings.BenchmarkWarmup) return;
 
             if (_sampleCount < MaxSampleFrames)
@@ -443,6 +527,7 @@ namespace Purge.Presentation.Stress
 
             _step = -1;
             Apply(_before);
+            RestoreSandbox();
             var summary = new StringBuilder("BENCH done. ").Append(DeviceLine()).Append('\n');
             summary.Append(BenchmarkResult.Header).Append('\n');
             foreach (var r in _results)
@@ -516,7 +601,8 @@ namespace Purge.Presentation.Stress
             _effects.FireCells = config.Effects;
             if (!Mathf.Approximately(config.Resolution, _resolutionScale))
                 SetResolutionScale(config.Resolution);
-            Autopilot = true;
+            // The sandbox is played by hand outside its benchmark.
+            Autopilot = BenchmarkRunning || !_settings.IsSandbox;
             _weapons.AutoFire = true;
             SetFrameRateCap(MaxFrameRate);
         }

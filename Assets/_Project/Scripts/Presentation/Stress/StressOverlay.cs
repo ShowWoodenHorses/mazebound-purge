@@ -69,14 +69,15 @@ namespace Purge.Presentation.Stress
 
             var sandbox = controller.Settings.IsSandbox;
             var header = Row(panel);
-            Button(header, sandbox ? "SANDBOX  [-/+]" : "STRESS  [-/+]", () => _body.SetActive(!_body.activeSelf), null, 260f);
+            Button(header, sandbox ? "SANDBOX  [-/+]" : "STRESS  [-/+]", () => _body.SetActive(!_body.activeSelf), null, sandbox ? 210f : 260f);
             if (sandbox)
             {
-                Button(header, "AMMO", controller.RefillAmmo, null, 160f);
-                Button(header, "THROW", controller.NextThrowable, null, 160f);
+                Button(header, "AMMO", controller.RefillAmmo, null, 100f);
+                Button(header, "THROW", controller.NextThrowable, null, 100f);
             }
-            else
-                _benchLabel = Button(header, "RUN BENCH", ToggleBenchmark, () => _controller.BenchmarkRunning, 220f);
+
+            // The sandbox's benchmark too (stage 5).
+            _benchLabel = Button(header, "RUN BENCH", ToggleBenchmark, () => _controller.BenchmarkRunning, sandbox ? 180f : 220f);
 
             _body = new GameObject("Body", typeof(RectTransform));
             _body.transform.SetParent(panel, false);

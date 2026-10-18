@@ -5,6 +5,7 @@ using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Doors;
+using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
@@ -20,7 +21,8 @@ namespace Purge.Gameplay.Combat
     /// <list type="bullet">
     /// <item><see cref="BulletAttack"/> — bullets or a fan of pellets (<see cref="BulletSystem"/>);
     /// <see cref="ExplosiveAttack"/> — a projectile that explodes where it ends.</item>
-    /// <item><see cref="StreamAttack"/> — every target in a cone in front, each tick of the stream.</item>
+    /// <item><see cref="StreamAttack"/> — every target in a cone in front, each tick of the stream; with
+    /// <see cref="IgniteCellsModule"/> the flammable cells in the cone catch fire (<see cref="ZoneSystem"/>).</item>
     /// <item><see cref="ChainAttack"/> — the first target in a cone, then jumps to the nearest ones
     /// (<see cref="ChainPoints"/> for views).</item>
     /// <item><see cref="MeleeAttack"/> — every target in a sector; also one hit on a frozen door in front.</item>
@@ -71,6 +73,7 @@ namespace Purge.Gameplay.Combat
         private readonly AmmoStock _ammo;
         private readonly IAimPointer _pointer;
         private readonly PlayerThrowing _throwing;
+        private readonly ZoneSystem _zones;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly List<CombatTarget> _meleeTargets = new List<CombatTarget>();
         private readonly List<IDamageable> _meleeHits = new List<IDamageable>();
@@ -82,8 +85,9 @@ namespace Purge.Gameplay.Combat
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
-            IAimPointer pointer = null, PlayerThrowing throwing = null)
+            IAimPointer pointer = null, PlayerThrowing throwing = null, ZoneSystem zones = null)
         {
+            _zones = zones;
             _input = input;
             _player = player;
             _weapons = weapons;
@@ -389,6 +393,33 @@ namespace Purge.Gameplay.Combat
                 if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
                     _targets.Damage(target, stream.DamagePerTick, direction, weapon);
             _found.Clear();
+
+            var ignite = weapon.Ignite;
+            if (ignite != null && ignite.Zone != null && _zones != null)
+                Ignite(ignite, stream, origin, direction, floor);
+        }
+
+        /// <summary>Flammable cells in the stream's cone and reach, not behind what stops bullets, catch fire.</summary>
+        private void Ignite(IgniteCellsModule ignite, StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
+        {
+            var grid = _zones.Grid;
+            var cos = Mathf.Cos(stream.Angle * 0.5f * Mathf.Deg2Rad);
+            var range = stream.Range;
+            var reach = Mathf.CeilToInt(range);
+            var cx = Mathf.FloorToInt(origin.x + 0.5f);
+            var cy = Mathf.FloorToInt(origin.y + 0.5f);
+            for (var y = cy - reach; y <= cy + reach; y++)
+            for (var x = cx - reach; x <= cx + reach; x++)
+            {
+                var cell = new GridPosition(x, y, floor);
+                if (!grid.Has(cell, CellFlags.Flammable)) continue;
+                var offset = new Vector2(x, y) - origin;
+                var distance = offset.magnitude;
+                // The player's own cell burns when they stand in a bush; the rest must be in the cone.
+                if (distance > range || distance > 0.5f && Vector2.Dot(offset / distance, direction) < cos) continue;
+                if (distance > 0.5f && !_targets.IsClear(origin, new Vector2(x, y), floor)) continue;
+                _zones.Place(cell, ignite.Zone, ignite.Duration, ignite.Strength);
+            }
         }
 
         private void Chain(WeaponDefinition weapon, ChainAttack chain, Vector2 origin, Vector2 direction, int floor)

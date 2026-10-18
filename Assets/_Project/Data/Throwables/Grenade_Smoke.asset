@@ -20,7 +20,18 @@ MonoBehaviour:
   _arcHeight: 0.3
   _cooldown: 0.6
   _soundRadius: 3
-  _effects: []
+  _effects:
+  - rid: 1763807284696973426
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1763807284696973426
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: 44cac426ebb14ee41aba10535a0ab7f0
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 2

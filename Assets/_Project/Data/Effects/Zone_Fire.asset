@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: zone_fire
   _core: {r: 1, g: 0.86, b: 0.35, a: 1}
   _edge: {r: 0.95, g: 0.3, b: 0.06, a: 1}
+  _particles:
+    m_AssetGUID: c36eb9b2b390dbb4d8c8ee3ef674a845
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _particlesPerSecond: 10
   _modules:
   - rid: 1763807262009983155
   - rid: 1763807262009983156

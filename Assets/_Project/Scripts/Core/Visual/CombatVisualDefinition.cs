@@ -83,6 +83,28 @@ namespace Purge.Core.Visual
         [SerializeField] private AssetReferenceGameObject _explosionLarge;
         [SerializeField, Min(0.3f)] private float _largeExplosionRadius = 2f;
 
+        [Header("Pack effects (stage Э2): weapons")]
+        [Tooltip("Stream (cone) of a weapon without its own: a looping effect at the muzzle while it fires, fitted to its " +
+                 "range; empty = the draft flame.")]
+        [SerializeField] private AssetReferenceGameObject _stream;
+        [Tooltip("Flash on every monster a chain lightning hits.")]
+        [SerializeField] private AssetReferenceGameObject _chainHit;
+        [Tooltip("Bolts of chain lightning from a pack texture (a bolt drawn along V, Purge/Particle): one quad per jump, " +
+                 "mirrored at random every frame; empty = the draft jagged bolt (Bolt Material).")]
+        [SerializeField] private Material _chainBolt;
+        [Tooltip("Width of a textured bolt, cells.")]
+        [SerializeField, Min(0.05f)] private float _chainBoltWidth = 0.6f;
+        [Tooltip("Smoke out of the muzzle when a burst of bullets ends.")]
+        [SerializeField] private AssetReferenceGameObject _barrelSmoke;
+        [Tooltip("Shots in a burst before it smokes (a shotgun's shot counts as many as its pellets).")]
+        [SerializeField, Min(1)] private int _barrelSmokeShots = 3;
+        [Tooltip("Sparks where the horde is hit: an effect the game emits from (many hits a second — no instances); " +
+                 "empty = the draft sparks.")]
+        [SerializeField] private AssetReferenceGameObject _hitSparks;
+        [Tooltip("Particles per hit and per kill.")]
+        [SerializeField, Min(0)] private int _hitSparksCount = 2;
+        [SerializeField, Min(0)] private int _killSparksCount = 5;
+
         [Header("Monsters' abilities (stage 5c)")]
         [Tooltip("Warnings of abilities on the floor: lines, circles, sectors (Purge/Warning).")]
         [SerializeField] private Material _abilityWarning;
@@ -117,6 +139,30 @@ namespace Purge.Core.Visual
         public AssetReferenceGameObject ExplosionLarge { get => _explosionLarge; internal set => _explosionLarge = value; }
         public float LargeExplosionRadius { get => _largeExplosionRadius; internal set => _largeExplosionRadius = value; }
 
+        public AssetReferenceGameObject Stream { get => _stream; internal set => _stream = value; }
+        public AssetReferenceGameObject ChainHit { get => _chainHit; internal set => _chainHit = value; }
+        public Material ChainBolt { get => _chainBolt; internal set => _chainBolt = value; }
+        public float ChainBoltWidth { get => _chainBoltWidth; internal set => _chainBoltWidth = value; }
+        public AssetReferenceGameObject BarrelSmoke { get => _barrelSmoke; internal set => _barrelSmoke = value; }
+        public int BarrelSmokeShots { get => _barrelSmokeShots; internal set => _barrelSmokeShots = value; }
+        public AssetReferenceGameObject HitSparks { get => _hitSparks; internal set => _hitSparks = value; }
+        public int HitSparksCount { get => _hitSparksCount; internal set => _hitSparksCount = value; }
+        public int KillSparksCount { get => _killSparksCount; internal set => _killSparksCount = value; }
+
+        /// <summary>The stream look of a weapon: its own, else the default; null for other attacks.</summary>
+        public AssetReferenceGameObject StreamOf(WeaponDefinition weapon) =>
+            weapon == null || !(weapon.Attack is StreamAttack) ? null : Own(weapon.Effects?.Stream) ?? Own(_stream);
+
+        /// <summary>The flash on a chain lightning's targets: the weapon's own, else the default; null for other attacks.</summary>
+        public AssetReferenceGameObject ChainHitOf(WeaponDefinition weapon) =>
+            weapon == null || !(weapon.Attack is ChainAttack) ? null : Own(weapon.Effects?.TargetHit) ?? Own(_chainHit);
+
+        /// <summary>Smoke after a burst: the weapon's own, else the default; null for attacks without bullets.</summary>
+        public AssetReferenceGameObject BarrelSmokeOf(WeaponDefinition weapon) =>
+            weapon == null || !(weapon.Attack is BulletAttack) ? null : Own(weapon.Effects?.BarrelSmoke) ?? Own(_barrelSmoke);
+
+        private static AssetReferenceGameObject Own(AssetReferenceGameObject reference) => IsSet(reference) ? reference : null;
+
         /// <summary>Default pack muzzle flash of a hold, or null (then <see cref="MuzzleFlash"/>, the own flash).</summary>
         public AssetReferenceGameObject MuzzleFlashOf(WeaponHold hold)
         {
@@ -148,6 +194,10 @@ namespace Purge.Core.Visual
                     if (entry != null) yield return entry.Effect;
                 yield return _explosionSmall;
                 yield return _explosionLarge;
+                yield return _stream;
+                yield return _chainHit;
+                yield return _barrelSmoke;
+                yield return _hitSparks;
             }
         }
 

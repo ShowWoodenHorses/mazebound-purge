@@ -50,6 +50,9 @@ namespace Purge.Gameplay.Effects
         /// <summary>(where, zone, radius) a zone was placed.</summary>
         public event Action<Vector2, ZoneDefinition, float> ZonePlaced;
 
+        /// <summary>(where, radius, look) of a look-only effect (<see cref="LookEffect"/>).</summary>
+        public event Action<Vector2, float, IExplosionLook> LookShown;
+
         /// <param name="hostile">The monsters' effect: it reaches the player too (the player's own never do).</param>
         public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false)
         {
@@ -67,6 +70,9 @@ namespace Purge.Gameplay.Effects
                     case PlaceZoneEffect zone when zone.Zone != null:
                         _zones.PlaceArea(at, floor, zone.Radius, zone.Zone, zone.Duration, zone.Strength, hostile);
                         ZonePlaced?.Invoke(at, zone.Zone, zone.Radius);
+                        break;
+                    case LookEffect look:
+                        LookShown?.Invoke(at, look.Radius, look);
                         break;
                     case AreaStatusEffect status when status.Status != null:
                         if (hostile) StatusOnPlayer(at, status, floor);

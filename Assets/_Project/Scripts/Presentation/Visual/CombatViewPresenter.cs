@@ -24,7 +24,9 @@ namespace Purge.Presentation.Visual
     /// joins the bullet's real line (gameplay bullets fly from the player's centre) within <see cref="ConvergeDistance"/>;</item>
     /// <item>bullet stopped by a wall or closed door: sparks and dust out of the wall; hit on a zombie (bullet or
     /// melee): a hit "star" (the model's flash is <see cref="ZombieViewPresenter"/>'s);</item>
-    /// <item>melee: a swing stroke over the weapon's sector (<see cref="SwingArc"/>: arc and reach of the weapon).</item>
+    /// <item>melee: a swing stroke over the weapon's sector (<see cref="SwingArc"/>: arc and reach of the weapon);</item>
+    /// <item>stage Э2 (pack effects, <see cref="PackEffectsPlayer"/>): a stream's looping look held at the muzzle while it
+    /// fires (no flash then), smoke out of the muzzle after a burst of bullets; shells only from cartridge guns.</item>
     /// </list>
     /// Melee visuals wait for the moment the attack clip hits (<see cref="PlayerViewPresenter.LastMeleeContactDelay"/>;
     /// the clip starts with a wind-up): the stroke starts <see cref="SwingLead"/> earlier so its head crosses the sector
@@ -50,6 +52,12 @@ namespace Purge.Presentation.Visual
 
         /// <summary>Where along the gun (grip → muzzle) shells come out.</summary>
         private const float EjectShare = 0.4f;
+
+        /// <summary>Seconds after a stream's tick (beyond its interval) its look keeps playing: no flicker between ticks.</summary>
+        private const float StreamGap = 0.15f;
+
+        /// <summary>Seconds of no shot (beyond the interval) that end a burst — as the weapon's sound tail.</summary>
+        private const float BurstGap = 0.12f;
 
         public const int PrefilledBullets = 8;
         public const int PrefilledImpacts = 4;
@@ -93,6 +101,12 @@ namespace Purge.Presentation.Visual
         private Vector2 _meleeDirection;
         private float _meleeSweep;
         private WeaponDefinition _meleeWeapon;
+        private AssetReferenceGameObject _streamLook;
+        private float _streamReach;
+        private float _streamLeft;
+        private WeaponDefinition _burstWeapon;
+        private int _burstShots;
+        private float _burstLeft;
         private bool _subscribed;
 
         public CombatViewPresenter(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root, BulletSystem bullets,
@@ -148,6 +162,8 @@ namespace Purge.Presentation.Visual
                 ShowShot();
             if (_meleePending)
                 UpdateMelee(deltaTime);
+            UpdateStream(deltaTime);
+            UpdateBurst(deltaTime);
 
             foreach (var pair in _tracers)
                 PlaceTracer(pair.Key, pair.Value);
@@ -192,6 +208,8 @@ namespace Purge.Presentation.Visual
             _shotPending = false;
             _meleePending = false;
             _meleeTargets.Clear();
+            _streamLook = null;
+            _burstWeapon = null;
 
             _tracerPool?.Dispose();
             _tracerPool = null;
@@ -285,7 +303,13 @@ namespace Purge.Presentation.Visual
 
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
-            if (!weapon.Definition.IsMelee)
+            var definition = weapon.Definition;
+            if (definition.Attack is StreamAttack stream && HoldsStream(definition, stream))
+                return; // the stream's look is the whole shot: no flash, no shell
+            if (definition.Attack is BulletAttack bullets)
+                CountBurst(definition, bullets);
+
+            if (!definition.IsMelee)
             {
                 // The gun is posed for this frame only in the late tick: the flash and shell wait for it.
                 _shotPending = true;
@@ -306,6 +330,80 @@ namespace Purge.Presentation.Visual
             _meleeWeapon = weapon.Definition;
             _meleeTargets.Clear();
             _meleeTargets.AddRange(_combat.LastMeleeHits);
+        }
+
+        // ---- Streams and bursts (stage Э2) ----
+
+        /// <summary>A stream with a loaded pack look keeps it held until the attacks stop.</summary>
+        private bool HoldsStream(WeaponDefinition weapon, StreamAttack stream)
+        {
+            var look = _visual.StreamOf(weapon);
+            if (_packEffects == null || !_packEffects.IsLoaded(look)) return false;
+            if (_streamLook != null && _streamLook.AssetGUID != look.AssetGUID) _packEffects.Release(_streamLook);
+            _streamLook = look;
+            _streamReach = stream.Range;
+            _streamLeft = weapon.Cooldown + StreamGap;
+            return true;
+        }
+
+        private void UpdateStream(float deltaTime)
+        {
+            if (_streamLook == null) return;
+            _streamLeft -= deltaTime;
+            if (_streamLeft > 0f && Muzzle(out var position, out var rotation, flat: true))
+            {
+                _packEffects.Hold(_streamLook, position, rotation, _streamReach);
+                return;
+            }
+
+            _packEffects.Release(_streamLook);
+            _streamLook = null;
+        }
+
+        private void CountBurst(WeaponDefinition weapon, BulletAttack bullets)
+        {
+            if (_burstWeapon != weapon) _burstShots = 0;
+            _burstWeapon = weapon;
+            _burstShots += Mathf.Max(1, bullets.Pellets);
+            _burstLeft = weapon.Cooldown + BurstGap;
+        }
+
+        /// <summary>A burst long enough smokes out of the muzzle when it stops.</summary>
+        private void UpdateBurst(float deltaTime)
+        {
+            if (_burstWeapon == null) return;
+            _burstLeft -= deltaTime;
+            if (_burstLeft > 0f) return;
+            var smoke = _burstShots >= _visual.BarrelSmokeShots ? _visual.BarrelSmokeOf(_burstWeapon) : null;
+            if (smoke != null && _packEffects != null && Muzzle(out var position, out var rotation, flat: false))
+                _packEffects.Play(smoke, position, rotation);
+            _burstWeapon = null;
+            _burstShots = 0;
+        }
+
+        /// <summary>The posed gun's muzzle (view root space), else in front of the player at shot height.</summary>
+        private bool Muzzle(out Vector3 position, out Quaternion rotation, bool flat)
+        {
+            var model = _weaponView != null ? _weaponView.ShownModel : null;
+            var muzzle = model != null ? model.Muzzle : null;
+            var aim = _combat.AimDirection;
+            var forward = new Vector3(aim.x, 0f, aim.y);
+            if (muzzle != null)
+            {
+                var rootTransform = _root.transform;
+                position = rootTransform.InverseTransformPoint(muzzle.position);
+                var barrel = rootTransform.InverseTransformDirection(muzzle.forward);
+                if (flat) barrel = Vector3.ProjectOnPlane(barrel, Vector3.up);
+                if (barrel.sqrMagnitude > 1e-4f) forward = barrel;
+            }
+            else
+            {
+                var front = _player.Position + aim * 0.5f;
+                position = new Vector3(front.x, ShotHeight, front.y);
+            }
+
+            rotation = forward.sqrMagnitude > 1e-4f ? Quaternion.LookRotation(forward, Vector3.up) : Quaternion.identity;
+            return _player.IsSpawned;
         }
 
         private void UpdateMelee(float deltaTime)
@@ -384,7 +482,9 @@ namespace Purge.Presentation.Visual
             var gun = model.transform;
             var eject = rootTransform.InverseTransformPoint(Vector3.Lerp(gun.position, muzzle.position, EjectShare));
             var right = Vector3.ProjectOnPlane(rootTransform.InverseTransformDirection(gun.right), Vector3.up);
-            if (right.sqrMagnitude > 1e-4f)
+            // Only guns that fire cartridges throw out shells (not streams or lightning).
+            var shells = _shotWeapon != null && (_shotWeapon.Attack is BulletAttack || _shotWeapon.Attack is ExplosiveAttack);
+            if (shells && right.sqrMagnitude > 1e-4f)
                 ShowAt(_shellPool, eject, Quaternion.LookRotation(right, Vector3.up));
 
             foreach (var tracer in _newTracers)

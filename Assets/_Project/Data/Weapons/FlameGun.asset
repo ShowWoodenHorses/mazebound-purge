@@ -25,6 +25,7 @@ MonoBehaviour:
   - rid: 1763807262009983060
   - rid: 1763807262009983161
   - rid: 1763807262009983186
+  - rid: 1763807284696973425
   references:
     version: 2
     RefIds:
@@ -79,3 +80,9 @@ MonoBehaviour:
         _hitRing: 0
         _vibrateAttack: 0
         _vibrateKill: 8
+    - rid: 1763807284696973425
+      type: {class: IgniteCellsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 83307b75801c02741aa4297c1ce82be8, type: 2}
+        _duration: 4
+        _strength: 1

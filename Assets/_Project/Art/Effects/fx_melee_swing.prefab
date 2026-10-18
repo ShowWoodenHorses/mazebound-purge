@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.Visual.CombatEffect
   _duration: 0.22
+  _radius: 0
+  _looping: 0
 --- !u!114 &8417989628694405004
 MonoBehaviour:
   m_ObjectHideFlags: 0

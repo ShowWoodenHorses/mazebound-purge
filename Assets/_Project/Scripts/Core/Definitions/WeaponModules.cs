@@ -253,7 +253,20 @@ namespace Purge.Core.Definitions
         [Tooltip("Flash at the muzzle on a shot, facing along the barrel (+Z).")]
         [SerializeField] private AssetReferenceGameObject _muzzleFlash;
 
+        [Tooltip("Stream (cone): a looping effect at the muzzle while the weapon fires, fitted to its range (an entry " +
+                 "built with Loop and a Radius).")]
+        [SerializeField] private AssetReferenceGameObject _stream;
+
+        [Tooltip("Chain lightning: a flash on every monster the bolt hits.")]
+        [SerializeField] private AssetReferenceGameObject _targetHit;
+
+        [Tooltip("Bullets: smoke out of the muzzle when a burst ends.")]
+        [SerializeField] private AssetReferenceGameObject _barrelSmoke;
+
         public AssetReferenceGameObject MuzzleFlash { get => _muzzleFlash; internal set => _muzzleFlash = value; }
+        public AssetReferenceGameObject Stream { get => _stream; internal set => _stream = value; }
+        public AssetReferenceGameObject TargetHit { get => _targetHit; internal set => _targetHit = value; }
+        public AssetReferenceGameObject BarrelSmoke { get => _barrelSmoke; internal set => _barrelSmoke = value; }
     }
 
     [Serializable, ModuleInfo("Feel", Category = "Feel")]
@@ -356,6 +369,31 @@ namespace Purge.Core.Definitions
         public override void Validate(List<string> problems)
         {
             if (_status == null) problems.Add("no status.");
+        }
+    }
+
+    /// <summary>
+    /// A stream sets the flammable cells it reaches alight (a flamethrower: bushes, grass) — never bare floor; the zone
+    /// spreads on by itself as its definition says. Each tick of the stream, cells within its cone and reach that a
+    /// bullet from the player could reach. Other attacks ignore the module.
+    /// </summary>
+    [Serializable, ModuleInfo("Ignite cells", Category = "Effect")]
+    public sealed class IgniteCellsModule : WeaponModule
+    {
+        [Tooltip("The fire (a zone with Spread).")]
+        [SerializeField] private ZoneDefinition _zone;
+        [Tooltip("Seconds a cell burns once set alight (renewed while the stream stays on it).")]
+        [SerializeField, Min(0.1f)] private float _duration = 4f;
+        [Tooltip("Multiplier of the zone's damage.")]
+        [SerializeField, Min(0f)] private float _strength = 1f;
+
+        public ZoneDefinition Zone { get => _zone; internal set => _zone = value; }
+        public float Duration { get => _duration; internal set => _duration = value; }
+        public float Strength { get => _strength; internal set => _strength = value; }
+
+        public override void Validate(List<string> problems)
+        {
+            if (_zone == null) problems.Add("no zone.");
         }
     }
 }

@@ -13,15 +13,22 @@ namespace Purge.Presentation.Visual
         [Tooltip("Seconds until the effect returns to the pool: the longest particle lifetime.")]
         [SerializeField, Min(0.02f)] private float _duration = 0.3f;
 
-        [Tooltip("Cells the effect covers at its own size: an explosion is scaled to its radius by this (0 = never scaled).")]
+        [Tooltip("Cells the effect covers at its own size: an explosion is scaled to its radius by this (0 = never scaled). " +
+                 "A looping stream: cells it reaches (its particles live longer or shorter to reach the weapon's range).")]
         [SerializeField, Min(0f)] private float _radius;
+
+        [Tooltip("Continuous (a stream): loops while held, then stops emitting and fades out over the duration.")]
+        [SerializeField] private bool _looping;
 
         private ParticleSystem[] _particles;
         private SwingArc _swing;
+        private ParticleSystem[] _all;
+        private float[] _lifetimes;
         private bool _cached;
 
         public float Duration { get => _duration; set => _duration = value; }
         public float Radius { get => _radius; set => _radius = value; }
+        public bool Looping { get => _looping; set => _looping = value; }
 
         /// <summary>Melee swing driven by this effect, or null.</summary>
         public SwingArc Swing
@@ -39,6 +46,43 @@ namespace Purge.Presentation.Visual
             Cache();
             Restart(_particles);
             if (_swing != null) _swing.Animate(0f);
+        }
+
+        /// <summary>A stopped looping effect emits again, keeping what is still out (no restart).</summary>
+        public void Resume()
+        {
+            Cache();
+            foreach (var system in _particles)
+                system.Play(true);
+        }
+
+        /// <summary>A looping effect stops emitting; what is out fades on its own.</summary>
+        public void Stop()
+        {
+            Cache();
+            foreach (var system in _particles)
+                system.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
+
+        /// <summary>
+        /// Particles live <paramref name="factor"/> times their own lifetime (a stream reaches farther or nearer at the
+        /// same speed). Called before <see cref="Play"/>; 1 = as built.
+        /// </summary>
+        public void SetLifetimeFactor(float factor)
+        {
+            Cache();
+            if (_lifetimes == null)
+            {
+                _all = GetComponentsInChildren<ParticleSystem>(true);
+                _lifetimes = new float[_all.Length];
+                for (var i = 0; i < _all.Length; i++) _lifetimes[i] = _all[i].main.startLifetimeMultiplier;
+            }
+
+            for (var i = 0; i < _all.Length; i++)
+            {
+                var main = _all[i].main;
+                main.startLifetimeMultiplier = _lifetimes[i] * factor;
+            }
         }
 
         /// <summary>Progress of the effect, 0..1 (called every frame while it is shown).</summary>

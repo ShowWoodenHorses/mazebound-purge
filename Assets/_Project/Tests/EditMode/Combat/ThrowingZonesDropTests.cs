@@ -341,6 +341,53 @@ namespace Purge.Tests.EditMode.Combat
             for (var t = 0f; t < seconds; t += Dt) _zones.Tick(Dt);
         }
 
+        // ------------------------------------------------------------------ Flamethrower on cells (stage Э2)
+
+        /// <summary>A flamethrower aimed from the start (2,3) down-right at the hedge (y = 1); one stream tick.</summary>
+        private void FlameOnce(bool ignite)
+        {
+            var gas = ScriptableObject.CreateInstance<AmmoDefinition>();
+            gas.Configure("ammo_gas", 6f);
+            _created.Add(gas);
+            var modules = new List<WeaponModule>
+            {
+                new StreamAttack { DamagePerSecond = 40f, Range = 3f, Angle = 60f, Interval = 0.1f },
+                new AmmoModule { Ammo = gas, Magazine = 50, ReloadTime = 1f },
+            };
+            if (ignite) modules.Add(new IgniteCellsModule { Zone = _fire, Duration = 3f });
+            var flamer = ScriptableObject.CreateInstance<WeaponDefinition>();
+            flamer.Configure("flamer", modules.ToArray());
+            _created.Add(flamer);
+            _weapons.Equip(new WeaponRuntime(new WeaponPickupData("weapon_f", new GridPosition(1, 1), flamer)));
+
+            var combat = new PlayerCombat(_input, _player, _weapons, _targets, _bullets, _sounds, new Aim(), _doors, _ammo,
+                zones: _zones);
+            _input.Look = new Vector2(1f, -1f).normalized;
+            _input.AttackHeld = true;
+            _weapons.Tick(Dt);
+            combat.Tick(Dt);
+            _input.EndFrame();
+        }
+
+        [Test]
+        public void Flamethrower_IgnitesFlammableCellsInItsCone_NotBareFloor()
+        {
+            FlameOnce(ignite: true);
+
+            Assert.AreEqual(_fire, _zones.ZoneAt(new GridPosition(3, 1)), "A bush in the cone catches fire.");
+            Assert.AreEqual(_fire, _zones.ZoneAt(new GridPosition(4, 1)));
+            Assert.IsNull(_zones.ZoneAt(new GridPosition(3, 2)), "Bare floor in the cone does not burn.");
+            Assert.IsNull(_zones.ZoneAt(new GridPosition(8, 1)), "Out of the stream's reach.");
+        }
+
+        [Test]
+        public void Flamethrower_WithoutTheModule_SetsNothingAlight()
+        {
+            FlameOnce(ignite: false);
+
+            Assert.AreEqual(0, _zones.Count);
+        }
+
         // ------------------------------------------------------------------ Drops and pickups
 
         [Test]

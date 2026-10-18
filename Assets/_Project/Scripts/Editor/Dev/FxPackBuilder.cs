@@ -20,7 +20,9 @@ namespace Purge.Editor.Dev
     /// <item>for phones: the Noise module is off, particles are capped per system (<see cref="MaxParticles"/>), bursts and
     /// emission rate are cut to the entry's share; renderers cast and receive no shadows, use no probes;</item>
     /// <item>one-shot: no looping, no play on awake; a <see cref="CombatEffect"/> on the root lasts as long as the
-    /// longest system (delay + duration + lifetime).</item>
+    /// longest system (delay + duration + lifetime). An entry marked Loop (streams) keeps looping and lasts as long as
+    /// its particles fade after it stops;</item>
+    /// <item>additive smoke (a material named "Smoke") becomes alpha-blended and grey — it glared white over light floors.</item>
     /// </list>
     /// The copies are Addressable (Purge Visuals). Textures and meshes stay in Import until
     /// Collect Used Third-Party Assets moves them (run it after this).
@@ -32,9 +34,18 @@ namespace Purge.Editor.Dev
         /// <summary>A system of a pack effect has up to 1000; a pooled one-shot shows a few dozen.</summary>
         public const int MaxParticles = 64;
 
+        /// <summary>A stream emits 100–200 a second for as long as it is held: one held instance at a time.</summary>
+        public const int MaxStreamParticles = 256;
+
         private const string ImportRoot = "Assets/_Project/Import/FX/";
         private const string TargetRoot = "Assets/_Project/Art/Effects";
         private const float MaxDuration = 6f;
+
+        /// <summary>Brightness of additive smoke made alpha-blended (grey, not white).</summary>
+        private const float SmokeShade = 0.55f;
+
+        /// <summary>Share of their life after which a stream's particles are gone.</summary>
+        private const float StreamFadeShare = 0.75f;
 
         [MenuItem("Purge/Dev/Build Pack Effects")]
         public static void Build()
@@ -100,9 +111,13 @@ namespace Purge.Editor.Dev
             root.transform.localScale *= entry.Scale;
 
             var duration = 0.05f;
+            var fade = 0.05f;
             foreach (var system in root.GetComponentsInChildren<ParticleSystem>(true))
             {
-                duration = Mathf.Max(duration, Trim(system, entry.Particles, scaled));
+                duration = Mathf.Max(duration, Trim(system, entry.Particles, scaled, entry.Loop));
+                if (entry.Loop || entry.Flat) Flatten(system, fadeEarly: entry.Loop);
+                fade = Mathf.Max(fade, system.main.startLifetime.constantMax);
+                if (entry.Tint.a > 0f) Tint(system, entry.Tint);
                 var renderer = system.GetComponent<ParticleSystemRenderer>();
                 if (renderer == null) continue;
                 SetupRenderer(renderer);
@@ -111,15 +126,18 @@ namespace Purge.Editor.Dev
                     renderer.trailMaterial = Convert(renderer.trailMaterial, folder, materials);
             }
 
-            // Meshes of the effect that are not particles (rare): unlit-converted too, no shadows.
-            foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>(true))
+            // Meshes and lines of the effect that are not particles (Arsenal's chains): unlit-converted too, no shadows.
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
+                if (renderer is ParticleSystemRenderer) continue;
                 SetupRenderer(renderer);
                 renderer.sharedMaterials = Convert(renderer.sharedMaterials, folder, materials);
             }
 
             var effect = root.GetComponent<CombatEffect>() ?? root.AddComponent<CombatEffect>();
-            effect.Duration = Mathf.Min(duration, MaxDuration);
+            // A looping one lasts as long as its particles take to fade after it stops.
+            effect.Duration = Mathf.Min(entry.Loop ? fade : duration, MaxDuration);
+            effect.Looping = entry.Loop;
             effect.Radius = entry.Radius;
             if (entry.Radius > 0f) // scaled at runtime: every system follows the root's scale
                 foreach (var system in root.GetComponentsInChildren<ParticleSystem>(true))
@@ -152,12 +170,12 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>Phone-friendly one-shot. Returns how long the system shows anything, seconds.</summary>
-        private static float Trim(ParticleSystem system, float share, bool scaled)
+        private static float Trim(ParticleSystem system, float share, bool scaled, bool loop)
         {
             var main = system.main;
-            main.loop = false;
+            main.loop = loop && main.loop;
             main.playOnAwake = false;
-            main.maxParticles = Mathf.Min(main.maxParticles, MaxParticles);
+            main.maxParticles = Mathf.Min(main.maxParticles, loop ? MaxStreamParticles : MaxParticles);
             if (scaled) main.scalingMode = ParticleSystemScalingMode.Hierarchy;
 
             var collision = system.collision;
@@ -202,6 +220,92 @@ namespace Purge.Editor.Dev
             }
 
             return main.startDelay.constantMax + lastEmit + main.startLifetime.constantMax;
+        }
+
+        /// <summary>
+        /// Seen from above: nothing drifts up (upward particles grow towards the camera into huge blobs). A stream's
+        /// particles also fade out by <see cref="StreamFadeShare"/> of their life — before the pack's dark smoke tail.
+        /// </summary>
+        private static void Flatten(ParticleSystem system, bool fadeEarly)
+        {
+            var main = system.main;
+            main.gravityModifier = 0f;
+            var velocity = system.velocityOverLifetime;
+            if (velocity.enabled) velocity.y = Zero(velocity.y); // the axes must stay in one mode
+            if (!fadeEarly) return;
+
+            var overLifetime = system.colorOverLifetime;
+            if (!overLifetime.enabled || overLifetime.color.mode != ParticleSystemGradientMode.Gradient) return;
+            var source = overLifetime.color.gradient;
+            var alphas = source.alphaKeys;
+            for (var i = 0; i < alphas.Length; i++)
+                alphas[i].time *= StreamFadeShare;
+            var last = alphas[alphas.Length - 1];
+            if (last.alpha > 0f) // make sure it ends invisible at the share
+                alphas[alphas.Length - 1] = new GradientAlphaKey(0f, last.time);
+            var result = new Gradient { mode = source.mode };
+            result.SetKeys(source.colorKeys, alphas);
+            overLifetime.color = new ParticleSystem.MinMaxGradient(result);
+        }
+
+        /// <summary>The same curve in its own mode, always zero.</summary>
+        private static ParticleSystem.MinMaxCurve Zero(ParticleSystem.MinMaxCurve curve)
+        {
+            switch (curve.mode)
+            {
+                case ParticleSystemCurveMode.Curve:
+                case ParticleSystemCurveMode.TwoCurves:
+                    curve.curveMultiplier = 0f;
+                    return curve;
+                case ParticleSystemCurveMode.TwoConstants:
+                    curve.constantMin = 0f;
+                    curve.constantMax = 0f;
+                    return curve;
+                default:
+                    curve.constant = 0f;
+                    return curve;
+            }
+        }
+
+        /// <summary>Start colours and the colour over lifetime become the tint × their own brightness (alpha kept).</summary>
+        private static void Tint(ParticleSystem system, Color tint)
+        {
+            var main = system.main;
+            main.startColor = Tint(main.startColor, tint);
+            var overLifetime = system.colorOverLifetime;
+            if (overLifetime.enabled) overLifetime.color = Tint(overLifetime.color, tint);
+        }
+
+        private static ParticleSystem.MinMaxGradient Tint(ParticleSystem.MinMaxGradient source, Color tint)
+        {
+            switch (source.mode)
+            {
+                case ParticleSystemGradientMode.Color:
+                    return new ParticleSystem.MinMaxGradient(Tint(source.color, tint));
+                case ParticleSystemGradientMode.TwoColors:
+                    return new ParticleSystem.MinMaxGradient(Tint(source.colorMin, tint), Tint(source.colorMax, tint));
+                case ParticleSystemGradientMode.Gradient:
+                    return new ParticleSystem.MinMaxGradient(Tint(source.gradient, tint));
+                case ParticleSystemGradientMode.TwoGradients:
+                    return new ParticleSystem.MinMaxGradient(Tint(source.gradientMin, tint), Tint(source.gradientMax, tint));
+                default:
+                    return source; // random colour: left as is
+            }
+        }
+
+        private static Gradient Tint(Gradient source, Color tint)
+        {
+            var keys = source.colorKeys;
+            for (var i = 0; i < keys.Length; i++) keys[i].color = Tint(keys[i].color, tint);
+            var result = new Gradient { mode = source.mode };
+            result.SetKeys(keys, source.alphaKeys);
+            return result;
+        }
+
+        private static Color Tint(Color color, Color tint)
+        {
+            var brightness = Mathf.Max(color.r, color.g, color.b);
+            return new Color(tint.r * brightness, tint.g * brightness, tint.b * brightness, color.a);
         }
 
         private static void SetupRenderer(Renderer renderer)
@@ -321,6 +425,13 @@ namespace Purge.Editor.Dev
                 blend = Blend.Alpha;
                 if (shaderName != "PolygonArsenal/PolyLitSurface" && shaderName != "Sprites/Default")
                     Debug.LogWarning($"[Purge] FX import: unknown shader '{shaderName}' of '{source.name}' — alpha blended.");
+            }
+
+            // Smoke is never a light: additive smoke (Synty's "Additive (Soft)") glared white over a light floor.
+            if (blend == Blend.Additive && source.name.IndexOf("Smoke", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                blend = Blend.Alpha;
+                color = new Color(color.r * SmokeShade, color.g * SmokeShade, color.b * SmokeShade, Mathf.Clamp01(color.a));
             }
 
             target.SetColor("_Color", color);

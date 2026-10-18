@@ -19,12 +19,18 @@ namespace Purge.Presentation.Visual
     /// neighbouring cells merge into one patch, a fading zone thins out) and one dynamic mesh of quads over its visible
     /// cells, shader <c>Purge/FireCells</c> (<see cref="CombatVisualDefinition.ZoneCells"/>) with the kind's colours.
     /// No object per cell, allocation-free per frame.
+    /// <para>Stage Э2: a zone with <see cref="ZoneDefinition.Particles"/> also emits that pack effect's particles over its
+    /// visible cells (<see cref="PackEmitters"/>; flames of a fire), <see cref="ZoneDefinition.ParticlesPerSecond"/> per
+    /// cell × its fading strength — in the tick, so nothing new rises while the level is paused.</para>
     /// </summary>
-    public sealed class ZoneView : ILevelLoadStep, ILevelLateTickable, IDisposable
+    public sealed class ZoneView : ILevelLoadStep, ILevelTickable, ILevelLateTickable, IDisposable
     {
         private const int MaxQuads = 512;
         private const float Height = 0.04f;
         private const float Half = 0.5f;
+
+        /// <summary>Height flames of a zone rise from over an obstacle that holds it (a bush).</summary>
+        private const float ObstacleTop = 0.6f;
 
         private static readonly int MaskId = Shader.PropertyToID("_PurgeFireMask");
         private static readonly int MaskSizeId = Shader.PropertyToID("_PurgeFireMaskSize");
@@ -36,14 +42,18 @@ namespace Purge.Presentation.Visual
         private readonly PlayerSystem _player;
         private readonly VisibilitySystem _visibility;
         private readonly CombatVisualDefinition _visual;
+        private readonly PackEmitters _emitters;
         private readonly List<Layer> _layers = new List<Layer>();
+        private readonly List<PackEmitters.Emitter> _kindEmitters = new List<PackEmitters.Emitter>();
+        private readonly List<float> _carry = new List<float>();
         private Bounds _bounds;
         private int _width;
         private int _height;
 
         public ZoneView(LevelData level, ZoneSystem zones, PlayerSystem player, VisibilitySystem visibility,
-            CombatVisualDefinition visual = null)
+            CombatVisualDefinition visual = null, PackEmitters emitters = null)
         {
+            _emitters = emitters;
             _level = level;
             _zones = zones;
             _player = player;
@@ -59,6 +69,40 @@ namespace Purge.Presentation.Visual
             _height = _level.Geometry.Height;
             _bounds = new Bounds(new Vector3(_width * 0.5f, 1f, _height * 0.5f), new Vector3(_width + 4f, 40f, _height + 4f));
             return UniTask.CompletedTask;
+        }
+
+        public void Tick(float deltaTime)
+        {
+            if (_emitters == null || _width == 0 || _zones.Count == 0) return;
+            var kinds = _zones.Kinds;
+            while (_kindEmitters.Count < kinds.Count)
+            {
+                _kindEmitters.Add(_emitters.Get(kinds[_kindEmitters.Count].Particles));
+                _carry.Add(0f);
+            }
+
+            var grid = _zones.Grid;
+            var floorSize = grid.FloorSize;
+            var floor = _player.Floor;
+            var h = floor * GridPosition.FloorHeight;
+            foreach (var index in _zones.Cells)
+            {
+                if (index / floorSize != floor) continue;
+                var kind = _zones.KindAt(index);
+                if (kind < 0 || kind >= _kindEmitters.Count || _kindEmitters[kind] == null) continue;
+                var flat = index % floorSize;
+                var x = flat % _width;
+                var y = flat / _width;
+                if (!_visibility.IsVisible(new GridPosition(x, y, floor))) continue;
+                // Whole particles per cell: a cell's share of a frame is under one at 60 FPS.
+                var carry = _carry[kind] + kinds[kind].ParticlesPerSecond * deltaTime * (0.35f + 0.65f * _zones.Strength01(index));
+                var whole = (int)carry;
+                _carry[kind] = carry - whole;
+                if (whole <= 0) continue;
+                // A burning bush: the flames rise from its top, not from under its mesh.
+                var top = grid.Has(new GridPosition(x, y, floor), CellFlags.BlocksMovement) ? ObstacleTop : 0f;
+                _kindEmitters[kind].Emit(new Vector3(x, h + top, y), whole);
+            }
         }
 
         public void LateTick(float deltaTime)

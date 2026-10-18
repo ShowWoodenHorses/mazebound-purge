@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Purge.Core.Content;
 using Purge.Core.Modules;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Purge.Core.Effects
 {
@@ -18,6 +19,10 @@ namespace Purge.Core.Effects
         [Tooltip("Draft look until stage 4в (display only): tint of the monster and of its particles.")]
         [SerializeField] private Color _color = new Color(1f, 0.55f, 0.15f, 1f);
 
+        [Tooltip("Look over a monster with the state (stage Э2): an effect of Art/Effects the game emits from (flames " +
+                 "of burning); empty = the draft particles in the colour above.")]
+        [SerializeField] private AssetReferenceGameObject _particles;
+
         [SerializeReference, ModuleList] private List<StatusModule> _modules = new List<StatusModule>();
 
         [NonSerialized] private bool _cached;
@@ -26,6 +31,7 @@ namespace Purge.Core.Effects
         [NonSerialized] private bool _stuns;
 
         public Color Color => _color;
+        public AssetReferenceGameObject Particles { get => _particles; internal set => _particles = value; }
         public IReadOnlyList<StatusModule> Modules => _modules;
 
         /// <summary>Sum of the damage-over-time modules.</summary>

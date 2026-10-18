@@ -362,7 +362,10 @@ namespace Purge.Tests.PlayMode
             Assert.Greater(_audio.PlayingCount(SoundChannel.Level), levelVoices, "The shot sounds.");
             Assert.AreEqual(1, views.ActiveBulletViews, "A bullet view taken from the pool.");
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-            Assert.GreaterOrEqual(views.ActiveEffects, 2, "Muzzle flash and shell shown after the gun was posed.");
+            // The flash is a pack effect since stage Э1 (PackEffectsPlayer), the shell is the presenter's own.
+            var packEffects = container.Resolve<PackEffectsPlayer>();
+            Assert.GreaterOrEqual(views.ActiveEffects + packEffects.ActiveEffects, 2,
+                "Muzzle flash and shell shown after the gun was posed.");
 
             await WaitFor(() => bullets.Active.Count == 0);
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);

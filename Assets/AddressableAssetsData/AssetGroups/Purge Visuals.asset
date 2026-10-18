@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 035c342a61c3bd742915e365a20eb5a7
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_FlameThrower_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 049b0a329261d1b4d9a593610ea82861
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_cyan.prefab
     m_ReadOnly: 0
@@ -245,6 +250,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44cac426ebb14ee41aba10535a0ab7f0
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Grenade_Smoke_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 458c4be2b24b6e44a9b5800b25ffbb52
     m_Address: Assets/_Project/Art/Weapons/Pickups/Glock_base_Pickup.prefab
     m_ReadOnly: 0
@@ -367,6 +377,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 668a0012b5f3eaa4e8a880ad48e79b38
     m_Address: Assets/_Project/Art/Weapons/Pickups/Mortar_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 675c2e12fe98fb84aa16bcfac5fd7909
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Stream_Acid.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -520,6 +535,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d185a001b4c0004d9a0bd9cd0dee0f8
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Sparks_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9f094055fdac6324e908944a519e5e9f
     m_Address: Assets/_Project/Art/Placeholders/door_red.prefab
     m_ReadOnly: 0
@@ -662,6 +682,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1399f418ca2ed2448252ca11c2be771
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/wall_snow_blocks.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c36eb9b2b390dbb4d8c8ee3ef674a845
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Fire_Small_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -830,6 +855,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f78e1b1121a44264dbf379920270f7bf
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/MiniExploLightningBlue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f7aca19616ac6834a8fad517cc155f7c
     m_Address: Assets/_Project/Art/Placeholders/door_yellow.prefab
     m_ReadOnly: 0
@@ -840,8 +870,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa1191450b9f48c4a80e9bce9118a334
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Stream_Gas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fd4d82f6367b9f94192f41787f70f2b6
     m_Address: Assets/_Project/Art/Effects/IceOverlay.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd520d69f3fd2094fa0216be8d810635
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Stream_Frost.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

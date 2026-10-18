@@ -80,6 +80,7 @@ namespace Purge.Core.Definitions
         [System.NonSerialized] private MobilityModule _mobility;
         [System.NonSerialized] private FeelModule _feel;
         [System.NonSerialized] private WeaponEffectsModule _effects;
+        [System.NonSerialized] private IgniteCellsModule _ignite;
 
         public Rarity Rarity => _rarity;
         public bool Upgradable => !_noUpgrades;
@@ -143,6 +144,9 @@ namespace Purge.Core.Definitions
         /// <summary>Looks of the attack (<see cref="WeaponEffectsModule"/>), or null: defaults only.</summary>
         public WeaponEffectsModule Effects => Cache()._effects;
 
+        /// <summary>Flammable cells the stream sets alight (<see cref="IgniteCellsModule"/>), or null.</summary>
+        public IgniteCellsModule Ignite => Cache()._ignite;
+
         public bool TryGet<T>(out T module) where T : WeaponModule => Purge.Core.Modules.Modules.TryGet(_modules, out module);
 
         /// <summary>Problems of the weapon's setup, in English (editor checks).</summary>
@@ -168,11 +172,13 @@ namespace Purge.Core.Definitions
             _mobility = null;
             _feel = null;
             _effects = null;
+            _ignite = null;
             foreach (var module in _modules)
                 switch (module)
                 {
                     case FeelModule feel when _feel == null: _feel = feel; break;
                     case WeaponEffectsModule effects when _effects == null: _effects = effects; break;
+                    case IgniteCellsModule ignite when _ignite == null: _ignite = ignite; break;
                     case WeaponAttack attack when _attack == null: _attack = attack; break;
                     case AmmoModule ammo when _ammo == null: _ammo = ammo; break;
                     case SilencerModule silencer when _silencer == null: _silencer = silencer; break;

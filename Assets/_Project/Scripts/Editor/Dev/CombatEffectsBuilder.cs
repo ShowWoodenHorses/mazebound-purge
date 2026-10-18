@@ -23,6 +23,7 @@ namespace Purge.Editor.Dev
         private const string Folder = "Assets/_Project/Art/Effects";
         private const string CombatVisualPath = "Assets/_Project/Data/Combat/CombatVisual.asset";
         private const string OldPlaceholders = "Assets/_Project/Art/Placeholders";
+        private const string PackSmokeMaterial = "Assets/_Project/Art/Effects/PolygonParticleFX/Materials/Smoke_Mat_01.mat";
 
         private static readonly Color FlashColor = new Color(1f, 0.88f, 0.5f);
         private static readonly Color SparkColor = new Color(1f, 0.75f, 0.3f);
@@ -95,6 +96,10 @@ namespace Purge.Editor.Dev
             visual.HitRing = hitRing;
             visual.AbilityWarning = warning;
             visual.StatusRing = statusRing;
+            // Stage Э2: the barrel's puff with a pack's smoke (Build Pack Effects converts it first).
+            var packSmoke = AssetDatabase.LoadAssetAtPath<Material>(PackSmokeMaterial);
+            if (packSmoke != null) visual.BarrelSmoke = Reference(BuildBarrelPuff(packSmoke));
+            else Debug.LogWarning($"[Purge] {PackSmokeMaterial} not found (Build Pack Effects first): no barrel puff.");
             EditorUtility.SetDirty(visual);
 
             // The first placeholders (cubes and spheres) are replaced.
@@ -188,6 +193,24 @@ namespace Purge.Editor.Dev
             puffMain.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
             SizeOverLifetime(puff, 0.6f, 1.5f);
             FadeOut(puff, 0.3f);
+            return SavePrefab(root);
+        }
+
+        /// <summary>
+        /// A short puff out of the muzzle after a burst (stage Э2): the packs' barrel smoke is thread-thin and unreadable
+        /// from above, so it is made here with the smoke of PolygonParticleFX (its converted material).
+        /// </summary>
+        private static GameObject BuildBarrelPuff(Material smoke)
+        {
+            var root = Effect("fx_barrel_puff", 0.8f);
+            var puff = Particles(root, "Puff", smoke, count: 3, lifetime: (0.5f, 0.75f), speed: (0.35f, 0.7f), size: (0.18f, 0.28f),
+                new Color(1f, 1f, 1f, 0.55f));
+            Shape(puff, ParticleSystemShapeType.Cone, radius: 0.03f, angle: 25f);
+            var main = puff.main;
+            main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+            main.gravityModifier = -0.15f; // drifts up
+            SizeOverLifetime(puff, 0.7f, 2.2f);
+            FadeOut(puff, 0.25f);
             return SavePrefab(root);
         }
 

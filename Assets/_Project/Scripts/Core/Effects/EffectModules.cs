@@ -75,6 +75,28 @@ namespace Purge.Core.Effects
         }
     }
 
+    /// <summary>
+    /// Only a look where the item lands, no gameplay (stage Э2: the cloud of a smoke grenade until smoke zones):
+    /// an effect of Art/Effects scaled to the radius.
+    /// </summary>
+    [Serializable, ModuleInfo("Look only", Category = "Effect", AllowMultiple = true)]
+    public sealed class LookEffect : EffectModule, IExplosionLook
+    {
+        [Tooltip("An effect of Art/Effects.")]
+        [SerializeField] private AssetReferenceGameObject _look;
+        [Tooltip("Cells it covers (the effect is scaled to it; the throw aim shows it).")]
+        [SerializeField, Min(0.3f)] private float _radius = 2f;
+
+        public AssetReferenceGameObject Look { get => _look; internal set => _look = value; }
+        public override float Radius => _radius;
+        internal void SetRadius(float radius) => _radius = radius;
+
+        public override void Validate(List<string> problems)
+        {
+            if (_look == null || !_look.RuntimeKeyIsValid()) problems.Add("no look.");
+        }
+    }
+
     /// <summary>A state on every monster in the radius (a grenade stuns those near the blast).</summary>
     [Serializable, ModuleInfo("Status in radius", Category = "Effect", AllowMultiple = true)]
     public sealed class AreaStatusEffect : EffectModule

@@ -27,6 +27,11 @@ namespace Purge.Presentation.Visual.Horde
     /// cells; nothing is created per effect. Materials — <see cref="CombatVisualDefinition.BoltMaterial"/> and
     /// <see cref="CombatVisualDefinition.EffectParticles"/> (Build Combat Effects; on every level since stage 4в), else
     /// those of the sandbox settings; off without either.
+    /// <para>Pack looks (stage Э2) replace the drafts where set: explosions and look-only effects (a smoke grenade's
+    /// cloud, <see cref="EffectSystem.LookShown"/>) through <see cref="PackEffectsPlayer"/>; the stream's flame is
+    /// <see cref="CombatViewPresenter"/>'s then; bolts from <see cref="CombatVisualDefinition.ChainBolt"/> (one textured
+    /// quad per jump) with a flash on every target; sparks of hits and flames of states (<c>StatusDefinition.Particles</c>)
+    /// emitted from pack effects (<see cref="PackEmitters"/>).</para>
     /// </summary>
     public sealed class WeaponEffectsView : ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -36,6 +41,7 @@ namespace Purge.Presentation.Visual.Horde
         private const float BoltWidth = 0.09f;
         private const float GunHeight = 0.75f;
         private const float StatusInterval = 0.12f;
+        private const float StatusHeight = 0.5f;
 
         private readonly LevelData _level;
         private readonly PlayerCombat _combat;
@@ -51,6 +57,9 @@ namespace Purge.Presentation.Visual.Horde
         private readonly HordeSystem _horde;
         private readonly CombatVisualDefinition _visual;
         private readonly PackEffectsPlayer _packEffects;
+        private readonly PackEmitters _emitters;
+        private PackEmitters.Emitter _hitSparks;
+        private bool _texturedBolt;
         private float _statusTimer;
 
         private Material _boltMaterial;
@@ -68,8 +77,9 @@ namespace Purge.Presentation.Visual.Horde
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
             StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
-            PackEffectsPlayer packEffects = null)
+            PackEffectsPlayer packEffects = null, PackEmitters emitters = null)
         {
+            _emitters = emitters;
             _visual = visual;
             _packEffects = packEffects;
             _effects = effects;
@@ -90,7 +100,10 @@ namespace Purge.Presentation.Visual.Horde
         {
             var settings = _level.StressTest;
             var sandbox = settings != null && settings.IsSandbox ? settings : null;
-            var boltMaterial = _visual != null && _visual.BoltMaterial != null ? _visual.BoltMaterial : sandbox?.TracerMaterial;
+            // A pack's bolt texture (stage Э2) over the draft jagged bolt.
+            _texturedBolt = _visual != null && _visual.ChainBolt != null;
+            var boltMaterial = _texturedBolt ? _visual.ChainBolt
+                : _visual != null && _visual.BoltMaterial != null ? _visual.BoltMaterial : sandbox?.TracerMaterial;
             var particles = _visual != null && _visual.EffectParticles != null ? _visual.EffectParticles : sandbox?.ParticleMaterial;
             if (boltMaterial == null && particles == null)
                 return UniTask.CompletedTask;
@@ -139,9 +152,14 @@ namespace Purge.Presentation.Visual.Horde
                 _blast = CreateParticles("Explosions", particles, 600, new Color(1f, 0.7f, 0.25f), 0.5f, 0.6f);
             }
 
+            _hitSparks = _emitters?.Get(_visual?.HitSparks);
             _combat.Attacked += OnAttacked;
             _bullets.Exploded += OnExploded;
-            if (_effects != null) _effects.Exploded += OnExploded;
+            if (_effects != null)
+            {
+                _effects.Exploded += OnExploded;
+                _effects.LookShown += OnLookShown;
+            }
             _targets.Damaged += OnDamaged;
             _bound = true;
             return UniTask.CompletedTask;
@@ -185,6 +203,13 @@ namespace Purge.Presentation.Visual.Horde
                     var at = positions[agent];
                     if (!Visible(at)) break;
                     var status = kinds[kind];
+                    var look = _emitters?.Get(status.Particles);
+                    if (look != null)
+                    {
+                        look.Emit(new Vector3(at.x, StatusHeight, at.y), 1f);
+                        continue;
+                    }
+
                     emit.startColor = status.Color;
                     if (status.Stuns)
                     {
@@ -213,7 +238,9 @@ namespace Purge.Presentation.Visual.Horde
             if (_boltMesh == null || _boltLeft <= 0f || _boltCount < 2) return;
 
             var quads = 0;
-            for (var p = 1; p < _boltCount; p++)
+            for (var p = 1; p < _boltCount && _texturedBolt && quads < MaxBoltQuads; p++)
+                AddTexturedQuad(quads++, _bolt[p - 1], _bolt[p]);
+            for (var p = 1; p < _boltCount && !_texturedBolt; p++)
             {
                 var from = _bolt[p - 1];
                 var to = _bolt[p];
@@ -251,7 +278,11 @@ namespace Purge.Presentation.Visual.Horde
             {
                 _combat.Attacked -= OnAttacked;
                 _bullets.Exploded -= OnExploded;
-                if (_effects != null) _effects.Exploded -= OnExploded;
+                if (_effects != null)
+                {
+                    _effects.Exploded -= OnExploded;
+                    _effects.LookShown -= OnLookShown;
+                }
                 _targets.Damaged -= OnDamaged;
                 _bound = false;
             }
@@ -266,7 +297,8 @@ namespace Purge.Presentation.Visual.Horde
         {
             switch (weapon.Definition.Attack)
             {
-                case StreamAttack stream when _flame != null:
+                // The pack's stream is held by CombatViewPresenter; the draft flame only without it.
+                case StreamAttack stream when _flame != null && !HasPackStream(weapon.Definition):
                     EmitFlame(stream, direction);
                     break;
                 case ChainAttack _:
@@ -275,6 +307,7 @@ namespace Purge.Presentation.Visual.Horde
                     for (var i = 0; i < _boltCount; i++) _bolt[i] = points[i];
                     if (_boltCount > 0) _bolt[0] += direction * 0.5f; // from the gun, not the chest
                     _boltLeft = BoltTime;
+                    PlayChainHits(weapon.Definition, points);
                     break;
             }
         }
@@ -319,7 +352,17 @@ namespace Purge.Presentation.Visual.Horde
 
         private void OnDamaged(CombatTarget target, Vector2 at, float damage, Vector2 direction, bool killed)
         {
-            if (_sparks == null || target.Agent < 0 || !Visible(at)) return;
+            if (target.Agent < 0 || !Visible(at)) return;
+            if (_hitSparks != null)
+            {
+                // Zones and burning hit without a direction: their own looks show them, no sparks.
+                if (direction == Vector2.zero) return;
+                _hitSparks.Emit(new Vector3(at.x - direction.x * 0.25f, GunHeight, at.y - direction.y * 0.25f),
+                    killed ? _visual.KillSparksCount : _visual.HitSparksCount);
+                return;
+            }
+
+            if (_sparks == null) return;
             var emit = new ParticleSystem.EmitParams
             {
                 position = new Vector3(at.x - direction.x * 0.25f, GunHeight, at.y - direction.y * 0.25f),
@@ -331,6 +374,38 @@ namespace Purge.Presentation.Visual.Horde
                 emit.velocity = UnityEngine.Random.insideUnitSphere * 3f + Vector3.up;
                 _sparks.Emit(emit, 1);
             }
+        }
+
+        private bool HasPackStream(WeaponDefinition weapon) =>
+            _visual != null && _packEffects != null && _packEffects.IsLoaded(_visual.StreamOf(weapon));
+
+        /// <summary>A flash of the pack on every monster the bolt hit (the first point is the gun).</summary>
+        private void PlayChainHits(WeaponDefinition weapon, ReadOnlySpan<Vector2> points)
+        {
+            var look = _visual?.ChainHitOf(weapon);
+            if (look == null || _packEffects == null) return;
+            for (var i = 1; i < points.Length; i++)
+                _packEffects.Play(look, new Vector3(points[i].x, GunHeight, points[i].y), Quaternion.identity);
+        }
+
+        private void OnLookShown(Vector2 at, float radius, IExplosionLook source)
+        {
+            if (_packEffects != null && source != null)
+                _packEffects.Play(source.Look, new Vector3(at.x, 0f, at.y), Quaternion.identity, radius);
+        }
+
+        /// <summary>One quad per jump, the texture's bolt along V, mirrored at random every frame (it flickers).</summary>
+        private void AddTexturedQuad(int quad, Vector2 from, Vector2 to)
+        {
+            var direction = (to - from).normalized;
+            var mirror = UnityEngine.Random.value < 0.5f ? -1f : 1f;
+            var side = new Vector2(-direction.y, direction.x) * (_visual.ChainBoltWidth * 0.5f * mirror);
+            var v = quad * 4;
+            // The quads' UVs are (0,0) (0,1) (1,1) (1,0): U runs across here, V along.
+            _boltVertices[v] = new Vector3(from.x - side.x, GunHeight, from.y - side.y);
+            _boltVertices[v + 1] = new Vector3(to.x - side.x, GunHeight, to.y - side.y);
+            _boltVertices[v + 2] = new Vector3(to.x + side.x, GunHeight, to.y + side.y);
+            _boltVertices[v + 3] = new Vector3(from.x + side.x, GunHeight, from.y + side.y);
         }
 
         private void AddQuad(int quad, Vector2 from, Vector2 to)

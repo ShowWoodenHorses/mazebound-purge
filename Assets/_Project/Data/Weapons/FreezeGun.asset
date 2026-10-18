@@ -24,6 +24,7 @@ MonoBehaviour:
   - rid: 1763807262009983095
   - rid: 1763807262009983096
   - rid: 1763807262009983168
+  - rid: 1763807284696973423
   references:
     version: 2
     RefIds:
@@ -72,3 +73,30 @@ MonoBehaviour:
         _hitRing: 0
         _vibrateAttack: 0
         _vibrateKill: 8
+    - rid: 1763807284696973423
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _muzzleFlash:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _stream:
+          m_AssetGUID: fd520d69f3fd2094fa0216be8d810635
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _targetHit:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _barrelSmoke:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0

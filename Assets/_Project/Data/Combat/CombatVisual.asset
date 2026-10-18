@@ -237,5 +237,34 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   _largeExplosionRadius: 2
+  _stream:
+    m_AssetGUID: 035c342a61c3bd742915e365a20eb5a7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _chainHit:
+    m_AssetGUID: f78e1b1121a44264dbf379920270f7bf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _chainBolt: {fileID: 2100000, guid: 97767f9cd8ca78742aff388cc6df8de0, type: 2}
+  _chainBoltWidth: 0.6
+  _barrelSmoke:
+    m_AssetGUID: 28769c5b57cd37f4ebb46384aff5b81b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _barrelSmokeShots: 3
+  _hitSparks:
+    m_AssetGUID: 9d185a001b4c0004d9a0bd9cd0dee0f8
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _hitSparksCount: 2
+  _killSparksCount: 5
   _abilityWarning: {fileID: 2100000, guid: 9894bcb9b8be812439cb8760096a98f1, type: 2}
   _statusRing: {fileID: 2100000, guid: caf790f28ec30094f9a5e96ca873e27c, type: 2}

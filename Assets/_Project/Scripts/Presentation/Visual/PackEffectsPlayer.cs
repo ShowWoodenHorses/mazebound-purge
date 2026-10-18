@@ -28,6 +28,9 @@ namespace Purge.Presentation.Visual
     /// <see cref="PoolSize"/> instances; when all are showing, the oldest is restarted in the new place.</para>
     /// Effects start only in cells the player sees. An effect with a <see cref="CombatEffect.Radius"/> is scaled to the
     /// radius it is played with (explosions).
+    /// <para>A looping effect (<see cref="CombatEffect.Looping"/>, stage Э2: streams) has one instance, kept playing by
+    /// <see cref="Hold"/> every frame and faded out by <see cref="Release"/>; its radius is the reach, fitted by the
+    /// particles' lifetime.</para>
     /// </summary>
     public sealed class PackEffectsPlayer : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -82,8 +85,11 @@ namespace Purge.Presentation.Visual
                 if (_kinds.ContainsKey(key)) continue;
                 var prefab = await _assets.LoadAsync<GameObject>(reference, cancellation);
                 cancellation.ThrowIfCancellationRequested();
-                var kind = new Kind { Instances = new Instance[PoolSize] };
-                for (var i = 0; i < PoolSize; i++)
+                // A looping effect is held by its one user (the player's stream).
+                var effect = prefab.GetComponent<CombatEffect>();
+                var count = effect != null && effect.Looping ? 1 : PoolSize;
+                var kind = new Kind { Instances = new Instance[count] };
+                for (var i = 0; i < count; i++)
                     kind.Instances[i] = Create(prefab);
                 _kinds[key] = kind;
                 _warmup.Add(kind.Instances[0].View);
@@ -119,6 +125,53 @@ namespace Purge.Presentation.Visual
             instance.Effect.Play();
             _shown.Add(new Shown { Instance = instance, Left = instance.Effect.Duration });
             return true;
+        }
+
+        /// <summary>The effect was loaded with the level (it can be played or held).</summary>
+        public bool IsLoaded(AssetReferenceGameObject reference) =>
+            CombatVisualDefinition.IsSet(reference) && _kinds.ContainsKey(reference.AssetGUID);
+
+        /// <summary>
+        /// Keeps a looping effect (a stream) playing at the point, called every frame while it should show; started
+        /// when it is not. <paramref name="reach"/> &gt; 0 fits an effect with a radius to it by its particles'
+        /// lifetime. <see cref="Release"/> stops it. False: not loaded.
+        /// </summary>
+        public bool Hold(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float reach = 0f)
+        {
+            if (!IsLoaded(reference)) return false;
+            var instance = _kinds[reference.AssetGUID].Instances[0];
+            instance.View.transform.SetLocalPositionAndRotation(position, rotation);
+            if (instance.Held) return true;
+
+            var index = IndexOf(instance);
+            instance.Effect.SetLifetimeFactor(reach > 0f && instance.Effect.Radius > 0f ? reach / instance.Effect.Radius : 1f);
+            if (index >= 0)
+            {
+                // Still fading from the last hold (a gap between attacks): emit on, keep the flame that is out.
+                _shown.RemoveAt(index);
+                instance.Effect.Resume();
+            }
+            else
+            {
+                instance.View.SetActive(true);
+                instance.Effect.Play();
+            }
+            instance.Busy = true;
+            instance.Held = true;
+            _shown.Add(new Shown { Instance = instance, Left = float.PositiveInfinity });
+            return true;
+        }
+
+        /// <summary>A held effect stops emitting and fades out.</summary>
+        public void Release(AssetReferenceGameObject reference)
+        {
+            if (!IsLoaded(reference)) return;
+            var instance = _kinds[reference.AssetGUID].Instances[0];
+            if (!instance.Held) return;
+            instance.Held = false;
+            instance.Effect.Stop();
+            var index = IndexOf(instance);
+            if (index >= 0) _shown[index] = new Shown { Instance = instance, Left = instance.Effect.Duration };
         }
 
         public void LateTick(float deltaTime)
@@ -160,6 +213,9 @@ namespace Purge.Presentation.Visual
                     if (entry != null) Add(wanted, entry.Effect);
                 Add(wanted, _visual.ExplosionSmall);
                 Add(wanted, _visual.ExplosionLarge);
+                Add(wanted, _visual.Stream);
+                Add(wanted, _visual.ChainHit);
+                Add(wanted, _visual.BarrelSmoke);
             }
 
             if (_level != null)
@@ -176,7 +232,13 @@ namespace Purge.Presentation.Visual
         private static void AddWeapon(List<AssetReferenceGameObject> wanted, WeaponDefinition weapon)
         {
             if (weapon == null) return;
-            if (weapon.Effects != null) Add(wanted, weapon.Effects.MuzzleFlash);
+            if (weapon.Effects != null)
+            {
+                Add(wanted, weapon.Effects.MuzzleFlash);
+                Add(wanted, weapon.Effects.Stream);
+                Add(wanted, weapon.Effects.TargetHit);
+                Add(wanted, weapon.Effects.BarrelSmoke);
+            }
             if (weapon.Attack is ExplosiveAttack explosive) Add(wanted, explosive.Look);
         }
 
@@ -214,12 +276,19 @@ namespace Purge.Presentation.Visual
             for (var i = 0; i < _shown.Count; i++)
             {
                 var oldest = _shown[i].Instance;
-                if (Array.IndexOf(kind.Instances, oldest) < 0) continue;
+                if (oldest.Held || Array.IndexOf(kind.Instances, oldest) < 0) continue;
                 _shown.RemoveAt(i); // the list is in start order: the first of the kind is the oldest
                 return oldest;
             }
 
             return kind.Instances[0];
+        }
+
+        private int IndexOf(Instance instance)
+        {
+            for (var i = 0; i < _shown.Count; i++)
+                if (_shown[i].Instance == instance) return i;
+            return -1;
         }
 
         private sealed class Kind
@@ -232,6 +301,7 @@ namespace Purge.Presentation.Visual
             public GameObject View;
             public CombatEffect Effect;
             public bool Busy;
+            public bool Held;
         }
 
         private struct Shown

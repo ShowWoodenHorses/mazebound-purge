@@ -132,7 +132,7 @@ namespace Purge.Composition
             builder.Register<PickupViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<DropViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
-            builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()
@@ -141,6 +141,8 @@ namespace Purge.Composition
             builder.Register<PlayerWeaponPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Pack effects (stage Э) named by content: loaded before the combat views and effects that play them.
             builder.Register<PackEffectsPlayer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // Mass effects in pack looks (stage Э2): fire on cells, burning monsters, hit sparks.
+            builder.Register<PackEmitters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, IViewWarmup>();
             // After the weapon presenter: the late tick reads the muzzle of the posed gun.
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();

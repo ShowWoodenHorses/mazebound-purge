@@ -503,19 +503,29 @@ Collection, набор на способ держать оружие (Unarmed, P
 `fx_splash` (капли цвета монстра, текстура `fx_blob`), `fx_hit_ring` (кольцо под целью, `fx_ring`), а также материалы
 чернового вида атак на всех уровнях — молнии (`fx_tracer`) и частицы пламени/взрывов/горения/оглушения (`fx_additive`).
 Цвета и параметры частиц — в коде билдера; цвет брызг — `HordeVisualDefinition.Splash Color`.
-Запускать: после правок эффектов в `CombatEffectsBuilder.cs`.
+Этап Э2: пых у ствола после очереди `fx_barrel_puff` (дым паков сверху не читается — свой, на материале дыма
+PolygonParticleFX `Art/Effects/PolygonParticleFX/Materials/Smoke_Mat_01.mat`; нет материала — предупреждение, пыха нет) →
+`CombatVisual.Barrel Smoke`.
+Запускать: после правок эффектов в `CombatEffectsBuilder.cs`; после Build Pack Effects (для пыха).
 
 #### Build Pack Effects
 Эффекты из паков `Import/FX` (PolygonParticleFX, Polygon Arsenal; этап Э). Что брать — список `Art/Effects/FxImport.asset`
 (перетащить исходные префабы из `Import/FX`; у записи: имя копии, масштаб, **Radius** — сколько клеток эффект покрывает
-в своём размере, взрыв масштабируется под свой радиус, 0 — не масштабировать; **Particles** — доля частиц, по умолчанию 0,6).
+в своём размере, взрыв масштабируется под свой радиус, 0 — не масштабировать; **Particles** — доля частиц, по умолчанию 0,6;
+**Loop** — струя: зацикливается, до 256 частиц, гаснет к 75 % жизни (до дымного хвоста), Radius — дальность, под дальность
+оружия подгоняется временем жизни частиц; **Flat** — вид сверху: без гравитации и скорости вверх (у струй всегда) —
+поднимающиеся частицы раздуваются к камере; **Tint** — перекраска (альфа 0 — цвета пака): цвет частиц = Tint × их
+яркость, одна струя в нескольких цветах; одна и та же исходная запись может повторяться под разными именами).
 Первый запуск без списка создаёт пустой список. Для каждой записи — очищенная копия `Art/Effects/<пак>/<имя>.prefab`
 (GUID при пересборке сохраняется): без Collision, Lights (и ссылки на лампу), Noise, ламп, `AudioSource`, коллайдеров и
 скриптов пака; материалы — копии в `Art/Effects/<пак>/Materials` на `Purge/Particle` (аддитив/альфа/умножение),
-`Purge/ParticleRim` (сферы и кольца Arsenal) и `Purge/Lit` (непрозрачные осколки); не больше 64 частиц на систему,
-всплески и эмиссия × доля; без зацикливания; `CombatEffect` с длительностью по последнему всплеску + время жизни.
+`Purge/ParticleRim` (сферы и кольца Arsenal) и `Purge/Lit` (непрозрачные осколки), аддитивный дым (материал с «Smoke»
+в имени) — на альфа-смешение и серее (пересвечивал светлый пол); материалы `LineRenderer`/мешей — так же; не больше 64
+частиц на систему, всплески и эмиссия × доля; без зацикливания (кроме Loop); `CombatEffect` с длительностью по последнему
+всплеску + время жизни (у Loop — время затухания).
 Копии — Addressable (Purge Visuals). Назначаются в модуле оружия **Effects**, в `Look` взрывов (`Explosion` у
-метательного и способностей, «Explosive projectile») и умолчаниями в `Data/Combat/CombatVisual` (раздел **Pack effects**).
+метательного и способностей, «Explosive projectile»), `Look only` (облако дымовой гранаты), `Particles` у зон и состояний
+(излучатели массовых эффектов) и умолчаниями в `Data/Combat/CombatVisual` (разделы **Pack effects**).
 Затем — **Collect Used Third-Party Assets** (перенесёт текстуры и меши; сам список в расчёт не берётся).
 Запускать: после правки списка.
 
@@ -629,7 +639,7 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 
 ## Зависимости между командами
 - **Build Combat Effects** → до Build Light Fixtures (материал пламени) и Build Footprints (пыль).
-- **Build Pack Effects** → затем **Collect Used Third-Party Assets**.
+- **Build Pack Effects** → затем **Build Combat Effects** (пых у ствола на дыме пака) и **Collect Used Third-Party Assets**.
 - **Create Placeholder Theme** → до Build Weapons и Build Zombie Animations (им нужны наборы темы-заглушки).
 - **Build Player Animations** → затем Build Weapons (риг рук по модели игрока).
 - Билдеры персонажей → затем **Extract Character Meshes**.

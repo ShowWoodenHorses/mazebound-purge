@@ -30,8 +30,20 @@ namespace Purge.Editor.Dev
             [Tooltip("Size of the copy against the source (pack effects are made for other cameras).")]
             [Min(0.05f)] public float Scale = 1f;
 
-            [Tooltip("Cells the copy covers at its size (explosions are scaled to their radius by it); 0 = never scaled.")]
+            [Tooltip("Cells the copy covers at its size (explosions are scaled to their radius by it); 0 = never scaled. " +
+                     "A looping stream: cells it reaches (fitted to the weapon's range by the particles' lifetime).")]
             [Min(0f)] public float Radius;
+
+            [Tooltip("Continuous (streams of flamethrowers): keeps looping while the weapon fires, then fades out.")]
+            public bool Loop;
+
+            [Tooltip("Seen from above: nothing drifts up (gravity and upward velocity off) — rising particles grow " +
+                     "towards the camera into huge blobs (clouds of smoke). Streams (Loop) are always flat.")]
+            public bool Flat;
+
+            [Tooltip("Recolour (alpha 0 = keep the pack's colours): every particle's colour becomes this times its own " +
+                     "brightness — one pack effect in several colours (streams of acid, frost, gas).")]
+            public Color Tint = new Color(1f, 1f, 1f, 0f);
 
             [Tooltip("Share of the source's particles kept (bursts and emission rate; at least one).")]
             [Range(0.1f, 1f)] public float Particles = FxPackBuilder.DefaultParticleShare;

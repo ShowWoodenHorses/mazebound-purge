@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28769c5b57cd37f4ebb46384aff5b81b
+    m_Address: Assets/_Project/Art/Effects/fx_barrel_puff.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2faff85800dfcf0428ba06ac642dd270
     m_Address: Assets/_Project/Art/Weapons/Purge/Melee/Knife.prefab
     m_ReadOnly: 0

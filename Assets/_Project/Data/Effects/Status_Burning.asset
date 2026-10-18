@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Effects.StatusDefinition
   _id: status_burning
   _color: {r: 1, g: 0.5, b: 0.12, a: 1}
+  _particles:
+    m_AssetGUID: c36eb9b2b390dbb4d8c8ee3ef674a845
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   _modules:
   - rid: 1763807262009983153
   references:

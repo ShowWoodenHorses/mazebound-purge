@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Purge.Core.Content;
 using Purge.Core.Modules;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Purge.Core.Effects
 {
@@ -20,6 +21,12 @@ namespace Purge.Core.Effects
         [SerializeField] private Color _core = new Color(1f, 0.86f, 0.35f, 1f);
         [SerializeField] private Color _edge = new Color(0.95f, 0.3f, 0.06f, 1f);
 
+        [Tooltip("Look over its visible cells (stage Э2): an effect of Art/Effects the game emits from (flames of a fire); " +
+                 "empty = only the cells' colours.")]
+        [SerializeField] private AssetReferenceGameObject _particles;
+        [Tooltip("Particles per second over one cell at full strength (a fading zone emits fewer).")]
+        [SerializeField, Min(0f)] private float _particlesPerSecond = 5f;
+
         [SerializeReference, ModuleList] private List<ZoneModule> _modules = new List<ZoneModule>();
 
         [NonSerialized] private bool _cached;
@@ -29,6 +36,8 @@ namespace Purge.Core.Effects
 
         public Color Core => _core;
         public Color Edge => _edge;
+        public AssetReferenceGameObject Particles { get => _particles; internal set => _particles = value; }
+        public float ParticlesPerSecond { get => _particlesPerSecond; internal set => _particlesPerSecond = value; }
         public IReadOnlyList<ZoneModule> Modules => _modules;
 
         public ZoneDamage Damage => Cache()._damage;

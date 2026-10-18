@@ -100,6 +100,8 @@ namespace Purge.Gameplay.Horde
         private readonly float[] _projectileFactor = new float[MaxProjectiles]; // × damage (the shooter's rage)
         private readonly int[] _projectileOwner = new int[MaxProjectiles]; // the shooter's slot and generation
         private readonly int[] _projectileGeneration = new int[MaxProjectiles];
+        private readonly int[] _projectileSerial = new int[MaxProjectiles]; // stable while it flies (views follow it)
+        private int _nextSerial;
 
         public MonsterAbilities(HordeSystem horde, CombatTargets targets, PlayerSystem player, PlayerHealth health,
             PlayerStatusSystem statuses = null, EffectSystem effects = null)
@@ -162,6 +164,9 @@ namespace Purge.Gameplay.Horde
         public Vector2 ProjectilePosition(int index) => _position[index];
         public Vector2 ProjectileDirection(int index) => _direction[index];
         public int ProjectileKind(int index) => _projectileKind[index];
+
+        /// <summary>Number of projectile <paramref name="index"/> that stays the same while it flies (indices shift as others end).</summary>
+        public int ProjectileSerial(int index) => _projectileSerial[index];
 
         /// <summary>Height above the floor of an arc projectile (0 for straight ones).</summary>
         public float ProjectileHeight(int index)
@@ -506,6 +511,7 @@ namespace Purge.Gameplay.Horde
             _projectileFactor[p] = _horde.DamageFactorOf(agent);
             _projectileOwner[p] = agent;
             _projectileGeneration[p] = _horde.Generations[agent];
+            _projectileSerial[p] = ++_nextSerial & int.MaxValue;
             _from[p] = origin;
             _position[p] = origin;
             _to[p] = target;
@@ -597,6 +603,7 @@ namespace Purge.Gameplay.Horde
             _projectileFactor[p] = _projectileFactor[last];
             _projectileOwner[p] = _projectileOwner[last];
             _projectileGeneration[p] = _projectileGeneration[last];
+            _projectileSerial[p] = _projectileSerial[last];
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
             if (ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);

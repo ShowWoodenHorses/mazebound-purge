@@ -79,6 +79,14 @@ MonoBehaviour:
         _statusDuration: 1
         _impact:
         - rid: 1763807284696973401
+        - rid: 1763807284696973433
+        _fall:
+          m_AssetGUID: c23c253cdfdcfe841bc96fe90048de56
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _fallTime: 0.45
     - rid: 1763807284696973401
       type: {class: PlaceZoneEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
@@ -86,3 +94,13 @@ MonoBehaviour:
         _radius: 1.6
         _duration: 6
         _strength: 1
+    - rid: 1763807284696973433
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: 856a79ebcdc90f24597b558c7f623eb3
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 1.6

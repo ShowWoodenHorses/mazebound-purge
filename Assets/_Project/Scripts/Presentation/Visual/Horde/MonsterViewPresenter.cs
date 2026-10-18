@@ -63,6 +63,7 @@ namespace Purge.Presentation.Visual.Horde
         private readonly VisibilitySystem _visibility;
         private readonly LevelViewRoot _root;
         private readonly BlobShadows _shadows;
+        private readonly Core.Visual.CombatVisualDefinition _visual;
 
         private KindViews[] _kinds; // per horde kind (null = not an Animator kind)
         private View[] _slots;      // per slot: its view (null = none)
@@ -72,8 +73,9 @@ namespace Purge.Presentation.Visual.Horde
         private bool _warnedPool;
 
         public MonsterViewPresenter(LevelData level, HordeSystem horde, MonsterAbilities abilities, VisibilitySystem visibility,
-            LevelViewRoot root, BlobShadows shadows)
+            LevelViewRoot root, BlobShadows shadows, Core.Visual.CombatVisualDefinition visual = null)
         {
+            _visual = visual;
             _level = level;
             _horde = horde;
             _abilities = abilities;
@@ -169,11 +171,16 @@ namespace Purge.Presentation.Visual.Horde
                 var visible = !_visibility.HasResult ||
                               _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f)));
                 if (view.GameObject.activeSelf != visible) view.GameObject.SetActive(visible);
-                view.Transform.SetPositionAndRotation(new Vector3(p.x, 0f, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
+                // A corpse sinks into the ground at the end of its time (stage Э3).
+                var sink = states[i] == HordeAgentState.Dying && _visual != null
+                    ? _visual.CorpseSink(_horde.Time - _horde.StateStart[i], _horde.StatsOf(i).CorpseTime) * _visual.CorpseSinkDepth *
+                      view.Transform.localScale.y / Mathf.Max(1e-3f, view.BaseScale.y)
+                    : 0f;
+                view.Transform.SetPositionAndRotation(new Vector3(p.x, -sink, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
                 if (!visible) continue;
                 shown++;
                 Animate(i, view, pool.Definition, states[i]);
-                ShowChampion(i, view, states[i]);
+                ShowGlow(i, view, states[i]);
                 // The pose of this frame is evaluated already: the body stays where the gameplay put it (deaths fall away;
                 // getting up from lying — the lying body is far from the point by nature, pulling it in would jerk).
                 if (states[i] != HordeAgentState.Dying && states[i] != HordeAgentState.Emerging) KeepInPlace(view);
@@ -281,20 +288,31 @@ namespace Purge.Presentation.Visual.Horde
             }
         }
 
-        /// <summary>A champion (stage 5e2) glows in its affix's colour, pulsing slowly; the glow goes out when it dies.</summary>
-        private void ShowChampion(int i, View view, HordeAgentState state)
+        /// <summary>
+        /// A champion (stage 5e2) glows in its affix's colour, pulsing slowly; an enraged monster (stage Э3) red, pulsing
+        /// faster, over a champion's colour; the glow goes out when it dies.
+        /// </summary>
+        private void ShowGlow(int i, View view, HordeAgentState state)
         {
-            if (view.Glow == null || _horde.Affixes[i] == 0) return;
-            var affix = _horde.AffixOf(i);
-            if (affix == null || state == HordeAgentState.Dying)
+            if (view.Glow == null) return;
+            var glow = Color.clear;
+            if (state != HordeAgentState.Dying)
             {
-                view.Glow.SetGlow(Color.clear);
-                return;
+                if (_visual != null && _horde.IsEnraged(i))
+                {
+                    glow = _visual.RageGlow;
+                    glow.a *= 0.75f + 0.25f * Mathf.Sin(_horde.Time * 9f + i);
+                }
+                else if (_horde.Affixes[i] != 0 && _horde.AffixOf(i) is { } affix)
+                {
+                    glow = affix.Glow;
+                    glow.a *= 0.8f + 0.2f * Mathf.Sin(_horde.Time * 5f + i);
+                }
             }
 
-            var glow = affix.Glow;
-            glow.a *= 0.8f + 0.2f * Mathf.Sin(_horde.Time * 5f + i);
+            if (glow.a <= 0f && !view.Glowing) return;
             view.Glow.SetGlow(glow);
+            view.Glowing = glow.a > 0f;
         }
 
         private float ChargeSpeed(int agent) =>
@@ -330,10 +348,11 @@ namespace Purge.Presentation.Visual.Horde
             _lastAttack[slot] = _horde.AttackStart[slot];
             _lastHit[slot] = _horde.HitTime[slot];
             view.GameObject.SetActive(true);
-            // A champion's look is bigger (its glow — every frame, ShowChampion).
+            // A champion's look is bigger (its glow — every frame, ShowGlow).
             var champions = _horde.Champions;
             view.Transform.localScale = view.BaseScale * (_horde.IsChampion(slot) && champions != null ? champions.Scale : 1f);
             view.Glow?.SetGlow(Color.clear);
+            view.Glowing = false;
             if (view.Animator != null)
             {
                 // A fresh monster: from the default state, every parameter back to its default.
@@ -403,6 +422,7 @@ namespace Purge.Presentation.Visual.Horde
             public readonly HitFlash Glow;
             public KindViews Pool;
             public bool Dead;
+            public bool Glowing;
 
             public View(GameObject gameObject, KindViews pool)
             {

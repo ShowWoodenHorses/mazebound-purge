@@ -18,7 +18,7 @@ AudioImporter:
       loadType: 0
       sampleRateSetting: 2
       sampleRateOverride: 44100
-      compressionFormat: 3
+      compressionFormat: 0
       quality: 0.6
       conversionMode: 0
       preloadAudioData: 1

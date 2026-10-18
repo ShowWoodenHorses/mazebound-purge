@@ -17,11 +17,16 @@ namespace Purge.Presentation.Visual
     /// (<see cref="PlayerStatusSystem"/>; <see cref="Purge.Core.Effects.StatusDefinition.Color"/>), and a pale pulsing
     /// ring while the immunity to control lasts (ТЗ: 2–3 с иммунитета). Material
     /// <see cref="CombatVisualDefinition.StatusRing"/> (Purge/Ring); without it nothing is drawn.
+    /// <para>Stage Э3: the pack look of every state on the player (<c>StatusDefinition.Particles</c>, emitted —
+    /// <see cref="PackEmitters"/>): frost of a freeze, flames of burning; a stun's stars circle the head.</para>
     /// </summary>
     public sealed class PlayerStatusView : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
         private const float Radius = 0.55f;
         private const float ImmunityRadius = 0.7f;
+        private const float ParticlesInterval = 0.12f;
+        private const float BodyHeight = 0.6f;
+        private const float HeadHeight = 1.75f;
         private static readonly int ColorId = Shader.PropertyToID("_Color");
         private static readonly int ThicknessId = Shader.PropertyToID("_Thickness");
         private static readonly Color ImmunityColor = new Color(0.85f, 0.95f, 1f, 0.8f);
@@ -30,14 +35,18 @@ namespace Purge.Presentation.Visual
         private readonly PlayerSystem _player;
         private readonly PlayerStatusSystem _statuses;
         private readonly CombatVisualDefinition _visual;
+        private readonly PackEmitters _emitters;
+        private float _particlesTimer;
         private Mesh _quad;
         private MaterialPropertyBlock _block;
         private MaterialPropertyBlock _immunityBlock; // a block per ring drawn in the same frame
         private Bounds _bounds;
         private float _time;
 
-        public PlayerStatusView(LevelData level, PlayerSystem player, PlayerStatusSystem statuses, CombatVisualDefinition visual = null)
+        public PlayerStatusView(LevelData level, PlayerSystem player, PlayerStatusSystem statuses, CombatVisualDefinition visual = null,
+            PackEmitters emitters = null)
         {
+            _emitters = emitters;
             _level = level;
             _player = player;
             _statuses = statuses;
@@ -96,6 +105,34 @@ namespace Purge.Presentation.Visual
                 var color = ImmunityColor;
                 color.a *= (0.55f + 0.45f * Mathf.Sin(_time * 12f)) * Mathf.Clamp01(_statuses.ImmunityLeft * 2f);
                 Draw(_immunityBlock, at, ImmunityRadius, color, 0.1f);
+            }
+
+            _particlesTimer -= deltaTime;
+            if (_particlesTimer <= 0f && longest >= 0 && _emitters != null)
+            {
+                _particlesTimer = ParticlesInterval;
+                EmitParticles(at);
+            }
+        }
+
+        /// <summary>The pack look of every state on the player: stars circling the head for a stun, else around the body.</summary>
+        private void EmitParticles(Vector3 floor)
+        {
+            var kinds = _statuses.Kinds;
+            for (var k = 0; k < kinds.Count; k++)
+            {
+                if (_statuses.Left(k) <= 0f) continue;
+                var look = _emitters.Get(kinds[k].Particles);
+                if (look == null) continue;
+                if (!kinds[k].ParticlesAtHead)
+                {
+                    look.Emit(floor + Vector3.up * BodyHeight, 1f);
+                    continue;
+                }
+
+                var angle = _time * 5f;
+                for (var n = 0; n < 3; n++, angle += Mathf.PI * 2f / 3f)
+                    look.EmitPoint(floor + new Vector3(Mathf.Cos(angle) * 0.3f, HeadHeight, Mathf.Sin(angle) * 0.3f), ParticlesInterval * 1.6f);
             }
         }
 

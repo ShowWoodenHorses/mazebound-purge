@@ -77,4 +77,22 @@ MonoBehaviour:
         _damage: 6
         _status: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
         _statusDuration: 1.2
-        _impact: []
+        _impact:
+        - rid: 1763807284696973432
+        _fall:
+          m_AssetGUID: 4e4197875e83d5a44a00540760d75b8f
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _fallTime: 0.45
+    - rid: 1763807284696973432
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: e901aa4357cbb654dba7e9ded95856c8
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 1.6

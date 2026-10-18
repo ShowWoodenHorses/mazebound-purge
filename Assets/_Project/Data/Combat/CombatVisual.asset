@@ -230,13 +230,20 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _explosionLarge:
-    m_AssetGUID: 780afce8d708a7e4f8c52e256ad368bb
+  _explosionMedium:
+    m_AssetGUID: 3ec5ca694ddef85478a0e273824f327c
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _largeExplosionRadius: 2
+  _mediumExplosionRadius: 1.75
+  _explosionLarge:
+    m_AssetGUID: 4e9e0c01dc85eb342a54ef2e83d0822b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _largeExplosionRadius: 2.25
   _stream:
     m_AssetGUID: 035c342a61c3bd742915e365a20eb5a7
     m_SubObjectName: 
@@ -250,7 +257,7 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   _chainBolt: {fileID: 2100000, guid: 97767f9cd8ca78742aff388cc6df8de0, type: 2}
-  _chainBoltWidth: 0.6
+  _chainBoltWidth: 0.45
   _barrelSmoke:
     m_AssetGUID: 28769c5b57cd37f4ebb46384aff5b81b
     m_SubObjectName: 
@@ -268,3 +275,27 @@ MonoBehaviour:
   _killSparksCount: 5
   _abilityWarning: {fileID: 2100000, guid: 9894bcb9b8be812439cb8760096a98f1, type: 2}
   _statusRing: {fileID: 2100000, guid: caf790f28ec30094f9a5e96ca873e27c, type: 2}
+  _emerge:
+    m_AssetGUID: c7cac90e16ab9fc498326f8c7153fe2b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _emergeRate: 6
+  _corpsePuff:
+    m_AssetGUID: 79512e1a7f118714394fd58acc7c6692
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _corpsePuffCount: 4
+  _corpseSinkTime: 0.4
+  _corpseSinkDepth: 0.9
+  _rageFlash:
+    m_AssetGUID: e6acdc56d1dd1b6418020a088f7ca733
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _rageGlow: {r: 1, g: 0.15, b: 0.05, a: 0.85}
+  _stunHeight: 1.45

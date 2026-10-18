@@ -32,3 +32,9 @@ MonoBehaviour:
         _radius: 2
         _edgeDamage: 0.35
         _soundRadius: 12
+        _look:
+          m_AssetGUID: 3ec5ca694ddef85478a0e273824f327c
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0

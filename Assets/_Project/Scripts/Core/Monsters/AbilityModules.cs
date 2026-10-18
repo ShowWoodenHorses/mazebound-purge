@@ -226,12 +226,19 @@ namespace Purge.Core.Monsters
         [SerializeField, Min(0.1f)] private float _statusDuration = 1f;
         [Tooltip("What happens at the centre (an explosion, a zone…); hostile — its explosion and zones hurt the player.")]
         [SerializeReference, ModuleList] private List<EffectModule> _impact = new List<EffectModule>();
+        [Tooltip("Look only (stage Э3): an effect of Art/Effects that falls from above onto the centre at the end of the " +
+                 "warning — a fireball, a blob of poison, a lump of ice; empty = nothing falls.")]
+        [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _fall;
+        [Tooltip("Seconds it falls: the last part of the warning.")]
+        [SerializeField, Range(0.1f, 1.5f)] private float _fallTime = 0.45f;
 
         public float Radius { get => _radius; internal set => _radius = value; }
         public float Damage { get => _damage; internal set => _damage = value; }
         public StatusDefinition Status { get => _status; internal set => _status = value; }
         public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
         public IReadOnlyList<EffectModule> Impact => _impact;
+        public UnityEngine.AddressableAssets.AssetReferenceGameObject Fall { get => _fall; internal set => _fall = value; }
+        public float FallTime { get => _fallTime; internal set => _fallTime = value; }
 
         /// <summary>Radius of the warning circle (the larger of the blow and the effects).</summary>
         public float WarningRadius

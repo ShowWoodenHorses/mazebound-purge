@@ -76,6 +76,7 @@ namespace Purge.Presentation.Visual
         private readonly PlayerWeaponPresenter _weaponView;
         private readonly PlayerViewPresenter _playerView;
         private readonly PackEffectsPlayer _packEffects;
+        private readonly CombatTargets _targets;
 
         private readonly Dictionary<Bullet, Tracer> _tracers = new Dictionary<Bullet, Tracer>();
         private readonly List<Tracer> _newTracers = new List<Tracer>();
@@ -111,8 +112,9 @@ namespace Purge.Presentation.Visual
 
         public CombatViewPresenter(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root, BulletSystem bullets,
             PlayerCombat combat, PlayerSystem player, VisibilitySystem visibility, PlayerWeaponPresenter weaponView,
-            PlayerViewPresenter playerView, PackEffectsPlayer packEffects = null)
+            PlayerViewPresenter playerView, PackEffectsPlayer packEffects = null, CombatTargets targets = null)
         {
+            _targets = targets;
             _playerView = playerView;
             _packEffects = packEffects;
             _visual = visual;
@@ -352,13 +354,41 @@ namespace Purge.Presentation.Visual
             _streamLeft -= deltaTime;
             if (_streamLeft > 0f && Muzzle(out var position, out var rotation, flat: true))
             {
-                _packEffects.Hold(_streamLook, position, rotation, _streamReach);
+                var reach = ReachToWall(position, rotation, out var cut);
+                _packEffects.Hold(_streamLook, position, rotation, reach, cut);
                 return;
             }
 
             _packEffects.Release(_streamLook);
             _streamLook = null;
         }
+
+        /// <summary>
+        /// The stream's reach from the muzzle, cut short by the first wall ahead (display only); <paramref name="cut"/> —
+        /// how far from the muzzle the wall's face is (everything beyond is not drawn), 0 = no wall.
+        /// </summary>
+        private float ReachToWall(Vector3 muzzle, Quaternion rotation, out float cut)
+        {
+            cut = 0f;
+            if (_targets == null) return _streamReach;
+            var forward = rotation * Vector3.forward;
+            var direction = new Vector2(forward.x, forward.z);
+            if (direction.sqrMagnitude < 1e-6f) return _streamReach;
+            direction.Normalize();
+            // From the player's centre (the muzzle may already be in the wall the player hugs).
+            var origin = _player.Position;
+            var muzzleAhead = Vector2.Dot(new Vector2(muzzle.x, muzzle.z) - origin, direction);
+            var length = _streamReach + Mathf.Max(0f, muzzleAhead);
+            var hit = _targets.Spatial.QuerySegment(origin, origin + direction * length, _player.Floor);
+            if (hit.Kind != SegmentHitKind.Blocker) return _streamReach;
+            var toWall = hit.T * length - muzzleAhead;
+            cut = Mathf.Max(0.05f, toWall + WallOverlap);
+            return Mathf.Clamp(toWall + WallOverlap, MinStreamReach, _streamReach);
+        }
+
+        /// <summary>The flame is drawn this far into the wall's cell (its face is the cell's edge, the wall mesh starts there).</summary>
+        private const float WallOverlap = 0.05f;
+        private const float MinStreamReach = 0.35f;
 
         private void CountBurst(WeaponDefinition weapon, BulletAttack bullets)
         {

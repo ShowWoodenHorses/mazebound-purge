@@ -56,6 +56,63 @@ namespace Purge.Presentation.Visual
                 system.Play(true);
         }
 
+        /// <summary>
+        /// Every particle system loops (an effect that follows a moving thing, stage Э3) or plays once as built. Called
+        /// before <see cref="Play"/>.
+        /// </summary>
+        public void SetLoop(bool loop)
+        {
+            if (_loopSystems == null)
+            {
+                _loopSystems = GetComponentsInChildren<ParticleSystem>(true);
+                _builtLoop = new bool[_loopSystems.Length];
+                for (var i = 0; i < _loopSystems.Length; i++) _builtLoop[i] = _loopSystems[i].main.loop;
+            }
+
+            for (var i = 0; i < _loopSystems.Length; i++)
+            {
+                var main = _loopSystems[i].main;
+                main.loop = loop || _builtLoop[i];
+            }
+        }
+
+        private ParticleSystem[] _loopSystems;
+        private bool[] _builtLoop;
+
+        private static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
+        private static readonly Vector4 NoClip = new Vector4(0f, 0f, 0f, 1f);
+        private Renderer[] _renderers;
+        private MaterialPropertyBlock _clipBlock;
+        private Vector4 _clip = NoClip;
+
+        /// <summary>
+        /// Cuts every pixel of the effect beyond the plane through <paramref name="point"/> facing
+        /// <paramref name="normal"/> (stage Э3: a stream ends hard at the wall it hits; shader Purge/Particle).
+        /// </summary>
+        public void SetClipPlane(Vector3 normal, Vector3 point) =>
+            ApplyClip(new Vector4(normal.x, normal.y, normal.z, Vector3.Dot(normal, point)));
+
+        /// <summary>No cut (as built).</summary>
+        public void ClearClipPlane() => ApplyClip(NoClip);
+
+        private void ApplyClip(Vector4 plane)
+        {
+            if (plane == _clip) return;
+            _clip = plane;
+            if (_renderers == null)
+            {
+                _renderers = GetComponentsInChildren<Renderer>(true);
+                _clipBlock = new MaterialPropertyBlock();
+            }
+
+            foreach (var target in _renderers)
+            {
+                target.GetPropertyBlock(_clipBlock);
+                _clipBlock.SetVector(ClipPlaneId, plane);
+                target.SetPropertyBlock(_clipBlock);
+            }
+        }
+
         /// <summary>A looping effect stops emitting; what is out fades on its own.</summary>
         public void Stop()
         {
@@ -83,6 +140,101 @@ namespace Purge.Presentation.Visual
                 var main = _all[i].main;
                 main.startLifetimeMultiplier = _lifetimes[i] * factor;
             }
+        }
+
+        /// <summary>
+        /// Sized to <paramref name="scale"/> × its own size by spread (stage Э3: big explosions looked like a few huge
+        /// squares): the root is scaled — reach, shape and speed follow (systems scale with the hierarchy) — but each
+        /// particle grows only by √scale, and there are scale times as many (at most <see cref="MaxCountFactor"/>).
+        /// 1 = as built. Called before <see cref="Play"/>.
+        /// </summary>
+        public void SetSpread(float scale)
+        {
+            scale = Mathf.Max(0.05f, scale);
+            // × the size the copy was built at (Build Pack Effects scales the root): setting the scale outright threw
+            // that away — every pack effect showed at the pack's own size.
+            if (!_baseScaleCached)
+            {
+                _baseScale = transform.localScale;
+                _baseScaleCached = true;
+            }
+
+            transform.localScale = _baseScale * scale;
+            if (_spreadSystems == null)
+            {
+                if (Mathf.Approximately(scale, 1f)) return;
+                CacheSpread();
+            }
+
+            var size = 1f / Mathf.Sqrt(scale);
+            var count = Mathf.Clamp(scale, 1f, MaxCountFactor);
+            for (var i = 0; i < _spreadSystems.Length; i++)
+            {
+                var system = _spreadSystems[i];
+                var main = system.main;
+                var basis = _spreadBase[i];
+                if (main.startSize3D)
+                {
+                    main.startSizeXMultiplier = basis.SizeX * size;
+                    main.startSizeYMultiplier = basis.SizeY * size;
+                    main.startSizeZMultiplier = basis.SizeZ * size;
+                }
+                else main.startSizeMultiplier = basis.SizeX * size;
+
+                main.maxParticles = Mathf.CeilToInt(basis.MaxParticles * count);
+                var emission = system.emission;
+                emission.rateOverTimeMultiplier = basis.Rate * count;
+                for (var b = 0; b < basis.Bursts.Length; b++)
+                {
+                    var burst = emission.GetBurst(b);
+                    burst.count = new ParticleSystem.MinMaxCurve(Mathf.Round(basis.Bursts[b].x * count), Mathf.Round(basis.Bursts[b].y * count));
+                    emission.SetBurst(b, burst);
+                }
+            }
+        }
+
+        /// <summary>Most extra particles a spread effect gets (phones).</summary>
+        public const float MaxCountFactor = 2.5f;
+
+        private ParticleSystem[] _spreadSystems;
+        private SpreadBase[] _spreadBase;
+        private Vector3 _baseScale = Vector3.one;
+        private bool _baseScaleCached;
+
+        private void CacheSpread()
+        {
+            _spreadSystems = GetComponentsInChildren<ParticleSystem>(true);
+            _spreadBase = new SpreadBase[_spreadSystems.Length];
+            for (var i = 0; i < _spreadSystems.Length; i++)
+            {
+                var main = _spreadSystems[i].main;
+                var emission = _spreadSystems[i].emission;
+                var basis = new SpreadBase
+                {
+                    SizeX = main.startSize3D ? main.startSizeXMultiplier : main.startSizeMultiplier,
+                    SizeY = main.startSizeYMultiplier,
+                    SizeZ = main.startSizeZMultiplier,
+                    MaxParticles = main.maxParticles,
+                    Rate = emission.rateOverTimeMultiplier,
+                    Bursts = new Vector2[emission.burstCount],
+                };
+                for (var b = 0; b < basis.Bursts.Length; b++)
+                {
+                    var count = emission.GetBurst(b).count;
+                    basis.Bursts[b] = count.mode == ParticleSystemCurveMode.TwoConstants
+                        ? new Vector2(count.constantMin, count.constantMax)
+                        : new Vector2(count.constant, count.constant);
+                }
+
+                _spreadBase[i] = basis;
+            }
+        }
+
+        private struct SpreadBase
+        {
+            public float SizeX, SizeY, SizeZ, Rate;
+            public int MaxParticles;
+            public Vector2[] Bursts;
         }
 
         /// <summary>Progress of the effect, 0..1 (called every frame while it is shown).</summary>

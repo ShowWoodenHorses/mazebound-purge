@@ -7,6 +7,7 @@ using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Effects;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Core.Visual;
 using Purge.Gameplay.Drops;
 using Purge.Gameplay.Level;
@@ -31,11 +32,18 @@ namespace Purge.Presentation.Visual
     /// <para>A looping effect (<see cref="CombatEffect.Looping"/>, stage Э2: streams) has one instance, kept playing by
     /// <see cref="Hold"/> every frame and faded out by <see cref="Release"/>; its radius is the reach, fitted by the
     /// particles' lifetime.</para>
+    /// <para>A followed effect (stage Э3: trails of monsters' projectiles, what falls onto an area strike) loops on a
+    /// pooled instance that <see cref="Move"/> carries every frame until <see cref="Unfollow"/>; a handle whose instance
+    /// was taken by a newer play is ignored. Monsters' looks are loaded with the level: ability impacts and falls, death
+    /// effects, the trails of their views, champions' death blasts, the rage flash.</para>
     /// </summary>
     public sealed class PackEffectsPlayer : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
         /// <summary>Instances of one effect: a rifle's flash lives ~0.7 s at 10 shots a second.</summary>
         public const int PoolSize = 6;
+
+        /// <summary>A followed effect not moved or let go for this long fades by itself (a lost handle).</summary>
+        private const float FollowTimeout = 8f;
 
         private readonly CombatVisualDefinition _visual;
         private readonly IAssetOwner _assets;
@@ -45,6 +53,7 @@ namespace Purge.Presentation.Visual
         private readonly DropPool _drops;
         private readonly PlayerDefinition _player;
         private readonly ThrowableSlot _slot;
+        private readonly List<Instance> _all = new List<Instance>();
 
         private readonly Dictionary<string, Kind> _kinds = new Dictionary<string, Kind>();
         private readonly List<Shown> _shown = new List<Shown>();
@@ -90,7 +99,11 @@ namespace Purge.Presentation.Visual
                 var count = effect != null && effect.Looping ? 1 : PoolSize;
                 var kind = new Kind { Instances = new Instance[count] };
                 for (var i = 0; i < count; i++)
+                {
                     kind.Instances[i] = Create(prefab);
+                    kind.Instances[i].Id = _all.Count;
+                    _all.Add(kind.Instances[i]);
+                }
                 _kinds[key] = kind;
                 _warmup.Add(kind.Instances[0].View);
             }
@@ -119,12 +132,65 @@ namespace Purge.Presentation.Visual
             var instance = Take(kind);
             var transform = instance.View.transform;
             transform.SetLocalPositionAndRotation(position, rotation);
-            var scale = radius > 0f && instance.Effect.Radius > 0f ? radius / instance.Effect.Radius : 1f;
-            transform.localScale = new Vector3(scale, scale, scale);
+            instance.Effect.SetSpread(radius > 0f && instance.Effect.Radius > 0f ? radius / instance.Effect.Radius : 1f);
+            if (instance.Followed) instance.Effect.SetLoop(false);
+            instance.Followed = false;
             instance.View.SetActive(true);
             instance.Effect.Play();
             _shown.Add(new Shown { Instance = instance, Left = instance.Effect.Duration });
             return true;
+        }
+
+        /// <summary>
+        /// Starts a looping copy of the effect that follows something (<see cref="Move"/> every frame,
+        /// <see cref="Unfollow"/> at the end). Returns its handle, or -1: not loaded, or the cell is not seen.
+        /// </summary>
+        public int Follow(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation)
+        {
+            if (!IsLoaded(reference) || !_visibility.IsVisible(PlayerMovement.CellOf(new Vector2(position.x, position.z))))
+                return -1;
+            var kind = _kinds[reference.AssetGUID];
+            if (kind.Instances.Length == 1 && kind.Instances[0].Held) return -1; // a stream's one copy
+            var instance = Take(kind);
+            instance.View.transform.SetLocalPositionAndRotation(position, rotation);
+            instance.Effect.SetSpread(1f);
+            instance.Effect.SetLoop(true);
+            instance.Followed = true;
+            instance.View.SetActive(true);
+            instance.Effect.Play();
+            _shown.Add(new Shown { Instance = instance, Left = FollowTimeout });
+            return instance.Id | ((instance.Generation & 0x7FFF) << 16);
+        }
+
+        /// <summary>Carries a followed effect (ignored when its instance was taken by a newer play).</summary>
+        public void Move(int handle, Vector3 position, Quaternion rotation)
+        {
+            var instance = Followed(handle);
+            if (instance == null) return;
+            instance.View.transform.SetLocalPositionAndRotation(position, rotation);
+            var index = IndexOf(instance);
+            if (index >= 0) _shown[index] = new Shown { Instance = instance, Left = FollowTimeout };
+        }
+
+        /// <summary>A followed effect stops emitting and fades out where it is.</summary>
+        public void Unfollow(int handle)
+        {
+            var instance = Followed(handle);
+            if (instance == null) return;
+            instance.Effect.Stop();
+            instance.Effect.SetLoop(false);
+            instance.Followed = false;
+            var index = IndexOf(instance);
+            if (index >= 0) _shown[index] = new Shown { Instance = instance, Left = instance.Effect.Duration };
+        }
+
+        private Instance Followed(int handle)
+        {
+            if (handle < 0) return null;
+            var id = handle & 0xFFFF;
+            if (id >= _all.Count) return null;
+            var instance = _all[id];
+            return instance.Followed && instance.Busy && (instance.Generation & 0x7FFF) == (handle >> 16) ? instance : null;
         }
 
         /// <summary>The effect was loaded with the level (it can be played or held).</summary>
@@ -136,15 +202,20 @@ namespace Purge.Presentation.Visual
         /// when it is not. <paramref name="reach"/> &gt; 0 fits an effect with a radius to it by its particles'
         /// lifetime. <see cref="Release"/> stops it. False: not loaded.
         /// </summary>
-        public bool Hold(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float reach = 0f)
+        /// <param name="cut">&gt; 0: everything farther than this along the effect's forward is cut (a wall, stage Э3).</param>
+        public bool Hold(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float reach = 0f, float cut = 0f)
         {
             if (!IsLoaded(reference)) return false;
             var instance = _kinds[reference.AssetGUID].Instances[0];
-            instance.View.transform.SetLocalPositionAndRotation(position, rotation);
+            var transform = instance.View.transform;
+            transform.SetLocalPositionAndRotation(position, rotation);
+            // Every frame: a wall ahead shortens the reach of new particles and cuts what flies on (stage Э3).
+            instance.Effect.SetLifetimeFactor(reach > 0f && instance.Effect.Radius > 0f ? reach / instance.Effect.Radius : 1f);
+            if (cut > 0f) instance.Effect.SetClipPlane(transform.forward, transform.position + transform.forward * cut);
+            else instance.Effect.ClearClipPlane();
             if (instance.Held) return true;
 
             var index = IndexOf(instance);
-            instance.Effect.SetLifetimeFactor(reach > 0f && instance.Effect.Radius > 0f ? reach / instance.Effect.Radius : 1f);
             if (index >= 0)
             {
                 // Still fading from the last hold (a gap between attacks): emit on, keep the flame that is out.
@@ -188,6 +259,11 @@ namespace Purge.Presentation.Visual
 
                 shown.Instance.View.SetActive(false);
                 shown.Instance.Busy = false;
+                if (shown.Instance.Followed)
+                {
+                    shown.Instance.Effect.SetLoop(false);
+                    shown.Instance.Followed = false;
+                }
                 _shown.RemoveAt(i);
             }
         }
@@ -198,6 +274,7 @@ namespace Purge.Presentation.Visual
             foreach (var instance in kind.Instances)
                 if (instance != null) UnityObjects.Destroy(instance.View);
             _kinds.Clear();
+            _all.Clear();
             _shown.Clear();
             _warmup.Clear();
             _missing.Clear();
@@ -212,11 +289,15 @@ namespace Purge.Presentation.Visual
                 foreach (var entry in _visual.MuzzleFlashes)
                     if (entry != null) Add(wanted, entry.Effect);
                 Add(wanted, _visual.ExplosionSmall);
+                Add(wanted, _visual.ExplosionMedium);
                 Add(wanted, _visual.ExplosionLarge);
                 Add(wanted, _visual.Stream);
                 Add(wanted, _visual.ChainHit);
                 Add(wanted, _visual.BarrelSmoke);
+                Add(wanted, _visual.RageFlash);
             }
+
+            CollectMonsters(wanted);
 
             if (_level != null)
                 foreach (var pickup in _level.Weapons) AddWeapon(wanted, pickup.Definition);
@@ -227,6 +308,48 @@ namespace Purge.Presentation.Visual
             }
             if (_player != null) AddWeapon(wanted, _player.BaseWeapon);
             if (_slot != null) AddThrowable(wanted, _slot.Definition);
+        }
+
+        /// <summary>Looks of the monsters the level can have (the waves' and the called-up kinds) and of champions.</summary>
+        private void CollectMonsters(List<AssetReferenceGameObject> wanted)
+        {
+            var settings = _level != null ? _level.StressTest : null;
+            if (settings == null) return;
+            foreach (var spawn in settings.Monsters)
+                if (spawn != null) AddMonster(wanted, spawn.Monster);
+            foreach (var monster in settings.OnDemandMonsters) AddMonster(wanted, monster);
+            foreach (var view in settings.MonsterViews)
+                if (view != null) Add(wanted, view.ProjectileTrail);
+            foreach (var affix in settings.Champions.Affixes)
+            {
+                if (affix == null) continue;
+                foreach (var module in affix.Modules)
+                    if (module is DeathBlastAffix blast) AddEffects(wanted, blast.Effects);
+            }
+        }
+
+        private static void AddMonster(List<AssetReferenceGameObject> wanted, MonsterDefinition monster)
+        {
+            if (monster == null) return;
+            AddEffects(wanted, monster.DeathEffects);
+            foreach (var ability in monster.Abilities)
+                switch (ability)
+                {
+                    case ProjectileAbility projectile:
+                        AddEffects(wanted, projectile.Impact);
+                        break;
+                    case AreaStrikeAbility area:
+                        AddEffects(wanted, area.Impact);
+                        Add(wanted, area.Fall);
+                        break;
+                }
+        }
+
+        private static void AddEffects(List<AssetReferenceGameObject> wanted, IReadOnlyList<EffectModule> effects)
+        {
+            if (effects == null) return;
+            foreach (var effect in effects)
+                if (effect is IExplosionLook look) Add(wanted, look.Look);
         }
 
         private static void AddWeapon(List<AssetReferenceGameObject> wanted, WeaponDefinition weapon)
@@ -245,8 +368,7 @@ namespace Purge.Presentation.Visual
         private static void AddThrowable(List<AssetReferenceGameObject> wanted, ThrowableDefinition throwable)
         {
             if (throwable == null) return;
-            foreach (var effect in throwable.Effects)
-                if (effect is IExplosionLook look) Add(wanted, look.Look);
+            AddEffects(wanted, throwable.Effects);
         }
 
         private static void Add(List<AssetReferenceGameObject> wanted, AssetReferenceGameObject reference)
@@ -270,6 +392,7 @@ namespace Purge.Presentation.Visual
                 if (!instance.Busy)
                 {
                     instance.Busy = true;
+                    instance.Generation++;
                     return instance;
                 }
 
@@ -278,6 +401,7 @@ namespace Purge.Presentation.Visual
                 var oldest = _shown[i].Instance;
                 if (oldest.Held || Array.IndexOf(kind.Instances, oldest) < 0) continue;
                 _shown.RemoveAt(i); // the list is in start order: the first of the kind is the oldest
+                oldest.Generation++;
                 return oldest;
             }
 
@@ -302,6 +426,9 @@ namespace Purge.Presentation.Visual
             public CombatEffect Effect;
             public bool Busy;
             public bool Held;
+            public bool Followed;
+            public int Id;
+            public int Generation;
         }
 
         private struct Shown

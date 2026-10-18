@@ -24,12 +24,41 @@ namespace Purge.Gameplay.Horde
         private readonly ContentCatalog _content;
         private readonly List<AmmoDefinition> _types = new List<AmmoDefinition>();
 
-        public CombatSandbox(LevelData level, AmmoStock ammo, ThrowableSlot throwables = null, ContentCatalog content = null)
+        private readonly WeaponSystem _weapons;
+        private WeaponRuntime _benchWeapon, _benchReplaced;
+
+        public CombatSandbox(LevelData level, AmmoStock ammo, ThrowableSlot throwables = null, ContentCatalog content = null,
+            WeaponSystem weapons = null)
         {
             _level = level;
             _ammo = ammo;
             _throwables = throwables;
             _content = content;
+            _weapons = weapons;
+        }
+
+        /// <summary>
+        /// The benchmark: <c>StressTestDefinition.BenchWeapon</c> in hands (the weapon it replaces comes back in
+        /// <see cref="Disarm"/>); false without one.
+        /// </summary>
+        public bool ArmForBench()
+        {
+            var definition = _level.StressTest != null ? _level.StressTest.BenchWeapon : null;
+            if (!IsActive || _weapons == null || definition == null || _benchWeapon != null) return false;
+            _benchWeapon = new WeaponRuntime(new WeaponPickupData("bench_" + definition.Id, default, definition), dropped: true);
+            _benchReplaced = _weapons.Equip(_benchWeapon);
+            return true;
+        }
+
+        /// <summary>The weapon the benchmark replaced back in hands.</summary>
+        public void Disarm()
+        {
+            if (_benchWeapon == null) return;
+            for (var slot = WeaponSlot.First; slot <= WeaponSlot.Second; slot++)
+                if (_weapons.Get(slot) == _benchWeapon)
+                    _weapons.Drop(slot);
+            if (_benchReplaced != null) _weapons.Equip(_benchReplaced);
+            _benchWeapon = _benchReplaced = null;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeSystems;

@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: zone_acid
   _core: {r: 0.75, g: 1, b: 0.3, a: 1}
   _edge: {r: 0.25, g: 0.7, b: 0.1, a: 1}
+  _particles:
+    m_AssetGUID: 04152a5f324977f4ebe0c24224401d29
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _particlesPerSecond: 5
   _modules:
   - rid: 1763807262009983218
   references:

@@ -19,7 +19,8 @@ namespace Purge.Presentation.Visual.Horde
     /// <see cref="MonsterViewDefinition.ProjectileModel"/> (its first mesh and material, pointing along the flight) or,
     /// without one, a glowing blob of <see cref="MonsterViewDefinition.ProjectileColor"/>
     /// (<see cref="CombatVisualDefinition.EffectParticles"/>) with a short trail. Arcs rise and fall. No GameObject per
-    /// projectile; allocation-free per frame.
+    /// projectile; allocation-free per frame. With <see cref="MonsterViewDefinition.ProjectileTrail"/> (stage Э3) a pack
+    /// effect follows each projectile in view (<see cref="PackEffectsPlayer.Follow"/>) and fades where it ended.
     /// </summary>
     public sealed class MonsterProjectileView : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -33,6 +34,11 @@ namespace Purge.Presentation.Visual.Horde
         private readonly MonsterAbilities _abilities;
         private readonly PlayerSystem _player;
         private readonly CombatVisualDefinition _visual;
+        private readonly PackEffectsPlayer _packEffects;
+        // Followed trails by projectile serial (MonsterAbilities.ProjectileSerial): serial → handle.
+        private readonly Dictionary<int, int> _trails = new Dictionary<int, int>(MonsterAbilities.MaxProjectiles);
+        private readonly List<int> _seen = new List<int>(MonsterAbilities.MaxProjectiles);
+        private readonly List<int> _ended = new List<int>(MonsterAbilities.MaxProjectiles);
         private readonly List<GameObject> _warmup = new List<GameObject>();
         private Look[] _looks; // per horde kind
         private Mesh _quad;
@@ -40,8 +46,9 @@ namespace Purge.Presentation.Visual.Horde
         private Bounds _bounds;
 
         public MonsterProjectileView(LevelData level, HordeSystem horde, MonsterAbilities abilities, PlayerSystem player,
-            CombatVisualDefinition visual = null)
+            CombatVisualDefinition visual = null, PackEffectsPlayer packEffects = null)
         {
+            _packEffects = packEffects;
             _level = level;
             _horde = horde;
             _abilities = abilities;
@@ -65,6 +72,7 @@ namespace Purge.Presentation.Visual.Horde
                 {
                     Color = view != null ? view.ProjectileColor : new Color(0.6f, 1f, 0.3f, 1f),
                     Size = view != null ? view.ProjectileSize : 0.35f,
+                    Trail = view != null && CombatVisualDefinition.IsSet(view.ProjectileTrail) ? view.ProjectileTrail : null,
                 };
                 var model = view != null ? view.ProjectileModel : null;
                 var filter = model != null ? model.GetComponentInChildren<MeshFilter>() : null;
@@ -101,7 +109,8 @@ namespace Purge.Presentation.Visual.Horde
 
         public void LateTick(float deltaTime)
         {
-            if (_looks == null || _abilities.ProjectileCount == 0) return;
+            if (_looks == null) return;
+            _seen.Clear();
             var floorHeight = _player.Floor * GridPosition.FloorHeight;
             for (var p = 0; p < _abilities.ProjectileCount; p++)
             {
@@ -113,6 +122,7 @@ namespace Purge.Presentation.Visual.Horde
                 var world = new Vector3(position.x, floorHeight + FlightHeight + _abilities.ProjectileHeight(p), position.y);
                 var forward = new Vector3(direction.x, 0f, direction.y);
                 if (forward.sqrMagnitude < 1e-6f) forward = Vector3.forward;
+                if (look.Trail != null && _packEffects != null) FollowTrail(p, look.Trail, world, forward);
                 if (look.Mesh != null)
                 {
                     var matrix = Matrix4x4.TRS(world, Quaternion.LookRotation(forward), Vector3.one) * look.Offset;
@@ -131,10 +141,42 @@ namespace Purge.Presentation.Visual.Horde
                         Matrix4x4.TRS(at, Quaternion.identity, new Vector3(size, 1f, size)));
                 }
             }
+
+            if (_packEffects != null) EndTrails();
+        }
+
+        /// <summary>Trails of projectiles that ended fade where they were.</summary>
+        private void EndTrails()
+        {
+            if (_trails.Count == 0) return;
+            _ended.Clear();
+            foreach (var pair in _trails)
+                if (!_seen.Contains(pair.Key)) _ended.Add(pair.Key);
+            foreach (var serial in _ended)
+            {
+                _packEffects.Unfollow(_trails[serial]);
+                _trails.Remove(serial);
+            }
+        }
+
+        private void FollowTrail(int p, UnityEngine.AddressableAssets.AssetReferenceGameObject trail, Vector3 world, Vector3 forward)
+        {
+            var serial = _abilities.ProjectileSerial(p);
+            _seen.Add(serial);
+            var rotation = Quaternion.LookRotation(forward);
+            if (_trails.TryGetValue(serial, out var handle))
+            {
+                _packEffects.Move(handle, world, rotation);
+                return;
+            }
+
+            handle = _packEffects.Follow(trail, world, rotation);
+            if (handle >= 0) _trails[serial] = handle;
         }
 
         public void Dispose()
         {
+            _trails.Clear();
             UnityObjects.Destroy(_quad);
             _quad = null;
             foreach (var go in _warmup) UnityObjects.Destroy(go);
@@ -158,6 +200,7 @@ namespace Purge.Presentation.Visual.Horde
             public Matrix4x4 Offset;
             public Color Color;
             public float Size;
+            public UnityEngine.AddressableAssets.AssetReferenceGameObject Trail;
         }
     }
 }

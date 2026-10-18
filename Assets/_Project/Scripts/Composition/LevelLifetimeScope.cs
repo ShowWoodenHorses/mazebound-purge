@@ -151,6 +151,8 @@ namespace Purge.Composition
             builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<AbilityWarningView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MonsterProjectileView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // Dust of climbing out, puffs of sinking corpses, the rage's flash, what falls onto area strikes (stage Э3).
+            builder.Register<MonsterEffectsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<PlayerStatusView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<WeaponFeelView>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable, IViewWarmup>();

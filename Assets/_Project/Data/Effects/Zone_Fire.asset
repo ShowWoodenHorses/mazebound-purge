@@ -21,7 +21,7 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _particlesPerSecond: 10
+  _particlesPerSecond: 16
   _modules:
   - rid: 1763807262009983155
   - rid: 1763807262009983156

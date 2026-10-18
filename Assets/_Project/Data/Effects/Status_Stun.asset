@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Effects.StatusDefinition
   _id: status_stun
   _color: {r: 1, g: 0.95, b: 0.45, a: 1}
+  _particles:
+    m_AssetGUID: 94535cff76d295d4ea67db490744f717
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _particlesAtHead: 1
   _modules:
   - rid: 1763807262009983154
   references:

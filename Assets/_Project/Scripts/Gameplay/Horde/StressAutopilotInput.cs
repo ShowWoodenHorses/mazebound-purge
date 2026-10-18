@@ -35,6 +35,14 @@ namespace Purge.Gameplay.Horde
 
         public bool Enabled { get; set; } = true;
 
+        /// <summary>
+        /// The sandbox benchmark: while <see cref="Enabled"/>, the attack is held and the look stays off (no mouse,
+        /// no right stick) — the player fires with the aim assist of the movement stick.
+        /// </summary>
+        public bool Shooting { get; set; }
+
+        private bool Shoots => Enabled && Shooting;
+
         /// <summary>The player whose position the route follows (set after the scope is built: no cycle).</summary>
         public void Attach(PlayerSystem player) => _player = player;
 
@@ -74,9 +82,9 @@ namespace Purge.Gameplay.Horde
             }
         }
 
-        public Vector2 Look => _inner.Look;
-        public bool LookIsPointer => _inner.LookIsPointer;
-        public bool AttackHeld => _inner.AttackHeld;
+        public Vector2 Look => Shoots ? Vector2.zero : _inner.Look;
+        public bool LookIsPointer => !Shoots && _inner.LookIsPointer;
+        public bool AttackHeld => Shoots || _inner.AttackHeld;
         public bool WasPressed(PlayerAction action) => _inner.WasPressed(action);
         public bool IsHeld(PlayerAction action) => _inner.IsHeld(action);
         public bool TryGetGroundTap(out Vector2 screenPosition) => _inner.TryGetGroundTap(out screenPosition);

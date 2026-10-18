@@ -52,6 +52,9 @@ namespace Purge.Core.Horde
         [SerializeField] private Color _projectileColor = new Color(0.6f, 1f, 0.3f, 1f);
         [Tooltip("Size of the projectile, cells.")]
         [SerializeField, Min(0.05f)] private float _projectileSize = 0.35f;
+        [Tooltip("Stage Э3: an effect of Art/Effects that follows each projectile in flight (a trail of acid, frost…); " +
+                 "empty = none.")]
+        [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _projectileTrail;
 
         public string MonsterId => _monsterId;
         public GameObject Prefab => _prefab;
@@ -64,6 +67,7 @@ namespace Purge.Core.Horde
         public GameObject ProjectileModel => _projectileModel;
         public Color ProjectileColor => _projectileColor;
         public float ProjectileSize => _projectileSize;
+        public UnityEngine.AddressableAssets.AssetReferenceGameObject ProjectileTrail { get => _projectileTrail; internal set => _projectileTrail = value; }
 
         /// <summary>When the cast clip of ability <paramref name="index"/> lets go (share) and how long it is at 1×, s.</summary>
         public void CastTiming(int index, out float moment, out float length)

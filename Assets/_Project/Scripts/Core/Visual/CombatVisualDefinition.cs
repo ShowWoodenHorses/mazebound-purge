@@ -77,11 +77,15 @@ namespace Purge.Core.Visual
         [Header("Pack effects (stage Э): defaults of content without its own look")]
         [Tooltip("Muzzle flash by the weapon's hold; a hold not listed — Muzzle Flash above.")]
         [SerializeField] private List<HoldEffect> _muzzleFlashes = new List<HoldEffect>();
-        [Tooltip("Explosion with a radius below Large Explosion Radius (scaled to the radius).")]
+        [Tooltip("Explosion with a radius below Medium Explosion Radius (scaled to the radius).")]
         [SerializeField] private AssetReferenceGameObject _explosionSmall;
-        [Tooltip("Explosion with a radius from Large Explosion Radius (scaled to the radius); empty = the small one.")]
+        [Tooltip("Stage Э3: explosion with a radius from Medium to Large Explosion Radius; empty = the small one. Each size " +
+                 "has its own effect — one effect grown to a big radius looked like a small one magnified.")]
+        [SerializeField] private AssetReferenceGameObject _explosionMedium;
+        [SerializeField, Min(0.3f)] private float _mediumExplosionRadius = 1.75f;
+        [Tooltip("Explosion with a radius from Large Explosion Radius (scaled to the radius); empty = the medium one.")]
         [SerializeField] private AssetReferenceGameObject _explosionLarge;
-        [SerializeField, Min(0.3f)] private float _largeExplosionRadius = 2f;
+        [SerializeField, Min(0.3f)] private float _largeExplosionRadius = 2.25f;
 
         [Header("Pack effects (stage Э2): weapons")]
         [Tooltip("Stream (cone) of a weapon without its own: a looping effect at the muzzle while it fires, fitted to its " +
@@ -111,6 +115,46 @@ namespace Purge.Core.Visual
         [Tooltip("Ring under the player while a state holds them or the immunity to control lasts (Purge/Ring).")]
         [SerializeField] private Material _statusRing;
 
+        [Header("Pack effects (stage Э3): monsters")]
+        [Tooltip("Dust and earth around a monster climbing out of the ground: an effect the game emits from (a wave " +
+                 "climbs out at once — no instances); empty = none.")]
+        [SerializeField] private AssetReferenceGameObject _emerge;
+        [Tooltip("Particles a second around one climbing monster.")]
+        [SerializeField, Min(0f)] private float _emergeRate = 6f;
+        [Tooltip("Puff where a corpse sinks into the ground at the end of its time (emitted from); empty = none.")]
+        [SerializeField] private AssetReferenceGameObject _corpsePuff;
+        [SerializeField, Min(0f)] private float _corpsePuffCount = 4f;
+        [Tooltip("Seconds a corpse takes to sink at the end of its time (it lies still before).")]
+        [SerializeField, Range(0.05f, 2f)] private float _corpseSinkTime = 0.4f;
+        [Tooltip("How deep a corpse sinks, metres (× the monster's size).")]
+        [SerializeField, Range(0.1f, 3f)] private float _corpseSinkDepth = 0.9f;
+        [Tooltip("Flash on a monster when its rage begins (one-shot).")]
+        [SerializeField] private AssetReferenceGameObject _rageFlash;
+        [Tooltip("Glow of an enraged monster until it dies, sRGB; alpha = strength (over a champion's glow).")]
+        [SerializeField] private Color _rageGlow = new Color(1f, 0.15f, 0.05f, 0.85f);
+        [Tooltip("Height of the stars circling a stunned monster's head, × its size (Status.Particles of a stun).")]
+        [SerializeField, Min(0.3f)] private float _stunHeight = 1.45f;
+
+        public AssetReferenceGameObject Emerge { get => _emerge; internal set => _emerge = value; }
+        public float EmergeRate { get => _emergeRate; internal set => _emergeRate = value; }
+        public AssetReferenceGameObject CorpsePuff { get => _corpsePuff; internal set => _corpsePuff = value; }
+        public float CorpsePuffCount { get => _corpsePuffCount; internal set => _corpsePuffCount = value; }
+        public float CorpseSinkTime { get => _corpseSinkTime; internal set => _corpseSinkTime = value; }
+        public float CorpseSinkDepth { get => _corpseSinkDepth; internal set => _corpseSinkDepth = value; }
+        public AssetReferenceGameObject RageFlash { get => _rageFlash; internal set => _rageFlash = value; }
+        public Color RageGlow { get => _rageGlow; internal set => _rageGlow = value; }
+        public float StunHeight { get => _stunHeight; internal set => _stunHeight = value; }
+
+        /// <summary>
+        /// How far a corpse has sunk, 0..1, <paramref name="sinceDeath"/> s after death with <paramref name="corpseTime"/>
+        /// to lie: still until the last <see cref="CorpseSinkTime"/>, then down.
+        /// </summary>
+        public float CorpseSink(float sinceDeath, float corpseTime)
+        {
+            var sink = Mathf.Min(_corpseSinkTime, corpseTime * 0.5f);
+            return sink <= 0f ? 0f : Mathf.Clamp01((sinceDeath - (corpseTime - sink)) / sink);
+        }
+
         public Material AbilityWarning { get => _abilityWarning; internal set => _abilityWarning = value; }
         public Material StatusRing { get => _statusRing; internal set => _statusRing = value; }
         public Material BoltMaterial { get => _boltMaterial; internal set => _boltMaterial = value; }
@@ -136,6 +180,8 @@ namespace Purge.Core.Visual
 
         public List<HoldEffect> MuzzleFlashes => _muzzleFlashes;
         public AssetReferenceGameObject ExplosionSmall { get => _explosionSmall; internal set => _explosionSmall = value; }
+        public AssetReferenceGameObject ExplosionMedium { get => _explosionMedium; internal set => _explosionMedium = value; }
+        public float MediumExplosionRadius { get => _mediumExplosionRadius; internal set => _mediumExplosionRadius = value; }
         public AssetReferenceGameObject ExplosionLarge { get => _explosionLarge; internal set => _explosionLarge = value; }
         public float LargeExplosionRadius { get => _largeExplosionRadius; internal set => _largeExplosionRadius = value; }
 
@@ -171,11 +217,17 @@ namespace Purge.Core.Visual
             return null;
         }
 
-        /// <summary>Default look of an explosion of <paramref name="radius"/> cells, or null.</summary>
-        public AssetReferenceGameObject ExplosionOf(float radius) =>
-            radius >= _largeExplosionRadius && IsSet(_explosionLarge) ? _explosionLarge
-            : IsSet(_explosionSmall) ? _explosionSmall
-            : IsSet(_explosionLarge) ? _explosionLarge : null;
+        /// <summary>
+        /// Default look of an explosion of <paramref name="radius"/> cells: its size's effect, else the nearest smaller
+        /// one, else any; null without any.
+        /// </summary>
+        public AssetReferenceGameObject ExplosionOf(float radius)
+        {
+            if (radius >= _largeExplosionRadius && IsSet(_explosionLarge)) return _explosionLarge;
+            if (radius >= _mediumExplosionRadius && IsSet(_explosionMedium)) return _explosionMedium;
+            if (IsSet(_explosionSmall)) return _explosionSmall;
+            return IsSet(_explosionMedium) ? _explosionMedium : IsSet(_explosionLarge) ? _explosionLarge : null;
+        }
 
         public static bool IsSet(AssetReferenceGameObject reference) => reference != null && reference.RuntimeKeyIsValid();
 
@@ -193,6 +245,7 @@ namespace Purge.Core.Visual
                 foreach (var entry in _muzzleFlashes)
                     if (entry != null) yield return entry.Effect;
                 yield return _explosionSmall;
+                yield return _explosionMedium;
                 yield return _explosionLarge;
                 yield return _stream;
                 yield return _chainHit;

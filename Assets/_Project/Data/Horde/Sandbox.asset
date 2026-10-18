@@ -122,8 +122,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 86d08ce4919207443b702b55cd54856d, type: 2}
   - {fileID: 11400000, guid: 83e03865f42011d468dfc95aa8e3b1e4, type: 2}
   _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
-  _monsterCounts: 000000001e0000003c0000006400000096000000c8000000
+  _monsterCounts: 000000001e0000003c0000006400000096000000c80000002c010000
   _startCount: 60
+  _reserveSlots: 64
   _cameraHalfExtents:
   - 4
   - 6
@@ -139,3 +140,4 @@ MonoBehaviour:
   _fireMaterial: {fileID: 2100000, guid: b49e1a135b417a04e8cd8d77ca43aef2, type: 2}
   _benchmarkWarmup: 3
   _benchmarkSample: 12
+  _benchWeapon: {fileID: 11400000, guid: bd948e954d146054e87e4bd8308c40a7, type: 2}

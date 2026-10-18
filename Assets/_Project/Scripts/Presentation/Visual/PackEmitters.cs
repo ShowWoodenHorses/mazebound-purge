@@ -18,7 +18,8 @@ namespace Purge.Presentation.Visual
     /// nothing by themselves (world space, a larger particle cap) and the views feed them by <see cref="Emitter.Emit"/>
     /// where they need (only in visible cells — the caller checks). Each system gets its share of a call by how much it
     /// emitted in the pack (flames more than embers). Display only.
-    /// <para>Loaded with the level: <see cref="CombatVisualDefinition.HitSparks"/> and the looks of every zone and state
+    /// <para>Loaded with the level: <see cref="CombatVisualDefinition.HitSparks"/>, the monsters' dust of climbing out
+    /// and puff of sinking corpses (stage Э3) and the looks of every zone and state
     /// of the content catalog (<see cref="ZoneDefinition.Particles"/>, <see cref="StatusDefinition.Particles"/> —
     /// a handful). Nothing is created during play.</para>
     /// </summary>
@@ -48,7 +49,12 @@ namespace Purge.Presentation.Visual
         public async UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var wanted = new List<AssetReferenceGameObject>();
-            if (_visual != null) Add(wanted, _visual.HitSparks);
+            if (_visual != null)
+            {
+                Add(wanted, _visual.HitSparks);
+                Add(wanted, _visual.Emerge);
+                Add(wanted, _visual.CorpsePuff);
+            }
             if (_content != null)
                 foreach (var item in _content.Items)
                     switch (item)
@@ -140,6 +146,26 @@ namespace Purge.Presentation.Visual
                     _carry[i] -= whole;
                     var system = _systems[i];
                     // The level warmup stops every particle system once it has drawn them.
+                    if (!system.isPlaying) system.Play(false);
+                    system.Emit(emit, whole);
+                }
+            }
+
+            /// <summary>
+            /// One particle of the main system exactly at <paramref name="position"/> (no shape) living
+            /// <paramref name="lifetime"/> s — the caller draws the figure (stars circling a stunned head); the other
+            /// systems — their share.
+            /// </summary>
+            public void EmitPoint(Vector3 position, float lifetime)
+            {
+                var emit = new ParticleSystem.EmitParams { position = position, applyShapeToPosition = false, startLifetime = lifetime };
+                for (var i = 0; i < _systems.Length; i++)
+                {
+                    _carry[i] += _shares[i];
+                    var whole = (int)_carry[i];
+                    if (whole <= 0) continue;
+                    _carry[i] -= whole;
+                    var system = _systems[i];
                     if (!system.isPlaying) system.Play(false);
                     system.Emit(emit, whole);
                 }

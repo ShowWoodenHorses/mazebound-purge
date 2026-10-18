@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04152a5f324977f4ebe0c24224401d29
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Acid_Bubbles.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 049b0a329261d1b4d9a593610ea82861
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_cyan.prefab
     m_ReadOnly: 0
@@ -190,6 +195,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33ce8ffbf748266499f9947cc139b363
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Spit_Trail.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34900a2fe8356b34a84ded3a07e96c95
     m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_04.prefab
     m_ReadOnly: 0
@@ -235,6 +245,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ec5ca694ddef85478a0e273824f327c
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Champion_Blast.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3f98ae964c6dcba429009f416a1b548e
     m_Address: Assets/_Project/Art/Items/Pickups/Energy_ammo_Pickup.prefab
     m_ReadOnly: 0
@@ -247,6 +262,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 43eab822f2c6f7b4c983d79f11cc4390
     m_Address: Assets/_Project/Art/Decor/SM_Env_Bush_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 442326f2364bd4147bf770abaa191f13
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Poison_Cloud.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -282,6 +302,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4d46abda59fa611408258f5cf721c4c1
     m_Address: Assets/_Project/Art/Decor/SM_Prop_BurnPile_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e4197875e83d5a44a00540760d75b8f
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Fall_Ice.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e9e0c01dc85eb342a54ef2e83d0822b
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Explosion_Large.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -327,6 +357,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 54dadb18da01ec54dae370f632b1b89e
     m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/wall_forest_logs.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5534070129acb064989095e8f81d7f5b
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Arrow_Hit.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -435,6 +470,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79512e1a7f118714394fd58acc7c6692
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Corpse_Puff.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7956f62c1692d6543a8af23ca0f1a2cc
     m_Address: Assets/_Project/Art/Items/Pickups/Medical_Crate_Pickup.prefab
     m_ReadOnly: 0
@@ -467,6 +507,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83c093c4e335b1d469a4032f23a75672
     m_Address: Assets/_Project/Art/Items/SM_Prop_MedicalBox_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 856a79ebcdc90f24597b558c7f623eb3
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Poison_Burst.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -510,6 +555,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94535cff76d295d4ea67db490744f717
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Stun_Stars.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95d4d9e502e4d5e4dbc109d0e6d60e53
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_purple.prefab
     m_ReadOnly: 0
@@ -537,6 +587,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d185a001b4c0004d9a0bd9cd0dee0f8
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Sparks_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dc3c0d83e4e2054dbbf06e86d388d71
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Icicle_Hit.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -595,8 +650,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa87cc25cc55433449c01b11751ead63
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Icicle_Trail.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ab2b1f65a41391342ad08c00716a55d2
     m_Address: Assets/_Project/Art/Items/Pickups/Flashbang_Flying.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aba72fd1921e4a84ea1a713add06b6dc
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Frozen.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -685,6 +750,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c182c4ed12e54d24d9485e61ef313a9c
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Spit_Splash.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c23c253cdfdcfe841bc96fe90048de56
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Fall_Poison.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c36eb9b2b390dbb4d8c8ee3ef674a845
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Fire_Small_01.prefab
     m_ReadOnly: 0
@@ -692,6 +767,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c75572203087ab34aaa404250516c2a8
     m_Address: Assets/_Project/Art/Weapons/Pickups/RPG_Pickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7cac90e16ab9fc498326f8c7153fe2b
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Emerge_Dirt.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -790,6 +870,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6acdc56d1dd1b6418020a088f7ca733
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Rage_Flash.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e70302ea4c17d6442b2e7555d6d824bf
     m_Address: Assets/_Project/Art/Placeholders/wall_t.prefab
     m_ReadOnly: 0
@@ -807,6 +892,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8ce55ce5f2a6e046be1087f736239ae
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e901aa4357cbb654dba7e9ded95856c8
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Ice_Burst.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -830,6 +920,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef80f724a4f186b4faef6c72e18dcf86
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Fireball_Explosion.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: efafa478f802de64d88b5192f2bbbb38
     m_Address: Assets/_Project/Art/Weapons/Pickups/Auto_Shotgun_Pickup.prefab
     m_ReadOnly: 0
@@ -847,6 +942,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f2c84bc6f7c40c34f97ab68de3a3d006
     m_Address: Assets/_Project/Art/Zombie/Zombie_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3c0ce2e4a62f3a4190ef0546d171d13
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Fall_Fireball.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -428,10 +428,30 @@ namespace Purge.Editor.Dev
             };
             var web = settings;
             web.compressionFormat = AudioCompressionFormat.MP3;
+            // A short loop (continuous fire, fire, a rocket's flight; stage Э3): MP3 is not gapless — the encoder's
+            // ~40 ms of silence at the start of the clip was heard on every repeat of the flamethrower. Uncompressed
+            // (a WAV for decodeAudioData, decodes everywhere); only a few such clips, so the download barely grows.
+            if (IsLoop(path) && clip != null && clip.length <= PcmLoopMaxLength)
+            {
+                web.compressionFormat = AudioCompressionFormat.PCM;
+                web.loadType = AudioClipLoadType.DecompressOnLoad;
+            }
             // The WebGL override refuses "preserve sample rate" (SetOverrideSampleSettings returns false, nothing set).
             web.sampleRateSetting = AudioSampleRateSetting.OverrideSampleRate;
             web.sampleRateOverride = 44100;
             return Apply(importer, !isInterface, false, settings, web);
+        }
+
+        /// <summary>Longest loop kept uncompressed on WebGL, seconds (longer ambience stays MP3).</summary>
+        private const float PcmLoopMaxLength = 6f;
+
+        /// <summary>A clip the game plays looping: "loop", "*_loop" or a part "*_flight".</summary>
+        private static bool IsLoop(string path)
+        {
+            var name = System.IO.Path.GetFileNameWithoutExtension(path);
+            return name.Equals("loop", StringComparison.OrdinalIgnoreCase) ||
+                   name.EndsWith("_loop", StringComparison.OrdinalIgnoreCase) ||
+                   name.EndsWith("_flight", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>Music: stereo Vorbis, streamed (never fully in memory where the platform can stream), loaded in the background.</summary>

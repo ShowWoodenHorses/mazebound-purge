@@ -37,11 +37,14 @@ namespace Purge.Presentation.Visual.Horde
     {
         private const int MaxBoltQuads = 256;
         private const int SegmentsPerJump = 5;
-        private const float BoltTime = 0.12f;
+        private const float BoltTime = 0.16f; // stage Э3: 0.12 s was hard to see
         private const float BoltWidth = 0.09f;
         private const float GunHeight = 0.75f;
         private const float StatusInterval = 0.12f;
         private const float StatusHeight = 0.5f;
+        private const int StunStars = 3;
+        private const float StunRing = 0.28f;
+        private const float StunTurn = 5f;
 
         private readonly LevelData _level;
         private readonly PlayerCombat _combat;
@@ -204,6 +207,17 @@ namespace Purge.Presentation.Visual.Horde
                     if (!Visible(at)) break;
                     var status = kinds[kind];
                     var look = _emitters?.Get(status.Particles);
+                    if (look != null && status.ParticlesAtHead)
+                    {
+                        // Stars circling the head (stage Э3): short-lived points along a turning ring.
+                        var angle = Time.time * StunTurn + agent * 2.4f;
+                        var head = StunHeightOf(agent);
+                        for (var n = 0; n < StunStars; n++, angle += Mathf.PI * 2f / StunStars)
+                            look.EmitPoint(new Vector3(at.x + Mathf.Cos(angle) * StunRing, head, at.y + Mathf.Sin(angle) * StunRing),
+                                StatusInterval * 1.6f);
+                        continue;
+                    }
+
                     if (look != null)
                     {
                         look.Emit(new Vector3(at.x, StatusHeight, at.y), 1f);
@@ -231,6 +245,16 @@ namespace Purge.Presentation.Visual.Horde
                     }
                 }
             }
+        }
+
+        /// <summary>Height of a stunned monster's stars: taller ranks and champions higher.</summary>
+        private float StunHeightOf(int agent)
+        {
+            var height = _visual != null ? _visual.StunHeight : 1.45f;
+            var definition = _horde.DefinitionOf(agent);
+            if (definition != null && definition.Rank >= Core.Monsters.MonsterRank.Elite) height *= 1.12f;
+            if (_horde.IsChampion(agent) && _horde.Champions != null) height *= _horde.Champions.Scale;
+            return height;
         }
 
         public void LateTick(float deltaTime)

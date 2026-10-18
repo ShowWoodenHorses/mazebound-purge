@@ -63,23 +63,23 @@ MonoBehaviour:
     Particles: 0.6
   - Source: {fileID: 1095787749935704, guid: cc606b05b54463b41bd3f1744812102d, type: 3}
     Name: 
-    Scale: 0.6
-    Radius: 3
+    Scale: 0.45
+    Radius: 2.25
     Loop: 0
     Flat: 1
-    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Tint: {r: 0.62, g: 0.62, b: 0.65, a: 1}
     Particles: 0.6
   - Source: {fileID: 1648978194837340, guid: c3039019fa1c65840b1b35eed158363c, type: 3}
     Name: 
-    Scale: 1.5
+    Scale: 2
     Radius: 0
     Loop: 0
-    Flat: 0
+    Flat: 1
     Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 1
   - Source: {fileID: 1303429800363182, guid: 9a905dc8b3b361840bb50c14f05926a9, type: 3}
     Name: 
-    Scale: 1.5
+    Scale: 2.2
     Radius: 0
     Loop: 0
     Flat: 0
@@ -108,4 +108,164 @@ MonoBehaviour:
     Loop: 1
     Flat: 0
     Tint: {r: 0.8, g: 0.9, b: 0.45, a: 1}
+    Particles: 1
+  - Source: {fileID: 1643851402782444, guid: 4f703a1da613efc43b08b1d2bdcfd49f, type: 3}
+    Name: FX_Emerge_Dirt
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1885733664846446, guid: dbada9b00d4f0394c87e2738108b402b, type: 3}
+    Name: FX_Corpse_Puff
+    Scale: 0.7
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 2734593525439524830, guid: 1a3ce7b11de591d47ae0f577a0863431, type: 3}
+    Name: FX_Stun_Stars
+    Scale: 0.35
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1117963138859732, guid: 00f33c39964fa154b9b082dc73e7eca2, type: 3}
+    Name: FX_Rage_Flash
+    Scale: 0.9
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1260334799937022, guid: 2b28f2fdc5a65964f96ea4d2b9d6ca63, type: 3}
+    Name: FX_Arrow_Hit
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 5246394779498801318, guid: df550a7e0a209784894a2d5ca9b13dbc, type: 3}
+    Name: FX_Spit_Splash
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 7471330421619993147, guid: 249f2d7c150622f4fa38432374750332, type: 3}
+    Name: FX_Icicle_Hit
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1471043185849760, guid: 7cec5113cc30b184391c64d5a0a33c65, type: 3}
+    Name: FX_Spit_Trail
+    Scale: 0.5
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1278067673019330, guid: 112f3db1547c11e4fadfba32f6df1cec, type: 3}
+    Name: FX_Icicle_Trail
+    Scale: 0.4
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 2961976109236827102, guid: e94da34902eb07248b46b001810f3088, type: 3}
+    Name: FX_Acid_Bubbles
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 1
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1471001059461388, guid: c1d501f0836891042af0a9b9060d3ff2, type: 3}
+    Name: FX_Poison_Cloud
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 1
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1722081097931586, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
+    Name: FX_Fall_Fireball
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1879798220002124, guid: 8c988011ae9fc604a8a3761a0ac3d8a8, type: 3}
+    Name: FX_Fireball_Explosion
+    Scale: 1
+    Radius: 1.2
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 5792377220495447673, guid: 3ed4c6eab5393ad48b9fd6b2845986ec, type: 3}
+    Name: FX_Fall_Poison
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 5954964381004960425, guid: 8c4f8dad7361c0f46b409563612a13f0, type: 3}
+    Name: FX_Poison_Burst
+    Scale: 1
+    Radius: 1.4
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.5
+  - Source: {fileID: 1278067673019330, guid: 112f3db1547c11e4fadfba32f6df1cec, type: 3}
+    Name: FX_Fall_Ice
+    Scale: 0.8
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1
+  - Source: {fileID: 1510452662759636, guid: a17347c42dfc98c4b861a7e41a444d6f, type: 3}
+    Name: FX_Ice_Burst
+    Scale: 1
+    Radius: 1
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.5
+  - Source: {fileID: 1708089498094967644, guid: cbfeb88c1df97af458051ffcc97980d4, type: 3}
+    Name: FX_Frozen
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1809022330002312, guid: ed511b7776af6174e9b1255c7a81e59c, type: 3}
+    Name: FX_Champion_Blast
+    Scale: 1
+    Radius: 1.4
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.5
+  - Source: {fileID: 1056904543853562, guid: 4cf45cdce36e66e4a93614abb5ae7821, type: 3}
+    Name: FX_Explosion_Large
+    Scale: 0.6
+    Radius: 2.2
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 1

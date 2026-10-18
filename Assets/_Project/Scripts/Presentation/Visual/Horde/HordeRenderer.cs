@@ -72,6 +72,8 @@ namespace Purge.Presentation.Visual.Horde
         private bool[] _seenDying;
         private Vector4[] _affixGlow; // per affix code (0 = not a champion): colour and strength of the glow
         private float _championScale = 1f;
+        private Vector4 _rageGlow; // the enraged monster's glow (stage Э3), in the project's colour space
+        private readonly Core.Visual.CombatVisualDefinition _visual;
         private float _lastTime;
 
         /// <summary>Seconds a hit's dent lasts (squash, then back).</summary>
@@ -92,8 +94,10 @@ namespace Purge.Presentation.Visual.Horde
         private Bounds _worldBounds;
         private bool _useVat, _interpolate;
 
-        public HordeRenderer(LevelData level, HordeSystem horde, VisibilitySystem visibility, TopDownCamera camera)
+        public HordeRenderer(LevelData level, HordeSystem horde, VisibilitySystem visibility, TopDownCamera camera,
+            Core.Visual.CombatVisualDefinition visual = null)
         {
+            _visual = visual;
             _level = level;
             _horde = horde;
             _visibility = visibility;
@@ -251,6 +255,12 @@ namespace Purge.Presentation.Visual.Horde
                     _affixGlow[a + 1] = new Vector4(rgb.r, rgb.g, rgb.b, glow.a);
                 }
             _championScale = champions != null ? champions.Scale : 1f;
+            if (_visual != null)
+            {
+                var rage = _visual.RageGlow;
+                var rageRgb = QualitySettings.activeColorSpace == ColorSpace.Linear ? rage.linear : rage;
+                _rageGlow = new Vector4(rageRgb.r, rageRgb.g, rageRgb.b, rage.a);
+            }
 
             var size = new Vector3(_level.Geometry.Width + 4f, 6f, _level.Geometry.Height + 4f);
             _worldBounds = new Bounds(new Vector3(_level.Geometry.Width * 0.5f, 1f, _level.Geometry.Height * 0.5f), size);
@@ -431,6 +441,13 @@ namespace Purge.Presentation.Visual.Horde
                     }
                 }
 
+                if (state != HordeAgentState.Dying && _rageGlow.w > 0f && _horde.IsEnraged(i))
+                {
+                    // The rage (stage Э3) over a champion's colour, pulsing faster.
+                    glow = _rageGlow;
+                    glow.w *= 0.75f + 0.25f * Mathf.Sin(time * 9f + i);
+                }
+
                 var size = new Vector3(scale, scale, scale);
                 if (state == HordeAgentState.Dying) frame.w = 0f;
                 else if (sinceHit < DentTime && _dent[i] > 0f)
@@ -443,7 +460,11 @@ namespace Purge.Presentation.Visual.Horde
                 var look = _kindLookStart[kind] + variants[i] % _kindLookCount[kind];
                 var batch = CurrentBatch(look);
                 var slot = _batchFill[look]++;
-                var world = new Vector3(p.x, 0f, p.y);
+                // A corpse sinks into the ground at the end of its time (stage Э3).
+                var sink = state == HordeAgentState.Dying && _visual != null
+                    ? _visual.CorpseSink(time - stateStart[i], stats.CorpseTime) * _visual.CorpseSinkDepth * scale
+                    : 0f;
+                var world = new Vector3(p.x, -sink, p.y);
                 batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), size);
                 batch.Frames[slot] = frame;
                 batch.Glows[slot] = glow;

@@ -637,7 +637,7 @@ namespace Purge.Gameplay.Horde
             if (Settings == null)
                 return UniTask.CompletedTask;
 
-            var capacity = Settings.MaxCount;
+            var capacity = Settings.Capacity;
             _positions = new Vector2[capacity];
             _facing = new float[capacity];
             _health = new float[capacity];
@@ -713,7 +713,7 @@ namespace Purge.Gameplay.Horde
         {
             if (_positions == null)
                 return;
-            TargetCount = Mathf.Clamp(count, 0, _positions.Length);
+            TargetCount = Mathf.Clamp(count, 0, Mathf.Min(Settings.MaxCount, _positions.Length));
             // Fewer: the farthest living monsters leave at once.
             while (AliveCount > TargetCount)
             {

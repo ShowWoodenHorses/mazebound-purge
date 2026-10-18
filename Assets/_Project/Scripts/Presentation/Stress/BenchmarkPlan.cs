@@ -29,8 +29,8 @@ namespace Purge.Presentation.Stress
         public bool Elite;
         /// <summary>Sandbox: champions called up on top (affixes in turn, every third an officer).</summary>
         public int Champions;
-        /// <summary>Sandbox: the bench kills the rank-and-file next to the player (drops, deaths' effects, blasts, raises).</summary>
-        public bool Kills;
+        /// <summary>Sandbox: the player fires the bench weapon with aim assist (bullets, hits, kills, drops, deaths' effects).</summary>
+        public bool Shoot;
     }
 
     /// <summary>Measured numbers of one configuration.</summary>
@@ -38,7 +38,7 @@ namespace Purge.Presentation.Stress
     {
         public const string Header =
             "name | count cam weapon storm fire vat lerp shadows render freeze fx res cull | avgFPS 1%low medMs | " +
-            "alive drawn | simMs simMaxMs flowMs fovMaxMs drawMs weapMs fxMs | drawCalls trisK | officers elite champs kills";
+            "alive drawn | simMs simMaxMs flowMs fovMaxMs drawMs weapMs fxMs | drawCalls trisK | officers elite champs shoot";
 
         public BenchmarkConfig Config;
         public float AvgFps, Low1Fps, MedianMs;
@@ -52,7 +52,7 @@ namespace Purge.Presentation.Stress
                    $"{B(c.Shadows)} {B(c.Render)} {B(c.Freeze)} {B(c.Effects)} {c.Resolution:0.##} {B(c.Cull)} | " +
                    $"{AvgFps:0.0} {Low1Fps:0.0} {MedianMs:0.0} | {Alive:0} {Drawn:0} | " +
                    $"{SimMs:0.00} {SimMaxMs:0.00} {FlowMs:0.00} {FovMaxMs:0.00} {RenderMs:0.00} {WeaponMs:0.00} {EffectsMs:0.00} | {DrawCalls:0} {Triangles / 1000f:0} | " +
-                   $"{B(c.Officers)} {B(c.Elite)} {c.Champions} {B(c.Kills)}";
+                   $"{B(c.Officers)} {B(c.Elite)} {c.Champions} {B(c.Shoot)}";
         }
 
         private static string B(bool value) => value ? "1" : "0";
@@ -193,7 +193,7 @@ namespace Purge.Presentation.Stress
 
         /// <summary>
         /// The combat sandbox's benchmark (stage 5, measured on the reference phone): the autopilot runs its circle, the
-        /// bench kills the rank-and-file next to the player; load grows step by step — <see cref="SandboxCount"/> of
+        /// player fires the bench rifle with aim assist (stage E3); load grows step by step — <see cref="SandboxCount"/> of
         /// the waves' kinds, + officers and Brutes (a closed door: the second flow field), + the elite, + champions,
         /// twice the crowd, and the whole of it on screen.
         /// </summary>
@@ -214,7 +214,7 @@ namespace Purge.Presentation.Stress
                 Effects = true,
                 Resolution = 1f,
                 Cull = true,
-                Kills = true,
+                Shoot = true,
             };
 
             var officers = Named(mass, "+officers");

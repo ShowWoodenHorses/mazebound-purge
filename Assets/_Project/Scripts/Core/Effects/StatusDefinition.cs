@@ -22,6 +22,8 @@ namespace Purge.Core.Effects
         [Tooltip("Look over a monster with the state (stage Э2): an effect of Art/Effects the game emits from (flames " +
                  "of burning); empty = the draft particles in the colour above.")]
         [SerializeField] private AssetReferenceGameObject _particles;
+        [Tooltip("The look circles the head (stars of a stun) instead of rising around the body (stage Э3).")]
+        [SerializeField] private bool _particlesAtHead;
 
         [SerializeReference, ModuleList] private List<StatusModule> _modules = new List<StatusModule>();
 
@@ -32,6 +34,7 @@ namespace Purge.Core.Effects
 
         public Color Color => _color;
         public AssetReferenceGameObject Particles { get => _particles; internal set => _particles = value; }
+        public bool ParticlesAtHead { get => _particlesAtHead; internal set => _particlesAtHead = value; }
         public IReadOnlyList<StatusModule> Modules => _modules;
 
         /// <summary>Sum of the damage-over-time modules.</summary>

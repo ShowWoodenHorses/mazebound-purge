@@ -67,4 +67,15 @@ MonoBehaviour:
         _arcHeight: 0.3
         _status: {fileID: 0}
         _statusDuration: 2
-        _impact: []
+        _impact:
+        - rid: 1763807284696973430
+    - rid: 1763807284696973430
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: 5534070129acb064989095e8f81d7f5b
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 0.4

@@ -107,6 +107,8 @@ namespace Purge.Core.Horde
         [Header("Run")]
         [SerializeField] private int[] _monsterCounts = { 50, 100, 150, 200, 300, 500 };
         [SerializeField, Min(0)] private int _startCount = 150;
+        [Tooltip("Slots above the largest count for monsters called up on top of the waves (officer/champion buttons, raised dead).")]
+        [SerializeField, Min(0)] private int _reserveSlots = 64;
         [Tooltip("Half-size (cells) of the square around the player that fits the screen.")]
         [SerializeField] private float[] _cameraHalfExtents = { 4f, 6f, 8f, 10f };
         [SerializeField, Min(1f)] private float _startCameraHalfExtent = 8f;
@@ -129,6 +131,8 @@ namespace Purge.Core.Horde
         [Header("Benchmark")]
         [SerializeField, Min(0.5f)] private float _benchmarkWarmup = 3f;
         [SerializeField, Min(1f)] private float _benchmarkSample = 12f;
+        [Tooltip("Sandbox benchmark: the automatic weapon the player fires with aim assist (empty = the weapon in hands).")]
+        [SerializeField] private Definitions.WeaponDefinition _benchWeapon;
 
         public HordeVisualDefinition Visual => _visual;
         public bool IsSandbox => _sandbox;
@@ -181,8 +185,12 @@ namespace Purge.Core.Horde
         public Material FireMaterial => _fireMaterial;
         public float BenchmarkWarmup => _benchmarkWarmup;
         public float BenchmarkSample => _benchmarkSample;
+        public Definitions.WeaponDefinition BenchWeapon => _benchWeapon;
 
-        /// <summary>Largest monster count the run can ask for (array capacity).</summary>
+        /// <summary>Slots of the horde's arrays: <see cref="MaxCount"/> + room for called-up monsters.</summary>
+        public int Capacity => MaxCount + Math.Max(0, _reserveSlots);
+
+        /// <summary>Largest monster count the waves can ask for.</summary>
         public int MaxCount
         {
             get
@@ -199,6 +207,12 @@ namespace Purge.Core.Horde
             _sandbox = sandbox;
             _sandboxAmmo = ammo;
             _startCount = startCount;
+        }
+
+        internal void ConfigureCounts(int[] counts, int reserveSlots)
+        {
+            _monsterCounts = counts ?? new int[0];
+            _reserveSlots = reserveSlots;
         }
 
         internal void ConfigureDrops(Drops.DropTable drop, params Definitions.ThrowableDefinition[] throwables)

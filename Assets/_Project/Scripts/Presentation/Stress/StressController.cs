@@ -339,6 +339,8 @@ namespace Purge.Presentation.Stress
                 // Everyone comes for the player, nothing hurts them (the bench must run to the end).
                 AllHunters = true;
                 _horde.GodMode = true;
+                if (_sandbox != null && !_sandbox.ArmForBench())
+                    GameLog.Warning(LogChannel.Performance, "BENCH: no bench weapon — the player fires what is in hands.");
             }
 
             _results.Clear();
@@ -428,19 +430,16 @@ namespace Purge.Presentation.Stress
 
         private readonly Gameplay.Doors.DoorSystem _doors;
         private bool _beforeHunters, _beforeGod;
-        private float _killTimer;
-
-        /// <summary>Seconds between the sandbox bench's kills (as if the player kept shooting).</summary>
-        private const float KillInterval = 0.25f;
-        private const float KillReach = 8f;
 
         /// <summary>
         /// A fresh step of the sandbox bench: doors closed again (officers chase through the second flow field), the
-        /// step's officers, elite and champions on top of the fresh wave.
+        /// step's officers, elite and champions on top of the fresh wave; the player's ammo topped up and the bench
+        /// rifle firing (or not) as the step says.
         /// </summary>
         private void SpawnExtras(BenchmarkConfig config)
         {
-            _killTimer = KillInterval;
+            _sandbox?.Refill();
+            if (_autopilot != null) _autopilot.Shooting = config.Shoot;
             if (_doors != null)
                 foreach (var door in _doors.Doors)
                     if (_doors.IsOpen(door.Id) && !_doors.IsBroken(door.Id) && !_horde.AnyBodyInCell(door.Position))
@@ -464,31 +463,11 @@ namespace Purge.Presentation.Stress
             ChampionOfficers = officers;
         }
 
-        /// <summary>The bench «shoots»: the nearest of the waves' monsters by the player dies now and then.</summary>
-        private void TickKills(float frame)
-        {
-            _killTimer -= frame;
-            if (_killTimer > 0f) return;
-            _killTimer += KillInterval;
-            var best = -1;
-            var bestDistance = KillReach * KillReach;
-            var positions = _horde.Positions;
-            var states = _horde.States;
-            for (var i = 0; i < _horde.HighWater; i++)
-            {
-                if (!HordeSystem.IsAlive(states[i]) || _horde.KindOf(i).Weight <= 0f) continue;
-                var distance = (positions[i] - _player.Position).sqrMagnitude;
-                if (distance >= bestDistance) continue;
-                bestDistance = distance;
-                best = i;
-            }
-
-            if (best >= 0) _horde.Damage(best, _horde.MaxHealthOf(best) * 10f);
-        }
-
         private void RestoreSandbox()
         {
             if (!_settings.IsSandbox) return;
+            if (_autopilot != null) _autopilot.Shooting = false;
+            _sandbox?.Disarm();
             AllHunters = _beforeHunters;
             _horde.GodMode = _beforeGod;
         }
@@ -496,7 +475,6 @@ namespace Purge.Presentation.Stress
         private void TickBenchmark(float frame)
         {
             _stepTime += frame;
-            if (_plan[_step].Kills) TickKills(frame);
             if (_stepTime < _settings.BenchmarkWarmup) return;
 
             if (_sampleCount < MaxSampleFrames)

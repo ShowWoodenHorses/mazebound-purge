@@ -32,8 +32,12 @@ MonoBehaviour:
     CallRadius: 14
     HoldRange: 0
     RetreatRange: 0
+    Mass: 0
+    Immovable: 0
     Doors: 0
     DoorDamage: 20
+    FrontArmor: 0
+    FrontArc: 120
   _drop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
   _resistances: []
   _deathEffects: []

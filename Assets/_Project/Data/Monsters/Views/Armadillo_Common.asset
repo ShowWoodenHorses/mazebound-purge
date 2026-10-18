@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6baf0199123e1774291e6d3fb4d54062, type: 3}
+  m_Name: Armadillo_Common
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.MonsterViewDefinition
+  _monsterId: armadillo_common
+  _prefab: {fileID: 1033247876357254, guid: 4d77c7f58bf06814ab3230df24f25a84, type: 3}
+  _equipment:
+  - Bone: 17
+    Model: {fileID: 1462960658062138, guid: 7ea9193952fbe5446be81a9effa9fb1b, type: 3}
+  - Bone: 18
+    Model: {fileID: 1530859087307534, guid: 591401735020eba448111083263e7b9e, type: 3}
+  _runSpeed: 0.84595025
+  _walkSpeed: 0.49231836
+  _castMoment: 0.5
+  _castLength: 1
+  _moreCasts: []
+  _splashColor: {r: 0.6, g: 0.55, b: 0.45, a: 1}
+  _projectileModel: {fileID: 0}
+  _projectileColor: {r: 0.6, g: 1, b: 0.3, a: 1}
+  _projectileSize: 0.35

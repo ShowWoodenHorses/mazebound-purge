@@ -15,6 +15,10 @@ namespace Purge.Core.Monsters
         Circle = 1,
         /// <summary>A sector in front of the monster.</summary>
         Sector = 2,
+        /// <summary>Nothing on the floor (the rage: the monster roars).</summary>
+        None = 3,
+        /// <summary>Small circles on the spots it acts on (the corpses a raise lifts).</summary>
+        Points = 4,
     }
 
     /// <summary>
@@ -203,5 +207,108 @@ namespace Purge.Core.Monsters
         public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
 
         public override AbilityWarningShape Shape => AbilityWarningShape.Circle;
+    }
+
+    /// <summary>
+    /// A blow on an area after a delay (ТЗ «удар по площади с задержкой»; the Shaman's magic): the warning circle shows
+    /// under the player for <see cref="AbilityModule.Warning"/> s — step out of it; then the player inside it and not
+    /// behind a wall takes the damage and the state, and the impact effects happen at its centre (hostile: an explosion
+    /// hurts the player too, a zone is the monsters'). The biome's flavour is the data: a fireball is an explosion, a
+    /// poison cloud a zone, a freeze a state.
+    /// </summary>
+    [Serializable, ModuleInfo("Area strike", Category = "Ability", AllowMultiple = true)]
+    public sealed class AreaStrikeAbility : AbilityModule
+    {
+        [Tooltip("The player this close to the centre takes the damage and the state, cells.")]
+        [SerializeField, Min(0.3f)] private float _radius = 1.6f;
+        [SerializeField, Min(0f)] private float _damage;
+        [SerializeField] private StatusDefinition _status;
+        [SerializeField, Min(0.1f)] private float _statusDuration = 1f;
+        [Tooltip("What happens at the centre (an explosion, a zone…); hostile — its explosion and zones hurt the player.")]
+        [SerializeReference, ModuleList] private List<EffectModule> _impact = new List<EffectModule>();
+
+        public float Radius { get => _radius; internal set => _radius = value; }
+        public float Damage { get => _damage; internal set => _damage = value; }
+        public StatusDefinition Status { get => _status; internal set => _status = value; }
+        public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
+        public IReadOnlyList<EffectModule> Impact => _impact;
+
+        /// <summary>Radius of the warning circle (the larger of the blow and the effects).</summary>
+        public float WarningRadius
+        {
+            get
+            {
+                var radius = _radius;
+                foreach (var effect in _impact)
+                    if (effect != null) radius = Mathf.Max(radius, effect.Radius);
+                return radius;
+            }
+        }
+
+        internal void SetImpact(params EffectModule[] effects) => _impact = new List<EffectModule>(effects);
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Circle;
+
+        public override void Validate(List<string> problems)
+        {
+            Purge.Core.Modules.Modules.Validate(_impact, "impact", problems);
+        }
+    }
+
+    /// <summary>
+    /// Raises the fallen (ТЗ: Шаман поднимает трупы): the rank-and-file and officers that died within
+    /// <see cref="Radius"/> of the monster in the last <see cref="MaxAge"/> s get up again where they fell — the same
+    /// monsters, at most <see cref="Count"/> a cast, the nearest first. No fallen near — no cast. The warning marks the
+    /// spots; they climb out for <see cref="RiseTime"/> s (they can be hit meanwhile) and chase the player at once.
+    /// </summary>
+    [Serializable, ModuleInfo("Raise the dead", Category = "Ability", AllowMultiple = false)]
+    public sealed class RaiseAbility : AbilityModule
+    {
+        public const int MaxCount = 5;
+
+        [Tooltip("Lifts the fallen this close to the monster, cells.")]
+        [SerializeField, Min(1f)] private float _radius = 7f;
+        [Tooltip("At most this many a cast (ТЗ: не больше 5 за раз).")]
+        [SerializeField, Range(1, MaxCount)] private int _count = MaxCount;
+        [Tooltip("Only those that died at most this many seconds ago.")]
+        [SerializeField, Min(1f)] private float _maxAge = 20f;
+        [Tooltip("Seconds they climb out before they walk.")]
+        [SerializeField, Min(0.2f)] private float _riseTime = 2f;
+
+        public float Radius { get => _radius; internal set => _radius = value; }
+        public int Count { get => Mathf.Clamp(_count, 1, MaxCount); internal set => _count = value; }
+        public float MaxAge { get => _maxAge; internal set => _maxAge = value; }
+        public float RiseTime { get => _riseTime; internal set => _riseTime = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Points;
+    }
+
+    /// <summary>
+    /// Rage (ТЗ «ярость по порогу HP»; the Brute, later bosses): once the HP falls to <see cref="AbilityModule.HealthBelow"/>
+    /// (30 % by default) the monster stops and roars for the warning, then deals × <see cref="DamageFactor"/> damage
+    /// (its attacks and abilities) and moves × <see cref="SpeedFactor"/> until it dies. Once per life.
+    /// </summary>
+    [Serializable, ModuleInfo("Rage", Category = "Ability", AllowMultiple = false)]
+    public sealed class RageAbility : AbilityModule
+    {
+        [Tooltip("× the damage of its attacks and abilities once enraged.")]
+        [SerializeField, Range(1f, 4f)] private float _damageFactor = 1.5f;
+        [Tooltip("× its speed once enraged (1 = as before).")]
+        [SerializeField, Range(0.5f, 2f)] private float _speedFactor = 1f;
+
+        public RageAbility()
+        {
+            HealthBelow = 0.3f;
+            NeedsSight = false;
+            FirstDelay = 0f;
+            MaxRange = 99f;
+            Warning = 1f;
+            Recovery = 0.2f;
+        }
+
+        public float DamageFactor { get => _damageFactor; internal set => _damageFactor = value; }
+        public float SpeedFactor { get => _speedFactor; internal set => _speedFactor = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.None;
     }
 }

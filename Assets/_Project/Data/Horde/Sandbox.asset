@@ -29,8 +29,12 @@ MonoBehaviour:
     CallRadius: 12
     HoldRange: 0
     RetreatRange: 0
+    Mass: 0
+    Immovable: 0
     Doors: 0
     DoorDamage: 20
+    FrontArmor: 0
+    FrontArc: 120
   _monsters:
   - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
     _weight: 3
@@ -51,19 +55,27 @@ MonoBehaviour:
   _onDemandMonsters:
   - {fileID: 11400000, guid: 1f8a534da70c88348837cd5089456c5f, type: 2}
   - {fileID: 11400000, guid: 395fa8870844ec64abbbcccbcef32cc5, type: 2}
+  - {fileID: 11400000, guid: 9ea2b7d6705917344b9c0ed4f1148807, type: 2}
   - {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+  - {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
   - {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
   - {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+  - {fileID: 11400000, guid: 5d93e767a67414e49a76e99be9b5c9a7, type: 2}
   - {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
   - {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+  - {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
   _monsterViews:
   - {fileID: 11400000, guid: f252ca0c80f63934a9cc276a2ec2dfed, type: 2}
   - {fileID: 11400000, guid: 2201a4e3e9616e44db62f651426261cd, type: 2}
+  - {fileID: 11400000, guid: 6876c3ae0f852554aba9a7f4c310458e, type: 2}
   - {fileID: 11400000, guid: 07cc53531cb2bc248ad89fe5dc4f47d7, type: 2}
+  - {fileID: 11400000, guid: 76d7c472e59f04e40a6b23ca2683687b, type: 2}
   - {fileID: 11400000, guid: 5007ed8e61216874fb3589c8e9f735b1, type: 2}
   - {fileID: 11400000, guid: 2f9ba67d81e07a64989e88bb30acd0d2, type: 2}
+  - {fileID: 11400000, guid: d49aaafd2027e4f4eba080a895771fb6, type: 2}
   - {fileID: 11400000, guid: e4b37603c2a3baa4daba8a4a59273952, type: 2}
   - {fileID: 11400000, guid: 5429444a236be9744b6721a92672ff10, type: 2}
+  - {fileID: 11400000, guid: 357330b921e342844863635edbe4b6f2, type: 2}
   _weapons:
     GunRate: 12
     BulletSpeed: 28

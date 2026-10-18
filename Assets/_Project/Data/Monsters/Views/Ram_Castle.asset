@@ -19,9 +19,11 @@ MonoBehaviour:
     Model: {fileID: 1549083794311288, guid: 4c413af6de9af6c44a601950b5d29439, type: 3}
   _runSpeed: 1.6884582
   _walkSpeed: 0.3119875
-  _castMoment: 0.325
-  _castLength: 2.5000002
+  _castMoment: 0.6666666
+  _castLength: 1.5000001
   _moreCasts:
+  - Moment: 0.325
+    Length: 2.5000002
   - Moment: 0.19285713
     Length: 4.666667
   _splashColor: {r: 0.45, g: 0.6, b: 0.25, a: 1}

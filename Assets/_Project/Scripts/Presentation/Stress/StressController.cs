@@ -115,6 +115,7 @@ namespace Purge.Presentation.Stress
 
             _overlay = new StressOverlay(this);
             if (_settings.IsSandbox && _feel != null) _feelOverlay = new FeelOverlay(_feel);
+            ApplyOverlaysVisible();
             GameLog.Info(LogChannel.Performance, "Stress test ready. " + DeviceLine());
             return UniTask.CompletedTask;
         }
@@ -164,7 +165,41 @@ namespace Purge.Presentation.Stress
         public string OfficerLabel(int index)
         {
             var monster = _horde.Settings.OnDemandMonsters[index];
-            return monster == null ? "-" : monster.name.Replace("Distant_", "Dist").Replace("_Common", string.Empty);
+            if (monster == null) return "-";
+            // "Distant_Castle" → "DistC", "Armadillo_Common" → "Armad": fits a button.
+            var name = monster.name;
+            var cut = name.IndexOf('_');
+            var head = cut < 0 ? name : name.Substring(0, cut);
+            head = head.Substring(0, Mathf.Min(head.Length, head.Length > 5 ? 4 : 5));
+            var biome = cut < 0 || name.EndsWith("_Common", System.StringComparison.Ordinal) ? string.Empty : name.Substring(cut + 1, 1);
+            return head + biome;
+        }
+
+        /// <summary>Rank of on-demand monster <paramref name="index"/> (the overlay's rows: officers, elite).</summary>
+        public Core.Monsters.MonsterRank OfficerRank(int index)
+        {
+            var monster = _horde.Settings.OnDemandMonsters[index];
+            return monster != null ? monster.Rank : Core.Monsters.MonsterRank.Officer;
+        }
+
+        private const string OverlaysHiddenKey = "Purge.Dev.OverlaysHidden";
+
+        /// <summary>The dev panels (stress / sandbox, FEEL) are shown; remembered between runs (dev levels only).</summary>
+        public bool OverlaysVisible { get; private set; } = true;
+
+        /// <summary>The DEV button: hides or shows every dev panel.</summary>
+        public void ToggleOverlays()
+        {
+            OverlaysVisible = !OverlaysVisible;
+            PlayerPrefs.SetInt(OverlaysHiddenKey, OverlaysVisible ? 0 : 1);
+            ApplyOverlaysVisible();
+        }
+
+        private void ApplyOverlaysVisible()
+        {
+            OverlaysVisible = PlayerPrefs.GetInt(OverlaysHiddenKey, 0) == 0;
+            _overlay?.SetPanelVisible(OverlaysVisible);
+            if (_feelOverlay != null) _feelOverlay.Visible = OverlaysVisible;
         }
 
         /// <summary>Sandbox (5c): officer <paramref name="index"/> 7–9 cells from the player (in view when possible).</summary>

@@ -34,6 +34,12 @@ namespace Purge.Presentation.Visual
         /// <summary>Int: which ability is cast (its index in the monster's list) — a cast clip per ability (stage 5d).</summary>
         public const string CastIndex = "CastIndex";
 
+        /// <summary>Bool: gets up from the ground (raised by a Shaman, stage 5e).</summary>
+        public const string Emerging = "Emerging";
+
+        /// <summary>Float 0..1: how far it has got up (drives the rise clip's time).</summary>
+        public const string EmergeProgress = "EmergeProgress";
+
         public const string Dead = "Dead";
 
         /// <summary>Int: 0 front (falls back), 1 back, 2 left, 3 right.</summary>

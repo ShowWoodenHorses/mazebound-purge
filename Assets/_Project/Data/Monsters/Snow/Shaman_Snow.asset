@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Shaman_Snow
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: shaman_snow
+  _rank: 2
+  _biome: 3
+  _perception: 0
+  _stats:
+    MaxHp: 200
+    Speed: 2
+    Radius: 0.36
+    AttackReach: 0.9
+    Damage: 8
+    AttackInterval: 1.4
+    TurnSpeed: 540
+    Separation: 0.5
+    CorpseTime: 4
+    EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 9
+    CallRadius: 12
+    HoldRange: 7
+    RetreatRange: 3
+    Mass: 0
+    Immovable: 0
+    Doors: 0
+    DoorDamage: 20
+    FrontArmor: 0
+    FrontArc: 120
+  _drop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities:
+  - rid: 1763807284696973397
+  - rid: 1763807284696973398
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807284696973397
+      type: {class: RaiseAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 9
+        _firstDelay: 1.5
+        _minRange: 0
+        _maxRange: 16
+        _needsSight: 0
+        _healthBelow: 1
+        _warning: 1.2
+        _recovery: 0.5
+        _radius: 7
+        _count: 5
+        _maxAge: 20
+        _riseTime: 2
+    - rid: 1763807284696973398
+      type: {class: AreaStrikeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 5
+        _firstDelay: 1
+        _minRange: 2
+        _maxRange: 10
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 1.2
+        _recovery: 0.4
+        _radius: 1.6
+        _damage: 6
+        _status: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+        _statusDuration: 1.2
+        _impact: []

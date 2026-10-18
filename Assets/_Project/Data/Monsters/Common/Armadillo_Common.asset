@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Armadillo_Common
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: armadillo_common
+  _rank: 2
+  _biome: 0
+  _perception: 0
+  _stats:
+    MaxHp: 320
+    Speed: 1.7
+    Radius: 0.42
+    AttackReach: 1
+    Damage: 14
+    AttackInterval: 1.4
+    TurnSpeed: 220
+    Separation: 0.5
+    CorpseTime: 4
+    EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 9
+    CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
+    Mass: 0
+    Immovable: 0
+    Doors: 0
+    DoorDamage: 20
+    FrontArmor: 0.5
+    FrontArc: 120
+  _drop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities: []
+  references:
+    version: 2
+    RefIds: []

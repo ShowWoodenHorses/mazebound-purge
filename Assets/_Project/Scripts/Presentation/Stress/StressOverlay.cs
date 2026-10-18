@@ -21,6 +21,7 @@ namespace Purge.Presentation.Stress
 
         private readonly StressController _controller;
         private readonly GameObject _root;
+        private readonly GameObject _panel;
         private readonly GameObject _body;
         private readonly TextMeshProUGUI _stats;
         private readonly TextMeshProUGUI _benchLabel;
@@ -42,10 +43,21 @@ namespace Purge.Presentation.Stress
             scaler.matchWidthOrHeight = 0.5f;
             _root.AddComponent<GraphicRaycaster>();
 
+            // DEV: hides and shows every dev panel (this one, FEEL) — they cover the screen on a phone.
+            var toggle = Rect("Toggle", _root.transform);
+            toggle.anchorMin = toggle.anchorMax = new Vector2(0f, 1f);
+            toggle.pivot = new Vector2(0f, 1f);
+            toggle.anchoredPosition = new Vector2(24f, -170f);
+            toggle.sizeDelta = new Vector2(120f, 44f);
+            var toggleLayout = toggle.gameObject.AddComponent<HorizontalLayoutGroup>();
+            toggleLayout.childControlHeight = toggleLayout.childControlWidth = true;
+            Button(toggle, "DEV", controller.ToggleOverlays, () => controller.OverlaysVisible, 120f);
+
             var panel = Rect("Panel", _root.transform);
+            _panel = panel.gameObject;
             panel.anchorMin = panel.anchorMax = new Vector2(0f, 1f);
             panel.pivot = new Vector2(0f, 1f);
-            panel.anchoredPosition = new Vector2(24f, -170f);
+            panel.anchoredPosition = new Vector2(24f, -220f);
             panel.sizeDelta = new Vector2(640f, 0f);
             var layout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
             layout.padding = new RectOffset(10, 10, 8, 10);
@@ -115,15 +127,8 @@ namespace Purge.Presentation.Stress
                 Button(perception, "+Wander", controller.SpawnWanderers, null);
                 Button(perception, "+Caller", controller.SpawnCaller, null);
 
-                if (controller.OfficerCount > 0)
-                {
-                    var officers = Row(bodyRect, "Officer");
-                    for (var o = 0; o < controller.OfficerCount; o++)
-                    {
-                        var index = o;
-                        Button(officers, "+" + controller.OfficerLabel(index), () => controller.SpawnOfficer(index), null);
-                    }
-                }
+                OnDemandRow(bodyRect, "Officer", Core.Monsters.MonsterRank.Officer);
+                OnDemandRow(bodyRect, "Elite", Core.Monsters.MonsterRank.Elite);
             }
 
             var sim = Row(bodyRect, "Sim");
@@ -174,6 +179,25 @@ namespace Purge.Presentation.Stress
                 () => _controller.Weapons.KeepFireCells = _controller.Weapons.KeepFireCells > 0 ? 0 : fireTarget,
                 () => _controller.Weapons.KeepFireCells > 0);
 
+        }
+
+        /// <summary>A button per on-demand monster of <paramref name="rank"/> (none — no row).</summary>
+        private void OnDemandRow(RectTransform bodyRect, string label, Core.Monsters.MonsterRank rank)
+        {
+            RectTransform row = null;
+            for (var o = 0; o < _controller.OfficerCount; o++)
+            {
+                if (_controller.OfficerRank(o) != rank) continue;
+                row ??= Row(bodyRect, label);
+                var index = o;
+                Button(row, "+" + _controller.OfficerLabel(index), () => _controller.SpawnOfficer(index), null);
+            }
+        }
+
+        /// <summary>The panel shown or hidden (the DEV button stays).</summary>
+        public void SetPanelVisible(bool visible)
+        {
+            if (_panel != null) _panel.SetActive(visible);
         }
 
         public void SetStats(StringBuilder text) => _stats.SetText(text);

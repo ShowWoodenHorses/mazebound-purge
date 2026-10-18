@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6baf0199123e1774291e6d3fb4d54062, type: 3}
+  m_Name: Shaman_Forest
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.MonsterViewDefinition
+  _monsterId: shaman_forest
+  _prefab: {fileID: 1520184032351820, guid: db1441e349ff4eb4f826e9c091622da3, type: 3}
+  _equipment:
+  - Bone: 18
+    Model: {fileID: 1083267958053092, guid: 0a4ce83fda3817e4f9acd9ce432acb4c, type: 3}
+  _runSpeed: 1.6992437
+  _walkSpeed: 0.6104937
+  _castMoment: 0.49166667
+  _castLength: 4.266667
+  _moreCasts:
+  - Moment: 0.225
+    Length: 2.1666667
+  _splashColor: {r: 0.55, g: 0.75, b: 0.3, a: 1}
+  _projectileModel: {fileID: 0}
+  _projectileColor: {r: 0.6, g: 1, b: 0.3, a: 1}
+  _projectileSize: 0.35

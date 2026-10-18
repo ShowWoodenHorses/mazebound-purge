@@ -18,13 +18,16 @@ namespace Purge.Presentation.Visual
     /// every cast in <see cref="AbilityPhase.Warning"/> (<see cref="MonsterAbilities"/>) a flat quad on the floor with
     /// <see cref="CombatVisualDefinition.AbilityWarning"/> (shader Purge/Warning) — lines along the shot (one per
     /// projectile of a fan), a circle where an arc lands, a sector in front of a strike, a body-wide line as far as a
-    /// charge rushes, a circle around a monster that shoves (stage 5d); the fill grows until it goes
-    /// off. Drawn whether or not the monster is in view: a shot out of the fog must be seen. Allocation-free per frame.
+    /// charge rushes, a circle around a monster that shoves (stage 5d), a circle under the player for an area strike and
+    /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars); the fill grows
+    /// until it goes off. Drawn whether or not the monster is in view: a shot out of the fog must be seen.
+    /// Allocation-free per frame.
     /// </summary>
     public sealed class AbilityWarningView : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
         private const float LineWidth = 0.45f;
         private const float Height = 0.04f;
+        private const float RaiseMark = 0.45f;
 
         private static readonly int ProgressId = Shader.PropertyToID("_Progress");
         private static readonly int ShapeId = Shader.PropertyToID("_Shape");
@@ -104,6 +107,22 @@ namespace Purge.Presentation.Visual
                             var center = new Vector3(origin.x, height, origin.y) + direction * (length * 0.5f);
                             Draw(1f, progress, 0f, 0.18f, Matrix4x4.TRS(center, Quaternion.LookRotation(direction),
                                 new Vector3(LineWidth, 1f, length)));
+                        }
+
+                        break;
+                    case AreaStrikeAbility area:
+                        var areaRadius = area.WarningRadius;
+                        Draw(0f, progress, 0f, 0.07f / areaRadius,
+                            Matrix4x4.TRS(new Vector3(aims[i].x, height, aims[i].y), Quaternion.identity,
+                                new Vector3(areaRadius * 2f, 1f, areaRadius * 2f)));
+                        break;
+                    case RaiseAbility _:
+                        // A small circle on each of the fallen that will get up.
+                        for (var n = _abilities.RaiseCount(i) - 1; n >= 0; n--)
+                        {
+                            var spot = _abilities.RaisePoint(i, n);
+                            Draw(0f, progress, 0f, 0.07f / RaiseMark, Matrix4x4.TRS(new Vector3(spot.x, height, spot.y),
+                                Quaternion.identity, new Vector3(RaiseMark * 2f, 1f, RaiseMark * 2f)));
                         }
 
                         break;

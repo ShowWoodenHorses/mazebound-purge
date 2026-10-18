@@ -177,7 +177,13 @@ namespace Purge.Gameplay.Combat
         /// <summary>Nothing that stops bullets between the points.</summary>
         public bool IsClear(Vector2 from, Vector2 to, int floor) => _spatial.IsClear(from, to, CellFlags.BlocksBullets, floor);
 
-        /// <summary>Deals damage; true when it killed the target.</summary>
+        /// <summary>Hits a monster's armored front took (tests, metrics).</summary>
+        public int ArmoredHits { get; private set; }
+
+        /// <summary>
+        /// Deals damage; true when it killed the target. <paramref name="direction"/> — where the hit travels (a monster's
+        /// front armor takes its share off hits from the front); zero = no direction (zones, burning: always in full).
+        /// </summary>
         public bool Damage(in CombatTarget target, float amount, Vector2 direction)
         {
             if (amount <= 0f || !IsAlive(target)) return false;
@@ -185,6 +191,13 @@ namespace Purge.Gameplay.Combat
             bool killed;
             if (target.Agent >= 0)
             {
+                var armor = _horde.ArmorFactor(target.Agent, direction);
+                if (armor < 1f)
+                {
+                    ArmoredHits++;
+                    amount *= armor;
+                }
+
                 killed = _horde.Damage(target.Agent, amount);
             }
             else

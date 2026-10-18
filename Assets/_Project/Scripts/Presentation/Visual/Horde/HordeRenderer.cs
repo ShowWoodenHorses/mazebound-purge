@@ -359,10 +359,11 @@ namespace Purge.Presentation.Visual.Horde
                 }
                 else if (state == HordeAgentState.Emerging && clips.Emerge >= 0)
                 {
-                    // Fits the clip into the emerge time.
+                    // Fits the clip into the emerge time (the kind's, or a raise's).
                     clip = clips.Emerge;
                     var length = clips.Visual.Clips[clip].Length;
-                    clipTime = (time - stateStart[i]) * (stats.EmergeTime > 0f ? length / stats.EmergeTime : 1f);
+                    var emergeTime = _horde.EmergeTimeOf(i);
+                    clipTime = (time - stateStart[i]) * (emergeTime > 0f ? length / emergeTime : 1f);
                 }
                 else if (stunned[i] && (clips.Stun >= 0 || clips.Idle >= 0))
                 {

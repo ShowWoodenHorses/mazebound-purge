@@ -41,6 +41,7 @@ MonoBehaviour:
     _keyId: 
     _isInitiallyOpen: 0
     _iceHits: 0
+    _strength: 0
   _playerStarts:
   - _id: start_1
     _position:

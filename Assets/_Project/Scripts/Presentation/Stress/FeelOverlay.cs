@@ -85,6 +85,13 @@ namespace Purge.Presentation.Stress
             if (_root != null) UnityEngine.Object.Destroy(_root);
         }
 
+        /// <summary>Shown or hidden as a whole (the stress overlay's DEV button).</summary>
+        public bool Visible
+        {
+            get => _root != null && _root.activeSelf;
+            set { if (_root != null) _root.SetActive(value); }
+        }
+
         private void SetAll(bool on)
         {
             foreach (FeelChannel channel in Enum.GetValues(typeof(FeelChannel)))

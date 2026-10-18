@@ -38,7 +38,7 @@ namespace Purge.Editor.Dev
     /// clips "Brute_*" (two casts: the shove and the roar before the charge), a head taller, a weapon in the right hand and
     /// the draft numbers: shove, charge, they break doors.
     /// </summary>
-    internal static class OfficersBuilder
+    internal static partial class OfficersBuilder
     {
         public const string ControllerPath = "Assets/_Project/Art/Monster/Officer.controller";
         public const string OverridesPath = "Assets/_Project/Art/Monster/Controllers";
@@ -65,7 +65,11 @@ namespace Purge.Editor.Dev
             ("Officer_Bow_Death_Back", "Humanoid@DeathBackBow"),
             ("Officer_Bow_Death_Left", "Humanoid@DeathLeftBow"),
             ("Officer_Bow_Death_Right", "Humanoid@DeathRightBow"),
+            // Getting up from the ground (raised by a Shaman, stage 5e).
+            (Rise, "Humanoid@GetBackUpFrontCombat"),
         };
+
+        private const string Rise = "Officer_Rise";
 
         private static readonly string[] Looping = { "Officer_Bow_Idle", "Officer_Bow_Walk", "Officer_Bow_Run", "Officer_Stunned" };
 
@@ -126,6 +130,7 @@ namespace Purge.Editor.Dev
             ("Brute_Roar", "Humanoid@Roar1Creature"),
             ("Brute_Push", "Humanoid@AttackDoubleClawsCreature"),
             ("Brute_Charge", "Humanoid@Roar2Creature"),
+            ("Brute_Rage", "Humanoid@Roar3Creature"),
         };
 
         private static readonly string[] BruteLooping = { "Brute_Idle", "Brute_Walk", "Brute_Run" };
@@ -138,22 +143,29 @@ namespace Purge.Editor.Dev
 
             /// <summary>A cast clip per ability index (CastIndex); one = every ability.</summary>
             public string[] Casts;
+
+            /// <summary>Getting up when raised (stage 5e), played by the share risen (EmergeProgress).</summary>
+            public string Rise;
         }
 
         private static readonly ClipSet OfficerClips = new ClipSet
         {
             Idle = Idle, Walk = Walk, Run = Run, Stun = Stun, Roar = Scream, Attacks = Attacks, Hits = Hits, Deaths = Deaths,
-            Casts = new[] { Throw },
+            Casts = new[] { Throw }, Rise = Rise,
         };
 
-        /// <summary>The Brute: abilities [push, charge] — the shove of both claws, the roar before the run-up.</summary>
+        /// <summary>
+        /// The Brute: abilities [rage, push, charge] — the roar of rage (stage 5e: first, nothing may delay it), the shove
+        /// of both claws, the roar before the run-up.
+        /// </summary>
         private static readonly ClipSet BruteClips = new ClipSet
         {
             Idle = "Brute_Idle", Walk = "Brute_Walk", Run = "Brute_Run", Stun = Stun, Roar = "Brute_Roar",
             Attacks = new[] { "Brute_Attack_1", "Brute_Attack_2", "Brute_Attack_3" },
             Hits = new[] { "Brute_Hit_Front", "Brute_Hit_Left", "Brute_Hit_Right" },
             Deaths = Deaths,
-            Casts = new[] { "Brute_Push", "Brute_Charge" },
+            Casts = new[] { "Brute_Rage", "Brute_Push", "Brute_Charge" },
+            Rise = Rise,
         };
 
         public static bool IsBrute(string prefabName) => prefabName.StartsWith("Ram_", StringComparison.Ordinal);
@@ -201,7 +213,8 @@ namespace Purge.Editor.Dev
 
             ImportClips(ClipPrefix, name => Array.IndexOf(Looping, name) >= 0,
                 name => name == Scream ? (ScreamStart, ScreamEnd) : ((float, float)?)null,
-                name => Array.Exists(InPlaceCopies, copy => copy.Name == name));
+                name => name == Rise || Array.Exists(InPlaceCopies, copy => copy.Name == name));
+            copied += PrepareEliteClips(uac);
             return copied;
         }
 
@@ -214,6 +227,10 @@ namespace Purge.Editor.Dev
             EnsureOfficerDrop();
             EnsureAcidZone();
             EnsureStatus("Status_Slow", new Color(0.55f, 0.85f, 1f, 1f), new SlowStatus { SpeedFactor = 0.5f });
+            // The elite's (stage 5e).
+            EnsureEliteDrop();
+            EnsureFreeze();
+            EnsurePoisonZone();
             AssetDatabase.SaveAssets();
         }
 
@@ -225,12 +242,22 @@ namespace Purge.Editor.Dev
             if (officers.Count == 0) return views;
             var controller = BuildController(ControllerPath, OfficerClips);
             var brutes = BuildController(BruteControllerPath, BruteClips);
+            var armadillos = BuildController(ArmadilloControllerPath, ArmadilloClips);
+            var shamans = BuildController(ShamanControllerPath, ShamanClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
             foreach (var (prefab, definition) in officers)
-                views.Add(IsBrute(prefab.name)
-                    ? SetupBrute(prefab, definition, brutes, report)
-                    : Setup(prefab, definition, controller, report));
+            {
+                if (IsBrute(prefab.name))
+                {
+                    EnsureRage(definition);
+                    views.Add(SetupBrute(prefab, definition, brutes, report));
+                }
+                else if (IsArmadillo(prefab.name)) views.Add(SetupElite(prefab, definition, armadillos, ArmadilloClips, report));
+                else if (IsShaman(prefab.name)) views.Add(SetupElite(prefab, definition, shamans, ShamanClips, report));
+                else views.Add(Setup(prefab, definition, controller, report));
+            }
+
             return views;
         }
 
@@ -257,13 +284,16 @@ namespace Purge.Editor.Dev
 
             var runSpeed = MeasureGroundSpeed(prefab, LoadClip(BruteClips.Run), scale);
             var walkSpeed = MeasureGroundSpeed(prefab, LoadClip(BruteClips.Walk), scale);
-            var push = LoadClip(BruteClips.Casts[0]);
-            var roar = LoadClip(BruteClips.Casts[1]);
+            var rage = LoadClip(BruteClips.Casts[0]);
+            var push = LoadClip(BruteClips.Casts[1]);
+            var roar = LoadClip(BruteClips.Casts[2]);
             var pushMoment = MeasureSwing(prefab, push).Moment;
             // The charge's warning is ~0.9 s: the roar plays at about 1× and the run takes over when it ends.
             var roarMoment = Mathf.Clamp(ChargeWarning / Mathf.Max(0.05f, roar.length), 0.05f, 1f);
-            view.Configure(definition.Id, prefab, runSpeed, walkSpeed, pushMoment, push.length,
-                new CastClipTiming(roarMoment, roar.length));
+            // The rage roars through its warning (1 s) the same way.
+            var rageMoment = Mathf.Clamp(RageWarning / Mathf.Max(0.05f, rage.length), 0.05f, 1f);
+            view.Configure(definition.Id, prefab, runSpeed, walkSpeed, rageMoment, rage.length,
+                new CastClipTiming(pushMoment, push.length), new CastClipTiming(roarMoment, roar.length));
             EditorUtility.SetDirty(view);
             report.Add($"  {prefab.name} ({definition.Id}): brute, scale {scale:0.00}, run {runSpeed:0.00} c/s, walk {walkSpeed:0.00} c/s, " +
                        $"push lets go at {pushMoment:0.00} of {push.length:0.00} s, roar {roar.length:0.00} s, equipment {view.Equipment.Length}.");
@@ -278,6 +308,26 @@ namespace Purge.Editor.Dev
         /// <summary>Draft warning of the Brute's charge, s.</summary>
         private const float ChargeWarning = 0.9f;
 
+        /// <summary>Draft roar of the rage, s (its warning).</summary>
+        private const float RageWarning = 1f;
+
+        /// <summary>
+        /// The Brute's rage (stage 5e, decision of 2026-10-18): at 30 % HP it roars and hits × 1.5. Put first (nothing may
+        /// delay it; its cast clip is the first) into a Brute that has none — also an existing one: its other numbers are
+        /// kept, a rage is only added once.
+        /// </summary>
+        public static void EnsureRage(MonsterDefinition definition)
+        {
+            foreach (var ability in definition.Abilities)
+                if (ability is RageAbility)
+                    return;
+            var abilities = new List<AbilityModule>(definition.Abilities);
+            abilities.Insert(0,
+                new RageAbility { HealthBelow = 0.3f, Warning = RageWarning, Recovery = 0.2f, DamageFactor = 1.5f, SpeedFactor = 1f });
+            definition.SetAbilities(abilities.ToArray());
+            EditorUtility.SetDirty(definition);
+        }
+
         /// <summary>Draft numbers of a new officer (stage 5c decisions; balance — stage 9).</summary>
         public static void Seed(MonsterDefinition definition, string prefabName)
         {
@@ -287,6 +337,12 @@ namespace Purge.Editor.Dev
             stats.CorpseTime = 4f;
             stats.EmergeTime = 0f;
             stats.SightRange = 9f;
+            if (IsBuiltElite(prefabName))
+            {
+                SeedElite(definition, prefabName);
+                return;
+            }
+
             definition.SetDrop(EnsureOfficerDrop());
             if (IsBrute(prefabName))
             {
@@ -313,8 +369,9 @@ namespace Purge.Editor.Dev
                     Cooldown = 7f, FirstDelay = 1f, MinRange = 3f, MaxRange = 9f, NeedsSight = true, Warning = ChargeWarning, Recovery = 0.6f,
                     Distance = 9f, Speed = 10f, Damage = 25f, Knockback = 2.5f, CrowdPush = 7f,
                 };
-                // Order = priority and the cast clip (BruteClips.Casts): the shove first.
+                // Order = priority and the cast clip (BruteClips.Casts): the rage, the shove, the charge.
                 definition.SetAbilities(shove, charge);
+                EnsureRage(definition);
                 EditorUtility.SetDirty(definition);
                 return;
             }
@@ -495,6 +552,18 @@ namespace Purge.Editor.Dev
                     equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("OneHand/SM_Wep_Troll_01") });
                     splash = new Color(0.75f, 0.85f, 1f, 1f);
                     break;
+                case "Armadillo_Common":
+                    // A shield in the left hand (its armored front), a sword in the right.
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.LeftHand, Model = Weapon("Shield/SM_Wep_Shield_04") });
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("OneHand/SM_Wep_Sword_09") });
+                    splash = new Color(0.6f, 0.55f, 0.45f, 1f);
+                    break;
+                case "Shaman_Castle":
+                case "Shaman_Forest":
+                case "Shaman_Snow":
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("Magic/SM_Wep_Staff_09") });
+                    splash = prefabName == "Shaman_Snow" ? new Color(0.7f, 0.8f, 1f, 1f) : new Color(0.55f, 0.75f, 0.3f, 1f);
+                    break;
             }
 
             equipment.RemoveAll(item => item.Model == null);
@@ -642,6 +711,8 @@ namespace Purge.Editor.Dev
             controller.AddParameter(P.CastIndex, AnimatorControllerParameterType.Int);
             controller.AddParameter(P.Dead, AnimatorControllerParameterType.Bool);
             controller.AddParameter(P.DeathIndex, AnimatorControllerParameterType.Int);
+            controller.AddParameter(P.Emerging, AnimatorControllerParameterType.Bool);
+            AddFloat(controller, P.EmergeProgress, 0f);
 
             var machine = controller.layers[0].stateMachine;
             var idle = machine.AddState("Idle", new Vector3(300f, 0f));
@@ -663,6 +734,19 @@ namespace Purge.Editor.Dev
                 var enter = Any(machine, death, 0.1f);
                 enter.AddCondition(AnimatorConditionMode.If, 0f, P.Dead);
                 enter.AddCondition(AnimatorConditionMode.Equals, d, P.DeathIndex);
+            }
+
+            if (clips.Rise != null)
+            {
+                // Raised (stage 5e): gets up from the ground, the clip's time = the share risen.
+                var rise = machine.AddState("Rise", new Vector3(0f, -120f));
+                rise.motion = LoadClip(clips.Rise);
+                rise.timeParameter = P.EmergeProgress;
+                rise.timeParameterActive = true;
+                var toRise = Any(machine, rise, 0f);
+                toRise.AddCondition(AnimatorConditionMode.If, 0f, P.Emerging);
+                toRise.AddCondition(AnimatorConditionMode.IfNot, 0f, P.Dead);
+                Transition(rise, idle, 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, P.Emerging);
             }
 
             var stun = machine.AddState("Stun", new Vector3(0f, 0f));

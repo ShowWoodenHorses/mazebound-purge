@@ -36,10 +36,13 @@ MonoBehaviour:
     Immovable: 0
     Doors: 3
     DoorDamage: 20
+    FrontArmor: 0
+    FrontArc: 120
   _drop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
   _resistances: []
   _deathEffects: []
   _abilities:
+  - rid: 1763807284696973402
   - rid: 1763807284696973375
   - rid: 1763807284696973376
   references:
@@ -77,3 +80,16 @@ MonoBehaviour:
         _damage: 25
         _knockback: 2.5
         _crowdPush: 7
+    - rid: 1763807284696973402
+      type: {class: RageAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 3
+        _firstDelay: 0
+        _minRange: 0
+        _maxRange: 99
+        _needsSight: 0
+        _healthBelow: 0.3
+        _warning: 1
+        _recovery: 0.2
+        _damageFactor: 1.5
+        _speedFactor: 1

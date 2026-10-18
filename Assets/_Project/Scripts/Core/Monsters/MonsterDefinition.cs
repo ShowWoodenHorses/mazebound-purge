@@ -105,10 +105,30 @@ namespace Purge.Core.Monsters
         [Tooltip("Breaks: damage to the door per blow (one blow per attack interval; the door's strength — DoorData).")]
         [Min(0f)] public float DoorDamage = 20f;
 
+        [Header("Armor (stage 5e)")]
+        [Tooltip("Share of the damage taken off hits from the front (0.5 = half goes through; the Armadillo). Hits without " +
+                 "a direction — zones, burning, poison — always go through in full.")]
+        [Range(0f, 0.9f)] public float FrontArmor;
+        [Tooltip("Width of the armored front, degrees around the facing.")]
+        [Range(30f, 270f)] public float FrontArc = 120f;
+
         /// <summary>Ground speed of the packs' walk clips at 1× (they shuffle at 0.2–0.6 cells/s).</summary>
         public const float WalkClipSpeed = 0.4f;
 
         public MonsterStats Clone() => (MonsterStats)MemberwiseClone();
+
+        /// <summary>
+        /// × damage of a hit travelling along <paramref name="hitDirection"/> into a monster facing
+        /// <paramref name="facing"/> (radians, 0 = North, clockwise): 1 − <see cref="FrontArmor"/> when it comes from the
+        /// armored front, 1 otherwise or without a direction (zero vector).
+        /// </summary>
+        public float ArmorFactor(float facing, Vector2 hitDirection)
+        {
+            if (FrontArmor <= 0f || hitDirection.sqrMagnitude < 1e-8f) return 1f;
+            var forward = new Vector2(Mathf.Sin(facing), Mathf.Cos(facing));
+            // The hit comes from where it travels from.
+            return Vector2.Angle(forward, -hitDirection) <= FrontArc * 0.5f ? 1f - FrontArmor : 1f;
+        }
     }
 
     /// <summary>A state lasts × <see cref="DurationFactor"/> on this monster (0 = immune).</summary>

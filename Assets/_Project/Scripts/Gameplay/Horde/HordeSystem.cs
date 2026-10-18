@@ -25,7 +25,10 @@ namespace Purge.Gameplay.Horde
         Attacking = 2,
         /// <summary>Killed: the corpse stays for <see cref="MonsterStats.CorpseTime"/>, then the slot is free.</summary>
         Dying = 3,
-        /// <summary>Climbs out of the ground (<see cref="MonsterStats.EmergeTime"/>): can be hit, neither walks nor attacks.</summary>
+        /// <summary>
+        /// Climbs out of the ground (<see cref="MonsterStats.EmergeTime"/>, or a raise's time — <see cref="HordeSystem.EmergeTimeOf"/>):
+        /// can be hit, neither walks nor attacks.
+        /// </summary>
         Emerging = 4,
     }
 
@@ -121,6 +124,17 @@ namespace Purge.Gameplay.Horde
         private float[] _dashPush;
         private int[] _doorAt; // cell of the door it is beating down, -1
         private float[] _doorTimer;
+        private float[] _emergeTime; // how long this one climbs out (its kind's, or a raise's)
+        private float[] _damageFactor; // × its damage (rage)
+        private bool[] _enraged;
+
+        // The fallen (stage 5e, the Shaman's raise): a ring of recent deaths of the rank-and-file and officers — where,
+        // which kind, when. Bodies are not kept for it: a corpse still disappears after its CorpseTime.
+        private readonly Vector2[] _fallenAt = new Vector2[FallenMemory];
+        private readonly byte[] _fallenKind = new byte[FallenMemory];
+        private readonly float[] _fallenTime = new float[FallenMemory];
+        private readonly bool[] _fallenUsed = new bool[FallenMemory];
+        private int _fallenNext;
 
         private bool[] _walkable;
         private bool[] _doorWalkable; // + closed doors monsters may get through (only with door users)
@@ -261,6 +275,106 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>A monster acts on a closed door this close to its body, cells.</summary>
         private const float DoorReach = 0.75f;
+
+        /// <summary>How many recent deaths the horde remembers for raising (the oldest are forgotten first).</summary>
+        public const int FallenMemory = 128;
+
+        /// <summary>Monsters raised from the fallen (tests, metrics).</summary>
+        public int Raised { get; private set; }
+
+        /// <summary>
+        /// Up to <paramref name="max"/> (and <c>results.Length</c>) of the fallen within <paramref name="radius"/> of
+        /// <paramref name="center"/> that died at most <paramref name="maxAge"/> s ago and were not raised yet, the nearest
+        /// first; their indices written, the count returned. Only the rank-and-file and officers are remembered.
+        /// </summary>
+        public int FindFallen(Vector2 center, float radius, float maxAge, int[] results, int max = int.MaxValue)
+        {
+            if (!IsActive || results == null) return 0;
+            var limit = Mathf.Min(max, results.Length);
+            if (limit <= 0) return 0;
+            var count = 0;
+            var radiusSquared = radius * radius;
+            for (var f = 0; f < FallenMemory; f++)
+            {
+                if (!IsFallen(f, maxAge)) continue;
+                var distance = (_fallenAt[f] - center).sqrMagnitude;
+                if (distance > radiusSquared) continue;
+                // Insertion by distance into the short list.
+                var at = count < limit ? count++ : limit;
+                while (at > 0 && (_fallenAt[results[at - 1]] - center).sqrMagnitude > distance)
+                {
+                    if (at < limit) results[at] = results[at - 1];
+                    at--;
+                }
+
+                if (at < limit) results[at] = f;
+            }
+
+            return count;
+        }
+
+        /// <summary>Where the fallen <paramref name="index"/> (of <see cref="FindFallen"/>) lies.</summary>
+        public Vector2 FallenPosition(int index) => _fallenAt[(uint)index % FallenMemory];
+
+        /// <summary>The fallen <paramref name="index"/> is still there to be raised (not raised, not forgotten, not too old).</summary>
+        public bool IsFallen(int index, float maxAge) =>
+            (uint)index < FallenMemory && _fallenUsed[index] && Time - _fallenTime[index] <= maxAge;
+
+        /// <summary>
+        /// Raises the fallen <paramref name="index"/>: the same kind gets up where it fell, climbing out for
+        /// <paramref name="riseTime"/> s, and chases the player at once (on top of the target count). Its slot, or -1 (no
+        /// free slot, the spot is not walkable any more, already raised).
+        /// </summary>
+        public int Raise(int index, float riseTime)
+        {
+            if (!IsActive || (uint)index >= FallenMemory || !_fallenUsed[index]) return -1;
+            _fallenUsed[index] = false;
+            var position = _fallenAt[index];
+            var cell = CellIndex(position);
+            if (cell < 0 || !_walkable[cell]) return -1;
+            var slot = Place(cell, true, MonsterPerception.Hunter, position, _fallenKind[index], riseTime);
+            if (slot >= 0) Raised++;
+            return slot;
+        }
+
+        private void RememberFallen(int agent)
+        {
+            var definition = _kinds[_kind[agent]].Definition;
+            if (definition != null && definition.Rank != MonsterRank.Mass && definition.Rank != MonsterRank.Officer) return;
+            var f = _fallenNext;
+            _fallenNext = (_fallenNext + 1) % FallenMemory;
+            _fallenAt[f] = _positions[agent];
+            _fallenKind[f] = _kind[agent];
+            _fallenTime[f] = Time;
+            _fallenUsed[f] = true;
+        }
+
+        /// <summary>
+        /// Rage (<c>RageAbility</c>): from now on the monster deals × <paramref name="damageFactor"/> damage and moves
+        /// × <paramref name="speedFactor"/>, until it dies. Once per life.
+        /// </summary>
+        public void Enrage(int agent, float damageFactor, float speedFactor)
+        {
+            if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || _enraged[agent]) return;
+            _enraged[agent] = true;
+            _damageFactor[agent] = Mathf.Max(0f, damageFactor);
+            _speed[agent] *= Mathf.Max(0.1f, speedFactor);
+        }
+
+        public bool IsEnraged(int agent) => (uint)agent < (uint)_highWater && _enraged[agent];
+
+        /// <summary>× the damage the monster deals (rage; 1 = as its data says).</summary>
+        public float DamageFactorOf(int agent) => (uint)agent < (uint)_highWater ? _damageFactor[agent] : 1f;
+
+        /// <summary>Seconds the monster in <paramref name="agent"/> climbs out of the ground (its kind's, or a raise's).</summary>
+        public float EmergeTimeOf(int agent) => (uint)agent < (uint)_highWater ? _emergeTime[agent] : 0f;
+
+        /// <summary>
+        /// × damage of a hit travelling along <paramref name="hitDirection"/> (zero = no direction) — the monster's front
+        /// armor (<see cref="MonsterStats.FrontArmor"/>, stage 5e).
+        /// </summary>
+        public float ArmorFactor(int agent, Vector2 hitDirection) =>
+            (uint)agent < (uint)_highWater ? _kinds[_kind[agent]].Stats.ArmorFactor(_facing[agent], hitDirection) : 1f;
 
         /// <summary>
         /// The monster rushes along <paramref name="direction"/> at <paramref name="speed"/> cells per second for up to
@@ -452,11 +566,15 @@ namespace Purge.Gameplay.Horde
             _dashPush = new float[capacity];
             _doorAt = new int[capacity];
             _doorTimer = new float[capacity];
+            _emergeTime = new float[capacity];
+            _damageFactor = new float[capacity];
+            _enraged = new bool[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
                 _speedFactor[i] = 1f;
                 _doorAt[i] = -1;
+                _damageFactor[i] = 1f;
             }
 
             _walkable = new bool[_grid.Width * _grid.Height];
@@ -522,6 +640,7 @@ namespace Purge.Gameplay.Horde
                 _states[i] = HordeAgentState.Inactive;
             AliveCount = 0;
             _highWater = 0;
+            Array.Clear(_fallenUsed, 0, FallenMemory);
             while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
         }
 
@@ -566,7 +685,7 @@ namespace Purge.Gameplay.Horde
                             TickAlive(i, playerPosition, deltaTime);
                         break;
                     case HordeAgentState.Emerging:
-                        if (!Frozen && Time - _stateStart[i] >= StatsOf(i).EmergeTime)
+                        if (!Frozen && Time - _stateStart[i] >= _emergeTime[i])
                         {
                             _states[i] = HordeAgentState.Moving;
                             _stateStart[i] = Time;
@@ -610,6 +729,7 @@ namespace Purge.Gameplay.Horde
             _dashLeft[agent] = 0f;
             AliveCount--;
             Kills++;
+            RememberFallen(agent);
             Killed?.Invoke(agent, _positions[agent]);
             return true;
         }
@@ -774,7 +894,7 @@ namespace Purge.Gameplay.Horde
                         _attackStart[i] = Time;
                         PlayerHits++;
                         if (!GodMode && stats.Damage > 0)
-                            _playerHealth.Damage(stats.Damage);
+                            _playerHealth.Damage(Mathf.RoundToInt(stats.Damage * _damageFactor[i]));
                     }
                 }
             }
@@ -1231,7 +1351,9 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <param name="perception">Overrides the kind's (sandbox groups).</param>
-        private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null, int forcedKind = -1)
+        /// <param name="emergeTime">How long it climbs out when <paramref name="emerge"/> (negative = its kind's).</param>
+        private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null, int forcedKind = -1,
+            float emergeTime = -1f)
         {
             var slot = FreeSlot();
             if (slot < 0) return -1;
@@ -1243,7 +1365,10 @@ namespace Purge.Gameplay.Horde
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
             _health[slot] = stats.MaxHp;
-            _states[slot] = emerge && stats.EmergeTime > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
+            _emergeTime[slot] = emerge ? emergeTime >= 0f ? emergeTime : stats.EmergeTime : 0f;
+            _states[slot] = _emergeTime[slot] > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
+            _damageFactor[slot] = 1f;
+            _enraged[slot] = false;
             _stateStart[slot] = Time;
             _attackTimer[slot] = 0f;
             _attackStart[slot] = -100f;

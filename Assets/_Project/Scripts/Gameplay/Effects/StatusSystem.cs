@@ -152,7 +152,7 @@ namespace Purge.Gameplay.Effects
 
                 Refresh(agent);
                 if (damage && dps > 0f)
-                    _targets.Damage(CombatTarget.OfAgent(agent), dps * DamageInterval, Vector2.up);
+                    _targets.Damage(CombatTarget.OfAgent(agent), dps * DamageInterval, Vector2.zero); // no direction: armor does not cover
                 if (!any) _has[agent] = false;
             }
         }

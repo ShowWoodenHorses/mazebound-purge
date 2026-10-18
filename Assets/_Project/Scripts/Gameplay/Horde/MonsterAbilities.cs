@@ -43,6 +43,12 @@ namespace Purge.Gameplay.Horde
     /// and the rush ends there.</item>
     /// <item><b>Push</b> (<see cref="PushAbility"/>, stage 5d): the player in the circle around the monster and not
     /// behind a wall takes the damage and the state and is knocked away from it.</item>
+    /// <item><b>Area strike</b> (<see cref="AreaStrikeAbility"/>, stage 5e): the circle under the player; when it comes down
+    /// the player still in it takes the damage and the state, the effects happen at its centre (hostile).</item>
+    /// <item><b>Raise</b> (<see cref="RaiseAbility"/>, stage 5e): only with the fallen near (<see cref="HordeSystem.FindFallen"/>,
+    /// chosen when the cast begins — the warning marks them); they get up where they fell (<see cref="HordeSystem.Raise"/>).</item>
+    /// <item><b>Rage</b> (<see cref="RageAbility"/>, stage 5e): roars through the warning, then <see cref="HordeSystem.Enrage"/>;
+    /// once per life. The damage of every attack and ability is × <see cref="HordeSystem.DamageFactorOf"/>.</item>
     /// </list>
     /// Also keeps <see cref="HordeSystem.SetSeesPlayer"/> (line of sight, <see cref="SightInterval"/>) for the ranged
     /// monsters' tactics. In <see cref="HordeSystem.GodMode"/> the player takes neither damage nor states — knocks still
@@ -78,6 +84,9 @@ namespace Purge.Gameplay.Horde
         private float[] _nextSight;
         private float[] _length; // a charge: how far it rushes (the warning line)
         private Vector2[] _dashFrom; // a charge: where the body was last tick
+        private int[] _raise; // agent · RaiseAbility.MaxCount + n: the fallen a raise lifts (HordeSystem.FindFallen)
+        private byte[] _raiseCount;
+        private readonly int[] _found = new int[RaiseAbility.MaxCount];
 
         private int _projectileCount;
         private readonly Vector2[] _from = new Vector2[MaxProjectiles];
@@ -88,6 +97,7 @@ namespace Purge.Gameplay.Horde
         private readonly float[] _age = new float[MaxProjectiles];
         private readonly int[] _projectileKind = new int[MaxProjectiles];
         private readonly ProjectileAbility[] _projectile = new ProjectileAbility[MaxProjectiles];
+        private readonly float[] _projectileFactor = new float[MaxProjectiles]; // × damage (the shooter's rage)
 
         public MonsterAbilities(HordeSystem horde, CombatTargets targets, PlayerSystem player, PlayerHealth health,
             PlayerStatusSystem statuses = null, EffectSystem effects = null)
@@ -121,6 +131,12 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>How far the charge of the monster in <paramref name="agent"/> rushes (its warning line), cells.</summary>
         public float ChargeLength(int agent) => IsActive && (uint)agent < (uint)_length.Length ? _length[agent] : 0f;
+
+        /// <summary>How many of the fallen the raise of the monster in <paramref name="agent"/> lifts (its warning marks them).</summary>
+        public int RaiseCount(int agent) => IsActive && (uint)agent < (uint)_raiseCount.Length ? _raiseCount[agent] : 0;
+
+        /// <summary>Where the fallen <paramref name="n"/> of <see cref="RaiseCount"/> lies.</summary>
+        public Vector2 RaisePoint(int agent, int n) => _horde.FallenPosition(_raise[agent * RaiseAbility.MaxCount + n]);
 
         public ReadOnlySpan<sbyte> CastIndices => _cast;
         public ReadOnlySpan<AbilityPhase> Phases => _phase;
@@ -196,6 +212,8 @@ namespace Purge.Gameplay.Horde
             _nextSight = new float[capacity];
             _length = new float[capacity];
             _dashFrom = new Vector2[capacity];
+            _raise = new int[capacity * RaiseAbility.MaxCount];
+            _raiseCount = new byte[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _generation[i] = -1;
@@ -263,7 +281,8 @@ namespace Purge.Gameplay.Horde
                         if (time - _phaseStart[i] >= abilities[_cast[i]].Recovery) Finish(i);
                         break;
                     default:
-                        if (!stunned[i] && state == HordeAgentState.Moving) TryBegin(i, abilities, time);
+                        // In melee (attacking) only the rage may begin: a Brute at the player still roars at 30 %.
+                        if (!stunned[i]) TryBegin(i, abilities, time, state == HordeAgentState.Attacking);
                         break;
                 }
             }
@@ -281,7 +300,7 @@ namespace Purge.Gameplay.Horde
                     Break(i, _horde.Time);
         }
 
-        private void TryBegin(int i, AbilityModule[] abilities, float time)
+        private void TryBegin(int i, AbilityModule[] abilities, float time, bool inMelee)
         {
             if (!_player.IsSpawned) return;
             var position = _horde.Positions[i];
@@ -291,11 +310,19 @@ namespace Purge.Gameplay.Horde
             for (var a = 0; a < abilities.Length; a++)
             {
                 var ability = abilities[a];
+                if (inMelee && !(ability is RageAbility)) continue;
                 if (time < _ready[i * MaxAbilities + a] || time - _chaseSince[i] < ability.FirstDelay) continue;
                 if (distance < ability.MinRange || distance > ability.MaxRange) continue;
                 if (health > ability.HealthBelow) continue;
                 if (ability.NeedsSight && !_horde.SeesPlayer(i)) continue;
+                if (ability is RageAbility && _horde.IsEnraged(i)) continue; // once per life
+                var found = 0;
+                if (ability is RaiseAbility raise &&
+                    (found = _horde.FindFallen(position, raise.Radius, raise.MaxAge, _found, raise.Count)) == 0) continue;
                 Begin(i, a, ability, position, toPlayer, distance, time);
+                // A raise chooses its spots now: the warning marks them.
+                for (var n = 0; n < found; n++) _raise[i * RaiseAbility.MaxCount + n] = _found[n];
+                _raiseCount[i] = (byte)found;
                 return;
             }
         }
@@ -310,7 +337,9 @@ namespace Purge.Gameplay.Horde
             _aim[i] = ability switch
             {
                 ProjectileAbility { Form: ProjectileForm.Arc } => LandingPoint(position, _player.Position),
+                AreaStrikeAbility => _player.Position,
                 PushAbility => position,
+                RaiseAbility => position,
                 _ => direction,
             };
             if (ability is ChargeAbility charge)
@@ -331,7 +360,7 @@ namespace Purge.Gameplay.Horde
             switch (ability)
             {
                 case ProjectileAbility projectile when projectile.Form == ProjectileForm.Arc:
-                    Launch(projectile, _horde.Kinds[i], position, Vector2.zero, _aim[i]);
+                    Launch(projectile, i, position, Vector2.zero, _aim[i]);
                     break;
                 case ProjectileAbility projectile:
                     var count = projectile.Count;
@@ -340,15 +369,26 @@ namespace Purge.Gameplay.Horde
                     {
                         var angle = count > 1 ? Mathf.Lerp(-0.5f, 0.5f, n / (count - 1f)) * projectile.FanAngle : 0f;
                         var direction = Rotate(_aim[i], angle);
-                        Launch(projectile, _horde.Kinds[i], position + direction * radius, direction, Vector2.zero);
+                        Launch(projectile, i, position + direction * radius, direction, Vector2.zero);
                     }
 
                     break;
                 case StrikeAbility strike:
-                    Strike(strike, position, _aim[i]);
+                    Strike(i, strike, position, _aim[i]);
                     break;
                 case PushAbility push:
-                    Shove(push, position);
+                    Shove(i, push, position);
+                    break;
+                case AreaStrikeAbility area:
+                    AreaStrike(i, area, _aim[i]);
+                    break;
+                case RaiseAbility raise:
+                    for (var n = 0; n < _raiseCount[i]; n++)
+                        _horde.Raise(_raise[i * RaiseAbility.MaxCount + n], raise.RiseTime);
+                    _raiseCount[i] = 0;
+                    break;
+                case RageAbility rage:
+                    _horde.Enrage(i, rage.DamageFactor, rage.SpeedFactor);
                     break;
                 case ChargeAbility charge:
                     // Rushes along the warned line (from where it stands now); the recovery begins when it stops.
@@ -369,7 +409,7 @@ namespace Purge.Gameplay.Horde
             {
                 // Ran into the player: hurt and knocked along the charge (no stun); the rush ends here.
                 ChargeHits++;
-                HurtPlayer(charge.Damage, position, null, 0f);
+                HurtPlayer(charge.Damage * _horde.DamageFactorOf(i), position, null, 0f);
                 // God spares the damage, not the knock (the stand must feel it).
                 if (!_health.IsDead) _player.Knock(_aim[i], charge.Knockback);
                 _horde.EndDash(i);
@@ -381,18 +421,19 @@ namespace Purge.Gameplay.Horde
             _phaseStart[i] = time;
         }
 
-        private void Shove(PushAbility push, Vector2 position)
+        private void Shove(int i, PushAbility push, Vector2 position)
         {
             if (!_player.IsSpawned) return;
             var offset = _player.Position - position;
             if (offset.magnitude > push.Radius + PlayerRadius) return;
             if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
-            HurtPlayer(push.Damage, position, push.Status, push.StatusDuration);
+            HurtPlayer(push.Damage * _horde.DamageFactorOf(i), position, push.Status, push.StatusDuration);
             if (!_health.IsDead) _player.Knock(offset.sqrMagnitude > 1e-6f ? offset : Vector2.up, push.Knockback);
         }
 
         private void Finish(int i)
         {
+            _raiseCount[i] = 0;
             _cast[i] = -1;
             _phase[i] = AbilityPhase.None;
             _horde.SetCasting(i, false);
@@ -413,7 +454,20 @@ namespace Purge.Gameplay.Horde
             Finish(i);
         }
 
-        private void Strike(StrikeAbility strike, Vector2 position, Vector2 direction)
+        /// <summary>
+        /// The blow comes down where the player stood when the cast began: the player inside and not behind a wall takes
+        /// the damage and the state; the effects happen at the centre (hostile).
+        /// </summary>
+        private void AreaStrike(int i, AreaStrikeAbility area, Vector2 at)
+        {
+            var floor = _player.Floor;
+            if (_player.IsSpawned && (_player.Position - at).magnitude <= area.Radius + PlayerRadius &&
+                _targets.IsClear(at, _player.Position, floor))
+                HurtPlayer(area.Damage * _horde.DamageFactorOf(i), at, area.Status, area.StatusDuration);
+            if (area.Impact.Count > 0) _effects?.Apply(area.Impact, at, floor, hostile: true);
+        }
+
+        private void Strike(int i, StrikeAbility strike, Vector2 position, Vector2 direction)
         {
             if (!_player.IsSpawned) return;
             var offset = _player.Position - position;
@@ -422,7 +476,7 @@ namespace Purge.Gameplay.Horde
             if (strike.Angle < 360f && distance > PlayerRadius &&
                 Vector2.Angle(direction, offset) > strike.Angle * 0.5f) return;
             if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
-            HurtPlayer(strike.Damage, position, strike.Status, strike.StatusDuration);
+            HurtPlayer(strike.Damage * _horde.DamageFactorOf(i), position, strike.Status, strike.StatusDuration);
         }
 
         /// <summary>Where an arc aimed at <paramref name="target"/> lands: walls cut it short (as a throw).</summary>
@@ -441,12 +495,13 @@ namespace Purge.Gameplay.Horde
             return last;
         }
 
-        private void Launch(ProjectileAbility ability, int kind, Vector2 origin, Vector2 direction, Vector2 target)
+        private void Launch(ProjectileAbility ability, int agent, Vector2 origin, Vector2 direction, Vector2 target)
         {
             if (_projectileCount >= MaxProjectiles) return;
             var p = _projectileCount++;
             _projectile[p] = ability;
-            _projectileKind[p] = kind;
+            _projectileKind[p] = _horde.Kinds[agent];
+            _projectileFactor[p] = _horde.DamageFactorOf(agent);
             _from[p] = origin;
             _position[p] = origin;
             _to[p] = target;
@@ -485,7 +540,7 @@ namespace Purge.Gameplay.Horde
                     var at = _to[p];
                     _position[p] = at;
                     var hit = _player.IsSpawned && (_player.Position - at).magnitude <= ability.ArcRadius + PlayerRadius;
-                    if (hit) HurtPlayer(ability.Damage, _from[p], ability.Status, ability.StatusDuration);
+                    if (hit) HurtPlayer(ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, hit);
                     continue;
                 }
@@ -503,7 +558,7 @@ namespace Purge.Gameplay.Horde
                 {
                     var at = Vector2.Lerp(from, next, player);
                     _position[p] = at;
-                    HurtPlayer(ability.Damage, _from[p], ability.Status, ability.StatusDuration);
+                    HurtPlayer(ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, true);
                     continue;
                 }
@@ -535,6 +590,7 @@ namespace Purge.Gameplay.Horde
             _left[p] = _left[last];
             _age[p] = _age[last];
             _projectileKind[p] = _projectileKind[last];
+            _projectileFactor[p] = _projectileFactor[last];
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
             if (ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);

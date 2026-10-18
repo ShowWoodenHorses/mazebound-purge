@@ -150,11 +150,11 @@ MonoBehaviour:
   - Name: Emerge
     Kind: 7
     FirstFrame: 528
-    FrameCount: 60
-    Length: 13.333334
+    FrameCount: 72
+    Length: 4.7999997
     Loop: 0
     Side: 0
-    FrameRate: 4.4249997
+    FrameRate: 14.791668
   _scale: 0.75
   _sourceVertexCount: 7620
   _splashColor: {r: 0.92, g: 0.89, b: 0.8, a: 1}

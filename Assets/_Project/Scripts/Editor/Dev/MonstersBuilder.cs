@@ -14,7 +14,7 @@ namespace Purge.Editor.Dev
     /// <summary>
     /// Purge → Dev → Build Monsters: monsters from the folders <c>Art/Monster/&lt;Biome&gt;/&lt;Rank&gt;/*.prefab</c>
     /// (Common, Castle, Forest, Snow… × Mass, Officer, Special = elite, Boss). Stage 5a builds the rank-and-file (Mass),
-    /// stage 5c — the officers (Animator: <see cref="OfficersBuilder"/>):
+    /// stage 5c — the officers, 5e — the elite (Animator: <see cref="OfficersBuilder"/>):
     /// <list type="number">
     /// <item>Clips: the "Monster_*" clips in Art/Animations are copied once from the Zombie_Animations and Ultimate
     /// Animation Collection packs in Import (<see cref="ClipTable"/>) and imported as Humanoid, root motion baked into
@@ -76,6 +76,28 @@ namespace Purge.Editor.Dev
             public int Frames;
             /// <summary>Keeps the body's ground drift (deaths: the body falls away); others are baked in place.</summary>
             public bool KeepDrift;
+            /// <summary>Window (start, end seconds) of each part; null = the whole parts. End 0 = to the part's end.</summary>
+            public Vector2[] Windows;
+            /// <summary>Seconds each part blends into the next (smooth joint between poses that differ).</summary>
+            public float Blend;
+        }
+
+        private static float PartStart(ClipEntry entry, int part) =>
+            entry.Windows != null && part < entry.Windows.Length ? entry.Windows[part].x : 0f;
+
+        private static float PartEnd(ClipEntry entry, AnimationClip[] sources, int part)
+        {
+            var length = sources[part].length;
+            if (entry.Windows == null || part >= entry.Windows.Length || entry.Windows[part].y <= 0f) return length;
+            return Mathf.Min(length, entry.Windows[part].y);
+        }
+
+        /// <summary>Element-wise blend of two bone matrices (poses close enough for a short joint).</summary>
+        private static Matrix4x4 Lerp(Matrix4x4 a, Matrix4x4 b, float t)
+        {
+            var result = new Matrix4x4();
+            for (var i = 0; i < 16; i++) result[i] = Mathf.Lerp(a[i], b[i], t);
+            return result;
         }
 
         /// <summary>"Monster_*" clip → its source in Import: (pack folder, file name without extension).</summary>
@@ -127,10 +149,15 @@ namespace Purge.Editor.Dev
             Entry("Death_Back", HordeClipKind.Death, side: HordeClipSide.Back, fps: 15f),
             Entry("Death_Left", HordeClipKind.Death, side: HordeClipSide.Left, fps: 15f),
             Entry("Death_Right", HordeClipKind.Death, side: HordeClipSide.Right, fps: 15f),
+            // Climbing out: 13.3 s of the pack's clips squeezed into ~2 s jerked (×7). Only the moments that read: the
+            // torso coming out of the ground (crawl 2.4–5.0 s; underground before, crawling forward after) and getting up
+            // (stand 0.6–3.2 s), blended at the joint — ~5 s, played at ~2.5×.
             new ClipEntry
             {
-                Name = "Emerge", Kind = HordeClipKind.Emerge, Frames = 60,
+                Name = "Emerge", Kind = HordeClipKind.Emerge, Frames = 72,
                 Parts = new[] { ClipPrefix + "Emerge_Crawl", ClipPrefix + "Emerge_Stand" },
+                Windows = new[] { new Vector2(2.4f, 5.0f), new Vector2(0.6f, 3.2f) },
+                Blend = 0.4f,
             },
         };
 
@@ -159,8 +186,8 @@ namespace Purge.Editor.Dev
                 var report = new List<string>();
                 foreach (var (prefab, biome, rank) in FindPrefabs())
                 {
-                    // Elite and bosses — Animator, stages 5e and 7.
-                    if (rank == MonsterRank.Officer)
+                    // Officers and elite — Animator (stages 5c, 5e: the Armadillo and the Shamans; the Hook later); bosses — stage 7.
+                    if (rank == MonsterRank.Officer || rank == MonsterRank.Elite && OfficersBuilder.IsBuiltElite(prefab.name))
                     {
                         var officer = EnsureDefinition(prefab, biome, rank, out var created);
                         if (created) OfficersBuilder.Seed(officer, prefab.name);
@@ -387,8 +414,10 @@ namespace Purge.Editor.Dev
                 {
                     var sources = Array.ConvertAll(entry.Parts, CharacterAnimationUtility.LoadClip);
                     var length = 0f;
-                    foreach (var clip in sources)
-                        length += clip.length;
+                    for (var p = 0; p < sources.Length; p++)
+                        length += PartEnd(entry, sources, p) - PartStart(entry, p);
+                    // Parts overlap by the blend at every joint.
+                    length -= entry.Blend * (sources.Length - 1);
                     if (entry.MaxLength > 0f) length = Mathf.Min(length, entry.MaxLength);
 
                     var fps = entry.Fps > 0f ? entry.Fps : FrameRate;
@@ -411,42 +440,70 @@ namespace Purge.Editor.Dev
                 var sampled = animator.gameObject;
                 var toRoot = root.worldToLocalMatrix;
                 var hips = animator.GetBoneTransform(HumanBodyBones.Hips);
+                var pose = new Matrix4x4[bones.Length];
+                var next = new Matrix4x4[bones.Length];
                 for (var c = 0; c < clips.Count; c++)
                 {
                     var info = clips[c];
+                    var entry = entries[c];
+                    var sources = parts[c];
                     var start = Vector3.zero;
                     for (var f = 0; f < info.FrameCount; f++)
                     {
-                        // Time along the parts played one after another → the part and the time in it.
+                        // Time along the parts played one after another (each in its window, overlapping by the
+                        // blend) → the part, the time in it, and how far into the next one it blends.
                         var time = Mathf.Min(info.Length, f / info.FrameRate);
-                        var clip = parts[c][0];
-                        for (var p = 0; p < parts[c].Length; p++)
+                        var p = 0;
+                        var blend = 0f;
+                        for (; p < sources.Length; p++)
                         {
-                            clip = parts[c][p];
-                            if (time <= clip.length || p == parts[c].Length - 1) break;
-                            time -= clip.length;
+                            var span = PartEnd(entry, sources, p) - PartStart(entry, p);
+                            if (time <= span || p == sources.Length - 1)
+                            {
+                                if (p < sources.Length - 1 && entry.Blend > 0f && time > span - entry.Blend)
+                                    blend = (time - (span - entry.Blend)) / entry.Blend;
+                                break;
+                            }
+
+                            time -= span - entry.Blend;
                         }
 
-                        AnimationMode.BeginSampling();
-                        AnimationMode.SampleAnimationClip(sampled, clip, Mathf.Min(time, clip.length));
-                        AnimationMode.EndSampling();
+                        Sample(sources[p], PartStart(entry, p) + time, pose, f == 0);
+                        if (blend > 0f)
+                        {
+                            Sample(sources[p + 1], PartStart(entry, p + 1) + (time - (PartEnd(entry, sources, p) - PartStart(entry, p) - entry.Blend)),
+                                next, false);
+                            var w = Mathf.SmoothStep(0f, 1f, blend);
+                            for (var b = 0; b < bones.Length; b++)
+                                pose[b] = Lerp(pose[b], next[b], w);
+                        }
+
                         var row = info.FirstFrame + f;
-                        // In place: the gameplay moves the monster. Clips with root motion baked into the pose
-                        // (attack lunges ~1.4 m, hit reactions step back, the crawl out of the ground) would carry
-                        // the body past the player and snap back on every repeat — their hips' ground drift from
-                        // the clip's first frame is taken out. Deaths keep it (the body falls away).
-                        var hipsAt = root.InverseTransformPoint(hips.position);
-                        if (f == 0) start = hipsAt;
-                        var drift = entries[c].KeepDrift ? Vector3.zero : new Vector3(hipsAt.x - start.x, 0f, hipsAt.z - start.z);
-                        var inPlace = Matrix4x4.Translate(-drift) * toRoot;
                         for (var b = 0; b < bones.Length; b++)
                         {
-                            var m = inPlace * bones[b].localToWorldMatrix * bindposes[b];
+                            var m = pose[b];
                             var offset = row * boneWidth + b * 3;
                             boneTexture[offset] = new Color(m.m00, m.m01, m.m02, m.m03);
                             boneTexture[offset + 1] = new Color(m.m10, m.m11, m.m12, m.m13);
                             boneTexture[offset + 2] = new Color(m.m20, m.m21, m.m22, m.m23);
                         }
+                    }
+
+                    void Sample(AnimationClip clip, float at, Matrix4x4[] into, bool first)
+                    {
+                        AnimationMode.BeginSampling();
+                        AnimationMode.SampleAnimationClip(sampled, clip, Mathf.Clamp(at, 0f, clip.length));
+                        AnimationMode.EndSampling();
+                        // In place: the gameplay moves the monster. Clips with root motion baked into the pose
+                        // (attack lunges ~1.4 m, hit reactions step back, the crawl out of the ground) would carry
+                        // the body past the player and snap back on every repeat — their hips' ground drift from
+                        // the clip's first frame is taken out. Deaths keep it (the body falls away).
+                        var hipsAt = root.InverseTransformPoint(hips.position);
+                        if (first) start = hipsAt;
+                        var drift = entry.KeepDrift ? Vector3.zero : new Vector3(hipsAt.x - start.x, 0f, hipsAt.z - start.z);
+                        var inPlace = Matrix4x4.Translate(-drift) * toRoot;
+                        for (var b = 0; b < bones.Length; b++)
+                            into[b] = inPlace * bones[b].localToWorldMatrix * bindposes[b];
                     }
                 }
 

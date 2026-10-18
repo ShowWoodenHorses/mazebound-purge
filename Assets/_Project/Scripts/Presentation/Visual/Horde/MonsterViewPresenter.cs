@@ -52,6 +52,8 @@ namespace Purge.Presentation.Visual.Horde
         private static readonly int CastId = Animator.StringToHash(P.Cast);
         private static readonly int CastSpeedId = Animator.StringToHash(P.CastSpeed);
         private static readonly int CastIndexId = Animator.StringToHash(P.CastIndex);
+        private static readonly int EmergingId = Animator.StringToHash(P.Emerging);
+        private static readonly int EmergeProgressId = Animator.StringToHash(P.EmergeProgress);
         private static readonly int DeadId = Animator.StringToHash(P.Dead);
         private static readonly int DeathIndexId = Animator.StringToHash(P.DeathIndex);
 
@@ -171,8 +173,9 @@ namespace Purge.Presentation.Visual.Horde
                 if (!visible) continue;
                 shown++;
                 Animate(i, view, pool.Definition, states[i]);
-                // The pose of this frame is evaluated already: the body stays where the gameplay put it (deaths fall away).
-                if (states[i] != HordeAgentState.Dying) KeepInPlace(view);
+                // The pose of this frame is evaluated already: the body stays where the gameplay put it (deaths fall away;
+                // getting up from lying — the lying body is far from the point by nature, pulling it in would jerk).
+                if (states[i] != HordeAgentState.Dying && states[i] != HordeAgentState.Emerging) KeepInPlace(view);
             }
 
             ShownCount = shown;
@@ -209,6 +212,16 @@ namespace Purge.Presentation.Visual.Horde
                     animator.SetBool(AlertId, false);
                 }
 
+                return;
+            }
+
+            // Raised (stage 5e): the rise clip follows how far it has got up.
+            var emerging = state == HordeAgentState.Emerging;
+            animator.SetBool(EmergingId, emerging);
+            if (emerging)
+            {
+                var emergeTime = _horde.EmergeTimeOf(i);
+                animator.SetFloat(EmergeProgressId, emergeTime > 0f ? Mathf.Clamp01((time - _horde.StateStart[i]) / emergeTime) : 1f);
                 return;
             }
 

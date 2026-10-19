@@ -143,7 +143,18 @@ namespace Purge.Gameplay.Run
         }
 
         /// <summary>A card's level and modules once more (a pick; also bonus cards later).</summary>
-        public void Apply(CardDefinition card)
+        public void Apply(CardDefinition card) => Apply(card, notify: true);
+
+        /// <summary>
+        /// A continued run's cards (stage 6e): each level applied again, without <see cref="Chosen"/>. A card's extra
+        /// throwables are given again too — the slot is restored after.
+        /// </summary>
+        public void Restore(IEnumerable<CardDefinition> cards)
+        {
+            foreach (var card in cards) Apply(card, notify: false);
+        }
+
+        private void Apply(CardDefinition card, bool notify)
         {
             if (card == null) return;
             var level = LevelOf(card) + 1;
@@ -167,6 +178,7 @@ namespace Purge.Gameplay.Run
             }
 
             PushToPlayer();
+            if (!notify) return;
             GameLog.Info(LogChannel.Gameplay, $"Card '{card.Id}' level {level}.");
             Chosen?.Invoke(card, level);
         }

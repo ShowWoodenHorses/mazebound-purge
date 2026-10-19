@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -411,4 +413,7 @@ MonoBehaviour:
   - Yonayotgan dushmanlarga +{0}% zarar
   - KRIT
   - "Ikki barobar zarar ehtimoli +{0}% (o\u02BBq, yaqin jang)"
+  - DAVOM ETISH
+  - "Yangi o\u02BByin boshlansinmi? Joriy o\u02BByin yo\u02BBqoladi, uning pullari
+    saqlanadi."
   _missing: []

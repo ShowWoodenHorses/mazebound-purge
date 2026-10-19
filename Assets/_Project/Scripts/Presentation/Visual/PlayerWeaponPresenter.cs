@@ -74,6 +74,7 @@ namespace Purge.Presentation.Visual
 
             _wanted.Clear();
             foreach (var pickup in _level.Weapons) _wanted.Add(pickup.Definition);
+            _wanted.Add(_level.StartWeapon); // the run's start weapon (stage 6e)
             if (_drops != null) _wanted.AddRange(_drops.Weapons);
             if (_player != null) _wanted.Add(_player.BaseWeapon);
             foreach (var definition in _wanted)

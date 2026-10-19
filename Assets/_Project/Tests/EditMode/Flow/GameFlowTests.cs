@@ -11,6 +11,7 @@ using Purge.Application.Services;
 using Purge.Core.Authoring;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Run;
 using Purge.Tests.EditMode.Common;
 using Purge.Tests.EditMode.Visual;
 using NUnit.Framework;
@@ -378,7 +379,59 @@ namespace Purge.Tests.EditMode.Flow
         });
 
         [UnityTest]
-        public IEnumerator LeavingFromPause_SavesRunMoney_WithoutResult() => UniTask.ToCoroutine(async () =>
+        public IEnumerator LeavingRunFromPause_KeepsItsSave_ContinueResumesIt() => UniTask.ToCoroutine(async () =>
+        {
+            await BootToMenu();
+            _sessions.Runs = true;
+            await _flow.StartLevel(ValidId);
+            var seed = _sessions.LastOptions.Seed;
+            Assert.IsTrue(seed.HasValue, "A new run gets one seed for all its systems.");
+            _sessions.Created[0].Money = 7;
+            _sessions.Created[0].RaiseCheckpoint(new RunSnapshot { Seed = seed.Value, Wave = 1, Money = 4 });
+            Assert.AreEqual(ValidId, _progress.RunLevelId, "A checkpoint goes to the save at once.");
+            _flow.PauseGameplay();
+
+            await _flow.ExitToMenu();
+
+            Assert.AreEqual(0, _progress.Money, "Left from the pause: the money stays in the run's save.");
+            Assert.AreEqual(0, _progress.Recorded.Count, "No result for a left run.");
+            Assert.IsTrue(_flow.HasSavedRun);
+
+            await _flow.ContinueRun();
+            Assert.AreEqual(GameFlowState.Playing, _flow.State);
+            Assert.AreSame(_progress.Run, _sessions.LastOptions.Resume);
+            Assert.AreEqual(seed, _sessions.LastOptions.Seed, "The continued run keeps its seed.");
+
+            _flow.FailLevel();
+            Assert.IsFalse(_progress.HasRun, "ТЗ: смерть удаляет сейв забега.");
+            await _flow.RetryLevel();
+            Assert.IsNull(_sessions.LastOptions.Resume, "Retry is a new run, not the continued one again.");
+        });
+
+        [UnityTest]
+        public IEnumerator NewRun_GivesUpTheSavedOne_ItsMoneyKept() => UniTask.ToCoroutine(async () =>
+        {
+            await BootToMenu();
+            _sessions.Runs = true;
+            await _flow.StartLevel(ValidId);
+            _sessions.Created[0].RaiseCheckpoint(new RunSnapshot { Wave = 0, Money = 4 });
+            _sessions.Created[0].Money = 9;
+            _flow.PauseGameplay();
+            Assert.IsTrue(_flow.IsRunActive);
+
+            await _flow.RetryLevel();
+            Assert.AreEqual(9, _progress.Money, "Retry from the pause gives up the run: its money now.");
+            Assert.IsFalse(_progress.HasRun);
+
+            _sessions.Created[1].RaiseCheckpoint(new RunSnapshot { Wave = 2, Money = 6 });
+            await _flow.ExitToMenu();
+            await _flow.StartLevel(ValidId);
+            Assert.AreEqual(15, _progress.Money, "A new run from the menu gives up the saved one: its saved money.");
+            Assert.IsFalse(_progress.HasRun);
+        });
+
+        [UnityTest]
+        public IEnumerator LeavingLevelWithoutWaves_KeepsNoMoney() => UniTask.ToCoroutine(async () =>
         {
             await BootToMenu();
             await _flow.StartLevel(ValidId);
@@ -387,13 +440,8 @@ namespace Purge.Tests.EditMode.Flow
 
             await _flow.ExitToMenu();
 
-            Assert.AreEqual(7, _progress.Money);
-            Assert.AreEqual(0, _progress.Recorded.Count, "No result for a left run.");
-
-            await _flow.StartLevel(ValidId);
-            _sessions.Created[1].Money = 5;
-            await _flow.RetryLevel();
-            Assert.AreEqual(12, _progress.Money, "Retry from the pause keeps the money too.");
+            Assert.AreEqual(0, _progress.Money);
+            Assert.IsFalse(_flow.HasSavedRun);
         });
 
         [UnityTest]
@@ -423,7 +471,7 @@ namespace Purge.Tests.EditMode.Flow
         public IEnumerator LaunchOptions_ArePassedToLevel_AndKeptOnRetry() => UniTask.ToCoroutine(async () =>
         {
             await BootToMenu();
-            var options = new LevelLaunchOptions(startIndex: 1);
+            var options = new LevelLaunchOptions(startIndex: 1, seed: 5);
             await _flow.StartLevel(ValidId, options);
             Assert.AreSame(options, _sessions.LastOptions);
 
@@ -432,7 +480,8 @@ namespace Purge.Tests.EditMode.Flow
             Assert.AreSame(options, _sessions.LastOptions, "Test from Start #N restarts at the same start.");
 
             await _flow.StartLevel(OtherId);
-            Assert.AreSame(LevelLaunchOptions.Default, _sessions.LastOptions);
+            Assert.IsNull(_sessions.LastOptions.StartIndex);
+            Assert.IsTrue(_sessions.LastOptions.Seed.HasValue, "A new seed for a run without a forced one.");
         });
 
         // ------------------------------------------------------------ Fakes
@@ -486,6 +535,26 @@ namespace Purge.Tests.EditMode.Flow
 
             public void AddMoney(int amount) => Money += amount;
             public void ResetProgress() => Recorded.Clear();
+
+            public RunSnapshot Run;
+            public string RunLevel;
+            public bool HasRun => Run != null;
+            public string RunLevelId => Run != null ? RunLevel : null;
+            public RunSnapshot LoadRun() => Run;
+
+            public void SaveRun(string levelId, int difficulty, RunSnapshot run)
+            {
+                RunLevel = levelId;
+                Run = run;
+            }
+
+            public void ClearRun() => Run = null;
+
+            public void AbandonRun(int money)
+            {
+                Money += money;
+                Run = null;
+            }
         }
 
         private sealed class FakeSessionFactory : ILevelSessionFactory
@@ -496,12 +565,15 @@ namespace Purge.Tests.EditMode.Flow
 
             public LevelLaunchOptions LastOptions;
 
+            /// <summary>Sessions created from now on are runs with waves.</summary>
+            public bool Runs;
+
             public UniTask<ILevelSession> CreateAsync(LevelData level, IAssetOwner levelAssets, LevelLaunchOptions options,
                 CancellationToken cancellation)
             {
                 OnCreate?.Invoke();
                 LastOptions = options;
-                var session = new FakeSession(level, levelAssets, LoadBehaviour);
+                var session = new FakeSession(level, levelAssets, LoadBehaviour) { IsRun = Runs };
                 Created.Add(session);
                 return UniTask.FromResult<ILevelSession>(session);
             }
@@ -527,8 +599,14 @@ namespace Purge.Tests.EditMode.Flow
             public bool Unloaded { get; private set; }
 
             public event Action<LevelOutcome> Finished;
+            public event Action<RunSnapshot> RunCheckpoint;
+
+            /// <summary>The level has waves (a run with a save).</summary>
+            public bool IsRun { get; set; }
 
             public void RaiseFinished(LevelOutcome outcome) => Finished?.Invoke(outcome);
+
+            public void RaiseCheckpoint(RunSnapshot run) => RunCheckpoint?.Invoke(run);
 
 
             public async UniTask LoadAsync(CancellationToken cancellation)

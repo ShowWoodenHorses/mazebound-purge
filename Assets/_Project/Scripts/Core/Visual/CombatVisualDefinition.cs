@@ -142,6 +142,39 @@ namespace Purge.Core.Visual
         [Tooltip("Seconds a vanishing drop shrinks away.")]
         [SerializeField, Range(0.05f, 1f)] private float _dropVanishTime = 0.3f;
 
+        [Header("Run (stage 6e)")]
+        [Tooltip("Looped ray over a dropped weapon by its rarity: green, blue, purple, orange (grey — none).")]
+        [SerializeField] private AssetReferenceGameObject _lootRayUncommon;
+        [SerializeField] private AssetReferenceGameObject _lootRayRare;
+        [SerializeField] private AssetReferenceGameObject _lootRayEpic;
+        [SerializeField] private AssetReferenceGameObject _lootRayLegendary;
+        [Tooltip("Flash around the player at the run's level-up (one-shot).")]
+        [SerializeField] private AssetReferenceGameObject _levelUp;
+
+        /// <summary>The ray over a dropped weapon of <paramref name="rarity"/>; null for grey or when not set.</summary>
+        public AssetReferenceGameObject LootRayOf(Content.Rarity rarity)
+        {
+            var ray = rarity switch
+            {
+                Content.Rarity.Uncommon => _lootRayUncommon,
+                Content.Rarity.Rare => _lootRayRare,
+                Content.Rarity.Epic => _lootRayEpic,
+                Content.Rarity.Legendary => _lootRayLegendary,
+                _ => null,
+            };
+            return IsSet(ray) ? ray : null;
+        }
+
+        public System.Collections.Generic.IEnumerable<AssetReferenceGameObject> LootRays()
+        {
+            yield return _lootRayUncommon;
+            yield return _lootRayRare;
+            yield return _lootRayEpic;
+            yield return _lootRayLegendary;
+        }
+
+        public AssetReferenceGameObject LevelUp { get => _levelUp; internal set => _levelUp = value; }
+
         public AssetReferenceGameObject DropVanish { get => _dropVanish; internal set => _dropVanish = value; }
         public float DropVanishCount => _dropVanishCount;
         public float DropVanishTime => _dropVanishTime;

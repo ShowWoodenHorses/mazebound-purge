@@ -138,6 +138,25 @@ namespace Purge.Gameplay.Weapons
             return replaced != null && !replaced.IsBase ? replaced : null;
         }
 
+        /// <summary>
+        /// A continued run's slot (stage 6e): <paramref name="weapon"/> (null = the basic pistol) with
+        /// <paramref name="ammo"/> rounds in the magazine.
+        /// </summary>
+        public void Restore(WeaponSlot slot, WeaponRuntime weapon, int ammo)
+        {
+            weapon ??= BaseFor();
+            if (weapon != null) weapon.Ammo = Math.Max(0, Math.Min(weapon.Definition.MagazineSize, ammo));
+            _slots[(int)slot] = weapon;
+            Changed?.Invoke();
+        }
+
+        /// <summary>Makes <paramref name="slot"/> active without the switch's events of the player (a continued run).</summary>
+        public void RestoreActive(WeaponSlot slot)
+        {
+            ActiveSlot = slot;
+            Changed?.Invoke();
+        }
+
         /// <summary>Takes the weapon out of the slot (the base pistol comes back). Null when there is nothing to drop.</summary>
         public WeaponRuntime Drop(WeaponSlot slot)
         {

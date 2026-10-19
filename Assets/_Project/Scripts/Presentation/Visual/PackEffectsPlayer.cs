@@ -298,12 +298,22 @@ namespace Purge.Presentation.Visual
             }
 
             CollectMonsters(wanted);
+            // The run's level-up flash (stage 6e): levels with waves.
+            if (_visual != null && _level != null && _level.Horde != null && _level.Horde.Waves != null)
+                Add(wanted, _visual.LevelUp);
 
             if (_level != null)
+            {
                 foreach (var pickup in _level.Weapons) AddWeapon(wanted, pickup.Definition);
+                AddWeapon(wanted, _level.StartWeapon); // the run's start weapon (stage 6e)
+            }
             if (_drops != null)
             {
-                foreach (var weapon in _drops.Weapons) AddWeapon(wanted, weapon);
+                foreach (var weapon in _drops.Weapons)
+                {
+                    AddWeapon(wanted, weapon);
+                    if (weapon != null && _visual != null) Add(wanted, _visual.LootRayOf(weapon.Rarity)); // stage 6e
+                }
                 foreach (var throwable in _drops.Throwables) AddThrowable(wanted, throwable);
             }
             if (_player != null)

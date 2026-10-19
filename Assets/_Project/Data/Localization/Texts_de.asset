@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -414,4 +416,6 @@ MonoBehaviour:
   - +{0} % Schaden gegen brennende Gegner
   - KRITISCHER TREFFER
   - +{0} % Chance auf doppelten Schaden (Kugeln, Nahkampf)
+  - FORTSETZEN
+  - Neuen Lauf starten? Der aktuelle Lauf geht verloren, sein Geld bleibt.
   _missing: []

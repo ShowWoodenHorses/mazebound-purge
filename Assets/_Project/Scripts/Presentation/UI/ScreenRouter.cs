@@ -16,7 +16,8 @@ namespace Purge.Presentation.UI
     /// and turns screen events into GameFlow commands. The level select is part of the main menu state: Play opens it
     /// over the menu, Back returns. The tutorial has its own menu button and caption, its window pauses the level
     /// (<see cref="GameFlowState.Tip"/>; Continue, Enter / Space / gamepad South close it) and its completion shows only
-    /// "Tutorial complete" with Next leading to the first level.
+    /// "Tutorial complete" with Next leading to the first level. A saved run (stage 6e): «Продолжить» in the menu, a new run
+    /// (Play, a level, Retry, Next) asks first in <see cref="ConfirmScreen"/>.
     /// </summary>
     public sealed class ScreenRouter : IDisposable
     {
@@ -52,6 +53,7 @@ namespace Purge.Presentation.UI
             _ui.ScaleDragThreshold();
             _flow.StateChanged += Show;
             _texts.LanguageChanged += OnLanguageChanged;
+            _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
             _ui.MainMenu.LevelsClicked += OnLevelsClicked;
             _ui.MainMenu.TutorialClicked += OnTutorialClicked;
@@ -93,6 +95,7 @@ namespace Purge.Presentation.UI
 
             if (_ui.RotateDevice != null) _ui.RotateDevice.Changed -= OnRotateDeviceChanged;
 
+            _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
             _ui.MainMenu.LevelsClicked -= OnLevelsClicked;
             _ui.MainMenu.TutorialClicked -= OnTutorialClicked;
@@ -156,6 +159,7 @@ namespace Purge.Presentation.UI
             _ui.Map.SetVisible(state == GameFlowState.Map);
             if (_ui.Cards != null) _ui.Cards.SetVisible(state == GameFlowState.Cards);
             if (_ui.Death != null) _ui.Death.SetVisible(state == GameFlowState.Death);
+            if (_ui.Confirm != null && (_ui.Confirm.IsOpen || _ui.Confirm.IsVisible)) _ui.Confirm.Close();
             if (_ui.Tutorial != null)
             {
                 _ui.Tutorial.SetVisible(inLevel && _flow.IsTutorialLevel);
@@ -191,6 +195,7 @@ namespace Purge.Presentation.UI
 
             _ui.MainMenu.SetSummary(_progress.Money, _progress.TotalKills);
             _ui.MainMenu.SetPlayable(levels.Count > 0);
+            _ui.MainMenu.SetContinueAvailable(_flow.HasSavedRun);
             _ui.MainMenu.SetTutorialAvailable(_catalog.Tutorial != null);
             RefreshSignIn();
             _ui.LevelSelect.SetLevels(_tiles, _devTiles);
@@ -271,8 +276,26 @@ namespace Purge.Presentation.UI
         {
             if (_flow.State != GameFlowState.MainMenu) return;
             var next = LevelToPlay();
-            if (next != null) _flow.StartLevel(next).Forget();
+            if (next != null) StartNewRun(() => _flow.StartLevel(next).Forget());
             else OnLevelsClicked();
+        }
+
+        /// <summary>«Продолжить»: the saved run (stage 6e).</summary>
+        private void OnContinueClicked()
+        {
+            if (_flow.State == GameFlowState.MainMenu && _flow.HasSavedRun) _flow.ContinueRun().Forget();
+        }
+
+        /// <summary>
+        /// A new run while one is played or saved (stage 6e): asked first — «Текущий забег будет потерян» (its money goes
+        /// to the save); otherwise at once.
+        /// </summary>
+        private void StartNewRun(Action start)
+        {
+            if ((_flow.IsRunActive || _flow.HasSavedRun) && _ui.Confirm != null)
+                _ui.Confirm.Open(_texts.Get(TextKeys.ConfirmNewRun), start);
+            else
+                start();
         }
 
         private void OnLevelsClicked()
@@ -296,7 +319,7 @@ namespace Purge.Presentation.UI
             Show(_flow.State);
         }
 
-        private void OnLevelSelected(string levelId) => _flow.StartLevel(levelId).Forget();
+        private void OnLevelSelected(string levelId) => StartNewRun(() => _flow.StartLevel(levelId).Forget());
 
         private void OnTutorialClicked()
         {
@@ -310,12 +333,12 @@ namespace Purge.Presentation.UI
             if (_flow.State == GameFlowState.Tip && _ui.Tutorial != null && _ui.Tutorial.CanContinue) _flow.CloseTip();
         }
 
-        private void OnRetryRequested() => _flow.RetryLevel().Forget();
+        private void OnRetryRequested() => StartNewRun(() => _flow.RetryLevel().Forget());
 
         private void OnNextRequested()
         {
             var next = NextLevelId();
-            if (next != null) _flow.StartLevel(next).Forget();
+            if (next != null) StartNewRun(() => _flow.StartLevel(next).Forget());
         }
 
         /// <summary>The result's ×2: a rewarded ad, then the run's money once more (stage 6d).</summary>

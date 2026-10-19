@@ -52,7 +52,7 @@ namespace Purge.Gameplay.Level
     /// <summary>
     /// Runtime progress of the current run (ТЗ §86): the play time (counted only while the level ticks, i.e. Running:
     /// pause, map and dialogs stop it) and the run's numbers from their systems for <see cref="GetResult"/>.
-    /// Nothing here is saved: a retry or death starts from a fresh LevelScope.
+    /// A continued run starts from its checkpoint (<see cref="Run.RunCheckpoints"/>, stage 6e).
     /// </summary>
     public sealed class LevelProgress : ILevelTickable
     {
@@ -62,7 +62,7 @@ namespace Purge.Gameplay.Level
         private readonly WaveSystem _waves;
         private readonly PlayerRevival _revival;
 
-        public LevelProgress(ZombieSystem zombies, RunScore score = null, RunWallet wallet = null, WaveSystem waves = null,
+        public LevelProgress(ZombieSystem zombies = null, RunScore score = null, RunWallet wallet = null, WaveSystem waves = null,
             PlayerRevival revival = null)
         {
             _zombies = zombies;
@@ -72,12 +72,15 @@ namespace Purge.Gameplay.Level
             _revival = revival;
         }
 
-        public int Kills => _zombies.KilledCount + (_score?.Kills ?? 0);
+        public int Kills => (_zombies?.KilledCount ?? 0) + (_score?.Kills ?? 0);
 
         /// <summary>Seconds played so far.</summary>
         public float Elapsed { get; private set; }
 
         public void Tick(float deltaTime) => Elapsed += deltaTime;
+
+        /// <summary>A continued run's play time (stage 6e).</summary>
+        public void Restore(float elapsed) => Elapsed = elapsed > 0f ? elapsed : 0f;
 
         public LevelResult GetResult(LevelOutcome outcome)
         {

@@ -124,7 +124,11 @@ namespace Purge.Application.Save
         public int Experience;
         public int PlayerLevel = 1;
         public int Health;
-        public int RevivesUsed;
+        public bool AdReviveUsed;
+        public bool SkillReviveUsed;
+
+        /// <summary>Seconds played (the result's time).</summary>
+        public float Time;
 
         /// <summary>Cards taken (stable ids, repeated when taken twice).</summary>
         public List<string> Cards = new List<string>();
@@ -134,6 +138,9 @@ namespace Purge.Application.Save
 
         /// <summary>The two weapon slots; an empty id = the basic pistol.</summary>
         public List<RunWeapon> Weapons = new List<RunWeapon>();
+
+        /// <summary>0 / 1: the slot in hands.</summary>
+        public int ActiveSlot;
 
         public string ThrowableId;
         public int ThrowableCount;
@@ -155,7 +162,10 @@ namespace Purge.Application.Save
             Experience = 0;
             PlayerLevel = 1;
             Health = 0;
-            RevivesUsed = 0;
+            AdReviveUsed = false;
+            SkillReviveUsed = false;
+            Time = 0f;
+            ActiveSlot = 0;
             Cards ??= new List<string>();
             Boosters ??= new List<string>();
             Weapons ??= new List<RunWeapon>();
@@ -182,7 +192,8 @@ namespace Purge.Application.Save
             if (Kills < 0) Kills = 0;
             if (Experience < 0) Experience = 0;
             if (PlayerLevel < 1) PlayerLevel = 1;
-            if (RevivesUsed < 0) RevivesUsed = 0;
+            if (!(Time >= 0f) || float.IsInfinity(Time)) Time = 0f;
+            if (ActiveSlot != 1) ActiveSlot = 0;
             if (ThrowableCount < 0 || string.IsNullOrEmpty(ThrowableId)) ThrowableCount = 0;
             foreach (var weapon in Weapons)
                 if (weapon.Ammo < 0) weapon.Ammo = 0;

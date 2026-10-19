@@ -51,12 +51,17 @@ namespace Purge.Gameplay.Level
     {
         public static readonly LevelLaunchOptions Default = new LevelLaunchOptions();
 
-        public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null)
+        public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null,
+            Run.RunSnapshot resume = null)
         {
             StartIndex = startIndex;
-            Seed = seed;
+            Seed = resume != null ? resume.Seed : seed;
             Difficulty = difficulty;
+            Resume = resume;
         }
+
+        /// <summary>A saved run to continue (stage 6e): its seed, state and the wave to start with; null = a new run.</summary>
+        public Run.RunSnapshot Resume { get; }
 
         /// <summary>Forced player start (Test from Start #N). Null = random start.</summary>
         public int? StartIndex { get; }

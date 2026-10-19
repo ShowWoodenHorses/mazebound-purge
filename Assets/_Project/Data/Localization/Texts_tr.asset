@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -415,4 +417,7 @@ MonoBehaviour:
   - "Yanan d\xFC\u015Fmanlara +%{0} hasar"
   - "KR\u0130T\u0130K VURU\u015E"
   - "\xC7ift hasar \u015Fans\u0131 +%{0} (mermi, yak\u0131n d\xF6v\xFC\u015F)"
+  - DEVAM ET
+  - "Yeni bir ko\u015Fu ba\u015Flat\u0131ls\u0131n m\u0131? Mevcut ko\u015Fu kaybolacak,
+    paras\u0131 kalacak."
   _missing: []

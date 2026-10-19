@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -409,4 +411,7 @@ MonoBehaviour:
   - "+{0} % de da\xF1o a enemigos en llamas"
   - "GOLPE CR\xCDTICO"
   - "+{0} % de probabilidad de da\xF1o doble (balas, cuerpo a cuerpo)"
+  - CONTINUAR
+  - "\xBFEmpezar una nueva partida? La actual se perder\xE1, pero conservar\xE1s
+    su dinero."
   _missing: []

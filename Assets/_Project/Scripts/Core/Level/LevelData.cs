@@ -37,7 +37,13 @@ namespace Purge.Core.Level
         [Tooltip("Stage 2 stress test (dev levels only): horde, stress weapons, autopilot, measuring overlay.")]
         [SerializeField] private Horde.StressTestDefinition _stressTest;
 
+        [Tooltip("Dev, until the menu of stage 10: the weapon a new run starts with besides the basic pistol; empty = the pistol only.")]
+        [SerializeField] private Definitions.WeaponDefinition _startWeapon;
+
         public LevelSettings Settings => _settings;
+
+        /// <summary>The weapon a new run starts with (dev, until the menu of stage 10); null = the basic pistol only.</summary>
+        public Definitions.WeaponDefinition StartWeapon { get => _startWeapon; internal set => _startWeapon = value; }
         public VisualTheme VisualTheme { get => _visualTheme; internal set => _visualTheme = value; }
         public VisualData VisualData => _visualData;
 

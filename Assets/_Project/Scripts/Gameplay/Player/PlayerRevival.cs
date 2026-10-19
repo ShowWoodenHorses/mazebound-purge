@@ -97,6 +97,13 @@ namespace Purge.Gameplay.Player
             Downed?.Invoke();
         }
 
+        /// <summary>A continued run's spent revives (stage 6e).</summary>
+        public void Restore(bool adUsed, bool skillUsed)
+        {
+            AdReviveUsed = adUsed;
+            SkillReviveUsed = skillUsed;
+        }
+
         /// <summary>Brings the dead player back (false when that kind is used up or the player is alive).</summary>
         public bool Revive(ReviveKind kind)
         {

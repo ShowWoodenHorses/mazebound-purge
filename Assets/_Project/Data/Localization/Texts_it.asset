@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -412,4 +414,6 @@ MonoBehaviour:
   - +{0}% danni ai nemici in fiamme
   - COLPO CRITICO
   - "+{0}% probabilit\xE0 di danno doppio (proiettili, mischia)"
+  - CONTINUA
+  - "Iniziare una nuova partita? Quella attuale andr\xE0 persa, il suo denaro resta."
   _missing: []

@@ -269,3 +269,51 @@ MonoBehaviour:
     Flat: 0
     Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 1
+  - Source: {fileID: 1471056418052322, guid: be3f2647e9f03024ca2d7ed5d154b213, type: 3}
+    Name: FX_LootRay_Green
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1449560930666284, guid: bbaeb331ae9016e469be01f7e4482c5b, type: 3}
+    Name: FX_LootRay_Blue
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1371570108566714, guid: 48c773bd8304efc42823380af4942de0, type: 3}
+    Name: FX_LootRay_Purple
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1945307557284214, guid: 590597403d9324b42929d54f5ecb9b96, type: 3}
+    Name: FX_LootRay_Orange
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 1624714524768532, guid: c9eb15264aa6c4348b00d5b9b3daab2a, type: 3}
+    Name: FX_LevelUp
+    Scale: 1
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6
+  - Source: {fileID: 2520148325800723006, guid: d2f3cec10b80b5449919efee295cbb11, type: 3}
+    Name: FX_Revive_Nova
+    Scale: 1
+    Radius: 3
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6

@@ -73,6 +73,8 @@ MonoBehaviour:
     _zombieDamageColor: {r: 1, g: 0.27, b: 0.2, a: 1}
     _playerDamageColor: {r: 1, g: 0.2, b: 0.15, a: 1}
     _healColor: {r: 0.42, g: 0.86, b: 0.36, a: 1}
+    _criticalColor: {r: 1, g: 0.82, b: 0.25, a: 1}
+    _criticalScale: 1.5
     _outlineColor: {r: 0.08, g: 0.02, b: 0.02, a: 0.9}
     _outlineWidth: 0.22
     _numberLifetime: 0.6
@@ -299,3 +301,41 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _rageGlow: {r: 1, g: 0.15, b: 0.05, a: 0.85}
   _stunHeight: 1.45
+  _dropVanish:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _dropVanishCount: 4
+  _dropVanishTime: 0.3
+  _lootRayUncommon:
+    m_AssetGUID: f394106ec9b389145a5e11af5330412f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _lootRayRare:
+    m_AssetGUID: 4fb0bdb7130f1b34e91e4405ad919ff7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _lootRayEpic:
+    m_AssetGUID: 28a3f089b4bdf864bb712c95298f8b23
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _lootRayLegendary:
+    m_AssetGUID: ef2e3b55b1a877b48829b34cad1b5807
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _levelUp:
+    m_AssetGUID: 596abaf99859eae42a65c0d4533e3d22
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

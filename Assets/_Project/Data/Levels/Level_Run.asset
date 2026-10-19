@@ -22491,3 +22491,4 @@ MonoBehaviour:
   _tutorial: {fileID: 0}
   _horde: {fileID: 11400000, guid: 2c7753eb9f44e084f8188b821639864e, type: 2}
   _stressTest: {fileID: 0}
+  _startWeapon: {fileID: 11400000, guid: bd948e954d146054e87e4bd8308c40a7, type: 2}

@@ -155,6 +155,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28a3f089b4bdf864bb712c95298f8b23
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_LootRay_Purple.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2bf304437e5febf4ab790bdf8259bd60
     m_Address: Assets/_Project/Art/Placeholders/wall_end.prefab
     m_ReadOnly: 0
@@ -325,6 +330,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fb0bdb7130f1b34e91e4405ad919ff7
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_LootRay_Blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5164ba6fc08bedf4a882f0f78fdffc0d
     m_Address: Assets/_Project/Art/Weapons/Pickups/SCAR-L_Pickup.prefab
     m_ReadOnly: 0
@@ -372,6 +382,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 560f18092b37e2544aab4b08ffca02e8
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 596abaf99859eae42a65c0d4533e3d22
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_LevelUp.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -920,6 +935,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef2e3b55b1a877b48829b34cad1b5807
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_LootRay_Orange.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ef80f724a4f186b4faef6c72e18dcf86
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Fireball_Explosion.prefab
     m_ReadOnly: 0
@@ -945,6 +965,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f394106ec9b389145a5e11af5330412f
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_LootRay_Green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f3c0ce2e4a62f3a4190ef0546d171d13
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Fall_Fireball.prefab
     m_ReadOnly: 0
@@ -967,6 +992,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f93f53310920b544b98e5d432a6e4778
     m_Address: Assets/_Project/Art/Decor/SM_Prop_Table_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9ef2dcd935542547b729101b02ded1e
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Revive_Nova.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

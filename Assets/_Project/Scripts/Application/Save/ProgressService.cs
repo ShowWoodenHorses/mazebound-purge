@@ -2,6 +2,7 @@ using System;
 using Purge.Application.Levels;
 using Purge.Core.Common;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Run;
 
 namespace Purge.Application.Save
 {
@@ -29,8 +30,29 @@ namespace Purge.Application.Save
         /// </summary>
         void RecordRun(string levelId, LevelResult result, int difficulty = 0);
 
-        /// <summary>Adds money (the result's rewarded ×2, a run left from the pause) and saves.</summary>
+        /// <summary>Adds money (the result's rewarded ×2) and saves.</summary>
         void AddMoney(int amount);
+
+        /// <summary>An unfinished run is saved (stage 6e): the menu offers «Продолжить».</summary>
+        bool HasRun { get; }
+
+        /// <summary>Level of the saved run; null without one.</summary>
+        string RunLevelId { get; }
+
+        /// <summary>The saved run as the level continues it; null without one.</summary>
+        RunSnapshot LoadRun();
+
+        /// <summary>A run's checkpoint (a wave started or cleared): saved at once, to the cloud with the save's delay.</summary>
+        void SaveRun(string levelId, int difficulty, RunSnapshot run);
+
+        /// <summary>The run ended (death, the last wave): its save goes. Nothing is saved when there is none.</summary>
+        void ClearRun();
+
+        /// <summary>
+        /// The run is given up for a new one (stage 6e: деньги брошенного забега — в сейв): <paramref name="money"/> is
+        /// added, the run's save goes.
+        /// </summary>
+        void AbandonRun(int money);
 
         /// <summary>Forgets all progress (debug); settings stay.</summary>
         void ResetProgress();
@@ -94,6 +116,92 @@ namespace Purge.Application.Save
             Data.Money = SafeAdd(Data.Money, amount);
             _save.Save();
             GameLog.Info(LogChannel.Save, $"Money +{amount} → {Data.Money}.");
+        }
+
+        public bool HasRun => Data.HasRun;
+
+        public string RunLevelId => Data.HasRun ? Data.Run.LevelId : null;
+
+        public RunSnapshot LoadRun()
+        {
+            if (!Data.HasRun) return null;
+            var save = Data.Run;
+            var run = new RunSnapshot
+            {
+                Seed = save.Seed,
+                Wave = save.Wave - 1,
+                WaveInProgress = save.WaveInProgress,
+                Money = save.Money,
+                Score = save.Score,
+                Kills = save.Kills,
+                Experience = save.Experience,
+                Level = save.PlayerLevel,
+                Health = save.Health,
+                AdReviveUsed = save.AdReviveUsed,
+                SkillReviveUsed = save.SkillReviveUsed,
+                Time = save.Time,
+                ActiveSlot = save.ActiveSlot,
+                ThrowableId = save.ThrowableId,
+                ThrowableCount = save.ThrowableCount,
+            };
+            run.WavesCleared = run.NextWave;
+            run.Cards.AddRange(save.Cards);
+            for (var i = 0; i < save.Weapons.Count && i < run.Weapons.Length; i++)
+            {
+                run.Weapons[i] = save.Weapons[i].Id;
+                run.Ammo[i] = save.Weapons[i].Ammo;
+            }
+
+            return run;
+        }
+
+        public void SaveRun(string levelId, int difficulty, RunSnapshot run)
+        {
+            if (string.IsNullOrEmpty(levelId)) throw new ArgumentException("Level id is empty.", nameof(levelId));
+            if (run == null) throw new ArgumentNullException(nameof(run));
+            var save = Data.Run ??= new RunSave();
+            save.Clear();
+            save.Active = true;
+            save.Mode = RunMode.Level;
+            save.LevelId = levelId;
+            save.Difficulty = difficulty;
+            save.Seed = run.Seed;
+            save.Wave = run.Wave + 1;
+            save.WaveInProgress = run.WaveInProgress;
+            save.Money = run.Money;
+            save.Score = run.Score;
+            save.Kills = run.Kills;
+            save.Experience = run.Experience;
+            save.PlayerLevel = run.Level;
+            save.Health = run.Health;
+            save.AdReviveUsed = run.AdReviveUsed;
+            save.SkillReviveUsed = run.SkillReviveUsed;
+            save.Time = run.Time;
+            save.ActiveSlot = run.ActiveSlot;
+            save.ThrowableId = run.ThrowableId;
+            save.ThrowableCount = run.ThrowableCount;
+            save.Cards.AddRange(run.Cards);
+            for (var i = 0; i < run.Weapons.Length; i++)
+                save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0 });
+            _save.Save();
+            GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' wave {save.Wave}{(save.WaveInProgress ? " (in progress)" : " cleared")}, " +
+                                          $"money {save.Money}.");
+        }
+
+        public void ClearRun()
+        {
+            if (!Data.HasRun) return;
+            Data.Run.Clear();
+            _save.Save();
+            GameLog.Info(LogChannel.Save, "Run save cleared.");
+        }
+
+        public void AbandonRun(int money)
+        {
+            if (money > 0) Data.Money = SafeAdd(Data.Money, money);
+            if (Data.HasRun) Data.Run.Clear();
+            _save.Save();
+            GameLog.Info(LogChannel.Save, $"Run abandoned: money +{Math.Max(0, money)} → {Data.Money}.");
         }
 
         private static int SafeAdd(int value, int amount) => amount <= 0 ? value : (int)Math.Min(int.MaxValue, (long)value + amount);

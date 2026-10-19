@@ -38,6 +38,14 @@ namespace Purge.Gameplay.Run
         /// <summary>The run's difficulty score factor (1 without a difficulty).</summary>
         public float Factor => _horde.Difficulty != null ? _horde.Difficulty.Score : 1f;
 
+        /// <summary>A continued run's numbers (stage 6e).</summary>
+        public void Restore(int kills, int wavesCleared, long score)
+        {
+            Kills = Math.Max(0, kills);
+            WavesCleared = Math.Max(0, wavesCleared);
+            _score = Math.Max(0L, score);
+        }
+
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             if (_subscribed || !_horde.IsActive) return UniTask.CompletedTask;

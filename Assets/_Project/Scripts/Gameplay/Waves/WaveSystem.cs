@@ -161,6 +161,20 @@ namespace Purge.Gameplay.Waves
             }
         }
 
+        /// <summary>
+        /// A continued run (stage 6e): instead of the first delay, the full pause before wave <paramref name="index"/>
+        /// (0 — the first delay as usual). Call after the load step, before the first tick.
+        /// </summary>
+        public void ResumeAt(int index)
+        {
+            if (!IsActive || index <= 0) return;
+            index = Mathf.Min(index, Scenario.Count - 1);
+            WaveIndex = index - 1;
+            Phase = WavePhase.Pause;
+            TimeLeft = Scenario.PauseTime;
+            GameLog.Info(LogChannel.Gameplay, $"Waves continued: wave {index + 1}/{Scenario.Count} after the pause.");
+        }
+
         /// <summary>Starts the next wave at once, without the bonus (tests, dev). False when not waiting.</summary>
         public bool StartNextWave()
         {

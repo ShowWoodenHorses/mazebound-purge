@@ -96,6 +96,31 @@ MonoBehaviour:
     _maxVoices: 1
     _minInterval: 0
   _heartbeatShare: 0.25
+  _levelUp:
+    _clips:
+    - {fileID: 8300000, guid: 17d26740de7b65344bee77ab4824c066, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0.3
+  _revive:
+    _clips:
+    - {fileID: 8300000, guid: 5c8cb9e13214c6940aafc75b2c7e5b25, type: 3}
+    _volume: 0.9
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _coin:
+    _clips:
+    - {fileID: 8300000, guid: 431d12643620fc349aedec22920d060c, type: 3}
+    - {fileID: 8300000, guid: 880c3def1ffa1c046a0ac3aeca675e38, type: 3}
+    _volume: 0.25
+    _pitch: {x: 0.95, y: 1.1}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0.07
   _meleeSwing:
     _clips:
     - {fileID: 8300000, guid: 7a4d25848a621434098aaa29f138c8b9, type: 3}

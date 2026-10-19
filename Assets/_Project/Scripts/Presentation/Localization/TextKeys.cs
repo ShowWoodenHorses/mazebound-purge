@@ -14,7 +14,9 @@ namespace Purge.Presentation.Localization
         public const string Percent = "format.percent";
 
         // Main menu, level select, loading.
+        public const string MenuContinue = "menu.continue";
         public const string MenuPlay = "menu.play";
+        public const string ConfirmNewRun = "confirm.new_run";
         public const string MenuResetProgress = "menu.reset_progress";
         public const string MenuTutorial = "menu.tutorial";
         public const string MenuLevels = "menu.levels";

@@ -26,6 +26,12 @@ namespace Purge.Application.Flow
         /// <summary>The current run's numbers (waves, kills, money, score), for the given outcome.</summary>
         LevelResult GetResult(LevelOutcome outcome);
 
+        /// <summary>The level is a run with waves: it has checkpoints and a save (stage 6e). Known after loading.</summary>
+        bool IsRun { get; }
+
+        /// <summary>A checkpoint of the run (a wave started or cleared): the state to save.</summary>
+        event Action<Gameplay.Run.RunSnapshot> RunCheckpoint;
+
         /// <summary>
         /// Full unload: dispose the LevelScope, unload its scene, release level Addressables.
         /// Not cancellable: cleanup always completes. <see cref="IDisposable.Dispose"/> is the synchronous

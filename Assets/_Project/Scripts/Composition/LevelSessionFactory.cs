@@ -10,6 +10,7 @@ using Purge.Gameplay.Horde;
 using Purge.Gameplay.Waves;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -70,12 +71,13 @@ namespace Purge.Composition
 
                 var runtime = scope.Container.Resolve<LevelRuntime>();
                 var progress = scope.Container.Resolve<LevelProgress>();
+                var checkpoints = scope.Container.Resolve<RunCheckpoints>();
                 // Rules subscribe on creation and are disposed with the scope (the death rule — on the revival's death).
                 scope.Container.Resolve<PlayerDeathRule>();
                 scope.Container.Resolve<AllKilledRule>();
                 scope.Container.Resolve<WavesClearedRule>();
                 GameLog.Info(LogChannel.LevelLoading, $"LevelScope for '{level.name}' created.");
-                return new LevelSession(scope, scene, levelAssets, runtime, progress);
+                return new LevelSession(scope, scene, levelAssets, runtime, progress, checkpoints);
             }
             catch
             {
@@ -101,13 +103,16 @@ namespace Purge.Composition
             private readonly IAssetOwner _assets;
             private readonly LevelRuntime _runtime;
             private readonly LevelProgress _progress;
+            private readonly RunCheckpoints _checkpoints;
             private LevelLifetimeScope _scope;
             private bool _released;
 
             public LevelSession(LevelLifetimeScope scope, Scene scene, IAssetOwner assets, LevelRuntime runtime,
-                LevelProgress progress)
+                LevelProgress progress, RunCheckpoints checkpoints)
             {
                 _progress = progress;
+                _checkpoints = checkpoints;
+                _checkpoints.Reached += OnCheckpoint;
                 _scope = scope;
                 _scene = scene;
                 _assets = assets;
@@ -116,6 +121,10 @@ namespace Purge.Composition
             }
 
             public event Action<LevelOutcome> Finished;
+
+            public event Action<RunSnapshot> RunCheckpoint;
+
+            public bool IsRun => !_released && _checkpoints.IsActive;
 
             public UniTask LoadAsync(CancellationToken cancellation) => _runtime.LoadAsync(cancellation);
 
@@ -150,7 +159,9 @@ namespace Purge.Composition
             {
                 _released = true;
                 _runtime.Finished -= OnFinished;
+                _checkpoints.Reached -= OnCheckpoint;
                 Finished = null;
+                RunCheckpoint = null;
                 if (_scope != null) _scope.Dispose();
                 _scope = null;
             }
@@ -158,6 +169,8 @@ namespace Purge.Composition
             private void ReleaseAssets() => _assets.Dispose();
 
             private void OnFinished(LevelOutcome outcome) => Finished?.Invoke(outcome);
+
+            private void OnCheckpoint(RunSnapshot run) => RunCheckpoint?.Invoke(run);
         }
     }
 }

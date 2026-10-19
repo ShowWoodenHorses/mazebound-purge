@@ -202,6 +202,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_result", BuildResult(parent));
             SetReference(root, "_settings", BuildSettings(parent));
             SetReference(root, "_error", BuildError(parent));
+            SetReference(root, "_confirm", BuildConfirm(parent)); // over the menu and the pause
             SetReference(root, "_fpsCounter", BuildFpsCounter(parent)); // over every screen
             SetReference(root, "_rotateDevice", BuildRotateDevice(parent)); // last: covers even the FPS counter
             AddUiSounds(root);
@@ -258,6 +259,8 @@ namespace Purge.Editor.Dev
             layout.childControlWidth = layout.childControlHeight = true;
             layout.childForceExpandHeight = false;
             buttons.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var resume = TextButton(buttons, "ContinueButton", Loc(TextKeys.MenuContinue), true, icons.Resume, 84f);
+            resume.gameObject.SetActive(false); // shown by the router while a run is saved
             var play = TextButton(buttons, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 84f);
             var levels = TextButton(buttons, "LevelsButton", Loc(TextKeys.MenuLevels), false, icons.Menu, 84f);
             var tutorial = TextButton(buttons, "TutorialButton", Loc(TextKeys.MenuTutorial), false, icons.Help, 84f);
@@ -290,6 +293,7 @@ namespace Purge.Editor.Dev
             AutoSize(hint);
             account.gameObject.SetActive(false);
 
+            SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);
             SetReference(screen, "_levelsButton", levels);
             SetReference(screen, "_tutorialButton", tutorial);
@@ -553,6 +557,13 @@ namespace Purge.Editor.Dev
 
             SetReference(screen, "_style", _style);
             SetReference(screen, "_levelName", levelName);
+            // The kills' coins fly to the money of the run (stage 6e): a full-screen layer over the HUD, the hidden template
+            // first; the presenter pools copies of it at load.
+            var coinLayer = Rect(root, "Coins", Center, Vector2.zero, Vector2.zero);
+            Stretch(coinLayer);
+            var coinTemplate = Icon(coinLayer, "CoinTemplate", icons.Coin, Center, Vector2.zero, 34f);
+            coinTemplate.color = _style.Accent;
+            coinTemplate.gameObject.SetActive(false);
             SetReference(screen, "_timer", timer);
             SetReference(screen, "_healthText", health);
             SetReference(screen, "_healthFrame", frame);
@@ -572,6 +583,8 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_waveText", waveText);
             SetReference(screen, "_enemiesText", enemiesText);
             SetReference(screen, "_moneyText", moneyText);
+            SetReference(screen, "_moneyIcon", money.transform.Find("Icon").GetComponent<RectTransform>());
+            SetReference(screen, "_coinLayer", coinLayer);
             SetReference(screen, "_countdown", countdown.gameObject);
             SetReference(screen, "_countdownText", countdownText);
             SetReference(screen, "_skipButton", skip);
@@ -1243,6 +1256,32 @@ namespace Purge.Editor.Dev
             }
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
+            return screen;
+        }
+
+        /// <summary>
+        /// Yes / no window (stage 6e: a new run instead of the saved one), over the menu and the pause: the message (set by
+        /// the router), YES and NO.
+        /// </summary>
+        private static ConfirmScreen BuildConfirm(Transform parent)
+        {
+            var screen = Screen<ConfirmScreen>(parent, "ConfirmScreen", new Color(0f, 0f, 0f, 0.6f));
+            var icons = UiIcons();
+            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 760f, new RectOffset(56, 56, 48, 56), 24f);
+            SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
+            var message = Text(panel, "Message", "", 34f, false, Center, Center, Vector2.zero, new Vector2(648f, 150f),
+                TextAlignmentOptions.Center);
+            message.textWrappingMode = TextWrappingModes.Normal;
+            AutoSize(message, 0.6f);
+            message.gameObject.AddComponent<LayoutElement>().preferredHeight = 150f;
+            var row = ButtonRow(panel, "Buttons", 18f, 86f);
+            var yes = TextButton(row, "YesButton", Loc(TextKeys.Yes), true, icons.ChevronRight, 86f);
+            var no = TextButton(row, "NoButton", Loc(TextKeys.No), false, icons.Close, 86f);
+
+            SetReference(screen, "_message", message);
+            SetReference(screen, "_yesButton", yes);
+            SetReference(screen, "_noButton", no);
+            screen.gameObject.SetActive(false);
             return screen;
         }
 

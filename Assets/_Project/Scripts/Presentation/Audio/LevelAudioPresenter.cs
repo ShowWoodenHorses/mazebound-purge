@@ -14,6 +14,7 @@ using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Waves;
@@ -76,6 +77,8 @@ namespace Purge.Presentation.Audio
         private readonly ZoneSystem _zones;
         private readonly DropSystem _drops;
         private readonly WaveSystem _waves;
+        private readonly RunExperience _experience;
+        private readonly PlayerRevival _revival;
 
         private int _fireVoice;
         private float _fireVolume;
@@ -89,8 +92,11 @@ namespace Purge.Presentation.Audio
         public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health,
             PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups, ZombieSystem zombies,
             ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
-            EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null, WaveSystem waves = null)
+            EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null, WaveSystem waves = null,
+            RunExperience experience = null, PlayerRevival revival = null)
         {
+            _experience = experience;
+            _revival = revival;
             _waves = waves;
             _zones = zones;
             _drops = drops;
@@ -152,6 +158,8 @@ namespace Purge.Presentation.Audio
                 }
                 if (_drops != null) _drops.ItemDropped += OnItemDropped;
                 if (_waves != null) _waves.WaveCleared += OnWaveCleared;
+                if (_experience != null) _experience.LeveledUp += OnLeveledUp;
+                if (_revival != null) _revival.Revived += OnRevived;
             }
 
             return UniTask.CompletedTask;
@@ -198,6 +206,8 @@ namespace Purge.Presentation.Audio
                 }
                 if (_drops != null) _drops.ItemDropped -= OnItemDropped;
                 if (_waves != null) _waves.WaveCleared -= OnWaveCleared;
+                if (_experience != null) _experience.LeveledUp -= OnLeveledUp;
+                if (_revival != null) _revival.Revived -= OnRevived;
             }
 
             foreach (var slot in _torchSlots)
@@ -238,6 +248,10 @@ namespace Purge.Presentation.Audio
         private void OnDropRequested(WeaponSlot slot) => PlayAt(Catalog.WeaponDrop, _player.Position);
 
         /// <summary>The pause between waves starts (the last wave is followed by the level's own sound).</summary>
+        private void OnLeveledUp(int level) => _audio.Play(Catalog.LevelUp, SoundChannel.Level);
+
+        private void OnRevived(ReviveKind kind) => _audio.Play(Catalog.Revive, SoundChannel.Level);
+
         private void OnWaveCleared(int index)
         {
             if (index + 1 < _waves.WaveCount) _audio.Play(Catalog.WaveCleared, SoundChannel.Level);

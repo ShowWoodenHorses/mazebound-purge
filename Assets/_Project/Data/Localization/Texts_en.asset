@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - English
   - SETTINGS
@@ -429,4 +431,6 @@ MonoBehaviour:
   - +{0}% damage to burning enemies
   - CRITICAL HIT
   - +{0}% chance of double damage (bullets, melee)
+  - CONTINUE
+  - Start a new run? The current run will be lost, its money is kept.
   _missing: []

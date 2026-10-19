@@ -8,6 +8,7 @@ using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Run;
 using Purge.Presentation.Map;
 using NUnit.Framework;
 using UnityEngine;
@@ -340,6 +341,53 @@ namespace Purge.Tests.EditMode.Progress
         }
 
         [Test]
+        public void RunCheckpoint_SavedAndLoaded_AbandonKeepsMoney()
+        {
+            var run = new RunSnapshot
+            {
+                Seed = 77, Wave = 2, WaveInProgress = true, Money = 31, Score = 900, Kills = 40, Experience = 6, Level = 4,
+                Health = 55, SkillReviveUsed = true, Time = 123.5f, ActiveSlot = 1, ThrowableId = "grenade", ThrowableCount = 4,
+            };
+            run.Cards.Add("card_a");
+            run.Weapons[1] = "ak_74";
+            run.Ammo[1] = 9;
+            _progress.SaveRun("first", 0, run);
+
+            _save.Load();
+            Assert.IsTrue(_progress.HasRun);
+            Assert.AreEqual("first", _progress.RunLevelId);
+            Assert.AreEqual(3, _save.Data.Run.Wave, "the save counts waves from 1");
+            var loaded = _progress.LoadRun();
+            Assert.AreEqual(77, loaded.Seed);
+            Assert.AreEqual(2, loaded.Wave);
+            Assert.IsTrue(loaded.WaveInProgress);
+            Assert.AreEqual(2, loaded.NextWave);
+            Assert.AreEqual(2, loaded.WavesCleared);
+            Assert.AreEqual(31, loaded.Money);
+            Assert.AreEqual(900, loaded.Score);
+            Assert.AreEqual(40, loaded.Kills);
+            Assert.AreEqual(4, loaded.Level);
+            Assert.AreEqual(6, loaded.Experience);
+            Assert.AreEqual(55, loaded.Health);
+            Assert.IsTrue(loaded.SkillReviveUsed);
+            Assert.IsFalse(loaded.AdReviveUsed);
+            Assert.AreEqual(123.5f, loaded.Time);
+            Assert.AreEqual(1, loaded.ActiveSlot);
+            CollectionAssert.AreEqual(new[] { "card_a" }, loaded.Cards);
+            Assert.IsTrue(string.IsNullOrEmpty(loaded.Weapons[0]));
+            Assert.AreEqual("ak_74", loaded.Weapons[1]);
+            Assert.AreEqual(9, loaded.Ammo[1]);
+            Assert.AreEqual("grenade", loaded.ThrowableId);
+            Assert.AreEqual(4, loaded.ThrowableCount);
+
+            var money = _progress.Money;
+            _progress.AbandonRun(loaded.Money);
+            Assert.AreEqual(money + 31, _progress.Money);
+            Assert.IsFalse(_progress.HasRun);
+            Assert.IsNull(_progress.LoadRun());
+        }
+
+                [Test]
         public void RunSave_SurvivesTheRoundTrip_AndClears()
         {
             _save.Data.Run.Active = true;

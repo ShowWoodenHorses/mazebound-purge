@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -428,4 +430,6 @@ MonoBehaviour:
   - +{0}% kerusakan ke musuh terbakar
   - SERANGAN KRITIS
   - +{0}% peluang kerusakan ganda (peluru, jarak dekat)
+  - LANJUTKAN
+  - Mulai permainan baru? Permainan saat ini akan hilang, uangnya tetap disimpan.
   _missing: []

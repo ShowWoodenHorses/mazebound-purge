@@ -7,6 +7,7 @@ using Purge.Core.Common;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
+using Purge.Core.Level;
 using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Drops;
@@ -54,11 +55,16 @@ namespace Purge.Presentation.Visual
         private PackEmitters.Emitter _puff;
         private Transform _parent;
         private bool _subscribed;
+        private readonly LevelData _level;
+        private readonly PackEffectsPlayer _effects;
 
         public DropViewPresenter(DropPool pool, PickupSystem pickups, BulletSystem bullets, ThrowableSlot slot,
             VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null,
-            CombatVisualDefinition visual = null, PackEmitters emitters = null)
+            CombatVisualDefinition visual = null, PackEmitters emitters = null, LevelData level = null,
+            PackEffectsPlayer effects = null)
         {
+            _level = level;
+            _effects = effects;
             _visual = visual;
             _emitters = emitters;
             _pool = pool;
@@ -81,6 +87,8 @@ namespace Purge.Presentation.Visual
 
             _pool.GetItems(_items);
             if (_slot.Definition != null) _items.Add(_slot.Definition);
+            // The run's start weapon can be dropped by the player (stage 6e).
+            if (_level != null && _level.StartWeapon != null) _items.Add(_level.StartWeapon);
             foreach (var item in _pool.Throwables) _items.Add(item);
             if (_items.Count == 0) return;
 
@@ -140,10 +148,12 @@ namespace Purge.Presentation.Visual
                     _lying[i] = Lift(shown, false);
                 }
 
-                var visible = _visibility.IsVisible(pickup.Cell);
+                var seen = _visibility.IsVisible(pickup.Cell);
+                var visible = seen;
                 var left = shown.Pickup.ExpiresAt - time;
                 if (visible && left < BlinkTime) visible = Mathf.Repeat(left, 0.3f) > 0.1f;
                 if (shown.Object.activeSelf != visible) shown.Object.SetActive(visible);
+                if (shown.RayLook != null) _lying[i] = TickRay(shown, seen);
             }
 
             foreach (var shown in _flying)
@@ -191,7 +201,36 @@ namespace Purge.Presentation.Visual
             // A steady turn of its own (from the id), not a random one.
             transform.localRotation = Quaternion.Euler(0f, StableHash.Of(pickup.Id) % 360, 0f);
             go.SetActive(_visibility.IsVisible(pickup.Cell));
-            _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item), Scale = transform.localScale });
+            var ray = _visual != null && _effects != null && pickup.Weapon != null
+                ? _visual.LootRayOf(pickup.Weapon.Definition.Rarity)
+                : null;
+            _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item), Scale = transform.localScale,
+                RayLook = ray, Ray = -1 });
+        }
+
+        /// <summary>
+        /// The ray of a rare weapon's rarity over it (stage 6e): follows it while its cell is seen (the magnet carries it),
+        /// fades where it is otherwise.
+        /// </summary>
+        private Shown TickRay(Shown shown, bool seen)
+        {
+            if (!seen || shown.Pickup.Attracted)
+            {
+                StopRay(ref shown);
+                return shown;
+            }
+
+            var position = shown.Object.transform.localPosition;
+            if (shown.Ray < 0) shown.Ray = _effects.Follow(shown.RayLook, position, Quaternion.identity);
+            else _effects.Move(shown.Ray, position, Quaternion.identity);
+            return shown;
+        }
+
+        private void StopRay(ref Shown shown)
+        {
+            if (shown.Ray < 0) return;
+            _effects.Unfollow(shown.Ray);
+            shown.Ray = -1;
         }
 
         private void OnRemoved(Pickup pickup)
@@ -201,6 +240,7 @@ namespace Purge.Presentation.Visual
                 var shown = _lying[i];
                 if (shown.Pickup != pickup) continue;
                 _lying.RemoveAt(i);
+                StopRay(ref shown);
                 if (!pickup.WasTaken && _visual != null && _visibility.IsVisible(pickup.Cell)) Vanish(shown);
                 else Return(shown, false);
                 return;
@@ -319,6 +359,12 @@ namespace Purge.Presentation.Visual
 
             /// <summary>Was flying to the player (the magnet): its place is set again.</summary>
             public bool Lifted;
+
+            /// <summary>The ray of a rare weapon's rarity (stage 6e); null — none.</summary>
+            public UnityEngine.AddressableAssets.AssetReferenceGameObject RayLook;
+
+            /// <summary>Handle of the shown ray; -1 — not shown.</summary>
+            public int Ray;
         }
     }
 }

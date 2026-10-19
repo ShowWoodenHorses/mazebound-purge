@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - Polski
   - USTAWIENIA
@@ -418,4 +420,6 @@ MonoBehaviour:
   - "+{0}% obra\u017Ce\u0144 p\u0142on\u0105cym wrogom"
   - TRAFIENIE KRYTYCZNE
   - "+{0}% szansy na podw\xF3jne obra\u017Cenia (pociski, walka wr\u0119cz)"
+  - KONTYNUUJ
+  - "Rozpocz\u0105\u0107 nowy bieg? Obecny przepadnie, jego pieni\u0105dze zostan\u0105."
   _missing: []

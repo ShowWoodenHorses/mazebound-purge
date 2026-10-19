@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -411,4 +413,6 @@ MonoBehaviour:
   - +{0}% de dano a inimigos em chamas
   - "ACERTO CR\xCDTICO"
   - +{0}% de chance de dano dobrado (balas, corpo a corpo)
+  - CONTINUAR
+  - "Come\xE7ar uma nova partida? A atual ser\xE1 perdida, o dinheiro dela fica."
   _missing: []

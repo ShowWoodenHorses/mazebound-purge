@@ -48,6 +48,9 @@ namespace Purge.Gameplay.Player
             Changed?.Invoke(Current, Max);
         }
 
+        /// <summary>A continued run's HP (stage 6e), 1..<see cref="Max"/>.</summary>
+        public void Restore(int current) => Set(Math.Max(1, Math.Min(Max, current)));
+
         /// <summary>Restores <paramref name="amount"/> (0 or less — to full).</summary>
         public void Heal(int amount)
         {

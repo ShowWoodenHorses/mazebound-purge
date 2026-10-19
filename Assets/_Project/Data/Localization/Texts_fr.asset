@@ -201,6 +201,8 @@ MonoBehaviour:
   - card.card_burning.text
   - card.card_crit
   - card.card_crit.text
+  - menu.continue
+  - confirm.new_run
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -413,4 +415,7 @@ MonoBehaviour:
   - "+{0} % de d\xE9g\xE2ts aux ennemis en feu"
   - COUP CRITIQUE
   - "+{0} % de chances de d\xE9g\xE2ts doubl\xE9s (balles, m\xEAl\xE9e)"
+  - CONTINUER
+  - "Commencer une nouvelle partie ? La partie en cours sera perdue, son argent est
+    conserv\xE9."
   _missing: []

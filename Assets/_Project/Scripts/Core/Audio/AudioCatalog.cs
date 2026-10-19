@@ -184,6 +184,12 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _heartbeat = new SoundCue(0.6f, 0f, 1, Vector2.one);
         [Tooltip("Share of the health at or below which the heartbeat plays.")]
         [SerializeField, Range(0f, 1f)] private float _heartbeatShare = 0.25f;
+        [Tooltip("The run's level-up (stage 6e).")]
+        [SerializeField] private SoundCue _levelUp = new SoundCue(0.7f, 0f, 1, Vector2.one, 0.3f);
+        [Tooltip("The player revives (stage 6e).")]
+        [SerializeField] private SoundCue _revive = new SoundCue(0.9f, 0f, 1, Vector2.one);
+        [Tooltip("A kill's coin reaches the HUD's money (stage 6e). Very often: short, soft, spaced out.")]
+        [SerializeField] private SoundCue _coin = new SoundCue(0.25f, 0f, 2, new Vector2(0.95f, 1.1f), 0.07f);
 
         [Header("Weapons")]
         [Tooltip("Common swing of melee weapons without their own sound group.")]
@@ -328,6 +334,9 @@ namespace Purge.Core.Audio
         public float BodyfallDelay => _bodyfallDelay;
         public SoundCue Heartbeat => _heartbeat;
         public float HeartbeatShare => _heartbeatShare;
+        public SoundCue LevelUp => _levelUp;
+        public SoundCue Revive => _revive;
+        public SoundCue Coin => _coin;
 
         public SoundCue MeleeSwing => _meleeSwing;
         public SoundCue Shot => _shot;
@@ -427,6 +436,9 @@ namespace Purge.Core.Audio
         internal SoundCue PickupThrowableCue => _pickupThrowable;
         internal SoundCue IceBreakCue => _iceBreak;
         internal SoundCue WaveClearedCue => _waveCleared;
+        internal SoundCue LevelUpCue => _levelUp;
+        internal SoundCue ReviveCue => _revive;
+        internal SoundCue CoinCue => _coin;
 
         internal List<WeaponSound> MutableWeaponSounds => _weaponSounds;
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
@@ -490,6 +502,7 @@ namespace Purge.Core.Audio
             yield return _emptyClick; yield return _lowAmmo; yield return _monsterHit; yield return _killPop;
             yield return _killSplat; yield return _weaponDrop; yield return _rareDrop; yield return _pin; yield return _land;
             yield return _fireLoop; yield return _bodyfall; yield return _heartbeat;
+            yield return _levelUp; yield return _revive; yield return _coin;
             yield return _throw; yield return _explosionSmall; yield return _explosionMedium; yield return _explosionLarge;
             yield return _ignite; yield return _pickupAmmo; yield return _pickupThrowable; yield return _iceHit;
             yield return _iceBreak;

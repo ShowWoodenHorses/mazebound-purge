@@ -88,6 +88,16 @@ namespace Purge.Gameplay.Run
             Changed?.Invoke();
         }
 
+        /// <summary>A continued run's level and experience (stage 6e): its cards are restored apart, nothing is pending.</summary>
+        public void Restore(int level, int experience)
+        {
+            Level = Mathf.Max(1, level);
+            Experience = Mathf.Max(0, experience);
+            Pending = 0;
+            _fraction = 0f;
+            Changed?.Invoke();
+        }
+
         /// <summary>One level-up's cards were chosen (or there was nothing to choose).</summary>
         public void ConsumePending()
         {

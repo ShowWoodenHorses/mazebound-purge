@@ -50,6 +50,13 @@ namespace Purge.Gameplay.Run
         /// <summary>The run's difficulty money factor (1 without a difficulty).</summary>
         public float Factor => _horde.Difficulty != null ? _horde.Difficulty.Money : 1f;
 
+        /// <summary>A continued run's money (stage 6e), without <see cref="Changed"/>.</summary>
+        public void Restore(int money)
+        {
+            Money = Mathf.Max(0, money);
+            _fraction = 0f;
+        }
+
         /// <summary>Adds <paramref name="amount"/> (already × the factor); the fraction is kept for the next one.</summary>
         public void Add(float amount)
         {

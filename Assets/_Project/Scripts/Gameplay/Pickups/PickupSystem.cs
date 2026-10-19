@@ -400,12 +400,18 @@ namespace Purge.Gameplay.Pickups
         public Pickup DropWeaponItem(Vector2 at, int floor, WeaponDefinition weapon, float lifetime)
         {
             if (weapon == null) return null;
-            var id = NextId();
             var cell = CellOf(at, floor);
-            var runtime = new WeaponRuntime(new WeaponPickupData(id, cell, weapon), dropped: true);
-            return AddDrop(new Pickup(id, PickupKind.Weapon, cell, Inside(at, cell), Time + lifetime, weapon: runtime),
+            var runtime = CreateWeapon(weapon, cell);
+            return AddDrop(new Pickup(runtime.Id, PickupKind.Weapon, cell, Inside(at, cell), Time + lifetime, weapon: runtime),
                 expires: true);
         }
+
+        /// <summary>
+        /// A weapon that is not an object of the level (a drop, the run's start weapon, a continued run's slot, stage 6e):
+        /// a fresh drop id, full magazine.
+        /// </summary>
+        public WeaponRuntime CreateWeapon(WeaponDefinition weapon, GridPosition cell = default) =>
+            new WeaponRuntime(new WeaponPickupData(NextId(), cell, weapon), dropped: true);
 
         /// <summary>
         /// Every monsters' drop still lying disappears (not taken; the views show it vanish) — the next wave starts

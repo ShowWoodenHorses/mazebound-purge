@@ -21,7 +21,7 @@
 - **Магнит** (`PickupSystem`): раз в 0,1 с дроп монстров (патроны, метательное при месте в слоте, аптечки при неполном HP) в радиусе → `Pickup.Attracted`, летит к игроку 12 кл/с (`Position`), подбирается на месте; не поместилось — обратно (`Home`). Оружие и ключи — только в своей клетке.
 
 ## Поток и вид
-- **`GameFlowState.Cards`** — пауза (`OpenCards`/`CloseCards`; закрыть нельзя, пока идёт реклама); Esc не закрывает; HUD виден; звуки паузы (свой звук повышения — 6д).
+- **`GameFlowState.Cards`** — пауза (`OpenCards`/`CloseCards`; закрыть нельзя, пока идёт реклама); Esc не закрывает; HUD виден; звуки паузы; повышение — звук `AudioCatalog.LevelUp` и вспышка (`RunFeedbackPresenter`, 6д). Продолжение забега — `CardSystem.Restore`, `RunExperience.Restore` ([MetaUI.md](MetaUI.md), «Сейв забега»).
 - **`CardsPresenter`** (Presentation, шаг `InitializeUI`, `LateTick`): полоса опыта в HUD (`HudScreen.SetExperience`, «УР. N» под HP); в `Playing` при `Pending` — `OpenNext` → `CardsScreen` + `OpenCards`; выбор → следующее предложение или `CloseCards`; переброс — `AdsService.ShowRewardedAsync("cards_reroll")`.
 - **`CardsScreen`** (вёрстка — `RuntimeScenesBuilder.BuildCards`): заголовок, «УРОВЕНЬ N · ВЫБЕРИТЕ КАРТОЧКУ», 3 карточки (рамка и подпись цветом редкости `UiStyle.Rarities`, иконка в кольце, имя, текст, «НОВАЯ» / «УРОВЕНЬ n/max»), «ПЕРЕБРОСИТЬ» с значком рекламы. Клики игнорируются 0,4 с после показа; первая карточка выбрана для геймпада.
 - **Крит** — `CombatFeedbackView` (по `CriticalHit`): число крупнее (`CombatFeedback.CriticalScale`) цветом `CriticalColor`; обычный урон по орде цифр не показывает. Мелкие лечения подряд у игрока складываются в одно число.

@@ -120,8 +120,12 @@ namespace Purge.Composition
             builder.Register<RunExperience>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<CardSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<RunDamage>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            // The run's start weapon or a continued run's player (stage 6e): before the views gather what to load.
+            builder.Register<RunLoadout>(Lifetime.Singleton).As<ILevelLoadStep>();
             // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
             builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Checkpoints of the run for its save (stage 6e): after the waves and the run's counters.
+            builder.Register<RunCheckpoints>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -154,6 +158,8 @@ namespace Purge.Composition
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             // The waves on the HUD (stage 6b): wave, enemies, money, the pause's countdown and skip.
             builder.Register<WaveHudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            // The run's coins to the HUD and the level-up flash (stage 6e).
+            builder.Register<RunFeedbackPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             // The run's level under the HP and the cards of a level-up (stage 6c).
             builder.Register<CardsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             // The death window: revive by an ad or the skill, or give up (stage 6d).

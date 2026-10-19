@@ -48,7 +48,7 @@ MonoBehaviour:
       type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
         _look:
-          m_AssetGUID: 3ec5ca694ddef85478a0e273824f327c
+          m_AssetGUID: f9ef2dcd935542547b729101b02ded1e
           m_SubObjectName: 
           m_SubObjectType: 
           m_SubObjectGUID: 

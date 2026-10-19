@@ -82,6 +82,10 @@ namespace Purge.Presentation.UI
         [SerializeField] private TMP_Text _waveText;
         [SerializeField] private TMP_Text _enemiesText;
         [SerializeField] private TMP_Text _moneyText;
+        [Tooltip("The coin icon of the run's money: the kills' coins fly to it (stage 6e).")]
+        [SerializeField] private RectTransform _moneyIcon;
+        [Tooltip("Full-screen layer under the HUD's controls for the flying coins; its first child is the coin template.")]
+        [SerializeField] private RectTransform _coinLayer;
 
         [Header("Experience (stage 6c)")]
         [Tooltip("Under the HP bar: the run's level and the way to the next one.")]
@@ -337,6 +341,32 @@ namespace Purge.Presentation.UI
             if (!shown) return;
             if (_experienceLevel != null && _experienceLevel.text != level) _experienceLevel.text = level;
             SetShare(_experienceFill, Mathf.Clamp01(progress));
+        }
+
+        /// <summary>Layer of the flying coins (its first child is the template); null — no coins.</summary>
+        public RectTransform CoinLayer => _coinLayer;
+
+        /// <summary>Where the coins fly: the money's icon in <see cref="CoinLayer"/>; false while it is hidden.</summary>
+        public bool TryGetCoinTarget(out Vector2 local)
+        {
+            local = default;
+            if (_coinLayer == null || _moneyIcon == null || !_moneyIcon.gameObject.activeInHierarchy) return false;
+            var screen = RectTransformUtility.WorldToScreenPoint(null, _moneyIcon.position);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(_coinLayer, screen, null, out local);
+        }
+
+        /// <summary>A screen point in <see cref="CoinLayer"/>.</summary>
+        public bool TryGetCoinPoint(Vector2 screen, out Vector2 local)
+        {
+            local = default;
+            return _coinLayer != null &&
+                   RectTransformUtility.ScreenPointToLocalPointInRectangle(_coinLayer, screen, null, out local);
+        }
+
+        /// <summary>The money icon's punch when a coin arrives: 1 = at rest.</summary>
+        public void SetMoneyBump(float scale)
+        {
+            if (_moneyIcon != null) _moneyIcon.localScale = Vector3.one * scale;
         }
 
         public void SetMoney(int money)

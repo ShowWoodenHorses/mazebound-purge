@@ -85,6 +85,13 @@ namespace Purge.Application.Flow
 
         public bool HasLevel => _session != null;
 
+        /// <summary>A saved run of a catalog level can be continued (stage 6e: «Продолжить» in the menu).</summary>
+        public bool HasSavedRun => _progress.HasRun && _catalog.Find(_progress.RunLevelId) != null;
+
+        /// <summary>A run with waves is being played (not ended): leaving it for a new one gives it up (stage 6e).</summary>
+        public bool IsRunActive => _session != null && _session.IsRun && State != GameFlowState.Completed &&
+                                   State != GameFlowState.Failed && State != GameFlowState.Loading;
+
         /// <summary>The current level is the tutorial (<see cref="ILevelCatalog.Tutorial"/>).</summary>
         public bool IsTutorialLevel => CurrentLevelId != null && _catalog.Tutorial?.LevelId == CurrentLevelId;
 
@@ -126,8 +133,8 @@ namespace Purge.Application.Flow
         {
             if (HasLevel)
             {
+                // Left from the pause: a run stays in its save (its last checkpoint) for «Продолжить».
                 var levelEnded = State == GameFlowState.Completed || State == GameFlowState.Failed;
-                if (!levelEnded) CreditLeftRun();
                 SetState(GameFlowState.Loading);
                 await UnloadLevelAsync();
                 // From the result window: an interstitial where the site wants one at this break (over the loading screen).
@@ -143,9 +150,28 @@ namespace Purge.Application.Flow
             RunTransition($"StartLevel({levelId})",
                 cancellation => StartLevelAsync(levelId, options ?? LevelLaunchOptions.Default, cancellation));
 
-        /// <summary>Restarts the current level with the same launch options (a forced start stays forced).</summary>
+        /// <summary>
+        /// Restarts the current level with the same launch options (a forced start stays forced) as a new run: a run left
+        /// from the pause is given up, its money goes to the save.
+        /// </summary>
         public UniTask RetryLevel() =>
             CurrentLevelId != null ? StartLevel(CurrentLevelId, _launchOptions) : UniTask.CompletedTask;
+
+        /// <summary>«Продолжить» (stage 6e): the saved run, in the pause before its wave.</summary>
+        public UniTask ContinueRun()
+        {
+            var levelId = _progress.RunLevelId;
+            var run = _progress.LoadRun();
+            if (run == null) return UniTask.CompletedTask;
+            if (_catalog.Find(levelId) == null)
+            {
+                GameLog.Warning(LogChannel.GameFlow, $"The saved run's level '{levelId}' is not in the catalog: the run is dropped.");
+                _progress.ClearRun();
+                return UniTask.CompletedTask;
+            }
+
+            return StartLevel(levelId, new LevelLaunchOptions(resume: run));
+        }
 
         public UniTask ExitToMenu() => OpenMainMenu();
 
@@ -279,6 +305,7 @@ namespace Purge.Application.Flow
             if (_session != null)
             {
                 _session.Finished -= OnLevelFinished;
+                _session.RunCheckpoint -= OnRunCheckpoint;
                 _session.Dispose();
                 _session = null;
             }
@@ -290,11 +317,14 @@ namespace Purge.Application.Flow
         private async UniTask StartLevelAsync(string levelId, LevelLaunchOptions options, CancellationToken cancellation)
         {
             var fromMenu = State == GameFlowState.MainMenu;
-            // Retry from the pause: the left run's money stays (until the run save of stage 6e).
-            if (_session != null && State != GameFlowState.Completed && State != GameFlowState.Failed) CreditLeftRun();
+            // Retry from the pause: the run is given up for a new one, its money goes to the save (stage 6e).
+            if (IsRunActive) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
             SetState(GameFlowState.Loading);
             CurrentLevelId = levelId;
-            _launchOptions = options;
+            // A retry is a new run: not the continued one again; a new seed unless the caller forced one.
+            _launchOptions = options.Resume != null ? LevelLaunchOptions.Default : options;
+            if (!options.Seed.HasValue)
+                options = new LevelLaunchOptions(options.StartIndex, NewSeed(), options.Difficulty);
             LastResult = null;
             LastWasCompletedBefore = false;
             LastRewardDoubled = false;
@@ -326,8 +356,12 @@ namespace Purge.Application.Flow
 
                 _session = await _sessionFactory.CreateAsync(level, levelAssets, options, cancellation);
                 _session.Finished += OnLevelFinished;
+                _session.RunCheckpoint += OnRunCheckpoint;
                 await _session.LoadAsync(cancellation);
                 cancellation.ThrowIfCancellationRequested();
+                // A new run instead of the saved one: the saved one is given up, its money goes to the save (stage 6e).
+                if (options.Resume == null && _session.IsRun && _progress.HasRun)
+                    AbandonRun(_progress.LoadRun()?.Money ?? 0);
             }
             catch
             {
@@ -369,6 +403,7 @@ namespace Purge.Application.Flow
             _session = null;
 
             session.Finished -= OnLevelFinished;
+            session.RunCheckpoint -= OnRunCheckpoint;
             try
             {
                 session.StopGameplay();
@@ -408,6 +443,7 @@ namespace Purge.Application.Flow
             try
             {
                 _progress.RecordRun(CurrentLevelId, levelResult);
+                if (_session.IsRun) _progress.ClearRun(); // ТЗ: смерть удаляет сейв забега; a won run has none either
             }
             catch (Exception e)
             {
@@ -418,21 +454,38 @@ namespace Purge.Application.Flow
             SetState(result);
         }
 
-        /// <summary>The run is left from the pause (menu, retry): its money goes to the save, no result.</summary>
-        private void CreditLeftRun()
+        /// <summary>A run is given up for a new one (stage 6e): its money goes to the save, its save goes.</summary>
+        private void AbandonRun(int money)
         {
             try
             {
-                var money = _session.GetResult(LevelOutcome.Failed).Money;
-                if (money <= 0) return;
-                GameLog.Info(LogChannel.GameFlow, $"Level '{CurrentLevelId}' left with {money} money.");
-                _progress.AddMoney(money);
+                GameLog.Info(LogChannel.GameFlow, $"Run given up with {money} money.");
+                _progress.AbandonRun(money);
             }
             catch (Exception e)
             {
-                GameLog.Exception(LogChannel.Save, e, $"Saving the money of the left run of '{CurrentLevelId}' failed");
+                GameLog.Exception(LogChannel.Save, e, "Saving the given up run's money failed");
             }
         }
+
+        /// <summary>A checkpoint of the run (a wave started or cleared) goes to the save at once (ТЗ «Продолжение забега»).</summary>
+        private void OnRunCheckpoint(Gameplay.Run.RunSnapshot run)
+        {
+            if (CurrentLevelId == null) return;
+            try
+            {
+                _progress.SaveRun(CurrentLevelId, 0, run);
+            }
+            catch (Exception e)
+            {
+                GameLog.Exception(LogChannel.Save, e, $"Saving the run of '{CurrentLevelId}' failed");
+            }
+        }
+
+        private static int _seeds;
+
+        /// <summary>A fresh seed of a new run: one for all its systems (waves, cards, start), kept in its save.</summary>
+        private static int NewSeed() => (int)StableHash.Of($"run/{Environment.TickCount}/{++_seeds}");
 
         private async UniTask RunTransition(string name, Func<CancellationToken, UniTask> body)
         {

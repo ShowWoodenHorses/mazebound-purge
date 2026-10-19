@@ -5,14 +5,12 @@ namespace Purge.Presentation.UI
     /// <summary>One level tile of the level select screen.</summary>
     public readonly struct LevelTileData
     {
-        public LevelTileData(string levelId, int number, int stars, bool unlocked, bool playable, float bestTime = 0f,
-            string caption = null)
+        public LevelTileData(string levelId, int number, bool completed, bool unlocked, bool playable, string caption = null)
         {
-            BestTime = bestTime;
             Caption = caption;
             LevelId = levelId;
             Number = number;
-            Stars = stars;
+            Completed = completed;
             Unlocked = unlocked;
             Playable = playable;
             IsNext = false;
@@ -35,21 +33,16 @@ namespace Purge.Presentation.UI
         /// <summary>A development level (or an empty filler tile before them): not part of the progression.</summary>
         public bool IsDev => Caption != null || LevelId == null;
 
-        /// <summary>Best stars; above 0 means completed (the exit is always a star).</summary>
-        public int Stars { get; }
+        /// <summary>Won on any difficulty.</summary>
+        public bool Completed { get; }
 
         public bool Unlocked { get; }
-
-        /// <summary>Best time of a completed run, seconds; 0 = none.</summary>
-        public float BestTime { get; }
 
         /// <summary>Can be started: unlocked, or any level in development builds.</summary>
         public bool Playable { get; }
 
         /// <summary>The level to play next (highlighted).</summary>
         public bool IsNext { get; }
-
-        public bool Completed => Stars > 0;
 
         public LevelTileData AsNext() => new LevelTileData(this, true);
     }

@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace Purge.Gameplay.Player
 {
-    /// <summary>The player's HP (runtime state, ТЗ §86). Starts full; damage comes with combat, healing with medkits.</summary>
+    /// <summary>
+    /// The player's HP (runtime state, ТЗ §86). Starts full; damage comes with combat, healing with medkits. The dead are
+    /// not healed — only <see cref="Revive"/> brings them back (stage 6d); <see cref="Invulnerable"/> takes no damage.
+    /// </summary>
     public sealed class PlayerHealth
     {
         public PlayerHealth(PlayerDefinition definition)
@@ -18,13 +21,22 @@ namespace Purge.Gameplay.Player
         public bool IsFull => Current >= Max;
         public bool IsDead => Current <= 0;
 
+        /// <summary>No damage gets through (the revived player's seconds, <c>PlayerDeathRule</c>).</summary>
+        public bool Invulnerable { get; set; }
+
         /// <summary>(current, max) after every change.</summary>
         public event Action<int, int> Changed;
 
         /// <summary>(damage, where the blow came from) after a hit with a direction (the HUD's damage arc).</summary>
         public event Action<int, Vector2> Hurt;
 
-        public void HealToFull() => Set(Max);
+        public void HealToFull()
+        {
+            if (!IsDead) Set(Max);
+        }
+
+        /// <summary>The dead player back with full HP.</summary>
+        public void Revive() => Set(Max);
 
         /// <summary>A new maximum (the run's cards); the current HP stays, cut to it when above.</summary>
         public void SetMax(int max)
@@ -37,18 +49,22 @@ namespace Purge.Gameplay.Player
         }
 
         /// <summary>Restores <paramref name="amount"/> (0 or less — to full).</summary>
-        public void Heal(int amount) => Set(amount <= 0 ? Max : Math.Min(Max, Current + amount));
+        public void Heal(int amount)
+        {
+            if (!IsDead) Set(amount <= 0 ? Max : Math.Min(Max, Current + amount));
+        }
 
         public void Damage(int amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
+            if (Invulnerable) return;
             Set(Math.Max(0, Current - amount));
         }
 
         /// <summary>Damage of a blow from <paramref name="source"/> (grid units): <see cref="Hurt"/> shows where it came from.</summary>
         public void Damage(int amount, Vector2 source)
         {
-            if (amount <= 0 || IsDead) return;
+            if (amount <= 0 || IsDead || Invulnerable) return;
             Damage(amount);
             Hurt?.Invoke(amount, source);
         }

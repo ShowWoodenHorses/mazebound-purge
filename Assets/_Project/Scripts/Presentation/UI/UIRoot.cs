@@ -26,6 +26,9 @@ namespace Purge.Presentation.UI
         [Tooltip("The cards of the run's level-up over the HUD (stage 6c).")]
         [SerializeField] private CardsScreen _cards;
 
+        [Tooltip("The death window over the HUD: revive by an ad or the skill, or give up (stage 6d).")]
+        [SerializeField] private DeathScreen _death;
+
         [Tooltip("On-screen controls: a separate canvas with physical sizes, shown by the HUD.")]
         [SerializeField] private TouchControls _touchControls;
 
@@ -52,6 +55,7 @@ namespace Purge.Presentation.UI
         public SettingsScreen Settings => _settings;
         public TutorialScreen Tutorial => _tutorial;
         public CardsScreen Cards => _cards;
+        public DeathScreen Death => _death;
         public TouchControls TouchControls => _touchControls;
         public FpsCounter FpsCounter => _fpsCounter;
         public RotateDeviceScreen RotateDevice => _rotateDevice;

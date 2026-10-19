@@ -13,7 +13,8 @@ namespace Purge.Gameplay.Effects
     /// Makes <see cref="EffectModule"/>s happen at a point, once each, in order (code written once per module): an
     /// explosion damages the monsters around (<see cref="CombatTargets.Blast"/>; walls cover) and is heard far, a zone
     /// covers the cells around (<see cref="ZoneSystem.PlaceArea"/>), a state goes on the monsters around
-    /// (<see cref="StatusSystem.ApplyInRadius"/>). Used by thrown items, monsters' projectiles, abilities and deaths.
+    /// (<see cref="StatusSystem.ApplyInRadius"/>), a push throws the monsters around back (the player's only). Used by
+    /// thrown items, monsters' projectiles, abilities and deaths, the player's revive.
     /// <para>A <b>hostile</b> effect (the monsters', stage 5e) reaches the player too: an explosion hurts them (less
     /// towards the edge, walls cover) as well as the monsters around, a zone is the monsters' (it hurts the player), a
     /// state goes on the player instead of the monsters. <see cref="HordeSystem.GodMode"/> spares the player.</para>
@@ -21,6 +22,8 @@ namespace Purge.Gameplay.Effects
     public sealed class EffectSystem
     {
         private const float PlayerRadius = 0.35f;
+
+        private readonly List<CombatTarget> _found = new List<CombatTarget>();
 
         private readonly CombatTargets _targets;
         private readonly ZoneSystem _zones;
@@ -80,8 +83,31 @@ namespace Purge.Gameplay.Effects
                         if (hostile) StatusOnPlayer(at, status, floor);
                         else _statuses.ApplyInRadius(at, status.Radius, floor, status.Status, status.Duration);
                         break;
+                    case PushEffect push when !hostile:
+                        PushAway(at, push, floor);
+                        break;
                 }
             }
+        }
+
+        /// <summary>Monsters in the radius not behind a wall are pushed away from the point, harder near it.</summary>
+        private void PushAway(Vector2 at, PushEffect push, int floor)
+        {
+            if (_horde == null || !_horde.IsActive || push.Speed <= 0f) return;
+            _targets.Collect(at, push.Radius, floor, _found);
+            foreach (var target in _found)
+            {
+                if (target.Agent < 0) continue;
+                var position = _targets.PositionOf(target);
+                if (!_targets.IsClear(at, position, floor)) continue;
+                var offset = position - at;
+                var distance = offset.magnitude;
+                var direction = distance > 1e-4f ? offset / distance : Vector2.up;
+                var share = Mathf.Lerp(1f, push.EdgeSpeed, Mathf.Clamp01(distance / push.Radius));
+                _horde.Push(target.Agent, direction * (push.Speed * share));
+            }
+
+            _found.Clear();
         }
 
         /// <summary>The player in reach of the point and not behind a wall (false without a player or in God mode).</summary>

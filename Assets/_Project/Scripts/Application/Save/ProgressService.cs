@@ -5,10 +5,13 @@ using Purge.Gameplay.Level;
 
 namespace Purge.Application.Save
 {
-    /// <summary>Player progress across levels: opened levels, completed difficulties, best stars and time, total kills.</summary>
+    /// <summary>Player progress across levels: opened levels, completed difficulties, money, total kills and wins.</summary>
     public interface IProgressService
     {
         int TotalKills { get; }
+
+        /// <summary>The one currency, kept between runs.</summary>
+        int Money { get; }
 
         /// <summary>
         /// The first catalog level is always unlocked; the others once the previous one is completed on any difficulty
@@ -20,17 +23,14 @@ namespace Purge.Application.Save
         /// <summary>Completed on any difficulty.</summary>
         bool IsCompleted(string levelId);
 
-        /// <summary>Best stars of the level, 0 when it was never completed.</summary>
-        int GetStars(string levelId);
-
-        /// <summary>Best time of a completed run of the level, seconds; 0 when there is none.</summary>
-        float GetBestTime(string levelId);
-
         /// <summary>
-        /// Stores a completed run (persistent event): the difficulty, best stars and time, kills, unlocks the next level,
-        /// saves.
+        /// Stores an ended run (persistent event; ТЗ: при смерти собранное остаётся): its money and kills; a won one also
+        /// the completed difficulty, the win, and unlocks the next level. Saves.
         /// </summary>
-        void RecordCompletion(string levelId, LevelResult result, int difficulty = 0);
+        void RecordRun(string levelId, LevelResult result, int difficulty = 0);
+
+        /// <summary>Adds money (the result's rewarded ×2, a run left from the pause) and saves.</summary>
+        void AddMoney(int amount);
 
         /// <summary>Forgets all progress (debug); settings stay.</summary>
         void ResetProgress();
@@ -65,30 +65,38 @@ namespace Purge.Application.Save
 
         public bool IsCompleted(string levelId) => Data.FindLevel(levelId)?.IsCompleted ?? false;
 
-        public int GetStars(string levelId) => Data.FindLevel(levelId)?.Stars ?? 0;
+        public int Money => Data.Money;
 
-        public float GetBestTime(string levelId) => Data.FindLevel(levelId)?.BestTime ?? 0f;
-
-        public void RecordCompletion(string levelId, LevelResult result, int difficulty = 0)
+        public void RecordRun(string levelId, LevelResult result, int difficulty = 0)
         {
             if (string.IsNullOrEmpty(levelId)) throw new ArgumentException("Level id is empty.", nameof(levelId));
-            if (!result.Completed) throw new ArgumentException("Only completed runs are saved.", nameof(result));
             if (difficulty < 0 || difficulty > 30) throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null);
 
-            var record = Open(levelId);
-            record.CompletedMask |= 1 << difficulty;
-            record.Stars = Math.Max(record.Stars, Math.Min(result.Stars, LevelResult.MaxStars));
-            if (result.Time > 0f && (record.BestTime <= 0f || result.Time < record.BestTime))
-                record.BestTime = result.Time;
-
-            Data.Stats.TotalKills += result.Kills;
-            var next = NextLevelId(levelId);
-            if (next != null) Open(next);
+            Data.Money = SafeAdd(Data.Money, result.Money);
+            Data.Stats.TotalKills = SafeAdd(Data.Stats.TotalKills, result.Kills);
+            string next = null;
+            if (result.Completed)
+            {
+                Open(levelId).CompletedMask |= 1 << difficulty;
+                Data.Stats.RunsWon++;
+                next = NextLevelId(levelId);
+                if (next != null) Open(next);
+            }
 
             _save.Save();
-            GameLog.Info(LogChannel.Save, $"Progress saved: '{levelId}' (difficulty {difficulty}) {result}" +
+            GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' (difficulty {difficulty}) {result}" +
                                           (next != null ? $", unlocked '{next}'." : "."));
         }
+
+        public void AddMoney(int amount)
+        {
+            if (amount <= 0) return;
+            Data.Money = SafeAdd(Data.Money, amount);
+            _save.Save();
+            GameLog.Info(LogChannel.Save, $"Money +{amount} → {Data.Money}.");
+        }
+
+        private static int SafeAdd(int value, int amount) => amount <= 0 ? value : (int)Math.Min(int.MaxValue, (long)value + amount);
 
         public void ResetProgress()
         {

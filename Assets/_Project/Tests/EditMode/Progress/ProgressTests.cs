@@ -41,35 +41,28 @@ namespace Purge.Tests.EditMode.Progress
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_catalogAsset);
 
-        private static LevelResult Completed(int kills = 0, int zombies = 0) => new LevelResult(true, kills, zombies);
+        private static LevelResult Completed(int kills = 0, int money = 0) => new LevelResult(true, kills, money: money);
 
-        // ------------------------------------------------------------ Time
-
-        [Test]
-        public void BestTime_KeepsTheFastestCompletedRun_AndSurvivesReload()
-        {
-            Assert.AreEqual(0f, _progress.GetBestTime("first"), "No time before a completed run.");
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 80f));
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 95f));
-            Assert.AreEqual(80f, _progress.GetBestTime("first"), "A slower run keeps the best.");
-            _progress.RecordCompletion("first", new LevelResult(true, 0, 0, 61.5f));
-            _progress.RecordCompletion("first", Completed());
-            Assert.AreEqual(61.5f, _progress.GetBestTime("first"), "Faster replaces it; an unknown time (0) does not.");
-
-            var reloaded = new SaveService(_storage);
-            reloaded.Load();
-            Assert.AreEqual(61.5f, new ProgressService(reloaded, new Catalog(_catalogAsset)).GetBestTime("first"));
-        }
-
-        // ------------------------------------------------------------ Stars
+        // ------------------------------------------------------------ Money (stage 6d)
 
         [Test]
-        public void Stars_CompletionAndAllZombies()
+        public void RunMoney_IsKeptOnDeathAndWin_AddMoneySaves()
         {
-            Assert.AreEqual(2, Completed(kills: 1, zombies: 2).Stars, "Completion + the former map star.");
-            Assert.AreEqual(3, Completed(kills: 2, zombies: 2).Stars);
-            Assert.AreEqual(3, Completed().Stars, "Nothing to kill: that star is free.");
-            Assert.AreEqual(0, new LevelResult(false, 2, 2).Stars, "No stars without completion.");
+            _progress.RecordRun("first", new LevelResult(false, 3, money: 10));
+            Assert.AreEqual(10, _progress.Money, "ТЗ: при смерти собранное остаётся.");
+            Assert.IsFalse(_progress.IsCompleted("first"), "A death completes nothing.");
+            Assert.AreEqual(3, _progress.TotalKills);
+            Assert.AreEqual(0, _save.Data.Stats.RunsWon);
+
+            _progress.RecordRun("first", Completed(kills: 1, money: 25));
+            Assert.AreEqual(35, _progress.Money);
+            Assert.AreEqual(1, _save.Data.Stats.RunsWon);
+
+            var writes = _storage.Writes;
+            _progress.AddMoney(25);
+            _progress.AddMoney(0);
+            Assert.AreEqual(60, _progress.Money);
+            Assert.AreEqual(writes + 1, _storage.Writes, "Saved at once; nothing to add — no write.");
         }
 
         // ------------------------------------------------------------ Progress
@@ -78,8 +71,8 @@ namespace Purge.Tests.EditMode.Progress
         public void LevelAddedAfterTheLastCompleted_IsUnlocked()
         {
             _catalogAsset.Remove("third");
-            _progress.RecordCompletion("first", Completed());
-            _progress.RecordCompletion("second", Completed());
+            _progress.RecordRun("first", Completed());
+            _progress.RecordRun("second", Completed());
             Assert.IsNull(_save.Data.FindLevel("third"), "Not in the catalog when 'second' was completed.");
 
             _catalogAsset.AddOrUpdate("third", "Levels/third", "Third"); // An update brings a new level.
@@ -93,41 +86,34 @@ namespace Purge.Tests.EditMode.Progress
             Assert.IsTrue(_progress.IsUnlocked("first"));
             Assert.IsFalse(_progress.IsUnlocked("second"));
 
-            _progress.RecordCompletion("first", Completed());
+            _progress.RecordRun("first", Completed());
 
             Assert.IsTrue(_progress.IsUnlocked("second"));
             Assert.IsFalse(_progress.IsUnlocked("third"));
         }
 
         [Test]
-        public void BestStarsAreKept_KillsAreSummed()
+        public void KillsAreSummed()
         {
-            _progress.RecordCompletion("first", Completed(kills: 2, zombies: 2));
-            _progress.RecordCompletion("first", Completed(kills: 1, zombies: 2));
+            _progress.RecordRun("first", Completed(kills: 2));
+            _progress.RecordRun("first", Completed(kills: 1));
 
-            Assert.AreEqual(3, _progress.GetStars("first"));
             Assert.AreEqual(3, _progress.TotalKills);
-            Assert.AreEqual(0, _progress.GetStars("second"));
-        }
-
-        [Test]
-        public void FailedRun_IsNotRecorded()
-        {
-            Assert.Throws<System.ArgumentException>(() => _progress.RecordCompletion("first", new LevelResult(false, 1, 1)));
-            Assert.AreEqual(0, _storage.Writes);
+            Assert.IsFalse(_progress.IsCompleted("second"));
         }
 
         [Test]
         public void Progress_SurvivesRestart()
         {
-            _progress.RecordCompletion("first", Completed(kills: 1, zombies: 3));
+            _progress.RecordRun("first", Completed(kills: 1, money: 9));
             Assert.AreEqual(1, _storage.Writes, "Saved right after completion.");
 
             var save = new SaveService(_storage);
             save.Load();
             var progress = new ProgressService(save, new Catalog(_catalogAsset));
 
-            Assert.AreEqual(2, progress.GetStars("first"));
+            Assert.IsTrue(progress.IsCompleted("first"));
+            Assert.AreEqual(9, progress.Money);
             Assert.AreEqual(1, progress.TotalKills);
             Assert.IsTrue(progress.IsUnlocked("second"));
         }
@@ -135,10 +121,10 @@ namespace Purge.Tests.EditMode.Progress
         [Test]
         public void ResetProgress_ForgetsEverything()
         {
-            _progress.RecordCompletion("first", Completed(kills: 4, zombies: 4));
+            _progress.RecordRun("first", Completed(kills: 4));
             _progress.ResetProgress();
 
-            Assert.AreEqual(0, _progress.GetStars("first"));
+            Assert.IsFalse(_progress.IsCompleted("first"));
             Assert.AreEqual(0, _progress.TotalKills);
             Assert.IsFalse(_progress.IsUnlocked("second"));
             Assert.IsTrue(_progress.IsUnlocked("first"));
@@ -396,7 +382,7 @@ namespace Purge.Tests.EditMode.Progress
         [Test]
         public void Completion_MarksTheDifficulty_AnyDifficultyOpensTheNext()
         {
-            _progress.RecordCompletion("first", Completed(), difficulty: 2);
+            _progress.RecordRun("first", Completed(), difficulty: 2);
 
             Assert.IsTrue(_save.Data.FindLevel("first").IsCompletedOn(2));
             Assert.IsFalse(_save.Data.FindLevel("first").IsCompletedOn(0));
@@ -411,7 +397,7 @@ namespace Purge.Tests.EditMode.Progress
             _save.Data.Settings.MusicVolume = 0.4f;
             _save.Data.Money = 50;
             _save.Data.Arsenal.Add(new OwnedItem { Id = "bat" });
-            _progress.RecordCompletion("first", Completed());
+            _progress.RecordRun("first", Completed());
 
             _progress.ResetProgress();
 

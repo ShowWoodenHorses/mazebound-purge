@@ -6,7 +6,6 @@ using Purge.Application.Levels;
 using Purge.Application.Platform;
 using Purge.Application.Save;
 using Purge.Application.Services;
-using Purge.Gameplay.Level;
 using Purge.Presentation.Localization;
 using UnityEngine;
 
@@ -76,6 +75,7 @@ namespace Purge.Presentation.UI
             _ui.Result.RetryClicked += OnRetryRequested;
             _ui.Result.MenuClicked += OnMenuRequested;
             _ui.Result.NextClicked += OnNextRequested;
+            _ui.Result.DoubleClicked += OnDoubleRequested;
 
             Show(_flow.State);
         }
@@ -113,6 +113,7 @@ namespace Purge.Presentation.UI
             _ui.Result.RetryClicked -= OnRetryRequested;
             _ui.Result.MenuClicked -= OnMenuRequested;
             _ui.Result.NextClicked -= OnNextRequested;
+            _ui.Result.DoubleClicked -= OnDoubleRequested;
         }
 
         /// <summary>Portrait on a phone: the level stops under "Rotate your device"; the player resumes it from the pause.</summary>
@@ -127,7 +128,7 @@ namespace Purge.Presentation.UI
             var loading = state == GameFlowState.None || state == GameFlowState.Initializing || state == GameFlowState.Loading;
             // The map is fullscreen: the HUD is hidden under it.
             var inLevel = state == GameFlowState.Playing || state == GameFlowState.Paused || state == GameFlowState.Tip ||
-                          state == GameFlowState.Cards;
+                          state == GameFlowState.Cards || state == GameFlowState.Death;
             var result = state == GameFlowState.Completed || state == GameFlowState.Failed;
             var error = state == GameFlowState.Error;
 
@@ -141,7 +142,7 @@ namespace Purge.Presentation.UI
                     _ui.Result.SetTutorialComplete(NextLevelId() != null);
                 else
                     _ui.Result.SetResult(completed, _flow.LastResult, LevelCaption(_flow.CurrentLevelId),
-                        completed && NextLevelId() != null, _flow.LastPreviousBestTime);
+                        completed && NextLevelId() != null, _flow.CanDoubleReward);
             }
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
@@ -154,6 +155,7 @@ namespace Purge.Presentation.UI
             _ui.Error.SetVisible(error);
             _ui.Map.SetVisible(state == GameFlowState.Map);
             if (_ui.Cards != null) _ui.Cards.SetVisible(state == GameFlowState.Cards);
+            if (_ui.Death != null) _ui.Death.SetVisible(state == GameFlowState.Death);
             if (_ui.Tutorial != null)
             {
                 _ui.Tutorial.SetVisible(inLevel && _flow.IsTutorialLevel);
@@ -162,22 +164,19 @@ namespace Purge.Presentation.UI
         }
 
         /// <summary>
-        /// Totals for the main menu and the level tiles with best stars. Locked levels are disabled; development builds
+        /// Totals for the main menu (money, kills) and the level tiles. Locked levels are disabled; development builds
         /// (and the editor) still let you start them so any level can be tested.
         /// </summary>
         private void RefreshMenus()
         {
             var levels = _catalog.Levels;
             _tiles.Clear();
-            var totalStars = 0;
             for (var i = 0; i < levels.Count; i++)
             {
                 var entry = levels[i];
-                var stars = _progress.GetStars(entry.LevelId);
-                totalStars += stars;
                 var unlocked = _progress.IsUnlocked(entry.LevelId);
-                _tiles.Add(new LevelTileData(entry.LevelId, i + 1, stars, unlocked, unlocked || Debug.isDebugBuild,
-                    _progress.GetBestTime(entry.LevelId)));
+                _tiles.Add(new LevelTileData(entry.LevelId, i + 1, _progress.IsCompleted(entry.LevelId), unlocked,
+                    unlocked || Debug.isDebugBuild));
             }
 
             // Development levels (editor, development builds): always playable, outside the progression.
@@ -186,16 +185,15 @@ namespace Purge.Presentation.UI
             for (var i = 0; i < devLevels.Count; i++)
             {
                 var entry = devLevels[i];
-                _devTiles.Add(new LevelTileData(entry.LevelId, i + 1, _progress.GetStars(entry.LevelId), true, true,
-                    _progress.GetBestTime(entry.LevelId), DevCaption(entry.LevelId)));
+                _devTiles.Add(new LevelTileData(entry.LevelId, i + 1, _progress.IsCompleted(entry.LevelId), true, true,
+                    DevCaption(entry.LevelId)));
             }
 
-            var maxStars = levels.Count * LevelResult.MaxStars;
-            _ui.MainMenu.SetSummary(totalStars, maxStars, _progress.TotalKills);
+            _ui.MainMenu.SetSummary(_progress.Money, _progress.TotalKills);
             _ui.MainMenu.SetPlayable(levels.Count > 0);
             _ui.MainMenu.SetTutorialAvailable(_catalog.Tutorial != null);
             RefreshSignIn();
-            _ui.LevelSelect.SetLevels(_tiles, totalStars, maxStars, _devTiles);
+            _ui.LevelSelect.SetLevels(_tiles, _devTiles);
         }
 
         private void RefreshSignIn()
@@ -287,7 +285,7 @@ namespace Purge.Presentation.UI
         private string LevelToPlay()
         {
             foreach (var level in _catalog.Levels)
-                if (_progress.IsUnlocked(level.LevelId) && _progress.GetStars(level.LevelId) == 0)
+                if (_progress.IsUnlocked(level.LevelId) && !_progress.IsCompleted(level.LevelId))
                     return level.LevelId;
             return null;
         }
@@ -318,6 +316,31 @@ namespace Purge.Presentation.UI
         {
             var next = NextLevelId();
             if (next != null) _flow.StartLevel(next).Forget();
+        }
+
+        /// <summary>The result's ×2: a rewarded ad, then the run's money once more (stage 6d).</summary>
+        private void OnDoubleRequested()
+        {
+            if (!_flow.CanDoubleReward) return;
+            DoubleAsync().Forget();
+        }
+
+        private async UniTaskVoid DoubleAsync()
+        {
+            _ui.Result.SetDoubleBusy(true);
+            var doubled = false;
+            try
+            {
+                doubled = await _flow.DoubleRewardAsync(System.Threading.CancellationToken.None);
+            }
+            finally
+            {
+                if (_ui != null && _ui.Result != null)
+                {
+                    _ui.Result.SetDoubleBusy(false);
+                    _ui.Result.SetDoubled(doubled);
+                }
+            }
         }
 
         private void OnResetProgressRequested()

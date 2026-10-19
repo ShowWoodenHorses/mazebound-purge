@@ -313,6 +313,36 @@ namespace Purge.Tests.EditMode.Monsters
         }
 
         [Test]
+        public void WaveBonuses_AndScore_ByRank_TimesTheDifficulty()
+        {
+            Assert.That(_mass.Score, Is.EqualTo(10f));
+            Assert.That(_officer.Score, Is.EqualTo(50f));
+            Assert.That(MonsterDefinition.ScoreOf(MonsterRank.Boss), Is.EqualTo(2000f));
+
+            var second = new WaveDefinition(5f, new[] { new WaveMonster(_mass, 1f) });
+            var probe = Scenario(new WaveDefinition(5f, new[] { new WaveMonster(_mass, 1f) }), second);
+            Assert.That(probe.MoneyBonusOf(1), Is.EqualTo(10f), "5 × the wave's number");
+            Assert.That(probe.ScoreBonusOf(1), Is.EqualTo(200f), "100 × the wave's number");
+            second.ScoreBonus = 70f;
+            Assert.That(probe.ScoreBonusOf(1), Is.EqualTo(70f));
+
+            LevelEditing.AddMonsterSpawn(_level, new GridPosition(5, 5));
+            var difficulty = Create<DifficultyDefinition>();
+            difficulty.SetScore(2f);
+            var (runtime, horde, waves) = Run(Scenario(new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f)), difficulty);
+            var score = new RunScore(horde, waves);
+            score.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+            Tick(runtime, 1.5f);
+            KillAll(horde);
+            Tick(runtime, 0.1f);
+
+            Assert.That(score.Kills, Is.EqualTo(3));
+            Assert.That(score.WavesCleared, Is.EqualTo(1));
+            Assert.That(score.Score, Is.EqualTo((3 * 10 + 100) * 2), "kills and the wave, × the difficulty");
+            score.Dispose();
+        }
+
+        [Test]
         public void Wallet_PaysKills_TimesTheDifficulty_KeepingFractions()
         {
             LevelEditing.AddMonsterSpawn(_level, new GridPosition(5, 5));
@@ -323,7 +353,8 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(horde.AliveCount, Is.EqualTo(5));
             KillAll(horde);
             Tick(runtime, 0.1f);
-            Assert.That(_wallet.Money, Is.EqualTo(2),"5 × 1 × 0.5 = 2.5: two now, the half kept");
+            // Kills 5 × 1 × 0.5 = 2.5 (two, the half kept) + the cleared wave's bonus 5 × 1 × 0.5 = 2.5 (stage 6d).
+            Assert.That(_wallet.Money, Is.EqualTo(5), "fractions add up across kills and the wave's bonus");
         }
 
         [Test]

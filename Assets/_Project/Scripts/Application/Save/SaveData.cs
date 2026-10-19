@@ -66,8 +66,6 @@ namespace Purge.Application.Save
             {
                 if (record.CompletedMask < 0) record.CompletedMask = 0;
                 if (record.ClosedArenaMask < 0) record.ClosedArenaMask = 0;
-                if (record.Stars < 0) record.Stars = 0;
-                if (!(record.BestTime > 0f)) record.BestTime = 0f; // negative or NaN from a hand-edited save
             }
 
             Survival.RemoveAll(record => record == null || string.IsNullOrEmpty(record.LocationId));
@@ -118,9 +116,6 @@ namespace Purge.Application.Save
 
                 mine.CompletedMask |= theirs.CompletedMask;
                 mine.ClosedArenaMask |= theirs.ClosedArenaMask;
-                mine.Stars = Math.Max(mine.Stars, theirs.Stars);
-                if (theirs.BestTime > 0f && (mine.BestTime <= 0f || theirs.BestTime < mine.BestTime))
-                    mine.BestTime = theirs.BestTime;
             }
 
             foreach (var theirs in other.Survival)

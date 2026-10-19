@@ -11,8 +11,7 @@ namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Level select (opened by Play in the main menu): pages of ten levels in two rows of five
-    /// (<see cref="LevelPages"/>), the arrows and a horizontal swipe switch pages, diamonds show the page; total stars
-    /// at the top right. Opens on the page of the next level to play. Development levels (editor and development
+    /// (<see cref="LevelPages"/>), the arrows and a horizontal swipe switch pages, diamonds show the page. Opens on the page of the next level to play. Development levels (editor and development
     /// builds) follow on their own pages, captioned "DEV". A passive view: the router fills it and starts the chosen
     /// level.
     /// </summary>
@@ -24,7 +23,6 @@ namespace Purge.Presentation.UI
 
         [SerializeField] private UiStyle _style;
         [SerializeField] private Button _backButton;
-        [SerializeField] private TMP_Text _totalStars;
         [SerializeField] private LevelTile[] _tiles;
 
         [Tooltip("Tiles fade in when the page changes.")]
@@ -58,12 +56,8 @@ namespace Purge.Presentation.UI
             if (_dotTemplate != null) _dotTemplate.gameObject.SetActive(false);
         }
 
-        /// <summary>
-        /// All catalog levels in order (development levels after them, may be null), and the total stars line; shows
-        /// the start page.
-        /// </summary>
-        public void SetLevels(IReadOnlyList<LevelTileData> levels, int stars, int maxStars,
-            IReadOnlyList<LevelTileData> devLevels = null)
+        /// <summary>All catalog levels in order (development levels after them, may be null); shows the start page.</summary>
+        public void SetLevels(IReadOnlyList<LevelTileData> levels, IReadOnlyList<LevelTileData> devLevels = null)
         {
             LevelPages.Combine(levels, devLevels, _combined);
             _gameLevels = levels.Count;
@@ -72,7 +66,6 @@ namespace Purge.Presentation.UI
             for (var i = 0; i < _combined.Count; i++)
                 _levels.Add(i == next ? _combined[i].AsNext() : _combined[i]);
 
-            if (_totalStars != null) _totalStars.text = stars + " / " + maxStars;
             if (_emptyLabel != null) _emptyLabel.gameObject.SetActive(levels.Count == 0);
             BuildDots();
             ShowPage(LevelPages.StartPage(_levels), instant: true);

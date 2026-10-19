@@ -670,9 +670,9 @@ namespace Purge.Tests.PlayMode
                     if (zombie.IsAlive) zombie.ApplyDamage(100000f, Vector2.left);
                 Assert.AreEqual(GameFlowState.Completed, _flow.State);
                 var result = _flow.LastResult.Value;
-                Assert.IsTrue(result.AllZombiesKilled);
-                Assert.AreEqual(LevelResult.MaxStars, result.Stars);
-                Assert.AreEqual(LevelResult.MaxStars, _container.Resolve<IProgressService>().GetStars(itemsLevel));
+                Assert.IsTrue(result.Completed);
+                Assert.AreEqual(zombies.TotalCount, result.Kills);
+                Assert.IsTrue(_container.Resolve<IProgressService>().IsCompleted(itemsLevel));
                 Assert.IsTrue(ui.Result.IsVisible);
 
                 await _flow.ExitToMenu();

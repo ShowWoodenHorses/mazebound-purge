@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - KELUAR KE MENU
   - 'DEBUG: SELESAI'
   - 'DEBUG: GAGAL'
-  - LEVEL SELESAI
-  - LEVEL GAGAL
-  - ZOMBI {0}/{1}
-  - WAKTU {0}
-  - REKOR {0}
-  - REKOR BARU!
+  - MENANG
+  - KALAH
+  - WAKTU
   - MENU
   - ULANGI
   - BERIKUTNYA
+  - GELOMBANG
+  - KILL
+  - SKOR
+  - DIPEROLEH
+  - "\xD72 HADIAH"
   - TERJADI KESALAHAN
   - KEMBALI KE MENU
   - PEMAIN
@@ -387,6 +395,10 @@ MonoBehaviour:
   - BARU
   - LEVEL {0}/{1}
   - ACAK ULANG
+  - KAMU MATI
+  - BANGKIT
+  - 'BANGKIT: SKILL'
+  - MENYERAH
   - BIASA
   - TIDAK BIASA
   - LANGKA

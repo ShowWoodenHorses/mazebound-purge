@@ -40,8 +40,11 @@ namespace Purge.Core.Monsters
         [SerializeField, Range(0.25f, 4f)] private float _dropRarity = 1f;
         [Tooltip("× the money of kills and waves.")]
         [SerializeField, Range(0.25f, 5f)] private float _money = 1f;
+        [Tooltip("× the score of kills and waves (stage 6d; the score is for survival records only).")]
+        [SerializeField, Range(0.25f, 5f)] private float _score = 1f;
 
         public DifficultyLevel Level => _level;
+        public float Score => _score;
         public float Health => _health;
         public float Count => _count;
         public float SeniorShare => _seniorShare;
@@ -69,5 +72,8 @@ namespace Purge.Core.Monsters
             _dropRarity = dropRarity;
             _money = money;
         }
+
+        /// <summary>For tests and tools.</summary>
+        internal void SetScore(float score) => _score = score;
     }
 }

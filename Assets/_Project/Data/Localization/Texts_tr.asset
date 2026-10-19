@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - "MEN\xDCYE D\xD6N"
   - 'DEBUG: TAMAMLA'
   - 'DEBUG: KAYBET'
-  - "B\xD6L\xDCM TAMAMLANDI"
-  - "B\xD6L\xDCM BA\u015EARISIZ"
-  - "ZOMB\u0130LER {0}/{1}"
-  - "S\xDCRE {0}"
-  - "EN \u0130Y\u0130 {0}"
-  - "YEN\u0130 REKOR!"
+  - ZAFER
+  - "YEN\u0130LG\u0130"
+  - "S\xDCRE"
   - "MEN\xDC"
   - TEKRAR
   - "SONRAK\u0130"
+  - DALGALAR
+  - "\xD6LD\xDCRME"
+  - PUAN
+  - KAZANILAN
+  - "\xD72 \xD6D\xDCL"
   - "B\u0130R \u015EEYLER TERS G\u0130TT\u0130"
   - "MEN\xDCYE D\xD6N"
   - OYUNCU
@@ -374,6 +382,10 @@ MonoBehaviour:
   - "YEN\u0130"
   - "SEV\u0130YE {0}/{1}"
   - "YEN\u0130LE"
+  - "\xD6LD\xDCN"
+  - "D\u0130R\u0130L"
+  - "D\u0130R\u0130L: YETENEK"
+  - "VAZGE\xC7"
   - SIRADAN
   - "ALI\u015EILMADIK"
   - "NAD\u0130R"

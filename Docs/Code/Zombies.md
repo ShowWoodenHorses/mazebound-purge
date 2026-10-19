@@ -14,5 +14,5 @@
 - Вид: `ZombieViewPresenter` (шаг `SpawnZombies` после системы) — `EntityViewRegistry.Add/Move/Remove`, параметры `ZombieAnimatorParameters` (наличие кэшируется — `animator.parameters` аллоцирует); убитый остаётся `CorpseTime` (анимация смерти), потом удаляется.
   - Префабы `Art/Zombie/*` + общий контроллер собирает **Purge → Dev → Build Zombie Animations** (он же заполняет Zombie Set темы — вариант на префаб, тип в `Definition` варианта сохраняется, новому ставится автоматически — и переназначает визуал зомби в уровнях; модель игрока для билдеров — единственный префаб в `Art/Player`).
   - Темп шага клипов — `LocomotionAnimation.Playback` (≤1.4×). Билдеры персонажей пересобирают контроллер на месте — не удалять ассет (ломает ссылки префабов).
-- Смерть игрока: `PlayerDeathRule` (резолвится в `LevelSessionFactory`) → `LevelRuntime.Finish(Failed)`; `LevelRuntime.Tick` прерывает кадр, когда уровень завершён.
+- Смерть игрока: `PlayerRevival.Died` (окно смерти и воскрешение — Player.md) → `PlayerDeathRule` → `LevelRuntime.Finish(Failed)`; `LevelRuntime.Tick` прерывает кадр, когда уровень завершён.
 - **Победа (временно, до волн этапа 6):** `AllKilledRule` (резолвится там же) — последний убитый зомби → `LevelRuntime.Finish(Completed)`; уровень без зомби так не завершается (решение пользователя 2026-10-14).

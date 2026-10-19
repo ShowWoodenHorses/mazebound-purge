@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - "WYJD\u0179 DO MENU"
   - "DEBUG: UKO\u0143CZ"
   - "DEBUG: PORA\u017BKA"
-  - "POZIOM UKO\u0143CZONY"
-  - "POZIOM NIEUKO\u0143CZONY"
-  - ZOMBIE {0}/{1}
-  - CZAS {0}
-  - REKORD {0}
-  - NOWY REKORD!
+  - "ZWYCI\u0118STWO"
+  - "PORA\u017BKA"
+  - CZAS
   - MENU
   - JESZCZE RAZ
   - DALEJ
+  - FALE
+  - "ZAB\xD3JSTWA"
+  - PUNKTY
+  - ZAROBIONO
+  - "\xD72 NAGRODA"
   - "CO\u015A POSZ\u0141O NIE TAK"
   - "WR\xD3\u0106 DO MENU"
   - GRACZ
@@ -377,6 +385,10 @@ MonoBehaviour:
   - NOWA
   - POZIOM {0}/{1}
   - LOSUJ PONOWNIE
+  - "NIE \u017BYJESZ"
+  - "WSKRZE\u015A"
+  - "WSKRZE\u015A: UMIEJ\u0118TNO\u015A\u0106"
+  - "PODDAJ SI\u0118"
   - "ZWYK\u0141A"
   - "NIEZWYK\u0141A"
   - RZADKA

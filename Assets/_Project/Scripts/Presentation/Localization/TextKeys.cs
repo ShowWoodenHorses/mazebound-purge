@@ -51,6 +51,12 @@ namespace Purge.Presentation.Localization
         public const string CardsLevel = "cards.level";
         public const string CardsReroll = "cards.reroll";
 
+        // Death window (stage 6d).
+        public const string DeathTitle = "death.title";
+        public const string DeathRevive = "death.revive";
+        public const string DeathReviveSkill = "death.revive_skill";
+        public const string DeathGiveUp = "death.give_up";
+
         /// <summary>"card.card_damage": card name; "card.card_damage.text" — what a level gives ({0}, {1}… — its numbers).</summary>
         public const string CardPrefix = "card.";
         public static readonly string CardTextSuffix = ".text"; // Not a key: not a constant.
@@ -76,10 +82,12 @@ namespace Purge.Presentation.Localization
         public const string PauseDebugFail = "pause.debug_fail";
         public const string ResultComplete = "result.complete";
         public const string ResultFailed = "result.failed";
-        public const string ResultZombies = "result.zombies";
+        public const string ResultWaves = "result.waves";
+        public const string ResultKills = "result.kills";
         public const string ResultTime = "result.time";
-        public const string ResultBest = "result.best";
-        public const string ResultRecord = "result.record";
+        public const string ResultScore = "result.score";
+        public const string ResultMoney = "result.money";
+        public const string ResultDouble = "result.double";
         public const string ResultMenu = "result.menu";
         public const string ResultRetry = "result.retry";
         public const string ResultNext = "result.next";

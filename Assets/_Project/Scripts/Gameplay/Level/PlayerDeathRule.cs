@@ -1,31 +1,26 @@
 using System;
-using Purge.Core.Common;
 using Purge.Gameplay.Player;
 
 namespace Purge.Gameplay.Level
 {
-    /// <summary>The player's HP reaching 0 fails the level (ТЗ §88); runtime progress is dropped with the level.</summary>
+    /// <summary>
+    /// The player dead for good (ТЗ §88; <see cref="PlayerRevival.Died"/>: no revive left or given up) fails the level;
+    /// runtime progress is dropped with the level.
+    /// </summary>
     public sealed class PlayerDeathRule : IDisposable
     {
-        private readonly PlayerHealth _health;
+        private readonly PlayerRevival _revival;
         private readonly LevelRuntime _runtime;
 
-        public PlayerDeathRule(PlayerHealth health, LevelRuntime runtime)
+        public PlayerDeathRule(PlayerRevival revival, LevelRuntime runtime)
         {
-            _health = health;
+            _revival = revival;
             _runtime = runtime;
-            _health.Changed += OnHealthChanged;
+            _revival.Died += OnDied;
         }
 
-        public void Dispose() => _health.Changed -= OnHealthChanged;
+        public void Dispose() => _revival.Died -= OnDied;
 
-        private void OnHealthChanged(int current, int max)
-        {
-            if (current > 0)
-                return;
-
-            GameLog.Info(LogChannel.Gameplay, "The player died.");
-            _runtime.Finish(LevelOutcome.Failed);
-        }
+        private void OnDied() => _runtime.Finish(LevelOutcome.Failed);
     }
 }

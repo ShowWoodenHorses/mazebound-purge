@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - EXIT TO MENU
   - 'DEBUG: COMPLETE'
   - 'DEBUG: FAIL'
-  - LEVEL COMPLETE
-  - LEVEL FAILED
-  - ZOMBIES {0}/{1}
-  - TIME {0}
-  - BEST {0}
-  - NEW RECORD!
+  - VICTORY
+  - DEFEAT
+  - TIME
   - MENU
   - RETRY
   - NEXT
+  - WAVES
+  - KILLS
+  - SCORE
+  - EARNED
+  - "\xD72 REWARD"
   - SOMETHING WENT WRONG
   - BACK TO MENU
   - PLAYER
@@ -388,6 +396,10 @@ MonoBehaviour:
   - NEW
   - LEVEL {0}/{1}
   - REROLL
+  - YOU DIED
+  - REVIVE
+  - 'REVIVE: SKILL'
+  - GIVE UP
   - COMMON
   - UNCOMMON
   - RARE

@@ -6,7 +6,6 @@ using Purge.Application.Levels;
 using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Common;
-using Purge.Gameplay.Level;
 
 namespace Purge.Application.Platform
 {
@@ -320,9 +319,8 @@ namespace Purge.Application.Platform
 
             if (state == GameFlowState.Completed) ReportProgress();
 
-            // Rarely (site rules): only the first time a level gets all stars.
-            if (state == GameFlowState.Completed && _flow.LastResult is { } result &&
-                result.Stars >= LevelResult.MaxStars && _flow.LastPreviousStars < LevelResult.MaxStars &&
+            // Rarely (site rules): only the first time a level is won.
+            if (state == GameFlowState.Completed && _flow.LastResult != null && !_flow.LastWasCompletedBefore &&
                 !_flow.IsTutorialLevel)
                 _platform.HappyMoment();
         }
@@ -337,7 +335,7 @@ namespace Purge.Application.Platform
             var levels = _catalog.Levels;
             var completed = 0;
             for (var i = 0; i < levels.Count; i++)
-                if (_progress.GetStars(levels[i].LevelId) > 0)
+                if (_progress.IsCompleted(levels[i].LevelId))
                     completed++;
             var percent = CompletedPercent(completed, levels.Count);
             if (percent == _reportedProgress) return;

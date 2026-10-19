@@ -306,7 +306,11 @@ namespace Purge.Presentation.Visual
                 foreach (var weapon in _drops.Weapons) AddWeapon(wanted, weapon);
                 foreach (var throwable in _drops.Throwables) AddThrowable(wanted, throwable);
             }
-            if (_player != null) AddWeapon(wanted, _player.BaseWeapon);
+            if (_player != null)
+            {
+                AddWeapon(wanted, _player.BaseWeapon);
+                AddEffects(wanted, _player.ReviveEffects); // the revive's wave (stage 6d)
+            }
             if (_slot != null) AddThrowable(wanted, _slot.Definition);
         }
 

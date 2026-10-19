@@ -5,87 +5,112 @@ using Purge.Presentation.Localization;
 using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Purge.Presentation.UI
 {
     /// <summary>
-    /// Result of a run (ТЗ §87, §89): LEVEL COMPLETE / LEVEL FAILED and the level name; three star slots with what
-    /// each is for (exit, all zombies, all map fragments). Earned stars appear one by one with their sounds
-    /// (<see cref="RevealNextStar"/> from the audio presenter); without sound they all appear after a while.
-    /// Under the stars — the play time; after a win also the best time, or "new record" in the accent.
-    /// Buttons: Menu, Retry and — after a completed level with another one after it — Next (the main action).
-    /// The completed tutorial shows only its title (<see cref="SetTutorialComplete"/>): no stars, no time.
+    /// Result of a run (stage 6d, ТЗ «итог» instead of the stars of Maze): VICTORY / DEFEAT and the level name; rows of
+    /// the run's numbers — waves (only on a level with waves), kills, time, score, money earned — that appear one by one
+    /// with their sounds (<see cref="RevealNextRow"/> from the audio presenter; without sound they all appear after a
+    /// while). Under them ×2 for a rewarded ad (<see cref="DoubleClicked"/>; after it the money row shows the doubled sum
+    /// in the accent). Buttons: Menu, Retry and — after a win with another level after it — Next (the main action).
+    /// The completed tutorial shows only its title (<see cref="SetTutorialComplete"/>).
     /// </summary>
     public sealed class ResultScreen : UIScreen
     {
-        private const float PopTime = 0.28f;
-        private const float PopScale = 1.45f;
+        public const int Waves = 0;
+        public const int Kills = 1;
+        public const int Time = 2;
+        public const int Score = 3;
+        public const int Money = 4;
+        public const int RowCount = 5;
 
-        /// <summary>Earned stars still hidden this long after the screen opened appear by themselves.</summary>
+        private const float PopTime = 0.28f;
+        private const float PopScale = 1.25f;
+
+        /// <summary>Rows still hidden this long after the screen opened appear by themselves.</summary>
         private const float RevealFallback = 4f;
+
+        [Serializable]
+        private struct Row
+        {
+            [Tooltip("Takes the row's place in the layout: hidden only for a row this result has not (no reflow on reveal).")]
+            public GameObject Slot;
+
+            [Tooltip("What appears with the row's sound.")]
+            public GameObject Root;
+
+            public TMP_Text Value;
+        }
 
         [SerializeField] private UiStyle _style;
         [SerializeField] private TMP_Text _title;
         [SerializeField] private TMP_Text _levelName;
-        [SerializeField] private GameObject _starsRow;
-        [SerializeField] private Image[] _stars;
-        [SerializeField] private TMP_Text[] _starLabels;
-        [SerializeField] private TMP_Text _time;
-        [SerializeField] private Sprite _star;
-        [SerializeField] private Sprite _starFilled;
+        [SerializeField] private GameObject _rowsRoot;
+        [SerializeField] private Row[] _rows = Array.Empty<Row>();
+        [SerializeField] private UiButton _doubleButton;
         [SerializeField] private UiButton _retryButton;
         [SerializeField] private UiButton _menuButton;
         [SerializeField] private UiButton _nextButton;
 
-        private readonly bool[] _earned = new bool[LevelResult.MaxStars];
-        private readonly float[] _pop = { -1f, -1f, -1f };
+        private readonly bool[] _shown = new bool[RowCount];
+        private readonly float[] _pop = new float[RowCount];
         private int _revealed;
         private float _shownTime;
+        private int _money;
+        private bool _canDouble;
         private LocalizationService _texts;
 
         public event Action RetryClicked;
         public event Action MenuClicked;
         public event Action NextClicked;
+        public event Action DoubleClicked;
 
         private void Awake()
         {
             Bind(_retryButton, () => RetryClicked?.Invoke());
             Bind(_menuButton, () => MenuClicked?.Invoke());
             Bind(_nextButton, () => NextClicked?.Invoke());
+            Bind(_doubleButton, () => DoubleClicked?.Invoke());
         }
 
         public override void ApplyLanguage(LocalizationService texts) => _texts = texts;
 
         /// <summary>
-        /// Fills the screen; earned stars start hidden (empty slots) and are revealed one by one.
-        /// <paramref name="levelName"/> is shown as given (already in the language's letter case).
+        /// Fills the screen; the rows start hidden and are revealed one by one. <paramref name="levelName"/> is shown as
+        /// given (already in the language's letter case).
         /// </summary>
-        /// <param name="previousBest">Best time of the level before this run, seconds; 0 = none.</param>
-        public void SetResult(bool completed, LevelResult? result, string levelName, bool hasNext, float previousBest = 0f)
+        /// <param name="canDouble">The ×2 offer is shown (the rows' reveal ends before it appears).</param>
+        public void SetResult(bool completed, LevelResult? result, string levelName, bool hasNext, bool canDouble)
         {
             _title.text = Text(completed ? TextKeys.ResultComplete : TextKeys.ResultFailed);
             if (_levelName != null) _levelName.text = levelName ?? string.Empty;
-
             ShowDetails(true);
-            var r = result ?? default;
-            _earned[0] = completed;
-            _earned[1] = completed && r.AllZombiesKilled;
-            _earned[2] = completed;
-            // Stars of Maze until the run result is redone (plan stage 6): only the kills have a caption.
-            SetLabel(0, string.Empty, _earned[0]);
-            SetLabel(1, Format(TextKeys.ResultZombies, r.Kills, r.TotalZombies), _earned[1]);
-            SetLabel(2, string.Empty, _earned[2]);
-            SetTime(completed, r.Time, previousBest);
 
-            for (var i = 0; i < _stars.Length; i++)
+            var r = result ?? default;
+            _money = r.Money;
+            _shown[Waves] = r.WaveCount > 0;
+            _shown[Kills] = true;
+            _shown[Time] = r.Time > 0f;
+            _shown[Score] = r.Score > 0 || r.WaveCount > 0;
+            _shown[Money] = true;
+            SetValue(Waves, r.Waves + " / " + r.WaveCount);
+            SetValue(Kills, r.Kills.ToString());
+            SetValue(Time, TimeFormat.ToText(r.Time));
+            SetValue(Score, r.Score.ToString());
+            SetMoney(false);
+
+            for (var i = 0; i < _rows.Length && i < RowCount; i++)
             {
                 _pop[i] = -1f;
-                PaintStar(i, false);
+                if (_rows[i].Slot != null) _rows[i].Slot.SetActive(_shown[i]);
+                if (_rows[i].Root != null) _rows[i].Root.SetActive(false);
             }
 
             _revealed = 0;
-            _shownTime = Time.unscaledTime;
+            _shownTime = UnityEngine.Time.unscaledTime;
+            _canDouble = canDouble;
+            if (_doubleButton != null) _doubleButton.gameObject.SetActive(false);
 
             var next = completed && hasNext;
             if (_nextButton != null) _nextButton.gameObject.SetActive(next);
@@ -93,13 +118,28 @@ namespace Purge.Presentation.UI
             if (_retryButton != null) _retryButton.Accent = !next;
         }
 
+        /// <summary>The money was doubled (or the ad failed: the offer comes back with <paramref name="doubled"/> false).</summary>
+        public void SetDoubled(bool doubled)
+        {
+            _canDouble = !doubled;
+            SetMoney(doubled);
+            if (_doubleButton != null) _doubleButton.gameObject.SetActive(_canDouble && _revealed >= RowCount);
+        }
+
+        /// <summary>The ×2 button while its ad is shown.</summary>
+        public void SetDoubleBusy(bool busy)
+        {
+            if (_doubleButton != null) _doubleButton.interactable = !busy;
+        }
+
         /// <summary>"Tutorial complete": the title, Menu and — when there is one — Next (the first level, the main action).</summary>
         public void SetTutorialComplete(bool hasNext)
         {
             _title.text = Text(TextKeys.ResultTutorialComplete);
             ShowDetails(false);
-            for (var i = 0; i < _earned.Length; i++) _earned[i] = false;
-            _revealed = _earned.Length;
+            _revealed = RowCount;
+            _canDouble = false;
+            if (_doubleButton != null) _doubleButton.gameObject.SetActive(false);
             if (_nextButton != null) _nextButton.gameObject.SetActive(hasNext);
             if (_retryButton != null)
             {
@@ -108,84 +148,72 @@ namespace Purge.Presentation.UI
             }
         }
 
-        /// <summary>Level name, stars and time (hidden for the tutorial); Retry is back for any other result.</summary>
-        private void ShowDetails(bool shown)
+        /// <summary>Rows still to be revealed (one sound each).</summary>
+        public int PendingRows
         {
-            if (_levelName != null) _levelName.gameObject.SetActive(shown);
-            if (_starsRow != null) _starsRow.SetActive(shown);
-            if (_time != null && !shown) _time.gameObject.SetActive(false);
-            if (_retryButton != null && shown) _retryButton.gameObject.SetActive(true);
+            get
+            {
+                var count = 0;
+                for (var i = _revealed; i < RowCount; i++)
+                    if (_shown[i]) count++;
+                return count;
+            }
         }
 
-        /// <summary>Shows the next earned star with a little pop (one per star sound).</summary>
-        public void RevealNextStar()
+        /// <summary>Shows the next row with a little pop (one per sound); after the last one — the ×2 offer.</summary>
+        public void RevealNextRow()
         {
-            for (var i = _revealed; i < _earned.Length; i++)
+            for (var i = _revealed; i < RowCount; i++)
             {
                 _revealed = i + 1;
-                if (!_earned[i]) continue;
-                PaintStar(i, true);
+                if (!_shown[i] || i >= _rows.Length || _rows[i].Root == null) continue;
+                _rows[i].Root.SetActive(true);
+                _rows[i].Root.transform.localScale = Vector3.one * PopScale;
                 _pop[i] = 0f;
-                return;
+                break;
             }
+
+            if (_revealed >= RowCount && PendingRows == 0 && _doubleButton != null)
+                _doubleButton.gameObject.SetActive(_canDouble);
         }
 
         private void Update()
         {
-            if (Time.unscaledTime - _shownTime > RevealFallback && _revealed < _earned.Length)
-                while (_revealed < _earned.Length) RevealNextStar();
+            if (UnityEngine.Time.unscaledTime - _shownTime > RevealFallback && _revealed < RowCount)
+                while (_revealed < RowCount) RevealNextRow();
 
-            for (var i = 0; i < _stars.Length; i++)
+            for (var i = 0; i < _rows.Length && i < RowCount; i++)
             {
                 if (_pop[i] < 0f) continue;
-                _pop[i] += Time.unscaledDeltaTime;
+                _pop[i] += UnityEngine.Time.unscaledDeltaTime;
                 var t = Mathf.Clamp01(_pop[i] / PopTime);
                 var scale = Mathf.Lerp(PopScale, 1f, 1f - (1f - t) * (1f - t));
-                _stars[i].rectTransform.localScale = new Vector3(scale, scale, 1f);
+                _rows[i].Root.transform.localScale = new Vector3(scale, scale, 1f);
                 if (t >= 1f) _pop[i] = -1f;
             }
         }
 
-        private void PaintStar(int index, bool filled)
+        /// <summary>Level name and rows (hidden for the tutorial); Retry is back for any other result.</summary>
+        private void ShowDetails(bool shown)
         {
-            var image = _stars[index];
-            image.sprite = filled ? _starFilled : _star;
-            var color = filled ? _style.Accent : _style.Line;
-            if (!filled) color.a *= 0.45f;
-            image.color = color;
-            image.rectTransform.localScale = Vector3.one;
+            if (_levelName != null) _levelName.gameObject.SetActive(shown);
+            if (_rowsRoot != null) _rowsRoot.SetActive(shown);
+            if (_retryButton != null && shown) _retryButton.gameObject.SetActive(true);
         }
 
-        private void SetTime(bool completed, float time, float previousBest)
+        private void SetMoney(bool doubled)
         {
-            if (_time == null) return;
-            _time.gameObject.SetActive(time > 0f);
-            if (time <= 0f) return;
-
-            var line = Format(TextKeys.ResultTime, TimeFormat.ToText(time));
-            if (completed && previousBest > 0f)
-            {
-                if (time < previousBest)
-                    line += "    <color=#" + ColorUtility.ToHtmlStringRGB(_style.Accent) + ">" + Text(TextKeys.ResultRecord) + "</color>";
-                else
-                    line += "    " + Format(TextKeys.ResultBest, TimeFormat.ToText(previousBest));
-            }
-
-            _time.text = line;
-            _time.color = _style.MutedText;
+            if (Money >= _rows.Length || _rows[Money].Value == null) return;
+            var value = _rows[Money].Value;
+            value.text = "+" + (doubled ? _money * 2 : _money);
+            value.color = doubled ? _style.Accent : _style.Text;
         }
 
-        private string Format(string key, string value) => _texts != null ? _texts.Format(key, value) : key;
+        private void SetValue(int row, string text)
+        {
+            if (row < _rows.Length && _rows[row].Value != null) _rows[row].Value.text = text;
+        }
 
         private string Text(string key) => _texts != null ? _texts.Get(key) : key;
-
-        private string Format(string key, int a, int b) => _texts != null ? _texts.Format(key, a, b) : key;
-
-        private void SetLabel(int index, string text, bool earned)
-        {
-            if (_starLabels == null || index >= _starLabels.Length || _starLabels[index] == null) return;
-            _starLabels[index].text = text;
-            _starLabels[index].color = earned ? _style.Text : _style.MutedText;
-        }
     }
 }

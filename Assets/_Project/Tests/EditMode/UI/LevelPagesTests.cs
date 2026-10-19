@@ -13,7 +13,7 @@ namespace Purge.Tests.EditMode.UI
             for (var i = 0; i < count; i++)
             {
                 var unlocked = i <= completed;
-                levels.Add(new LevelTileData("L" + i, i + 1, i < completed ? 2 : 0, unlocked, unlocked));
+                levels.Add(new LevelTileData("L" + i, i + 1, i < completed, unlocked, unlocked));
             }
 
             return levels;
@@ -49,7 +49,7 @@ namespace Purge.Tests.EditMode.UI
         public void DevLevels_StartOnANewPage_AndAreNeverNext()
         {
             var combined = new List<LevelTileData>();
-            var dev = new List<LevelTileData> { new LevelTileData("Level_Dev", 1, 0, true, true, caption: "Dev") };
+            var dev = new List<LevelTileData> { new LevelTileData("Level_Dev", 1, false, true, true, caption: "Dev") };
             LevelPages.Combine(Levels(12, 12), dev, combined);
             Assert.AreEqual(21, combined.Count, "12 levels, 8 fillers, the dev level on page 3.");
             Assert.IsNull(combined[12].LevelId, "A filler.");
@@ -64,7 +64,7 @@ namespace Purge.Tests.EditMode.UI
         [Test]
         public void AsNext_KeepsTheData()
         {
-            var tile = new LevelTileData("L3", 4, 0, true, true).AsNext();
+            var tile = new LevelTileData("L3", 4, false, true, true).AsNext();
             Assert.IsTrue(tile.IsNext);
             Assert.AreEqual("L3", tile.LevelId);
             Assert.AreEqual(4, tile.Number);

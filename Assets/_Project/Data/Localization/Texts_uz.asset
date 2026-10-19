@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - MENYUGA CHIQISH
   - "DEBUG: O\u02BBTISH"
   - "DEBUG: MAG\u02BBLUBIYAT"
-  - "DARAJA O\u02BBTILDI"
-  - "DARAJA O\u02BBTILMADI"
-  - ZOMBILAR {0}/{1}
-  - VAQT {0}
-  - REKORD {0}
-  - YANGI REKORD!
+  - "G\u02BBALABA"
+  - "MAG\u02BBLUBIYAT"
+  - VAQT
   - MENYU
   - QAYTADAN
   - KEYINGI
+  - "TO\u02BBLQINLAR"
+  - "O\u02BBLDIRISHLAR"
+  - OCHKO
+  - ISHLANDI
+  - "\xD72 MUKOFOT"
   - "NIMADIR NOTO\u02BBG\u02BBRI KETDI"
   - MENYUGA
   - "O\u02BBYINCHI"
@@ -370,6 +378,10 @@ MonoBehaviour:
   - YANGI
   - DARAJA {0}/{1}
   - QAYTA TANLASH
+  - "SIZ HALOK BO\u02BBLDINGIZ"
+  - TIRILISH
+  - 'TIRILISH: MAHORAT'
+  - VOZ KECHISH
   - ODDIY
   - NOODATIY
   - NOYOB

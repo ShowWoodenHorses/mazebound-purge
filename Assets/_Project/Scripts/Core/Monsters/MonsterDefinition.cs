@@ -177,6 +177,9 @@ namespace Purge.Core.Monsters
         [Tooltip("Experience of the run for killing it (stage 6c); 0 = by rank: rank-and-file 1, officers 4, elite 15, bosses 50.")]
         [SerializeField, Min(0f)] private float _experience;
 
+        [Tooltip("Score of the run for killing it (stage 6d, × the difficulty's score factor); 0 = by rank: rank-and-file 10, officers 50, elite 200, bosses 2000.")]
+        [SerializeField, Min(0f)] private float _score;
+
         [Tooltip("What it drops (ТЗ: ранг определяет дроп) — the rank's table; empty = the level's.")]
         [SerializeField] private DropTable _drop;
 
@@ -226,6 +229,17 @@ namespace Purge.Core.Monsters
             MonsterRank.Officer => 4f,
             MonsterRank.Elite => 15f,
             _ => 50f,
+        };
+
+        /// <summary>Score of the run for killing it, the rank resolved (ТЗ: 10 / 50 / 200 / 2000).</summary>
+        public float Score => _score > 0f ? _score : ScoreOf(_rank);
+
+        public static float ScoreOf(MonsterRank rank) => rank switch
+        {
+            MonsterRank.Mass => 10f,
+            MonsterRank.Officer => 50f,
+            MonsterRank.Elite => 200f,
+            _ => 2000f,
         };
 
         public IReadOnlyList<StatusResistance> Resistances => _resistances;

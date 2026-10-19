@@ -138,7 +138,7 @@ namespace Purge.Gameplay.Throwing
         /// <summary>Throws one now at <paramref name="target"/> (clamped to reach and walls), ignoring input (tests, tools).</summary>
         public bool TryThrow(Vector2 target)
         {
-            if (!_player.IsSpawned || _slot.IsEmpty || _cooldown > 0f || _player.Stunned) return false;
+            if (!_player.IsSpawned || _slot.IsEmpty || _cooldown > 0f || _player.Stunned || _player.Down) return false;
             var definition = _slot.Definition;
             var origin = _player.Position;
             target = Clamp(target);

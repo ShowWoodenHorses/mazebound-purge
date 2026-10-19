@@ -10,8 +10,9 @@ namespace Purge.Gameplay.Run
     /// <summary>
     /// Money of the run (stage 6b; ТЗ: одна валюта): every horde monster killed (by anything) pays its
     /// <see cref="Core.Monsters.MonsterDefinition.Money"/> × the run's difficulty money factor, the pause's «Пропустить»
-    /// pays its bonus (<see cref="Waves.WaveSystem.Skip"/>). Fractions add up (a factor of 0.8 still pays 4 for 5
-    /// rank-and-file). Goes to the save at the run's end (stage 6d); the coin flying to the HUD — stage 6e.
+    /// pays its bonus (<see cref="Waves.WaveSystem.Skip"/>), so does a cleared wave (stage 6d). Fractions add up (a factor
+    /// of 0.8 still pays 4 for 5 rank-and-file). Goes to the save when the run ends or is left (<c>GameFlow</c>, stage 6d);
+    /// the coin flying to the HUD — stage 6e.
     /// </summary>
     public sealed class RunWallet : ILevelLoadStep, IDisposable
     {

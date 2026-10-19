@@ -310,13 +310,13 @@ namespace Purge.Tests.EditMode.Flow
         });
 
         [UnityTest]
-        public IEnumerator Completion_CalculatesStars_SavesProgress_BeforeResultWindow() => UniTask.ToCoroutine(async () =>
+        public IEnumerator Completion_SavesRun_BeforeResultWindow() => UniTask.ToCoroutine(async () =>
         {
             await BootToMenu();
             await _flow.StartLevel(ValidId);
             var session = _sessions.Created[0];
             session.Kills = 1;
-            session.TotalZombies = 2;
+            session.Money = 30;
             var savedBeforeResult = false;
             _flow.StateChanged += state =>
             {
@@ -325,29 +325,75 @@ namespace Purge.Tests.EditMode.Flow
 
             session.RaiseFinished(LevelOutcome.Completed);
 
-            Assert.IsTrue(savedBeforeResult, "ТЗ §89: Calculate Stars → Save → Result Window.");
+            Assert.IsTrue(savedBeforeResult, "ТЗ §89: result → save → result window.");
             Assert.AreEqual(ValidId, _progress.Recorded[0].Key);
             var result = _flow.LastResult.Value;
             Assert.IsTrue(result.Completed);
-            Assert.AreEqual(2, result.Stars, "Completion + the former map star; zombies 1/2.");
-            Assert.AreEqual(result.Stars, _progress.Recorded[0].Value.Stars);
+            Assert.AreEqual(30, _progress.Money);
         });
 
         [UnityTest]
-        public IEnumerator Death_ShowsResult_SavesNothing_RetryClearsResult() => UniTask.ToCoroutine(async () =>
+        public IEnumerator Death_SavesMoney_DoubledByRewarded_RetryClearsResult() => UniTask.ToCoroutine(async () =>
         {
             await BootToMenu();
             await _flow.StartLevel(ValidId);
             _sessions.Created[0].Kills = 1;
+            _sessions.Created[0].Money = 12;
 
             _sessions.Created[0].RaiseFinished(LevelOutcome.Failed);
 
             Assert.AreEqual(GameFlowState.Failed, _flow.State);
-            Assert.AreEqual(0, _progress.Recorded.Count, "ТЗ §85: an unfinished run is not saved.");
-            Assert.AreEqual(0, _flow.LastResult.Value.Stars);
+            Assert.AreEqual(1, _progress.Recorded.Count, "ТЗ: при смерти собранное остаётся.");
+            Assert.IsFalse(_flow.LastResult.Value.Completed);
+            Assert.AreEqual(12, _progress.Money);
+
+            Assert.IsTrue(_flow.CanDoubleReward);
+            Assert.IsTrue(await _flow.DoubleRewardAsync(CancellationToken.None), "No ad service: ×2 is free.");
+            Assert.AreEqual(24, _progress.Money);
+            Assert.IsFalse(_flow.CanDoubleReward, "Once per result.");
+            Assert.IsFalse(await _flow.DoubleRewardAsync(CancellationToken.None));
 
             await _flow.RetryLevel();
             Assert.IsNull(_flow.LastResult);
+            Assert.AreEqual(24, _progress.Money);
+        });
+
+        [UnityTest]
+        public IEnumerator DeathWindow_PausesUntilRevive_GivingUpEndsLevel() => UniTask.ToCoroutine(async () =>
+        {
+            await BootToMenu();
+            await _flow.StartLevel(ValidId);
+            var session = _sessions.Created[0];
+
+            _flow.OpenDeath();
+            Assert.AreEqual(GameFlowState.Death, _flow.State);
+            Assert.IsTrue(session.Paused);
+            _flow.CloseDeath();
+            Assert.AreEqual(GameFlowState.Playing, _flow.State);
+            Assert.IsFalse(session.Paused);
+
+            _flow.OpenDeath();
+            session.RaiseFinished(LevelOutcome.Failed); // given up in the window
+            Assert.AreEqual(GameFlowState.Failed, _flow.State);
+        });
+
+        [UnityTest]
+        public IEnumerator LeavingFromPause_SavesRunMoney_WithoutResult() => UniTask.ToCoroutine(async () =>
+        {
+            await BootToMenu();
+            await _flow.StartLevel(ValidId);
+            _sessions.Created[0].Money = 7;
+            _flow.PauseGameplay();
+
+            await _flow.ExitToMenu();
+
+            Assert.AreEqual(7, _progress.Money);
+            Assert.AreEqual(0, _progress.Recorded.Count, "No result for a left run.");
+
+            await _flow.StartLevel(ValidId);
+            _sessions.Created[1].Money = 5;
+            await _flow.RetryLevel();
+            Assert.AreEqual(12, _progress.Money, "Retry from the pause keeps the money too.");
         });
 
         [UnityTest]
@@ -428,12 +474,17 @@ namespace Purge.Tests.EditMode.Flow
             public readonly List<KeyValuePair<string, LevelResult>> Recorded = new List<KeyValuePair<string, LevelResult>>();
 
             public int TotalKills => 0;
+            public int Money { get; private set; }
             public bool IsUnlocked(string levelId) => true;
             public bool IsCompleted(string levelId) => false;
-            public int GetStars(string levelId) => 0;
-            public float GetBestTime(string levelId) => 0f;
-            public void RecordCompletion(string levelId, LevelResult result, int difficulty = 0) =>
+
+            public void RecordRun(string levelId, LevelResult result, int difficulty = 0)
+            {
                 Recorded.Add(new KeyValuePair<string, LevelResult>(levelId, result));
+                Money += result.Money;
+            }
+
+            public void AddMoney(int amount) => Money += amount;
             public void ResetProgress() => Recorded.Clear();
         }
 
@@ -490,10 +541,10 @@ namespace Purge.Tests.EditMode.Flow
             public void SetPaused(bool paused) => Paused = paused;
             public void StopGameplay() => Stopped = true;
 
-            public int Kills, TotalZombies;
+            public int Kills, Money;
 
             public LevelResult GetResult(LevelOutcome outcome) =>
-                new LevelResult(outcome == LevelOutcome.Completed, Kills, TotalZombies);
+                new LevelResult(outcome == LevelOutcome.Completed, Kills, money: Money);
 
             public UniTask UnloadAsync()
             {

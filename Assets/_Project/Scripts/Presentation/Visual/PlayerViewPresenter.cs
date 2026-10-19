@@ -51,6 +51,7 @@ namespace Purge.Presentation.Visual
         private GameObject _view;
         private Animator _animator;
         private int _upperBodyLayer = -1;
+        private float _upperBodyWeight;
         private int _attackCounter;
         private int _lastHealth;
         private bool _subscribed;
@@ -205,12 +206,22 @@ namespace Purge.Presentation.Visual
         private void OnHealthChanged(int current, int max)
         {
             var damaged = current < _lastHealth;
+            var revived = _lastHealth <= 0 && current > 0;
             _lastHealth = current;
+            if (revived)
+            {
+                // Stage 6d: the death clip gives way to the stance of the weapon in hands.
+                SetBool(P.DeadHash, false);
+                if (_upperBodyLayer >= 0)
+                    _animator.SetLayerWeight(_upperBodyLayer, _upperBodyWeight);
+                return;
+            }
+
             if (!damaged) return;
 
             if (current <= 0)
             {
-                // The level finishes now and late ticks stop: a flash would stay on the corpse.
+                // The death window may pause the level: a flash would stay on the body.
                 _flash?.Stop();
             }
             else if (_combatVisual != null)
@@ -259,6 +270,7 @@ namespace Purge.Presentation.Visual
                     _attackSweeps[sweep] = Mathf.Sign(parameter.defaultFloat);
             }
             _upperBodyLayer = _animator.GetLayerIndex(P.UpperBodyLayer);
+            _upperBodyWeight = _upperBodyLayer >= 0 ? _animator.GetLayerWeight(_upperBodyLayer) : 0f;
         }
 
         private void SetFloat(int hash, float value)

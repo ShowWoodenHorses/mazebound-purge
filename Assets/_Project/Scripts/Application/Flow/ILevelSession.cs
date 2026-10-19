@@ -23,7 +23,7 @@ namespace Purge.Application.Flow
         void SetPaused(bool paused);
         void StopGameplay();
 
-        /// <summary>Stars and counters of the current run (ТЗ §87), for the given outcome.</summary>
+        /// <summary>The current run's numbers (waves, kills, money, score), for the given outcome.</summary>
         LevelResult GetResult(LevelOutcome outcome);
 
         /// <summary>

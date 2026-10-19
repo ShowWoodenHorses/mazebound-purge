@@ -35,6 +35,9 @@ namespace Purge.Application.Flow
 
         /// <summary>The run's level-up: gameplay is paused until a card is chosen (stage 6c).</summary>
         Cards = 12,
+
+        /// <summary>The player is dead: gameplay is paused in the death window until a revive or giving up (stage 6d).</summary>
+        Death = 13,
     }
 
     /// <summary>
@@ -85,14 +88,22 @@ namespace Purge.Application.Flow
         /// <summary>The current level is the tutorial (<see cref="ILevelCatalog.Tutorial"/>).</summary>
         public bool IsTutorialLevel => CurrentLevelId != null && _catalog.Tutorial?.LevelId == CurrentLevelId;
 
-        /// <summary>Result of the last ended run (stars, kills, fragments); null until a level ends.</summary>
+        /// <summary>Result of the last ended run (waves, kills, money, score); null until a level ends.</summary>
         public LevelResult? LastResult { get; private set; }
 
-        /// <summary>Best time of the level before the last ended run, seconds; 0 when there was none.</summary>
-        public float LastPreviousBestTime { get; private set; }
+        /// <summary>The level of the last ended run had been completed before it.</summary>
+        public bool LastWasCompletedBefore { get; private set; }
 
-        /// <summary>Best stars of the level before the last ended run; 0 when it was never completed.</summary>
-        public int LastPreviousStars { get; private set; }
+        /// <summary>The last result's money was doubled by a rewarded ad (<see cref="DoubleRewardAsync"/>).</summary>
+        public bool LastRewardDoubled { get; private set; }
+
+        /// <summary>The result window may offer ×2: a run ended with money, not doubled yet.</summary>
+        public bool CanDoubleReward =>
+            (State == GameFlowState.Completed || State == GameFlowState.Failed) && !LastRewardDoubled &&
+            LastResult is { } result && result.Money > 0;
+
+        /// <summary>Placement of the result's rewarded ×2.</summary>
+        public const string DoublePlacement = "result_double";
 
         public event Action<GameFlowState> StateChanged;
 
@@ -116,6 +127,7 @@ namespace Purge.Application.Flow
             if (HasLevel)
             {
                 var levelEnded = State == GameFlowState.Completed || State == GameFlowState.Failed;
+                if (!levelEnded) CreditLeftRun();
                 SetState(GameFlowState.Loading);
                 await UnloadLevelAsync();
                 // From the result window: an interstitial where the site wants one at this break (over the loading screen).
@@ -208,6 +220,51 @@ namespace Purge.Application.Flow
             SetState(GameFlowState.Playing);
         }
 
+        /// <summary>The player died (stage 6d): gameplay pauses in the death window until <see cref="CloseDeath"/> or the end.</summary>
+        public void OpenDeath()
+        {
+            if (State != GameFlowState.Playing) return;
+            _session.SetPaused(true);
+            SetState(GameFlowState.Death);
+        }
+
+        /// <summary>The player revived: the game goes on.</summary>
+        public void CloseDeath()
+        {
+            if (State != GameFlowState.Death) return;
+            if (_ads != null && _ads.IsShowing) return;
+            _session.SetPaused(false);
+            SetState(GameFlowState.Playing);
+        }
+
+        /// <summary>
+        /// The result's ×2 (ТЗ: rewarded ×2 к заработку, при победе и при смерти): after the ad was watched the run's money
+        /// is added once more. True when doubled.
+        /// </summary>
+        public async UniTask<bool> DoubleRewardAsync(CancellationToken cancellation)
+        {
+            if (!CanDoubleReward) return false;
+            var money = LastResult.Value.Money;
+            LastRewardDoubled = true; // no second offer while the ad is shown
+            var watched = _ads == null || await _ads.ShowRewardedAsync(DoublePlacement, cancellation);
+            if (!watched)
+            {
+                LastRewardDoubled = false;
+                return false;
+            }
+
+            try
+            {
+                _progress.AddMoney(money);
+            }
+            catch (Exception e)
+            {
+                GameLog.Exception(LogChannel.Save, e, "Saving the doubled money failed");
+            }
+
+            return true;
+        }
+
         public void CompleteLevel() => EndLevel(GameFlowState.Completed);
 
         public void FailLevel() => EndLevel(GameFlowState.Failed);
@@ -233,12 +290,14 @@ namespace Purge.Application.Flow
         private async UniTask StartLevelAsync(string levelId, LevelLaunchOptions options, CancellationToken cancellation)
         {
             var fromMenu = State == GameFlowState.MainMenu;
+            // Retry from the pause: the left run's money stays (until the run save of stage 6e).
+            if (_session != null && State != GameFlowState.Completed && State != GameFlowState.Failed) CreditLeftRun();
             SetState(GameFlowState.Loading);
             CurrentLevelId = levelId;
             _launchOptions = options;
             LastResult = null;
-            LastPreviousBestTime = 0f;
-            LastPreviousStars = 0;
+            LastWasCompletedBefore = false;
+            LastRewardDoubled = false;
             GameLog.Info(LogChannel.LevelLoading, $"Loading level '{levelId}'.");
 
             // Stop current gameplay, dispose the old LevelScope, release its Addressables.
@@ -328,35 +387,51 @@ namespace Purge.Application.Flow
             else FailLevel();
         }
 
-        /// <summary>ТЗ §88–89: stop gameplay → calculate stars → save (completion only) → result window.</summary>
+        /// <summary>
+        /// ТЗ §88–89, stage 6d: stop gameplay → the run's result → save (money and kills always — при смерти собранное
+        /// остаётся; the completion when won) → result window.
+        /// </summary>
         private void EndLevel(GameFlowState result)
         {
-            if (State != GameFlowState.Playing && State != GameFlowState.Paused &&
-                State != GameFlowState.Map && State != GameFlowState.Tip && State != GameFlowState.Cards)
+            if (State != GameFlowState.Playing && State != GameFlowState.Paused && State != GameFlowState.Map &&
+                State != GameFlowState.Tip && State != GameFlowState.Cards && State != GameFlowState.Death)
                 return;
 
             _session.StopGameplay();
             var outcome = result == GameFlowState.Completed ? LevelOutcome.Completed : LevelOutcome.Failed;
             var levelResult = _session.GetResult(outcome);
             LastResult = levelResult;
-            LastPreviousBestTime = _progress.GetBestTime(CurrentLevelId);
-            LastPreviousStars = _progress.GetStars(CurrentLevelId);
+            LastRewardDoubled = false;
+            LastWasCompletedBefore = _progress.IsCompleted(CurrentLevelId);
             GameLog.Info(LogChannel.GameFlow, $"Level '{CurrentLevelId}' ended: {levelResult}.");
 
-            if (outcome == LevelOutcome.Completed)
+            try
             {
-                try
-                {
-                    _progress.RecordCompletion(CurrentLevelId, levelResult);
-                }
-                catch (Exception e)
-                {
-                    // Losing a save must not take the result screen away.
-                    GameLog.Exception(LogChannel.Save, e, $"Recording progress of '{CurrentLevelId}' failed");
-                }
+                _progress.RecordRun(CurrentLevelId, levelResult);
+            }
+            catch (Exception e)
+            {
+                // Losing a save must not take the result screen away.
+                GameLog.Exception(LogChannel.Save, e, $"Recording the run of '{CurrentLevelId}' failed");
             }
 
             SetState(result);
+        }
+
+        /// <summary>The run is left from the pause (menu, retry): its money goes to the save, no result.</summary>
+        private void CreditLeftRun()
+        {
+            try
+            {
+                var money = _session.GetResult(LevelOutcome.Failed).Money;
+                if (money <= 0) return;
+                GameLog.Info(LogChannel.GameFlow, $"Level '{CurrentLevelId}' left with {money} money.");
+                _progress.AddMoney(money);
+            }
+            catch (Exception e)
+            {
+                GameLog.Exception(LogChannel.Save, e, $"Saving the money of the left run of '{CurrentLevelId}' failed");
+            }
         }
 
         private async UniTask RunTransition(string name, Func<CancellationToken, UniTask> body)

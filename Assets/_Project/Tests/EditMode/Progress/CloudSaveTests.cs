@@ -91,7 +91,7 @@ namespace Purge.Tests.EditMode.Progress
         {
             var local = new MemoryStorage();
             var guest = new SaveData { Stats = new SaveStats { TotalKills = 3 } };
-            guest.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 1, Stars = 2, BestTime = 40f });
+            guest.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 1 });
             guest.Levels.Add(new LevelRecord { LevelId = "L2" });
             var cloud = new FakeCloud { Json = JsonUtility.ToJson(guest) };
             var site = new CloudPlatform(cloud);
@@ -101,8 +101,8 @@ namespace Purge.Tests.EditMode.Progress
 
             // The account's save, made on another device.
             var other = new SaveData { Stats = new SaveStats { TotalKills = 5 } };
-            other.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 4, Stars = 3, BestTime = 55f });
-            other.Levels.Add(new LevelRecord { LevelId = "L3", CompletedMask = 1, Stars = 1, BestTime = 90f });
+            other.Levels.Add(new LevelRecord { LevelId = "L1", CompletedMask = 4 });
+            other.Levels.Add(new LevelRecord { LevelId = "L3", CompletedMask = 1 });
             other.Levels.Add(new LevelRecord { LevelId = "L4" });
             cloud.Json = JsonUtility.ToJson(other);
             var changes = 0;
@@ -112,8 +112,6 @@ namespace Purge.Tests.EditMode.Progress
 
             Assert.AreEqual(5, save.Data.Stats.TotalKills);
             var l1 = save.Data.FindLevel("L1");
-            Assert.AreEqual(3, l1.Stars);
-            Assert.AreEqual(40f, l1.BestTime, "The better time of the two.");
             Assert.AreEqual(5, l1.CompletedMask, "Difficulties of both.");
             Assert.IsNotNull(save.Data.FindLevel("L3"));
             Assert.IsNotNull(save.Data.FindLevel("L2"));
@@ -183,14 +181,14 @@ namespace Purge.Tests.EditMode.Progress
         public void Merge_KeepsTheBestOfBoth()
         {
             var mine = new SaveData { Money = 100, Stats = new SaveStats { TotalKills = 10 } };
-            mine.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 1, Stars = 3, BestTime = 0f });
+            mine.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 1 });
             mine.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 2, Forks = 1, Mark = PoolMark.Favorite });
             mine.CharacterNodes.Add("shooter_1");
             mine.Run.Active = true;
             mine.Run.LevelId = "A";
             mine.Settings.MusicVolume = 0.3f;
             var theirs = new SaveData { Money = 250, Stats = new SaveStats { TotalKills = 4, RunsStarted = 9 } };
-            theirs.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 2, Stars = 1, BestTime = 70f });
+            theirs.Levels.Add(new LevelRecord { LevelId = "A", CompletedMask = 2 });
             theirs.Arsenal.Add(new OwnedItem { Id = "ak_74", Level = 5, Forks = 2 });
             theirs.Arsenal.Add(new OwnedItem { Id = "bat" });
             theirs.Survival.Add(new SurvivalRecord { LocationId = "forest", BestScore = 1200, BestWave = 7 });
@@ -205,9 +203,7 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(250, mine.Money, "The larger amount, not the sum.");
             Assert.AreEqual(10, mine.Stats.TotalKills);
             Assert.AreEqual(9, mine.Stats.RunsStarted);
-            Assert.AreEqual(3, mine.Levels[0].Stars);
             Assert.AreEqual(3, mine.Levels[0].CompletedMask);
-            Assert.AreEqual(70f, mine.Levels[0].BestTime, "A time where there was none.");
             Assert.AreEqual(5, mine.FindItem("ak_74").Level, "The higher upgrade, with its forks.");
             Assert.AreEqual(2, mine.FindItem("ak_74").Forks);
             Assert.AreEqual(PoolMark.Favorite, mine.FindItem("ak_74").Mark, "The mark stays this device's.");

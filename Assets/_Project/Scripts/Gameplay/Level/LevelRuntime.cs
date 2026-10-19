@@ -101,10 +101,12 @@ namespace Purge.Gameplay.Level
                 _lateTickables[i].LateTick(deltaTime);
         }
 
-        /// <summary>Ends gameplay with an outcome. Ignored unless gameplay is running.</summary>
+        /// <summary>
+        /// Ends gameplay with an outcome. Ignored unless gameplay is running or paused (giving up in the death window).
+        /// </summary>
         public void Finish(LevelOutcome outcome)
         {
-            if (State != LevelRunState.Running)
+            if (State != LevelRunState.Running && State != LevelRunState.Paused)
                 return;
 
             State = LevelRunState.Stopped;

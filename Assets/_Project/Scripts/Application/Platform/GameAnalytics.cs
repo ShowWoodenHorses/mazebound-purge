@@ -242,16 +242,16 @@ namespace Purge.Application.Platform
             var parameters = Level(level);
             parameters["time"] = Mathf.RoundToInt(result.Time);
             parameters["kills"] = result.Kills;
-            parameters["zombies"] = result.TotalZombies;
+            parameters["waves"] = result.Waves;
+            parameters["money"] = result.Money;
+            parameters["score"] = result.Score;
+            parameters["revives"] = result.Revives;
             parameters["avg_fps"] = Mathf.RoundToInt(_stats.AverageFps);
             _failsSinceWin.TryGetValue(level, out var fails);
             if (completed)
             {
-                var previousBest = _flow.LastPreviousBestTime;
-                parameters["stars"] = result.Stars;
-                parameters["star_zombies"] = result.AllZombiesKilled;
                 parameters["deaths_before"] = fails;
-                parameters["new_best"] = previousBest <= 0f || result.Time < previousBest;
+                parameters["first_win"] = !_flow.LastWasCompletedBefore;
                 _failsSinceWin[level] = 0;
                 _analytics.Send(AnalyticsEvents.LevelComplete);
             }

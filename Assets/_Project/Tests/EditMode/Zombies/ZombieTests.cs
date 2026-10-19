@@ -356,13 +356,48 @@ namespace Purge.Tests.EditMode.Zombies
             runtime.StartGameplay();
             LevelOutcome? outcome = null;
             runtime.Finished += result => outcome = result;
-            var rule = new PlayerDeathRule(_health, runtime);
+            var revival = new PlayerRevival(_health);
+            var rule = new PlayerDeathRule(revival, runtime);
+            var downed = 0;
+            revival.Downed += () => downed++;
 
             _health.Damage(_health.Max);
+            Assert.IsTrue(revival.IsDown);
+            Assert.IsNull(outcome, "Dead, but a revive is left: the window first.");
+            revival.Tick(0.1f);
+            Assert.AreEqual(1, downed);
+
+            revival.GiveUp();
 
             Assert.AreEqual(LevelOutcome.Failed, outcome);
             Assert.AreEqual(LevelRunState.Stopped, runtime.State);
             rule.Dispose();
+            revival.Dispose();
+        }
+
+        [Test]
+        public void Revive_FullHealth_Invulnerable_OnceByAd_ThenDeathIsFinal()
+        {
+            Build();
+            var revival = new PlayerRevival(_health);
+            var died = 0;
+            revival.Died += () => died++;
+
+            _health.Damage(_health.Max);
+            _health.Heal(10);
+            Assert.IsTrue(_health.IsDead, "A medkit does not raise the dead.");
+            Assert.IsFalse(revival.Revive(ReviveKind.Skill), "No skill without the player's definition.");
+            Assert.IsTrue(revival.Revive(ReviveKind.Ad));
+            Assert.AreEqual(_health.Max, _health.Current);
+            Assert.IsFalse(revival.IsDown);
+
+            _health.Damage(_health.Max);
+            Assert.IsTrue(revival.IsDown);
+            Assert.IsFalse(revival.CanReviveAtAll, "The ad's revive is used up.");
+            revival.Tick(0.1f);
+            Assert.AreEqual(1, died, "No revive left: dead for good after the delay.");
+            Assert.AreEqual(1, revival.RevivesUsed);
+            revival.Dispose();
         }
     }
 }

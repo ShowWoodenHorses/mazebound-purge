@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - "ZUM MEN\xDC"
   - 'DEBUG: ABSCHLIESSEN'
   - 'DEBUG: SCHEITERN'
-  - LEVEL GESCHAFFT
-  - LEVEL GESCHEITERT
-  - ZOMBIES {0}/{1}
-  - ZEIT {0}
-  - BESTZEIT {0}
-  - NEUER REKORD!
+  - SIEG
+  - NIEDERLAGE
+  - ZEIT
   - "MEN\xDC"
   - NOCHMAL
   - WEITER
+  - WELLEN
+  - KILLS
+  - PUNKTE
+  - VERDIENT
+  - "\xD72 BELOHNUNG"
   - ETWAS IST SCHIEFGELAUFEN
   - "ZUR\xDCCK ZUM MEN\xDC"
   - SPIELER
@@ -373,6 +381,10 @@ MonoBehaviour:
   - NEU
   - STUFE {0}/{1}
   - NEU ZIEHEN
+  - DU BIST TOT
+  - WIEDERBELEBEN
+  - "WIEDERBELEBEN: F\xC4HIGKEIT"
+  - AUFGEBEN
   - "GEW\xD6HNLICH"
   - "UNGEW\xD6HNLICH"
   - SELTEN

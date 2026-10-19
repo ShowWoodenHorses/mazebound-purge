@@ -7,8 +7,7 @@ namespace Purge.Presentation.UI
 {
     /// <summary>
     /// Main menu (minimal by the user's choice): the title, Play (starts the next level at once), Levels (the level
-    /// select), Tutorial (when the game has one) and Settings; total stars and
-    /// zombies killed at the bottom left; "Debug: reset progress" (development builds) and the version at the bottom
+    /// select), Tutorial (when the game has one) and Settings; money and monsters killed at the bottom right; "Debug: reset progress" (development builds) and the version at the bottom
     /// right; at the top right — signing in to the site's account (Yandex Games) while the player is not signed in.
     /// </summary>
     public sealed class MainMenuScreen : UIScreen
@@ -18,7 +17,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private Button _tutorialButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private GameObject _summary;
-        [SerializeField] private TMP_Text _stars;
+        [SerializeField] private TMP_Text _money;
         [SerializeField] private TMP_Text _kills;
         [SerializeField] private TMP_Text _version;
 
@@ -49,11 +48,11 @@ namespace Purge.Presentation.UI
             if (_version != null) _version.text = "v" + UnityEngine.Application.version;
         }
 
-        /// <summary>Overall progress; hidden while the catalog is empty.</summary>
-        public void SetSummary(int stars, int maxStars, int kills)
+        /// <summary>Overall progress: the money kept between runs and the monsters killed.</summary>
+        public void SetSummary(int money, int kills)
         {
-            if (_summary != null) _summary.SetActive(maxStars > 0);
-            if (_stars != null) _stars.text = stars + " / " + maxStars;
+            if (_summary != null) _summary.SetActive(true);
+            if (_money != null) _money.text = money.ToString();
             if (_kills != null) _kills.text = kills.ToString();
         }
 

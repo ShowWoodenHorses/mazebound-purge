@@ -88,7 +88,8 @@ namespace Purge.Presentation.Audio
                     _audio.SetLevelPaused(false);
                     _audio.SetMusicShare(1f);
                     _audio.PlayMusic(Catalog.LevelMusic);
-                    if (previous == GameFlowState.Paused || previous == GameFlowState.Tip || previous == GameFlowState.Cards)
+                    if (previous == GameFlowState.Paused || previous == GameFlowState.Tip || previous == GameFlowState.Cards ||
+                        previous == GameFlowState.Death)
                         Play(Catalog.PauseResume);
                     else if (previous == GameFlowState.Map) Play(Catalog.MapClose);
                     break;
@@ -103,15 +104,19 @@ namespace Purge.Presentation.Audio
                     else Play(Catalog.MapOpen);
                     break;
 
+                case GameFlowState.Death:
+                    // The death sound already played (the level's presenter): the window opens quietly.
+                    _audio.SetLevelPaused(true);
+                    _audio.SetMusicShare(Catalog.PausedMusicVolume);
+                    break;
+
                 case GameFlowState.Completed:
                 case GameFlowState.Failed:
                     _audio.SetLevelPaused(false); // The last sounds (death) finish…
                     _audio.StopLevelSounds(loopsOnly: true); // …the ambience stops.
                     _audio.SetMusicShare(Catalog.ResultMusicVolume);
                     _result = new CancellationTokenSource();
-                    // The tutorial shows no stars: only the jingle.
-                    var stars = _flow.IsTutorialLevel ? 0 : _flow.LastResult?.Stars ?? 0;
-                    PlayResultAsync(state == GameFlowState.Completed, stars, _result.Token).Forget();
+                    PlayResultAsync(state == GameFlowState.Completed, _result.Token).Forget();
                     break;
 
                 case GameFlowState.Error:
@@ -123,20 +128,20 @@ namespace Purge.Presentation.Audio
         }
 
         /// <summary>
-        /// Jingle after a short pause (the death or exit sound first), then a sound per star, pitch rising; each sound
-        /// reveals its star on the result screen.
+        /// Jingle after a short pause (the death or exit sound first), then a sound per result row, pitch rising; each
+        /// sound reveals its row on the result screen (the tutorial's has none).
         /// </summary>
-        private async UniTaskVoid PlayResultAsync(bool completed, int stars, CancellationToken cancellation)
+        private async UniTaskVoid PlayResultAsync(bool completed, CancellationToken cancellation)
         {
             var catalog = Catalog;
             if (await Delay(catalog.ResultDelay, cancellation)) return;
             Play(completed ? catalog.LevelComplete : catalog.LevelFailed);
 
-            for (var i = 0; i < stars; i++)
+            for (var i = 0; _ui.Result.PendingRows > 0; i++)
             {
                 if (await Delay(catalog.StarInterval, cancellation)) return;
                 _audio.Play(catalog.Star, SoundChannel.Interface, 1f, 0f, 1f + catalog.StarPitchStep * i);
-                _ui.Result.RevealNextStar(); // The star appears with its sound.
+                _ui.Result.RevealNextRow(); // The row appears with its sound.
             }
         }
 

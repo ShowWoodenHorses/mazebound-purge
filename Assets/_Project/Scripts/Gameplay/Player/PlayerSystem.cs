@@ -113,6 +113,9 @@ namespace Purge.Gameplay.Player
         /// <summary>A state holds the player in place (stun): no step, no attack (<c>PlayerStatuses</c>).</summary>
         public bool Stunned { get; set; }
 
+        /// <summary>The player is dead and waits for a revive (stage 6d): no step, no attack, no throw (<c>PlayerDeathRule</c>).</summary>
+        public bool Down { get; set; }
+
         /// <summary>Actual speed this tick relative to <see cref="PlayerDefinition.MoveSpeed"/>, 0..1 (for animation).</summary>
         public float SpeedFactor { get; private set; }
 
@@ -149,7 +152,7 @@ namespace Purge.Gameplay.Player
             _aiming = false;
             IsAiming = aiming;
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
-            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned)
+            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned || Down)
             {
                 if (aiming) Facing = _aimFacing;
                 else if (_moved) Facing = Aim.Snap(Facing, _aim.AimMode);

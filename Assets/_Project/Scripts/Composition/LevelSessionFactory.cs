@@ -70,7 +70,7 @@ namespace Purge.Composition
 
                 var runtime = scope.Container.Resolve<LevelRuntime>();
                 var progress = scope.Container.Resolve<LevelProgress>();
-                // Rules subscribe on creation and are disposed with the scope.
+                // Rules subscribe on creation and are disposed with the scope (the death rule — on the revival's death).
                 scope.Container.Resolve<PlayerDeathRule>();
                 scope.Container.Resolve<AllKilledRule>();
                 scope.Container.Resolve<WavesClearedRule>();

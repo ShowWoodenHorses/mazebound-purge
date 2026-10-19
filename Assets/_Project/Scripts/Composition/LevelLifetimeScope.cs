@@ -88,6 +88,8 @@ namespace Purge.Composition
             // and speed) → movement → steps → pickups (lifetimes) → interaction → bullets.
             // States on the player first: slow and stun act on this tick's attack and movement.
             builder.Register<PlayerStatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
+            // Death and revive (stage 6d): the fallen player's delay before the window, the revived one's invulnerability.
+            builder.Register<PlayerRevival>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
@@ -112,6 +114,8 @@ namespace Purge.Composition
             builder.Register<ChampionSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Money of the run (stage 6b): kills and the pause's skip bonus.
             builder.Register<RunWallet>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            // Kills and score of the run (stage 6d): the result's numbers.
+            builder.Register<RunScore>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // Experience, cards and their damage (stage 6c): kills give experience, a level-up offers cards.
             builder.Register<RunExperience>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<CardSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -152,6 +156,8 @@ namespace Purge.Composition
             builder.Register<WaveHudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             // The run's level under the HP and the cards of a level-up (stage 6c).
             builder.Register<CardsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            // The death window: revive by an ad or the skill, or give up (stage 6d).
+            builder.Register<DeathPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();

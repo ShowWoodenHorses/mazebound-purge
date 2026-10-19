@@ -15,12 +15,6 @@ namespace Purge.Application.Save
         /// <summary>Difficulties completed with the arena closed (the extra reward is paid once).</summary>
         public int ClosedArenaMask;
 
-        /// <summary>Best stars of the Maze-style result (until the run result of stage 6).</summary>
-        public int Stars;
-
-        /// <summary>Best time of a completed run, seconds; 0 = none.</summary>
-        public float BestTime;
-
         public bool IsCompleted => CompletedMask != 0;
 
         public bool IsCompletedOn(int difficulty) =>
@@ -28,7 +22,7 @@ namespace Purge.Application.Save
 
         public LevelRecord Clone() => new LevelRecord
         {
-            LevelId = LevelId, CompletedMask = CompletedMask, ClosedArenaMask = ClosedArenaMask, Stars = Stars, BestTime = BestTime,
+            LevelId = LevelId, CompletedMask = CompletedMask, ClosedArenaMask = ClosedArenaMask,
         };
     }
 

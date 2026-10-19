@@ -97,6 +97,25 @@ namespace Purge.Core.Effects
         }
     }
 
+    /// <summary>
+    /// Pushes every monster in the radius away from the point, harder near it (stage 6d: the revive's wave). A push fades
+    /// as a hit's knockback does (about speed / 11 cells); heavy monsters fly less.
+    /// </summary>
+    [Serializable, ModuleInfo("Push away", Category = "Effect", AllowMultiple = true)]
+    public sealed class PushEffect : EffectModule
+    {
+        [SerializeField, Min(0.3f)] private float _radius = 5f;
+        [Tooltip("Push at the centre, cells per second (12 at most — a push of 12 carries about 1.1 cells).")]
+        [SerializeField, Min(0f)] private float _speed = 12f;
+        [Tooltip("Share of the push at the edge of the radius.")]
+        [SerializeField, Range(0f, 1f)] private float _edgeSpeed = 0.4f;
+
+        public override float Radius => _radius;
+        public float Speed { get => _speed; internal set => _speed = value; }
+        public float EdgeSpeed { get => _edgeSpeed; internal set => _edgeSpeed = value; }
+        internal void SetRadius(float radius) => _radius = radius;
+    }
+
     /// <summary>A state on every monster in the radius (a grenade stuns those near the blast).</summary>
     [Serializable, ModuleInfo("Status in radius", Category = "Effect", AllowMultiple = true)]
     public sealed class AreaStatusEffect : EffectModule

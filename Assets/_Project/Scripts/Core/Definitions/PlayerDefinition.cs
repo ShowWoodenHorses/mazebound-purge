@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Purge.Core.Effects;
+using Purge.Core.Modules;
 using UnityEngine;
 
 namespace Purge.Core.Definitions
@@ -33,6 +36,17 @@ namespace Purge.Core.Definitions
                  "and is never dropped for it; a dropped weapon brings it back.")]
         [SerializeField] private WeaponDefinition _baseWeapon;
 
+        [Header("Death and revive (stage 6d)")]
+        [Tooltip("Seconds the player lies (the death clip) before the death window.")]
+        [SerializeField, Min(0f)] private float _deathDelay = 1.3f;
+        [Tooltip("Seconds no damage reaches the revived player.")]
+        [SerializeField, Min(0f)] private float _reviveInvulnerability = 2f;
+        [Tooltip("The character's revive skill is open (ТЗ: once a run besides the rewarded one). Until the character tree " +
+                 "(stage 10) — this flag.")]
+        [SerializeField] private bool _reviveSkill = true;
+        [Tooltip("What happens around the revived player, in order: a wave pushing back and stunning the monsters, its look.")]
+        [SerializeReference, ModuleList] private List<EffectModule> _reviveEffects = new List<EffectModule>();
+
         [Header("Sounds (ТЗ §71), radii in cells")]
         [Tooltip("A step sound is emitted every this many cells walked.")]
         [SerializeField, Min(0.1f)] private float _stepDistance = 0.8f;
@@ -50,6 +64,20 @@ namespace Purge.Core.Definitions
         public float StepDistance => _stepDistance;
         public float StepSoundRadius => _stepSoundRadius;
         public float InteractionSoundRadius => _interactionSoundRadius;
+        public float DeathDelay => _deathDelay;
+        public float ReviveInvulnerability => _reviveInvulnerability;
+        public bool ReviveSkill { get => _reviveSkill; internal set => _reviveSkill = value; }
+        public IReadOnlyList<EffectModule> ReviveEffects => _reviveEffects;
+
+        /// <summary>Tools: the revive's effects after editing them in place.</summary>
+        internal List<EffectModule> MutableReviveEffects => _reviveEffects ??= new List<EffectModule>();
+
+        /// <summary>For tests.</summary>
+        internal void ConfigureDeath(float deathDelay, float reviveInvulnerability)
+        {
+            _deathDelay = deathDelay;
+            _reviveInvulnerability = reviveInvulnerability;
+        }
 
         /// <summary>For tests and tools.</summary>
         internal void Configure(float moveSpeed, float bodyHalfSize, float cornerAssist)

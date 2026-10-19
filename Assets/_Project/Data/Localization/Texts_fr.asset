@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - QUITTER VERS LE MENU
   - 'DEBUG : TERMINER'
   - "DEBUG : \xC9CHEC"
-  - "NIVEAU TERMIN\xC9"
-  - "NIVEAU \xC9CHOU\xC9"
-  - ZOMBIES {0}/{1}
-  - TEMPS {0}
-  - RECORD {0}
-  - NOUVEAU RECORD !
+  - VICTOIRE
+  - "D\xC9FAITE"
+  - TEMPS
   - MENU
   - REJOUER
   - SUIVANT
+  - VAGUES
+  - "\xC9LIMINATIONS"
+  - SCORE
+  - "GAGN\xC9"
+  - "\xD72 R\xC9COMPENSE"
   - "UN PROBL\xC8ME EST SURVENU"
   - RETOUR AU MENU
   - JOUEUR
@@ -372,6 +380,10 @@ MonoBehaviour:
   - NOUVELLE
   - NIVEAU {0}/{1}
   - RELANCER
+  - "VOUS AVEZ P\xC9RI"
+  - RESSUSCITER
+  - 'RESSUSCITER : TALENT'
+  - ABANDONNER
   - COMMUNE
   - PEU COMMUNE
   - RARE

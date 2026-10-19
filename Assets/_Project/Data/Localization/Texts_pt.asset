@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - SAIR PARA O MENU
   - 'DEBUG: CONCLUIR'
   - 'DEBUG: FALHAR'
-  - "N\xCDVEL CONCLU\xCDDO"
-  - "N\xCDVEL FRACASSADO"
-  - ZUMBIS {0}/{1}
-  - TEMPO {0}
-  - RECORDE {0}
-  - NOVO RECORDE!
+  - "VIT\xD3RIA"
+  - DERROTA
+  - TEMPO
   - MENU
   - DE NOVO
   - "PR\xD3XIMO"
+  - ONDAS
+  - ABATES
+  - PONTOS
+  - GANHO
+  - "\xD72 RECOMPENSA"
   - ALGO DEU ERRADO
   - VOLTAR AO MENU
   - JOGADOR
@@ -370,6 +378,10 @@ MonoBehaviour:
   - NOVA
   - "N\xCDVEL {0}/{1}"
   - TROCAR
+  - "VOC\xCA MORREU"
+  - REVIVER
+  - 'REVIVER: HABILIDADE'
+  - DESISTIR
   - COMUM
   - INCOMUM
   - RARA

@@ -59,13 +59,15 @@ MonoBehaviour:
   - pause.debug_fail
   - result.complete
   - result.failed
-  - result.zombies
   - result.time
-  - result.best
-  - result.record
   - result.menu
   - result.retry
   - result.next
+  - result.waves
+  - result.kills
+  - result.score
+  - result.money
+  - result.double
   - error.title
   - error.back
   - map.player
@@ -166,6 +168,10 @@ MonoBehaviour:
   - cards.new
   - cards.level
   - cards.reroll
+  - death.title
+  - death.revive
+  - death.revive_skill
+  - death.give_up
   - card.rarity.common
   - card.rarity.uncommon
   - card.rarity.rare
@@ -239,15 +245,17 @@ MonoBehaviour:
   - ESCI AL MENU
   - 'DEBUG: COMPLETA'
   - 'DEBUG: FALLISCI'
-  - LIVELLO COMPLETATO
-  - LIVELLO FALLITO
-  - ZOMBI {0}/{1}
-  - TEMPO {0}
-  - RECORD {0}
-  - NUOVO RECORD!
+  - VITTORIA
+  - SCONFITTA
+  - TEMPO
   - MENU
   - RIPROVA
   - AVANTI
+  - ONDATE
+  - UCCISIONI
+  - PUNTI
+  - GUADAGNATO
+  - "\xD72 RICOMPENSA"
   - "QUALCOSA \xC8 ANDATO STORTO"
   - TORNA AL MENU
   - GIOCATORE
@@ -371,6 +379,10 @@ MonoBehaviour:
   - NUOVA
   - LIVELLO {0}/{1}
   - RIPESCA
+  - SEI MORTO
+  - RINASCI
+  - "RINASCI: ABILIT\xC0"
+  - ARRENDITI
   - COMUNE
   - NON COMUNE
   - RARA

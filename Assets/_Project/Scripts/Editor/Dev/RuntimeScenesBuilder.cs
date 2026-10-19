@@ -196,6 +196,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
             SetReference(root, "_cards", BuildCards(parent));
+            SetReference(root, "_death", BuildDeath(parent));
             SetReference(root, "_pause", BuildPause(parent));
             SetReference(root, "_map", BuildMap(parent));
             SetReference(root, "_result", BuildResult(parent));
@@ -265,8 +266,8 @@ namespace Purge.Editor.Dev
             // Bottom right, over the version: bottom left the totals ran into the last button on a short screen
             // (VK's frame on a desktop).
             var summary = Row(area, "Summary", new Vector2(1f, 0f), new Vector2(-64f, 96f), 44f, new Vector2(1f, 0f));
-            var stars = Counter(summary, "Stars", icons.StarFilled, out var starsText);
-            stars.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
+            var money = Counter(summary, "Money", icons.Coin, out var moneyText);
+            money.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
             Counter(summary, "Kills", icons.Skull, out var killsText);
 
             var reset = LinkButton(area, "DebugResetProgressButton", Loc(TextKeys.MenuResetProgress), new Vector2(1f, 0f),
@@ -294,7 +295,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_tutorialButton", tutorial);
             SetReference(screen, "_settingsButton", settings);
             SetReference(screen, "_summary", summary.gameObject);
-            SetReference(screen, "_stars", starsText);
+            SetReference(screen, "_money", moneyText);
             SetReference(screen, "_kills", killsText);
             SetReference(screen, "_version", version);
             SetReference(screen, "_debugResetProgressButton", reset);
@@ -304,9 +305,8 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>
-        /// Level select (user's spec): back, title and total stars at the top; ten tiles in two rows of five (number,
-        /// padlock when locked, three star slots under completed ones); arrows, page diamonds and the range at the
-        /// bottom. The screen itself takes horizontal swipes.
+        /// Level select (user's spec): back and title at the top; ten tiles in two rows of five (number, padlock when
+        /// locked); arrows, page diamonds and the range at the bottom. The screen itself takes horizontal swipes.
         /// </summary>
         private static LevelSelectScreen BuildLevelSelect(Transform parent)
         {
@@ -318,10 +318,6 @@ namespace Purge.Editor.Dev
             var back = RoundButton(area, "BackButton", icons.ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
             Text(area, "Title", Loc(TextKeys.LevelSelectTitle), 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
                 new Vector2(700f, 60f), TextAlignmentOptions.MidlineLeft, spacing: 16f);
-            var total = Row(area, "TotalStars", new Vector2(1f, 1f), new Vector2(-64f, -90f), 10f, new Vector2(1f, 0.5f));
-            var totalCounter = Counter(total, "Stars", icons.StarFilled, out var totalText);
-            totalCounter.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
-
             var gridRect = Rect(area, "Grid", Center, new Vector2(0f, 30f), new Vector2(1058f, 414f));
             var gridGroup = gridRect.gameObject.AddComponent<CanvasGroup>();
             var grid = gridRect.gameObject.AddComponent<GridLayoutGroup>();
@@ -352,7 +348,6 @@ namespace Purge.Editor.Dev
 
             SetReference(screen, "_style", _style);
             SetReference(screen, "_backButton", back);
-            SetReference(screen, "_totalStars", totalText);
             SetReferences(screen, "_tiles", tiles);
             SetReference(screen, "_grid", gridGroup);
             SetReference(screen, "_previousButton", previous);
@@ -364,7 +359,7 @@ namespace Purge.Editor.Dev
             return screen;
         }
 
-        /// <summary>One tile (a grid cell): the button with the number and padlock, the star slots under it.</summary>
+        /// <summary>One tile (a grid cell): the button with the number and padlock.</summary>
         private static LevelTile LevelTileView(RectTransform grid, int index, UiIconSet icons)
         {
             var holder = new GameObject("Tile" + index, typeof(RectTransform), typeof(CanvasGroup));
@@ -381,36 +376,13 @@ namespace Purge.Editor.Dev
             number.textWrappingMode = TextWrappingModes.NoWrap;
             AutoSize(number, 0.35f); // Development levels show a word instead of the number.
             var padlock = Icon(bodyRect, "Lock", icons.Lock, new Vector2(0.5f, 0f), new Vector2(0f, 26f), 30f);
-            var bestTime = Text(bodyRect, "BestTime", "", 22f, false, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0f, 10f), new Vector2(150f, 28f), TextAlignmentOptions.Bottom, _style.MutedText);
-            bestTime.textWrappingMode = TextWrappingModes.NoWrap;
-            bestTime.gameObject.SetActive(false);
             var button = MakeButton(body, false, number, padlock);
 
-            var stars = new GameObject("Stars", typeof(RectTransform)).GetComponent<RectTransform>();
-            stars.SetParent(holder.transform, false);
-            stars.anchorMin = Vector2.zero;
-            stars.anchorMax = new Vector2(1f, 0.17f);
-            stars.offsetMin = stars.offsetMax = Vector2.zero;
-            var starsLayout = stars.gameObject.AddComponent<HorizontalLayoutGroup>();
-            starsLayout.spacing = 6f;
-            starsLayout.childAlignment = TextAnchor.MiddleCenter;
-            starsLayout.childControlWidth = starsLayout.childControlHeight = false;
-            var starImages = new List<Object>();
-            for (var i = 0; i < 3; i++)
-                starImages.Add(Icon(stars, "Star" + i, icons.Star, Center, Vector2.zero, 32f));
-
             var tile = body.gameObject.AddComponent<LevelTile>();
-            SetReference(tile, "_style", _style);
             SetReference(tile, "_button", button);
             SetReference(tile, "_number", number);
             SetReference(tile, "_lock", padlock.gameObject);
-            SetReference(tile, "_bestTime", bestTime);
             SetReference(tile, "_group", holder.GetComponent<CanvasGroup>());
-            SetReference(tile, "_stars", stars.gameObject);
-            SetReferences(tile, "_starImages", starImages);
-            SetReference(tile, "_star", icons.Star);
-            SetReference(tile, "_starFilled", icons.StarFilled);
             return tile;
         }
 
@@ -1186,62 +1158,64 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>
-        /// Result (mock-up): the title and level name, three star slots with what each is for, a hairline, then Menu,
+        /// Result (stage 6d): the title and level name; rows "caption — value" (waves, kills, time, score, money earned
+        /// with the coin), each revealed with its sound; the ×2 offer (rewarded) in its own slot; a hairline, then Menu,
         /// Retry and Next (shown after a win when there is a next level).
         /// </summary>
         private static ResultScreen BuildResult(Transform parent)
         {
+            const float rowHeight = 48f;
             var screen = Screen<ResultScreen>(parent, "ResultScreen", Dim);
             var icons = UiIcons();
-            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 940f, new RectOffset(64, 64, 52, 56), 24f);
+            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 940f, new RectOffset(64, 64, 52, 56), 22f);
             SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
-            var title = Heading(panel, "Title", "LEVEL COMPLETE", 62f);
+            var title = Heading(panel, "Title", "VICTORY", 62f);
             var levelName = Text(panel, "LevelName", "", 28f, true, Center, Center, Vector2.zero, new Vector2(600f, 34f),
                 TextAlignmentOptions.Center, _style.MutedText, 10f);
             levelName.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
 
-            var starsRow = new GameObject("Stars", typeof(RectTransform));
-            starsRow.transform.SetParent(panel, false);
-            var starsLayout = starsRow.AddComponent<HorizontalLayoutGroup>();
-            starsLayout.spacing = 40f;
-            starsLayout.childAlignment = TextAnchor.MiddleCenter;
-            starsLayout.childControlWidth = starsLayout.childControlHeight = true;
-            starsLayout.childForceExpandWidth = starsLayout.childForceExpandHeight = false;
-            starsRow.AddComponent<LayoutElement>().preferredHeight = 170f;
-            var stars = new List<Object>();
-            var labels = new List<Object>();
-            for (var i = 0; i < 3; i++)
+            var rowsRoot = new GameObject("Rows", typeof(RectTransform));
+            rowsRoot.transform.SetParent(panel, false);
+            var rowsLayout = rowsRoot.AddComponent<VerticalLayoutGroup>();
+            rowsLayout.padding = new RectOffset(110, 110, 4, 4);
+            rowsLayout.spacing = 6f;
+            rowsLayout.childControlWidth = rowsLayout.childControlHeight = true;
+            rowsLayout.childForceExpandHeight = false;
+
+            var keys = new[] { TextKeys.ResultWaves, TextKeys.ResultKills, TextKeys.ResultTime, TextKeys.ResultScore, TextKeys.ResultMoney };
+            var names = new[] { "Waves", "Kills", "Time", "Score", "Money" };
+            var rows = new List<(GameObject Slot, GameObject Root, TMP_Text Value)>();
+            for (var i = 0; i < keys.Length; i++)
             {
-                var column = new GameObject("Star" + i, typeof(RectTransform));
-                column.transform.SetParent(starsRow.transform, false);
-                var columnLayout = column.AddComponent<VerticalLayoutGroup>();
-                columnLayout.spacing = 14f;
-                columnLayout.childAlignment = TextAnchor.UpperCenter;
-                columnLayout.childControlWidth = columnLayout.childControlHeight = true;
-                columnLayout.childForceExpandWidth = columnLayout.childForceExpandHeight = false;
-                var columnElement = column.AddComponent<LayoutElement>();
-                // (940 − 2 × 64 padding − 2 × 40 spacing) / 3: the label has this width whatever its text.
-                columnElement.preferredWidth = 244f;
-                var holder = new GameObject("Holder", typeof(RectTransform));
-                holder.transform.SetParent(column.transform, false);
-                var holderLayout = holder.AddComponent<LayoutElement>();
-                holderLayout.preferredWidth = holderLayout.preferredHeight = 108f;
-                stars.Add(Icon(holder.transform, "Icon", icons.Star, Center, Vector2.zero, 108f));
-                var label = Text(column.transform, "Label", "", 26f, true, Center, Center, Vector2.zero, new Vector2(230f, 34f),
-                    TextAlignmentOptions.Center, spacing: 6f);
+                var slot = new GameObject(names[i], typeof(RectTransform));
+                slot.transform.SetParent(rowsRoot.transform, false);
+                slot.AddComponent<LayoutElement>().preferredHeight = rowHeight;
+                var content = new GameObject("Content", typeof(RectTransform)).GetComponent<RectTransform>();
+                content.SetParent(slot.transform, false);
+                Stretch(content);
+                var left = new Vector2(0f, 0.5f);
+                var right = new Vector2(1f, 0.5f);
+                var label = Text(content, "Label", Loc(keys[i]), 30f, true, left, left, Vector2.zero, new Vector2(380f, rowHeight),
+                    TextAlignmentOptions.MidlineLeft, _style.MutedText, 8f);
                 label.textWrappingMode = TextWrappingModes.NoWrap;
                 AutoSize(label);
-                var labelElement = label.gameObject.AddComponent<LayoutElement>();
-                labelElement.preferredHeight = 34f;
-                labelElement.preferredWidth = 244f;
-                labels.Add(label);
+                var money = i == ResultScreen.Money;
+                var value = Text(content, "Value", "0", 38f, true, right, right, new Vector2(money ? -52f : 0f, 0f),
+                    new Vector2(300f, rowHeight), TextAlignmentOptions.MidlineRight, _style.Text, 2f);
+                value.textWrappingMode = TextWrappingModes.NoWrap;
+                if (money)
+                {
+                    var coin = Icon(content, "Coin", icons.Coin, right, new Vector2(-20f, 0f), 40f);
+                    coin.color = _style.Accent;
+                }
+
+                rows.Add((slot, content.gameObject, value));
             }
 
-            var time = Text(panel, "Time", "", 28f, true, Center, Center, Vector2.zero, new Vector2(700f, 36f),
-                TextAlignmentOptions.Center, _style.MutedText, 6f);
-            time.textWrappingMode = TextWrappingModes.NoWrap;
-            AutoSize(time);
-            time.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
+            // The offer's slot keeps its height: the panel does not jump when it appears.
+            var doubleRow = ButtonRow(panel, "DoubleRow", 0f, 80f);
+            doubleRow.GetComponent<HorizontalLayoutGroup>().padding = new RectOffset(170, 170, 0, 0);
+            var doubleButton = TextButton(doubleRow, "DoubleButton", Loc(TextKeys.ResultDouble), true, icons.Ad, 80f);
 
             Hairline(panel, 0.2f);
             var row = ButtonRow(panel, "Buttons", 18f, 86f);
@@ -1252,15 +1226,45 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_style", _style);
             SetReference(screen, "_title", title);
             SetReference(screen, "_levelName", levelName);
-            SetReference(screen, "_starsRow", starsRow);
-            SetReferences(screen, "_stars", stars);
-            SetReferences(screen, "_starLabels", labels);
-            SetReference(screen, "_time", time);
-            SetReference(screen, "_star", icons.Star);
-            SetReference(screen, "_starFilled", icons.StarFilled);
+            SetReference(screen, "_rowsRoot", rowsRoot);
+            SetReference(screen, "_doubleButton", doubleButton);
             SetReference(screen, "_retryButton", retry);
             SetReference(screen, "_menuButton", menu);
             SetReference(screen, "_nextButton", next);
+            var serialized = new SerializedObject(screen);
+            var array = serialized.FindProperty("_rows");
+            array.arraySize = rows.Count;
+            for (var i = 0; i < rows.Count; i++)
+            {
+                var element = array.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("Slot").objectReferenceValue = rows[i].Slot;
+                element.FindPropertyRelative("Root").objectReferenceValue = rows[i].Root;
+                element.FindPropertyRelative("Value").objectReferenceValue = rows[i].Value;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return screen;
+        }
+
+        /// <summary>
+        /// The death window (stage 6d), over the HUD: the title, revive for an ad (the main action), revive by the skill,
+        /// give up. The presenter hides the revives that are used up.
+        /// </summary>
+        private static DeathScreen BuildDeath(Transform parent)
+        {
+            var screen = Screen<DeathScreen>(parent, "DeathScreen", new Color(0.18f, 0f, 0f, 0.55f));
+            var icons = UiIcons();
+            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 660f, new RectOffset(56, 56, 48, 56), 18f);
+            SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
+            var title = Heading(panel, "Title", Loc(TextKeys.DeathTitle), 62f);
+            title.color = _style.Danger;
+            var ad = TextButton(panel, "ReviveAdButton", Loc(TextKeys.DeathRevive), true, icons.Ad, 86f);
+            var skill = TextButton(panel, "ReviveSkillButton", Loc(TextKeys.DeathReviveSkill), false, icons.HeartFill, 86f);
+            var giveUp = TextButton(panel, "GiveUpButton", Loc(TextKeys.DeathGiveUp), false, icons.Close, 86f);
+
+            SetReference(screen, "_adButton", ad);
+            SetReference(screen, "_skillButton", skill);
+            SetReference(screen, "_giveUpButton", giveUp);
             return screen;
         }
 

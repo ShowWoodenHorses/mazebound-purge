@@ -39,6 +39,7 @@ namespace Purge.Gameplay.Waves
     /// <para>Stage 6b: the pause between waves counts down <see cref="WaveScenario.PauseTime"/>; <see cref="Skip"/> starts
     /// the next wave at once and pays <see cref="SkipBonus"/> into the <see cref="RunWallet"/>. When the next wave starts
     /// the monsters' drop still lying disappears (<see cref="PickupSystem.ClearDropped"/>).</para>
+    /// <para>Stage 6d: a cleared wave pays <see cref="WaveScenario.MoneyBonusOf"/> into the wallet.</para>
     /// </summary>
     public sealed class WaveSystem : ILevelLoadStep, ILevelTickable
     {
@@ -236,6 +237,8 @@ namespace Purge.Gameplay.Waves
         private void ClearWave()
         {
             GameLog.Info(LogChannel.Gameplay, $"Wave {WaveIndex + 1}/{Scenario.Count} cleared.");
+            // The wave's money (stage 6d); its score — RunScore.
+            if (_wallet != null) _wallet.Add(Scenario.MoneyBonusOf(WaveIndex) * _wallet.Factor);
             WaveCleared?.Invoke(WaveIndex);
             if (WaveIndex + 1 >= Scenario.Count)
             {

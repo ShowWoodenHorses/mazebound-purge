@@ -78,6 +78,10 @@ namespace Purge.Core.Waves
         [Tooltip("Money per second left of the pause before this wave for «Пропустить» (× the difficulty's money factor); " +
                  "0 = the wave's number (wave 2 — 2 a second).")]
         [SerializeField, Min(0f)] private float _skipRate;
+        [Tooltip("Money for clearing this wave (stage 6d, × the difficulty's money factor); 0 = 5 × the wave's number.")]
+        [SerializeField, Min(0f)] private float _moneyBonus;
+        [Tooltip("Score for clearing this wave (stage 6d, × the difficulty's score factor); 0 = 100 × the wave's number.")]
+        [SerializeField, Min(0f)] private float _scoreBonus;
 
         public float Budget => _budget;
         public WaveMonster[] Monsters => _monsters ??= Array.Empty<WaveMonster>();
@@ -91,6 +95,20 @@ namespace Purge.Core.Waves
         {
             get => _skipRate;
             internal set => _skipRate = Math.Max(0f, value);
+        }
+
+        /// <summary>The set money bonus; 0 = by the wave's number (<see cref="WaveScenario.MoneyBonusOf"/>).</summary>
+        public float MoneyBonus
+        {
+            get => _moneyBonus;
+            internal set => _moneyBonus = Math.Max(0f, value);
+        }
+
+        /// <summary>The set score bonus; 0 = by the wave's number (<see cref="WaveScenario.ScoreBonusOf"/>).</summary>
+        public float ScoreBonus
+        {
+            get => _scoreBonus;
+            internal set => _scoreBonus = Math.Max(0f, value);
         }
 
         public WaveDefinition()
@@ -134,6 +152,22 @@ namespace Purge.Core.Waves
             if (index < 0 || index >= Count) return 0f;
             var rate = Waves[index]?.SkipRate ?? 0f;
             return rate > 0f ? rate : index + 1;
+        }
+
+        /// <summary>Money for clearing wave <paramref name="index"/> (from 0), the default (5 × its number) resolved.</summary>
+        public float MoneyBonusOf(int index)
+        {
+            if (index < 0 || index >= Count) return 0f;
+            var bonus = Waves[index]?.MoneyBonus ?? 0f;
+            return bonus > 0f ? bonus : 5f * (index + 1);
+        }
+
+        /// <summary>Score for clearing wave <paramref name="index"/> (from 0), the default (100 × its number) resolved.</summary>
+        public float ScoreBonusOf(int index)
+        {
+            if (index < 0 || index >= Count) return 0f;
+            var bonus = Waves[index]?.ScoreBonus ?? 0f;
+            return bonus > 0f ? bonus : 100f * (index + 1);
         }
 
         /// <summary>For tests and tools.</summary>

@@ -78,9 +78,9 @@ namespace Purge.Composition
         {
             if (!_platform.Traits.StartsInGameplay) return null;
             var tutorial = _catalog.Tutorial;
-            if (tutorial != null && _progress.GetStars(tutorial.LevelId) > 0) return null;
+            if (tutorial != null && _progress.IsCompleted(tutorial.LevelId)) return null;
             foreach (var level in _catalog.Levels)
-                if (_progress.GetStars(level.LevelId) > 0)
+                if (_progress.IsCompleted(level.LevelId))
                     return null;
             return tutorial?.LevelId ?? (_catalog.Levels.Count > 0 ? _catalog.Levels[0].LevelId : null);
         }

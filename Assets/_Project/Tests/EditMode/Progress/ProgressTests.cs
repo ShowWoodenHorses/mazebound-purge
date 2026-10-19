@@ -267,6 +267,25 @@ namespace Purge.Tests.EditMode.Progress
         }
 
         [Test]
+        public void ControlsScheme_TwoSticksByDefault_Saved_BrokenValueClamped()
+        {
+            Assert.AreEqual(TouchScheme.TwoSticks, ControlsSettings.Default.Scheme);
+            Assert.AreEqual(TouchScheme.TwoSticks, default(ControlsSettings).Scheme, "Old saves (zero): two sticks.");
+
+            var settings = new SettingsService(_save);
+            settings.InitializeAsync(CancellationToken.None);
+            var controls = settings.Controls;
+            controls.Scheme = TouchScheme.Auto;
+            settings.SetControls(controls);
+            var save = new SaveService(_storage);
+            save.Load();
+            Assert.AreEqual(TouchScheme.Auto, save.Data.Settings.Controls.Scheme);
+
+            controls.Scheme = (TouchScheme)7;
+            Assert.AreEqual(TouchScheme.TwoSticks, controls.Clamped().Scheme);
+        }
+
+        [Test]
         public void TouchLayout_IsSaved_Clamped_AndOldSavesGetBuiltInPlaces()
         {
             var settings = new SettingsService(_save);

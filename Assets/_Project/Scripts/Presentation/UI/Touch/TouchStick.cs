@@ -12,6 +12,8 @@ namespace Purge.Presentation.UI.Touch
     /// (physical, see <see cref="TouchControls"/>) and shaped by <see cref="StickResponse"/>.
     /// The ring is anchored to the zone's bottom-left corner. The player may move its rest point (inside the zone) and
     /// scale it (<see cref="SetPlacement"/>); a scaled stick has a proportionally longer travel.
+    /// The aim stick of the two-stick scheme lives in the attack cluster: its ring may leave the zone (a touch is never
+    /// shifted, so it starts undeflected), and in the mirrored (left-handed) cluster its value is mirrored back.
     /// </summary>
     public sealed class TouchStick : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
@@ -34,6 +36,9 @@ namespace Purge.Presentation.UI.Touch
 
         [Tooltip("Full travel of the stick (canvas units).")]
         [SerializeField] private float _radius = 100f;
+
+        [Tooltip("Keep the whole ring inside the zone (the movement stick); off — the ring is centred on the touch.")]
+        [SerializeField] private bool _keepInZone = true;
 
         private float _deadZone = 0.2f;
         private float _exponent = 1.6f;
@@ -130,7 +135,9 @@ namespace Purge.Presentation.UI.Touch
             // The knob lives in the scaled ring: its local offset is divided by the scale.
             var offset = (point - _ring.anchoredPosition) / _scale;
             if (_knob != null) _knob.anchoredPosition = Vector2.ClampMagnitude(offset, _radius);
-            SendValueToControl(StickResponse.Shape(offset / _radius, _deadZone, _exponent));
+            // Local space of a mirrored parent is flipped; the value is in screen directions.
+            var screen = transform.lossyScale.x < 0f ? new Vector2(-offset.x, offset.y) : offset;
+            SendValueToControl(StickResponse.Shape(screen / _radius, _deadZone, _exponent));
             if (_marks != null) _marks.Point(Vector2.ClampMagnitude(offset / _radius, 1f));
         }
 
@@ -163,6 +170,7 @@ namespace Purge.Presentation.UI.Touch
         /// <summary>Keeps the whole ring inside the zone.</summary>
         private Vector2 KeepInside(Vector2 point)
         {
+            if (!_keepInZone) return point;
             var size = Zone.rect.size;
             var half = RingRadius;
             return new Vector2(

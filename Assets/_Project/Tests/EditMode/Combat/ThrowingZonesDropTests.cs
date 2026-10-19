@@ -286,6 +286,29 @@ namespace Purge.Tests.EditMode.Combat
             Assert.AreEqual(1, _slot.Count);
         }
 
+        [Test]
+        public void Throw_AimStick_PointsTheThrow_ByDeflection_ReleaseThrows()
+        {
+            _slot.Add(Grenade(range: 8f), 3);
+            _input.Press(PlayerAction.Throw);
+            _input.Hold(PlayerAction.Throw, true);
+            Frame();
+            _input.Hold(PlayerAction.Throw, false);
+            Frame();
+            Assert.IsTrue(_throwing.WaitsForTap, "A quick press: aiming.");
+
+            _input.AimStick = new Vector2(0.5f, 0f);
+            Frame();
+            Assert.AreEqual(new Vector2(6f, 3f), _throwing.Target, "Half the deflection: half of the 8-cell reach.");
+            Assert.AreEqual(3, _slot.Count, "Not thrown while the stick is held.");
+
+            _input.AimStick = Vector2.zero;
+            Frame();
+            Assert.AreEqual(2, _slot.Count, "Letting the stick go throws.");
+            Assert.IsFalse(_throwing.IsAiming);
+            Fly();
+        }
+
         // ------------------------------------------------------------------ Zones
 
         [Test]

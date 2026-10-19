@@ -87,6 +87,9 @@ MonoBehaviour:
   - settings.button_layout
   - settings.edit
   - settings.aim_mode
+  - settings.scheme
+  - settings.scheme_two_sticks
+  - settings.scheme_auto
   - settings.aim.free
   - settings.aim.eight
   - settings.aim.four
@@ -277,6 +280,9 @@ MonoBehaviour:
   - Disposition des boutons
   - MODIFIER
   - "Directions de vis\xE9e"
+  - "Sch\xE9ma de contr\xF4le"
+  - Deux sticks
+  - Auto
   - LIBRE
   - HUIT
   - QUATRE

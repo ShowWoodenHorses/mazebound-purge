@@ -13,7 +13,7 @@ namespace Purge.Presentation.UI
     /// <summary>Pages of the settings screen.</summary>
     public enum SettingsTab
     {
-        /// <summary>On-screen controls: stick, size, opacity, layout.</summary>
+        /// <summary>On-screen controls: scheme, stick, size, opacity, layout.</summary>
         Controls,
 
         /// <summary>Aim directions, auto-aim.</summary>
@@ -41,6 +41,8 @@ namespace Purge.Presentation.UI
         [Tooltip("In SettingsTab order.")]
         [SerializeField] private GameObject[] _pages;
 
+        [Tooltip("Scheme segments: Two sticks, Auto (TouchScheme order); the chosen one in the accent.")]
+        [SerializeField] private UiButton[] _schemeButtons;
         [SerializeField] private Slider _deadZone;
         [SerializeField] private TMP_Text _deadZoneLabel;
         [SerializeField] private Slider _sensitivity;
@@ -96,6 +98,7 @@ namespace Purge.Presentation.UI
         public event Action BackClicked;
 
         private AimMode _aimMode;
+        private TouchScheme _scheme;
         private LocalizationService _texts;
 
         public SettingsTab Tab { get; private set; }
@@ -123,6 +126,12 @@ namespace Purge.Presentation.UI
                 var mode = (AimMode)i;
                 Bind(_aimButtons[i], () => OnAimModeClicked(mode));
             }
+            if (_schemeButtons != null)
+                for (var i = 0; i < _schemeButtons.Length; i++)
+                {
+                    var scheme = (TouchScheme)i;
+                    Bind(_schemeButtons[i], () => OnSchemeClicked(scheme));
+                }
             Bind(_resetButton, () => ResetClicked?.Invoke(Tab));
             Bind(_editLayoutButton, () => EditLayoutClicked?.Invoke());
             Bind(_backButton, () => BackClicked?.Invoke());
@@ -213,6 +222,7 @@ namespace Purge.Presentation.UI
             _leftHanded.SetIsOnWithoutNotify(settings.LeftHanded);
             _aimAssist.SetIsOnWithoutNotify(settings.AimAssist);
             _aimMode = settings.AimMode;
+            _scheme = settings.Scheme;
             UpdateLabels(settings);
         }
 
@@ -229,6 +239,7 @@ namespace Purge.Presentation.UI
             settings.LeftHanded = _leftHanded.isOn;
             settings.AimMode = _aimMode;
             settings.AimAssist = _aimAssist.isOn;
+            settings.Scheme = _scheme;
             return settings;
         }
 
@@ -236,6 +247,13 @@ namespace Purge.Presentation.UI
         {
             if (_aimMode == mode) return;
             _aimMode = mode;
+            OnEdited();
+        }
+
+        private void OnSchemeClicked(TouchScheme scheme)
+        {
+            if (_scheme == scheme) return;
+            _scheme = scheme;
             OnEdited();
         }
 
@@ -255,6 +273,9 @@ namespace Purge.Presentation.UI
             _opacityLabel.text = Percent(settings.Opacity);
             for (var i = 0; i < _aimButtons.Length; i++)
                 _aimButtons[i].Accent = i == (int)settings.AimMode;
+            if (_schemeButtons != null)
+                for (var i = 0; i < _schemeButtons.Length; i++)
+                    _schemeButtons[i].Accent = i == (int)settings.Scheme;
         }
 
         private void OnVolumesEdited()

@@ -37,6 +37,10 @@ namespace Purge.Gameplay.Combat
     /// stick or the facing — the latter two with aim assist (<see cref="IAimSettings"/>: the best living target within
     /// <see cref="AssistAngle"/>, in the attack's reach, not behind a wall; for the movement stick then the nearest one
     /// all around) or snapped (<see cref="Aim.Snap"/>).</para>
+    /// <para>Two-stick scheme of a phone (decision 2026-10-19): the on-screen aim stick (<see cref="IPlayerInput.AimStick"/>)
+    /// attacks while deflected — automatic weapons continuously, the rest at their own pace — exactly where it points,
+    /// with only a slight turn to a target within <see cref="StickAssistAngle"/> (aim assist on, no snapping). Not while a
+    /// throw is aimed: then the stick aims the throw (<see cref="PlayerThrowing"/>).</para>
     /// <para>Ammo (<see cref="AmmoModule"/>): an attack takes rounds from the magazine; an empty magazine reloads
     /// itself from the reserve (<see cref="AmmoStock"/>; the base pistol's is infinite). Reload (or the active slot's key
     /// again) reloads earlier. No rounds left anywhere — the attack only clicks (<see cref="DryFired"/>).</para>
@@ -48,6 +52,9 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>Half-angle of the aim assist cone, degrees.</summary>
         public const float AssistAngle = 30f;
+
+        /// <summary>Half-angle of the aim assist cone around the on-screen aim stick, degrees.</summary>
+        public const float StickAssistAngle = 10f;
 
         /// <summary>Seconds after the last attack the player still counts as firing (weapon speed).</summary>
         public const float FiringLinger = 0.25f;
@@ -84,6 +91,7 @@ namespace Purge.Gameplay.Combat
         private readonly DeterministicRandom _random = new DeterministicRandom(0x5eed);
         private float _firingLeft;
         private float _stanceLeft;
+        private bool _stickWasFiring;
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
@@ -159,23 +167,28 @@ namespace Purge.Gameplay.Combat
                 TryReload();
 
             var definition = weapon.Definition;
-            var wantsToAttack = WantsToAttack(weapon);
+            var stickFiring = StickFiring();
+            var stickPressed = stickFiring && !_stickWasFiring;
+            _stickWasFiring = stickFiring;
+            var wantsToAttack = stickFiring || WantsToAttack(weapon);
             if (wantsToAttack || _stanceLeft > 0f || pointerAim)
             {
                 // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
                 // right stick aims): the body does not follow the run direction.
-                var direction = wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
+                var direction = stickFiring
+                    ? StickAim(definition, _input.AimStick.normalized)
+                    : wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
                 if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned)
                 {
                     if (HasRounds(weapon)) Attack(weapon, direction);
-                    else if (!TryReload() && _input.WasPressed(PlayerAction.Attack)) DryFired?.Invoke(weapon);
+                    else if (!TryReload() && (stickPressed || _input.WasPressed(PlayerAction.Attack))) DryFired?.Invoke(weapon);
                 }
 
                 AimDirection = direction;
                 _player.AimAt(direction);
             }
 
-            var firing = IsFiring || (wantsToAttack && definition.Attack != null && definition.Attack.Automatic);
+            var firing = IsFiring || (wantsToAttack && definition.Attack != null && (definition.Attack.Automatic || stickFiring));
             _player.WeaponSpeed = definition.SpeedInHands * (firing ? definition.SpeedWhileFiring : 1f);
         }
 
@@ -230,6 +243,18 @@ namespace Purge.Gameplay.Combat
             if (_aim.AimAssist && TryFindAssistTarget(definition, wanted, AssistAngle, out var toTarget))
                 return toTarget;
             return Aim.Snap(wanted, _aim.AimMode);
+        }
+
+        /// <summary>The on-screen aim stick is deflected and not aiming a throw.</summary>
+        private bool StickFiring() =>
+            _input.AimStick.sqrMagnitude > 0f && (_throwing == null || !_throwing.IsAiming);
+
+        /// <summary>Where the aim stick points, turned slightly to a target in a narrow cone (aim assist on).</summary>
+        private Vector2 StickAim(WeaponDefinition definition, Vector2 wanted)
+        {
+            if (_aim.AimAssist && TryFindAssistTarget(definition, wanted, StickAssistAngle, out var toTarget))
+                return toTarget;
+            return wanted;
         }
 
         private Vector2 AimFor(WeaponDefinition definition)

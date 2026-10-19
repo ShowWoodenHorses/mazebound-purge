@@ -1,4 +1,5 @@
 using System;
+using Purge.Application.Save;
 using Purge.Presentation.UI.Shapes;
 using Purge.Presentation.UI.Style;
 using TMPro;
@@ -16,6 +17,8 @@ namespace Purge.Presentation.UI.Touch
     /// while aiming. Use lights up when it would do something. Pressed buttons get the light fill. Only the look: the
     /// buttons are <c>OnScreenButton</c>s. The left-handed layout mirrors the content (icons and numbers stay readable).
     /// "Melee" / "Ranged" in the field names are the slots 1 / 2 of Maze's layout: either slot holds any weapon.
+    /// The two-stick scheme (<see cref="TouchScheme"/>, stage Т) puts the aim stick in the Attack quarter instead of the
+    /// button (<see cref="SetScheme"/>); the sectors stay around it.
     /// </summary>
     public sealed class TouchAttackCluster : MonoBehaviour
     {
@@ -54,6 +57,12 @@ namespace Purge.Presentation.UI.Touch
 
         [SerializeField] private UiShape _attack;
 
+        [Tooltip("Shown only in the Auto scheme: the Attack button and its icon.")]
+        [SerializeField] private GameObject[] _attackOnly;
+
+        [Tooltip("The aim stick's quarter (TouchStick on it): shown only in the two-stick scheme.")]
+        [SerializeField] private UiShape _aimStick;
+
         [Tooltip("Weapon slot 1 (LB).")]
         [SerializeField] private SlotView _melee = new SlotView();
 
@@ -81,12 +90,14 @@ namespace Purge.Presentation.UI.Touch
         private TouchPress _throwPress;
         private bool _mirrored;
         private TouchPress _attackPress;
+        private TouchPress _aimPress;
         private TouchPress _usePress;
         private int _shownThrowCount = int.MinValue;
 
         private void Awake()
         {
             _attackPress = Watch(_attack);
+            _aimPress = Watch(_aimStick);
             _melee.Press = Watch(_melee.Shape);
             _ranged.Press = Watch(_ranged.Shape);
             _usePress = Watch(_use);
@@ -100,6 +111,19 @@ namespace Purge.Presentation.UI.Touch
             if (press != null) press.Changed += Refresh;
             return press;
         }
+
+        /// <summary>The aim stick (two sticks) or the Attack button (auto) in the Attack quarter.</summary>
+        public void SetScheme(TouchScheme scheme)
+        {
+            var sticks = scheme == TouchScheme.TwoSticks;
+            if (_aimStick != null) _aimStick.gameObject.SetActive(sticks);
+            if (_attackOnly != null)
+                foreach (var part in _attackOnly)
+                    if (part != null) part.SetActive(!sticks);
+        }
+
+        /// <summary>The aim stick of the two-stick scheme (null in old scenes).</summary>
+        public TouchStick AimStick => _aimStick != null ? _aimStick.GetComponent<TouchStick>() : null;
 
         public void SetMirrored(bool mirrored)
         {
@@ -150,6 +174,7 @@ namespace Purge.Presentation.UI.Touch
         {
             if (_style == null) return;
             PaintButton(_attack, true, false, _attackPress);
+            PaintButton(_aimStick, true, false, _aimPress);
             PaintSlot(_melee);
             PaintSlot(_ranged);
             PaintUse();

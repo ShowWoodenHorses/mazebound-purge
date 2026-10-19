@@ -130,6 +130,9 @@ namespace Purge.Presentation.Localization
         public const string SettingsButtonLayout = "settings.button_layout";
         public const string SettingsEdit = "settings.edit";
         public const string SettingsAimMode = "settings.aim_mode";
+        public const string SettingsScheme = "settings.scheme";
+        public const string SettingsSchemeTwoSticks = "settings.scheme_two_sticks";
+        public const string SettingsSchemeAuto = "settings.scheme_auto";
         public const string SettingsAimFree = "settings.aim.free";
         public const string SettingsAimEight = "settings.aim.eight";
         public const string SettingsAimFour = "settings.aim.four";

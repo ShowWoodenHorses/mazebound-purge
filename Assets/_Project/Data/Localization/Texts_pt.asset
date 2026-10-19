@@ -87,6 +87,9 @@ MonoBehaviour:
   - settings.button_layout
   - settings.edit
   - settings.aim_mode
+  - settings.scheme
+  - settings.scheme_two_sticks
+  - settings.scheme_auto
   - settings.aim.free
   - settings.aim.eight
   - settings.aim.four
@@ -277,6 +280,9 @@ MonoBehaviour:
   - "Posi\xE7\xE3o dos bot\xF5es"
   - EDITAR
   - "Dire\xE7\xF5es da mira"
+  - Esquema de controle
+  - "Dois anal\xF3gicos"
+  - Auto
   - LIVRE
   - OITO
   - QUATRO

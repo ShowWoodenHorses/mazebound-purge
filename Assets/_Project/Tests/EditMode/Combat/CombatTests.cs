@@ -343,6 +343,57 @@ namespace Purge.Tests.EditMode.Combat
             Assert.AreEqual(1, behind.Hits);
         }
 
+        [Test]
+        public void AimStick_FiresWhileDeflected_AtTheWeaponsPace_StopsOnRelease_KeepsTheStance()
+        {
+            Equip(Weapon("semi", Bullets(0.25f), Ammo(30)));
+            var attacks = 0;
+            _combat.Attacked += (_, direction) =>
+            {
+                attacks++;
+                AssertDirection(Vector2.down, direction, "Exactly where the stick points.");
+            };
+
+            _input.AimStick = new Vector2(0f, -0.6f);
+            for (var t = 0f; t < 0.6f; t += Dt) Frame();
+            Assert.AreEqual(3, attacks, "A semi-automatic in its own pace: t ≈ 0, 0.25, 0.5.");
+
+            _input.AimStick = Vector2.zero;
+            for (var t = 0f; t < 0.5f; t += Dt) Frame();
+            Assert.AreEqual(3, attacks, "Released: no more shots.");
+            AssertDirection(Vector2.down, _player.Facing, "The stance keeps the aim.");
+        }
+
+        [Test]
+        public void AimStick_TurnsOnlyToTargetsInANarrowCone_NoSnapping()
+        {
+            _aim.AimAssist = true;
+            _aim.AimMode = AimMode.Eight;
+            Vector2 Dir(float degrees) => new Vector2(Mathf.Cos(degrees * Mathf.Deg2Rad), Mathf.Sin(degrees * Mathf.Deg2Rad));
+            Equip(Weapon("semi", Bullets(0.25f), Ammo(30)));
+            var wide = AddTarget(5f, 2f + 3f * Mathf.Tan(20f * Mathf.Deg2Rad));
+            _input.AimStick = Dir(3f);
+            Frame();
+            AssertDirection(Dir(3f), _combat.AimDirection, "20° off: no turn to it, and no snapping to 8 directions.");
+
+            _spatial.Remove(wide);
+            AddTarget(5f, 2f + 3f * Mathf.Tan(8f * Mathf.Deg2Rad));
+            _input.AimStick = Vector2.right;
+            Frame();
+            AssertDirection(Dir(8f), _combat.AimDirection, "Within the narrow cone: a slight turn.");
+        }
+
+        [Test]
+        public void GamepadRightStick_OnlyAims_DoesNotFire()
+        {
+            Equip(Weapon("semi", Bullets(0.25f), Ammo(30)));
+            var attacks = 0;
+            _combat.Attacked += (_, _) => attacks++;
+            _input.Look = Vector2.left;
+            for (var t = 0f; t < 0.5f; t += Dt) Frame();
+            Assert.AreEqual(0, attacks);
+        }
+
         private sealed class FixedPointer : IAimPointer
         {
             public Vector2 Point;

@@ -87,6 +87,9 @@ MonoBehaviour:
   - settings.button_layout
   - settings.edit
   - settings.aim_mode
+  - settings.scheme
+  - settings.scheme_two_sticks
+  - settings.scheme_auto
   - settings.aim.free
   - settings.aim.eight
   - settings.aim.four
@@ -277,6 +280,9 @@ MonoBehaviour:
   - "D\xFC\u011Fme d\xFCzeni"
   - "D\xDCZENLE"
   - "Ni\u015Fan y\xF6nleri"
+  - "Kontrol \u015Femas\u0131"
+  - "\u0130ki \xE7ubuk"
+  - Otomatik
   - SERBEST
   - "SEK\u0130Z"
   - "D\xD6RT"

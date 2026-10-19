@@ -181,6 +181,16 @@ namespace Purge.Application.Save
         public string Language = string.Empty;
     }
 
+    /// <summary>How a phone's on-screen controls attack (decision 2026-10-19).</summary>
+    public enum TouchScheme
+    {
+        /// <summary>Left stick moves, the right (aim) stick in the Attack place fires where it points while deflected.</summary>
+        TwoSticks = 0,
+
+        /// <summary>The Attack button; attacks aim by the movement stick with aim assist (the stage 4 scheme).</summary>
+        Auto = 1,
+    }
+
     /// <summary>
     /// Controls: on-screen stick response, size and layout (<see cref="TouchLayout"/>), aiming (all input devices). Applied at once, without restarting
     /// a level.
@@ -221,6 +231,9 @@ namespace Purge.Application.Save
         /// <summary>Positions and sizes of the stick and buttons set by the player (old saves: built-in places).</summary>
         public TouchLayout Layout;
 
+        /// <summary>On-screen attack scheme (old saves: zero — two sticks, the default).</summary>
+        public TouchScheme Scheme;
+
         /// <summary>Aim help is on by default on mobile (touch), off elsewhere.</summary>
         public static ControlsSettings Default => new ControlsSettings
         {
@@ -233,6 +246,7 @@ namespace Purge.Application.Save
             Opacity = 0.6f,
             LeftHanded = false,
             Layout = TouchLayout.Default,
+            Scheme = TouchScheme.TwoSticks,
         };
 
         public ControlsSettings Clamped()
@@ -243,6 +257,7 @@ namespace Purge.Application.Save
             result.Size = Clamp(Size, MinSize, MaxSize, Default.Size);
             result.Opacity = Clamp(Opacity, MinOpacity, MaxOpacity, Default.Opacity);
             if (!Enum.IsDefined(typeof(AimMode), AimMode)) result.AimMode = Default.AimMode;
+            if (!Enum.IsDefined(typeof(TouchScheme), Scheme)) result.Scheme = Default.Scheme;
             result.Layout = Layout.Clamped();
             return result;
         }
@@ -256,11 +271,12 @@ namespace Purge.Application.Save
             LeftHanded == other.LeftHanded &&
             AimMode == other.AimMode &&
             AimAssist == other.AimAssist &&
+            Scheme == other.Scheme &&
             Layout.Equals(other.Layout);
 
         public override bool Equals(object obj) => obj is ControlsSettings other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout);
+        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout, Scheme);
 
         private static float Clamp(float value, float min, float max, float fallback) =>
             float.IsNaN(value) ? fallback : UnityEngine.Mathf.Clamp(value, min, max);

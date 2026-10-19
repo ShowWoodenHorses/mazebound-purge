@@ -18,6 +18,8 @@ namespace Purge.Gameplay.Throwing
     /// where the right stick points, the stick's tilt is the distance).</item>
     /// <item>A quick press keeps aiming: a touch on the game (a phone) or a mouse click throws there; the throw key again
     /// cancels.</item>
+    /// <item>A phone's two-stick scheme: while aiming, the on-screen aim stick points the throw (its deflection is the
+    /// distance); letting the stick go throws there (decision 2026-10-19). Without the stick — as above.</item>
     /// </list>
     /// Without a pointer or a stick the target is the nearest monster ahead in reach, otherwise a cell ahead. The target
     /// is a cell centre within <see cref="ThrowableDefinition.Range"/>; whatever stops bullets on the straight line cuts it
@@ -46,6 +48,7 @@ namespace Purge.Gameplay.Throwing
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private float _held;
         private float _cooldown;
+        private bool _stickAimed;
         private bool _subscribed;
 
         public PlayerThrowing(IPlayerInput input, PlayerSystem player, ThrowableSlot slot, BulletSystem bullets,
@@ -113,6 +116,15 @@ namespace Purge.Gameplay.Throwing
 
             var held = _input.IsHeld(PlayerAction.Throw);
             if (held) _held += deltaTime;
+            var stick = _input.AimStick;
+            if (stick.sqrMagnitude <= 0f && _stickAimed)
+            {
+                // The aim stick let go: where it last pointed.
+                if (!TryThrow(Target)) StopAiming();
+                return;
+            }
+
+            _stickAimed = stick.sqrMagnitude > 0f;
             Target = FindTarget();
 
             if (!WaitsForTap && !held)
@@ -196,6 +208,10 @@ namespace Purge.Gameplay.Throwing
         {
             var origin = _player.Position;
             var range = _slot.Definition.Range;
+            var stick = _input.AimStick;
+            if (stick.sqrMagnitude > 0f)
+                return Clamp(origin + Vector2.ClampMagnitude(stick, 1f) * range);
+
             if (_input.LookIsPointer && _pointer != null && _pointer.TryGetGroundPoint(_input.Look, out var point))
                 return Clamp(point);
 
@@ -231,6 +247,7 @@ namespace Purge.Gameplay.Throwing
         {
             IsAiming = false;
             WaitsForTap = false;
+            _stickAimed = false;
             _held = 0f;
         }
 

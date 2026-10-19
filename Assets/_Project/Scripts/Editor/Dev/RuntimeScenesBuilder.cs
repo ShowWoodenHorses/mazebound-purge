@@ -917,10 +917,11 @@ namespace Purge.Editor.Dev
 
             var attack = SectorShape(content, "AttackButton", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
             AddTouchButton(attack.gameObject, "<Gamepad>/buttonSouth");
+            var aimStick = BuildAimStick(content, radius, icons.Attack);
             var arc = SectorShape(content, "AttackHairline", BottomRight, Vector2.zero, radius - 11.5f, radius - 10f, 90f, 90f);
             arc.StrokeWidth = 0f;
             arc.Fill = Fade(_style.Line, 0.25f);
-            Icon(content, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
+            var attackIcon = Icon(content, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
 
             var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
             ClusterSlot(cluster, "_ranged", content, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
@@ -944,6 +945,8 @@ namespace Purge.Editor.Dev
             SetReference(cluster, "_style", _style);
             SetReference(cluster, "_content", content);
             SetReference(cluster, "_attack", attack);
+            SetReference(cluster, "_aimStick", aimStick);
+            SetReferences(cluster, "_attackOnly", new List<Object> { attack.gameObject, attackIcon.gameObject });
             SetReference(cluster, "_use", useShape);
             SetReference(cluster, "_useIcon", useIcon);
             SetReference(cluster, "_throw", throwShape);
@@ -957,6 +960,39 @@ namespace Purge.Editor.Dev
             serialized.FindProperty("_tickRadius").floatValue = tickRadius;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             return (cluster, root, useShape.rectTransform);
+        }
+
+        /// <summary>
+        /// The aim stick of the two-stick scheme (stage Т): the Attack quarter itself catches the thumb; the ring (a faint
+        /// circle with the crosshair knob) rests in the quarter and jumps to where the thumb lands. It drives its own
+        /// virtual device (<see cref="Purge.Application.Services.TouchAimDevice"/>), not the gamepad's right stick.
+        /// </summary>
+        private static UiShape BuildAimStick(RectTransform content, float radius, Sprite crosshair)
+        {
+            const float ring = 130f, knob = 64f, travel = 70f, rest = 78f;
+            var zone = SectorShape(content, "AimStick", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
+            zone.gameObject.AddComponent<TouchPress>();
+
+            var ringShape = Shape(zone.transform, "Ring", Vector2.zero, Vector2.zero, new Vector2(ring, ring));
+            ringShape.Kind = UiShapeKind.Capsule;
+            ringShape.Fill = Fade(_style.Fill, 0.35f / _style.Fill.a);
+            ringShape.Stroke = Fade(_style.Line, 0.5f);
+            var knobShape = Shape(ringShape.transform, "Knob", Center, Vector2.zero, new Vector2(knob, knob));
+            knobShape.Kind = UiShapeKind.Capsule;
+            knobShape.Fill = _style.PressedFill;
+            Icon(knobShape.transform, "Icon", crosshair, Center, Vector2.zero, 38f);
+
+            var stick = zone.gameObject.AddComponent<TouchStick>();
+            SetReference(stick, "_ring", ringShape.rectTransform);
+            SetReference(stick, "_knob", knobShape.rectTransform);
+            var serialized = new SerializedObject(stick);
+            serialized.FindProperty("_controlPath").stringValue = Purge.Application.Services.TouchAimDevice.ControlPath;
+            // From the zone's bottom-left corner (the quarter's bounds): the rest point is (-rest, rest) from its right angle.
+            serialized.FindProperty("_restFromCorner").vector2Value = new Vector2(radius - rest, rest);
+            serialized.FindProperty("_radius").floatValue = travel;
+            serialized.FindProperty("_keepInZone").boolValue = false;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return zone;
         }
 
         /// <summary>A weapon slot sector of the cluster: button, icon, reload arc, 12 magazine ticks, reserve number.</summary>
@@ -1681,6 +1717,15 @@ namespace Purge.Editor.Dev
             pagesLayout.padding = new RectOffset(0, 0, 10, 0);
 
             var controlsPage = Page(pages.transform, "ControlsPage");
+            var schemeRow = SettingRow(controlsPage, "Scheme", Loc(TextKeys.SettingsScheme));
+            var schemeButtons = new List<Object>();
+            foreach (var (name, caption) in new[] { ("SchemeTwoSticksButton", Loc(TextKeys.SettingsSchemeTwoSticks)), ("SchemeAutoButton", Loc(TextKeys.SettingsSchemeAuto)) })
+            {
+                var segment = TextButton(schemeRow, name, caption, false, null, 60f, 24f);
+                segment.GetComponent<LayoutElement>().preferredWidth = 220f;
+                schemeButtons.Add(segment);
+            }
+
             var (deadZone, deadZoneLabel) = SliderSetting(controlsPage, "DeadZone", Loc(TextKeys.SettingsDeadZone));
             var (sensitivity, sensitivityLabel) = SliderSetting(controlsPage, "Sensitivity", Loc(TextKeys.SettingsStickResponse));
             var (size, sizeLabel) = SliderSetting(controlsPage, "Size", Loc(TextKeys.SettingsControlsSize));
@@ -1749,6 +1794,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_floatingStick", floating);
             SetReference(screen, "_leftHanded", leftHanded);
             SetReferences(screen, "_aimButtons", aimButtons);
+            SetReferences(screen, "_schemeButtons", schemeButtons);
             SetReference(screen, "_aimAssist", aimAssist);
             SetReference(screen, "_musicVolume", music);
             SetReference(screen, "_musicVolumeLabel", musicLabel);

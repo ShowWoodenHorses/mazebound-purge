@@ -87,6 +87,9 @@ MonoBehaviour:
   - settings.button_layout
   - settings.edit
   - settings.aim_mode
+  - settings.scheme
+  - settings.scheme_two_sticks
+  - settings.scheme_auto
   - settings.aim.free
   - settings.aim.eight
   - settings.aim.four
@@ -277,6 +280,9 @@ MonoBehaviour:
   - "Rozmieszczenie przycisk\xF3w"
   - EDYTUJ
   - Kierunki celowania
+  - Schemat sterowania
+  - "Dwa dr\u0105\u017Cki"
+  - Auto
   - DOWOLNE
   - OSIEM
   - CZTERY

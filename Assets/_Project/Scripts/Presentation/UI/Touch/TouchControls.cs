@@ -9,7 +9,8 @@ namespace Purge.Presentation.UI.Touch
     /// Root of the on-screen controls (ТЗ §64): a separate overlay canvas under the application UI, so sizes are
     /// physical rather than a share of the screen. One canvas unit = 0.1 mm × <see cref="ControlsSettings.Size"/>,
     /// limited so the layout (<see cref="_designHeight"/>) always fits the safe area of small screens.
-    /// Applies <see cref="ControlsSettings"/>: stick response, size, opacity, mirrored layout and the player's
+    /// Applies <see cref="ControlsSettings"/>: stick response (both sticks), the scheme (aim stick or Attack), size,
+    /// opacity, mirrored layout and the player's
     /// <see cref="TouchLayout"/> (moved controls are anchored at their point of the safe area and kept inside it;
     /// the stick inside its zone). While <see cref="TouchLayoutEditor"/> edits the layout the controls are shown over
     /// the whole UI and do not send input.
@@ -72,12 +73,22 @@ namespace Purge.Presentation.UI.Touch
             _size = settings.Size;
             if (_group != null) _group.alpha = settings.Opacity;
             SetLeftHanded(settings.LeftHanded);
-            if (_cluster != null) _cluster.SetMirrored(settings.LeftHanded);
+            if (_cluster != null)
+            {
+                _cluster.SetMirrored(settings.LeftHanded);
+                _cluster.SetScheme(settings.Scheme);
+            }
+
             if (_marks != null) _marks.SetMode(settings.AimMode);
             UpdateScale();
             if (_stick != null)
                 _stick.Configure(settings.StickDeadZone, StickResponse.ExponentFor(settings.StickSensitivity),
                     settings.FloatingStick, settings.LeftHanded);
+            // The aim stick always starts where the thumb lands in its quarter (no shift, no instant shot); the
+            // cluster's content mirrors it already.
+            var aim = AimStick;
+            if (aim != null)
+                aim.Configure(settings.StickDeadZone, StickResponse.ExponentFor(settings.StickSensitivity), true, false);
             ApplyLayout();
         }
 
@@ -115,6 +126,7 @@ namespace Purge.Presentation.UI.Touch
             // Pressed looks also catch the pointer: off, so drags reach the layout handles above them.
             foreach (var press in _presses) press.enabled = !editing;
             if (_stick != null) _stick.enabled = !editing;
+            if (AimStick != null) AimStick.enabled = !editing;
             foreach (var handle in _handles) handle.enabled = editing;
             // The stick zone (where the stick may go) is invisible in play, faintly drawn while editing.
             var zone = _mirrored[0].GetComponent<Image>();
@@ -176,6 +188,8 @@ namespace Purge.Presentation.UI.Touch
             // Moved controls are clamped against the safe area size, which follows the resolution.
             if (_area != null && _area.rect.size != _appliedAreaSize) ApplyLayout();
         }
+
+        private TouchStick AimStick => _cluster != null ? _cluster.AimStick : null;
 
         private void RefreshActive()
         {

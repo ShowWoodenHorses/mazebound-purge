@@ -13,6 +13,7 @@ namespace Purge.Tests.EditMode.Player
         public Vector2 Move { get; set; }
         public Vector2 Look { get; set; }
         public bool LookIsPointer { get; set; }
+        public Vector2 AimStick { get; set; }
         public bool AttackHeld { get; set; }
 
         public bool WasPressed(PlayerAction action) => _pressed.Contains(action);

@@ -36,6 +36,13 @@ namespace Purge.Gameplay.Player
 
         bool LookIsPointer { get; }
 
+        /// <summary>
+        /// The on-screen aim stick of the two-stick scheme (a phone): its deflection, x = East, y = North, magnitude
+        /// 0..1, zero inside its dead zone and when not touched. Fires while deflected (decision 2026-10-19); a real
+        /// gamepad's right stick is <see cref="Look"/>, never this.
+        /// </summary>
+        Vector2 AimStick { get; }
+
         /// <summary>True while the attack control is held (automatic weapons).</summary>
         bool AttackHeld { get; }
 

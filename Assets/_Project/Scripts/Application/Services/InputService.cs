@@ -32,6 +32,7 @@ namespace Purge.Application.Services
         private InputActionMap _actions;
         private InputAction _move;
         private InputAction _look;
+        private InputAction _aimStick;
         private InputAction _attack;
         private InputAction _pointerAttack;
         private readonly InputAction[] _buttons = new InputAction[7];
@@ -56,6 +57,7 @@ namespace Purge.Application.Services
         public Vector2 Move => _move != null ? _move.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 Look => _look != null ? _look.ReadValue<Vector2>() : Vector2.zero;
         public bool LookIsPointer => _look?.activeControl?.device is Pointer;
+        public Vector2 AimStick => _aimStick != null ? _aimStick.ReadValue<Vector2>() : Vector2.zero;
         public bool AttackHeld
         {
             get
@@ -156,6 +158,11 @@ namespace Purge.Application.Services
             _look.AddBinding("<Mouse>/position"); // not touches: a finger on the stick must not aim
             _look.AddBinding("<Gamepad>/rightStick");
 
+            // The on-screen aim stick (two-stick scheme) has a device of its own: it fires, a gamepad's stick does not.
+            TouchAimDevice.Register();
+            _aimStick = _actions.AddAction("AimStick", InputActionType.Value, expectedControlLayout: "Vector2");
+            _aimStick.AddBinding(TouchAimDevice.ControlPath);
+
             _attack = Button(PlayerAction.Attack, "<Keyboard>/space", "<Gamepad>/buttonSouth");
             // The mouse separately: its clicks may belong to the UI.
             _pointerAttack = _actions.AddAction("PointerAttack", InputActionType.Button);
@@ -196,7 +203,7 @@ namespace Purge.Application.Services
             _actions.Disable();
             _actions.Dispose();
             _actions = null;
-            _move = _look = _attack = _pointerAttack = null;
+            _move = _look = _aimStick = _attack = _pointerAttack = null;
             _pointerBlocked = false;
             Array.Clear(_buttons, 0, _buttons.Length);
         }

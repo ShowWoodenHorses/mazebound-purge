@@ -83,6 +83,9 @@ settings.left_handed	Left-handed layout	Раскладка для левши	Sol
 settings.button_layout	Button layout	Расположение кнопок	Düğme düzeni	Disposición de botones	Tastenanordnung	Posição dos botões	Disposition des boutons	Posizione dei pulsanti	Rozmieszczenie przycisków	Posisi tombol	Батырмалардың орны	Tugmalar joylashuvi	Размяшчэнне кнопак
 settings.edit	EDIT	ИЗМЕНИТЬ	DÜZENLE	EDITAR	ÄNDERN	EDITAR	MODIFIER	MODIFICA	EDYTUJ	UBAH	ӨЗГЕРТУ	OʻZGARTIRISH	ЗМЯНІЦЬ
 settings.aim_mode	Aim directions	Направления прицела	Nişan yönleri	Direcciones de apuntado	Zielrichtungen	Direções da mira	Directions de visée	Direzioni di mira	Kierunki celowania	Arah bidikan	Көздеу бағыттары	Nishonga olish yoʻnalishlari	Кірункі прыцэла
+settings.scheme	Control scheme	Схема управления	Kontrol şeması	Esquema de control	Steuerung	Esquema de controle	Schéma de contrôle	Schema di controllo	Schemat sterowania	Skema kontrol	Басқару сызбасы	Boshqaruv sxemasi	Схема кіравання
+settings.scheme_two_sticks	Two sticks	Два стика	İki çubuk	Dos sticks	Zwei Sticks	Dois analógicos	Deux sticks	Due stick	Dwa drążki	Dua stik	Екі стик	Ikki stik	Два стыкі
+settings.scheme_auto	Auto	Авто	Otomatik	Auto	Auto	Auto	Auto	Auto	Auto	Otomatis	Авто	Avto	Аўта
 settings.aim.free	FREE	ЛЮБЫЕ	SERBEST	LIBRE	FREI	LIVRE	LIBRE	LIBERA	DOWOLNE	BEBAS	ЕРКІН	ERKIN	ЛЮБЫЯ
 settings.aim.eight	EIGHT	ВОСЕМЬ	SEKİZ	OCHO	ACHT	OITO	HUIT	OTTO	OSIEM	DELAPAN	СЕГІЗ	SAKKIZ	ВОСЕМ
 settings.aim.four	FOUR	ЧЕТЫРЕ	DÖRT	CUATRO	VIER	QUATRO	QUATRE	QUATTRO	CZTERY	EMPAT	ТӨРТ	TOʻRT	ЧАТЫРЫ

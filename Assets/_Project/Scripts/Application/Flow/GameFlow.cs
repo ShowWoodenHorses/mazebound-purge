@@ -32,6 +32,9 @@ namespace Purge.Application.Flow
 
         /// <summary>A tutorial window is shown over the level: gameplay is paused until it is closed.</summary>
         Tip = 11,
+
+        /// <summary>The run's level-up: gameplay is paused until a card is chosen (stage 6c).</summary>
+        Cards = 12,
     }
 
     /// <summary>
@@ -189,6 +192,22 @@ namespace Purge.Application.Flow
             SetState(GameFlowState.Playing);
         }
 
+        /// <summary>Shows the cards of a level-up: gameplay pauses until <see cref="CloseCards"/>.</summary>
+        public void OpenCards()
+        {
+            if (State != GameFlowState.Playing) return;
+            _session.SetPaused(true);
+            SetState(GameFlowState.Cards);
+        }
+
+        public void CloseCards()
+        {
+            if (State != GameFlowState.Cards) return;
+            if (_ads != null && _ads.IsShowing) return; // the reroll's rewarded ad is still showing
+            _session.SetPaused(false);
+            SetState(GameFlowState.Playing);
+        }
+
         public void CompleteLevel() => EndLevel(GameFlowState.Completed);
 
         public void FailLevel() => EndLevel(GameFlowState.Failed);
@@ -313,7 +332,7 @@ namespace Purge.Application.Flow
         private void EndLevel(GameFlowState result)
         {
             if (State != GameFlowState.Playing && State != GameFlowState.Paused &&
-                State != GameFlowState.Map && State != GameFlowState.Tip)
+                State != GameFlowState.Map && State != GameFlowState.Tip && State != GameFlowState.Cards)
                 return;
 
             _session.StopGameplay();

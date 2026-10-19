@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -327,4 +362,39 @@ MonoBehaviour:
     lupa muestra el camino al objetivo m\xE1s cercano."
   - 'Abre el mapa: M'
   - Abre el mapa
+  - NV. {0}
+  - "\xA1SUBES DE NIVEL!"
+  - "NIVEL {0} \xB7 ELIGE UNA CARTA"
+  - NUEVA
+  - NIVEL {0}/{1}
+  - CAMBIAR
+  - "COM\xDAN"
+  - "POCO COM\xDAN"
+  - RARA
+  - "\xC9PICA"
+  - LEGENDARIA
+  - "DA\xD1O"
+  - "+{0} % de da\xF1o de armas"
+  - CADENCIA
+  - +{0} % de cadencia
+  - RECARGA
+  - -{0} % de tiempo de recarga
+  - CARGADOR
+  - +{0} % de capacidad del cargador
+  - VELOCIDAD
+  - +{0} % de velocidad de movimiento
+  - VITALIDAD
+  - "+{0} de PV m\xE1x. y cura lo mismo"
+  - "IM\xC1N"
+  - Radio de recogida +{0}
+  - GRANADAS
+  - +{0} arrojables ahora mismo
+  - CURA AL MATAR
+  - +{0} PV por cada muerte
+  - EXPLOSIVOS
+  - "+{0} % de da\xF1o de explosi\xF3n, +{1} % de radio"
+  - INCENDIARIO
+  - "+{0} % de da\xF1o a enemigos en llamas"
+  - "GOLPE CR\xCDTICO"
+  - "+{0} % de probabilidad de da\xF1o doble (balas, cuerpo a cuerpo)"
   _missing: []

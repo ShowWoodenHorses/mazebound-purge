@@ -23,6 +23,9 @@ namespace Purge.Presentation.UI
         [Tooltip("Tutorial layer over the HUD: reminder, arrow, highlight ring and the step window.")]
         [SerializeField] private TutorialScreen _tutorial;
 
+        [Tooltip("The cards of the run's level-up over the HUD (stage 6c).")]
+        [SerializeField] private CardsScreen _cards;
+
         [Tooltip("On-screen controls: a separate canvas with physical sizes, shown by the HUD.")]
         [SerializeField] private TouchControls _touchControls;
 
@@ -48,6 +51,7 @@ namespace Purge.Presentation.UI
         public MapScreen Map => _map;
         public SettingsScreen Settings => _settings;
         public TutorialScreen Tutorial => _tutorial;
+        public CardsScreen Cards => _cards;
         public TouchControls TouchControls => _touchControls;
         public FpsCounter FpsCounter => _fpsCounter;
         public RotateDeviceScreen RotateDevice => _rotateDevice;
@@ -77,7 +81,7 @@ namespace Purge.Presentation.UI
             foreach (var text in _localizedTexts)
                 if (text != null) text.Apply(texts);
 
-            UIScreen[] screens = { _mainMenu, _levelSelect, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial };
+            UIScreen[] screens = { _mainMenu, _levelSelect, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial, _cards };
             foreach (var screen in screens)
                 if (screen != null) screen.ApplyLanguage(texts);
             if (_touchControls != null && _touchControls.LayoutEditor != null)

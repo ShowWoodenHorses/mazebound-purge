@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -329,4 +364,39 @@ MonoBehaviour:
     yaqin maqsadga yo\u02BBlni ko\u02BBrsatadi."
   - 'Xaritani oching: M'
   - Xaritani oching
+  - DAR. {0}
+  - YANGI DARAJA!
+  - "DARAJA {0} \xB7 KARTA TANLANG"
+  - YANGI
+  - DARAJA {0}/{1}
+  - QAYTA TANLASH
+  - ODDIY
+  - NOODATIY
+  - NOYOB
+  - EPIK
+  - AFSONAVIY
+  - ZARAR
+  - Qurol zarari +{0}%
+  - OTISH TEZLIGI
+  - Otish tezligi +{0}%
+  - "QAYTA O\u02BBQLASH"
+  - "Qayta o\u02BBqlash vaqti -{0}%"
+  - MAGAZIN
+  - "Magazin sig\u02BBimi +{0}%"
+  - TEZLIK
+  - Yugurish tezligi +{0}%
+  - CHIDAMLILIK
+  - Maks. HP +{0}, shuncha davolaydi
+  - MAGNIT
+  - "Yig\u02BBish radiusi +{0}"
+  - GRANATALAR
+  - Darhol +{0} otiladigan
+  - "O\u02BBLDIRGANDA DAVOLANISH"
+  - "Har o\u02BBldirish uchun +{0} HP"
+  - PORTLOVCHI
+  - Portlash zarari +{0}%, radiusi +{1}%
+  - "O\u02BBT QO\u02BBYUVCHI"
+  - Yonayotgan dushmanlarga +{0}% zarar
+  - KRIT
+  - "Ikki barobar zarar ehtimoli +{0}% (o\u02BBq, yaqin jang)"
   _missing: []

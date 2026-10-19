@@ -65,6 +65,32 @@ namespace Purge.Gameplay.Combat
         public CombatTarget Target { get; }
     }
 
+    /// <summary>What dealt a damage of the player (the run's cards change it, <see cref="IDamageModifier"/>).</summary>
+    public enum PlayerDamage
+    {
+        /// <summary>Zones, states, the monsters' own effects: never changed.</summary>
+        None = 0,
+
+        /// <summary>A weapon's attack that cannot be critical (streams, chains).</summary>
+        Weapon = 1,
+
+        /// <summary>A weapon's bullet or melee blow: may be critical.</summary>
+        Precise = 2,
+
+        /// <summary>An explosion of the player's (grenades, launchers).</summary>
+        Explosion = 3,
+    }
+
+    /// <summary>Changes the player's damage before it is dealt (the run's cards, stage 6c).</summary>
+    public interface IDamageModifier
+    {
+        /// <summary>The damage to deal; <paramref name="critical"/> — the hit is critical.</summary>
+        float Modify(in CombatTarget target, float amount, PlayerDamage kind, out bool critical);
+
+        /// <summary>× the radius of the player's explosions.</summary>
+        float ExplosionRadiusFactor { get; }
+    }
+
     /// <summary>
     /// Every target of the player's attacks in one place: the horde (<see cref="HordeSystem"/>, flat arrays) and the
     /// damageable spatial objects (<see cref="ISpatialQueryService"/>). Queries take walls into account as bullets do
@@ -88,6 +114,12 @@ namespace Purge.Gameplay.Combat
         }
 
         public ISpatialQueryService Spatial => _spatial;
+
+        /// <summary>Changes the player's damage (the run's cards); null = as dealt.</summary>
+        public IDamageModifier Modifier { get; set; }
+
+        /// <summary>(target, where, damage) after a critical hit (its number shows).</summary>
+        public event Action<CombatTarget, Vector2, float> CriticalHit;
 
         /// <summary>(target, where, damage, direction, killed) after every damage dealt by the player.</summary>
         public event Action<CombatTarget, Vector2, float, Vector2, bool> Damaged;
@@ -211,14 +243,19 @@ namespace Purge.Gameplay.Combat
         }
 
         /// <summary>
-        /// Damage of a weapon's attack: as <see cref="Damage(in CombatTarget, float, Vector2)"/>, then
-        /// <see cref="WeaponHit"/> for a target that survived (states on hit).
+        /// Damage of the player's attack: changed by <see cref="Modifier"/> as <paramref name="kind"/> says, dealt as
+        /// <see cref="Damage(in CombatTarget, float, Vector2)"/>, then <see cref="WeaponHit"/> for a target that survived
+        /// (states on hit) when a <paramref name="weapon"/> made it.
         /// </summary>
-        public bool Damage(in CombatTarget target, float amount, Vector2 direction, WeaponDefinition weapon)
+        public bool Damage(in CombatTarget target, float amount, Vector2 direction, WeaponDefinition weapon,
+            PlayerDamage kind = PlayerDamage.Weapon)
         {
             if (amount <= 0f || !IsAlive(target)) return false;
             var at = PositionOf(target);
+            var critical = false;
+            if (Modifier != null && kind != PlayerDamage.None) amount = Modifier.Modify(target, amount, kind, out critical);
             var killed = Damage(target, amount, direction);
+            if (critical) CriticalHit?.Invoke(target, at, amount);
             if (!killed && weapon != null) WeaponHit?.Invoke(target, weapon);
             if (weapon != null) WeaponDamaged?.Invoke(target, at, direction, weapon, killed);
             return killed;
@@ -228,9 +265,13 @@ namespace Purge.Gameplay.Combat
         /// Damage to every living target whose body reaches into the circle and is not behind something that stops
         /// bullets: <paramref name="damage"/> at the centre, × <paramref name="edgeShare"/> at the edge. With the
         /// <paramref name="weapon"/> that fired it, each damage is that weapon's (feel: pushed away from the centre).
+        /// The player's (<see cref="PlayerDamage.Explosion"/>) is changed by <see cref="Modifier"/>, radius too.
+        /// Returns the radius it reached.
         /// </summary>
-        public void Blast(Vector2 at, float damage, float radius, float edgeShare, int floor, WeaponDefinition weapon = null)
+        public float Blast(Vector2 at, float damage, float radius, float edgeShare, int floor, WeaponDefinition weapon = null,
+            PlayerDamage kind = PlayerDamage.None)
         {
+            if (Modifier != null && kind == PlayerDamage.Explosion) radius *= Modifier.ExplosionRadiusFactor;
             Collect(at, radius, floor, _blast);
             foreach (var target in _blast)
             {
@@ -239,10 +280,11 @@ namespace Purge.Gameplay.Combat
                 var offset = position - at;
                 var share = Mathf.Clamp01((offset.magnitude - RadiusOf(target)) / radius);
                 Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
-                    offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon);
+                    offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon, kind);
             }
 
             _blast.Clear();
+            return radius;
         }
     }
 }

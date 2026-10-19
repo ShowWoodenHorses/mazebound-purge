@@ -55,9 +55,12 @@ namespace Purge.Gameplay.Weapons
 
         public bool IsReloading => ReloadRemaining > 0f;
 
+        /// <summary>Seconds the current (or last) reload takes: the weapon's, with the run's cards.</summary>
+        public float ReloadDuration { get; internal set; }
+
         /// <summary>0..1 share of the reload done; 0 when not reloading.</summary>
-        public float ReloadProgress => IsReloading && Definition.ReloadTime > 0f
-            ? 1f - Math.Min(1f, ReloadRemaining / Definition.ReloadTime)
+        public float ReloadProgress => IsReloading && ReloadDuration > 0f
+            ? 1f - Math.Min(1f, ReloadRemaining / ReloadDuration)
             : 0f;
 
         /// <summary>Interrupts the reload and the cooldown (the weapon leaves the hands); the magazine stays as it is.</summary>

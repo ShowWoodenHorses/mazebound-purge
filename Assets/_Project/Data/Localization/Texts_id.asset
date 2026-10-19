@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -346,4 +381,39 @@ MonoBehaviour:
     jalan ke tujuan terdekat.
   - 'Buka peta: M'
   - Buka peta
+  - LV {0}
+  - NAIK LEVEL!
+  - "LEVEL {0} \xB7 PILIH KARTU"
+  - BARU
+  - LEVEL {0}/{1}
+  - ACAK ULANG
+  - BIASA
+  - TIDAK BIASA
+  - LANGKA
+  - EPIK
+  - LEGENDARIS
+  - KERUSAKAN
+  - +{0}% kerusakan senjata
+  - LAJU TEMBAK
+  - +{0}% laju tembak
+  - ISI ULANG
+  - -{0}% waktu isi ulang
+  - MAGASIN
+  - +{0}% kapasitas magasin
+  - KECEPATAN
+  - +{0}% kecepatan gerak
+  - VITALITAS
+  - +{0} HP maks., pulihkan sebanyak itu
+  - MAGNET
+  - Radius pungut +{0}
+  - GRANAT
+  - +{0} lemparan sekarang
+  - PULIH SAAT MEMBUNUH
+  - +{0} HP tiap membunuh
+  - BAHAN PELEDAK
+  - +{0}% kerusakan ledakan, +{1}% radius
+  - PEMBAKAR
+  - +{0}% kerusakan ke musuh terbakar
+  - SERANGAN KRITIS
+  - +{0}% peluang kerusakan ganda (peluru, jarak dekat)
   _missing: []

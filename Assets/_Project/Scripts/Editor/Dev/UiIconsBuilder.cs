@@ -101,11 +101,70 @@ namespace Purge.Editor.Dev
             // A coin: rim, inner ring and an upright mark (money of the run).
             set.Coin = Draw("ui_coin", new Icon().Circle(12, 12, 8.5f).Circle(12, 12, 5.5f).Segment(12, 9.5f, 12, 14.5f));
             set.Backdrop = DrawBackdrop();
+            BuildCardIcons();
 
             EditorUtility.SetDirty(set);
             AssetDatabase.SaveAssets();
             Debug.Log($"[Purge] UI icons built: {SetPath}.");
             return set;
+        }
+
+        public const string CardFolder = Folder + "/Cards";
+
+        /// <summary>
+        /// Icons of the first card set (stage 6c), by name ("card_damage" → <c>Icons/Cards/card_damage.png</c>);
+        /// Build Cards gives them to the cards that have none.
+        /// </summary>
+        public static Dictionary<string, Sprite> BuildCardIcons()
+        {
+            EnsureFolder(CardFolder);
+            var heart = HeartPoints();
+            var icons = new Dictionary<string, Icon>
+            {
+                // A bullet with a plus.
+                ["card_damage"] = new Icon().Polyline(true, 4, 9, 13, 9, 17, 12, 13, 15, 4, 15).Segment(7, 9, 7, 15)
+                    .Segment(19.5f, 4, 19.5f, 9).Segment(17, 6.5f, 22, 6.5f),
+                // Three bullets in a row with speed lines.
+                ["card_fire_rate"] = new Icon().Polyline(true, 9, 6, 15, 6, 18, 8, 15, 10, 9, 10)
+                    .Polyline(true, 9, 14, 15, 14, 18, 16, 15, 18, 9, 18).Segment(2.5f, 8, 6.5f, 8).Segment(2.5f, 16, 6.5f, 16)
+                    .Segment(4, 12, 8, 12),
+                // A magazine with a circling arrow.
+                ["card_reload"] = new Icon().Polyline(true, 5, 4, 11, 4, 12, 20, 6, 20)
+                    .Polyline(false, Arc(16.5f, 12, 4.5f, 120, -150)).Fill(18.5f, 4.8f, 14.2f, 7.2f, 18.2f, 9.6f),
+                // A long magazine with rounds.
+                ["card_magazine"] = new Icon().Polyline(true, 8, 2.5f, 16, 2.5f, 17, 21.5f, 7, 21.5f)
+                    .Segment(10, 7, 14, 7).Segment(10, 11, 14, 11).Segment(10, 15, 14, 15),
+                // A running chevron pair.
+                ["card_speed"] = new Icon().Polyline(false, 5, 6, 11, 12, 5, 18, 2f).Polyline(false, 12, 6, 18, 12, 12, 18, 2f),
+                // A heart with a plus.
+                ["card_health"] = new Icon().Polyline(true, heart).Segment(12, 8.5f, 12, 14.5f).Segment(9, 11.5f, 15, 11.5f),
+                // A magnet.
+                ["card_magnet"] = new Icon().Polyline(false, Join(new[] { 6f, 4f }, Arc(12, 13, 6, 180, 360), new[] { 18f, 4f }))
+                    .Polyline(false, Join(new[] { 9.5f, 4f }, Arc(12, 13, 2.5f, 180, 360), new[] { 14.5f, 4f }))
+                    .Segment(6, 7, 9.5f, 7).Segment(14.5f, 7, 18, 7),
+                // A grenade with a plus.
+                ["card_throwables"] = new Icon().Circle(10, 15, 5.5f).Polyline(false, 8, 9.5f, 8, 7.5f, 12, 7.5f, 12, 9.5f)
+                    .Segment(19, 4, 19, 10).Segment(16, 7, 22, 7),
+                // A skull and a heart.
+                ["card_heal_on_kill"] = new Icon().Polyline(true, Join(Arc(9, 10, 5.5f, 180, 0), new[] { 14.5f, 13, 12.5f, 13, 12.5f, 16, 5.5f, 16, 5.5f, 13, 3.5f, 13 }))
+                    .Dot(7, 10, 1.2f).Dot(11, 10, 1.2f).Segment(18.5f, 13, 18.5f, 20).Segment(15, 16.5f, 22, 16.5f),
+                // A burst.
+                ["card_explosives"] = new Icon().Polyline(true, 12, 2.5f, 14, 8, 20, 5.5f, 16.5f, 10.5f, 21.5f, 13, 15.5f, 14.5f,
+                    17, 20.5f, 12, 16.5f, 7, 20.5f, 8.5f, 14.5f, 2.5f, 13, 7.5f, 10.5f, 4, 5.5f, 10, 8),
+                // A flame.
+                ["card_burning"] = new Icon().Polyline(true, Join(new[] { 12f, 3f }, Quad(12, 3, 19, 10, 17.5f, 15),
+                    Quad(17.5f, 15, 16, 21, 12, 21), Quad(12, 21, 8, 21, 6.5f, 15), Quad(6.5f, 15, 6, 10, 9.5f, 7.5f),
+                    Quad(9.5f, 7.5f, 10, 10.5f, 12, 11), Quad(12, 11, 13.5f, 7, 12, 3)))
+                    .Polyline(false, Join(new[] { 12f, 20f }, Quad(12, 20, 9.5f, 19.5f, 10.5f, 15.5f))),
+                // Crosshairs with a star point.
+                ["card_crit"] = new Icon().Circle(12, 12, 7.5f).Segment(12, 2, 12, 6.5f).Segment(12, 17.5f, 12, 22)
+                    .Segment(2, 12, 6.5f, 12).Segment(17.5f, 12, 22, 12).Dot(12, 12, 2f),
+            };
+
+            var sprites = new Dictionary<string, Sprite>();
+            foreach (var pair in icons)
+                sprites[pair.Key] = DrawTo($"{CardFolder}/{pair.Key}.png", pair.Value);
+            return sprites;
         }
 
         // ---- icons (24-unit grid, y down like the mock-up's SVG) ----
@@ -283,7 +342,9 @@ namespace Purge.Editor.Dev
             return inside ? -distance : distance;
         }
 
-        private static Sprite Draw(string name, Icon icon)
+        private static Sprite Draw(string name, Icon icon) => DrawTo($"{Folder}/{name}.png", icon);
+
+        private static Sprite DrawTo(string path, Icon icon)
         {
             var pixels = new Color32[Size * Size];
             var pixel = Grid / Size;
@@ -296,7 +357,7 @@ namespace Purge.Editor.Dev
                 pixels[y * Size + x] = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(alpha * 255f));
             }
 
-            return SavePng($"{Folder}/{name}.png", pixels, Size);
+            return SavePng(path, pixels, Size);
         }
 
         // ---- menu backdrop ----

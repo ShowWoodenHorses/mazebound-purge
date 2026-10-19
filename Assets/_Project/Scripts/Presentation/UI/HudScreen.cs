@@ -83,6 +83,12 @@ namespace Purge.Presentation.UI
         [SerializeField] private TMP_Text _enemiesText;
         [SerializeField] private TMP_Text _moneyText;
 
+        [Header("Experience (stage 6c)")]
+        [Tooltip("Under the HP bar: the run's level and the way to the next one.")]
+        [SerializeField] private GameObject _experience;
+        [SerializeField] private TMP_Text _experienceLevel;
+        [SerializeField] private RectTransform _experienceFill;
+
         [Tooltip("The pause between waves: the countdown, «Пропустить +N» and the ammo reserve by type.")]
         [SerializeField] private GameObject _countdown;
         [SerializeField] private TMP_Text _countdownText;
@@ -321,6 +327,16 @@ namespace Purge.Presentation.UI
             if (count == _enemiesShown || _enemiesText == null) return;
             _enemiesShown = count;
             _enemiesText.SetText("{0}", count);
+        }
+
+        /// <summary>The experience bar: hidden without cards; <paramref name="level"/> — its caption ("УР. 3").</summary>
+        public void SetExperience(bool shown, string level, float progress)
+        {
+            if (_experience == null) return;
+            if (_experience.activeSelf != shown) _experience.SetActive(shown);
+            if (!shown) return;
+            if (_experienceLevel != null && _experienceLevel.text != level) _experienceLevel.text = level;
+            SetShare(_experienceFill, Mathf.Clamp01(progress));
         }
 
         public void SetMoney(int money)

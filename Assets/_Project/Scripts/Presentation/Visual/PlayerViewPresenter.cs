@@ -199,7 +199,7 @@ namespace Purge.Presentation.Visual
         private void OnReloadChanged(WeaponRuntime weapon)
         {
             if (weapon.IsReloading)
-                SetFloat(P.ReloadSpeedHash, 1f / Mathf.Max(weapon.Definition.ReloadTime, 0.01f));
+                SetFloat(P.ReloadSpeedHash, 1f / Mathf.Max(weapon.ReloadDuration, 0.01f));
         }
 
         private void OnHealthChanged(int current, int max)

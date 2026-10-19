@@ -195,6 +195,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
+            SetReference(root, "_cards", BuildCards(parent));
             SetReference(root, "_pause", BuildPause(parent));
             SetReference(root, "_map", BuildMap(parent));
             SetReference(root, "_result", BuildResult(parent));
@@ -485,6 +486,17 @@ namespace Purge.Editor.Dev
             var trail = BarFill(bar, "Trail", Fade(_style.Text, 0.6f));
             var fill = BarFill(bar, "Fill", _style.Health);
 
+            // Under it (stage 6c): the run's experience — a thin bar in the accent and the level after it.
+            var experience = Rect(root, "Experience", TopLeft, new Vector2(146f + 238f, -113f), new Vector2(476f, 6f));
+            var experienceBack = BarFill(experience, "Back", Fade(_style.Line, 0.25f));
+            experienceBack.anchorMax = Vector2.one;
+            var experienceFill = BarFill(experience, "Fill", _style.Accent);
+            experienceFill.anchorMax = new Vector2(0f, 1f);
+            var experienceLevel = Text(experience, "Level", "LV 1", 22f, true, new Vector2(1f, 0.5f), new Vector2(0f, 0.5f),
+                new Vector2(12f, 0f), new Vector2(120f, 28f), TextAlignmentOptions.MidlineLeft, _style.Accent, 3f);
+            experienceLevel.textWrappingMode = TextWrappingModes.NoWrap;
+            experience.gameObject.SetActive(false); // Shown on a run with cards.
+
             // Under it: zombies killed, keys.
             var stats = Row(root, "Stats", TopLeft, new Vector2(52f, -128f), 30f);
             var kills = Counter(stats, "Kills", icons.Skull, out var killsText);
@@ -581,6 +593,9 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_keyTemplate", keyTemplate);
             SetReference(screen, "_messageRow", messageRow.gameObject);
             SetReference(screen, "_message", message);
+            SetReference(screen, "_experience", experience.gameObject);
+            SetReference(screen, "_experienceLevel", experienceLevel);
+            SetReference(screen, "_experienceFill", experienceFill);
             SetReference(screen, "_waveRow", waveRow.gameObject);
             SetReference(screen, "_waveText", waveText);
             SetReference(screen, "_enemiesText", enemiesText);
@@ -1327,6 +1342,101 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_dialogTitle", title);
             SetReference(screen, "_dialogText", body);
             SetReference(screen, "_continueButton", continueButton);
+            return screen;
+        }
+
+        /// <summary>
+        /// Cards of a level-up (stage 6c) over the paused level: dim, the title and the run's level, three cards side by
+        /// side (a frame in the rarity's colour, rarity caption, icon in a ring, name, what a level gives, its level) and
+        /// the reroll for a rewarded ad under them.
+        /// </summary>
+        private static CardsScreen BuildCards(Transform parent)
+        {
+            const int count = 3;
+            const float width = 400f;
+            const float height = 500f;
+            const float spacing = 48f;
+            // Darker than the pause: the HUD's wave row and countdown stay faint under the title.
+            var screen = Screen<CardsScreen>(parent, "CardsScreen", new Color(0f, 0f, 0f, 0.8f));
+            var icons = UiIcons();
+            var root = screen.transform;
+
+            var title = Text(root, "Title", Loc(TextKeys.CardsTitle), 58f, true, Center, Center, new Vector2(0f, 252f),
+                new Vector2(1200f, 76f), TextAlignmentOptions.Center, _style.Accent, 14f);
+            title.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(title);
+            var subtitle = Text(root, "Subtitle", "LEVEL 2", 28f, true, Center, Center, new Vector2(0f, 198f),
+                new Vector2(1200f, 38f), TextAlignmentOptions.Center, _style.MutedText, 6f);
+            subtitle.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(subtitle);
+
+            var row = Rect(root, "Cards", Center, new Vector2(0f, -88f), new Vector2(count * width + (count - 1) * spacing, height));
+            SetReference(screen.GetComponent<UiAppear>(), "_panel", row);
+            var slots = new List<(UiButton Button, UiShape Frame, TMP_Text Rarity, Image Icon, TMP_Text Name, TMP_Text Text, TMP_Text Level)>();
+            for (var i = 0; i < count; i++)
+            {
+                var x = (i - (count - 1) * 0.5f) * (width + spacing);
+                var body = Shape(row, "Card" + (i + 1), Center, new Vector2(x, 0f), new Vector2(width, height), true);
+                body.CornerRadius = 3f;
+                body.HitPadding = 8f;
+                var frame = Shape(body.transform, "Frame", Center, Vector2.zero, Vector2.zero);
+                Stretch(frame.rectTransform);
+                frame.rectTransform.offsetMin = new Vector2(-7f, -7f);
+                frame.rectTransform.offsetMax = new Vector2(7f, 7f);
+                frame.Fill = Color.clear;
+                frame.CornerRadius = 5f;
+                frame.StrokeWidth = 3f;
+
+                var top = new Vector2(0.5f, 1f);
+                var rarity = Text(body.transform, "Rarity", "COMMON", 22f, true, top, top, new Vector2(0f, -22f),
+                    new Vector2(width - 40f, 30f), TextAlignmentOptions.Center, _style.MutedText, 8f);
+                rarity.textWrappingMode = TextWrappingModes.NoWrap;
+                AutoSize(rarity);
+                var ring = Shape(body.transform, "IconRing", top, new Vector2(0f, -136f), new Vector2(136f, 136f));
+                ring.Kind = UiShapeKind.Capsule;
+                ring.Fill = Fade(_style.Fill, 0.6f / _style.Fill.a);
+                var icon = Icon(ring.transform, "Icon", null, Center, Vector2.zero, 88f);
+                var name = Text(body.transform, "Name", "CARD", 36f, true, top, top, new Vector2(0f, -224f),
+                    new Vector2(width - 40f, 48f), TextAlignmentOptions.Center, _style.Text, 4f);
+                name.textWrappingMode = TextWrappingModes.NoWrap;
+                AutoSize(name, 0.6f);
+                var text = Text(body.transform, "Text", "", 28f, false, top, top, new Vector2(0f, -290f),
+                    new Vector2(width - 56f, 180f), TextAlignmentOptions.Top, _style.Text);
+                text.textWrappingMode = TextWrappingModes.Normal;
+                AutoSize(text, 0.7f);
+                var level = Text(body.transform, "Level", "NEW", 22f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
+                    new Vector2(0f, 22f), new Vector2(width - 40f, 30f), TextAlignmentOptions.Center, _style.MutedText, 6f);
+                level.textWrappingMode = TextWrappingModes.NoWrap;
+
+                var button = MakeButton(body, false);
+                slots.Add((button, frame, rarity, icon, name, text, level));
+            }
+
+            var reroll = TextButton(root, "RerollButton", Loc(TextKeys.CardsReroll), false, icons.Ad, 76f, 26f);
+            var rerollRect = (RectTransform)reroll.transform;
+            rerollRect.anchorMin = rerollRect.anchorMax = rerollRect.pivot = new Vector2(0.5f, 0.5f);
+            rerollRect.anchoredPosition = new Vector2(0f, -400f);
+            rerollRect.sizeDelta = new Vector2(460f, 76f);
+
+            SetReference(screen, "_style", _style);
+            SetReference(screen, "_subtitle", subtitle);
+            SetReference(screen, "_rerollButton", reroll);
+            var serialized = new SerializedObject(screen);
+            var array = serialized.FindProperty("_cards");
+            array.arraySize = slots.Count;
+            for (var i = 0; i < slots.Count; i++)
+            {
+                var element = array.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("Button").objectReferenceValue = slots[i].Button;
+                element.FindPropertyRelative("Frame").objectReferenceValue = slots[i].Frame;
+                element.FindPropertyRelative("RarityName").objectReferenceValue = slots[i].Rarity;
+                element.FindPropertyRelative("Icon").objectReferenceValue = slots[i].Icon;
+                element.FindPropertyRelative("Name").objectReferenceValue = slots[i].Name;
+                element.FindPropertyRelative("Text").objectReferenceValue = slots[i].Text;
+                element.FindPropertyRelative("Level").objectReferenceValue = slots[i].Level;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             return screen;
         }
 

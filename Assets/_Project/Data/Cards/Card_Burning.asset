@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f51ffcc36130acd46b755c1c2e487b79, type: 3}
+  m_Name: Card_Burning
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Cards.CardDefinition
+  _id: card_burning
+  _rarity: 2
+  _maxLevel: 3
+  _icon: {fileID: 21300000, guid: de84bb0ab3197c446811ef912717ec23, type: 3}
+  _modules:
+  - rid: 1763807284696973462
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807284696973462
+      type: {class: StatusDamageCard, ns: Purge.Core.Cards, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
+        _perLevel: 0.25

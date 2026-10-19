@@ -91,6 +91,8 @@ namespace Purge.Application.Services
 
         public string Format(string key, object arg0, object arg1) => SafeFormat(key, arg0, arg1);
 
+        public string Format(string key, object[] args) => SafeFormat(key, args);
+
         /// <summary>Shows the language at <paramref name="index"/>; a newer call cancels a pending one.</summary>
         public async UniTask SetLanguageAsync(int index, CancellationToken cancellation = default)
         {

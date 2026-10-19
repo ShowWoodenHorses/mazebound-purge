@@ -166,7 +166,7 @@ namespace Purge.Presentation.UI
                 Equipped = true,
                 Active = _weapons.ActiveSlot == slot,
                 Icon = _visuals != null ? _visuals.Find(weapon.Definition)?.Icon : null,
-                Magazine = weapon.Definition.MagazineSize,
+                Magazine = _combat != null ? _combat.MagazineOf(definition) : definition.MagazineSize,
                 Ammo = weapon.Ammo,
                 Reloading = weapon.IsReloading,
                 Reload = weapon.ReloadProgress,

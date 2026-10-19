@@ -88,9 +88,9 @@ namespace Purge.Tests.PlayMode
             var catalog = _container.Resolve<ILevelCatalog>();
             Assert.Greater(catalog.Levels.Count, 0, "Run Build / Sync for at least one level.");
             var devCatalog = catalog.DevLevels.Count > 0 ? 1 : 0; // Editor and development builds.
-            Assert.AreEqual(10 + devCatalog, AppHandles,
+            Assert.AreEqual(11 + devCatalog, AppHandles,
                 "Only application-wide assets are resident in the menu: level catalog (+ development levels catalog), " +
-                "player definition, player visual, combat visual, weapon visuals, item visuals, content catalog, audio catalog, language catalog, " +
+                "player definition, player visual, combat visual, weapon visuals, item visuals, card deck, content catalog, audio catalog, language catalog, " +
                 "texts of one language (music is counted apart).");
             Assert.IsNotNull(_audio.Catalog, "Audio catalog loaded.");
             Assert.AreSame(_audio.Catalog.MenuMusic, _audio.CurrentMusic, "Menu music in the menu.");

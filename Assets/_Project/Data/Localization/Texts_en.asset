@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - English
   - SETTINGS
@@ -347,4 +382,39 @@ MonoBehaviour:
     shows the way to the nearest goal.
   - 'Open the map: M'
   - Open the map
+  - LV {0}
+  - LEVEL UP!
+  - "LEVEL {0} \xB7 CHOOSE A CARD"
+  - NEW
+  - LEVEL {0}/{1}
+  - REROLL
+  - COMMON
+  - UNCOMMON
+  - RARE
+  - EPIC
+  - LEGENDARY
+  - DAMAGE
+  - +{0}% weapon damage
+  - FIRE RATE
+  - +{0}% attack speed
+  - RELOAD
+  - -{0}% reload time
+  - MAGAZINE
+  - +{0}% magazine size
+  - SPEED
+  - +{0}% movement speed
+  - VITALITY
+  - +{0} max HP, heals as much
+  - MAGNET
+  - Pickup radius +{0}
+  - GRENADES
+  - +{0} throwables right away
+  - HEAL ON KILL
+  - +{0} HP for every kill
+  - EXPLOSIVES
+  - +{0}% explosion damage, +{1}% radius
+  - ARSONIST
+  - +{0}% damage to burning enemies
+  - CRITICAL HIT
+  - +{0}% chance of double damage (bullets, melee)
   _missing: []

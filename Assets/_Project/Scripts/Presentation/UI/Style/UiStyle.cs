@@ -38,6 +38,13 @@ namespace Purge.Presentation.UI.Style
         [Tooltip("Low health and other warnings.")]
         public Color Danger = new Color(0.878f, 0.29f, 0.208f, 1f);
 
+        [Tooltip("Rarities: gray, green, blue, purple, orange (cards, later weapons in the shop).")]
+        public Color[] Rarities =
+        {
+            new Color(0.69f, 0.67f, 0.63f, 1f), new Color(0.42f, 0.75f, 0.36f, 1f), new Color(0.33f, 0.6f, 0.93f, 1f),
+            new Color(0.69f, 0.42f, 0.9f, 1f), new Color(0.96f, 0.58f, 0.2f, 1f),
+        };
+
         [Tooltip("Alpha multiplier of disabled controls.")]
         [Range(0f, 1f)] public float DisabledAlpha = 0.35f;
 
@@ -54,6 +61,9 @@ namespace Purge.Presentation.UI.Style
 
         [Tooltip("Titles and buttons: Rajdhani Bold.")]
         public TMP_FontAsset BoldFont;
+
+        public Color RarityColor(Core.Content.Rarity rarity) =>
+            Rarities != null && (int)rarity < Rarities.Length ? Rarities[(int)rarity] : Line;
 
         /// <summary>Gives a shape the shared material and the standard look: dark fill, light (or accent) outline.</summary>
         public void Paint(UiShape shape, bool accent = false)

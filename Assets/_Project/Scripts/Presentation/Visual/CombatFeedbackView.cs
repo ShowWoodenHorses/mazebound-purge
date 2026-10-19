@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Level;
 using Purge.Core.Visual;
+using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Zombies;
@@ -53,6 +54,7 @@ namespace Purge.Presentation.Visual
         private readonly PlayerHealth _health;
         private readonly EntityViewRegistry _views;
         private readonly LevelViewRoot _root;
+        private readonly CombatTargets _targets;
 
         private readonly Bar[] _bars = new Bar[MaxBars];
         private readonly Number[] _numbers = new Number[MaxNumbers];
@@ -67,14 +69,15 @@ namespace Purge.Presentation.Visual
         private CombatFeedback _settings;
         private Mesh _mesh;
         private MeshRenderer _renderer;
-        private Color32 _barBorder, _barBackground, _barFill, _barTrail, _zombieDamage, _playerDamage, _heal;
+        private Color32 _barBorder, _barBackground, _barFill, _barTrail, _zombieDamage, _playerDamage, _heal, _critical;
         private int _lastHealth;
         private int _quads;
         private bool _subscribed;
 
         public CombatFeedbackView(LevelData level, CombatVisualDefinition combatVisual, ZombieViewPresenter zombieViews,
-            PlayerSystem player, PlayerHealth health, EntityViewRegistry views, LevelViewRoot root)
+            PlayerSystem player, PlayerHealth health, EntityViewRegistry views, LevelViewRoot root, CombatTargets targets = null)
         {
+            _targets = targets;
             _level = level;
             _combatVisual = combatVisual;
             _zombieViews = zombieViews;
@@ -143,6 +146,7 @@ namespace Purge.Presentation.Visual
             _zombieDamage = ToVertex(_settings.ZombieDamageColor);
             _playerDamage = ToVertex(_settings.PlayerDamageColor);
             _heal = ToVertex(_settings.HealColor);
+            _critical = ToVertex(_settings.CriticalColor);
 
             for (var i = 0; i < MaxQuads; i++)
             {
@@ -163,6 +167,7 @@ namespace Purge.Presentation.Visual
             {
                 _zombieViews.DamageShown += OnZombieDamageShown;
                 _health.Changed += OnHealthChanged;
+                if (_targets != null) _targets.CriticalHit += OnCriticalHit;
                 _subscribed = true;
             }
 
@@ -206,6 +211,7 @@ namespace Purge.Presentation.Visual
             {
                 _zombieViews.DamageShown -= OnZombieDamageShown;
                 _health.Changed -= OnHealthChanged;
+                if (_targets != null) _targets.CriticalHit -= OnCriticalHit;
                 _subscribed = false;
             }
 
@@ -247,6 +253,13 @@ namespace Purge.Presentation.Visual
             bar.TrailWait = _settings.BarTrailDelay;
             bar.Left = _settings.BarShowTime;
             bar.View = view;
+        }
+
+        /// <summary>A critical hit of the player (the run's cards): a bigger number in its own colour.</summary>
+        private void OnCriticalHit(CombatTarget target, Vector2 at, float damage)
+        {
+            if (_renderer == null) return;
+            AddNumber(at, Mathf.Max(1, Mathf.RoundToInt(damage)), heal: false, _critical, null, _settings.CriticalScale);
         }
 
         private void OnHealthChanged(int current, int max)
@@ -327,14 +340,25 @@ namespace Purge.Presentation.Visual
 
         // ---- Numbers ----
 
-        private void AddNumber(Vector2 position, int value, bool heal, Color32 color, EntityView view)
+        private void AddNumber(Vector2 position, int value, bool heal, Color32 color, EntityView view, float scale = 1f)
         {
+            var lifetime = Mathf.Max(_settings.NumberLifetime, 0.05f);
+            // Small heals in a row (the cards' heal for a kill) add up in one young number instead of a cloud of "+1".
+            if (heal && view == null)
+                for (var i = 0; i < _numbers.Length; i++)
+                {
+                    ref var young = ref _numbers[i];
+                    if (!young.Active || !young.Heal || young.HasView || young.Age >= lifetime * SpreadWindow) continue;
+                    young.Value = Mathf.Min(999, young.Value + value);
+                    young.Position = position;
+                    return;
+                }
+
             // Numbers at the same target still young are spread sideways; the oldest slot is reused when all are busy.
             var spread = 0;
             var slot = -1;
             var oldest = 0;
             var oldestAge = -1f;
-            var lifetime = Mathf.Max(_settings.NumberLifetime, 0.05f);
             for (var i = 0; i < _numbers.Length; i++)
             {
                 ref var number = ref _numbers[i];
@@ -364,6 +388,7 @@ namespace Purge.Presentation.Visual
                 View = view,
                 HasView = view != null,
                 Spread = spread,
+                Scale = scale,
             };
         }
 
@@ -388,7 +413,7 @@ namespace Purge.Presentation.Visual
                 if (number.HasView && (number.View == null || !number.View.IsVisible)) continue;
 
                 var grow = EaseOut(Mathf.Clamp01(t / growShare));
-                var size = Mathf.Lerp(_settings.NumberStartSize, _settings.NumberEndSize, grow);
+                var size = Mathf.Lerp(_settings.NumberStartSize, _settings.NumberEndSize, grow) * number.Scale;
                 var alpha = t <= growShare ? 1f : 1f - (t - growShare) / (1f - growShare + 1e-4f);
                 var offset = SpreadPattern[number.Spread % SpreadPattern.Length] * _settings.NumberSpread;
                 var center = number.Position + offset + new Vector2(0f, _settings.NumberOffset + _settings.NumberRise * EaseOut(t));
@@ -536,6 +561,7 @@ namespace Purge.Presentation.Visual
             public bool HasView;
             public int Spread;
             public float Age;
+            public float Scale;
         }
     }
 }

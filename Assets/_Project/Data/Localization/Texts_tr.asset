@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -333,4 +368,39 @@ MonoBehaviour:
     b\xFCy\xFCte\xE7 en yak\u0131n hedefe giden yolu g\xF6sterir."
   - "Haritay\u0131 a\xE7: M"
   - "Haritay\u0131 a\xE7"
+  - SV {0}
+  - "SEV\u0130YE ATLADIN!"
+  - "SEV\u0130YE {0} \xB7 B\u0130R KART SE\xC7"
+  - "YEN\u0130"
+  - "SEV\u0130YE {0}/{1}"
+  - "YEN\u0130LE"
+  - SIRADAN
+  - "ALI\u015EILMADIK"
+  - "NAD\u0130R"
+  - DESTANSI
+  - "EFSANEV\u0130"
+  - HASAR
+  - "Silah hasar\u0131 +%{0}"
+  - "ATE\u015E HIZI"
+  - "Sald\u0131r\u0131 h\u0131z\u0131 +%{0}"
+  - "YEN\u0130DEN DOLDURMA"
+  - "Doldurma s\xFCresi -%{0}"
+  - "\u015EARJ\xD6R"
+  - "\u015Earj\xF6r kapasitesi +%{0}"
+  - HIZ
+  - "Hareket h\u0131z\u0131 +%{0}"
+  - DAYANIKLILIK
+  - "Maks. can +{0}, o kadar iyile\u015Fme"
+  - MIKNATIS
+  - "Toplama yar\u0131\xE7ap\u0131 +{0}"
+  - BOMBALAR
+  - "Hemen +{0} f\u0131rlat\u0131labilir"
+  - "\xD6LD\xDCR\xDCNCE \u0130Y\u0130LE\u015E"
+  - "Her \xF6ld\xFCrmede +{0} can"
+  - PATLAYICILAR
+  - "Patlama hasar\u0131 +%{0}, yar\u0131\xE7ap +%{1}"
+  - "KUNDAK\xC7I"
+  - "Yanan d\xFC\u015Fmanlara +%{0} hasar"
+  - "KR\u0130T\u0130K VURU\u015E"
+  - "\xC7ift hasar \u015Fans\u0131 +%{0} (mermi, yak\u0131n d\xF6v\xFC\u015F)"
   _missing: []

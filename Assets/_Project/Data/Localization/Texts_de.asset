@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -332,4 +367,39 @@ MonoBehaviour:
     den Weg zum n\xE4chsten Ziel."
   - "\xD6ffne die Karte: M"
   - "\xD6ffne die Karte"
+  - ST. {0}
+  - STUFENAUFSTIEG!
+  - "STUFE {0} \xB7 W\xC4HLE EINE KARTE"
+  - NEU
+  - STUFE {0}/{1}
+  - NEU ZIEHEN
+  - "GEW\xD6HNLICH"
+  - "UNGEW\xD6HNLICH"
+  - SELTEN
+  - EPISCH
+  - "LEGEND\xC4R"
+  - SCHADEN
+  - +{0} % Waffenschaden
+  - FEUERRATE
+  - +{0} % Feuerrate
+  - NACHLADEN
+  - -{0} % Nachladezeit
+  - MAGAZIN
+  - "+{0} % Magazingr\xF6\xDFe"
+  - TEMPO
+  - +{0} % Laufgeschwindigkeit
+  - "VITALIT\xC4T"
+  - +{0} max. LP, heilt ebenso viel
+  - MAGNET
+  - Aufsammelradius +{0}
+  - GRANATEN
+  - Sofort +{0} Wurfwaffen
+  - "HEILEN BEIM T\xD6TEN"
+  - +{0} LP pro Abschuss
+  - SPRENGSTOFF
+  - +{0} % Explosionsschaden, +{1} % Radius
+  - BRANDSTIFTER
+  - +{0} % Schaden gegen brennende Gegner
+  - KRITISCHER TREFFER
+  - +{0} % Chance auf doppelten Schaden (Kugeln, Nahkampf)
   _missing: []

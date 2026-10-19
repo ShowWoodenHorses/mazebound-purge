@@ -8,6 +8,7 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Throwing;
@@ -74,6 +75,7 @@ namespace Purge.Gameplay.Combat
         private readonly IAimPointer _pointer;
         private readonly PlayerThrowing _throwing;
         private readonly ZoneSystem _zones;
+        private readonly RunStats _stats;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly List<CombatTarget> _meleeTargets = new List<CombatTarget>();
         private readonly List<IDamageable> _meleeHits = new List<IDamageable>();
@@ -85,9 +87,10 @@ namespace Purge.Gameplay.Combat
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
-            IAimPointer pointer = null, PlayerThrowing throwing = null, ZoneSystem zones = null)
+            IAimPointer pointer = null, PlayerThrowing throwing = null, ZoneSystem zones = null, RunStats stats = null)
         {
             _zones = zones;
+            _stats = stats;
             _input = input;
             _player = player;
             _weapons = weapons;
@@ -194,13 +197,18 @@ namespace Purge.Gameplay.Combat
         {
             var weapon = _weapons.Active;
             if (weapon == null || !_player.IsSpawned || !weapon.Definition.UsesAmmo || weapon.IsReloading ||
-                weapon.Ammo >= weapon.Definition.MagazineSize || !HasReserve(weapon.Definition))
+                weapon.Ammo >= MagazineOf(weapon.Definition) || !HasReserve(weapon.Definition))
                 return false;
 
-            weapon.ReloadRemaining = Mathf.Max(weapon.Definition.ReloadTime, 1e-4f);
+            weapon.ReloadDuration = Mathf.Max(weapon.Definition.ReloadTime * (_stats != null ? _stats.ReloadFactor : 1f), 1e-4f);
+            weapon.ReloadRemaining = weapon.ReloadDuration;
             ReloadChanged?.Invoke(weapon);
             return true;
         }
+
+        /// <summary>Rounds of the weapon's full magazine, with the run's cards.</summary>
+        public int MagazineOf(WeaponDefinition definition) =>
+            _stats != null ? _stats.MagazineOf(definition) : definition != null ? definition.MagazineSize : 0;
 
         /// <summary>Rounds in the reserve for this weapon (int.MaxValue — infinite).</summary>
         public int ReserveOf(WeaponDefinition definition)
@@ -302,6 +310,10 @@ namespace Purge.Gameplay.Combat
 
         private bool HasReserve(WeaponDefinition definition) => ReserveOf(definition) > 0;
 
+        /// <summary>Seconds between attacks, with the run's cards.</summary>
+        public float CooldownOf(WeaponDefinition definition) =>
+            definition.Cooldown * (_stats != null ? _stats.CooldownFactor : 1f);
+
         private void UpdateTimers(WeaponRuntime weapon, float deltaTime)
         {
             // May go a frame below zero: the next attack keeps the remainder, so the fire rate does not depend on the
@@ -317,7 +329,7 @@ namespace Purge.Gameplay.Combat
             if (weapon.IsReloading) return;
 
             var definition = weapon.Definition;
-            var need = definition.MagazineSize - weapon.Ammo;
+            var need = MagazineOf(definition) - weapon.Ammo;
             weapon.Ammo += definition.Ammo.InfiniteReserve ? need : _ammo.Take(definition.Ammo.Ammo, need);
             ReloadChanged?.Invoke(weapon);
         }
@@ -325,7 +337,7 @@ namespace Purge.Gameplay.Combat
         private void Attack(WeaponRuntime weapon, Vector2 direction)
         {
             var definition = weapon.Definition;
-            weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + definition.Cooldown;
+            weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + CooldownOf(definition);
             _firingLeft = FiringLinger;
             _stanceLeft = StanceTime;
             AimDirection = direction;
@@ -487,7 +499,7 @@ namespace Purge.Gameplay.Combat
             foreach (var target in _meleeTargets)
             {
                 if (target.Object != null) _meleeHits.Add(target.Object);
-                _targets.Damage(target, melee.Damage, direction, weapon);
+                _targets.Damage(target, melee.Damage, direction, weapon, PlayerDamage.Precise);
             }
 
             LastIceHit = null;

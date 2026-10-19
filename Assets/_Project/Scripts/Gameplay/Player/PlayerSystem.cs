@@ -107,6 +107,9 @@ namespace Purge.Gameplay.Player
         /// <summary>× speed of the states on the player (slow; <c>PlayerStatuses</c> sets it every tick before this one).</summary>
         public float StatusSpeed { get; set; } = 1f;
 
+        /// <summary>× speed from the run's cards (<c>CardSystem</c> sets it when a card is picked).</summary>
+        public float BonusSpeed { get; set; } = 1f;
+
         /// <summary>A state holds the player in place (stun): no step, no attack (<c>PlayerStatuses</c>).</summary>
         public bool Stunned { get; set; }
 
@@ -162,7 +165,7 @@ namespace Purge.Gameplay.Player
             _moved = true;
             var maxDistance = _definition.MoveSpeed * deltaTime;
             var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell) *
-                       WeaponSpeed * StatusSpeed;
+                       WeaponSpeed * StatusSpeed * BonusSpeed;
             var target = PlayerMovement.Move(Position, move * (maxDistance * slow), _definition.BodyHalfSize, _definition.CornerAssist, this);
             // Of the full speed: in a snowdrift the walk animation slows down too.
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);

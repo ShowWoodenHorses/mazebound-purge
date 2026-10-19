@@ -33,6 +33,7 @@ namespace Purge.Presentation.Visual
         private const float BlinkTime = 5f;
         private const float HandHeight = 1.1f;
         private const float SpinSpeed = 540f;
+        private const float MagnetHeight = 0.5f;
 
         private readonly DropPool _pool;
         private readonly PickupSystem _pickups;
@@ -119,9 +120,27 @@ namespace Purge.Presentation.Visual
         {
             TickVanishing(deltaTime);
             var time = _pickups.Time;
-            foreach (var shown in _lying)
+            for (var i = 0; i < _lying.Count; i++)
             {
-                var visible = _visibility.IsVisible(shown.Pickup.Cell);
+                var shown = _lying[i];
+                var pickup = shown.Pickup;
+                if (pickup.Attracted || shown.Lifted)
+                {
+                    // The magnet of the run's cards: it flies to the player a little above the floor (and lands back where
+                    // it lay when the player could not take it after all).
+                    shown.Object.transform.localPosition = new Vector3(pickup.Position.x,
+                        (pickup.Attracted ? MagnetHeight : 0f) + pickup.Cell.Floor * GridPosition.FloorHeight, pickup.Position.y);
+                    if (pickup.Attracted)
+                    {
+                        if (!shown.Object.activeSelf) shown.Object.SetActive(true);
+                        if (!shown.Lifted) _lying[i] = Lift(shown, true);
+                        continue;
+                    }
+
+                    _lying[i] = Lift(shown, false);
+                }
+
+                var visible = _visibility.IsVisible(pickup.Cell);
                 var left = shown.Pickup.ExpiresAt - time;
                 if (visible && left < BlinkTime) visible = Mathf.Repeat(left, 0.3f) > 0.1f;
                 if (shown.Object.activeSelf != visible) shown.Object.SetActive(visible);
@@ -272,6 +291,12 @@ namespace Purge.Presentation.Visual
             return go;
         }
 
+        private static Shown Lift(Shown shown, bool lifted)
+        {
+            shown.Lifted = lifted;
+            return shown;
+        }
+
         /// <summary>By type and id: a definition may be a different copy in another bundle of a build.</summary>
         private static string Key(ContentDefinition item) => item.GetType().Name + "/" + item.Id;
 
@@ -291,6 +316,9 @@ namespace Purge.Presentation.Visual
             public string Item;
             public Vector3 Scale;
             public float Age;
+
+            /// <summary>Was flying to the player (the magnet): its place is set again.</summary>
+            public bool Lifted;
         }
     }
 }

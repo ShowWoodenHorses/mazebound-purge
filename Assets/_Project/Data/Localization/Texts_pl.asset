@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - Polski
   - USTAWIENIA
@@ -336,4 +371,39 @@ MonoBehaviour:
     pokazuje drog\u0119 do najbli\u017Cszego celu."
   - "Otw\xF3rz map\u0119: M"
   - "Otw\xF3rz map\u0119"
+  - POZ. {0}
+  - NOWY POZIOM!
+  - "POZIOM {0} \xB7 WYBIERZ KART\u0118"
+  - NOWA
+  - POZIOM {0}/{1}
+  - LOSUJ PONOWNIE
+  - "ZWYK\u0141A"
+  - "NIEZWYK\u0141A"
+  - RZADKA
+  - EPICKA
+  - LEGENDARNA
+  - "OBRA\u017BENIA"
+  - "+{0}% obra\u017Ce\u0144 broni"
+  - "SZYBKOSTRZELNO\u015A\u0106"
+  - "+{0}% szybkostrzelno\u015Bci"
+  - "PRZE\u0141ADOWANIE"
+  - "-{0}% czasu prze\u0142adowania"
+  - MAGAZYNEK
+  - "+{0}% pojemno\u015Bci magazynka"
+  - "SZYBKO\u015A\u0106"
+  - "+{0}% szybko\u015Bci ruchu"
+  - "WITALNO\u015A\u0106"
+  - "+{0} maks. P\u017B i tyle samo leczenia"
+  - MAGNES
+  - "Zasi\u0119g zbierania +{0}"
+  - GRANATY
+  - Od razu +{0} do rzucania
+  - "LECZENIE ZA ZAB\xD3JSTWO"
+  - "+{0} P\u017B za ka\u017Cde zab\xF3jstwo"
+  - "MATERIA\u0141Y WYBUCHOWE"
+  - "+{0}% obra\u017Ce\u0144 wybuch\xF3w, +{1}% zasi\u0119gu"
+  - PODPALACZ
+  - "+{0}% obra\u017Ce\u0144 p\u0142on\u0105cym wrogom"
+  - TRAFIENIE KRYTYCZNE
+  - "+{0}% szansy na podw\xF3jne obra\u017Cenia (pociski, walka wr\u0119cz)"
   _missing: []

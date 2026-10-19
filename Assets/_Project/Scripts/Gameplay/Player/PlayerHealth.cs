@@ -13,7 +13,7 @@ namespace Purge.Gameplay.Player
             Current = Max;
         }
 
-        public int Max { get; }
+        public int Max { get; private set; }
         public int Current { get; private set; }
         public bool IsFull => Current >= Max;
         public bool IsDead => Current <= 0;
@@ -25,6 +25,16 @@ namespace Purge.Gameplay.Player
         public event Action<int, Vector2> Hurt;
 
         public void HealToFull() => Set(Max);
+
+        /// <summary>A new maximum (the run's cards); the current HP stays, cut to it when above.</summary>
+        public void SetMax(int max)
+        {
+            max = Math.Max(1, max);
+            if (max == Max) return;
+            Max = max;
+            if (Current > Max) Current = Max;
+            Changed?.Invoke(Current, Max);
+        }
 
         /// <summary>Restores <paramref name="amount"/> (0 or less — to full).</summary>
         public void Heal(int amount) => Set(amount <= 0 ? Max : Math.Min(Max, Current + amount));

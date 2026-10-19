@@ -126,7 +126,8 @@ namespace Purge.Presentation.UI
             var menu = state == GameFlowState.MainMenu;
             var loading = state == GameFlowState.None || state == GameFlowState.Initializing || state == GameFlowState.Loading;
             // The map is fullscreen: the HUD is hidden under it.
-            var inLevel = state == GameFlowState.Playing || state == GameFlowState.Paused || state == GameFlowState.Tip;
+            var inLevel = state == GameFlowState.Playing || state == GameFlowState.Paused || state == GameFlowState.Tip ||
+                          state == GameFlowState.Cards;
             var result = state == GameFlowState.Completed || state == GameFlowState.Failed;
             var error = state == GameFlowState.Error;
 
@@ -152,6 +153,7 @@ namespace Purge.Presentation.UI
             _ui.Result.SetVisible(result);
             _ui.Error.SetVisible(error);
             _ui.Map.SetVisible(state == GameFlowState.Map);
+            if (_ui.Cards != null) _ui.Cards.SetVisible(state == GameFlowState.Cards);
             if (_ui.Tutorial != null)
             {
                 _ui.Tutorial.SetVisible(inLevel && _flow.IsTutorialLevel);

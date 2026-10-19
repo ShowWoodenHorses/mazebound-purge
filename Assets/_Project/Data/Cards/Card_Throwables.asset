@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f51ffcc36130acd46b755c1c2e487b79, type: 3}
+  m_Name: Card_Throwables
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Cards.CardDefinition
+  _id: card_throwables
+  _rarity: 1
+  _maxLevel: 5
+  _icon: {fileID: 21300000, guid: 892f066dc58526a49b36f6752084c1a8, type: 3}
+  _modules:
+  - rid: 1763807284696973458
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807284696973458
+      type: {class: ThrowablesCard, ns: Purge.Core.Cards, asm: Purge.Core}
+      data:
+        _count: 2
+        _fallback: {fileID: 11400000, guid: 825d87ccc3a2b514ea82f2032258dca3, type: 2}

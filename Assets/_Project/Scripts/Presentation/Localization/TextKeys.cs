@@ -43,6 +43,21 @@ namespace Purge.Presentation.Localization
         public const string HudWaveSkip = "hud.wave.skip";
         public const string HudKeySpace = "hud.key.space";
 
+        // Experience and cards (stage 6c).
+        public const string HudRunLevel = "hud.run.level";
+        public const string CardsTitle = "cards.title";
+        public const string CardsSubtitle = "cards.subtitle";
+        public const string CardsNew = "cards.new";
+        public const string CardsLevel = "cards.level";
+        public const string CardsReroll = "cards.reroll";
+
+        /// <summary>"card.card_damage": card name; "card.card_damage.text" — what a level gives ({0}, {1}… — its numbers).</summary>
+        public const string CardPrefix = "card.";
+        public static readonly string CardTextSuffix = ".text"; // Not a key: not a constant.
+
+        /// <summary>"card.rarity.common": a card's rarity caption.</summary>
+        public const string CardRarityPrefix = "card.rarity.";
+
         /// <summary>"ammo.ammo_9mm": ammo type name by its definition id (falls back to the id).</summary>
         public const string AmmoPrefix = "ammo.";
 

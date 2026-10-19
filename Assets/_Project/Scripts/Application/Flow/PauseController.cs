@@ -5,7 +5,8 @@ namespace Purge.Application.Flow
 {
     /// <summary>
     /// Toggles pause from the Pause input action (Escape / Start / Android Back) and the map from the OpenMap action.
-    /// Pause while the map is open closes the map; while a tutorial window is open — closes the window.
+    /// Pause while the map is open closes the map; while a tutorial window is open — closes the window; the cards of a
+    /// level-up wait for a choice (nothing).
     /// </summary>
     public sealed class PauseController : IDisposable
     {

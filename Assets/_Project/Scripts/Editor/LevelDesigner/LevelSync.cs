@@ -191,6 +191,9 @@ namespace Purge.Editor.LevelDesigner
                 }
             }
 
+            // Optional (Build Cards): without it a run has no experience and cards.
+            EnsureSingleAddressable<Purge.Core.Cards.CardDeck>(settings, sharedGroup, Purge.Core.Cards.CardDeck.Address);
+
             var audio = EnsureSingleAddressable<AudioCatalog>(settings, sharedGroup, AudioCatalog.Address);
             if (audio == null)
                 return "Audio catalog is missing: run Purge → Dev → Build Audio or create one (Create → Purge → Audio Catalog). " +

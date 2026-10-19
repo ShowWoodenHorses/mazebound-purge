@@ -139,7 +139,7 @@ namespace Purge.Gameplay.Combat
                 {
                     case CombatHitKind.Target:
                         bullet.Position = hit.Point;
-                        _targets.Damage(hit.Target, bullet.Damage, bullet.Direction, bullet.Weapon);
+                        _targets.Damage(hit.Target, bullet.Damage, bullet.Direction, bullet.Weapon, PlayerDamage.Precise);
                         if (bullet.Explosive != null)
                         {
                             Explode(bullet, hit.Point);
@@ -185,8 +185,9 @@ namespace Purge.Gameplay.Combat
         /// <summary>Damage of an explosion at <paramref name="at"/> to every target in the radius not behind a wall.</summary>
         public void Explode(Vector2 at, ExplosiveAttack explosive, int floor, WeaponDefinition weapon = null)
         {
-            _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor, weapon);
-            Exploded?.Invoke(at, explosive.Radius, explosive);
+            var radius = _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius, explosive.EdgeDamage, floor, weapon,
+                PlayerDamage.Explosion);
+            Exploded?.Invoke(at, radius, explosive);
         }
 
         private void TickThrown(int index, Bullet bullet, Vector2 next, float distance)

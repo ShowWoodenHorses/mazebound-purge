@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Purge.Core.Cards;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Core.Localization;
@@ -113,6 +114,16 @@ namespace Purge.Editor.Dev
                 var id = weapon != null && !string.IsNullOrEmpty(weapon.Id) ? weapon.Id : weapon?.name;
                 if (id != null && !tableKeys.Contains(TextKeys.WeaponPrefix + id))
                     issues.Add(new LocalizationCheck.Issue(false, $"Weapon '{id}' has no name ('{TextKeys.WeaponPrefix}{id}')."));
+            }
+
+            foreach (var guid in AssetDatabase.FindAssets("t:" + nameof(CardDefinition)))
+            {
+                var card = AssetDatabase.LoadAssetAtPath<CardDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                if (card == null || string.IsNullOrEmpty(card.Id)) continue;
+                var name = TextKeys.CardPrefix + card.Id;
+                if (!tableKeys.Contains(name)) issues.Add(new LocalizationCheck.Issue(false, $"Card '{card.Id}' has no name ('{name}')."));
+                if (!tableKeys.Contains(name + TextKeys.CardTextSuffix))
+                    issues.Add(new LocalizationCheck.Issue(false, $"Card '{card.Id}' has no text ('{name}{TextKeys.CardTextSuffix}')."));
             }
 
             var colors = new HashSet<string>();

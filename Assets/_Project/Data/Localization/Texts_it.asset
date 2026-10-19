@@ -160,6 +160,41 @@ MonoBehaviour:
   - tutorial.map.touch
   - tutorial.map.hint
   - tutorial.map.hint.touch
+  - hud.run.level
+  - cards.title
+  - cards.subtitle
+  - cards.new
+  - cards.level
+  - cards.reroll
+  - card.rarity.common
+  - card.rarity.uncommon
+  - card.rarity.rare
+  - card.rarity.epic
+  - card.rarity.legendary
+  - card.card_damage
+  - card.card_damage.text
+  - card.card_fire_rate
+  - card.card_fire_rate.text
+  - card.card_reload
+  - card.card_reload.text
+  - card.card_magazine
+  - card.card_magazine.text
+  - card.card_speed
+  - card.card_speed.text
+  - card.card_health
+  - card.card_health.text
+  - card.card_magnet
+  - card.card_magnet.text
+  - card.card_throwables
+  - card.card_throwables.text
+  - card.card_heal_on_kill
+  - card.card_heal_on_kill.text
+  - card.card_explosives
+  - card.card_explosives.text
+  - card.card_burning
+  - card.card_burning.text
+  - card.card_crit
+  - card.card_crit.text
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -330,4 +365,39 @@ MonoBehaviour:
     lente mostra la strada verso l\u2019obiettivo pi\xF9 vicino."
   - 'Apri la mappa: M'
   - Apri la mappa
+  - LV {0}
+  - LIVELLO SUPERIORE!
+  - "LIVELLO {0} \xB7 SCEGLI UNA CARTA"
+  - NUOVA
+  - LIVELLO {0}/{1}
+  - RIPESCA
+  - COMUNE
+  - NON COMUNE
+  - RARA
+  - EPICA
+  - LEGGENDARIA
+  - DANNO
+  - +{0}% danni delle armi
+  - CADENZA
+  - +{0}% cadenza di fuoco
+  - RICARICA
+  - -{0}% tempo di ricarica
+  - CARICATORE
+  - "+{0}% capacit\xE0 del caricatore"
+  - "VELOCIT\xC0"
+  - "+{0}% velocit\xE0 di movimento"
+  - "VITALIT\xC0"
+  - +{0} PS max., cura altrettanto
+  - MAGNETE
+  - Raggio di raccolta +{0}
+  - GRANATE
+  - +{0} da lancio subito
+  - CURA ALL'UCCISIONE
+  - +{0} PS per uccisione
+  - ESPLOSIVI
+  - +{0}% danni da esplosione, +{1}% raggio
+  - INCENDIARIO
+  - +{0}% danni ai nemici in fiamme
+  - COLPO CRITICO
+  - "+{0}% probabilit\xE0 di danno doppio (proiettili, mischia)"
   _missing: []

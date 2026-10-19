@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Assets;
+using Purge.Core.Cards;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Visual;
@@ -33,6 +34,9 @@ namespace Purge.Application.Services
         /// <summary>Looks of dropped and thrown items; null until Build Items has made it (they are then not shown).</summary>
         public ItemVisualCatalog ItemVisuals { get; private set; }
 
+        /// <summary>Cards of the run and the experience curve; null until Build Cards has made it (no cards then).</summary>
+        public CardDeck Cards { get; private set; }
+
         /// <summary>Every content asset by stable id (purchases, upgrades and runs in the save refer to them).</summary>
         public ContentCatalog Content { get; private set; }
 
@@ -47,6 +51,8 @@ namespace Purge.Application.Services
                 _assets.LoadAsync<ContentCatalog>(ContentCatalog.Address, cancellation));
             if (await _addressables.ExistsAsync(ItemVisualCatalog.Address, cancellation))
                 ItemVisuals = await _assets.LoadAsync<ItemVisualCatalog>(ItemVisualCatalog.Address, cancellation);
+            if (await _addressables.ExistsAsync(CardDeck.Address, cancellation))
+                Cards = await _assets.LoadAsync<CardDeck>(CardDeck.Address, cancellation);
         }
 
         public void Dispose()
@@ -58,6 +64,7 @@ namespace Purge.Application.Services
             CombatVisual = null;
             WeaponVisuals = null;
             ItemVisuals = null;
+            Cards = null;
             Content = null;
         }
     }

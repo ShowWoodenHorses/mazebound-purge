@@ -47,6 +47,12 @@ namespace Purge.Core.Visual
         [SerializeField] private Color _playerDamageColor = new Color(1f, 0.2f, 0.15f, 1f);
         [SerializeField] private Color _healColor = new Color(0.42f, 0.86f, 0.36f, 1f);
 
+        [Tooltip("A critical hit of the player (the run's cards): only these show over the horde's monsters.")]
+        [SerializeField] private Color _criticalColor = new Color(1f, 0.82f, 0.25f, 1f);
+
+        [Tooltip("× the size of a critical hit's number.")]
+        [SerializeField, Min(1f)] private float _criticalScale = 1.5f;
+
         [Tooltip("Dark edge around the digits.")]
         [SerializeField] private Color _outlineColor = new Color(0.08f, 0.02f, 0.02f, 0.9f);
 
@@ -93,6 +99,8 @@ namespace Purge.Core.Visual
         public Color ZombieDamageColor => _zombieDamageColor;
         public Color PlayerDamageColor => _playerDamageColor;
         public Color HealColor => _healColor;
+        public Color CriticalColor => _criticalColor;
+        public float CriticalScale => _criticalScale;
         public Color OutlineColor => _outlineColor;
         public float OutlineWidth => _outlineWidth;
         public float NumberLifetime => _numberLifetime;

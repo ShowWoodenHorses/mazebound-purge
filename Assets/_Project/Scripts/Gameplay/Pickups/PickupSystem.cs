@@ -38,6 +38,7 @@ namespace Purge.Gameplay.Pickups
             Medkit = medkit;
             Weapon = weapon;
             Position = new Vector2(cell.X, cell.Y);
+            Home = Position;
             ExpiresAt = float.PositiveInfinity;
         }
 
@@ -50,6 +51,7 @@ namespace Purge.Gameplay.Pickups
             Kind = kind;
             Cell = cell;
             Position = position;
+            Home = position;
             ExpiresAt = expiresAt;
             Ammo = ammo;
             Throwable = throwable;
@@ -61,8 +63,17 @@ namespace Purge.Gameplay.Pickups
         public PickupKind Kind { get; }
         public GridPosition Cell { get; }
 
-        /// <summary>Where in the cell it lies (grid units): the cell centre for level objects.</summary>
-        public Vector2 Position { get; }
+        /// <summary>
+        /// Where it is (grid units): in its cell, the centre for level objects; on the way to the player while
+        /// <see cref="Attracted"/>.
+        /// </summary>
+        public Vector2 Position { get; internal set; }
+
+        /// <summary>Where it lies in its cell.</summary>
+        internal Vector2 Home { get; }
+
+        /// <summary>Flies to the player (the magnet of the run's cards); still lies in <see cref="Cell"/> until it arrives.</summary>
+        public bool Attracted { get; internal set; }
 
         public KeyData Key { get; }
 
@@ -106,11 +117,18 @@ namespace Purge.Gameplay.Pickups
     /// (<see cref="TryTakeWeapon"/>, <see cref="TryTakeThrowable"/>): a weapon — the new one becomes active, a replaced one
     /// drops into the cell (a slot with the base pistol is filled first); a throwable of another kind — it replaces the
     /// stack, which drops. Monsters' drops (<see cref="DropAmmo"/> etc.) lie for a lifetime and at most
-    /// <see cref="MaxDropped"/> at once (the oldest goes); items the player drops stay.
+    /// <see cref="MaxDropped"/> at once (the oldest goes); items the player drops stay. With a
+    /// <see cref="MagnetRadius"/> (the run's cards) ammo, throwables the slot has room for and medkits (when hurt) that
+    /// close fly to the player and are picked up on arrival; weapons and keys still only in their cell.
     /// </summary>
     public sealed class PickupSystem : ILevelLoadStep, ILevelTickable, IDisposable
     {
         private const float ExpiryCheckInterval = 0.25f;
+        private const float MagnetCheckInterval = 0.1f;
+
+        /// <summary>Cells per second of an item flying to the player; it arrives this close.</summary>
+        public const float MagnetSpeed = 12f;
+        private const float MagnetArrival = 0.3f;
         private static readonly List<Pickup> Empty = new List<Pickup>();
 
         private readonly LevelData _level;
@@ -123,9 +141,11 @@ namespace Purge.Gameplay.Pickups
         private readonly ThrowableSlot _throwables;
         private readonly Dictionary<GridPosition, List<Pickup>> _byCell = new Dictionary<GridPosition, List<Pickup>>();
         private readonly List<Pickup> _expiring = new List<Pickup>(); // monsters' drops, oldest first
+        private readonly List<Pickup> _attracted = new List<Pickup>();
         private bool _subscribed;
         private int _nextDrop;
         private float _expiryTimer;
+        private float _magnetTimer;
 
         public PickupSystem(LevelData level, PlayerSystem player, PlayerHealth health, PlayerInventory inventory, WeaponSystem weapons,
             SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null)
@@ -149,6 +169,12 @@ namespace Purge.Gameplay.Pickups
         public int MaxDropped { get; set; } = 40;
 
         public int DroppedCount => _expiring.Count;
+
+        /// <summary>Cells around the player from which items fly to them (0 = none; the run's cards).</summary>
+        public float MagnetRadius { get; set; }
+
+        /// <summary>Items flying to the player now.</summary>
+        public int AttractedCount => _attracted.Count;
 
         /// <summary>A pickup appeared (a dropped weapon, a monster's drop).</summary>
         public event Action<Pickup> Added;
@@ -188,6 +214,7 @@ namespace Purge.Gameplay.Pickups
         {
             _byCell.Clear();
             _expiring.Clear();
+            _attracted.Clear();
             foreach (var key in _level.Keys)
                 Place(new Pickup(PickupKind.Key, key.Position, key: key));
             foreach (var medkit in _level.Medkits)
@@ -209,12 +236,99 @@ namespace Purge.Gameplay.Pickups
         public void Tick(float deltaTime)
         {
             Time += deltaTime;
+            TickMagnet(deltaTime);
             _expiryTimer -= deltaTime;
             if (_expiryTimer > 0f) return;
             _expiryTimer = ExpiryCheckInterval;
             for (var i = _expiring.Count - 1; i >= 0; i--)
-                if (_expiring[i].ExpiresAt <= Time)
+                if (_expiring[i].ExpiresAt <= Time && !_expiring[i].Attracted)
                     Take(_expiring[i], taken: false);
+        }
+
+        // ------------------------------------------------------------------ Magnet
+
+        private void TickMagnet(float deltaTime)
+        {
+            if (!_player.IsSpawned) return;
+            if (MagnetRadius > 0f)
+            {
+                _magnetTimer -= deltaTime;
+                if (_magnetTimer <= 0f)
+                {
+                    _magnetTimer = MagnetCheckInterval;
+                    Attract();
+                }
+            }
+
+            var target = _player.Position;
+            var step = MagnetSpeed * deltaTime;
+            for (var i = _attracted.Count - 1; i >= 0 && i < _attracted.Count; i--)
+            {
+                var pickup = _attracted[i];
+                pickup.Position = Vector2.MoveTowards(pickup.Position, target, step);
+                if ((pickup.Position - target).sqrMagnitude > MagnetArrival * MagnetArrival) continue;
+                _attracted.RemoveAt(i);
+                Arrive(pickup);
+            }
+        }
+
+        /// <summary>Items within the radius on the player's floor start flying to them.</summary>
+        private void Attract()
+        {
+            var radius = MagnetRadius;
+            var reach = Mathf.CeilToInt(radius);
+            var centre = _player.Position;
+            var cell = _player.Cell;
+            for (var y = cell.Y - reach; y <= cell.Y + reach; y++)
+            for (var x = cell.X - reach; x <= cell.X + reach; x++)
+            {
+                if (!_byCell.TryGetValue(new GridPosition(x, y, cell.Floor), out var list)) continue;
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var pickup = list[i];
+                    if (pickup.Attracted || !Attractable(pickup) || (pickup.Position - centre).sqrMagnitude > radius * radius)
+                        continue;
+                    pickup.Attracted = true;
+                    _attracted.Add(pickup);
+                }
+            }
+        }
+
+        /// <summary>Monsters' drops only (level objects have their own views that do not fly).</summary>
+        private bool Attractable(Pickup pickup) => pickup.IsDropped && pickup.Kind switch
+        {
+            PickupKind.Ammo => true,
+            PickupKind.Throwable => _throwables.Room(pickup.Throwable) > 0,
+            PickupKind.Medkit => !_health.IsFull,
+            _ => false,
+        };
+
+        /// <summary>Picked up as in its cell; what cannot be taken now goes back where it lay.</summary>
+        private void Arrive(Pickup pickup)
+        {
+            pickup.Attracted = false;
+            switch (pickup.Kind)
+            {
+                case PickupKind.Ammo:
+                    Take(pickup, taken: true);
+                    _ammo.Add(pickup.Ammo, pickup.Amount);
+                    return;
+                case PickupKind.Throwable:
+                    pickup.Amount -= _throwables.Add(pickup.Throwable, pickup.Amount);
+                    if (pickup.Amount <= 0)
+                    {
+                        Take(pickup, taken: true);
+                        return;
+                    }
+
+                    break;
+                case PickupKind.Medkit when !_health.IsFull:
+                    Take(pickup, taken: true);
+                    UseMedkit(pickup);
+                    return;
+            }
+
+            pickup.Position = pickup.Home;
         }
 
         /// <summary>Drops the weapon of the slot into the player's cell (the base pistol stays). False when nothing was dropped.</summary>
@@ -390,11 +504,16 @@ namespace Purge.Gameplay.Pickups
                 if (pickup.Kind == PickupKind.Medkit)
                 {
                     Take(pickup, taken: true);
-                    if (pickup.MedkitItem != null) _health.Heal(pickup.MedkitItem.Heal);
-                    else _health.HealToFull();
-                    GameLog.Info(LogChannel.Gameplay, $"Used medkit '{pickup.Id}'.");
+                    UseMedkit(pickup);
                     break;
                 }
+        }
+
+        private void UseMedkit(Pickup pickup)
+        {
+            if (pickup.MedkitItem != null) _health.Heal(pickup.MedkitItem.Heal);
+            else _health.HealToFull();
+            GameLog.Info(LogChannel.Gameplay, $"Used medkit '{pickup.Id}'.");
         }
 
         private void Place(Pickup pickup)
@@ -410,6 +529,12 @@ namespace Purge.Gameplay.Pickups
             if (list.Count == 0)
                 _byCell.Remove(pickup.Cell);
             _expiring.Remove(pickup);
+            if (pickup.Attracted)
+            {
+                pickup.Attracted = false;
+                _attracted.Remove(pickup);
+            }
+
             pickup.WasTaken = taken;
             if (taken)
                 _sounds.Emit(SoundType.Pickup, pickup.Position, _player.Definition.InteractionSoundRadius, pickup.Cell.Floor);

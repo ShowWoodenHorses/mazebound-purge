@@ -165,7 +165,7 @@ namespace Purge.Presentation.Audio
             if (!string.IsNullOrEmpty(group.Cycle)) Schedule(Catalog.Part(group.Cycle), group.CycleDelay, pitch);
             if (!string.IsNullOrEmpty(group.Shells)) Schedule(Catalog.Part(group.Shells), ShellsDelay, 1f);
 
-            var size = definition.MagazineSize;
+            var size = _combat.MagazineOf(definition);
             if (size >= 4 && weapon.Ammo > 0 && weapon.Ammo <= Mathf.CeilToInt(size * Catalog.LowAmmoShare))
                 Play(Catalog.LowAmmo, 1f, 1f);
         }
@@ -174,7 +174,7 @@ namespace Purge.Presentation.Audio
         private void TickBurst()
         {
             if (_firing == null) return;
-            if (_time - _lastAttack <= _firing.Definition.Cooldown + BurstGap && _weapons.Active == _firing) return;
+            if (_time - _lastAttack <= _combat.CooldownOf(_firing.Definition) + BurstGap && _weapons.Active == _firing) return;
             EndBurst();
         }
 

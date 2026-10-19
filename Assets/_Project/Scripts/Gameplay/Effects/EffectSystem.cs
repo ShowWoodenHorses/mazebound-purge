@@ -62,10 +62,12 @@ namespace Purge.Gameplay.Effects
                 switch (effects[i])
                 {
                     case ExplosionEffect explosion:
-                        _targets.Blast(at, explosion.Damage, explosion.Radius, explosion.EdgeDamage, floor);
+                        // The player's own explosions are changed by the run's cards (damage, radius), the monsters' never.
+                        var radius = _targets.Blast(at, explosion.Damage, explosion.Radius, explosion.EdgeDamage, floor,
+                            kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion);
                         if (hostile) BlastPlayer(at, explosion, floor);
                         _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
-                        Exploded?.Invoke(at, explosion.Radius, explosion);
+                        Exploded?.Invoke(at, radius, explosion);
                         break;
                     case PlaceZoneEffect zone when zone.Zone != null:
                         _zones.PlaceArea(at, floor, zone.Radius, zone.Zone, zone.Duration, zone.Strength, hostile);

@@ -174,6 +174,9 @@ namespace Purge.Core.Monsters
         [Tooltip("Money of the run for killing it (stage 6b, × the difficulty's money factor); 0 = by rank: rank-and-file 1, officers 5, elite 20, bosses 100.")]
         [SerializeField, Min(0f)] private float _money;
 
+        [Tooltip("Experience of the run for killing it (stage 6c); 0 = by rank: rank-and-file 1, officers 4, elite 15, bosses 50.")]
+        [SerializeField, Min(0f)] private float _experience;
+
         [Tooltip("What it drops (ТЗ: ранг определяет дроп) — the rank's table; empty = the level's.")]
         [SerializeField] private DropTable _drop;
 
@@ -212,6 +215,17 @@ namespace Purge.Core.Monsters
             MonsterRank.Officer => 5f,
             MonsterRank.Elite => 20f,
             _ => 100f,
+        };
+
+        /// <summary>Experience of the run for killing it, the rank resolved (drafts; balance — stage 9).</summary>
+        public float Experience => _experience > 0f ? _experience : ExperienceOf(_rank);
+
+        public static float ExperienceOf(MonsterRank rank) => rank switch
+        {
+            MonsterRank.Mass => 1f,
+            MonsterRank.Officer => 4f,
+            MonsterRank.Elite => 15f,
+            _ => 50f,
         };
 
         public IReadOnlyList<StatusResistance> Resistances => _resistances;
@@ -303,6 +317,9 @@ namespace Purge.Core.Monsters
 
         /// <summary>For tests and tools: 0 = by rank.</summary>
         internal void SetMoney(float money) => _money = Mathf.Max(0f, money);
+
+        /// <summary>For tests and tools: 0 = by rank.</summary>
+        internal void SetExperience(float experience) => _experience = Mathf.Max(0f, experience);
 
         /// <summary>For tests and tools.</summary>
         internal void SetAbilities(params AbilityModule[] abilities) => _abilities = new List<AbilityModule>(abilities);

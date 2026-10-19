@@ -88,16 +88,18 @@ namespace Purge.Presentation.Audio
                     _audio.SetLevelPaused(false);
                     _audio.SetMusicShare(1f);
                     _audio.PlayMusic(Catalog.LevelMusic);
-                    if (previous == GameFlowState.Paused || previous == GameFlowState.Tip) Play(Catalog.PauseResume);
+                    if (previous == GameFlowState.Paused || previous == GameFlowState.Tip || previous == GameFlowState.Cards)
+                        Play(Catalog.PauseResume);
                     else if (previous == GameFlowState.Map) Play(Catalog.MapClose);
                     break;
 
                 case GameFlowState.Paused:
                 case GameFlowState.Map:
                 case GameFlowState.Tip:
+                case GameFlowState.Cards: // the level-up's own sound — stage 6e
                     _audio.SetLevelPaused(true);
                     _audio.SetMusicShare(Catalog.PausedMusicVolume);
-                    if (state == GameFlowState.Paused || state == GameFlowState.Tip) Play(Catalog.PauseOpen);
+                    if (state != GameFlowState.Map) Play(Catalog.PauseOpen);
                     else Play(Catalog.MapOpen);
                     break;
 

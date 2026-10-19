@@ -313,11 +313,9 @@ namespace Purge.Presentation.Visual
         /// <summary>Looks of the monsters the level can have (the waves' and the called-up kinds) and of champions.</summary>
         private void CollectMonsters(List<AssetReferenceGameObject> wanted)
         {
-            var settings = _level != null ? _level.StressTest : null;
+            var settings = _level != null ? _level.Horde : null;
             if (settings == null) return;
-            foreach (var spawn in settings.Monsters)
-                if (spawn != null) AddMonster(wanted, spawn.Monster);
-            foreach (var monster in settings.OnDemandMonsters) AddMonster(wanted, monster);
+            foreach (var monster in settings.AllMonsters()) AddMonster(wanted, monster);
             foreach (var view in settings.MonsterViews)
                 if (view != null) Add(wanted, view.ProjectileTrail);
             foreach (var affix in settings.Champions.Affixes)

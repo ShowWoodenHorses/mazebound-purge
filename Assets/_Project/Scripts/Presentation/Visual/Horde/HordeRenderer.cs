@@ -18,7 +18,7 @@ namespace Purge.Presentation.Visual.Horde
 {
     /// <summary>
     /// Draws the horde (<see cref="HordeSystem"/>) with GPU instancing: no GameObject per monster. Every kind of
-    /// monster has its look (<see cref="HordeVisualDefinition"/> by monster id, <see cref="StressTestDefinition.VisualOf"/>);
+    /// monster has its look (<see cref="HordeVisualDefinition"/> by monster id, <see cref="HordeDefinition.VisualOf"/>);
     /// every late tick the monsters on screen and in the player's view (hidden ones keep simulating, ТЗ §57) are packed
     /// per look (kind × material variant) into batches of <see cref="BatchSize"/>: a matrix and the animation frame per
     /// instance (shader Purge/Horde reads the baked animation). The clip follows the gameplay state: run at the monster's
@@ -163,7 +163,7 @@ namespace Purge.Presentation.Visual.Horde
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var settings = _level.StressTest;
+            var settings = _level.Horde;
             if (!_horde.IsActive || settings == null)
                 return UniTask.CompletedTask;
 

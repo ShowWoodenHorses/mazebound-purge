@@ -24,6 +24,8 @@ namespace Purge.Core.Validation
         public const string ObstacleNotOnFloor = "ObstacleNotOnFloor";
         public const string ObjectInBlockedCell = "ObjectInBlockedCell";
         public const string FloorOverhang = "FloorOverhang";
+        public const string MonsterSpawnBlocked = "MonsterSpawnBlocked";
+        public const string WavesWithoutSpawns = "WavesWithoutSpawns";
 
         // Visual
         public const string NoVisualTheme = "NoVisualTheme";

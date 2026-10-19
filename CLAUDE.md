@@ -70,7 +70,7 @@ Unity 6000.3.8f1 (6.3 LTS) · Built-in RP · VContainer 1.19 · UniTask 2.5 · A
 | [Monsters.md](Docs/Code/Monsters.md) | `MonsterDefinition` и Build Monsters, экипировка рядовых, виды в орде, сопротивления, эффекты смерти, вид рядовых (`HordeRenderer`), восприятие и шум `HordePerception`/`NoiseField`, сложность |
 | [Abilities.md](Docs/Code/Abilities.md) | Способности (`MonsterAbilities`, модули, предупреждения), снаряды монстров, офицеры на Animator (`MonsterViewPresenter`), Громила, рывок, `CrowdImpulse`, двери по рангам, масса тела |
 | [Elite.md](Docs/Code/Elite.md) | Элита (броня спереди, подъём павших, удар по площади, ярость, враждебные эффекты), чемпионы (аффиксы, `ChampionSystem`, свечение), бенчмарк песочницы, эффекты монстров (Э3) |
-| [Horde.md](Docs/Code/Horde.md) | Орда `HordeSystem` (массивы, тик, появление), рендер орды, боевая песочница, стресс-тест |
+| [Horde.md](Docs/Code/Horde.md) | Орда уровня `HordeDefinition`, волны (`WaveScenario`, `WaveGenerator`, `WaveSystem`, `Level_Run`), `HordeSystem` (массивы, тик, появление), рендер орды, боевая песочница, стресс-тест |
 | [MetaUI.md](Docs/Code/MetaUI.md) | Карта, таймер, завершение уровня, сейв-сервисы; UI: `UiShape`, `UiStyle`, иконки, кнопки, экраны, HUD; локализация; обучение |
 | [Audio.md](Docs/Code/Audio.md) | `AudioBuilder` и `AudioCatalog`, `AudioService`, музыка, `LevelAudioPresenter`, `WeaponAudioPresenter`, звуковые группы оружия |
 | [Platforms.md](Docs/Code/Platforms.md) | Веб (фокус, шаблон, release-настройки), аналитика, реклама, `IGamePlatform`, облачный сейв, сборка под площадку, Яндекс, CrazyGames, ВК, GameDistribution, RuStore (Android) |

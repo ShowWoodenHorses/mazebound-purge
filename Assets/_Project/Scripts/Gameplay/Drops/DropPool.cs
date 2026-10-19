@@ -11,7 +11,7 @@ namespace Purge.Gameplay.Drops
 {
     /// <summary>
     /// What monsters of this level may drop (ТЗ: в дроп попадает купленное — stage 10): the table, the weapons and
-    /// throwables of the pool, the ammo types and medkits. Now — the combat sandbox's lists (its stress test settings);
+    /// throwables of the pool, the ammo types and medkits. Now — the lists of the level's horde (HordeDefinition);
     /// a level without them drops nothing. Known at load (stage InitializeSystems) so the views load only these items'
     /// looks.
     /// </summary>
@@ -46,9 +46,9 @@ namespace Purge.Gameplay.Drops
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var settings = _level.StressTest;
-            Configure(settings != null && settings.IsSandbox ? settings.Drop : null,
-                settings != null ? settings.SandboxWeapons : null, settings != null ? settings.SandboxThrowables : null);
+            var horde = _level.Horde;
+            Configure(horde != null ? horde.Drop : null, horde != null ? horde.PoolWeapons : null,
+                horde != null ? horde.PoolThrowables : null);
             return UniTask.CompletedTask;
         }
 

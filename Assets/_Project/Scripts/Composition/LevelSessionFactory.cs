@@ -7,6 +7,7 @@ using Purge.Core.Common;
 using Purge.Core.Level;
 using Purge.Application.Services;
 using Purge.Gameplay.Horde;
+using Purge.Gameplay.Waves;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using UnityEngine;
@@ -72,6 +73,7 @@ namespace Purge.Composition
                 // Rules subscribe on creation and are disposed with the scope.
                 scope.Container.Resolve<PlayerDeathRule>();
                 scope.Container.Resolve<AllKilledRule>();
+                scope.Container.Resolve<WavesClearedRule>();
                 GameLog.Info(LogChannel.LevelLoading, $"LevelScope for '{level.name}' created.");
                 return new LevelSession(scope, scene, levelAssets, runtime, progress);
             }

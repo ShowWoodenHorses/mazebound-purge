@@ -39,8 +39,8 @@ namespace Purge.Gameplay.Horde
     /// <summary>
     /// Perception of the horde (stage 5b, ТЗ: бродяга / зовущий / охотник; шум — геймплейная механика). Per slot, in flat
     /// arrays: <see cref="HordeAwareness"/>. Hunters chase from the start. Wanderers walk with one of
-    /// <see cref="StressTestDefinition.WanderGroups"/> groups to its random point (a shared flow field per group, a new
-    /// point every <see cref="StressTestDefinition.WanderRetarget"/> s; stage 6 replaces it with the wave's route).
+    /// <see cref="HordeDefinition.WanderGroups"/> groups to its random point (a shared flow field per group, a new
+    /// point every <see cref="HordeDefinition.WanderRetarget"/> s; stage 6 replaces it with the wave's route).
     /// <list type="bullet">
     /// <item><b>Hearing.</b> Every sound of <see cref="SoundEventBus"/> spreads along the passages (<see cref="NoiseField"/>:
     /// walls stop it, a closed door × <see cref="ClosedDoorTransmission"/>; radius × difficulty). Sounds are gathered and
@@ -136,7 +136,7 @@ namespace Purge.Gameplay.Horde
         public HordeAwareness AwarenessOf(int agent) =>
             _awareness != null && (uint)agent < (uint)_awareness.Length ? _awareness[agent] : HordeAwareness.Chase;
 
-        internal void Initialize(int capacity, StressTestDefinition settings)
+        internal void Initialize(int capacity, HordeDefinition settings, DifficultyDefinition difficulty)
         {
             _awareness = new HordeAwareness[capacity];
             _since = new float[capacity];
@@ -156,7 +156,6 @@ namespace Purge.Gameplay.Horde
             _pending = new PendingSound[MaxPending];
             _random = new DeterministicRandom((int)StableHash.Of(_horde.LevelName + "/perception"));
 
-            var difficulty = settings.Difficulty;
             _hearing = difficulty != null ? difficulty.Hearing : 1f;
             _sight = difficulty != null ? difficulty.Sight : 1f;
             _call = difficulty != null ? difficulty.Call : 1f;
@@ -190,7 +189,7 @@ namespace Purge.Gameplay.Horde
             _willCall[agent] = false;
             _noise[agent] = -1;
             var hunts = _allHunters || perception == MonsterPerception.Hunter;
-            if (!hunts && _groups == null) CreateGroups(_horde.Settings);
+            if (!hunts && _groups == null) CreateGroups(_horde.Horde);
             _awareness[agent] = hunts ? HordeAwareness.Chase : HordeAwareness.Wander;
             _since[agent] = time;
         }
@@ -405,7 +404,7 @@ namespace Purge.Gameplay.Horde
             }
         }
 
-        private void CreateGroups(StressTestDefinition settings)
+        private void CreateGroups(HordeDefinition settings)
         {
             if (settings == null) return;
             _groups = new WanderGroup[settings.WanderGroups];

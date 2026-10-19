@@ -31,6 +31,7 @@ namespace Purge.Editor.Dev
         private const string DataPath = "Assets/_Project/Data/Horde";
         private const string VisualPath = DataPath + "/ZombieHorde.asset";
         private const string StressTestPath = DataPath + "/StressTest.asset";
+        private const string StressHordePath = DataPath + "/StressHorde.asset";
         private const string EffectsPath = "Assets/_Project/Art/Effects";
         private const string ClipPrefix = "Zombie_";
         private const float FrameRate = 30f;
@@ -60,9 +61,20 @@ namespace Purge.Editor.Dev
                     AssetDatabase.CreateAsset(stress, StressTestPath);
                 }
 
-                stress.Configure(visual, AssetDatabase.LoadAssetAtPath<Material>(EffectsPath + "/fx_tracer.mat"),
+                stress.Configure(AssetDatabase.LoadAssetAtPath<Material>(EffectsPath + "/fx_tracer.mat"),
                     AssetDatabase.LoadAssetAtPath<Material>(EffectsPath + "/fx_additive.mat"), SaveFireMaterial());
                 EditorUtility.SetDirty(stress);
+                // The stress test's monsters (stage 6: the horde is its own asset).
+                var horde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(StressHordePath);
+                if (horde == null)
+                {
+                    horde = ScriptableObject.CreateInstance<HordeDefinition>();
+                    horde.ConfigureCapacity(stress.MaxCount, 64);
+                    AssetDatabase.CreateAsset(horde, StressHordePath);
+                }
+
+                horde.SetVisual(visual);
+                EditorUtility.SetDirty(horde);
                 AssetDatabase.SaveAssets();
             }
             catch (Exception e)

@@ -40,6 +40,7 @@ MonoBehaviour:
     _keyId: 
     _isInitiallyOpen: 0
     _iceHits: 0
+    _strength: 0
   - _id: door_2
     _position:
       _x: 11
@@ -48,6 +49,7 @@ MonoBehaviour:
     _keyId: key_1
     _isInitiallyOpen: 0
     _iceHits: 0
+    _strength: 0
   _playerStarts:
   - _id: start_1
     _position:
@@ -221,6 +223,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
+  _monsterSpawns: []
   _visualTheme: {fileID: 11400000, guid: e7b38e2ce65ec8b4c9afc1c7f463e1f9, type: 2}
   _visualData:
     _floorAssignments:
@@ -2458,4 +2461,5 @@ MonoBehaviour:
         _rotation: 0
     _objectOverrides: []
   _tutorial: {fileID: 0}
+  _horde: {fileID: 0}
   _stressTest: {fileID: 0}

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: LevelCatalog
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Level.LevelCatalog
   _levels:
-  - _levelId: Level_Dev
-    _address: Levels/Level_Dev
-    _displayName: New Level
+  - _levelId: Level_Run
+    _address: Levels/Level_Run
+    _displayName: Run
   _tutorial:
     _levelId: Level_Tutorial
     _address: Levels/Level_Tutorial

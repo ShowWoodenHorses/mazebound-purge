@@ -459,6 +459,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
+  _monsterSpawns: []
   _visualTheme: {fileID: 11400000, guid: ad23ba20b94ed7a45b12d5a6627c3e0f, type: 2}
   _visualData:
     _floorAssignments:
@@ -10102,4 +10103,5 @@ MonoBehaviour:
         _rotation: 1
     _objectOverrides: []
   _tutorial: {fileID: 0}
+  _horde: {fileID: 11400000, guid: 97d197dde962ce940ade8385e0bb74f8, type: 2}
   _stressTest: {fileID: 11400000, guid: bc88733bd64205649ad0f68eb28fadb0, type: 2}

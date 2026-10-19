@@ -22,7 +22,7 @@
 ## Чемпионы (5д2)
 - **Аффикс — контент** `ChampionAffixDefinition` (`Core/Monsters`, меню Purge/Definitions/Champion Affix, `Data/Monsters/Champions`): цвет свечения (альфа — сила) + модули `AffixModule`: `SpeedAffix` (скорость ×, частота атак ×), `ArmorAffix` (урон с направлением ×; зоны и состояния — полностью), `HitStatusAffix` (состояние игроку при каждом попадании монстра), `TrailAffix` (зона на клетках, с которых сходит; зона монстров; сам её не получает — `HordeSystem.IgnoresZone`), `DeathBlastAffix` (эффекты после смерти через задержку, вложенный список `EffectModule`, круг-предупреждение радиусом самого широкого), `LifestealAffix` (доля урона по игроку в HP), `ResistAffix` (сопротивления состояниям).
   - Значения модулей кэшируются (`OnValidate` сбрасывает).
-- **Правила** — `ChampionRules` в `StressTestDefinition.Champions` (до волн этапа 6): шанс для монстров волн (`SpawnOne` → `RollChampion`, 4 % в песочнице), список аффиксов (выбор равновероятно), HP ×2, вид ×1,15 (тело в геймплее — как у вида), дроп на ранг выше (`DropOf(rank)`: рядовые → `OfficerDrop`, офицеры → `EliteDrop`).
+- **Правила** — `ChampionRules` в `HordeDefinition.Champions` (до волн этапа 6): шанс для монстров волн (`SpawnOne` → `RollChampion`, 4 % в песочнице), список аффиксов (выбор равновероятно), HP ×2, вид ×1,15 (тело в геймплее — как у вида), дроп на ранг выше (`DropOf(rank)`: рядовые → `OfficerDrop`, офицеры → `EliteDrop`).
   - Чемпионами бывают только рядовые и офицеры (`CanBe`); поднятые Шаманом встают обычными.
 - **Состояние слота** — `HordeSystem`: `_affix` (индекс аффикса + 1), `_maxHealth`, `_attackRate`
   - `MakeChampion(slot, affix)` (HP, скорость, темп атак; один раз), `AffixOf/IsChampion/Affixes`, `MaxHealthOf`, `AttackIntervalOf` (вид и способности берут его), `Heal`, `ArmorFactor` × броня аффикса для ударов с направлением, `ChampionsMade`. Новый монстр в слоте — обычный.
@@ -34,7 +34,7 @@
   - у офицеров `MonsterViewPresenter` держит `HitFlash` на экземпляр (`SetGlow`), масштаб от исходного префаба. `AbilityWarningView` рисует круги взрывов чемпионов.
 - **Бенчмарк песочницы** (замер этапа 5): `BenchmarkPlan.CreateSandbox` + `StressController` (`SpawnExtras` — двери закрыть, офицеры/элита/чемпионы шага, патроны долить; на время бенча AllHunters и God); автопилот `StressAutopilotInput` регистрируется и в песочнице, но включён только в бенче.
   - С Э3: **игрок стреляет** — `CombatSandbox.ArmForBench` даёт в руки `StressTestDefinition.BenchWeapon` (AK-74; `Disarm` возвращает прежнее), `StressAutopilotInput.Shooting` держит атаку и выключает мышь/правый стик — прицел автонаведением стика движения (`BenchmarkConfig.Shoot`; убийств самим бенчем больше нет).
-  - **Ёмкость** орды — `StressTestDefinition.Capacity` = наибольшее из `Monster Counts` + `Reserve Slots` (64): волны (`TargetCount`) не выше `MaxCount`, запас — под вызванных кнопками и поднятых; у песочницы `Monster Counts` до 300. Методика — [StressTest.md](../StressTest.md).
+  - **Ёмкость** орды — `HordeSystem.MaxCount` (наибольшее из `Monster Counts` стресса и `HordeDefinition.MaxAlive`) + `HordeDefinition.ReserveSlots` (64): волны (`TargetCount`) не выше `MaxCount`, запас — под вызванных кнопками и поднятых; у песочницы `Monster Counts` до 300. Методика — [StressTest.md](../StressTest.md).
 - **Песочница**: строка **Champ** — `Offc` (рядовой охотник из видов волн / случайный офицер) и кнопка на аффикс (`StressController.SpawnChampion`, 7–9 клеток от игрока). Создание — Build Monsters ([PurgeMenu.md](../PurgeMenu.md)).
 
 ## Эффекты монстров (Э3)

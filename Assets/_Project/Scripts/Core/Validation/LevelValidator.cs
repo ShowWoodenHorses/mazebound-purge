@@ -61,10 +61,29 @@ namespace Purge.Core.Validation
             ValidateObstacles(level, report);
             ValidateFloors(level, report);
             ValidateTutorial(level, report);
+            ValidateMonsterSpawns(level, report);
 
             foreach (var door in level.Doors.Where(d => d.IsFrozen && d.IsInitiallyOpen))
                 report.Add(Error, Structural, ValidationCodes.FrozenDoorInitiallyOpen,
                     $"Door '{door.Id}' is frozen and initially open: a frozen door starts closed.", door.Position, door.Id);
+        }
+
+        /// <summary>Spawn points of the waves (stage 6): inside, on a floor cell, not in an obstacle that blocks movement.</summary>
+        private static void ValidateMonsterSpawns(LevelData level, ValidationReport report)
+        {
+            var geometry = level.Geometry;
+            foreach (var spawn in level.MonsterSpawns)
+            {
+                var p = spawn.Position;
+                var obstacle = geometry.IsInside(p) && geometry.ObstaclesConsistent ? geometry.GetObstacle(p) : null;
+                if (!geometry.IsInside(p) || geometry.GetCell(p) != CellType.Floor || obstacle != null && obstacle.BlocksMovement)
+                    report.Add(Error, Structural, ValidationCodes.MonsterSpawnBlocked,
+                        $"Monster spawn point '{spawn.Id}' at {p} is not on a free floor cell.", p, spawn.Id);
+            }
+
+            if (level.Horde != null && level.Horde.Waves != null && level.StressTest == null && level.MonsterSpawns.Count == 0)
+                report.Add(Warning, Structural, ValidationCodes.WavesWithoutSpawns,
+                    "The level has waves but no monster spawn points: monsters appear anywhere far from the player.");
         }
 
         /// <summary>

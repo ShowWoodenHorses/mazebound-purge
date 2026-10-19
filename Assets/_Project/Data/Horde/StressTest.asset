@@ -12,33 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3489b509720531c4b87349f0912159e7, type: 3}
   m_Name: StressTest
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.StressTestDefinition
-  _visual: {fileID: 11400000, guid: fbd9bed12ffae374180fb7eeb1d78e96, type: 2}
-  _monster:
-    MaxHp: 30
-    Speed: 2.2
-    Radius: 0.3
-    AttackReach: 0.8
-    Damage: 5
-    AttackInterval: 1.2
-    TurnSpeed: 540
-    Separation: 0.5
-    CorpseTime: 2
-    EmergeTime: 0
-    WanderSpeed: 0.4
-    SightRange: 7
-    CallRadius: 12
-    HoldRange: 0
-    RetreatRange: 0
-    Mass: 0
-    Immovable: 0
-    Doors: 0
-    DoorDamage: 20
-    FrontArmor: 0
-    FrontArc: 120
-  _monsters: []
-  _monsterVisuals: []
-  _onDemandMonsters: []
-  _monsterViews: []
   _weapons:
     GunRate: 12
     BulletSpeed: 28
@@ -55,21 +28,10 @@ MonoBehaviour:
     FireLifetime: 4
     FireDps: 20
     FireCellsTarget: 30
-  _difficulty: {fileID: 0}
-  _wanderGroups: 3
-  _wanderRetarget: 25
-  _champions:
-    _chance: 0.04
-    _affixes: []
-    _healthFactor: 2
-    _scale: 1.15
-    _massDrop: {fileID: 0}
-    _officerDrop: {fileID: 0}
   _sandbox: 0
   _sandboxAmmo: 500
   _sandboxWeapons: []
   _sandboxThrowables: []
-  _drop: {fileID: 0}
   _monsterCounts: 320000006400000096000000c80000002c010000f4010000
   _startCount: 150
   _cameraHalfExtents:
@@ -87,3 +49,4 @@ MonoBehaviour:
   _fireMaterial: {fileID: 2100000, guid: b49e1a135b417a04e8cd8d77ca43aef2, type: 2}
   _benchmarkWarmup: 3
   _benchmarkSample: 12
+  _benchWeapon: {fileID: 0}

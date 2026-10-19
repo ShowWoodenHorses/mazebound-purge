@@ -154,9 +154,11 @@ namespace Purge.Gameplay.Horde
         private bool _flowDirty = true;
         private bool _subscribed;
         private int _highWater;
+        private readonly float _healthFactor; // difficulty
 
         public HordeSystem(LevelData level, LevelGrid grid, LevelPassability passability, DoorSystem doors,
-            PlayerSystem player, PlayerHealth playerHealth, SoundEventBus sounds = null, VisibilitySystem visibility = null)
+            PlayerSystem player, PlayerHealth playerHealth, SoundEventBus sounds = null, VisibilitySystem visibility = null,
+            LevelLaunchOptions options = null)
         {
             _level = level;
             _grid = grid;
@@ -165,8 +167,11 @@ namespace Purge.Gameplay.Horde
             _player = player;
             _playerHealth = playerHealth;
             _sounds = sounds;
-            Settings = level.StressTest;
-            _kinds = CreateKinds(Settings);
+            Horde = level.Horde;
+            Stress = level.StressTest;
+            Difficulty = options?.Difficulty != null ? options.Difficulty : Horde != null ? Horde.Difficulty : null;
+            _healthFactor = Difficulty != null ? Difficulty.Health : 1f;
+            _kinds = CreateKinds(Horde);
             Perception = new HordePerception(this, grid, doors, sounds, visibility, player);
             foreach (var kind in _kinds)
             {
@@ -176,7 +181,7 @@ namespace Purge.Gameplay.Horde
             }
         }
 
-        private static HordeKind[] CreateKinds(StressTestDefinition settings)
+        private static HordeKind[] CreateKinds(HordeDefinition settings)
         {
             if (settings == null)
                 return new[] { new HordeKind(null, new MonsterStats(), 1f) };
@@ -187,8 +192,8 @@ namespace Purge.Gameplay.Horde
                     kinds.Add(new HordeKind(spawn.Monster, spawn.Monster.Stats, spawn.Weight));
             if (kinds.Count == 0)
                 kinds.Add(new HordeKind(null, settings.Monster ?? new MonsterStats(), 1f));
-            // Weight 0: never in the waves, only when asked (SpawnKind — the sandbox's officers).
-            foreach (var monster in settings.OnDemandMonsters)
+            // Weight 0: never kept up by weight, only when asked (the waves, SpawnKind — the sandbox's officers).
+            foreach (var monster in settings.AllMonsters())
                 if (monster != null && kinds.Count < byte.MaxValue && kinds.FindIndex(kind => kind.Definition == monster) < 0)
                     kinds.Add(new HordeKind(monster, monster.Stats, 0f));
             return kinds.ToArray();
@@ -196,13 +201,23 @@ namespace Purge.Gameplay.Horde
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
-        public StressTestDefinition Settings { get; }
+        /// <summary>The level's monsters; null = no horde.</summary>
+        public HordeDefinition Horde { get; }
+
+        /// <summary>Dev levels: the horde is kept full by count (<see cref="TargetCount"/>), no waves.</summary>
+        public StressTestDefinition Stress { get; }
+
+        /// <summary>The run's difficulty (launch options, else the horde's); null = every factor 1.</summary>
+        public DifficultyDefinition Difficulty { get; }
+
+        /// <summary>The waves spawn the horde (<c>WaveSystem</c>): the level has waves and is not a dev level.</summary>
+        public bool UsesWaves => Horde != null && Horde.Waves != null && Stress == null;
 
         /// <summary>Who knows about the player (stage 5b).</summary>
         public HordePerception Perception { get; }
 
         internal string LevelName => _level.name;
-        public bool IsActive => Settings != null && _positions != null;
+        public bool IsActive => Horde != null && _positions != null;
 
         /// <summary>Kinds of monsters this horde has (slots refer to them by <see cref="Kinds"/>).</summary>
         public System.Collections.Generic.IReadOnlyList<HordeKind> KindList => _kinds;
@@ -232,6 +247,9 @@ namespace Purge.Gameplay.Horde
         public float Time { get; private set; }
 
         public int Capacity => _positions?.Length ?? 0;
+
+        /// <summary>Most alive at once: the horde's limit, or the stress test's largest count.</summary>
+        public int MaxCount => Horde == null ? 0 : Stress != null ? Math.Max(Horde.MaxAlive, Stress.MaxCount) : Horde.MaxAlive;
 
         /// <summary>Slots 0 .. HighWater-1 may be in use; views iterate only these.</summary>
         public int HighWater => _highWater;
@@ -374,7 +392,7 @@ namespace Purge.Gameplay.Horde
         public float EmergeTimeOf(int agent) => (uint)agent < (uint)_highWater ? _emergeTime[agent] : 0f;
 
         /// <summary>Champions of this horde (stage 5e2; null without settings).</summary>
-        public ChampionRules Champions => Settings?.Champions;
+        public ChampionRules Champions => Horde?.Champions;
 
         /// <summary>Champions made so far (tests, metrics).</summary>
         public int ChampionsMade { get; private set; }
@@ -634,10 +652,10 @@ namespace Purge.Gameplay.Horde
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (Settings == null)
+            if (Horde == null)
                 return UniTask.CompletedTask;
 
-            var capacity = Settings.Capacity;
+            var capacity = MaxCount + Horde.ReserveSlots;
             _positions = new Vector2[capacity];
             _facing = new float[capacity];
             _health = new float[capacity];
@@ -701,10 +719,14 @@ namespace Purge.Gameplay.Horde
             }
 
             RebuildFlow();
-            Perception.Initialize(capacity, Settings);
-            SetTargetCount(Settings.StartCount);
-            // The first wave appears at once, spread over the level.
-            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
+            Perception.Initialize(capacity, Horde, Difficulty);
+            if (Stress != null)
+            {
+                SetTargetCount(Stress.StartCount);
+                // The first lot appears at once, spread over the level.
+                while (CountPresent() < TargetCount && SpawnOne(Stress.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
+            }
+
             GameLog.Info(LogChannel.Gameplay, $"Horde: {AliveCount} monster(s), capacity {capacity}.");
             return UniTask.CompletedTask;
         }
@@ -713,7 +735,7 @@ namespace Purge.Gameplay.Horde
         {
             if (_positions == null)
                 return;
-            TargetCount = Mathf.Clamp(count, 0, Mathf.Min(Settings.MaxCount, _positions.Length));
+            TargetCount = Mathf.Clamp(count, 0, Mathf.Min(MaxCount, _positions.Length));
             // Fewer: the farthest living monsters leave at once.
             while (AliveCount > TargetCount)
             {
@@ -745,7 +767,8 @@ namespace Purge.Gameplay.Horde
             AliveCount = 0;
             _highWater = 0;
             Array.Clear(_fallenUsed, 0, FallenMemory);
-            while (CountPresent() < TargetCount && SpawnOne(Settings.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
+            if (Stress == null) return;
+            while (CountPresent() < TargetCount && SpawnOne(Stress.SpawnMinDistance * 0.5f, float.MaxValue, false)) { }
         }
 
         public void Tick(float deltaTime)
@@ -763,11 +786,11 @@ namespace Purge.Gameplay.Horde
                 FlowMs = Milliseconds(flowStarted);
             }
 
-            if (Respawn)
+            if (Respawn && Stress != null)
             {
                 var present = CountPresent();
                 for (var n = 0; n < SpawnsPerTick && present < TargetCount; n++, present++)
-                    if (!SpawnOne(Settings.SpawnMinDistance, Settings.SpawnMaxDistance, true))
+                    if (!SpawnOne(Stress.SpawnMinDistance, Stress.SpawnMaxDistance, true))
                         break;
             }
 
@@ -1400,6 +1423,36 @@ namespace Purge.Gameplay.Horde
             return -1;
         }
 
+        /// <summary>
+        /// Waves: a monster of <paramref name="kind"/> climbs out of the ground (its kind's emerge time) on a reachable
+        /// cell within <paramref name="radius"/> of <paramref name="center"/>, with its kind's perception; may become a
+        /// champion. Its slot, or -1 (no free slot, no such cell).
+        /// </summary>
+        public int SpawnEmerging(Vector2 center, int kind, float radius)
+        {
+            if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
+            for (var attempt = 0; attempt < 16; attempt++)
+            {
+                var offset = attempt == 0
+                    ? Vector2.zero
+                    : new Vector2((float)_random.NextDouble() * 2f - 1f, (float)_random.NextDouble() * 2f - 1f) * radius;
+                var cell = CellIndex(center + offset);
+                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                var slot = Place(cell, true, null, null, kind);
+                if (slot >= 0) RollChampion(slot);
+                return slot;
+            }
+
+            return -1;
+        }
+
+        /// <summary>Flow distance from the cell to the player (orthogonal step 2, diagonal 3), or <see cref="FlowField.Unreachable"/>.</summary>
+        public int FlowDistance(int x, int y)
+        {
+            if (!IsActive || x < 0 || y < 0 || x >= _grid.Width || y >= _grid.Height) return FlowField.Unreachable;
+            return _flow.DistanceAt(y * _grid.Width + x);
+        }
+
         /// <summary>A random walkable cell the player can be reached from (index y · width + x), -1 when none found.</summary>
         public int RandomReachableCell(DeterministicRandom random)
         {
@@ -1475,8 +1528,8 @@ namespace Purge.Gameplay.Horde
             _positions[slot] = exact ?? new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
-            _health[slot] = stats.MaxHp;
-            _maxHealth[slot] = stats.MaxHp;
+            _health[slot] = stats.MaxHp * _healthFactor;
+            _maxHealth[slot] = _health[slot];
             _affix[slot] = 0;
             _attackRate[slot] = 1f;
             _emergeTime[slot] = emerge ? emergeTime >= 0f ? emergeTime : stats.EmergeTime : 0f;

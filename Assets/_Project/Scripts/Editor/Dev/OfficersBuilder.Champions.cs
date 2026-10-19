@@ -75,9 +75,9 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>The sandbox's champions: the folder's affixes, the rank-up drops when not set by hand.</summary>
-        public static void SetupChampions(StressTestDefinition stress, ChampionAffixDefinition[] affixes)
+        public static void SetupChampions(HordeDefinition horde, ChampionAffixDefinition[] affixes)
         {
-            stress.Champions.SetAffixes(affixes, AssetDatabase.LoadAssetAtPath<DropTable>(OfficerDropPath),
+            horde.Champions.SetAffixes(affixes, AssetDatabase.LoadAssetAtPath<DropTable>(OfficerDropPath),
                 AssetDatabase.LoadAssetAtPath<DropTable>(EliteDropPath));
         }
     }

@@ -31,6 +31,7 @@ namespace Purge.Tests.EditMode.Monsters
         private LevelData _level;
         private PlayerDefinition _playerDefinition;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
         private MonsterDefinition _walker;
         private HordeSystem _horde;
 
@@ -53,10 +54,12 @@ namespace Purge.Tests.EditMode.Monsters
 
             _stress = Create<StressTestDefinition>();
             _level.StressTest = _stress;
+            _hordeData = Create<HordeDefinition>();
+            _level.Horde = _hordeData;
             _walker = Create<MonsterDefinition>();
             _walker.Configure("walker", MonsterRank.Mass, MonsterBiome.Common, new MonsterStats { MaxHp = 30f, Speed = 2f, Damage = 0 });
             _walker.SetPerception(MonsterPerception.Hunter);
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_walker, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_walker, 1f) });
             _playerDefinition = Create<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
         }
@@ -94,7 +97,8 @@ namespace Purge.Tests.EditMode.Monsters
         public void Capacity_LeavesRoomForCalledUpMonsters_AboveTheWaves()
         {
             _stress.ConfigureSandbox(true, 0, 10);
-            _stress.ConfigureCounts(new[] { 0, 10 }, 6);
+            _stress.ConfigureCounts(new[] { 0, 10 });
+            _hordeData.ConfigureCapacity(1, 6);
             Build();
             Assert.That(_horde.Capacity, Is.EqualTo(16), "the largest count + the reserve");
             Assert.That(_horde.AliveCount, Is.EqualTo(10), "the first wave");

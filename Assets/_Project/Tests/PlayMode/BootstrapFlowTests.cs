@@ -219,7 +219,8 @@ namespace Purge.Tests.PlayMode
 
             Assert.IsTrue(visibility.HasResult, "Calculated when the player spawned.");
             Assert.IsTrue(visibility.IsVisible(player.Cell));
-            Assert.LessOrEqual(visibility.VisibleCells.Count, 121, "At most 11x11 cells (ТЗ §53).");
+            var side = visibility.Radius * 2 + 1;
+            Assert.LessOrEqual(visibility.VisibleCells.Count, side * side, "Within the view square (ТЗ: ~21×21).");
 
             for (var y = 0; y < grid.Height; y++)
             for (var x = 0; x < grid.Width; x++)

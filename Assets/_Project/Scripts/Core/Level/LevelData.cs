@@ -24,11 +24,15 @@ namespace Purge.Core.Level
         [SerializeField] private List<KeyData> _keys = new List<KeyData>();
         [SerializeField] private List<MedkitData> _medkits = new List<MedkitData>();
         [SerializeField] private List<LightSourceData> _lights = new List<LightSourceData>();
+        [SerializeField] private List<MonsterSpawnData> _monsterSpawns = new List<MonsterSpawnData>();
         [SerializeField] private VisualTheme _visualTheme;
         [SerializeField] private VisualData _visualData = new VisualData();
 
         [Tooltip("Steps of the tutorial: set only on the tutorial level (Build / Sync lists it apart from the numbered levels).")]
         [SerializeField] private TutorialScript _tutorial;
+
+        [Tooltip("The level's monsters (stage 6): kinds and looks, champions, capacity, difficulty, drop, waves.")]
+        [SerializeField] private Horde.HordeDefinition _horde;
 
         [Tooltip("Stage 2 stress test (dev levels only): horde, stress weapons, autopilot, measuring overlay.")]
         [SerializeField] private Horde.StressTestDefinition _stressTest;
@@ -39,6 +43,9 @@ namespace Purge.Core.Level
 
         /// <summary>Tutorial steps; null for every level but the tutorial.</summary>
         public TutorialScript Tutorial { get => _tutorial; internal set => _tutorial = value; }
+
+        /// <summary>The level's monsters; null = no horde.</summary>
+        public Horde.HordeDefinition Horde { get => _horde; internal set => _horde = value; }
 
         /// <summary>Stress test settings; null for every level but the stress test levels.</summary>
         public Horde.StressTestDefinition StressTest { get => _stressTest; internal set => _stressTest = value; }
@@ -63,6 +70,9 @@ namespace Purge.Core.Level
         /// <summary>Light sources (visual only, not in <see cref="AllEntities"/>).</summary>
         public IReadOnlyList<LightSourceData> Lights => _lights;
 
+        /// <summary>Where the waves' monsters appear (not in <see cref="AllEntities"/>).</summary>
+        public IReadOnlyList<MonsterSpawnData> MonsterSpawns => _monsterSpawns;
+
         internal List<DoorData> MutableDoors => _doors;
         internal List<PlayerStartData> MutablePlayerStarts => _playerStarts;
         internal List<ZombieSpawnData> MutableZombieSpawns => _zombieSpawns;
@@ -70,6 +80,7 @@ namespace Purge.Core.Level
         internal List<KeyData> MutableKeys => _keys;
         internal List<MedkitData> MutableMedkits => _medkits;
         internal List<LightSourceData> MutableLights => _lights;
+        internal List<MonsterSpawnData> MutableMonsterSpawns => _monsterSpawns;
 
         /// <summary>All placed objects, in a stable order.</summary>
         public IEnumerable<LevelEntityData> AllEntities()
@@ -87,6 +98,7 @@ namespace Purge.Core.Level
         {
             foreach (var entity in AllEntities()) yield return entity.Id;
             foreach (var light in _lights) yield return light.Id;
+            foreach (var spawn in _monsterSpawns) yield return spawn.Id;
         }
 
         internal void ReplaceGeometry(LevelGeometry geometry) => _geometry = geometry;
@@ -101,6 +113,7 @@ namespace Purge.Core.Level
             ClearObjects();
             _visualData.Clear();
             _lights.Clear();
+            _monsterSpawns.Clear();
 
             foreach (var position in result.PlayerStarts)
                 _playerStarts.Add(new PlayerStartData(CreateUniqueId(PlayerStartData.IdPrefix), position));

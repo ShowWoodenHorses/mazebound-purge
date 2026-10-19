@@ -37,6 +37,7 @@ namespace Purge.Tests.EditMode.Monsters
         private FakePlayerInput _input;
         private PlayerHealth _health;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
         private MonsterDefinition _monster;
         private MonsterDefinition _mass;
         private HordeSystem _horde;
@@ -63,6 +64,9 @@ namespace Purge.Tests.EditMode.Monsters
             _stress = ScriptableObject.CreateInstance<StressTestDefinition>();
             _created.Add(_stress);
             _level.StressTest = _stress;
+            _hordeData = ScriptableObject.CreateInstance<HordeDefinition>();
+            _created.Add(_hordeData);
+            _level.Horde = _hordeData;
             _monster = ScriptableObject.CreateInstance<MonsterDefinition>();
             _monster.Configure("brute", MonsterRank.Officer, MonsterBiome.Common,
                 new MonsterStats { MaxHp = 300f, Speed = 3f, Radius = 0.4f, AttackReach = 0.9f, Damage = 0, AttackInterval = 0.5f });
@@ -73,7 +77,7 @@ namespace Purge.Tests.EditMode.Monsters
                 new MonsterStats { MaxHp = 30f, Speed = 3f, Damage = 0 });
             _created.Add(_mass);
             _stress.ConfigureSandbox(true, 0, 0);
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f), new HordeSpawn(_mass, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f), new HordeSpawn(_mass, 1f) });
 
             _playerDefinition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);

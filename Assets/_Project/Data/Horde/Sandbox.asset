@@ -12,70 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3489b509720531c4b87349f0912159e7, type: 3}
   m_Name: Sandbox
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Horde.StressTestDefinition
-  _visual: {fileID: 11400000, guid: fbd9bed12ffae374180fb7eeb1d78e96, type: 2}
-  _monster:
-    MaxHp: 30
-    Speed: 2.2
-    Radius: 0.3
-    AttackReach: 0.8
-    Damage: 5
-    AttackInterval: 1.2
-    TurnSpeed: 540
-    Separation: 0.5
-    CorpseTime: 2
-    EmergeTime: 0
-    WanderSpeed: 0.4
-    SightRange: 7
-    CallRadius: 12
-    HoldRange: 0
-    RetreatRange: 0
-    Mass: 0
-    Immovable: 0
-    Doors: 0
-    DoorDamage: 20
-    FrontArmor: 0
-    FrontArc: 120
-  _monsters:
-  - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
-    _weight: 3
-  - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
-    _weight: 2
-  - _monster: {fileID: 11400000, guid: 64b9eac41c25e444ba0287326c01fb16, type: 2}
-    _weight: 1
-  - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
-    _weight: 1
-  - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
-    _weight: 1
-  _monsterVisuals:
-  - {fileID: 11400000, guid: 28f6f9adee1d7b94c91d68fbe6c65dff, type: 2}
-  - {fileID: 11400000, guid: 5686e5b3387d13f4bb04489b4f047bb6, type: 2}
-  - {fileID: 11400000, guid: 32d9b60a0adf11f49aa052fce6ae2c45, type: 2}
-  - {fileID: 11400000, guid: 53edea5b7886e02478f6d18c6ddb84ad, type: 2}
-  - {fileID: 11400000, guid: 3a23457ea1daefd498d9554229c96a02, type: 2}
-  _onDemandMonsters:
-  - {fileID: 11400000, guid: 1f8a534da70c88348837cd5089456c5f, type: 2}
-  - {fileID: 11400000, guid: 395fa8870844ec64abbbcccbcef32cc5, type: 2}
-  - {fileID: 11400000, guid: 9ea2b7d6705917344b9c0ed4f1148807, type: 2}
-  - {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
-  - {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
-  - {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
-  - {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
-  - {fileID: 11400000, guid: 5d93e767a67414e49a76e99be9b5c9a7, type: 2}
-  - {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
-  - {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
-  - {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
-  _monsterViews:
-  - {fileID: 11400000, guid: f252ca0c80f63934a9cc276a2ec2dfed, type: 2}
-  - {fileID: 11400000, guid: 2201a4e3e9616e44db62f651426261cd, type: 2}
-  - {fileID: 11400000, guid: 6876c3ae0f852554aba9a7f4c310458e, type: 2}
-  - {fileID: 11400000, guid: 07cc53531cb2bc248ad89fe5dc4f47d7, type: 2}
-  - {fileID: 11400000, guid: 76d7c472e59f04e40a6b23ca2683687b, type: 2}
-  - {fileID: 11400000, guid: 5007ed8e61216874fb3589c8e9f735b1, type: 2}
-  - {fileID: 11400000, guid: 2f9ba67d81e07a64989e88bb30acd0d2, type: 2}
-  - {fileID: 11400000, guid: d49aaafd2027e4f4eba080a895771fb6, type: 2}
-  - {fileID: 11400000, guid: e4b37603c2a3baa4daba8a4a59273952, type: 2}
-  - {fileID: 11400000, guid: 5429444a236be9744b6721a92672ff10, type: 2}
-  - {fileID: 11400000, guid: 357330b921e342844863635edbe4b6f2, type: 2}
   _weapons:
     GunRate: 12
     BulletSpeed: 28
@@ -92,21 +28,6 @@ MonoBehaviour:
     FireLifetime: 4
     FireDps: 20
     FireCellsTarget: 30
-  _difficulty: {fileID: 11400000, guid: 8e3955f51ef0b7744b39b01e5550619f, type: 2}
-  _wanderGroups: 3
-  _wanderRetarget: 25
-  _champions:
-    _chance: 0.04
-    _affixes:
-    - {fileID: 11400000, guid: bec9ae0f1740b8f4cbf40cc4a25ce751, type: 2}
-    - {fileID: 11400000, guid: ccd00858965fed54fb71e911859be19b, type: 2}
-    - {fileID: 11400000, guid: 23d6015ac0e45ff44b6ce65a1a79faa0, type: 2}
-    - {fileID: 11400000, guid: c2842929a64f1164ab14509195ed7dad, type: 2}
-    - {fileID: 11400000, guid: a01dc0a5e18a0f14ca1db1a100f526fa, type: 2}
-    _healthFactor: 2
-    _scale: 1.15
-    _massDrop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
-    _officerDrop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
   _sandbox: 1
   _sandboxAmmo: 500
   _sandboxWeapons:
@@ -121,10 +42,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 825d87ccc3a2b514ea82f2032258dca3, type: 2}
   - {fileID: 11400000, guid: 86d08ce4919207443b702b55cd54856d, type: 2}
   - {fileID: 11400000, guid: 83e03865f42011d468dfc95aa8e3b1e4, type: 2}
-  _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
   _monsterCounts: 000000001e0000003c0000006400000096000000c80000002c010000
   _startCount: 60
-  _reserveSlots: 64
   _cameraHalfExtents:
   - 4
   - 6

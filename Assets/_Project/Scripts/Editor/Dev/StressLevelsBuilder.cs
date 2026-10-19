@@ -27,6 +27,8 @@ namespace Purge.Editor.Dev
         private const string ThemePath = "Assets/_Project/Data/Themes/ForestTheme.asset";
         private const string StressTestPath = "Assets/_Project/Data/Horde/StressTest.asset";
         private const string SandboxPath = "Assets/_Project/Data/Horde/Sandbox.asset";
+        private const string StressHordePath = "Assets/_Project/Data/Horde/StressHorde.asset";
+        private const string SandboxHordePath = "Assets/_Project/Data/Horde/SandboxHorde.asset";
         private const float ObstacleDensity = 0.12f;
         private const string BushPath = "Assets/_Project/Data/Obstacles/Bush.asset";
 
@@ -53,6 +55,17 @@ namespace Purge.Editor.Dev
                 EditorUtility.SetDirty(sandbox);
             }
 
+            var stressHorde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(StressHordePath)
+                              ?? throw new InvalidOperationException($"No stress test horde at {StressHordePath}: run Build Horde Visuals.");
+            var sandboxHorde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(SandboxHordePath);
+            if (sandboxHorde == null)
+            {
+                AssetDatabase.CopyAsset(StressHordePath, SandboxHordePath);
+                sandboxHorde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(SandboxHordePath);
+                sandboxHorde.ConfigureCapacity(300, 64);
+                EditorUtility.SetDirty(sandboxHorde);
+            }
+
             foreach (var (name, size, seed, isSandbox) in Levels)
             {
                 var path = $"{LevelsPath}/{name}.asset";
@@ -66,6 +79,7 @@ namespace Purge.Editor.Dev
                 level.Settings.DisplayName = name.Replace("Level_", "");
                 level.VisualTheme = theme;
                 level.StressTest = isSandbox ? sandbox : stress;
+                level.Horde = isSandbox ? sandboxHorde : stressHorde;
                 level.Generation.Width = size;
                 level.Generation.Height = size;
                 level.Generation.LayoutSeed = seed;

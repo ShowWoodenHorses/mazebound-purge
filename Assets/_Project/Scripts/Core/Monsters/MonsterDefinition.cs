@@ -168,6 +168,9 @@ namespace Purge.Core.Monsters
         [SerializeField] private MonsterPerception _perception = MonsterPerception.Hunter;
         [SerializeField] private MonsterStats _stats = new MonsterStats();
 
+        [Tooltip("Points of a wave's budget it takes (stage 6); 0 = by rank: rank-and-file 1, officers 10, elite 30, bosses 100.")]
+        [SerializeField, Min(0f)] private float _cost;
+
         [Tooltip("What it drops (ТЗ: ранг определяет дроп) — the rank's table; empty = the level's.")]
         [SerializeField] private DropTable _drop;
 
@@ -185,6 +188,18 @@ namespace Purge.Core.Monsters
         public MonsterPerception Perception => _perception;
         public MonsterStats Stats => _stats;
         public DropTable Drop => _drop;
+
+        /// <summary>Points of a wave's budget it takes, the rank resolved (drafts; balance — stage 9).</summary>
+        public float Cost => _cost > 0f ? _cost : CostOf(_rank);
+
+        public static float CostOf(MonsterRank rank) => rank switch
+        {
+            MonsterRank.Mass => 1f,
+            MonsterRank.Officer => 10f,
+            MonsterRank.Elite => 30f,
+            _ => 100f,
+        };
+
         public IReadOnlyList<StatusResistance> Resistances => _resistances;
         public IReadOnlyList<EffectModule> DeathEffects => _deathEffects;
         public IReadOnlyList<AbilityModule> Abilities => _abilities;
@@ -268,6 +283,9 @@ namespace Purge.Core.Monsters
         }
 
         internal void SetDrop(DropTable drop) => _drop = drop;
+
+        /// <summary>For tests and tools: 0 = by rank.</summary>
+        internal void SetCost(float cost) => _cost = Mathf.Max(0f, cost);
 
         /// <summary>For tests and tools.</summary>
         internal void SetAbilities(params AbilityModule[] abilities) => _abilities = new List<AbilityModule>(abilities);

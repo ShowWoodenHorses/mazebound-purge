@@ -38,6 +38,7 @@ namespace Purge.Tests.EditMode.Monsters
         private PlayerHealth _health;
         private CombatTargets _targets;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
         private MonsterDefinition _monster;
         private HordeSystem _horde;
         private StatusSystem _statuses;
@@ -67,13 +68,16 @@ namespace Purge.Tests.EditMode.Monsters
             _stress = ScriptableObject.CreateInstance<StressTestDefinition>();
             _created.Add(_stress);
             _level.StressTest = _stress;
+            _hordeData = ScriptableObject.CreateInstance<HordeDefinition>();
+            _created.Add(_hordeData);
+            _level.Horde = _hordeData;
             _monster = ScriptableObject.CreateInstance<MonsterDefinition>();
             _monster.Configure("shooter", MonsterRank.Officer, MonsterBiome.Common,
                 new MonsterStats { MaxHp = 100f, Speed = 3f, AttackReach = 0.8f, Damage = 5 });
             _monster.SetPerception(MonsterPerception.Hunter);
             _created.Add(_monster);
             _stress.ConfigureSandbox(true, 0, 0);
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f) });
 
             _playerDefinition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -307,7 +311,7 @@ namespace Purge.Tests.EditMode.Monsters
             var officer = ScriptableObject.CreateInstance<MonsterDefinition>();
             officer.Configure("officer", MonsterRank.Officer, MonsterBiome.Common, new MonsterStats());
             _created.Add(officer);
-            _stress.SetOnDemandMonsters(new[] { officer });
+            _hordeData.SetOnDemandMonsters(new[] { officer });
             _stress.ConfigureSandbox(true, 0, 20);
             Build();
 

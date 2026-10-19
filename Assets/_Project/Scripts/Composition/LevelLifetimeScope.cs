@@ -8,6 +8,7 @@ using Purge.Gameplay.Drops;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
+using Purge.Gameplay.Waves;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
@@ -105,6 +106,8 @@ namespace Purge.Composition
             builder.Register<MonsterDeathEffects>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Champions' affixes (stage 5e2): trails, death blasts, a hit's state, the vampire.
             builder.Register<ChampionSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
+            builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -115,6 +118,7 @@ namespace Purge.Composition
             builder.Register<LevelRuntime>(Lifetime.Singleton);
             builder.Register<PlayerDeathRule>(Lifetime.Singleton);
             builder.Register<AllKilledRule>(Lifetime.Singleton);
+            builder.Register<WavesClearedRule>(Lifetime.Singleton);
             builder.RegisterEntryPoint<LevelTickDriver>();
 
             // Presentation

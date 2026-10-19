@@ -128,6 +128,7 @@ namespace Purge.Core.Authoring
             }
 
             level.MutableLights.RemoveAll(light => light.Cell.Floor == top);
+            level.MutableMonsterSpawns.RemoveAll(spawn => spawn.Position.Floor == top);
             level.VisualData.ClearFloor(top);
             var hadAssignments = level.VisualData.HasCellAssignments(geometry.CellCount);
             geometry.RemoveTopFloor();
@@ -140,6 +141,20 @@ namespace Purge.Core.Authoring
 
         public static PlayerStartData AddPlayerStart(LevelData level, GridPosition position) =>
             Add(level, level.MutablePlayerStarts, new PlayerStartData(level.CreateUniqueId(PlayerStartData.IdPrefix), position));
+
+        /// <summary>A spawn point of the waves' monsters (stage 6); one per cell — an existing one is returned.</summary>
+        public static MonsterSpawnData AddMonsterSpawn(LevelData level, GridPosition position)
+        {
+            foreach (var existing in level.MutableMonsterSpawns)
+                if (existing.Position == position)
+                    return existing;
+            var spawn = new MonsterSpawnData(level.CreateUniqueId(MonsterSpawnData.IdPrefix), position);
+            level.MutableMonsterSpawns.Add(spawn);
+            return spawn;
+        }
+
+        public static bool RemoveMonsterSpawn(LevelData level, GridPosition position) =>
+            level.MutableMonsterSpawns.RemoveAll(spawn => spawn.Position == position) > 0;
 
         public static MedkitData AddMedkit(LevelData level, GridPosition position) =>
             Add(level, level.MutableMedkits, new MedkitData(level.CreateUniqueId(MedkitData.IdPrefix), position));
@@ -221,6 +236,8 @@ namespace Purge.Core.Authoring
             }
 
             if (level.MutableLights.RemoveAll(light => light.Cell == position) > 0)
+                changed = true;
+            if (level.MutableMonsterSpawns.RemoveAll(spawn => spawn.Position == position) > 0)
                 changed = true;
 
             var type = level.Geometry.GetCell(position);

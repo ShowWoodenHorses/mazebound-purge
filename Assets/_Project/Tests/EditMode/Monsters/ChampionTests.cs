@@ -38,6 +38,7 @@ namespace Purge.Tests.EditMode.Monsters
         private PlayerHealth _health;
         private CombatTargets _targets;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
         private MonsterDefinition _mass;
         private MonsterDefinition _officer;
         private MonsterDefinition _elite;
@@ -75,11 +76,14 @@ namespace Purge.Tests.EditMode.Monsters
             _stress = ScriptableObject.CreateInstance<StressTestDefinition>();
             _created.Add(_stress);
             _level.StressTest = _stress;
+            _hordeData = ScriptableObject.CreateInstance<HordeDefinition>();
+            _created.Add(_hordeData);
+            _level.Horde = _hordeData;
             _mass = Monster("walker", MonsterRank.Mass, new MonsterStats { MaxHp = 30f, Speed = 2f, Damage = 0, AttackInterval = 1.2f });
             _officer = Monster("officer", MonsterRank.Officer, new MonsterStats { MaxHp = 60f, Speed = 2f, Damage = 0 });
             _elite = Monster("elite", MonsterRank.Elite, new MonsterStats { MaxHp = 200f, Speed = 2f, Radius = 0.4f, Damage = 0 });
             _stress.ConfigureSandbox(true, 0, 0);
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f), new HordeSpawn(_officer, 1f), new HordeSpawn(_elite, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f), new HordeSpawn(_officer, 1f), new HordeSpawn(_elite, 1f) });
 
             _burning = Create<StatusDefinition>();
             _burning.Configure("burning", new DamageOverTimeStatus { DamagePerSecond = 8f });
@@ -99,7 +103,7 @@ namespace Purge.Tests.EditMode.Monsters
             _vampire = Affix("vampire", new LifestealAffix { Share = 1f });
             _massDrop = Create<DropTable>();
             _officerDrop = Create<DropTable>();
-            _stress.Champions.Configure(0f, new[] { _fast, _fiery, _armored, _explosive, _vampire }, 2f, 1.15f, _massDrop, _officerDrop);
+            _hordeData.Champions.Configure(0f, new[] { _fast, _fiery, _armored, _explosive, _vampire }, 2f, 1.15f, _massDrop, _officerDrop);
 
             _playerDefinition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -149,7 +153,7 @@ namespace Purge.Tests.EditMode.Monsters
             return affix;
         }
 
-        private int IndexOf(ChampionAffixDefinition affix) => System.Array.IndexOf(_stress.Champions.Affixes, affix);
+        private int IndexOf(ChampionAffixDefinition affix) => System.Array.IndexOf(_hordeData.Champions.Affixes, affix);
 
         private void Build()
         {
@@ -317,7 +321,7 @@ namespace Purge.Tests.EditMode.Monsters
         [Test]
         public void Drop_ARankHigher()
         {
-            var rules = _stress.Champions;
+            var rules = _hordeData.Champions;
             Assert.That(rules.DropOf(MonsterRank.Mass), Is.SameAs(_massDrop));
             Assert.That(rules.DropOf(MonsterRank.Officer), Is.SameAs(_officerDrop));
             Assert.That(rules.DropOf(MonsterRank.Elite), Is.Null);
@@ -328,16 +332,16 @@ namespace Purge.Tests.EditMode.Monsters
         [Test]
         public void Waves_MakeChampionsByChance()
         {
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f) });
             _stress.ConfigureSandbox(true, 0, 20);
-            _stress.Champions.Configure(1f, new[] { _fast, _armored }, 2f, 1.15f, _massDrop, _officerDrop);
+            _hordeData.Champions.Configure(1f, new[] { _fast, _armored }, 2f, 1.15f, _massDrop, _officerDrop);
             Build();
             Assert.That(_horde.AliveCount, Is.EqualTo(20));
             Assert.That(_horde.ChampionsMade, Is.EqualTo(20), "chance 1: every one");
 
             TearDown();
             SetUp();
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_mass, 1f) });
             _stress.ConfigureSandbox(true, 0, 20);
             Build();
             Assert.That(_horde.ChampionsMade, Is.EqualTo(0), "chance 0: none");

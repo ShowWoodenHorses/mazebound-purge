@@ -39,6 +39,7 @@
   - Меши/аватар персонажей — копии в `Art/Characters` (**Purge → Dev → Extract Character Meshes**), чтобы общий `Characters.fbx` Synty не попадал в сборку целиком; запускать после смены модели персонажа.
 - Тулза: окно **Purge → Level Designer** (`Scripts/Editor/LevelDesigner`), правки уровня — через `LevelEditing` (Core, покрыт тестами). Руководство для людей: [Docs/LevelDesigner.md](Docs/LevelDesigner.md) — **обновлять при изменении тулзы/визуальной системы**.
 - Валидатор: `LevelValidator.Validate(level)` → `ValidationReport`; проверки идентифицируются `ValidationCodes`, сообщения на английском.
+  - Точки появления волн (6а) — `LevelData.MonsterSpawns` (`MonsterSpawnData`, префикс id `spawn`, с этажом; не в `AllEntities`, в `AllIds`): `LevelEditing.AddMonsterSpawn/RemoveMonsterSpawn`, `ClearCell` и удаление этажа их снимают, Generate New очищает. Валидатор: `MonsterSpawnBlocked` (не на свободном полу — ошибка), `WavesWithoutSpawns` (у орды волны, точек нет — предупреждение). В Level Designer пока не рисуются и не ставятся (кисть — этап 8).
 
 ## Визуал уровня в игре
 - `LevelVisualSystem` (Presentation, шаг `BuildVisuals`): `VisualPrefabLibrary` грузит через `IAssetOwner` уровня **только используемые** варианты (`LevelVisualUsage`) → `GeometryBuilder` → `EntityViewFactory`. Варианты берутся только через `VisualResolver` (сохранённые id), никакого выбора в runtime.

@@ -500,6 +500,35 @@ namespace Purge.Tests.EditMode.Combat
             Assert.Less(nothing, 140, "Half and half by weight.");
         }
 
+        [Test]
+        public void Drop_DifficultyRarityFactor_RaisesTheRarer()
+        {
+            var nine = ScriptableObject.CreateInstance<AmmoDefinition>();
+            nine.Configure("ammo_9mm", 6f);
+            _created.Add(nine);
+            var grey = WeaponWith("grey", nine, 12, Rarity.Common);
+            var orange = WeaponWith("orange", nine, 12, Rarity.Legendary);
+            var table = ScriptableObject.CreateInstance<DropTable>();
+            _created.Add(table);
+            table.Configure("weapons_only", 0f, 0f, 0f, 0f, 1f);
+            var pool = new DropPool(_level);
+            pool.Configure(table, new[] { grey, orange }, null);
+
+            int Oranges(float factor)
+            {
+                var random = new DeterministicRandom(11);
+                var context = new DropContext { RarityFactor = factor };
+                var count = 0;
+                for (var i = 0; i < 2000; i++)
+                    if (DropRoller.Roll(table, pool, context, random).Item == orange) count++;
+                return count;
+            }
+
+            // Weights 100 : 3 → ~3 %; × 10 on the rarer → 100 : 30 → ~23 %.
+            Assert.That(Oranges(0f), Is.InRange(20, 110), "0 = no factor");
+            Assert.That(Oranges(10f), Is.InRange(360, 560));
+        }
+
         private WeaponDefinition WeaponWith(string id, AmmoDefinition ammo, int magazine, Rarity rarity)
         {
             var weapon = ScriptableObject.CreateInstance<WeaponDefinition>();

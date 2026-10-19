@@ -36,6 +36,7 @@ namespace Purge.Tests.EditMode.Monsters
         private PlayerSystem _player;
         private PlayerHealth _health;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
 
         private sealed class Aim : IAimSettings
         {
@@ -58,6 +59,9 @@ namespace Purge.Tests.EditMode.Monsters
             _stress = ScriptableObject.CreateInstance<StressTestDefinition>();
             _created.Add(_stress);
             _level.StressTest = _stress;
+            _hordeData = ScriptableObject.CreateInstance<HordeDefinition>();
+            _created.Add(_hordeData);
+            _level.Horde = _hordeData;
 
             _playerDefinition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -91,7 +95,7 @@ namespace Purge.Tests.EditMode.Monsters
         private HordeSystem Horde(int count, params HordeSpawn[] monsters)
         {
             _stress.ConfigureSandbox(true, 0, count);
-            _stress.ConfigureMonsters(monsters);
+            _hordeData.ConfigureMonsters(monsters);
             var horde = new HordeSystem(_level, _grid, _passability, _doors, _player, _health);
             horde.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             return horde;
@@ -129,7 +133,7 @@ namespace Purge.Tests.EditMode.Monsters
         [Test]
         public void NoMonsters_TheBuiltInOne()
         {
-            _stress.Monster.MaxHp = 77f;
+            _hordeData.Monster.MaxHp = 77f;
             var horde = Horde(5);
 
             Assert.That(horde.KindList.Count, Is.EqualTo(1));

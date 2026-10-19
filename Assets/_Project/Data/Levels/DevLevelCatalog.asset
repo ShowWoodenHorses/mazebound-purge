@@ -31,6 +31,9 @@ MonoBehaviour:
   - _levelId: Level_Sandbox
     _address: Levels/Level_Sandbox
     _displayName: Sandbox
+  - _levelId: Level_Dev
+    _address: Levels/Level_Dev
+    _displayName: New Level
   _tutorial:
     _levelId: 
     _address: 

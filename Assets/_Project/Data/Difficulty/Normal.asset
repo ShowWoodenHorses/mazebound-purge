@@ -16,3 +16,8 @@ MonoBehaviour:
   _hearing: 1
   _sight: 1
   _call: 1
+  _health: 1
+  _count: 1
+  _seniorShare: 1
+  _dropRarity: 1
+  _money: 1

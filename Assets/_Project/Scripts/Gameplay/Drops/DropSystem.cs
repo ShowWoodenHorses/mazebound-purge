@@ -86,6 +86,7 @@ namespace Purge.Gameplay.Drops
                 Second = second != null && !second.IsBase ? second.Definition : null,
                 ActiveSlot = (int)_weapons.ActiveSlot,
                 FullHealth = _health.IsFull,
+                RarityFactor = _horde.Difficulty != null ? _horde.Difficulty.DropRarity : 1f,
             };
             context.FirstReserve = context.First != null ? _combat.ReserveOf(context.First) : 0;
             context.SecondReserve = context.Second != null ? _combat.ReserveOf(context.Second) : 0;

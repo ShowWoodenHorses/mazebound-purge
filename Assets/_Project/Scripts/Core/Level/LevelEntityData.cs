@@ -75,6 +75,18 @@ namespace Purge.Core.Level
         public PlayerStartData(string id, GridPosition position) : base(id, position) { }
     }
 
+    /// <summary>
+    /// Where the waves' monsters climb out (stage 6: ТЗ «монстры появляются из фиксированных точек локации»), within a
+    /// couple of cells around it. Not in <c>LevelData.AllEntities</c>: it has no look and does not take the cell.
+    /// </summary>
+    [Serializable]
+    public sealed class MonsterSpawnData : LevelEntityData
+    {
+        public const string IdPrefix = "spawn";
+
+        public MonsterSpawnData(string id, GridPosition position) : base(id, position) { }
+    }
+
     /// <summary>Medkit always heals the player to full HP and is consumed only if HP is below max.</summary>
     [Serializable]
     public sealed class MedkitData : LevelEntityData

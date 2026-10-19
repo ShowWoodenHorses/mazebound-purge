@@ -162,12 +162,12 @@ namespace Purge.Presentation.Stress
             SpawnAway(Core.Monsters.MonsterPerception.Wanderer, Core.Monsters.MonsterPerception.Caller);
 
         /// <summary>Sandbox (5c): the officers its buttons call up (<see cref="StressTestDefinition.OnDemandMonsters"/>).</summary>
-        public int OfficerCount => _horde.Settings != null ? _horde.Settings.OnDemandMonsters.Length : 0;
+        public int OfficerCount => _horde.Horde != null ? _horde.Horde.OnDemandMonsters.Length : 0;
 
         /// <summary>Short button label of officer <paramref name="index"/> (the asset name without its rank words).</summary>
         public string OfficerLabel(int index)
         {
-            var monster = _horde.Settings.OnDemandMonsters[index];
+            var monster = _horde.Horde.OnDemandMonsters[index];
             if (monster == null) return "-";
             // "Distant_Castle" → "DistC", "Armadillo_Common" → "Armad": fits a button.
             var name = monster.name;
@@ -181,7 +181,7 @@ namespace Purge.Presentation.Stress
         /// <summary>Rank of on-demand monster <paramref name="index"/> (the overlay's rows: officers, elite).</summary>
         public Core.Monsters.MonsterRank OfficerRank(int index)
         {
-            var monster = _horde.Settings.OnDemandMonsters[index];
+            var monster = _horde.Horde.OnDemandMonsters[index];
             return monster != null ? monster.Rank : Core.Monsters.MonsterRank.Officer;
         }
 
@@ -208,7 +208,7 @@ namespace Purge.Presentation.Stress
         /// <summary>Sandbox (5c): officer <paramref name="index"/> 7–9 cells from the player (in view when possible).</summary>
         public void SpawnOfficer(int index)
         {
-            var monster = _horde.Settings.OnDemandMonsters[index];
+            var monster = _horde.Horde.OnDemandMonsters[index];
             var kind = _horde.KindIndexOf(monster);
             if (kind < 0) return;
             _groupRandom ??= new DeterministicRandom((int)StableHash.Of(_level.name + "/sandbox-groups"));
@@ -254,7 +254,7 @@ namespace Purge.Presentation.Stress
                 var officers = new System.Collections.Generic.List<int>();
                 for (var o = 0; o < OfficerCount; o++)
                     if (OfficerRank(o) == Core.Monsters.MonsterRank.Officer)
-                        officers.Add(_horde.KindIndexOf(_horde.Settings.OnDemandMonsters[o]));
+                        officers.Add(_horde.KindIndexOf(_horde.Horde.OnDemandMonsters[o]));
                 officers.RemoveAll(index => index < 0);
                 if (officers.Count == 0) return;
                 kind = officers[_groupRandom.NextInt(officers.Count)];

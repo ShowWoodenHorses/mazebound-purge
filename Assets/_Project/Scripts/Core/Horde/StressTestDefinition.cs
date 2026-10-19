@@ -1,30 +1,9 @@
 using System;
-using Purge.Core.Monsters;
+
 using UnityEngine;
 
 namespace Purge.Core.Horde
 {
-    /// <summary>A monster the horde spawns and how often (weights are relative).</summary>
-    [Serializable]
-    public sealed class HordeSpawn
-    {
-        [SerializeField] private MonsterDefinition _monster;
-        [SerializeField, Min(0f)] private float _weight = 1f;
-
-        public MonsterDefinition Monster => _monster;
-        public float Weight => _weight;
-
-        public HordeSpawn()
-        {
-        }
-
-        public HordeSpawn(MonsterDefinition monster, float weight)
-        {
-            _monster = monster;
-            _weight = weight;
-        }
-    }
-
     /// <summary>Weapons of the stress test (stub; stage 4 rebuilds weapons from modules).</summary>
     [Serializable]
     public sealed class StressWeaponSettings
@@ -56,9 +35,10 @@ namespace Purge.Core.Horde
     }
 
     /// <summary>
-    /// Stage 2 stress test (dev levels only): referenced by <c>LevelData.StressTest</c>. Turns on the horde, the
-    /// stress weapons, the autopilot and the measuring overlay; the numbers here are the starting point, the overlay
-    /// changes them at run time.
+    /// Stage 2 stress test (dev levels only): referenced by <c>LevelData.StressTest</c> next to the level's
+    /// <see cref="HordeDefinition"/> (the monsters themselves, stage 6). Keeps the horde full by count (no waves) and turns
+    /// on the stress weapons, the autopilot and the measuring overlay; the numbers here are the starting point, the
+    /// overlay changes them at run time.
     /// <para>With <see cref="IsSandbox"/> it is the combat sandbox of stage 4 instead: the horde fights the player's own
     /// weapons (picked up on the level), the player gets <see cref="SandboxAmmo"/> rounds of every ammo type; no stress
     /// weapons, autopilot or benchmark (the overlay keeps the counts, god mode and the metrics).</para>
@@ -66,31 +46,7 @@ namespace Purge.Core.Horde
     [CreateAssetMenu(menuName = "Purge/Stress Test", fileName = "StressTest")]
     public sealed class StressTestDefinition : ScriptableObject
     {
-        [Tooltip("Look of the built-in monster (used when Monsters is empty: the stress test's zombie).")]
-        [SerializeField] private HordeVisualDefinition _visual;
-        [Tooltip("Stats of the built-in monster (used when Monsters is empty).")]
-        [SerializeField] private MonsterStats _monster = new MonsterStats();
-        [Tooltip("Monsters the horde spawns, by weight (stage 5); empty = the built-in monster above.")]
-        [SerializeField] private HordeSpawn[] _monsters = Array.Empty<HordeSpawn>();
-        [Tooltip("Looks of the monsters (by monster id; Build Monsters fills it).")]
-        [SerializeField] private HordeVisualDefinition[] _monsterVisuals = Array.Empty<HordeVisualDefinition>();
-        [Tooltip("Monsters that appear only when asked (the sandbox's officer buttons, stage 5c), never in the waves.")]
-        [SerializeField] private MonsterDefinition[] _onDemandMonsters = Array.Empty<MonsterDefinition>();
-        [Tooltip("Animator looks of the officers, elite and bosses (by monster id; Build Monsters fills it).")]
-        [SerializeField] private MonsterViewDefinition[] _monsterViews = Array.Empty<MonsterViewDefinition>();
         [SerializeField] private StressWeaponSettings _weapons = new StressWeaponSettings();
-
-        [Header("Perception (stage 5b)")]
-        [Tooltip("Difficulty of the horde's perception (empty = every factor 1).")]
-        [SerializeField] private DifficultyDefinition _difficulty;
-        [Tooltip("Wanderers walk in this many groups, each to its own point (until the waves of stage 6).")]
-        [SerializeField, Range(1, 6)] private int _wanderGroups = 3;
-        [Tooltip("Seconds between a group's new points.")]
-        [SerializeField, Min(3f)] private float _wanderRetarget = 25f;
-
-        [Header("Champions (stage 5e)")]
-        [Tooltip("Rank-and-file and officers with an affix: how often, which affixes, HP, size, the rank-up drop.")]
-        [SerializeField] private ChampionRules _champions = new ChampionRules();
 
         [Header("Combat sandbox")]
         [Tooltip("The combat sandbox (stage 4): the player's own weapons against the horde.")]
@@ -101,14 +57,10 @@ namespace Purge.Core.Horde
         [SerializeField] private Definitions.WeaponDefinition[] _sandboxWeapons = new Definitions.WeaponDefinition[0];
         [Tooltip("Throwables of the sandbox: the drop pool's and the player's at the start (a full stack of the first).")]
         [SerializeField] private Definitions.ThrowableDefinition[] _sandboxThrowables = new Definitions.ThrowableDefinition[0];
-        [Tooltip("What the horde's monsters drop (empty = nothing). Weapons and throwables — from the sandbox's lists.")]
-        [SerializeField] private Drops.DropTable _drop;
 
         [Header("Run")]
         [SerializeField] private int[] _monsterCounts = { 50, 100, 150, 200, 300, 500 };
         [SerializeField, Min(0)] private int _startCount = 150;
-        [Tooltip("Slots above the largest count for monsters called up on top of the waves (officer/champion buttons, raised dead).")]
-        [SerializeField, Min(0)] private int _reserveSlots = 64;
         [Tooltip("Half-size (cells) of the square around the player that fits the screen.")]
         [SerializeField] private float[] _cameraHalfExtents = { 4f, 6f, 8f, 10f };
         [SerializeField, Min(1f)] private float _startCameraHalfExtent = 8f;
@@ -134,44 +86,11 @@ namespace Purge.Core.Horde
         [Tooltip("Sandbox benchmark: the automatic weapon the player fires with aim assist (empty = the weapon in hands).")]
         [SerializeField] private Definitions.WeaponDefinition _benchWeapon;
 
-        public HordeVisualDefinition Visual => _visual;
         public bool IsSandbox => _sandbox;
         public int SandboxAmmo => _sandboxAmmo;
         public Definitions.WeaponDefinition[] SandboxWeapons => _sandboxWeapons;
         public Definitions.ThrowableDefinition[] SandboxThrowables => _sandboxThrowables ??= new Definitions.ThrowableDefinition[0];
-        public Drops.DropTable Drop => _drop;
-        public MonsterStats Monster => _monster;
-        public HordeSpawn[] Monsters => _monsters ??= Array.Empty<HordeSpawn>();
-        public HordeVisualDefinition[] MonsterVisuals => _monsterVisuals ??= Array.Empty<HordeVisualDefinition>();
-        public MonsterDefinition[] OnDemandMonsters => _onDemandMonsters ??= Array.Empty<MonsterDefinition>();
-        public MonsterViewDefinition[] MonsterViews => _monsterViews ??= Array.Empty<MonsterViewDefinition>();
-
-        /// <summary>Animator look of <paramref name="monster"/> among <see cref="MonsterViews"/> (null = none: baked or not drawn).</summary>
-        public MonsterViewDefinition ViewOf(MonsterDefinition monster)
-        {
-            if (monster == null) return null;
-            foreach (var view in MonsterViews)
-                if (view != null && view.MonsterId == monster.Id)
-                    return view;
-            return null;
-        }
-
-        /// <summary>Look of <paramref name="monster"/> among <see cref="MonsterVisuals"/> (null = none).</summary>
-        public HordeVisualDefinition VisualOf(MonsterDefinition monster)
-        {
-            if (monster == null) return _visual;
-            foreach (var visual in MonsterVisuals)
-                if (visual != null && visual.MonsterId == monster.Id)
-                    return visual;
-            return null;
-        }
         public StressWeaponSettings Weapons => _weapons;
-        public DifficultyDefinition Difficulty => _difficulty;
-
-        /// <summary>Champions of the horde (until the waves of stage 6).</summary>
-        public ChampionRules Champions => _champions ??= new ChampionRules();
-        public int WanderGroups => Math.Max(1, _wanderGroups);
-        public float WanderRetarget => Math.Max(3f, _wanderRetarget);
         public int[] MonsterCounts => _monsterCounts;
         public int StartCount => _startCount;
         public float[] CameraHalfExtents => _cameraHalfExtents;
@@ -186,9 +105,6 @@ namespace Purge.Core.Horde
         public float BenchmarkWarmup => _benchmarkWarmup;
         public float BenchmarkSample => _benchmarkSample;
         public Definitions.WeaponDefinition BenchWeapon => _benchWeapon;
-
-        /// <summary>Slots of the horde's arrays: <see cref="MaxCount"/> + room for called-up monsters.</summary>
-        public int Capacity => MaxCount + Math.Max(0, _reserveSlots);
 
         /// <summary>Largest monster count the waves can ask for.</summary>
         public int MaxCount
@@ -209,36 +125,16 @@ namespace Purge.Core.Horde
             _startCount = startCount;
         }
 
-        internal void ConfigureCounts(int[] counts, int reserveSlots)
-        {
-            _monsterCounts = counts ?? new int[0];
-            _reserveSlots = reserveSlots;
-        }
+        internal void ConfigureCounts(int[] counts) => _monsterCounts = counts ?? new int[0];
 
-        internal void ConfigureDrops(Drops.DropTable drop, params Definitions.ThrowableDefinition[] throwables)
+        internal void ConfigureSandboxLists(Definitions.WeaponDefinition[] weapons, params Definitions.ThrowableDefinition[] throwables)
         {
-            _drop = drop;
+            _sandboxWeapons = weapons ?? new Definitions.WeaponDefinition[0];
             _sandboxThrowables = throwables;
         }
 
-        internal void ConfigureMonsters(HordeSpawn[] monsters) => _monsters = monsters ?? Array.Empty<HordeSpawn>();
-
-        internal void ConfigurePerception(DifficultyDefinition difficulty, int wanderGroups, float wanderRetarget)
+        internal void Configure(Material tracer, Material particles, Material fire)
         {
-            _difficulty = difficulty;
-            _wanderGroups = wanderGroups;
-            _wanderRetarget = wanderRetarget;
-        }
-
-        internal void SetMonsterVisuals(HordeVisualDefinition[] visuals) => _monsterVisuals = visuals ?? Array.Empty<HordeVisualDefinition>();
-
-        internal void SetMonsterViews(MonsterViewDefinition[] views) => _monsterViews = views ?? Array.Empty<MonsterViewDefinition>();
-
-        internal void SetOnDemandMonsters(MonsterDefinition[] monsters) => _onDemandMonsters = monsters ?? Array.Empty<MonsterDefinition>();
-
-        internal void Configure(HordeVisualDefinition visual, Material tracer, Material particles, Material fire)
-        {
-            _visual = visual;
             _tracerMaterial = tracer;
             _particleMaterial = particles;
             _fireMaterial = fire;

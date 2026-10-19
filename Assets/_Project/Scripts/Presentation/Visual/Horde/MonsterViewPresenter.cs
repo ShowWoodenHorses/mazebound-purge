@@ -17,7 +17,7 @@ namespace Purge.Presentation.Visual.Horde
 {
     /// <summary>
     /// Views of the horde's officers, elite and bosses (ТЗ: Animator, not baked; stage 5c): kinds with a
-    /// <see cref="MonsterViewDefinition"/> (<see cref="StressTestDefinition.ViewOf"/>). Their instances are made while
+    /// <see cref="MonsterViewDefinition"/> (<see cref="HordeDefinition.ViewOf"/>). Their instances are made while
     /// loading — <see cref="PoolPerKind"/> per kind — and handed to the slots that show such a monster; a slot gives its
     /// view back when the corpse is gone. Every late tick: position and facing from the arrays, hidden outside the
     /// player's view (the simulation goes on, ТЗ §57), and the Animator's parameters (<see cref="MonsterAnimatorParameters"/>)
@@ -93,7 +93,7 @@ namespace Purge.Presentation.Visual.Horde
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var settings = _level.StressTest;
+            var settings = _level.Horde;
             if (!_horde.IsActive || settings == null) return UniTask.CompletedTask;
 
             var kinds = _horde.KindList;

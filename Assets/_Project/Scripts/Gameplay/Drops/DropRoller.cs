@@ -49,6 +49,9 @@ namespace Purge.Gameplay.Drops
         public int SecondReserve;
 
         public bool FullHealth;
+
+        /// <summary>× the weights of weapons and throwables above Common (the difficulty's <c>DropRarity</c>); 0 = 1.</summary>
+        public float RarityFactor;
     }
 
     /// <summary>
@@ -66,7 +69,7 @@ namespace Purge.Gameplay.Drops
 
             var ammoWeight = HasAmmo(pool, context) ? table.AmmoWeight : 0f;
             var medkitWeight = MedkitTotal(table) > 0f ? table.MedkitWeight * (context.FullHealth ? table.MedkitAtFullHealth : 1f) : 0f;
-            var throwableWeight = ThrowableTotal(table, pool) > 0f ? table.ThrowableWeight : 0f;
+            var throwableWeight = ThrowableTotal(table, pool, context) > 0f ? table.ThrowableWeight : 0f;
             var weaponWeight = WeaponTotal(table, pool, context) > 0f ? table.WeaponWeight : 0f;
             var total = table.NothingWeight + ammoWeight + medkitWeight + throwableWeight + weaponWeight;
             if (total <= 0f) return DropRoll.Nothing;
@@ -75,7 +78,7 @@ namespace Purge.Gameplay.Drops
             if ((pick -= table.NothingWeight) < 0f) return DropRoll.Nothing;
             if ((pick -= ammoWeight) < 0f) return RollAmmo(table, pool, context, random);
             if ((pick -= medkitWeight) < 0f) return RollMedkit(table, random);
-            if ((pick -= throwableWeight) < 0f) return RollThrowable(table, pool, random);
+            if ((pick -= throwableWeight) < 0f) return RollThrowable(table, pool, context, random);
             return RollWeapon(table, pool, context, random);
         }
 
@@ -145,20 +148,27 @@ namespace Purge.Gameplay.Drops
             return last != null ? new DropRoll(DropKind.Medkit, last, 1) : DropRoll.Nothing;
         }
 
-        private static float ThrowableTotal(DropTable table, DropPool pool)
+        /// <summary>The table's weight of <paramref name="rarity"/>, the rarer ones × the difficulty's factor.</summary>
+        private static float Weight(DropTable table, Rarity rarity, in DropContext context)
+        {
+            var weight = table.RarityWeight(rarity);
+            return rarity > Rarity.Common && context.RarityFactor > 0f ? weight * context.RarityFactor : weight;
+        }
+
+        private static float ThrowableTotal(DropTable table, DropPool pool, in DropContext context)
         {
             var total = 0f;
-            foreach (var throwable in pool.Throwables) total += table.RarityWeight(throwable.Rarity);
+            foreach (var throwable in pool.Throwables) total += Weight(table, throwable.Rarity, context);
             return total;
         }
 
-        private static DropRoll RollThrowable(DropTable table, DropPool pool, DeterministicRandom random)
+        private static DropRoll RollThrowable(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
         {
-            var pick = (float)random.NextDouble() * ThrowableTotal(table, pool);
+            var pick = (float)random.NextDouble() * ThrowableTotal(table, pool, context);
             ThrowableDefinition last = null;
             foreach (var throwable in pool.Throwables)
             {
-                var weight = table.RarityWeight(throwable.Rarity);
+                var weight = Weight(table, throwable.Rarity, context);
                 if (weight <= 0f) continue;
                 last = throwable;
                 if ((pick -= weight) < 0f) break;
@@ -177,7 +187,7 @@ namespace Purge.Gameplay.Drops
         {
             var total = 0f;
             foreach (var weapon in pool.Weapons)
-                if (!InSlots(weapon, context)) total += table.RarityWeight(weapon.Rarity);
+                if (!InSlots(weapon, context)) total += Weight(table, weapon.Rarity, context);
             return total;
         }
 
@@ -188,7 +198,7 @@ namespace Purge.Gameplay.Drops
             foreach (var weapon in pool.Weapons)
             {
                 if (InSlots(weapon, context)) continue;
-                var weight = table.RarityWeight(weapon.Rarity);
+                var weight = Weight(table, weapon.Rarity, context);
                 if (weight <= 0f) continue;
                 last = weapon;
                 if ((pick -= weight) < 0f) break;

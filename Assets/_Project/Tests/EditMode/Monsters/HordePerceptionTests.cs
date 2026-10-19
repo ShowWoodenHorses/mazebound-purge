@@ -37,6 +37,7 @@ namespace Purge.Tests.EditMode.Monsters
         private SoundEventBus _sounds;
         private VisibilitySystem _visibility;
         private StressTestDefinition _stress;
+        private HordeDefinition _hordeData;
         private MonsterDefinition _monster;
         private HordeSystem _horde;
 
@@ -62,13 +63,16 @@ namespace Purge.Tests.EditMode.Monsters
             _stress = ScriptableObject.CreateInstance<StressTestDefinition>();
             _created.Add(_stress);
             _level.StressTest = _stress;
+            _hordeData = ScriptableObject.CreateInstance<HordeDefinition>();
+            _created.Add(_hordeData);
+            _level.Horde = _hordeData;
             _monster = ScriptableObject.CreateInstance<MonsterDefinition>();
             _monster.Configure("walker", MonsterRank.Mass, MonsterBiome.Common,
                 new MonsterStats { MaxHp = 100f, Speed = 3f, SightRange = 7f, CallRadius = 12f });
             _monster.SetPerception(MonsterPerception.Wanderer);
             _created.Add(_monster);
             _stress.ConfigureSandbox(true, 0, 0);
-            _stress.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f) });
+            _hordeData.ConfigureMonsters(new[] { new HordeSpawn(_monster, 1f) });
 
             _playerDefinition = ScriptableObject.CreateInstance<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
@@ -199,7 +203,7 @@ namespace Purge.Tests.EditMode.Monsters
             var difficulty = ScriptableObject.CreateInstance<DifficultyDefinition>();
             difficulty.Configure(DifficultyLevel.Hard, hearing: 2f, sight: 1f, call: 1f);
             _created.Add(difficulty);
-            _stress.ConfigurePerception(difficulty, 3, 25f);
+            _hordeData.ConfigurePerception(difficulty, 3, 25f);
             Horde();
             var agent = Spawn(30f, 4f);
             _sounds.Emit(SoundType.Ranged, new Vector2(24f, 4f), 4f); // 6 cells: × 2 → heard

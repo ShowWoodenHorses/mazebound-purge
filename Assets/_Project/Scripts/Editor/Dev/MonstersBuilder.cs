@@ -44,10 +44,9 @@ namespace Purge.Editor.Dev
         private const string ClipPrefix = "Monster_";
         private const float FrameRate = 30f;
 
-        private static readonly string[] StressAssets =
-        {
-            "Assets/_Project/Data/Horde/StressTest.asset", "Assets/_Project/Data/Horde/Sandbox.asset",
-        };
+        private const string HordeFolder = "Assets/_Project/Data/Horde";
+        private const string SandboxHordePath = HordeFolder + "/SandboxHorde.asset";
+        private const string StressHordePath = HordeFolder + "/StressHorde.asset";
 
         /// <summary>A monster this fast (cells/s) chases with the sprint clips, slower ones — with the run.</summary>
         private const float SprintSpeed = 2.8f;
@@ -205,24 +204,22 @@ namespace Purge.Editor.Dev
                 var views = OfficersBuilder.Build(officers, report);
                 var affixes = OfficersBuilder.FindChampionAffixes(problems);
 
-                foreach (var path in StressAssets)
+                // Every level horde of Data/Horde (stage 6).
+                foreach (var guid in AssetDatabase.FindAssets("t:" + nameof(HordeDefinition), new[] { HordeFolder }))
                 {
-                    var stress = AssetDatabase.LoadAssetAtPath<StressTestDefinition>(path);
-                    if (stress == null) continue;
-                    // Only the looks of its own monsters: the level's download carries them.
-                    var used = visuals.FindAll(visual => Array.Exists(stress.Monsters,
-                        spawn => spawn?.Monster != null && spawn.Monster.Id == visual.MonsterId));
-                    stress.SetMonsterVisuals(used.ToArray());
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var horde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(path);
+                    if (horde == null) continue;
                     // The sandbox calls the officers up with its buttons (stage 5c).
-                    if (stress.IsSandbox) stress.SetOnDemandMonsters(officers.ConvertAll(officer => officer.Item2).ToArray());
-                    // Its champions (stage 5e2): every affix of Data/Monsters/Champions.
-                    if (stress.IsSandbox) OfficersBuilder.SetupChampions(stress, affixes);
-                    var shown = views.FindAll(view => Array.Exists(stress.Monsters,
-                                                          spawn => spawn?.Monster != null && spawn.Monster.Id == view.MonsterId) ||
-                                                      Array.Exists(stress.OnDemandMonsters,
-                                                          monster => monster != null && monster.Id == view.MonsterId));
-                    stress.SetMonsterViews(shown.ToArray());
-                    EditorUtility.SetDirty(stress);
+                    if (path == SandboxHordePath) horde.SetOnDemandMonsters(officers.ConvertAll(officer => officer.Item2).ToArray());
+                    // Champions (stage 5e2): every affix of Data/Monsters/Champions; the stress test's zombie has none.
+                    if (path != StressHordePath) OfficersBuilder.SetupChampions(horde, affixes);
+                    // Only the looks of its own monsters: the level's download carries them.
+                    var monsters = horde.AllMonsters();
+                    bool Has(string id) => monsters.Exists(monster => monster.Id == id);
+                    horde.SetMonsterVisuals(visuals.FindAll(visual => Has(visual.MonsterId)).ToArray());
+                    horde.SetMonsterViews(views.FindAll(view => Has(view.MonsterId)).ToArray());
+                    EditorUtility.SetDirty(horde);
                 }
 
                 AssetDatabase.SaveAssets();

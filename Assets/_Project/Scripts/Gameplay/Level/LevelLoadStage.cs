@@ -51,10 +51,11 @@ namespace Purge.Gameplay.Level
     {
         public static readonly LevelLaunchOptions Default = new LevelLaunchOptions();
 
-        public LevelLaunchOptions(int? startIndex = null, int? seed = null)
+        public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null)
         {
             StartIndex = startIndex;
             Seed = seed;
+            Difficulty = difficulty;
         }
 
         /// <summary>Forced player start (Test from Start #N). Null = random start.</summary>
@@ -62,6 +63,9 @@ namespace Purge.Gameplay.Level
 
         /// <summary>Seed for gameplay randomness of this run. Null = new seed every run.</summary>
         public int? Seed { get; }
+
+        /// <summary>Difficulty of the run (stage 6); null = the level horde's own.</summary>
+        public Core.Monsters.DifficultyDefinition Difficulty { get; }
     }
 
     public enum LevelOutcome

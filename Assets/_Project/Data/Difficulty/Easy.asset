@@ -16,3 +16,8 @@ MonoBehaviour:
   _hearing: 0.8
   _sight: 0.85
   _call: 0.8
+  _health: 0.75
+  _count: 0.8
+  _seniorShare: 0.7
+  _dropRarity: 0.8
+  _money: 0.7

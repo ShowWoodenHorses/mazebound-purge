@@ -61,7 +61,7 @@ namespace Purge.Presentation.Visual.Horde
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var settings = _level.StressTest;
+            var settings = _level.Horde;
             if (!_abilities.IsActive || settings == null) return UniTask.CompletedTask;
             var kinds = _horde.KindList;
             _looks = new Look[kinds.Count];

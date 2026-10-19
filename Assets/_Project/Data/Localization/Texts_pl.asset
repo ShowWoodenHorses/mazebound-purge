@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -245,6 +258,19 @@ MonoBehaviour:
   - "ZALOGUJ SI\u0118"
   - "Zaloguj si\u0119, aby zachowa\u0107 post\u0119p na wszystkich urz\u0105dzeniach"
   - SAMOUCZEK
+  - FALA {0}/{1}
+  - FALA {0}
+  - FALA POKONANA
+  - FALA {0} ZA {1}
+  - "POMI\u0143 +{0}"
+  - SPACJA
+  - 9 mm
+  - 5,45
+  - 7,62
+  - "\u015Arut"
+  - Paliwo
+  - Baterie
+  - "\u0141adunki"
   - "SAMOUCZEK UKO\u0143CZONY"
   - "Reklama jest teraz niedost\u0119pna"
   - "Obr\xF3\u0107 urz\u0105dzenie"

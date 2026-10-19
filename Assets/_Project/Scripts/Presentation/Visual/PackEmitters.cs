@@ -54,6 +54,7 @@ namespace Purge.Presentation.Visual
                 Add(wanted, _visual.HitSparks);
                 Add(wanted, _visual.Emerge);
                 Add(wanted, _visual.CorpsePuff);
+                Add(wanted, _visual.DropVanishOf());
             }
             if (_content != null)
                 foreach (var item in _content.Items)

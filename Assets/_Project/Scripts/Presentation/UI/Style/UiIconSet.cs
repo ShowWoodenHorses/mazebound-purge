@@ -39,6 +39,8 @@ namespace Purge.Presentation.UI.Style
         public Sprite Help;
         [Tooltip("Watch an ad: a screen with a play triangle.")]
         public Sprite Ad;
+        [Tooltip("Money of the run (stage 6b): a coin.")]
+        public Sprite Coin;
 
         [Tooltip("Background of the menu screens: a faint maze with a torch glow and a vignette.")]
         public Texture2D Backdrop;

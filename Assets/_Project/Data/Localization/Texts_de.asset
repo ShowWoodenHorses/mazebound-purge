@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - ANMELDEN
   - "Melde dich an, um deinen Fortschritt auf allen Ger\xE4ten zu behalten"
   - TUTORIAL
+  - WELLE {0}/{1}
+  - WELLE {0}
+  - WELLE GESCHAFFT
+  - WELLE {0} IN {1}
+  - "\xDCBERSPRINGEN +{0}"
+  - LEERTASTE
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Schrot
+  - Treibstoff
+  - Batterien
+  - Ladungen
   - TUTORIAL ABGESCHLOSSEN
   - "Werbung ist gerade nicht verf\xFCgbar"
   - "Drehe dein Ger\xE4t"

@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - KIRISH
   - Barcha qurilmalarda natijani saqlash uchun kiring
   - "O\u02BBRGATISH"
+  - "TO\u02BBLQIN {0}/{1}"
+  - "TO\u02BBLQIN {0}"
+  - "TO\u02BBLQIN O\u02BBTILDI"
+  - "TO\u02BBLQIN {0} \xB7 {1}"
+  - "O\u02BBTKAZISH +{0}"
+  - PROBEL
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Drob
+  - Ballonlar
+  - Batareyalar
+  - Zaryadlar
   - "O\u02BBRGATISH TUGADI"
   - Reklama hozir mavjud emas
   - Qurilmani aylantiring

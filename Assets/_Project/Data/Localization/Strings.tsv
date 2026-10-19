@@ -107,6 +107,19 @@ menu.tutorial	TUTORIAL	ОБУЧЕНИЕ	EĞİTİM	TUTORIAL	TUTORIAL	TUTORIAL	TUT
 menu.sign_in	SIGN IN	ВОЙТИ	GİRİŞ YAP	INICIAR SESIÓN	ANMELDEN	ENTRAR	SE CONNECTER	ACCEDI	ZALOGUJ SIĘ	MASUK	КІРУ	KIRISH	УВАЙСЦІ
 menu.sign_in.hint	Sign in to keep your progress on all devices	Войдите, чтобы прогресс сохранялся на всех устройствах	İlerlemeni tüm cihazlarda korumak için giriş yap	Inicia sesión para conservar tu progreso en todos los dispositivos	Melde dich an, um deinen Fortschritt auf allen Geräten zu behalten	Entre para manter seu progresso em todos os dispositivos	Connectez-vous pour garder votre progression sur tous vos appareils	Accedi per conservare i progressi su tutti i dispositivi	Zaloguj się, aby zachować postęp na wszystkich urządzeniach	Masuk untuk menyimpan progres di semua perangkat	Барлық құрылғыда прогресті сақтау үшін кіріңіз	Barcha qurilmalarda natijani saqlash uchun kiring	Увайдзіце, каб прагрэс захоўваўся на ўсіх прыладах
 hud.tutorial	TUTORIAL	ОБУЧЕНИЕ	EĞİTİM	TUTORIAL	TUTORIAL	TUTORIAL	TUTORIEL	TUTORIAL	SAMOUCZEK	TUTORIAL	ҮЙРЕТУ	OʻRGATISH	НАВУЧАННЕ
+hud.wave	WAVE {0}/{1}	ВОЛНА {0}/{1}	DALGA {0}/{1}	OLEADA {0}/{1}	WELLE {0}/{1}	ONDA {0}/{1}	VAGUE {0}/{1}	ONDATA {0}/{1}	FALA {0}/{1}	GELOMBANG {0}/{1}	ТОЛҚЫН {0}/{1}	TOʻLQIN {0}/{1}	ХВАЛЯ {0}/{1}
+hud.wave.start	WAVE {0}	ВОЛНА {0}	DALGA {0}	OLEADA {0}	WELLE {0}	ONDA {0}	VAGUE {0}	ONDATA {0}	FALA {0}	GELOMBANG {0}	ТОЛҚЫН {0}	TOʻLQIN {0}	ХВАЛЯ {0}
+hud.wave.cleared	WAVE CLEARED	ВОЛНА ПРОЙДЕНА	DALGA TEMİZLENDİ	OLEADA SUPERADA	WELLE GESCHAFFT	ONDA CONCLUÍDA	VAGUE TERMINÉE	ONDATA SUPERATA	FALA POKONANA	GELOMBANG SELESAI	ТОЛҚЫН ӨТТІ	TOʻLQIN OʻTILDI	ХВАЛЯ ПРОЙДЗЕНА
+hud.wave.countdown	WAVE {0} IN {1}	ВОЛНА {0} ЧЕРЕЗ {1}	DALGA {0} · {1}	OLEADA {0} EN {1}	WELLE {0} IN {1}	ONDA {0} EM {1}	VAGUE {0} DANS {1}	ONDATA {0} TRA {1}	FALA {0} ZA {1}	GELOMBANG {0} DALAM {1}	ТОЛҚЫН {0} · {1}	TOʻLQIN {0} · {1}	ХВАЛЯ {0} ПРАЗ {1}
+hud.wave.skip	SKIP +{0}	ПРОПУСТИТЬ +{0}	ATLA +{0}	SALTAR +{0}	ÜBERSPRINGEN +{0}	PULAR +{0}	PASSER +{0}	SALTA +{0}	POMIŃ +{0}	LEWATI +{0}	ӨТКІЗУ +{0}	OʻTKAZISH +{0}	ПРАПУСЦІЦЬ +{0}
+hud.key.space	SPACE	ПРОБЕЛ	BOŞLUK	ESPACIO	LEERTASTE	ESPAÇO	ESPACE	SPAZIO	SPACJA	SPASI	БОС ОРЫН	PROBEL	ПРАБЕЛ
+ammo.ammo_9mm	9 mm	9 мм	9 mm	9 mm	9 mm	9 mm	9 mm	9 mm	9 mm	9 mm	9 мм	9 mm	9 мм
+ammo.ammo_5_45	5.45	5,45	5,45	5,45	5,45	5,45	5,45	5,45	5,45	5,45	5,45	5,45	5,45
+ammo.ammo_7_62	7.62	7,62	7,62	7,62	7,62	7,62	7,62	7,62	7,62	7,62	7,62	7,62	7,62
+ammo.ammo_shells	Shells	Дробь	Saçma	Cartuchos	Schrot	Cartuchos	Cartouches	Cartucce	Śrut	Peluru shotgun	Бытыра	Drob	Шрот
+ammo.ammo_fuel	Fuel	Баллоны	Yakıt	Combustible	Treibstoff	Combustível	Carburant	Carburante	Paliwo	Bahan bakar	Баллондар	Ballonlar	Балоны
+ammo.ammo_battery	Batteries	Батареи	Piller	Baterías	Batterien	Baterias	Batteries	Batterie	Baterie	Baterai	Батареялар	Batareyalar	Батарэі
+ammo.ammo_charge	Charges	Заряды	Şarjlar	Cargas	Ladungen	Cargas	Charges	Cariche	Ładunki	Muatan	Зарядтар	Zaryadlar	Зарады
 result.tutorial_complete	TUTORIAL COMPLETE	ОБУЧЕНИЕ ПРОЙДЕНО	EĞİTİM TAMAMLANDI	TUTORIAL COMPLETADO	TUTORIAL ABGESCHLOSSEN	TUTORIAL CONCLUÍDO	TUTORIEL TERMINÉ	TUTORIAL COMPLETATO	SAMOUCZEK UKOŃCZONY	TUTORIAL SELESAI	ҮЙРЕТУ АЯҚТАЛДЫ	OʻRGATISH TUGADI	НАВУЧАННЕ ПРОЙДЗЕНА
 ad.unavailable	Ad is not available right now	Реклама сейчас недоступна	Reklam şu anda kullanılamıyor	El anuncio no está disponible ahora	Werbung ist gerade nicht verfügbar	O anúncio não está disponível agora	La publicité n’est pas disponible pour le moment	La pubblicità non è disponibile al momento	Reklama jest teraz niedostępna	Iklan tidak tersedia saat ini	Жарнама қазір қолжетімсіз	Reklama hozir mavjud emas	Рэклама зараз недаступная
 rotate.title	Rotate your device	Поверните устройство	Cihazınızı döndürün	Gira tu dispositivo	Drehe dein Gerät	Gire o seu aparelho	Tournez votre appareil	Ruota il dispositivo	Obróć urządzenie	Putar perangkatmu	Құрылғыны бұрыңыз	Qurilmani aylantiring	Павярніце прыладу

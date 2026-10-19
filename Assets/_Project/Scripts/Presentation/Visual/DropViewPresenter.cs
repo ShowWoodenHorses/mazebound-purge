@@ -20,7 +20,8 @@ namespace Purge.Presentation.Visual
 {
     /// <summary>
     /// Looks of the items that appear during play (<see cref="ItemVisualCatalog"/>): monsters' drops lying on the ground
-    /// (<see cref="Pickup.IsDropped"/>; they blink before they disappear) and thrown items flying along their arc. Every
+    /// (<see cref="Pickup.IsDropped"/>; they blink before their time is out; one that disappears unpicked — its time is
+    /// out, the next wave starts — puffs and shrinks away, stage 6b) and thrown items flying along their arc. Every
     /// look the drop pool or the throwable slot can need is loaded with the level (its asset owner) and pooled hidden —
     /// nothing is loaded or created during play (a pool that runs dry creates one more and warns). Shown only in cells the
     /// player sees.
@@ -44,14 +45,21 @@ namespace Purge.Presentation.Visual
         private readonly Dictionary<string, Kind> _kinds = new Dictionary<string, Kind>();
         private readonly List<Shown> _lying = new List<Shown>();
         private readonly List<Shown> _flying = new List<Shown>();
+        private readonly List<Shown> _vanishing = new List<Shown>();
         private readonly List<ContentDefinition> _items = new List<ContentDefinition>();
         private readonly List<GameObject> _all = new List<GameObject>();
+        private readonly CombatVisualDefinition _visual;
+        private readonly PackEmitters _emitters;
+        private PackEmitters.Emitter _puff;
         private Transform _parent;
         private bool _subscribed;
 
         public DropViewPresenter(DropPool pool, PickupSystem pickups, BulletSystem bullets, ThrowableSlot slot,
-            VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null)
+            VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null,
+            CombatVisualDefinition visual = null, PackEmitters emitters = null)
         {
+            _visual = visual;
+            _emitters = emitters;
             _pool = pool;
             _pickups = pickups;
             _bullets = bullets;
@@ -109,6 +117,7 @@ namespace Purge.Presentation.Visual
 
         public void LateTick(float deltaTime)
         {
+            TickVanishing(deltaTime);
             var time = _pickups.Time;
             foreach (var shown in _lying)
             {
@@ -151,6 +160,7 @@ namespace Purge.Presentation.Visual
             _kinds.Clear();
             _lying.Clear();
             _flying.Clear();
+            _vanishing.Clear();
             if (_parent != null) UnityObjects.Destroy(_parent.gameObject);
         }
 
@@ -162,17 +172,50 @@ namespace Purge.Presentation.Visual
             // A steady turn of its own (from the id), not a random one.
             transform.localRotation = Quaternion.Euler(0f, StableHash.Of(pickup.Id) % 360, 0f);
             go.SetActive(_visibility.IsVisible(pickup.Cell));
-            _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item) });
+            _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item), Scale = transform.localScale });
         }
 
         private void OnRemoved(Pickup pickup)
         {
             for (var i = 0; i < _lying.Count; i++)
             {
-                if (_lying[i].Pickup != pickup) continue;
-                Return(_lying[i], false);
+                var shown = _lying[i];
+                if (shown.Pickup != pickup) continue;
                 _lying.RemoveAt(i);
+                if (!pickup.WasTaken && _visual != null && _visibility.IsVisible(pickup.Cell)) Vanish(shown);
+                else Return(shown, false);
                 return;
+            }
+        }
+
+        /// <summary>Not picked up and seen: a puff, then it shrinks away (<see cref="CombatVisualDefinition.DropVanishTime"/>).</summary>
+        private void Vanish(Shown shown)
+        {
+            _puff ??= _emitters?.Get(_visual.DropVanishOf());
+            var position = shown.Object.transform.localPosition;
+            _puff?.Emit(position + new Vector3(0f, 0.3f, 0f), _visual.DropVanishCount);
+            shown.Object.SetActive(true);
+            shown.Age = 0f;
+            _vanishing.Add(shown);
+        }
+
+        private void TickVanishing(float deltaTime)
+        {
+            for (var i = _vanishing.Count - 1; i >= 0; i--)
+            {
+                var shown = _vanishing[i];
+                shown.Age += deltaTime;
+                var t = shown.Age / _visual.DropVanishTime;
+                if (t >= 1f)
+                {
+                    shown.Object.transform.localScale = shown.Scale;
+                    Return(shown, false);
+                    _vanishing.RemoveAt(i);
+                    continue;
+                }
+
+                shown.Object.transform.localScale = shown.Scale * (1f - t * t);
+                _vanishing[i] = shown;
             }
         }
 
@@ -246,6 +289,8 @@ namespace Purge.Presentation.Visual
             public Pickup Pickup;
             public Bullet Bullet;
             public string Item;
+            public Vector3 Scale;
+            public float Age;
         }
     }
 }

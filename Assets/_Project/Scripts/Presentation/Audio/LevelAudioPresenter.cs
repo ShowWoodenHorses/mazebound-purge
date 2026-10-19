@@ -16,6 +16,7 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Throwing;
+using Purge.Gameplay.Waves;
 using Purge.Gameplay.Weapons;
 using Purge.Gameplay.Zombies;
 using Purge.Presentation.Visual;
@@ -74,6 +75,7 @@ namespace Purge.Presentation.Audio
         private readonly EffectSystem _effects;
         private readonly ZoneSystem _zones;
         private readonly DropSystem _drops;
+        private readonly WaveSystem _waves;
 
         private int _fireVoice;
         private float _fireVolume;
@@ -87,8 +89,9 @@ namespace Purge.Presentation.Audio
         public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health,
             PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups, ZombieSystem zombies,
             ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
-            EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null)
+            EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null, WaveSystem waves = null)
         {
+            _waves = waves;
             _zones = zones;
             _drops = drops;
             _throwing = throwing;
@@ -148,6 +151,7 @@ namespace Purge.Presentation.Audio
                     _effects.ZonePlaced += OnZonePlaced;
                 }
                 if (_drops != null) _drops.ItemDropped += OnItemDropped;
+                if (_waves != null) _waves.WaveCleared += OnWaveCleared;
             }
 
             return UniTask.CompletedTask;
@@ -193,6 +197,7 @@ namespace Purge.Presentation.Audio
                     _effects.ZonePlaced -= OnZonePlaced;
                 }
                 if (_drops != null) _drops.ItemDropped -= OnItemDropped;
+                if (_waves != null) _waves.WaveCleared -= OnWaveCleared;
             }
 
             foreach (var slot in _torchSlots)
@@ -231,6 +236,12 @@ namespace Purge.Presentation.Audio
         private void OnExploded(Vector2 at, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at);
 
         private void OnDropRequested(WeaponSlot slot) => PlayAt(Catalog.WeaponDrop, _player.Position);
+
+        /// <summary>The pause between waves starts (the last wave is followed by the level's own sound).</summary>
+        private void OnWaveCleared(int index)
+        {
+            if (index + 1 < _waves.WaveCount) _audio.Play(Catalog.WaveCleared, SoundChannel.Level);
+        }
 
         private void OnItemDropped(DropRoll roll, Vector2 at)
         {

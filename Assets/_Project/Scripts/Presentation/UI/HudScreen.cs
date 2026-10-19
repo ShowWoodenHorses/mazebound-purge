@@ -17,7 +17,9 @@ namespace Purge.Presentation.UI
     /// arrow-tipped frame — a light "trail" shows the lost part for a moment, low health turns the frame red and makes
     /// it pulse; under it zombies killed and the carried keys in their doors' colours. Top centre: a
     /// short message between diamonds. Top right: Map and Pause. Weapon slots: the on-screen cluster on touch devices,
-    /// small slots at the bottom right otherwise. A red pulse at the screen edges when hurt.
+    /// small slots at the bottom right otherwise. A red pulse at the screen edges when hurt. A level with waves (stage 6b):
+    /// under the time the wave, enemies left and money of the run; in the pause between waves the countdown,
+    /// «Пропустить +N» and the ammo reserve by type; a big caption when a wave starts or is cleared.
     /// </summary>
     public sealed class HudScreen : UIScreen
     {
@@ -74,6 +76,27 @@ namespace Purge.Presentation.UI
         [Tooltip("The throwable slot (key G): kind, count of max, accent while aiming.")]
         [SerializeField] private HudWeaponSlot _throwSlot;
 
+        [Header("Waves (stage 6b)")]
+        [Tooltip("Top centre under the time: the wave of how many, enemies left, money of the run.")]
+        [SerializeField] private GameObject _waveRow;
+        [SerializeField] private TMP_Text _waveText;
+        [SerializeField] private TMP_Text _enemiesText;
+        [SerializeField] private TMP_Text _moneyText;
+
+        [Tooltip("The pause between waves: the countdown, «Пропустить +N» and the ammo reserve by type.")]
+        [SerializeField] private GameObject _countdown;
+        [SerializeField] private TMP_Text _countdownText;
+        [SerializeField] private Button _skipButton;
+        [SerializeField] private TMP_Text _skipText;
+        [Tooltip("The key hint on the skip button (hidden with the on-screen controls).")]
+        [SerializeField] private GameObject _skipKey;
+        [SerializeField] private RectTransform _ammoRow;
+        [SerializeField] private TMP_Text _ammoTemplate;
+
+        [Tooltip("A big caption in the middle that fades by itself: «Волна 3», «Волна пройдена».")]
+        [SerializeField] private TMP_Text _banner;
+        [SerializeField, Min(0.5f)] private float _bannerTime = 2.2f;
+
         [Header("Damage pulse")]
         [Tooltip("Full-screen image under the HUD: red at the screen edges when the player is hurt. Its texture is made on start.")]
         [SerializeField] private RawImage _damageFlash;
@@ -105,12 +128,19 @@ namespace Purge.Presentation.UI
         private bool _low;
         private int _killsShown = -1;
         private int _killsTotal = -1;
+        private int _enemiesShown = -1;
+        private int _moneyShown = -1;
+        private float _bannerElapsed = float.MaxValue;
+        private readonly List<TMP_Text> _ammoTexts = new List<TMP_Text>();
 
         /// <summary>A real touch was seen on a platform that is not mobile (e.g. a desktop browser on a touchscreen).</summary>
         private static bool _touchSeen;
 
         public event Action PauseClicked;
         public event Action MapClicked;
+
+        /// <summary>«Пропустить +N» of the pause between waves.</summary>
+        public event Action SkipClicked;
 
         /// <summary>
         /// Touch controls are shown at once on mobile (including mobile browsers). Elsewhere a touchscreen device may be
@@ -125,7 +155,10 @@ namespace Purge.Presentation.UI
         {
             Bind(_pauseButton, () => PauseClicked?.Invoke());
             Bind(_mapButton, () => MapClicked?.Invoke());
+            Bind(_skipButton, () => SkipClicked?.Invoke());
             if (_keyTemplate != null) _keyTemplate.gameObject.SetActive(false);
+            if (_ammoTemplate != null) _ammoTemplate.gameObject.SetActive(false);
+            HideWaves();
             if (_messageRow != null) _messageRow.SetActive(false);
 
             if (_damageFlash != null)
@@ -179,6 +212,7 @@ namespace Purge.Presentation.UI
             UpdateHealthBar(Time.unscaledDeltaTime);
             UpdateDamagePulse();
             UpdateDamageArcs();
+            UpdateBanner();
         }
 
         // ---- health ----
@@ -266,6 +300,111 @@ namespace Purge.Presentation.UI
             }
         }
 
+        // ---- waves ----
+
+        /// <summary>The wave row (a level with waves); hidden — the countdown and the banner go too.</summary>
+        public void SetWaveShown(bool shown)
+        {
+            if (_waveRow != null && _waveRow.activeSelf != shown) _waveRow.SetActive(shown);
+            if (!shown) HideWaves();
+        }
+
+        /// <summary>The caption of the wave ("ВОЛНА 2/5", already in the language).</summary>
+        public void SetWave(string text)
+        {
+            if (_waveText != null) _waveText.text = text;
+        }
+
+        /// <summary>Enemies of the wave left (no allocations; the text changes only with the number).</summary>
+        public void SetEnemies(int count)
+        {
+            if (count == _enemiesShown || _enemiesText == null) return;
+            _enemiesShown = count;
+            _enemiesText.SetText("{0}", count);
+        }
+
+        public void SetMoney(int money)
+        {
+            if (money == _moneyShown || _moneyText == null) return;
+            _moneyShown = money;
+            _moneyText.SetText("{0}", money);
+        }
+
+        /// <summary>
+        /// The countdown under the wave row: <paramref name="text"/> ("ВОЛНА 3 ЧЕРЕЗ 12"); <paramref name="skip"/> — the
+        /// skip button's caption, null = no button (before the first wave).
+        /// </summary>
+        public void SetCountdown(bool shown, string text = null, string skip = null)
+        {
+            if (_countdown == null) return;
+            if (_countdown.activeSelf != shown) _countdown.SetActive(shown);
+            if (!shown) return;
+            if (_countdownText != null && text != null) _countdownText.text = text;
+            var skippable = skip != null;
+            if (_skipButton != null && _skipButton.gameObject.activeSelf != skippable) _skipButton.gameObject.SetActive(skippable);
+            if (_skipText != null && skippable) _skipText.text = skip;
+            if (_skipKey != null) _skipKey.SetActive(!TouchShown);
+        }
+
+        /// <summary>The ammo reserve by type under the countdown: one "name count" per entry (empty — hidden).</summary>
+        public void SetAmmo(IReadOnlyList<string> entries)
+        {
+            if (_ammoTemplate == null || _ammoRow == null) return;
+            while (_ammoTexts.Count < entries.Count)
+            {
+                var text = Instantiate(_ammoTemplate, _ammoRow);
+                text.gameObject.name = "Ammo" + _ammoTexts.Count;
+                _ammoTexts.Add(text);
+            }
+
+            for (var i = 0; i < _ammoTexts.Count; i++)
+            {
+                var shown = i < entries.Count;
+                _ammoTexts[i].gameObject.SetActive(shown);
+                if (shown) _ammoTexts[i].text = entries[i];
+            }
+
+            _ammoRow.gameObject.SetActive(entries.Count > 0);
+        }
+
+        /// <summary>A big caption in the middle of the screen that fades by itself.</summary>
+        public void ShowBanner(string text)
+        {
+            if (_banner == null) return;
+            _banner.text = text;
+            _bannerElapsed = 0f;
+            _banner.gameObject.SetActive(true);
+            UpdateBanner();
+        }
+
+        private void UpdateBanner()
+        {
+            if (_banner == null || !_banner.gameObject.activeSelf) return;
+            if (_bannerElapsed >= _bannerTime)
+            {
+                _banner.gameObject.SetActive(false);
+                return;
+            }
+
+            // Quick in, a hold, a slow fade; it grows a little.
+            var t = _bannerElapsed / _bannerTime;
+            var alpha = Mathf.Clamp01(t / 0.08f) * (1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.6f, 1f, t)));
+            var color = _banner.color;
+            color.a = alpha;
+            _banner.color = color;
+            _banner.rectTransform.localScale = Vector3.one * Mathf.Lerp(0.92f, 1.04f, Mathf.Sqrt(t));
+            _bannerElapsed += Time.unscaledDeltaTime;
+        }
+
+        private void HideWaves()
+        {
+            _enemiesShown = _moneyShown = -1;
+            if (_countdown != null) _countdown.SetActive(false);
+            if (_ammoRow != null) _ammoRow.gameObject.SetActive(false);
+            _bannerElapsed = float.MaxValue;
+            if (_banner != null) _banner.gameObject.SetActive(false);
+        }
+
         // ---- weapons, message ----
 
         /// <summary>Weapon slots shown where there are no on-screen controls.</summary>
@@ -329,6 +468,7 @@ namespace Purge.Presentation.UI
             _killsShown = _killsTotal = -1;
             _low = false;
             SetKeys(Array.Empty<Color>());
+            SetWaveShown(false);
             if (_messageRow != null) _messageRow.SetActive(false);
             _damageElapsed = float.MaxValue;
             if (_damageFlash != null) _damageFlash.enabled = false;

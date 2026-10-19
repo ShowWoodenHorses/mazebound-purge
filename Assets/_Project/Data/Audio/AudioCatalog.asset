@@ -2812,6 +2812,14 @@ MonoBehaviour:
     _range: 0
     _maxVoices: 1
     _minInterval: 0
+  _waveCleared:
+    _clips:
+    - {fileID: 8300000, guid: e97a1cf936649e54eacdb3c7591fec38, type: 3}
+    _volume: 0.8
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
   _levelFailed:
     _clips:
     - {fileID: 8300000, guid: f329181417d0d1e45a576673cec7a461, type: 3}

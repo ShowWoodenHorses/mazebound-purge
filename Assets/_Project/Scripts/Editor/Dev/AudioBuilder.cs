@@ -87,6 +87,7 @@ namespace Purge.Editor.Dev
             ("Other", @"^ice_break\d*$", c => c.IceBreakCue),
             ("Other", @"^detect$", c => c.ChaseStinger),
             ("Other", @"^light_loop$", c => c.TorchLoop),
+            ("Player", @"^win$", c => c.WaveClearedCue),
 
             ("Zombie", @"^zombie-idle\d*$", c => c.ZombieGroan),
             ("Zombie", @"^zombie-scream\d*$", c => c.ZombieRoar),

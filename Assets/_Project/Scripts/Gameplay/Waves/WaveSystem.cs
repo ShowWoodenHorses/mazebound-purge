@@ -8,7 +8,9 @@ using Purge.Core.Navigation;
 using Purge.Core.Waves;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using UnityEngine;
 
 namespace Purge.Gameplay.Waves
@@ -20,7 +22,7 @@ namespace Purge.Gameplay.Waves
         /// <summary>Before the first wave.</summary>
         Delay = 1,
         Running = 2,
-        /// <summary>Between waves (ТЗ: отсчёт, «Пропустить» — stage 6b).</summary>
+        /// <summary>Between waves (ТЗ: отсчёт, «Пропустить +N»): the wave's drop lies until the next wave.</summary>
         Pause = 3,
         /// <summary>The last wave is cleared: the level is completed.</summary>
         Completed = 4,
@@ -34,6 +36,9 @@ namespace Purge.Gameplay.Waves
     /// (all of them — the farthest reachable one). A wave is cleared when all of it has appeared and no monster is
     /// alive; after the last one <see cref="Completed"/> (<see cref="WavesClearedRule"/> completes the level). Ticks after
     /// <see cref="HordeSystem"/>.
+    /// <para>Stage 6b: the pause between waves counts down <see cref="WaveScenario.PauseTime"/>; <see cref="Skip"/> starts
+    /// the next wave at once and pays <see cref="SkipBonus"/> into the <see cref="RunWallet"/>. When the next wave starts
+    /// the monsters' drop still lying disappears (<see cref="PickupSystem.ClearDropped"/>).</para>
     /// </summary>
     public sealed class WaveSystem : ILevelLoadStep, ILevelTickable
     {
@@ -48,6 +53,8 @@ namespace Purge.Gameplay.Waves
         private readonly LevelData _level;
         private readonly HordeSystem _horde;
         private readonly PlayerSystem _player;
+        private readonly PickupSystem _pickups;
+        private readonly RunWallet _wallet;
         private readonly List<WaveSpawn> _spawns = new List<WaveSpawn>();
         private readonly Dictionary<int, int> _packPoints = new Dictionary<int, int>();
         private readonly List<int> _allowed = new List<int>();
@@ -56,11 +63,14 @@ namespace Purge.Gameplay.Waves
         private int _next;
         private float _waveTime;
 
-        public WaveSystem(LevelData level, HordeSystem horde, PlayerSystem player, LevelLaunchOptions options = null)
+        public WaveSystem(LevelData level, HordeSystem horde, PlayerSystem player, LevelLaunchOptions options = null,
+            PickupSystem pickups = null, RunWallet wallet = null)
         {
             _level = level;
             _horde = horde;
             _player = player;
+            _pickups = pickups;
+            _wallet = wallet;
             Seed = options?.Seed ?? Environment.TickCount;
         }
 
@@ -87,8 +97,31 @@ namespace Purge.Gameplay.Waves
         /// <summary>Monsters of the current wave in total.</summary>
         public int WaveSize => _spawns.Count;
 
+        /// <summary>Enemies of the current wave left: alive (raised by a Shaman too) and still to appear; 0 between waves.</summary>
+        public int RemainingCount => Phase == WavePhase.Running ? _horde.AliveCount + PendingCount : 0;
+
+        /// <summary>Seconds the current pause has lasted (0 outside one).</summary>
+        public float PauseElapsed => Phase == WavePhase.Pause ? Mathf.Max(0f, Scenario.PauseTime - TimeLeft) : 0f;
+
+        /// <summary>
+        /// What <see cref="Skip"/> pays now: the whole seconds left of the pause × the next wave's
+        /// <see cref="WaveScenario.SkipRateOf"/> × the difficulty's money factor; 0 outside the pause between waves.
+        /// </summary>
+        public int SkipBonus
+        {
+            get
+            {
+                if (Phase != WavePhase.Pause) return 0;
+                var factor = _horde.Difficulty != null ? _horde.Difficulty.Money : 1f;
+                return Mathf.FloorToInt(Mathf.Ceil(TimeLeft) * Scenario.SkipRateOf(WaveIndex + 1) * factor + 1e-4f);
+            }
+        }
+
         /// <summary>A wave starts (its index).</summary>
         public event Action<int> WaveStarted;
+
+        /// <summary>The pause was skipped (the bonus paid), right before <see cref="WaveStarted"/>.</summary>
+        public event Action<int> Skipped;
 
         /// <summary>A wave is cleared (its index); the last one is followed by <see cref="Completed"/>.</summary>
         public event Action<int> WaveCleared;
@@ -127,7 +160,7 @@ namespace Purge.Gameplay.Waves
             }
         }
 
-        /// <summary>Starts the next wave at once (the pause's «Пропустить», stage 6b; tests). False when not waiting.</summary>
+        /// <summary>Starts the next wave at once, without the bonus (tests, dev). False when not waiting.</summary>
         public bool StartNextWave()
         {
             if (Phase != WavePhase.Delay && Phase != WavePhase.Pause) return false;
@@ -135,8 +168,25 @@ namespace Purge.Gameplay.Waves
             return true;
         }
 
+        /// <summary>
+        /// «Пропустить +N» of the pause between waves: pays <see cref="SkipBonus"/> into the run's wallet and starts the
+        /// next wave. False outside the pause (the short delay before the first wave is not skipped).
+        /// </summary>
+        public bool Skip()
+        {
+            if (Phase != WavePhase.Pause) return false;
+            var bonus = SkipBonus;
+            _wallet?.Add(bonus);
+            GameLog.Info(LogChannel.Gameplay, $"Pause skipped with {TimeLeft:0.#} s left: +{bonus}.");
+            Skipped?.Invoke(bonus);
+            StartWave(WaveIndex + 1);
+            return true;
+        }
+
         private void StartWave(int index)
         {
+            // ТЗ: дроп волны лежит до начала следующей волны, потом исчезает.
+            if (index > 0) _pickups?.ClearDropped();
             WaveIndex = index;
             var wave = Scenario.Waves[index];
             _spawns.Clear();

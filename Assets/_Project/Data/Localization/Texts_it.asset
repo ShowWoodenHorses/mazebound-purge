@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - ACCEDI
   - Accedi per conservare i progressi su tutti i dispositivi
   - TUTORIAL
+  - ONDATA {0}/{1}
+  - ONDATA {0}
+  - ONDATA SUPERATA
+  - ONDATA {0} TRA {1}
+  - SALTA +{0}
+  - SPAZIO
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Cartucce
+  - Carburante
+  - Batterie
+  - Cariche
   - TUTORIAL COMPLETATO
   - "La pubblicit\xE0 non \xE8 disponibile al momento"
   - Ruota il dispositivo

@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - "INICIAR SESI\xD3N"
   - "Inicia sesi\xF3n para conservar tu progreso en todos los dispositivos"
   - TUTORIAL
+  - OLEADA {0}/{1}
+  - OLEADA {0}
+  - OLEADA SUPERADA
+  - OLEADA {0} EN {1}
+  - SALTAR +{0}
+  - ESPACIO
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Cartuchos
+  - Combustible
+  - "Bater\xEDas"
+  - Cargas
   - TUTORIAL COMPLETADO
   - "El anuncio no est\xE1 disponible ahora"
   - Gira tu dispositivo

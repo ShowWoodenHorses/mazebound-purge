@@ -35,6 +35,17 @@ namespace Purge.Presentation.Localization
         public const string HudDoorBlocked = "hud.door_blocked";
         public const string HudDoorFrozen = "hud.door_frozen";
 
+        // Waves (stage 6b).
+        public const string HudWave = "hud.wave";
+        public const string HudWaveStart = "hud.wave.start";
+        public const string HudWaveCleared = "hud.wave.cleared";
+        public const string HudWaveCountdown = "hud.wave.countdown";
+        public const string HudWaveSkip = "hud.wave.skip";
+        public const string HudKeySpace = "hud.key.space";
+
+        /// <summary>"ammo.ammo_9mm": ammo type name by its definition id (falls back to the id).</summary>
+        public const string AmmoPrefix = "ammo.";
+
         /// <summary>"hud.locked.red": locked door whose key has that colour tag (falls back to <see cref="HudLocked"/>).</summary>
         public const string HudLockedPrefix = "hud.locked.";
 

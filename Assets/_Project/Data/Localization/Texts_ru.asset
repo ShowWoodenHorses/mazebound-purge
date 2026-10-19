@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -267,6 +280,19 @@ MonoBehaviour:
     \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u043B\u0441\u044F \u043D\u0430 \u0432\u0441\u0435\u0445
     \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430\u0445"
   - "\u041E\u0411\u0423\u0427\u0415\u041D\u0418\u0415"
+  - "\u0412\u041E\u041B\u041D\u0410 {0}/{1}"
+  - "\u0412\u041E\u041B\u041D\u0410 {0}"
+  - "\u0412\u041E\u041B\u041D\u0410 \u041F\u0420\u041E\u0419\u0414\u0415\u041D\u0410"
+  - "\u0412\u041E\u041B\u041D\u0410 {0} \u0427\u0415\u0420\u0415\u0417 {1}"
+  - "\u041F\u0420\u041E\u041F\u0423\u0421\u0422\u0418\u0422\u042C +{0}"
+  - "\u041F\u0420\u041E\u0411\u0415\u041B"
+  - "9 \u043C\u043C"
+  - 5,45
+  - 7,62
+  - "\u0414\u0440\u043E\u0431\u044C"
+  - "\u0411\u0430\u043B\u043B\u043E\u043D\u044B"
+  - "\u0411\u0430\u0442\u0430\u0440\u0435\u0438"
+  - "\u0417\u0430\u0440\u044F\u0434\u044B"
   - "\u041E\u0411\u0423\u0427\u0415\u041D\u0418\u0415 \u041F\u0420\u041E\u0419\u0414\u0415\u041D\u041E"
   - "\u0420\u0435\u043A\u043B\u0430\u043C\u0430 \u0441\u0435\u0439\u0447\u0430\u0441
     \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u0430"

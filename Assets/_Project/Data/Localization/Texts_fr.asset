@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - SE CONNECTER
   - Connectez-vous pour garder votre progression sur tous vos appareils
   - TUTORIEL
+  - VAGUE {0}/{1}
+  - VAGUE {0}
+  - "VAGUE TERMIN\xC9E"
+  - VAGUE {0} DANS {1}
+  - PASSER +{0}
+  - ESPACE
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Cartouches
+  - Carburant
+  - Batteries
+  - Charges
   - "TUTORIEL TERMIN\xC9"
   - "La publicit\xE9 n\u2019est pas disponible pour le moment"
   - Tournez votre appareil

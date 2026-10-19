@@ -293,6 +293,19 @@ namespace Purge.Gameplay.Pickups
                 expires: true);
         }
 
+        /// <summary>
+        /// Every monsters' drop still lying disappears (not taken; the views show it vanish) — the next wave starts
+        /// (stage 6b). Items the player dropped stay.
+        /// </summary>
+        public int ClearDropped()
+        {
+            var count = _expiring.Count;
+            for (var i = _expiring.Count - 1; i >= 0; i--)
+                Take(_expiring[i], taken: false);
+            if (count > 0) GameLog.Info(LogChannel.Gameplay, $"Wave drop gone: {count} item(s).");
+            return count;
+        }
+
         public void Dispose()
         {
             if (!_subscribed) return;

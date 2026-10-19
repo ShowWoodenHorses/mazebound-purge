@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - MASUK
   - Masuk untuk menyimpan progres di semua perangkat
   - TUTORIAL
+  - GELOMBANG {0}/{1}
+  - GELOMBANG {0}
+  - GELOMBANG SELESAI
+  - GELOMBANG {0} DALAM {1}
+  - LEWATI +{0}
+  - SPASI
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Peluru shotgun
+  - Bahan bakar
+  - Baterai
+  - Muatan
   - TUTORIAL SELESAI
   - Iklan tidak tersedia saat ini
   - Putar perangkatmu

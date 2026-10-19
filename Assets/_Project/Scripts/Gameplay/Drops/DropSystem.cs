@@ -103,7 +103,8 @@ namespace Purge.Gameplay.Drops
             if (roll.Kind == DropKind.Nothing) return;
 
             var floor = _player.Floor; // the horde lives on the player's floor
-            var lifetime = table.Lifetime;
+            // On a wave level the drop lies until the next wave starts (stage 6b: WaveSystem clears it), not for a lifetime.
+            var lifetime = _horde.UsesWaves ? float.PositiveInfinity : table.Lifetime;
             var pickup = roll.Kind switch
             {
                 DropKind.Ammo => _pickups.DropAmmo(position, floor, (AmmoDefinition)roll.Item, roll.Amount, lifetime),

@@ -13,9 +13,13 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
+using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Waves;
+using Purge.Gameplay.Weapons;
 using Purge.Tests.EditMode.Player;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -33,6 +37,8 @@ namespace Purge.Tests.EditMode.Monsters
         private MonsterDefinition _mass;
         private MonsterDefinition _officer;
         private WavesClearedRule _rule;
+        private PickupSystem _pickups;
+        private RunWallet _wallet;
 
         private sealed class Aim : IAimSettings
         {
@@ -62,6 +68,10 @@ namespace Purge.Tests.EditMode.Monsters
         {
             _rule?.Dispose();
             _rule = null;
+            _wallet?.Dispose();
+            _pickups?.Dispose();
+            _wallet = null;
+            _pickups = null;
             Object.DestroyImmediate(_level);
             foreach (var created in _created) Object.DestroyImmediate(created);
             _created.Clear();
@@ -178,8 +188,12 @@ namespace Purge.Tests.EditMode.Monsters
             var health = new PlayerHealth(_playerDefinition);
             var system = new HordeSystem(_level, grid, passability, doors, player, health, options: new LevelLaunchOptions(seed: 5));
             system.GodMode = true;
-            var waves = new WaveSystem(_level, system, player, new LevelLaunchOptions(seed: 5));
-            var runtime = new LevelRuntime(_level, new ILevelLoadStep[] { player, system, waves }, new ILevelTickable[] { system, waves });
+            _pickups = new PickupSystem(_level, player, health, new PlayerInventory(), new WeaponSystem(new FakePlayerInput(), _playerDefinition),
+                new SoundEventBus());
+            _wallet = new RunWallet(system);
+            var waves = new WaveSystem(_level, system, player, new LevelLaunchOptions(seed: 5), _pickups, _wallet);
+            var runtime = new LevelRuntime(_level, new ILevelLoadStep[] { player, _pickups, system, _wallet, waves },
+                new ILevelTickable[] { _pickups, system, waves });
             _rule = new WavesClearedRule(waves, runtime);
             runtime.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
             runtime.StartGameplay();
@@ -276,6 +290,73 @@ namespace Purge.Tests.EditMode.Monsters
             Tick(runtime, 0.2f);
             Assert.That(horde.AliveCount, Is.EqualTo(10), "the next ten come as the first die");
             Assert.That(waves.Phase, Is.EqualTo(WavePhase.Running));
+        }
+
+        // ---------------------------------------------------------------- the pause (stage 6b)
+
+        [Test]
+        public void Money_ByRank_OrSet_AndSkipRate_ByWaveNumber()
+        {
+            Assert.That(_mass.Money, Is.EqualTo(1f));
+            Assert.That(_officer.Money, Is.EqualTo(5f));
+            Assert.That(MonsterDefinition.MoneyOf(MonsterRank.Elite), Is.EqualTo(20f));
+            Assert.That(MonsterDefinition.MoneyOf(MonsterRank.Boss), Is.EqualTo(100f));
+            _officer.SetMoney(7f);
+            Assert.That(_officer.Money, Is.EqualTo(7f));
+
+            var second = new WaveDefinition(5f, new[] { new WaveMonster(_mass, 1f) });
+            var scenario = Scenario(new WaveDefinition(5f, new[] { new WaveMonster(_mass, 1f) }), second);
+            Assert.That(scenario.SkipRateOf(0), Is.EqualTo(1f));
+            Assert.That(scenario.SkipRateOf(1), Is.EqualTo(2f), "0 = the wave's number");
+            second.SkipRate = 3.5f;
+            Assert.That(scenario.SkipRateOf(1), Is.EqualTo(3.5f));
+        }
+
+        [Test]
+        public void Wallet_PaysKills_TimesTheDifficulty_KeepingFractions()
+        {
+            LevelEditing.AddMonsterSpawn(_level, new GridPosition(5, 5));
+            var difficulty = Create<DifficultyDefinition>();
+            difficulty.ConfigureWaves(1f, 1f, 1f, 1f, 0.5f);
+            var (runtime, horde, _) = Run(Scenario(new WaveDefinition(5f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f)), difficulty);
+            Tick(runtime, 1.5f);
+            Assert.That(horde.AliveCount, Is.EqualTo(5));
+            KillAll(horde);
+            Tick(runtime, 0.1f);
+            Assert.That(_wallet.Money, Is.EqualTo(2),"5 × 1 × 0.5 = 2.5: two now, the half kept");
+        }
+
+        [Test]
+        public void Skip_PaysTheSecondsLeft_AndTheWaveDropVanishes()
+        {
+            LevelEditing.AddMonsterSpawn(_level, new GridPosition(5, 5));
+            var ammo = Create<AmmoDefinition>();
+            ammo.Configure("ammo_test", 5f);
+            var (runtime, horde, waves) = Run(Scenario(
+                new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f),
+                new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f)));
+            var skipped = -1;
+            waves.Skipped += bonus => skipped = bonus;
+
+            Assert.That(waves.Skip(), Is.False, "the delay before the first wave is not skipped");
+            Tick(runtime, 1.5f);
+            Assert.That(waves.RemainingCount, Is.EqualTo(3));
+            KillAll(horde);
+            var drop = _pickups.DropAmmo(new Vector2(10f, 10f), 0, ammo, 10, float.PositiveInfinity);
+            Tick(runtime, 1.1f);
+            Assert.That(waves.Phase, Is.EqualTo(WavePhase.Pause));
+            Assert.That(waves.RemainingCount, Is.EqualTo(0));
+            Assert.That(_pickups.IsLying(drop.Id), Is.True, "the drop lies through the pause");
+
+            var money = _wallet.Money;
+            var expected = Mathf.CeilToInt(waves.TimeLeft) * 2; // wave 2's rate: 2 a second
+            Assert.That(waves.SkipBonus, Is.EqualTo(expected));
+            Assert.That(waves.Skip(), Is.True);
+            Assert.That(skipped, Is.EqualTo(expected));
+            Assert.That(_wallet.Money, Is.EqualTo(money + expected));
+            Assert.That(waves.WaveIndex, Is.EqualTo(1));
+            Assert.That(_pickups.IsLying(drop.Id), Is.False, "the next wave starts: the drop is gone");
+            Assert.That(drop.WasTaken, Is.False);
         }
 
         [Test]

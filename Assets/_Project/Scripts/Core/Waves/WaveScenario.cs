@@ -75,6 +75,9 @@ namespace Purge.Core.Waves
         [SerializeField, Range(1, 30)] private int _packSize = 6;
         [Tooltip("At most this many alive at once: the rest wait (ТЗ: до 200 рядовых, пики до 300).")]
         [SerializeField, Min(1)] private int _maxAlive = 150;
+        [Tooltip("Money per second left of the pause before this wave for «Пропустить» (× the difficulty's money factor); " +
+                 "0 = the wave's number (wave 2 — 2 a second).")]
+        [SerializeField, Min(0f)] private float _skipRate;
 
         public float Budget => _budget;
         public WaveMonster[] Monsters => _monsters ??= Array.Empty<WaveMonster>();
@@ -82,6 +85,13 @@ namespace Purge.Core.Waves
         public float SpawnTime => _spawnTime;
         public int PackSize => Math.Max(1, _packSize);
         public int MaxAlive => Math.Max(1, _maxAlive);
+
+        /// <summary>The set rate; 0 = by the wave's number (<see cref="WaveScenario.SkipRateOf"/>).</summary>
+        public float SkipRate
+        {
+            get => _skipRate;
+            internal set => _skipRate = Math.Max(0f, value);
+        }
 
         public WaveDefinition()
         {
@@ -108,7 +118,7 @@ namespace Purge.Core.Waves
     public sealed class WaveScenario : ScriptableObject
     {
         [SerializeField] private WaveDefinition[] _waves = Array.Empty<WaveDefinition>();
-        [Tooltip("Seconds of the pause between waves (ТЗ: отсчёт; «Пропустить» — stage 6b).")]
+        [Tooltip("Seconds of the pause between waves (ТЗ: отсчёт, «Пропустить +N» — the seconds left × the next wave's skip rate).")]
         [SerializeField, Min(0f)] private float _pauseTime = 20f;
         [Tooltip("Seconds before the first wave.")]
         [SerializeField, Min(0f)] private float _firstDelay = 3f;
@@ -117,6 +127,14 @@ namespace Purge.Core.Waves
         public int Count => Waves.Length;
         public float PauseTime => _pauseTime;
         public float FirstDelay => _firstDelay;
+
+        /// <summary>Money per second of the pause skipped before wave <paramref name="index"/> (from 0), the default resolved.</summary>
+        public float SkipRateOf(int index)
+        {
+            if (index < 0 || index >= Count) return 0f;
+            var rate = Waves[index]?.SkipRate ?? 0f;
+            return rate > 0f ? rate : index + 1;
+        }
 
         /// <summary>For tests and tools.</summary>
         internal void Configure(WaveDefinition[] waves, float pauseTime, float firstDelay)

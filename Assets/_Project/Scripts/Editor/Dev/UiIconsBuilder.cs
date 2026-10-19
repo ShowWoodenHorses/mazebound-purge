@@ -98,6 +98,8 @@ namespace Purge.Editor.Dev
                 .Dot(12f, 17.4f, 1.2f));
             set.Ad = Draw("ui_ad", new Icon().Polyline(true, 3.5f, 5.5f, 20.5f, 5.5f, 20.5f, 18.5f, 3.5f, 18.5f)
                 .Polyline(true, 10f, 9f, 15.5f, 12f, 10f, 15f).Fill(new[] { 10f, 9f, 15.5f, 12f, 10f, 15f }));
+            // A coin: rim, inner ring and an upright mark (money of the run).
+            set.Coin = Draw("ui_coin", new Icon().Circle(12, 12, 8.5f).Circle(12, 12, 5.5f).Segment(12, 9.5f, 12, 14.5f));
             set.Backdrop = DrawBackdrop();
 
             EditorUtility.SetDirty(set);

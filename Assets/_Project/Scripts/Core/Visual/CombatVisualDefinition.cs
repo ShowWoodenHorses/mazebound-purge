@@ -135,6 +135,20 @@ namespace Purge.Core.Visual
         [Tooltip("Height of the stars circling a stunned monster's head, × its size (Status.Particles of a stun).")]
         [SerializeField, Min(0.3f)] private float _stunHeight = 1.45f;
 
+        [Header("Drop (stage 6b)")]
+        [Tooltip("Puff where a drop disappears unpicked (the next wave starts, its time is out); emitted from; empty = the corpse puff.")]
+        [SerializeField] private AssetReferenceGameObject _dropVanish;
+        [SerializeField, Min(0f)] private float _dropVanishCount = 4f;
+        [Tooltip("Seconds a vanishing drop shrinks away.")]
+        [SerializeField, Range(0.05f, 1f)] private float _dropVanishTime = 0.3f;
+
+        public AssetReferenceGameObject DropVanish { get => _dropVanish; internal set => _dropVanish = value; }
+        public float DropVanishCount => _dropVanishCount;
+        public float DropVanishTime => _dropVanishTime;
+
+        /// <summary><see cref="DropVanish"/>, else <see cref="CorpsePuff"/>.</summary>
+        public AssetReferenceGameObject DropVanishOf() => IsSet(_dropVanish) ? _dropVanish : _corpsePuff;
+
         public AssetReferenceGameObject Emerge { get => _emerge; internal set => _emerge = value; }
         public float EmergeRate { get => _emergeRate; internal set => _emergeRate = value; }
         public AssetReferenceGameObject CorpsePuff { get => _corpsePuff; internal set => _corpsePuff = value; }

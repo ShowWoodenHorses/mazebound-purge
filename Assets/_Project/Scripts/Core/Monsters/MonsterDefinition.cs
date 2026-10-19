@@ -171,6 +171,9 @@ namespace Purge.Core.Monsters
         [Tooltip("Points of a wave's budget it takes (stage 6); 0 = by rank: rank-and-file 1, officers 10, elite 30, bosses 100.")]
         [SerializeField, Min(0f)] private float _cost;
 
+        [Tooltip("Money of the run for killing it (stage 6b, × the difficulty's money factor); 0 = by rank: rank-and-file 1, officers 5, elite 20, bosses 100.")]
+        [SerializeField, Min(0f)] private float _money;
+
         [Tooltip("What it drops (ТЗ: ранг определяет дроп) — the rank's table; empty = the level's.")]
         [SerializeField] private DropTable _drop;
 
@@ -197,6 +200,17 @@ namespace Purge.Core.Monsters
             MonsterRank.Mass => 1f,
             MonsterRank.Officer => 10f,
             MonsterRank.Elite => 30f,
+            _ => 100f,
+        };
+
+        /// <summary>Money of the run for killing it, the rank resolved (drafts; balance — stage 9).</summary>
+        public float Money => _money > 0f ? _money : MoneyOf(_rank);
+
+        public static float MoneyOf(MonsterRank rank) => rank switch
+        {
+            MonsterRank.Mass => 1f,
+            MonsterRank.Officer => 5f,
+            MonsterRank.Elite => 20f,
             _ => 100f,
         };
 
@@ -286,6 +300,9 @@ namespace Purge.Core.Monsters
 
         /// <summary>For tests and tools: 0 = by rank.</summary>
         internal void SetCost(float cost) => _cost = Mathf.Max(0f, cost);
+
+        /// <summary>For tests and tools: 0 = by rank.</summary>
+        internal void SetMoney(float money) => _money = Mathf.Max(0f, money);
 
         /// <summary>For tests and tools.</summary>
         internal void SetAbilities(params AbilityModule[] abilities) => _abilities = new List<AbilityModule>(abilities);

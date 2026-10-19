@@ -515,6 +515,45 @@ namespace Purge.Editor.Dev
             Ornament(messageRow, true);
             messageRow.gameObject.SetActive(false); // Shown with a message.
 
+            // Waves (stage 6b). Under the time: the wave, enemies left, money of the run.
+            var waveRow = Row(root, "WaveRow", new Vector2(0.5f, 1f), new Vector2(0f, -96f), 26f, new Vector2(0.5f, 1f));
+            waveRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
+            var waveText = Text(waveRow, "Wave", "WAVE 1/5", 28f, true, Center, Center, Vector2.zero, new Vector2(10f, 36f),
+                TextAlignmentOptions.Center, spacing: 6f);
+            waveText.textWrappingMode = TextWrappingModes.NoWrap;
+            Counter(waveRow, "Enemies", icons.Skull, out var enemiesText);
+            var money = Counter(waveRow, "Money", icons.Coin, out var moneyText);
+            money.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
+            waveRow.gameObject.SetActive(false); // Shown on a level with waves.
+
+            // The pause between waves: the countdown, «Пропустить +N» (Space), the ammo reserve by type.
+            var countdown = Rect(root, "Countdown", new Vector2(0.5f, 1f), new Vector2(0f, -232f), new Vector2(760f, 200f));
+            countdown.pivot = new Vector2(0.5f, 1f);
+            var countdownText = Text(countdown, "Text", "WAVE 2 IN 20", 30f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                Vector2.zero, new Vector2(760f, 40f), TextAlignmentOptions.Center, spacing: 6f);
+            countdownText.textWrappingMode = TextWrappingModes.NoWrap;
+            var skip = TextButton(countdown, "SkipButton", "SKIP +40", true, null, 64f, 28f);
+            var skipRect = (RectTransform)skip.transform;
+            skipRect.anchorMin = skipRect.anchorMax = skipRect.pivot = new Vector2(0.5f, 1f);
+            skipRect.anchoredPosition = new Vector2(0f, -50f);
+            skipRect.sizeDelta = new Vector2(400f, 64f);
+            var skipText = skip.transform.Find("Label").GetComponent<TMP_Text>();
+            var skipKey = Text(countdown, "SkipKey", Loc(TextKeys.HudKeySpace), 18f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0f, -120f), new Vector2(400f, 24f), TextAlignmentOptions.Center, _style.MutedText, 6f);
+            var ammoRow = Row(countdown, "AmmoRow", new Vector2(0.5f, 1f), new Vector2(0f, -152f), 28f, new Vector2(0.5f, 1f));
+            ammoRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
+            var ammoTemplate = Text(ammoRow, "AmmoTemplate", "9 mm  120", 24f, false, Center, Center, Vector2.zero,
+                new Vector2(10f, 32f), TextAlignmentOptions.Center, _style.MutedText);
+            ammoTemplate.textWrappingMode = TextWrappingModes.NoWrap;
+            ammoTemplate.gameObject.SetActive(false); // Cloned per ammo type.
+            countdown.gameObject.SetActive(false);
+
+            // A big caption in the middle: «Волна 3», «Волна пройдена».
+            var banner = AutoSize(Text(root, "Banner", "", 64f, true, Center, Center, new Vector2(0f, 200f),
+                new Vector2(1400f, 90f), TextAlignmentOptions.Center, _style.Text, 14f));
+            banner.textWrappingMode = TextWrappingModes.NoWrap;
+            banner.gameObject.SetActive(false);
+
             // Top right: Map and Pause.
             // Spaced so that their widened touch areas (RoundButton) meet but do not overlap.
             var pause = RoundButton(root, "PauseButton", icons.Pause, new Vector2(1f, 1f), new Vector2(-82f, -78f), 84f, 40f);
@@ -542,6 +581,18 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_keyTemplate", keyTemplate);
             SetReference(screen, "_messageRow", messageRow.gameObject);
             SetReference(screen, "_message", message);
+            SetReference(screen, "_waveRow", waveRow.gameObject);
+            SetReference(screen, "_waveText", waveText);
+            SetReference(screen, "_enemiesText", enemiesText);
+            SetReference(screen, "_moneyText", moneyText);
+            SetReference(screen, "_countdown", countdown.gameObject);
+            SetReference(screen, "_countdownText", countdownText);
+            SetReference(screen, "_skipButton", skip);
+            SetReference(screen, "_skipText", skipText);
+            SetReference(screen, "_skipKey", skipKey.gameObject);
+            SetReference(screen, "_ammoRow", ammoRow);
+            SetReference(screen, "_ammoTemplate", ammoTemplate);
+            SetReference(screen, "_banner", banner);
             SetReference(screen, "_pauseButton", pause);
             SetReference(screen, "_mapButton", map);
             SetReference(screen, "_weaponPanel", weaponPanel.gameObject);

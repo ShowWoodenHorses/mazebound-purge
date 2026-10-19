@@ -302,6 +302,8 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _mapOpen = new SoundCue(0.7f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _mapClose = new SoundCue(0.7f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _levelComplete = new SoundCue(1f, 0f, 1, Vector2.one);
+        [Tooltip("A wave is cleared, the pause between waves starts (stage 6b).")]
+        [SerializeField] private SoundCue _waveCleared = new SoundCue(0.8f, 0f, 1, Vector2.one);
         [SerializeField] private SoundCue _levelFailed = new SoundCue(0.8f, 0f, 1, Vector2.one);
         [Tooltip("Each star of the result, one after another, pitch rising.")]
         [SerializeField] private SoundCue _star = new SoundCue(0.8f, 0f, 3, Vector2.one);
@@ -395,6 +397,7 @@ namespace Purge.Core.Audio
         public SoundCue MapOpen => _mapOpen;
         public SoundCue MapClose => _mapClose;
         public SoundCue LevelComplete => _levelComplete;
+        public SoundCue WaveCleared => _waveCleared;
         public SoundCue LevelFailed => _levelFailed;
         public SoundCue Star => _star;
         public float ResultDelay => _resultDelay;
@@ -423,6 +426,7 @@ namespace Purge.Core.Audio
         internal SoundCue PickupAmmoCue => _pickupAmmo;
         internal SoundCue PickupThrowableCue => _pickupThrowable;
         internal SoundCue IceBreakCue => _iceBreak;
+        internal SoundCue WaveClearedCue => _waveCleared;
 
         internal List<WeaponSound> MutableWeaponSounds => _weaponSounds;
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
@@ -496,7 +500,7 @@ namespace Purge.Core.Audio
             yield return _torchLoop;
             yield return _click; yield return _back; yield return _denied; yield return _pauseOpen; yield return _pauseResume;
             yield return _mapOpen; yield return _mapClose;
-            yield return _levelComplete; yield return _levelFailed; yield return _star;
+            yield return _levelComplete; yield return _levelFailed; yield return _star; yield return _waveCleared;
         }
     }
 }

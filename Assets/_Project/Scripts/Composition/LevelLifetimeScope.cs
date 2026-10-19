@@ -13,6 +13,7 @@ using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Throwing;
@@ -106,6 +107,8 @@ namespace Purge.Composition
             builder.Register<MonsterDeathEffects>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Champions' affixes (stage 5e2): trails, death blasts, a hit's state, the vampire.
             builder.Register<ChampionSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Money of the run (stage 6b): kills and the pause's skip bonus.
+            builder.Register<RunWallet>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
             builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -138,6 +141,8 @@ namespace Purge.Composition
             builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            // The waves on the HUD (stage 6b): wave, enemies, money, the pause's countdown and skip.
+            builder.Register<WaveHudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();

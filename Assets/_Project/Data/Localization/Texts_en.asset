@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - SIGN IN
   - Sign in to keep your progress on all devices
   - TUTORIAL
+  - WAVE {0}/{1}
+  - WAVE {0}
+  - WAVE CLEARED
+  - WAVE {0} IN {1}
+  - SKIP +{0}
+  - SPACE
+  - 9 mm
+  - 5.45
+  - 7.62
+  - Shells
+  - Fuel
+  - Batteries
+  - Charges
   - TUTORIAL COMPLETE
   - Ad is not available right now
   - Rotate your device

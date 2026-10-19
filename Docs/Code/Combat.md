@@ -91,6 +91,7 @@
   - Сложность (6а): `DropContext.RarityFactor` = `Difficulty.DropRarity` (`DropSystem.Context`) — × вес оружия и метательного выше серого в `DropRoller`.
   - Оружие в слотах повторно не выпадает.
 - **Вид дропа** — `ItemVisualCatalog` ("Items/Visual", грузит `SharedDefinitionsService`, необязателен): пикап-префаб и летящий на определение (метательное, аптечки, патроны, оружие — пикапы Weapon Set).
-  - `DropViewPresenter` (шаг `BuildVisuals`) грузит виды всего, что может дать пул (+ все типы патронов), пулит заранее, показывает в видимых клетках, мигает последние 5 с. Собирает **Purge → Dev → Build Items**. `PickupViewPresenter` дроп не трогает.
+  - `DropViewPresenter` (шаг `BuildVisuals`) грузит виды всего, что может дать пул (+ все типы патронов), пулит заранее, показывает в видимых клетках, мигает последние 5 с.
+  - Невзятый (истёк, следующая волна — 6б) в видимой клетке: пых `CombatVisualDefinition.DropVanishOf()` (пусто = `CorpsePuff`, через `PackEmitters`) и сжатие за `DropVanishTime`. Собирает **Purge → Dev → Build Items**. `PickupViewPresenter` дроп не трогает.
 - HUD: слот метательного на ПК (`HudScreen._throwSlot`, клавиша G) и сектор кластера (`TouchAttackCluster._throw`, `<Gamepad>/leftTrigger`) — `WeaponSlotState` (Magazine = стопка, Ammo = количество, Active = прицел), иконка — силуэт пикап-модели (`ItemVisualDefinition.Icon`, Build Items / Build UI Icons).
   - Слоты ПК — «патроны/запас», R у обоих. Звуки — `AudioCatalog.Throw/Pin/Land/ExplosionOf(радиус)/Ignite/PickupAmmo/PickupThrowable`, петля огня `FireLoop` (ближайшая горящая клетка).

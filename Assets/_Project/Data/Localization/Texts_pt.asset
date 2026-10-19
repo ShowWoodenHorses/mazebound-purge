@@ -110,6 +110,19 @@ MonoBehaviour:
   - menu.sign_in
   - menu.sign_in.hint
   - hud.tutorial
+  - hud.wave
+  - hud.wave.start
+  - hud.wave.cleared
+  - hud.wave.countdown
+  - hud.wave.skip
+  - hud.key.space
+  - ammo.ammo_9mm
+  - ammo.ammo_5_45
+  - ammo.ammo_7_62
+  - ammo.ammo_shells
+  - ammo.ammo_fuel
+  - ammo.ammo_battery
+  - ammo.ammo_charge
   - result.tutorial_complete
   - ad.unavailable
   - rotate.title
@@ -244,6 +257,19 @@ MonoBehaviour:
   - ENTRAR
   - Entre para manter seu progresso em todos os dispositivos
   - TUTORIAL
+  - ONDA {0}/{1}
+  - ONDA {0}
+  - "ONDA CONCLU\xCDDA"
+  - ONDA {0} EM {1}
+  - PULAR +{0}
+  - "ESPA\xC7O"
+  - 9 mm
+  - 5,45
+  - 7,62
+  - Cartuchos
+  - "Combust\xEDvel"
+  - Baterias
+  - Cargas
   - "TUTORIAL CONCLU\xCDDO"
   - "O an\xFAncio n\xE3o est\xE1 dispon\xEDvel agora"
   - Gire o seu aparelho

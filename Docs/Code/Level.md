@@ -5,7 +5,7 @@
 ## Уровень, тулза, сборки, ассеты
 - Клетка `(x, y)` ↔ мир `(x, 0, y)`; North = +Y сетки = +Z мира. За пределами сетки = Wall.
 - Мутация `LevelData` (и `LevelCatalog`) только `internal` (InternalsVisibleTo `Purge.Editor`, `Purge.Tests.EditMode`); команды тулзы — `LevelAuthoring` (GenerateNew, RegenerateVisuals).
-  - **Generate New** до генератора биомов (этап 8) — `OpenFieldGenerator` (Core/Generation): площадка W×H (мин. 5×5), стена по периметру, старт в центре
+  - **Generate New** до генератора биомов (этап 7) — `OpenFieldGenerator` (Core/Generation): площадка W×H (мин. 5×5), стена по периметру, старт в центре
   - `ObstacleDensity` — одиночные столбы на клетках с чётными координатами (не рядом со стартом; связность гарантирована), по `LayoutSeed` (бывший `MazeSeed`, `FormerlySerializedAs`).
 - ID объектов: `{prefix}_{N}` через `LevelData.CreateUniqueId`. Межобъектные ссылки — по ID; на Definitions — прямые SO-ссылки.
 - Случайность только `DeterministicRandom` / `StableHash` (не `System.Random`, не `string.GetHashCode`).
@@ -39,7 +39,7 @@
   - Меши/аватар персонажей — копии в `Art/Characters` (**Purge → Dev → Extract Character Meshes**), чтобы общий `Characters.fbx` Synty не попадал в сборку целиком; запускать после смены модели персонажа.
 - Тулза: окно **Purge → Level Designer** (`Scripts/Editor/LevelDesigner`), правки уровня — через `LevelEditing` (Core, покрыт тестами). Руководство для людей: [Docs/LevelDesigner.md](Docs/LevelDesigner.md) — **обновлять при изменении тулзы/визуальной системы**.
 - Валидатор: `LevelValidator.Validate(level)` → `ValidationReport`; проверки идентифицируются `ValidationCodes`, сообщения на английском.
-  - Точки появления волн (6а) — `LevelData.MonsterSpawns` (`MonsterSpawnData`, префикс id `spawn`, с этажом; не в `AllEntities`, в `AllIds`): `LevelEditing.AddMonsterSpawn/RemoveMonsterSpawn`, `ClearCell` и удаление этажа их снимают, Generate New очищает. Валидатор: `MonsterSpawnBlocked` (не на свободном полу — ошибка), `WavesWithoutSpawns` (у орды волны, точек нет — предупреждение). В Level Designer пока не рисуются и не ставятся (кисть — этап 8).
+  - Точки появления волн (6а) — `LevelData.MonsterSpawns` (`MonsterSpawnData`, префикс id `spawn`, с этажом; не в `AllEntities`, в `AllIds`): `LevelEditing.AddMonsterSpawn/RemoveMonsterSpawn`, `ClearCell` и удаление этажа их снимают, Generate New очищает. Валидатор: `MonsterSpawnBlocked` (не на свободном полу — ошибка), `WavesWithoutSpawns` (у орды волны, точек нет — предупреждение). В Level Designer пока не рисуются и не ставятся (кисть — этап 7).
 
 ## Визуал уровня в игре
 - `LevelVisualSystem` (Presentation, шаг `BuildVisuals`): `VisualPrefabLibrary` грузит через `IAssetOwner` уровня **только используемые** варианты (`LevelVisualUsage`) → `GeometryBuilder` → `EntityViewFactory`. Варианты берутся только через `VisualResolver` (сохранённые id), никакого выбора в runtime.

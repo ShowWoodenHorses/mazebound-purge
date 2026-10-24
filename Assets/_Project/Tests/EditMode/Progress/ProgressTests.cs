@@ -9,6 +9,7 @@ using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Run;
+using Purge.Gameplay.Visibility;
 using Purge.Presentation.Map;
 using NUnit.Framework;
 using UnityEngine;
@@ -426,6 +427,7 @@ namespace Purge.Tests.EditMode.Progress
             run.BrokenBarrels.Add("barrel_2");
             run.OpenedChests.Add("chest_1");
             run.ChestKeyDropped = true;
+            run.Explored = "AQID";
             _progress.SaveRun("first", 0, run);
 
             _save.Load();
@@ -457,6 +459,7 @@ namespace Purge.Tests.EditMode.Progress
             CollectionAssert.AreEqual(new[] { "barrel_2" }, loaded.BrokenBarrels, "level objects (stage 7в)");
             CollectionAssert.AreEqual(new[] { "chest_1" }, loaded.OpenedChests);
             Assert.IsTrue(loaded.ChestKeyDropped);
+            Assert.AreEqual("AQID", loaded.Explored, "explored map (stage 7г)");
 
             var money = _progress.Money;
             _progress.AbandonRun(loaded.Money);
@@ -665,11 +668,38 @@ namespace Purge.Tests.EditMode.Progress
                 Assert.AreEqual(MapRenderer.Wall, pixels[grid.ToIndex(new GridPosition(1, 1))]);
                 Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(2, 0))], "A door is a passage; its icon shows it.");
                 Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(3, 0))]);
+
+                // Fog (stage 7г): only explored cells are drawn; a cell explored later is painted alone.
+                MapRenderer.Render(grid, pixels, 0, cell => cell.X <= 1);
+                Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(1, 0))]);
+                Assert.AreEqual(MapRenderer.Unknown, pixels[grid.ToIndex(new GridPosition(2, 0))]);
+                Assert.AreEqual(MapRenderer.Unknown, pixels[grid.ToIndex(new GridPosition(3, 1))]);
+                MapRenderer.RenderCell(grid, pixels, new GridPosition(3, 0));
+                Assert.AreEqual(MapRenderer.Floor, pixels[grid.ToIndex(new GridPosition(3, 0))]);
+                Assert.AreEqual(MapRenderer.Unknown, pixels[grid.ToIndex(new GridPosition(2, 0))]);
             }
             finally
             {
                 Object.DestroyImmediate(level);
             }
+        }
+
+        [Test]
+        public void MapExploration_PacksABitPerCell_AndIgnoresAnotherSize()
+        {
+            var cells = new bool[37];
+            cells[0] = cells[8] = cells[36] = true;
+            var packed = MapExploration.Pack(cells);
+
+            var back = new bool[37];
+            Assert.IsTrue(MapExploration.Unpack(packed, back));
+            CollectionAssert.AreEqual(cells, back);
+
+            var other = new bool[64];
+            Assert.IsFalse(MapExploration.Unpack(packed, other), "another level size");
+            Assert.IsFalse(MapExploration.Unpack("not base64!", other));
+            Assert.IsFalse(MapExploration.Unpack(null, other));
+            CollectionAssert.DoesNotContain(other, true);
         }
 
         // ------------------------------------------------------------ Fakes

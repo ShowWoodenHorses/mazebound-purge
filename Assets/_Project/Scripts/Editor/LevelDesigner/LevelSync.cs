@@ -35,6 +35,13 @@ namespace Purge.Editor.LevelDesigner
 
         /// <summary>Music tracks: a bundle per track, downloaded only when it starts playing (not with the start-up bundle).</summary>
         public const string MusicGroup = "Purge Music";
+
+        /// <summary>
+        /// Game levels of one location (stage 7g): "Purge Location &lt;Biome&gt;" by the theme id, one bundle per location —
+        /// a level downloads its location (its level data, theme and the theme's textures), not every level of the game.
+        /// Levels without a theme stay in <see cref="LevelsGroup"/>.
+        /// </summary>
+        public const string LocationGroupPrefix = "Purge Location ";
         public const string LevelAddressPrefix = "Levels/";
         public const string CatalogPath = "Assets/_Project/Data/Levels/LevelCatalog.asset";
         public const string DevCatalogPath = "Assets/_Project/Data/Levels/DevLevelCatalog.asset";
@@ -66,7 +73,7 @@ namespace Purge.Editor.LevelDesigner
             var levelsGroup = GetOrCreateGroup(settings, LevelsGroup);
             var devGroup = GetOrCreateGroup(settings, DevLevelsGroup);
             var levelGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(level));
-            var levelEntry = settings.CreateOrMoveEntry(levelGuid, dev ? devGroup : levelsGroup);
+            var levelEntry = settings.CreateOrMoveEntry(levelGuid, dev ? devGroup : LocationGroup(settings, level) ?? levelsGroup);
             levelEntry.address = LevelAddressPrefix + level.name;
 
             var catalog = GetOrCreateCatalog(settings, levelsGroup);
@@ -376,6 +383,16 @@ namespace Purge.Editor.LevelDesigner
             schema.BundleMode = BundledAssetGroupSchema.BundlePackingMode.PackSeparately;
             schema.BundleNaming = BundledAssetGroupSchema.BundleNamingStyle.OnlyHash;
             EditorUtility.SetDirty(schema);
+        }
+
+        /// <summary>The location group of a game level (by its theme id, packed together); null without a theme.</summary>
+        public static AddressableAssetGroup LocationGroup(AddressableAssetSettings settings, LevelData level)
+        {
+            var id = level.VisualTheme != null ? level.VisualTheme.Id : null;
+            if (string.IsNullOrEmpty(id)) return null;
+            var group = GetOrCreateGroup(settings, LocationGroupPrefix + char.ToUpperInvariant(id[0]) + id.Substring(1));
+            PackTogether(group);
+            return group;
         }
 
         private static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings settings, string name)

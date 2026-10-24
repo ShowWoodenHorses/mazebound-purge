@@ -52,6 +52,11 @@ namespace Purge.Editor.Dev
             set.Weapon = Draw("map_weapon", 8, Sword, null);
             set.Medkit = Draw("map_medkit", 9, Medkit, MedkitCross);
             set.Key = Draw("map_key", 10, Key, null);
+            set.Monster = Draw("map_monster", 11, Dot, null);
+            set.Barrel = Draw("map_barrel", 12, Barrel, BarrelHoops);
+            set.Chest = Draw("map_chest", 13, Chest, ChestDetails);
+            set.LockedChest = Draw("map_locked_chest", 14, Chest, ChestLock);
+            set.Refuge = Draw("map_refuge", 15, Dome, null);
             EditorUtility.SetDirty(set);
             AssetDatabase.SaveAssets();
             Debug.Log($"[Purge] Map icons built: {SetPath}.");
@@ -131,6 +136,30 @@ namespace Purge.Editor.Dev
                 RoundBox(p, new Vector2(0.7f, -0.14f), new Vector2(0.07f, 0.2f), 0.03f));
             return Mathf.Min(bow, Mathf.Min(shaft, teeth));
         }
+
+        private static float Dot(Vector2 p) => Circle(p, Vector2.zero, 0.55f);
+
+        private static float Barrel(Vector2 p) => RoundBox(p, Vector2.zero, new Vector2(0.5f, 0.74f), 0.22f);
+
+        private static float BarrelHoops(Vector2 p) => Mathf.Min(
+            Capsule(p, new Vector2(-0.44f, 0.36f), new Vector2(0.44f, 0.36f), 0.035f),
+            Capsule(p, new Vector2(-0.44f, -0.36f), new Vector2(0.44f, -0.36f), 0.035f));
+
+        private static float Chest(Vector2 p) => Mathf.Min(
+            RoundBox(p, new Vector2(0f, -0.2f), new Vector2(0.78f, 0.44f), 0.08f),
+            Ellipse(p, new Vector2(0f, 0.24f), new Vector2(0.78f, 0.36f)));
+
+        private static float ChestDetails(Vector2 p) => Mathf.Min(
+            Capsule(p, new Vector2(-0.72f, 0.16f), new Vector2(0.72f, 0.16f), 0.035f),
+            RoundBox(p, new Vector2(0f, 0.06f), new Vector2(0.1f, 0.14f), 0.03f));
+
+        private static float ChestLock(Vector2 p) => Mathf.Min(
+            Capsule(p, new Vector2(-0.72f, 0.16f), new Vector2(0.72f, 0.16f), 0.035f),
+            Mathf.Min(RoundBox(p, new Vector2(0f, -0.18f), new Vector2(0.26f, 0.22f), 0.05f),
+                Mathf.Max(Mathf.Abs(Circle(p, new Vector2(0f, 0.04f), 0.16f)) - 0.05f, 0.04f - p.y)));
+
+        /// <summary>The safe dome: a ring (its area stays see-through).</summary>
+        private static float Dome(Vector2 p) => Mathf.Abs(Circle(p, Vector2.zero, 0.8f)) - 0.1f;
 
         // ---- drawing ----
 

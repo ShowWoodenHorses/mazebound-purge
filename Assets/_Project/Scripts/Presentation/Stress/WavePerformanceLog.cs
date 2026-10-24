@@ -124,7 +124,9 @@ namespace Purge.Presentation.Stress
                 .Append((stats.Held / n).ToString("0.0")).Append('/').Append(stats.HeldMax).Append(' ')
                 .Append(stats.ShownMax).Append(' ').Append(stats.MissingMax).Append(" | ")
                 .Append((stats.Sim / n).ToString("0.00")).Append('/').Append(stats.SimMax.ToString("0.0")).Append(" | ")
-                .Append(stats.DrawCalls >= 0 ? (stats.DrawCalls / n).ToString("0") : "-");
+                .Append(stats.DrawCalls >= 0 ? (stats.DrawCalls / n).ToString("0") : "-").Append(" | flow ")
+                .Append(stats.FlowCount > 0 ? (stats.Flow / stats.FlowCount).ToString("0.00") : "-").Append('/')
+                .Append(stats.FlowMax.ToString("0.00")).Append(" x").Append(stats.FlowCount);
             GameLog.Info(LogChannel.Performance, t.ToString());
         }
 
@@ -136,6 +138,11 @@ namespace Purge.Presentation.Stress
             public double Alive, Drawn, Held, Sim, DrawCalls;
             public int AliveMax, HeldMax, ShownMax, MissingMax;
             public float SimMax;
+
+            // Path field rebuilds (stage 7г: target ≤ 2 ms on A16): time of each rebuild seen in the frame.
+            public double Flow;
+            public int FlowCount, LastFlowBuilds = -1;
+            public float FlowMax;
 
             public Stats(int capacity) => Frames = new float[capacity];
 
@@ -153,6 +160,13 @@ namespace Purge.Presentation.Stress
                 MissingMax = Math.Max(MissingMax, views.MissingCount);
                 Sim += horde.SimulationMs;
                 SimMax = Mathf.Max(SimMax, horde.SimulationMs);
+                if (LastFlowBuilds >= 0 && horde.FlowBuilds != LastFlowBuilds)
+                {
+                    Flow += horde.FlowMs;
+                    FlowCount++;
+                    FlowMax = Mathf.Max(FlowMax, horde.FlowMs);
+                }
+                LastFlowBuilds = horde.FlowBuilds;
                 if (drawCalls >= 0 && DrawCalls >= 0) DrawCalls += drawCalls;
                 else DrawCalls = -1;
             }
@@ -164,6 +178,10 @@ namespace Purge.Presentation.Stress
                 Alive = Drawn = Held = Sim = DrawCalls = 0;
                 AliveMax = HeldMax = ShownMax = MissingMax = 0;
                 SimMax = 0f;
+                Flow = 0;
+                FlowCount = 0;
+                FlowMax = 0f;
+                LastFlowBuilds = -1;
             }
         }
     }

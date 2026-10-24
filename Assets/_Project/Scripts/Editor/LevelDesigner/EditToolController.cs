@@ -27,6 +27,7 @@ namespace Purge.Editor.LevelDesigner
         Decor,
         Snowdrift,
         Grass,
+        Ground,
         Obstacle,
         LockArea,
         Erase,
@@ -100,7 +101,7 @@ namespace Purge.Editor.LevelDesigner
             {
                 if (ActiveTool == EditTool.Decor)
                     PaintDecor(cell, DecorBrushMode.None);
-                else if (ActiveTool == EditTool.Snowdrift || ActiveTool == EditTool.Grass)
+                else if (IsSurfaceTool(ActiveTool))
                     PaintSurface(cell, CellSurface.None);
                 else if (ActiveTool == EditTool.Obstacle)
                     PaintObstacle(cell, null);
@@ -138,6 +139,9 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Grass:
                     PaintSurface(cell, CellSurface.Grass);
                     break;
+                case EditTool.Ground:
+                    PaintSurface(cell, CellSurface.Ground);
+                    break;
                 case EditTool.Obstacle:
                     if (ObstacleDefinition == null) _notify("Choose an obstacle first.");
                     else PaintObstacle(cell, ObstacleDefinition);
@@ -151,6 +155,16 @@ namespace Purge.Editor.LevelDesigner
             }
         }
 
+        private static bool IsSurfaceTool(EditTool tool) =>
+            tool == EditTool.Snowdrift || tool == EditTool.Grass || tool == EditTool.Ground;
+
+        private static CellSurface SurfaceOf(EditTool tool) => tool switch
+        {
+            EditTool.Grass => CellSurface.Grass,
+            EditTool.Ground => CellSurface.Ground,
+            _ => CellSurface.Snowdrift,
+        };
+
         public void OnMouseDrag(GridPosition cell, Event e)
         {
             if (ActiveTool == EditTool.Decor && (e.button == 0 || e.button == 1))
@@ -159,10 +173,9 @@ namespace Purge.Editor.LevelDesigner
                 return;
             }
 
-            if ((ActiveTool == EditTool.Snowdrift || ActiveTool == EditTool.Grass) && (e.button == 0 || e.button == 1))
+            if (IsSurfaceTool(ActiveTool) && (e.button == 0 || e.button == 1))
             {
-                PaintSurface(cell, e.button == 1 ? CellSurface.None
-                    : ActiveTool == EditTool.Grass ? CellSurface.Grass : CellSurface.Snowdrift);
+                PaintSurface(cell, e.button == 1 ? CellSurface.None : SurfaceOf(ActiveTool));
                 return;
             }
 

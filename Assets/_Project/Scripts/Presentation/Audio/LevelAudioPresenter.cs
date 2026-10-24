@@ -7,7 +7,9 @@ using Purge.Core.Audio;
 using Purge.Core.Common;
 using Purge.Core.Definitions;
 using Purge.Core.Effects;
+using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Drops;
 using Purge.Gameplay.Effects;
@@ -81,6 +83,7 @@ namespace Purge.Presentation.Audio
         private readonly PlayerRevival _revival;
 
         private int _fireVoice;
+        private int _ambientVoice;
         private float _fireVolume;
         private float _firePick;
         private Vector2 _firePoint;
@@ -175,6 +178,7 @@ namespace Purge.Presentation.Audio
             TickFire(deltaTime);
             TickHeartbeat(deltaTime);
             TickBodyfall(deltaTime);
+            TickAmbience();
         }
 
         public void Dispose()
@@ -214,6 +218,8 @@ namespace Purge.Presentation.Audio
                 _audio.Stop(slot.Voice);
             _torchSlots = Array.Empty<TorchSlot>();
             _audio.Stop(_fireVoice);
+            _audio.Stop(_ambientVoice);
+            _ambientVoice = 0;
             _audio.Stop(_heartVoice);
         }
 
@@ -222,7 +228,34 @@ namespace Purge.Presentation.Audio
         private void OnSound(SoundEvent sound)
         {
             if (sound.Type == SoundType.Step)
-                PlayAt(Catalog.Footstep, sound.Position);
+                PlayAt(FootstepAt(sound.Position), sound.Position);
+        }
+
+        /// <summary>
+        /// Steps by the surface under the player (stage 7г): grass cells — grass, ground cells — ground, plain floor —
+        /// what the theme says (<see cref="VisualTheme.FloorSteps"/>); a missing sound falls back to the default steps.
+        /// </summary>
+        private SoundCue FootstepAt(Vector2 position)
+        {
+            var catalog = Catalog;
+            var cell = PlayerMovement.CellOf(position, _player.Floor);
+            var steps = _level.Geometry.GetSurface(cell) switch
+            {
+                CellSurface.Grass => FloorStepSound.Grass,
+                CellSurface.Ground => FloorStepSound.Ground,
+                _ => _level.VisualTheme != null ? _level.VisualTheme.FloorSteps : FloorStepSound.Default,
+            };
+            var cue = steps == FloorStepSound.Grass ? catalog.FootstepGrass
+                : steps == FloorStepSound.Ground ? catalog.FootstepGround : null;
+            return cue == null || cue.IsEmpty ? catalog.Footstep : cue;
+        }
+
+        /// <summary>The biome's ambient loop (theme id → Sounds/Ambient/&lt;id&gt;), all level long; paused with the level.</summary>
+        private void TickAmbience()
+        {
+            var cue = _level.VisualTheme != null ? Catalog.Ambience(_level.VisualTheme.Id) : null;
+            if (cue == null) return;
+            _ambientVoice = KeepLoop(cue, _ambientVoice, 1f, 0f);
         }
 
         private void OnHealthChanged(int current, int max)

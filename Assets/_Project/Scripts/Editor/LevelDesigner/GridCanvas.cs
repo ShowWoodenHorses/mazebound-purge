@@ -31,6 +31,7 @@ namespace Purge.Editor.LevelDesigner
         private static readonly Color DoorColor = new Color(0.55f, 0.36f, 0.18f);
         private static readonly Color SnowdriftColor = new Color(0.86f, 0.93f, 1f);
         private static readonly Color GrassColor = new Color(0.62f, 0.78f, 0.45f);
+        private static readonly Color GroundColor = new Color(0.72f, 0.6f, 0.44f);
         private static readonly Color VoidColor = new Color(0.08f, 0.08f, 0.1f);
         private static readonly Color ObstacleBlockingColor = new Color(0.25f, 0.45f, 0.22f);
         private static readonly Color ObstaclePassableColor = new Color(0.55f, 0.75f, 0.45f);
@@ -246,7 +247,8 @@ namespace Purge.Editor.LevelDesigner
 
                 var type = geometry.GetCell(cell);
                 var surface = type == CellType.Floor ? geometry.GetSurface(cell) : CellSurface.None;
-                var color = surface == CellSurface.Snowdrift ? SnowdriftColor : surface == CellSurface.Grass ? GrassColor : CellColor(type);
+                var color = surface == CellSurface.Snowdrift ? SnowdriftColor : surface == CellSurface.Grass ? GrassColor
+                    : surface == CellSurface.Ground ? GroundColor : CellColor(type);
                 EditorGUI.DrawRect(new Rect(r.x, r.y, r.width - gap, r.height - gap), color);
 
                 var obstacle = type == CellType.Floor ? geometry.GetObstacle(cell) : null;

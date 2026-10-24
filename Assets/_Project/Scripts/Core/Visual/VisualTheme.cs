@@ -33,6 +33,11 @@ namespace Purge.Core.Visual
 
         [SerializeField] private ThemeWeather _weather = new ThemeWeather();
 
+        [SerializeField] private ThemeGround _ground = new ThemeGround();
+
+        [Tooltip("Footsteps on the plain floor of the theme (no surface). Grass cells always sound as grass, Ground cells as ground.")]
+        [SerializeField] private FloorStepSound _floorSteps;
+
         public string Id => _id;
 
         public Material FogMaterial { get => _fogMaterial; internal set => _fogMaterial = value; }
@@ -44,6 +49,10 @@ namespace Purge.Core.Visual
         public ThemeAwareness Awareness => _awareness ??= new ThemeAwareness();
 
         public ThemeWeather Weather => _weather ??= new ThemeWeather();
+
+        public ThemeGround Ground => _ground ??= new ThemeGround();
+
+        public FloorStepSound FloorSteps { get => _floorSteps; internal set => _floorSteps = value; }
 
         public VisualSet GetSet(VisualKind kind)
         {

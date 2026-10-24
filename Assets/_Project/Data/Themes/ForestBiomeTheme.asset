@@ -124,3 +124,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+  _ground:
+    Albedo: {fileID: 2800000, guid: bb461912c831d0c44b22ca58ca0bf4dd, type: 3}
+    TileCells: 1
+    EdgeSoftness: 0.12
+    EdgeNoise: 0.55
+    NoiseScale: 1.3
+  _floorSteps: 1

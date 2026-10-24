@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - "CO\u015A POSZ\u0141O NIE TAK"
   - "WR\xD3\u0106 DO MENU"
   - GRACZ
-  - ZOMBIE
+  - POTWORY
   - "BRO\u0143"
   - APTECZKI
   - KLUCZE
+  - OBIEKTY
   - STEROWANIE
   - STRZELANIE
   - INNE

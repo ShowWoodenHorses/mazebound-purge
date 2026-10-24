@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Purge Location Castle_block
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Purge Location Castle_block
+  m_GUID: f6108bb6f06480a49a6b42e5399625fc
+  m_SerializeEntries:
+  - m_GUID: 76fcdc4f4dd3f1c4e92d86957546c5a1
+    m_Address: Levels/Level_Tutorial
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 7b0b4a63a91ea59479d6f21c16e4df79, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 59450c8e2856e924eb671c4e8c1e1c03, type: 2}
+    - {fileID: 11400000, guid: b4c3c2330101a784d9ef41ff4169af1f, type: 2}
+    m_SchemaDisplayOrder:
+    - Purge Location Castle_block_BundledAssetGroupSchema
+    - Purge Location Castle_block_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

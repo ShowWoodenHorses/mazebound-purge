@@ -48,7 +48,7 @@ namespace Purge.Presentation.Visual
                 StaticBatchingUtility.Combine(root.gameObject);
 
             var view = new LevelGeometryView(root, chunks, new CellVisibilityMask(geometry.Width, geometry.Height, floor), missing,
-                SnowdriftMask.Create(level, floor));
+                SnowdriftMask.Create(level, floor), GroundMask.Create(level, floor));
             view.ApplyVisibility();
             return view;
         }

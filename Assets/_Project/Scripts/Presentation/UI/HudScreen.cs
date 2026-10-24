@@ -61,7 +61,9 @@ namespace Purge.Presentation.UI
 
         [Header("Buttons")]
         [SerializeField] private Button _pauseButton;
+        [Tooltip("The mini-map (stage 7g): its button opens the full map.")]
         [SerializeField] private Button _mapButton;
+        [SerializeField] private MiniMapView _miniMap;
         private HorizontalShift _topRightShift;
 
         [Tooltip("On-screen stick and buttons (ТЗ §64, Android): a separate canvas, shown while the HUD is. " +
@@ -369,6 +371,9 @@ namespace Purge.Presentation.UI
 
         /// <summary>Layer of the flying coins (its first child is the template); null — no coins.</summary>
         public RectTransform CoinLayer => _coinLayer;
+
+        /// <summary>The mini-map (stage 7g); null in old scenes.</summary>
+        public MiniMapView MiniMap => _miniMap;
 
         /// <summary>Where the coins fly: the money's icon in <see cref="CoinLayer"/>; false while it is hidden.</summary>
         public bool TryGetCoinTarget(out Vector2 local)

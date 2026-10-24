@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - "UN PROBL\xC8ME EST SURVENU"
   - RETOUR AU MENU
   - JOUEUR
-  - ZOMBIES
+  - MONSTRES
   - ARMES
   - TROUSSES DE SOINS
   - "CL\xC9S"
+  - OBJETS
   - COMMANDES
   - TIR
   - AUTRES

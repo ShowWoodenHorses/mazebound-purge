@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - TERJADI KESALAHAN
   - KEMBALI KE MENU
   - PEMAIN
-  - ZOMBI
+  - MONSTER
   - SENJATA
   - KOTAK P3K
   - KUNCI
+  - OBJEK
   - KONTROL
   - MENEMBAK
   - LAINNYA

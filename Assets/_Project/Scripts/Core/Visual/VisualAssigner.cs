@@ -345,6 +345,9 @@ namespace Purge.Core.Visual
             else if (layer == CellLayer.Floor && geometry.GetSurface(position) == CellSurface.Snowdrift &&
                      HasAutoVariant(theme.GetSet(kind), VisualCategory.Snowdrift))
                 category = VisualCategory.Snowdrift; // a theme without drift floors shows the ordinary floor
+            else if (layer == CellLayer.Floor && geometry.GetSurface(position) == CellSurface.Ground &&
+                     theme.Ground.Albedo == null && HasAutoVariant(theme.GetSet(kind), VisualCategory.Ground))
+                category = VisualCategory.Ground; // with a ground texture the shader draws the ground over the plain floor (soft edge both ways)
 
             var variant = VisualSelector.PickOrDefault(theme.GetSet(kind), category, null, key);
             return variant == null ? VisualChoice.None : new VisualChoice(variant.Id, rotation);

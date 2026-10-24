@@ -151,6 +151,9 @@ namespace Purge.Application.Save
         public List<string> OpenedChests = new List<string>();
         public bool ChestKeyDropped;
 
+        /// <summary>Explored map cells (stage 7г): a bit per cell, Base64; empty = none.</summary>
+        public string Explored;
+
         /// <summary>No run any more (death, finish, abandon).</summary>
         public void Clear()
         {
@@ -185,6 +188,7 @@ namespace Purge.Application.Save
             BrokenBarrels.Clear();
             OpenedChests.Clear();
             ChestKeyDropped = false;
+            Explored = null;
         }
 
         public void Normalize()

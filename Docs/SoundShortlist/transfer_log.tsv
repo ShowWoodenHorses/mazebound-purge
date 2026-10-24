@@ -204,3 +204,10 @@ UI/card_reroll1.wav	12_Прогресс_и_волны\Выбор_карточк�
 Other/chest_open1.wav	12_Прогресс_и_волны\Сундук_открыть\Door_LargeWood_Unlock.wav
 Other/chest_locked1.wav	12_Прогресс_и_волны\Сундук_заперт_ключом\Door_Locked_HandleRattle3.wav
 Other/dome_loop.wav	12_Прогресс_и_волны\Колпак_безопасной_зоны\Scifi_DomeShield_Loop2.wav
+Player/step_grass1.wav	15_Игрок\Шаги_трава\Foot_Grass_Run15.wav
+Player/step_grass2.wav	15_Игрок\Шаги_трава\Foot_Grass_Walk08.wav
+Player/step_grass3.wav	15_Игрок\Шаги_трава\Foot_Grass_Walk22.wav
+Player/step_ground1.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_BareRun01.wav
+Player/step_ground2.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_BareRun05.wav
+Player/step_ground3.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_BareRun10.wav
+Ambient/forest/loop.wav	17_Эмбиент_биомов\Лес\Wind_Loop11.wav

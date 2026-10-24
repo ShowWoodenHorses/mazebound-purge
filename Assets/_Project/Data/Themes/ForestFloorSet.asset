@@ -27,3 +27,16 @@ MonoBehaviour:
     _definition: {fileID: 0}
     _colorTag: 
     _height: 0
+  - _id: floor_forest_ground
+    _prefab:
+      m_AssetGUID: 908a49eb224c91946abc6ff3c1c2c762
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 10
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  _shapelessWalls: 0

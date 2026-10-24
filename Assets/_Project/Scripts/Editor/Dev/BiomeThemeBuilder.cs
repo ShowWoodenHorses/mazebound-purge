@@ -77,6 +77,15 @@ namespace Purge.Editor.Dev
             /// </summary>
             public (int Seed, int Weight)[] Drifts;
 
+            /// <summary>
+            /// Bare ground (trails, CellSurface.Ground): a floor variant of category Ground, and its texture becomes the
+            /// theme's ground (ThemeGround.Albedo) that Purge/Geometry blends in world space with a soft edge.
+            /// </summary>
+            public Surface Ground;
+
+            /// <summary>Footsteps on the plain floor of the biome's themes.</summary>
+            public FloorStepSound FloorSteps;
+
             public Action<VisualTheme, Material> Tune;
         }
 
@@ -118,10 +127,11 @@ namespace Purge.Editor.Dev
             Name = "Forest",
             Floors = new[]
             {
-                (new Surface { Name = "floor_forest_soil", Paint = (u, v) => ForestSoil(u, v, 31), Bump = 4f }, 45),
-                (new Surface { Name = "floor_forest_grass", Paint = (u, v) => Grass(u, v, 32, flowers: true), Bump = 3f }, 35),
-                (new Surface { Name = "floor_forest_flagstones", Paint = (u, v) => MossFlagstones(u, v, 33), Bump = 6f }, 20),
+                (new Surface { Name = "floor_forest_grass", Paint = (u, v) => Grass(u, v, 32, flowers: true), Bump = 3f }, 85),
+                (new Surface { Name = "floor_forest_flagstones", Paint = (u, v) => MossFlagstones(u, v, 33), Bump = 6f }, 15),
             },
+            Ground = new Surface { Name = "floor_forest_soil", Paint = (u, v) => ForestSoil(u, v, 31), Bump = 4f },
+            FloorSteps = FloorStepSound.Grass,
             Walls = new[]
             {
                 (new Surface { Name = "wall_forest_mossy_stone", Height = 768, Paint = (u, v) => MossyStoneWall(u, v, 41), Bump = 6f }, 65),
@@ -177,6 +187,15 @@ namespace Purge.Editor.Dev
                 }
             }
 
+            Material groundMaterial = null;
+            if (biome.Ground != null)
+            {
+                groundMaterial = MaterialFor(folder, biome.Ground);
+                var name = biome.Name.ToLowerInvariant();
+                var prefab = Prefab(folder, $"floor_{name}_ground", floorMesh, groundMaterial);
+                floorAdds.Add(Variant($"floor_{name}_ground", 1, VisualCategory.Ground, prefab));
+            }
+
             var top = MaterialFor(folder, biome.WallTop);
             foreach (var (sides, weight) in biome.Walls)
             {
@@ -210,6 +229,17 @@ namespace Purge.Editor.Dev
             theme.SetSet(VisualKind.Floor, floorSet);
             theme.SetSet(VisualKind.Wall, wallSet);
             EditorUtility.SetDirty(theme);
+
+            // Every theme on this floor set (the biome theme of the Forest recipe shares it): its ground and steps.
+            foreach (var guid in AssetDatabase.FindAssets("t:VisualTheme"))
+            {
+                var other = AssetDatabase.LoadAssetAtPath<VisualTheme>(AssetDatabase.GUIDToAssetPath(guid));
+                if (other == null || other.GetSet(VisualKind.Floor) != floorSet) continue;
+                if (groundMaterial != null)
+                    other.Ground.Albedo = (Texture2D)groundMaterial.GetTexture("_MainTex");
+                other.FloorSteps = biome.FloorSteps;
+                EditorUtility.SetDirty(other);
+            }
         }
 
         private static VisualSet Set(string path, VisualKind kind, out bool created)

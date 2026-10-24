@@ -36,6 +36,9 @@ namespace Purge.Editor.Dev
         /// <summary>Files right in it are fixed monster cues (call, armor, champion); folders under it — sounds of abilities.</summary>
         internal const string MonsterFolder = SoundsFolder + "/Monster";
 
+        /// <summary>Folders under it are biome ambient loops, named by theme id (stage 7г).</summary>
+        internal const string AmbientFolder = SoundsFolder + "/Ambient";
+
         private static readonly Regex AttackFile = new Regex(@"^attack\d*$", RegexOptions.IgnoreCase);
         private static readonly Regex StartFile = new Regex(@"^start\d*$", RegexOptions.IgnoreCase);
         private static readonly Regex LoopFile = new Regex(@"^loop\d*$", RegexOptions.IgnoreCase);
@@ -50,6 +53,8 @@ namespace Purge.Editor.Dev
         {
             ("Player", @"^Wood Run \d+$", c => c.Footstep),
             ("Player", @"^Wood Walk \d+$", c => c.FootstepWalk),
+            ("Player", @"^step_grass\d*$", c => c.FootstepGrass),
+            ("Player", @"^step_ground\d*$", c => c.FootstepGround),
             ("Player", @"^hit\d*$", c => c.PlayerHurt),
             ("Player", @"^death\d*$", c => c.PlayerDeath),
             ("Player", @"^bodyfall\d*$", c => c.BodyfallCue),
@@ -176,6 +181,7 @@ namespace Purge.Editor.Dev
             FillParts(catalog, sounds, used);
             FillFolders(catalog.MutableMonsterSounds, MonsterFolder, sounds, used,
                 _ => new SoundCue(0.75f, 16f, 3, new Vector2(0.95f, 1.05f), 0.08f));
+            FillFolders(catalog.MutableAmbiences, AmbientFolder, sounds, used, _ => new SoundCue(0.35f, 0f, 1, Vector2.one));
             FillWeaponSounds(catalog, sounds, used);
 
             foreach (var (name, track, volume, overlap) in Music)

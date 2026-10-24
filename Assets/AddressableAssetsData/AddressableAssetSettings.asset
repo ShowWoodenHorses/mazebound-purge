@@ -69,8 +69,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 05f614a6d59b7b844b016b273a091298, type: 2}
   - {fileID: 11400000, guid: f39fe4698ac73974a96937cdee65cd2c, type: 2}
   - {fileID: 11400000, guid: 7751b4b5786d23e498de06550f6b1d62, type: 2}
+  - {fileID: 11400000, guid: 5b8bade52c777284c8c166056f9a0632, type: 2}
   - {fileID: 11400000, guid: 654774833753e5b479190707cefefc9f, type: 2}
   - {fileID: 11400000, guid: 0c137e712f89dd44ab555dec3894293f, type: 2}
+  - {fileID: 11400000, guid: 52dbcf22832a8fd4f82812cb568cf2a3, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles

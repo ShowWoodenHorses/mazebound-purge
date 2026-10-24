@@ -179,6 +179,7 @@ namespace Purge.Application.Save
         public bool MapHideWeapons;
         public bool MapHideMedkits;
         public bool MapHideKeys;
+        public bool MapHideObjects;
 
         /// <summary>Language code ("en", "ru", …); empty until the first start chooses one from the system language.</summary>
         public string Language = string.Empty;

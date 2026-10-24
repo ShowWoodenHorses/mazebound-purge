@@ -138,6 +138,7 @@ namespace Purge.Composition
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<MapExploration>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
             builder.Register<TutorialSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -182,6 +183,7 @@ namespace Purge.Composition
             // The death window: revive by an ad or the skill, or give up (stage 6d).
             builder.Register<DeathPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<MiniMapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<PlayerViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();

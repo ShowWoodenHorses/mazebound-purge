@@ -15,16 +15,6 @@ MonoBehaviour:
   m_GroupName: Purge Levels
   m_GUID: efafa3a577e5e9e459ba23312871367b
   m_SerializeEntries:
-  - m_GUID: 76fcdc4f4dd3f1c4e92d86957546c5a1
-    m_Address: Levels/Level_Tutorial
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 95f06e9effdffa14d9f8c54476dbd3e3
-    m_Address: Levels/Level_Run
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: beac6958660592447a3d68511f0d1399
     m_Address: LevelCatalog
     m_ReadOnly: 0

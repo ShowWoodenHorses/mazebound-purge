@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - ALGO DEU ERRADO
   - VOLTAR AO MENU
   - JOGADOR
-  - ZUMBIS
+  - MONSTROS
   - ARMAS
   - "KITS M\xC9DICOS"
   - CHAVES
+  - OBJETOS
   - CONTROLES
   - TIRO
   - OUTROS

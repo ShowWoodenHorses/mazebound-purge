@@ -9,6 +9,7 @@ using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Objects;
+using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Throwing;
@@ -115,11 +116,14 @@ namespace Purge.Gameplay.Run
         private int _skipBonus;
         private bool _subscribed;
 
+        private readonly MapExploration _exploration;
+
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
-            ChestSystem chests = null)
+            ChestSystem chests = null, MapExploration exploration = null)
         {
+            _exploration = exploration;
             _barrels = barrels;
             _chests = chests;
             _waves = waves;
@@ -211,6 +215,8 @@ namespace Purge.Gameplay.Run
                 run.OpenedChests.AddRange(_chests.OpenedIds);
                 run.ChestKeyDropped = _chests.KeyDropped;
             }
+
+            if (_exploration != null) run.Explored = _exploration.Export();
 
             return run;
         }

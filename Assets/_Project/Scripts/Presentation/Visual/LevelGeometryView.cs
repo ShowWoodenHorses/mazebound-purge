@@ -14,8 +14,10 @@ namespace Purge.Presentation.Visual
         private readonly List<VisibilityChunk> _chunks;
 
         public LevelGeometryView(Transform root, List<VisibilityChunk> chunks, CellVisibilityMask mask, int missingVisuals,
-            SnowdriftMask snowdrifts = null)
+            SnowdriftMask snowdrifts = null, GroundMask ground = null)
         {
+            Ground = snowdrifts == null ? ground : null; // one keyword set: drifts win
+            if (snowdrifts != null) ground?.Dispose();
             Root = root;
             _chunks = chunks;
             Mask = mask;
@@ -30,11 +32,15 @@ namespace Purge.Presentation.Visual
         /// <summary>Soft drift edges of the level; null when it shows no drift floors.</summary>
         public SnowdriftMask Snowdrifts { get; }
 
+        /// <summary>Soft ground edges of the level; null when it has no ground cells or the theme no ground texture.</summary>
+        public GroundMask Ground { get; }
+
         /// <summary>Makes the shader use this level's masks. Only one level is active at a time.</summary>
         public void Bind()
         {
             Mask.Bind();
             Snowdrifts?.Bind();
+            Ground?.Bind();
         }
 
         /// <summary>Cell layers that should have geometry but whose visual or prefab is missing.</summary>
@@ -56,6 +62,7 @@ namespace Purge.Presentation.Visual
         {
             Mask.Dispose();
             Snowdrifts?.Dispose();
+            Ground?.Dispose();
             foreach (var chunk in _chunks)
                 UnityObjects.Destroy(chunk.Mesh);
             _chunks.Clear();

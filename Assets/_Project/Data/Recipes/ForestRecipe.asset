@@ -21,6 +21,7 @@ MonoBehaviour:
   - rid: 1763807423339692105
   - rid: 1763807423339692106
   - rid: 1763807423339692107
+  - rid: 1763807423339692125
   - rid: 1763807423339692108
   - rid: 1763807423339692122
   - rid: 1763807423339692109
@@ -106,3 +107,9 @@ MonoBehaviour:
         _challengeRadius: 6
         _chestSpacing: 8
         _startViewRadius: 10
+    - rid: 1763807423339692125
+      type: {class: GroundStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _trails: 1
+        _clearings: 1
+        _start: 1

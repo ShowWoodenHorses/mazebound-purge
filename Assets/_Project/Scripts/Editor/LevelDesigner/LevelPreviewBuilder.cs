@@ -20,6 +20,7 @@ namespace Purge.Editor.LevelDesigner
 
         /// <summary>Soft drift edges of the previewed level (same shader path as in the game); null without drifts.</summary>
         private static SnowdriftMask _snowdrifts;
+        private static GroundMask _ground;
 
         /// <summary>Returns the number of cells/objects that could not be shown (no visual or missing prefab).</summary>
         public static int Build(LevelData level)
@@ -105,6 +106,11 @@ namespace Purge.Editor.LevelDesigner
 
             _snowdrifts = SnowdriftMask.Create(level);
             _snowdrifts?.Bind();
+            if (_snowdrifts == null)
+            {
+                _ground = GroundMask.Create(level);
+                _ground?.Bind();
+            }
 
             Selection.activeGameObject = root;
             return missing;
@@ -189,11 +195,13 @@ namespace Purge.Editor.LevelDesigner
                     Object.DestroyImmediate(go);
         }
 
-        /// <summary>Drops the preview's drift mask (keyword off); also before a domain reload, which would orphan it.</summary>
+        /// <summary>Drops the preview's drift and ground masks (keywords off); also before a domain reload, which would orphan them.</summary>
         public static void ReleaseSnowdrifts()
         {
             _snowdrifts?.Dispose();
             _snowdrifts = null;
+            _ground?.Dispose();
+            _ground = null;
         }
 
         /// <summary>

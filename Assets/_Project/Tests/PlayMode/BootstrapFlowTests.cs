@@ -613,11 +613,17 @@ namespace Purge.Tests.PlayMode
                 var presenter = container.Resolve<MapPresenter>();
                 var ui = _container.Resolve<UIRoot>();
 
+                // Fog (stage 7g): explored cells are drawn, the rest is black.
+                var exploration = container.Resolve<Purge.Gameplay.Visibility.MapExploration>();
+                var visibility = container.Resolve<Purge.Gameplay.Visibility.VisibilitySystem>();
+                Assert.IsTrue(exploration.IsExplored(container.Resolve<PlayerSystem>().Cell), "The player's cell is explored.");
+                Assert.Less(exploration.Count, grid.CellCount, "Not all is explored at the start.");
+                presenter.ApplyPending();
                 for (var i = 0; i < grid.CellCount; i++)
                 {
                     var cell = grid.ToPosition(i);
-                    Assert.AreEqual(MapRenderer.ColorOf(grid.GetCell(cell)), (Color32)presenter.Texture.GetPixel(cell.X, cell.Y),
-                        $"The whole level is drawn: {cell}.");
+                    var expected = exploration.IsExplored(cell) ? MapRenderer.ColorOf(grid, cell) : MapRenderer.Unknown;
+                    Assert.AreEqual(expected, (Color32)presenter.Texture.GetPixel(cell.X, cell.Y), $"Map pixel {cell}.");
                 }
 
                 var runtime = container.Resolve<LevelRuntime>();
@@ -635,18 +641,24 @@ namespace Purge.Tests.PlayMode
                 Assert.IsTrue(playerIcon.Visible);
                 Assert.AreEqual(MapIconLayout.CenterOf(player.Position), playerIcon.Center);
                 Assert.IsTrue(icons[0].Visible, "The start.");
-                Assert.IsTrue(icons.Where(icon => icon.Kind == MapIconKind.Door || icon.Kind == MapIconKind.LockedDoor)
-                    .All(icon => icon.Visible), "Doors.");
+                Assert.AreEqual(level.Doors.Count(door => exploration.IsExplored(door.Position)),
+                    icons.Count(icon => (icon.Kind == MapIconKind.Door || icon.Kind == MapIconKind.LockedDoor) && icon.Visible),
+                    "Doors in explored cells.");
 
                 var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
                 Assert.Greater(zombies.TotalCount, 0, "Level_Items has zombies.");
                 var zombieIcons = icons.Where(icon => icon.Kind == MapIconKind.Zombie).ToList();
                 Assert.AreEqual(zombies.TotalCount, zombieIcons.Count);
-                Assert.IsTrue(zombieIcons.All(icon => icon.Visible), "Living zombies are shown wherever they are.");
+                for (var z = 0; z < zombieIcons.Count; z++)
+                    Assert.AreEqual(zombies.Zombies[z].IsAlive && visibility.IsVisible(zombies.Zombies[z].Cell), zombieIcons[z].Visible,
+                        "Monsters are shown in view only.");
                 Assert.AreEqual(MapIconLayout.CenterOf(zombies.Zombies[0].Position), zombieIcons[0].Center);
-                Assert.AreEqual(level.Keys.Count, icons.Count(icon => icon.Kind == MapIconKind.Key && icon.Visible));
-                Assert.AreEqual(level.Medkits.Count, icons.Count(icon => icon.Kind == MapIconKind.Medkit && icon.Visible));
-                Assert.AreEqual(level.Weapons.Count, icons.Count(icon => icon.Kind == MapIconKind.Weapon && icon.Visible));
+                Assert.AreEqual(level.Keys.Count(k => exploration.IsExplored(k.Position)),
+                    icons.Count(icon => icon.Kind == MapIconKind.Key && icon.Visible), "Items in explored cells.");
+                Assert.AreEqual(level.Medkits.Count(m => exploration.IsExplored(m.Position)),
+                    icons.Count(icon => icon.Kind == MapIconKind.Medkit && icon.Visible));
+                Assert.AreEqual(level.Weapons.Count(w => exploration.IsExplored(w.Position)),
+                    icons.Count(icon => icon.Kind == MapIconKind.Weapon && icon.Visible));
 
                 var zombieToggle = ui.Map.transform.Find("SafeArea/ShowZombiesToggle").GetComponent<Toggle>();
                 var iconCount = presenter.Icons.Count;

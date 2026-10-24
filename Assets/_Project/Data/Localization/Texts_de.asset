@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - ETWAS IST SCHIEFGELAUFEN
   - "ZUR\xDCCK ZUM MEN\xDC"
   - SPIELER
-  - ZOMBIES
+  - MONSTER
   - WAFFEN
   - MEDKITS
   - "SCHL\xDCSSEL"
+  - OBJEKTE
   - STEUERUNG
   - SCHIESSEN
   - SONSTIGES

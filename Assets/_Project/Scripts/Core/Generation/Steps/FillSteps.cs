@@ -107,8 +107,49 @@ namespace Purge.Core.Generation
     }
 
     /// <summary>
-    /// Grass (<see cref="CellSurface.Grass"/>: burns, tall grass decor) in noise patches over free floor; not on trails
-    /// and not under obstacles.
+    /// Bare ground (<see cref="CellSurface.Ground"/>, stage 7г: look and footsteps only) on the trails, the clearings
+    /// and the open ground of the start; free floor only (no obstacles, no other surface). Before Grass.
+    /// </summary>
+    [Serializable, ModuleInfo("Ground", Category = "Fill")]
+    public sealed class GroundStep : GenerationStep
+    {
+        [SerializeField] private bool _trails = true;
+        [SerializeField] private bool _clearings = true;
+        [SerializeField] private bool _start = true;
+
+        public override void Apply(LevelLayout layout, DeterministicRandom random)
+        {
+            for (var i = 0; i < layout.CellCount; i++)
+            {
+                if (layout.Cell(i) != CellType.Floor || layout.Obstacle(i) != null || layout.Surface(i) != CellSurface.None)
+                    continue;
+                if ((_trails && layout.IsTrail(i)) || (_clearings && InClearing(layout, i)) || (_start && NearStart(layout, i)))
+                    layout.SetSurface(i, CellSurface.Ground);
+            }
+        }
+
+        private static bool InClearing(LevelLayout layout, int index)
+        {
+            var cell = layout.Position(index);
+            foreach (var clearing in layout.Clearings)
+                if (Within(cell, clearing.Center, clearing.Radius))
+                    return true;
+            return false;
+        }
+
+        private static bool NearStart(LevelLayout layout, int index) =>
+            layout.HasStart && Within(layout.Position(index), layout.Start, layout.StartClearRadius);
+
+        private static bool Within(GridPosition cell, GridPosition center, float radius)
+        {
+            float dx = cell.X - center.X, dy = cell.Y - center.Y;
+            return dx * dx + dy * dy <= radius * radius;
+        }
+    }
+
+    /// <summary>
+    /// Grass (<see cref="CellSurface.Grass"/>: burns, tall grass decor) in noise patches over free floor; not on trails,
+    /// not under obstacles, not over another surface (ground).
     /// </summary>
     [Serializable, ModuleInfo("Grass", Category = "Fill")]
     public sealed class GrassStep : GenerationStep
@@ -124,7 +165,8 @@ namespace Purge.Core.Generation
             var noiseSeed = (int)random.NextULong();
             var cells = new List<(float, int)>();
             for (var i = 0; i < layout.CellCount; i++)
-                if (layout.Cell(i) == CellType.Floor && layout.Obstacle(i) == null && !layout.IsTrail(i) && !layout.IsKept(i))
+                if (layout.Cell(i) == CellType.Floor && layout.Obstacle(i) == null && !layout.IsTrail(i) && !layout.IsKept(i) &&
+                    layout.Surface(i) == CellSurface.None)
                     cells.Add((LayoutNoise.Fractal(noiseSeed, i % layout.Width, i / layout.Width, _patchScale), i));
 
             cells.Sort((a, b) => b.Item1.CompareTo(a.Item1));

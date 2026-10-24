@@ -26,6 +26,7 @@ namespace Purge.Editor.Dev
         {
             Shader.DisableKeyword(GeometryShader.VisibilityKeyword);
             Shader.DisableKeyword(GeometryShader.SnowdriftKeyword);
+            Shader.DisableKeyword(GeometryShader.GroundKeyword);
         }
     }
 }

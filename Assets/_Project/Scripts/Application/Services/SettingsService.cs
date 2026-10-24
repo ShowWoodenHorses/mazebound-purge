@@ -108,6 +108,13 @@ namespace Purge.Application.Services
             set => SetFlag(ref _save.Data.Settings.MapHideKeys, !value);
         }
 
+        /// <summary>Barrels, chests and the safe dome on the map (stage 7г).</summary>
+        public bool MapShowObjects
+        {
+            get => !_save.Data.Settings.MapHideObjects;
+            set => SetFlag(ref _save.Data.Settings.MapHideObjects, !value);
+        }
+
         /// <summary>Language code chosen by the player or on the first start; empty before that. Saved at once.</summary>
         public string Language
         {

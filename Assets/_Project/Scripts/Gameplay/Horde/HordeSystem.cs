@@ -1585,7 +1585,7 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>Builds <paramref name="field"/> towards <paramref name="target"/> over the horde's walkability.</summary>
         internal void BuildFlow(FlowField field, GridPosition target) =>
-            field.Build(target, new FloorMask(_grid.Width, _walkable, target.Floor));
+            field.Build(target, _walkable);
 
         /// <param name="emerge">A replacement climbs out of the ground (its kind's emerge time); the first wave stands.</param>
         private bool SpawnOne(float minDistance, float maxDistance, bool emerge)
@@ -1721,8 +1721,8 @@ namespace Purge.Gameplay.Horde
         private void RebuildFlow()
         {
             _flowTarget = _player.Cell;
-            _flow.Build(_flowTarget, new FloorMask(_grid.Width, _walkable, _flowTarget.Floor));
-            if (UsesDoorFlow) _doorFlow.Build(_flowTarget, new FloorMask(_grid.Width, _doorWalkable, _flowTarget.Floor));
+            _flow.Build(_flowTarget, _walkable);
+            if (UsesDoorFlow) _doorFlow.Build(_flowTarget, _doorWalkable);
             _flowDirty = false;
             FlowBuilds++;
         }
@@ -1739,25 +1739,6 @@ namespace Purge.Gameplay.Horde
             RefreshWalkable();
             _flowDirty = true;
             Perception.OnDoorChanged();
-        }
-
-        /// <summary>Walkability of one floor (the mask is that floor's, y · width + x).</summary>
-        private readonly struct FloorMask : IGridPassability
-        {
-            private readonly int _width;
-            private readonly bool[] _mask;
-            private readonly int _floor;
-
-            public FloorMask(int width, bool[] mask, int floor)
-            {
-                _width = width;
-                _mask = mask;
-                _floor = floor;
-            }
-
-            public bool IsPassable(GridPosition position) =>
-                position.Floor == _floor && position.X >= 0 && position.X < _width && position.Y >= 0 &&
-                position.Y * _width + position.X < _mask.Length && _mask[position.Y * _width + position.X];
         }
 
         private static float Milliseconds(long started) =>

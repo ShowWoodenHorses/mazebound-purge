@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - "B\u0130R \u015EEYLER TERS G\u0130TT\u0130"
   - "MEN\xDCYE D\xD6N"
   - OYUNCU
-  - "ZOMB\u0130LER"
+  - CANAVARLAR
   - "S\u0130LAHLAR"
   - "\u0130LK YARDIM"
   - ANAHTARLAR
+  - NESNELER
   - KONTROLLER
   - "ATI\u015E"
   - "D\u0130\u011EER"

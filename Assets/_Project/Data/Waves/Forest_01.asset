@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d87e952ee1156f941b8c520f8b756029, type: 3}
+  m_Name: Forest_01
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Waves.WaveScenario
+  _waves:
+  - _budget: 40
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    _groups: []
+    _spawnTime: 25
+    _packSize: 6
+    _maxAlive: 80
+  - _budget: 70
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.1
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.05
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.05
+    _groups:
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _count: 1
+      _time: 15
+      _point: -1
+    _spawnTime: 35
+    _packSize: 6
+    _maxAlive: 120
+  - _budget: 110
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.2
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.1
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.1
+    _groups:
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _count: 2
+      _time: 25
+      _point: -1
+    _spawnTime: 40
+    _packSize: 8
+    _maxAlive: 150
+  - _budget: 150
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.3
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.15
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.15
+    _groups:
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 1
+      _time: 20
+      _point: -1
+    _spawnTime: 45
+    _packSize: 8
+    _maxAlive: 200
+  - _budget: 220
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.4
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.2
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.2
+    _groups:
+    - _monster: {fileID: 11400000, guid: 5d93e767a67414e49a76e99be9b5c9a7, type: 2}
+      _count: 1
+      _time: 10
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 1
+      _time: 35
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _count: 2
+      _time: 50
+      _point: -1
+    _spawnTime: 55
+    _packSize: 10
+    _maxAlive: 250
+  _pauseTime: 20
+  _firstDelay: 3

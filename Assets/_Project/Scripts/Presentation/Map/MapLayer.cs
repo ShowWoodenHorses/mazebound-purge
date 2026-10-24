@@ -8,10 +8,13 @@ namespace Purge.Presentation.Map
         Weapons = 2,
         Medkits = 3,
         Keys = 4,
+
+        /// <summary>Barrels, chests, the safe dome (stage 7г).</summary>
+        Objects = 5,
     }
 
     public static class MapLayers
     {
-        public const int Count = 5;
+        public const int Count = 6;
     }
 }

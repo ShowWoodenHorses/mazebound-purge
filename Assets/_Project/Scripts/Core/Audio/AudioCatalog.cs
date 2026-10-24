@@ -172,6 +172,10 @@ namespace Purge.Core.Audio
 
         [Header("Player")]
         [SerializeField] private SoundCue _footstep = new SoundCue(0.6f, 0f, 2, new Vector2(0.92f, 1.08f));
+        [Tooltip("Steps on grass: Grass cells and the floor of themes whose Floor Steps is Grass (Player/step_grass*, 7г).")]
+        [SerializeField] private SoundCue _footstepGrass = new SoundCue(0.55f, 0f, 2, new Vector2(0.92f, 1.08f));
+        [Tooltip("Steps on bare ground: Ground cells, trails (Player/step_ground*, 7г).")]
+        [SerializeField] private SoundCue _footstepGround = new SoundCue(0.55f, 0f, 2, new Vector2(0.92f, 1.08f));
         [Tooltip("Not used yet: for a walk animation, if one is added.")]
         [SerializeField] private SoundCue _footstepWalk = new SoundCue(0.6f, 0f, 2, new Vector2(0.92f, 1.08f));
         [SerializeField] private SoundCue _playerHurt = new SoundCue(0.8f, 0f, 1, new Vector2(0.95f, 1.05f), 0.15f);
@@ -313,6 +317,10 @@ namespace Purge.Core.Audio
         [Tooltip("Loop of the safe dome while it stands (Other/dome_loop*), heard near it.")]
         [SerializeField] private SoundCue _domeLoop = new SoundCue(0.35f, 8f, 1, Vector2.one);
 
+        [Header("Ambience (stage 7г)")]
+        [Tooltip("Ambient loop of a biome: a folder Sounds/Ambient/<theme id> each (forest, castle…); plays all level long.")]
+        [SerializeField] private List<SoundPart> _ambiences = new List<SoundPart>();
+
         [Header("World")]
         [Tooltip("Loop of a burning torch at every light source; only the nearest ones play.")]
         [SerializeField] private SoundCue _torchLoop = new SoundCue(0.7f, 5f, 3, Vector2.one);
@@ -355,6 +363,8 @@ namespace Purge.Core.Audio
         public float ResultMusicVolume => _resultMusicVolume;
 
         public SoundCue Footstep => _footstep;
+        public SoundCue FootstepGrass => _footstepGrass;
+        public SoundCue FootstepGround => _footstepGround;
         public SoundCue FootstepWalk => _footstepWalk;
         public SoundCue PlayerHurt => _playerHurt;
         public SoundCue PlayerDeath => _playerDeath;
@@ -472,6 +482,7 @@ namespace Purge.Core.Audio
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
         internal List<SoundPart> MutableParts => _parts;
         internal List<SoundPart> MutableMonsterSounds => _monsterSounds;
+        internal List<SoundPart> MutableAmbiences => _ambiences;
         internal SoundCue MonsterCallCue => _monsterCall;
         internal SoundCue ArmorHitCue => _armorHit;
         internal SoundCue ChampionAppearCue => _championAppear;
@@ -498,6 +509,18 @@ namespace Purge.Core.Audio
         public SoundCue CardChosen => _cardChosen;
         public SoundCue CardReroll => _cardReroll;
         public SoundCue ConfirmOpen => _confirmOpen;
+
+        public IReadOnlyList<SoundPart> Ambiences => _ambiences;
+
+        /// <summary>Ambient loop of a biome by its theme id, or null when there is none.</summary>
+        public SoundCue Ambience(string themeId)
+        {
+            if (string.IsNullOrEmpty(themeId)) return null;
+            foreach (var sound in _ambiences)
+                if (sound != null && string.Equals(sound.Name, themeId, StringComparison.OrdinalIgnoreCase))
+                    return NonEmpty(sound.Cue);
+            return null;
+        }
 
         /// <summary>A monster sound by name (<see cref="MonsterSoundAttribute"/>), or null when there is none.</summary>
         public SoundCue MonsterSound(string name)
@@ -549,7 +572,7 @@ namespace Purge.Core.Audio
         /// <summary>Every sound cue (for checks and tools).</summary>
         public IEnumerable<SoundCue> AllCues()
         {
-            yield return _footstep; yield return _footstepWalk; yield return _playerHurt; yield return _playerDeath;
+            yield return _footstep; yield return _footstepGrass; yield return _footstepGround; yield return _footstepWalk; yield return _playerHurt; yield return _playerDeath;
             yield return _meleeSwing; yield return _shot; yield return _reloadMagazine;
             yield return _reloadSingle; yield return _switchWeapon; yield return _bulletImpact;
             foreach (var sound in _weaponSounds)
@@ -585,6 +608,9 @@ namespace Purge.Core.Audio
             yield return _monsterCall; yield return _armorHit; yield return _championAppear;
             yield return _doorHit; yield return _doorBroken;
             yield return _chestOpen; yield return _chestLocked; yield return _domeLoop;
+            foreach (var sound in _ambiences)
+                if (sound != null)
+                    yield return sound.Cue;
             yield return _cardsShown; yield return _cardChosen; yield return _cardReroll; yield return _confirmOpen;
         }
     }

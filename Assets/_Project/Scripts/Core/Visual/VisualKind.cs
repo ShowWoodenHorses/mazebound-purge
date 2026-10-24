@@ -44,5 +44,8 @@ namespace Purge.Core.Visual
 
         /// <summary>Decor of a grass cell (<see cref="Grid.CellSurface.Grass"/>), e.g. tall grass; picked only there.</summary>
         Grass = 9,
+
+        /// <summary>Floor of a ground cell (<see cref="Grid.CellSurface.Ground"/>); picked only there.</summary>
+        Ground = 10,
     }
 }

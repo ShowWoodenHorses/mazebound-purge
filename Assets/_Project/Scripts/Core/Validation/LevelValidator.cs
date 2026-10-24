@@ -624,7 +624,8 @@ namespace Purge.Core.Validation
                     continue;
 
                 var autoVariants = set.Variants.Count(v => v.Weight > 0 && v.Category != VisualCategory.Special &&
-                                                           v.Category != VisualCategory.Snowdrift);
+                                                           v.Category != VisualCategory.Snowdrift &&
+                                                           v.Category != VisualCategory.Ground);
                 if (autoVariants >= 2 && used.Count == 1 && cellCounts[kind] >= 20)
                     report.Add(Warning, Visual, ValidationCodes.UniformDistribution,
                         $"All {cellCounts[kind]} cells use the same {kind.ToString().ToLowerInvariant()} variant '{used.First()}'.");

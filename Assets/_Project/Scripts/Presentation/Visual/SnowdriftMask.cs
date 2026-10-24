@@ -101,6 +101,7 @@ namespace Purge.Presentation.Visual
             Shader.SetGlobalVector(GeometryShader.SnowdriftSizeId, new Vector4(1f / _texture.width, 1f / _texture.height, 0f, 0f));
             Shader.SetGlobalVector(GeometryShader.SnowdriftColorId, _color);
             Shader.SetGlobalVector(GeometryShader.SnowdriftParamsId, _parameters);
+            Shader.DisableKeyword(GeometryShader.GroundKeyword);
             Shader.EnableKeyword(GeometryShader.SnowdriftKeyword);
         }
 

@@ -111,6 +111,7 @@ namespace Purge.Presentation.Localization
         public const string MapWeapons = "map.weapons";
         public const string MapMedkits = "map.medkits";
         public const string MapKeys = "map.keys";
+        public const string MapObjects = "map.objects";
         public const string AdUnavailable = "ad.unavailable";
         public const string RotateDevice = "rotate.title";
 

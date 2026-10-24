@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - SOMETHING WENT WRONG
   - BACK TO MENU
   - PLAYER
-  - ZOMBIES
+  - MONSTERS
   - WEAPONS
   - MEDKITS
   - KEYS
+  - OBJECTS
   - CONTROLS
   - SHOOTING
   - OTHER

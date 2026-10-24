@@ -24,6 +24,17 @@ namespace Purge.Presentation.Visual
         public static readonly int SnowdriftColorId = Shader.PropertyToID("_PurgeDriftColor");
         public static readonly int SnowdriftParamsId = Shader.PropertyToID("_PurgeDriftParams");
 
+        /// <summary>
+        /// Bare ground on the floor (<see cref="GroundMask"/>); one multi_compile set with <see cref="SnowdriftKeyword"/>:
+        /// a level shows either drifts or ground.
+        /// </summary>
+        public const string GroundKeyword = "PURGE_GROUND";
+
+        public static readonly int GroundMaskId = Shader.PropertyToID("_PurgeGround");
+        public static readonly int GroundTextureId = Shader.PropertyToID("_PurgeGroundTex");
+        public static readonly int GroundSizeId = Shader.PropertyToID("_PurgeGroundSize");
+        public static readonly int GroundParamsId = Shader.PropertyToID("_PurgeGroundParams");
+
         public static bool Supports(Material material) =>
             material != null && material.shader != null && material.shader.name == Name;
     }

@@ -54,6 +54,9 @@ namespace Purge.Gameplay.Run
         /// <summary>The chest key has dropped: a continued run gives it to the player while the locked chest is shut.</summary>
         public bool ChestKeyDropped;
 
+        /// <summary>Explored map cells (stage 7г): <see cref="Visibility.MapExploration.Export"/>; null = none.</summary>
+        public string Explored;
+
         /// <summary>The wave a continued run starts with (after its pause).</summary>
         public int NextWave => WaveInProgress ? System.Math.Max(0, Wave) : Wave + 1;
     }

@@ -87,3 +87,4 @@ MonoBehaviour:
     _definition: {fileID: 0}
     _colorTag: 
     _height: 0
+  _shapelessWalls: 0

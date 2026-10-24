@@ -190,6 +190,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13537533e4f9d644ca142fed76bdfb86
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Tree_Mat_01_Leaves.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 139d8d84876ecc446a2736ba5b40c135
     m_Address: Assets/_Project/Data/Weapons/MachineGun.asset
     m_ReadOnly: 0
@@ -260,6 +265,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dbaf50770171fe42abe3dbb36e413cc
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Birch_Trunk.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e149c22fe2cf6d44be01901d1733720
     m_Address: Assets/_Project/Art/Animations/Monster_Death_Right.fbx
     m_ReadOnly: 0
@@ -315,8 +325,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 241610e08b02e144e910dea891469100
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Prop_Barrel_Nuke_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25438a4be6ea1ca4d9f6a2d426a3de67
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Leaves_Base.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2547be63e939e8b42b18cafdfc08a54d
+    m_Address: Assets/_Project/Art/Biomes/Forest/Textures/floor_forest_soil_n.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2567d5dc72b00744f9a60e77a5154a30
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_RPG_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26957312001695845aee523274a0283f
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Rock_Grass_Triplanar_Meadow_01.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -382,6 +412,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e85d085836cfbc418b37c26a35b3385
     m_Address: Assets/_Project/Art/Animations/Zombie_scream.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2edd58f7c433e934db9029c375173b44
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/PolygonNature_01.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -550,6 +585,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44fe53d0e7db1d74b995e75b902e7295
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/Leaves/Birch_Trunk_Texture.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4603c076b0dc82e439b037eb58eea531
     m_Address: Assets/_Project/Art/Animations/Officer_Scream.fbx
     m_ReadOnly: 0
@@ -605,6 +645,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b799636d147b9f40956e104bb770819
+    m_Address: Assets/_Project/Art/Biomes/Forest/Materials/floor_forest_soil.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c92cdb4d2e187a4bba2c6865456a6cf
     m_Address: Assets/_Project/Data/Drops/EliteDrop.asset
     m_ReadOnly: 0
@@ -612,6 +657,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4cc44080e090eeb4587abd21b38ba962
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_F2D91A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d5ad89acbda26b4cbfcd131f29182d3
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/Grass_Short_01.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -730,6 +780,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58fb12932ceb36940862389c1f4d861d
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 591401735020eba448111083263e7b9e
     m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/OneHand/SM_Wep_Sword_09.prefab
     m_ReadOnly: 0
@@ -782,6 +837,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d93e767a67414e49a76e99be9b5c9a7
     m_Address: Assets/_Project/Data/Monsters/Forest/Shaman_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f1b86882b34a5d40bbe21e5f780a099
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Branches_02_Trunk.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -865,6 +925,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 698987019c4689a41b38383761d543c9
+    m_Address: Assets/_Project/Art/ThirdParty/FX/Polygon Arsenal/Models/PolySphereMega2.FBX
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a2652f755e68aa4ea9046c0f74109d5
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Emissive/Alts/PolygonApocalypseWasteland_Emissive_01_A.png
     m_ReadOnly: 0
@@ -907,6 +972,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 71e41e43b459a244abaf5acca76b89ee
     m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Materials/PolygonFantasyKingdom_Mat_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72b7690f1bc6b194981389b952c5b3c3
+    m_Address: Assets/_Project/Data/Obstacles/Tree.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1022,6 +1092,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 822402f846727b24890cc7d5f5430675
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82331dec7b360ca44bd02f65fc337e1c
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Tree_Birch_Mat_01_Leaves.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1145,6 +1220,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f11ab0970d6e0a42b8f2cd282cd68c6
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Leaves_Pine.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8f3a52989d6d9534290edf86e19f4dd9
     m_Address: Assets/_Project/Data/Themes/CastleBlockWallSet.asset
     m_ReadOnly: 0
@@ -1152,6 +1232,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ffce8b93f03c304d8a632d992750457
     m_Address: Assets/_Project/Art/Animations/Brute_Roar.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90e46759a33c26f48a8a7efd3c386617
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Tree_Trunk.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1192,6 +1277,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97ef3c7cdf0c73648bad7e94f60e15ec
     m_Address: Assets/_Project/Art/Shaders/PurgeBlobShadow.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 982f3d7be02e9e64cad6e6cb831eece7
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/Birch_Trunk_Texture.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1247,6 +1337,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9ecb9a7ec3c4c6541a4e92686dfa670e
     m_Address: Assets/_Project/Art/Placeholders/Materials/G_524C57.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a016761757afaf041a03488d011d0aa3
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Tree_Mat_01_Trunk.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1320,6 +1415,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a802f8f4751190d40a62739de495277f
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Grass_Short_Mat_01_Leaves.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a892e118a3cf81b47af884d2d53b4c30
     m_Address: Assets/_Project/Data/Effects/Status_Acid.asset
     m_ReadOnly: 0
@@ -1382,6 +1482,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aea32fe75a11cb247a0fb9adcb79d3de
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Mod_Silencer_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aee5584f2e9e3244c86e5b57a887ca0e
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/PolygonNatureBiomes_Meadow_Texture_01.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1465,8 +1570,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb461912c831d0c44b22ca58ca0bf4dd
+    m_Address: Assets/_Project/Art/Biomes/Forest/Textures/floor_forest_soil.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bba26acef6eb7ea4994381dfc3c7211e
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Death_Left.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc5b6eba09de2524ba62622e5d8e2ec6
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/Leaves/Leaves_Pine_Texture.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1530,6 +1645,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c511eaff870437f42849bd2f60002e6d
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Tree_Birch_Mat_01_Trunk.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c54e06cf12c71ef49b6735cd5f683934
     m_Address: Assets/_Project/Data/Weapons/Pistol_silencer.asset
     m_ReadOnly: 0
@@ -1547,6 +1667,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c633bed7d52d4aa479714d4f7d85066f
     m_Address: Assets/_Project/Data/Weapons/Hammer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6458d63cdcbc1a42acb5982d18a0fa1
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Normals/Grass_01_Normals.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1572,6 +1697,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c8722ddf12087de4085adb7c8fffb51a
     m_Address: Assets/_Project/Data/Ammo/Ammo_Shells.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8df7e36f2e606a468e1934e966ab862
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Normals/Grass_Short_01_Normals.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1675,6 +1805,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0633eed99b7c9f439931c671dea93ea
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/leafPatch_01.tga
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d0979293b58f90343b18039357dc34e5
     m_Address: Assets/_Project/Art/Shaders/PurgeFog.shader
     m_ReadOnly: 0
@@ -1732,6 +1867,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d603b4f752b3fe44a9eaf6747a48e739
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Hit_Left.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d77a2c93811dc784799e97f15a3180b6
+    m_Address: Assets/_Project/Data/Recipes/ForestRecipe.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1830,6 +1970,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e106bde9e5b122842a1083f64774cbd4
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/Branches_02.tga
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e1dedf1be5e1fda4d9f8c370a2b4ca39
     m_Address: Assets/_Project/Art/Horde/Zombie_Common/Zombie_Common_Mesh.asset
     m_ReadOnly: 0
@@ -1872,6 +2017,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e736c7c91cc7060488b56c0a5a01769b
     m_Address: Assets/_Project/Art/Horde/Zombie_Forest/Zombie_Forest_Bones.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e74038749402533478c64197ac9db16b
+    m_Address: Assets/_Project/Data/Obstacles/Stone.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2016,6 +2166,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6719627c8a45d1459ff89b93a967b05
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/Leaves/Leaves_Generic_Texture.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f6ced432ca9deac4abd09c3f2c26d0ee
     m_Address: Assets/_Project/Art/Animations/Monster_Idle.fbx
     m_ReadOnly: 0
@@ -2033,6 +2188,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f932dc705e6143a4daf475d0957bca78
     m_Address: Assets/_Project/Art/Effects/fx_tracer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9c2f71bf10b65a45b70175620103b1c
+    m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Grass_Tall_Mat_01_Leaves.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2088,6 +2248,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe102ee82ec5b31478d8f038e76f739d
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Attack_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fecbf02c50d091d45bcab8716ebe97e5
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/Grass_01.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

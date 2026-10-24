@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -304,10 +305,11 @@ MonoBehaviour:
     \u0422\u0410\u041A"
   - "\u0412 \u041C\u0415\u041D\u042E"
   - "\u0418\u0413\u0420\u041E\u041A"
-  - "\u0417\u041E\u041C\u0411\u0418"
+  - "\u041C\u041E\u041D\u0421\u0422\u0420\u042B"
   - "\u041E\u0420\u0423\u0416\u0418\u0415"
   - "\u0410\u041F\u0422\u0415\u0427\u041A\u0418"
   - "\u041A\u041B\u042E\u0427\u0418"
+  - "\u041E\u0411\u042A\u0415\u041A\u0422\u042B"
   - "\u0423\u041F\u0420\u0410\u0412\u041B\u0415\u041D\u0418\u0415"
   - "\u0421\u0422\u0420\u0415\u041B\u042C\u0411\u0410"
   - "\u041F\u0420\u041E\u0427\u0415\u0415"

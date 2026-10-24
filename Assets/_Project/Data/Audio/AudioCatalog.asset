@@ -46,6 +46,26 @@ MonoBehaviour:
     _range: 0
     _maxVoices: 2
     _minInterval: 0
+  _footstepGrass:
+    _clips:
+    - {fileID: 8300000, guid: 238dbbe447919c04d89f3861a161b4f3, type: 3}
+    - {fileID: 8300000, guid: 1cc0be1dcc0cdf64087051337b16ea65, type: 3}
+    - {fileID: 8300000, guid: 1577e8c8af7bc1b4383d93ce036a1725, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _footstepGround:
+    _clips:
+    - {fileID: 8300000, guid: 709f6e65b5ff1da48bf6951f31013b36, type: 3}
+    - {fileID: 8300000, guid: 263b7659ed8a2ba48ba4b195ffcb38c6, type: 3}
+    - {fileID: 8300000, guid: 24c7026dcc9a2384d92f33f09b04e845, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
   _footstepWalk:
     _clips:
     - {fileID: 8300000, guid: ac0e8271dd302f646843c879c9fb898b, type: 3}
@@ -2883,6 +2903,16 @@ MonoBehaviour:
     _range: 8
     _maxVoices: 1
     _minInterval: 0
+  _ambiences:
+  - _name: forest
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: f77d781a8118ec9439a9d900fb331369, type: 3}
+      _volume: 0.35
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
   _torchLoop:
     _clips:
     - {fileID: 8300000, guid: 044491aba8b03aa48940a25d4dd8ade6, type: 3}

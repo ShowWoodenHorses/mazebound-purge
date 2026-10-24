@@ -13,6 +13,11 @@ namespace Purge.Presentation.Map
         Weapon,
         Medkit,
         Key,
+        Monster,
+        Barrel,
+        Chest,
+        LockedChest,
+        Refuge,
     }
 
     /// <summary>
@@ -36,6 +41,13 @@ namespace Purge.Presentation.Map
         public Sprite Medkit;
         [Tooltip("Tinted with the colour of its door pair.")]
         public Sprite Key;
+        [Tooltip("A monster in view (stage 7г): a dot, tinted by rank.")]
+        public Sprite Monster;
+        public Sprite Barrel;
+        public Sprite Chest;
+        public Sprite LockedChest;
+        [Tooltip("The safe dome: a ring around its area.")]
+        public Sprite Refuge;
 
         [Header("Colours (tint)")]
         public Color StartColor = new Color(0.35f, 0.6f, 1f);
@@ -51,6 +63,23 @@ namespace Purge.Presentation.Map
         public Color MedkitColor = new Color(0.95f, 0.42f, 0.38f);
         [Tooltip("Key whose door has no colour.")]
         public Color KeyColor = new Color(0.95f, 0.85f, 0.45f);
+
+        [Header("Monsters and level objects (stage 7г)")]
+        public Color MassColor = new Color(0.9f, 0.3f, 0.26f);
+        public Color OfficerColor = new Color(1f, 0.6f, 0.2f);
+        public Color EliteColor = new Color(0.82f, 0.38f, 1f);
+        public Color ChampionColor = new Color(1f, 0.86f, 0.25f);
+        public Color BossColor = new Color(1f, 0.15f, 0.15f);
+        [Tooltip("Rank-and-file dot size, cells; officers, elite, champions and bosses — Big Monster Size.")]
+        [Min(0.2f)] public float MonsterSize = 0.8f;
+        [Min(0.2f)] public float BigMonsterSize = 1.3f;
+        public Color GasBarrelColor = new Color(0.55f, 0.85f, 0.35f);
+        public Color FireBarrelColor = new Color(1f, 0.5f, 0.2f);
+        public Color AcidBarrelColor = new Color(0.8f, 0.95f, 0.2f);
+        public Color ChestColor = new Color(0.9f, 0.7f, 0.35f);
+        [Tooltip("An opened chest: dim.")]
+        public Color OpenedChestColor = new Color(0.55f, 0.5f, 0.45f, 0.6f);
+        public Color RefugeColor = new Color(0.45f, 0.75f, 1f, 0.9f);
 
         [Header("Placement")]
         [Tooltip("Icon size in cells (icons are bigger than a cell).")]
@@ -74,6 +103,11 @@ namespace Purge.Presentation.Map
             MapIconKind.Weapon => Weapon,
             MapIconKind.Medkit => Medkit,
             MapIconKind.Key => Key,
+            MapIconKind.Monster => Monster,
+            MapIconKind.Barrel => Barrel,
+            MapIconKind.Chest => Chest,
+            MapIconKind.LockedChest => LockedChest,
+            MapIconKind.Refuge => Refuge,
             _ => Player,
         };
 
@@ -86,6 +120,11 @@ namespace Purge.Presentation.Map
             MapIconKind.Weapon => WeaponColor,
             MapIconKind.Medkit => MedkitColor,
             MapIconKind.Key => KeyColor,
+            MapIconKind.Monster => MassColor,
+            MapIconKind.Barrel => FireBarrelColor,
+            MapIconKind.Chest => ChestColor,
+            MapIconKind.LockedChest => ChestColor,
+            MapIconKind.Refuge => RefugeColor,
             _ => PlayerColor,
         };
     }

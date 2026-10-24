@@ -34,7 +34,7 @@ namespace Purge.Tests.EditMode.Level
             _recipe.MutableSteps.AddRange(new GenerationStep[]
             {
                 new PerimeterStep(), new StartStep(), new ArenaStep(), new SpawnPointsStep(), new ClearingsStep(),
-                new TrailsStep(), obstacles, new GrassStep(), new ObjectsStep(), new DecorStep(),
+                new TrailsStep(), obstacles, new GroundStep(), new GrassStep(), new ObjectsStep(), new DecorStep(),
             });
         }
 
@@ -220,6 +220,29 @@ namespace Purge.Tests.EditMode.Level
         }
 
         [Test]
+        public void Ground_OnTheTrailsAndTheStart_FreeFloorOnly()
+        {
+            for (var seed = 0; seed < 6; seed++)
+            {
+                var result = new BiomeGenerator().Generate(Settings(seed), _recipe);
+                var g = result.Geometry;
+                var ground = 0;
+                for (var i = 0; i < g.CellCount; i++)
+                {
+                    var p = g.ToPosition(i);
+                    if (g.GetSurface(p) != CellSurface.Ground) continue;
+                    ground++;
+                    Assert.AreEqual(CellType.Floor, g.GetCell(p), $"seed {seed}");
+                    Assert.IsNull(g.GetObstacle(p), $"seed {seed}");
+                    Assert.AreEqual(CellFlags.None, g.GetFlags(p), "ground has no gameplay");
+                }
+
+                Assert.AreEqual(CellSurface.Ground, g.GetSurface(result.PlayerStarts.Single()), $"seed {seed}: the start");
+                Assert.Greater(ground, 300, $"seed {seed}: trails, clearings and the start");
+            }
+        }
+
+        [Test]
         public void Generate_KeepsHandEditedCells_TheirObjects_AndTheStart()
         {
             var level = Level(5);
@@ -295,8 +318,13 @@ namespace Purge.Tests.EditMode.Level
             decor.Kind = VisualKind.Decor;
             decor.MutableVariants.Add(new VisualVariant("tall_grass", 1, VisualCategory.Grass));
             decor.MutableVariants.Add(new VisualVariant("flower", 1));
+            var floors = Make<VisualSet>();
+            floors.Kind = VisualKind.Floor;
+            floors.MutableVariants.Add(new VisualVariant("grass_floor", 1));
+            floors.MutableVariants.Add(new VisualVariant("soil", 1, VisualCategory.Ground));
             theme.SetSet(VisualKind.Wall, walls);
             theme.SetSet(VisualKind.Decor, decor);
+            theme.SetSet(VisualKind.Floor, floors);
             level.VisualTheme = theme;
             level.Generation.GrassDecorDensity = 1f;
             level.Generation.DecorDensity = 1f;
@@ -312,8 +340,11 @@ namespace Purge.Tests.EditMode.Level
                     wallIds.Add(VisualResolver.ResolveCell(level, p, CellLayer.Wall).VariantId);
                 else if (g.GetCell(p) == CellType.Floor && g.GetObstacle(p) == null)
                 {
-                    var expected = g.GetSurface(p) == CellSurface.Grass ? "tall_grass" : "flower";
+                    var surface = g.GetSurface(p);
+                    var expected = surface == CellSurface.Grass ? "tall_grass" : surface == CellSurface.Ground ? null : "flower";
                     Assert.AreEqual(expected, VisualResolver.ResolveDecor(level, p).VariantId, p.ToString());
+                    Assert.AreEqual(surface == CellSurface.Ground ? "soil" : "grass_floor",
+                        VisualResolver.ResolveCell(level, p, CellLayer.Floor).VariantId, "ground floor (7г): " + p);
                 }
             }
 

@@ -16,6 +16,9 @@ MonoBehaviour:
   - _levelId: Level_Run
     _address: Levels/Level_Run
     _displayName: Run
+  - _levelId: Level_Forest_01
+    _address: Levels/Level_Forest_01
+    _displayName: Forest 1
   _tutorial:
     _levelId: Level_Tutorial
     _address: Levels/Level_Tutorial

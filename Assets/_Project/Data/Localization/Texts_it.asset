@@ -79,6 +79,7 @@ MonoBehaviour:
   - map.weapons
   - map.medkits
   - map.keys
+  - map.objects
   - settings.tab.controls
   - settings.tab.shooting
   - settings.tab.other
@@ -288,10 +289,11 @@ MonoBehaviour:
   - "QUALCOSA \xC8 ANDATO STORTO"
   - TORNA AL MENU
   - GIOCATORE
-  - ZOMBI
+  - MOSTRI
   - ARMI
   - KIT MEDICI
   - CHIAVI
+  - OGGETTI
   - COMANDI
   - TIRO
   - ALTRO

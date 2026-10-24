@@ -563,7 +563,8 @@ namespace Purge.Editor.Dev
             // Top right: Map and Pause.
             // Spaced so that their widened touch areas (RoundButton) meet but do not overlap.
             var pause = RoundButton(root, "PauseButton", icons.Pause, new Vector2(1f, 1f), new Vector2(-82f, -78f), 84f, 40f);
-            var map = RoundButton(root, "MapButton", icons.Map, new Vector2(1f, 1f), new Vector2(-214f, -78f), 84f, 40f);
+            // Mini-map (stage 7g) in place of the Map button, left of Pause: a tap opens the full map.
+            var (map, miniMap) = BuildMiniMap(root);
 
             // Bottom right (no on-screen controls): weapon slots, keys 1 and 2.
             var weaponPanel = Rect(root, "WeaponPanel", new Vector2(1f, 0f), new Vector2(-40f - 158f, 40f + 55f),
@@ -614,6 +615,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_banner", banner);
             SetReference(screen, "_pauseButton", pause);
             SetReference(screen, "_mapButton", map);
+            SetReference(screen, "_miniMap", miniMap);
             SetReference(screen, "_weaponPanel", weaponPanel.gameObject);
             SetReference(screen, "_meleeSlot", meleeSlot);
             SetReference(screen, "_rangedSlot", rangedSlot);
@@ -1603,6 +1605,48 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>ТЗ §60: fullscreen map; the texture (one pixel per cell) is set by the level's MapPresenter.</summary>
+        /// <summary>
+        /// The HUD mini-map (stage 7g): a rounded square button (top right, left of Pause) with a masked viewport — its
+        /// own canvas, so the content moving every frame does not rebuild the HUD — holding the moving content (the map
+        /// image and icon root, positions in map cells) and the player arrow fixed in the centre.
+        /// </summary>
+        private static (UiButton Button, MiniMapView View) BuildMiniMap(Transform parent)
+        {
+            const float side = 216f;
+            var body = Shape(parent, "MiniMap", new Vector2(1f, 1f), new Vector2(-150f - side * 0.5f, -32f - side * 0.5f),
+                new Vector2(side, side), true);
+            body.CornerRadius = 18f;
+            body.HitPadding = 12f;
+            var button = MakeButton(body, false);
+
+            var viewport = Rect(body.transform, "Viewport", Center, Vector2.zero, new Vector2(side - 14f, side - 14f));
+            viewport.gameObject.AddComponent<Canvas>();
+            viewport.gameObject.AddComponent<RectMask2D>();
+
+            var content = Rect(viewport, "Content", Center, Vector2.zero, Vector2.one);
+            content.pivot = Vector2.zero;
+            var imageRect = Rect(content, "Map", Center, Vector2.zero, Vector2.one);
+            Stretch(imageRect);
+            var image = imageRect.gameObject.AddComponent<RawImage>();
+            image.raycastTarget = false;
+            image.color = new Color(1f, 1f, 1f, 0.92f);
+            var iconRoot = Rect(content, "Icons", Center, Vector2.zero, Vector2.one);
+            Stretch(iconRoot);
+
+            var mapIcons = AssetDatabase.LoadAssetAtPath<MapIconSet>(MapIconsBuilder.SetPath);
+            if (mapIcons == null) mapIcons = MapIconsBuilder.Build();
+            var player = Icon(viewport, "Player", mapIcons.Player, Center, Vector2.zero, 24f);
+            player.raycastTarget = false;
+
+            var view = body.gameObject.AddComponent<MiniMapView>();
+            SetReference(view, "_viewport", viewport);
+            SetReference(view, "_content", content);
+            SetReference(view, "_image", image);
+            SetReference(view, "_iconRoot", iconRoot);
+            SetReference(view, "_player", player);
+            return (button, view);
+        }
+
         private static MapScreen BuildMap(Transform parent)
         {
             var screen = Screen<MapScreen>(parent, "MapScreen", MapBackground);
@@ -1644,6 +1688,7 @@ namespace Purge.Editor.Dev
             {
                 ("ShowPlayer", TextKeys.MapPlayer), ("ShowZombies", TextKeys.MapZombies),
                 ("ShowWeapons", TextKeys.MapWeapons), ("ShowMedkits", TextKeys.MapMedkits), ("ShowKeys", TextKeys.MapKeys),
+                ("ShowObjects", TextKeys.MapObjects),
             };
             var toggles = new List<Object>();
             for (var i = 0; i < layers.Length; i++)

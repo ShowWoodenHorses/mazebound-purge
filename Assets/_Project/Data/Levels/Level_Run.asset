@@ -243,20 +243,6 @@ MonoBehaviour:
       _rotation: 0
   - _id: light_14
     _cell:
-      _x: 7
-      _y: 4
-      _floor: 0
-    _offset: {x: -0.42, y: 0}
-    _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
-    _radius: 4
-    _intensity: 1.3
-    _flicker: 0.6
-    _isGenerated: 1
-    _visual:
-      _variantId: SM_Prop_Torch_04
-      _rotation: 0
-  - _id: light_15
-    _cell:
       _x: 17
       _y: 8
       _floor: 0
@@ -267,9 +253,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_16
+  - _id: light_15
     _cell:
       _x: 58
       _y: 50
@@ -281,9 +267,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_17
+  - _id: light_16
     _cell:
       _x: 45
       _y: 1
@@ -297,7 +283,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_18
+  - _id: light_17
     _cell:
       _x: 7
       _y: 16
@@ -311,7 +297,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_19
+  - _id: light_18
     _cell:
       _x: 50
       _y: 25
@@ -323,9 +309,9 @@ MonoBehaviour:
     _flicker: 0.15
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_20
+  - _id: light_19
     _cell:
       _x: 1
       _y: 1
@@ -337,9 +323,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_21
+  - _id: light_20
     _cell:
       _x: 22
       _y: 57
@@ -351,9 +337,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_22
+  - _id: light_21
     _cell:
       _x: 58
       _y: 9
@@ -367,7 +353,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_23
+  - _id: light_22
     _cell:
       _x: 18
       _y: 27
@@ -381,7 +367,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_24
+  - _id: light_23
     _cell:
       _x: 39
       _y: 30
@@ -393,9 +379,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_25
+  - _id: light_24
     _cell:
       _x: 4
       _y: 58
@@ -407,9 +393,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_26
+  - _id: light_25
     _cell:
       _x: 16
       _y: 1
@@ -423,7 +409,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_27
+  - _id: light_26
     _cell:
       _x: 26
       _y: 1
@@ -435,9 +421,9 @@ MonoBehaviour:
     _flicker: 0.15
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_28
+  - _id: light_27
     _cell:
       _x: 12
       _y: 37
@@ -451,7 +437,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_29
+  - _id: light_28
     _cell:
       _x: 58
       _y: 20
@@ -463,9 +449,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_30
+  - _id: light_29
     _cell:
       _x: 46
       _y: 58
@@ -479,7 +465,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_31
+  - _id: light_30
     _cell:
       _x: 14
       _y: 58
@@ -491,9 +477,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_32
+  - _id: light_31
     _cell:
       _x: 35
       _y: 22
@@ -505,9 +491,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_02
+      _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_33
+  - _id: light_32
     _cell:
       _x: 1
       _y: 33
@@ -521,7 +507,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_34
+  - _id: light_33
     _cell:
       _x: 32
       _y: 13
@@ -533,9 +519,9 @@ MonoBehaviour:
     _flicker: 0.6
     _isGenerated: 1
     _visual:
-      _variantId: SM_Prop_Torch_04
+      _variantId: SM_Prop_Torch_02
       _rotation: 0
-  - _id: light_35
+  - _id: light_34
     _cell:
       _x: 39
       _y: 54
@@ -549,7 +535,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_36
+  - _id: light_35
     _cell:
       _x: 45
       _y: 10
@@ -563,7 +549,7 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_37
+  - _id: light_36
     _cell:
       _x: 24
       _y: 31
@@ -577,12 +563,26 @@ MonoBehaviour:
     _visual:
       _variantId: SM_Prop_Torch_04
       _rotation: 0
-  - _id: light_38
+  - _id: light_37
     _cell:
       _x: 1
       _y: 13
       _floor: 0
     _offset: {x: -0.42, y: 0}
+    _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
+    _radius: 4
+    _intensity: 1.3
+    _flicker: 0.6
+    _isGenerated: 1
+    _visual:
+      _variantId: SM_Prop_Torch_04
+      _rotation: 0
+  - _id: light_38
+    _cell:
+      _x: 10
+      _y: 1
+      _floor: 0
+    _offset: {x: 0, y: -0.42}
     _color: {r: 1, g: 0.6039216, b: 0.2901961, a: 1}
     _radius: 4
     _intensity: 1.3

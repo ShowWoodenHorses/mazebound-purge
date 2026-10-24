@@ -467,6 +467,30 @@ namespace Purge.Tests.EditMode.Combat
         }
 
         [Test]
+        public void Drops_OfOneWeapon_AreCapped_TheOldestGoes()
+        {
+            var nine = ScriptableObject.CreateInstance<AmmoDefinition>();
+            nine.Configure("ammo_9mm", 6f);
+            _created.Add(nine);
+            var sword = WeaponWith("sword", nine, 10, Rarity.Common);
+            var rifle = WeaponWith("rifle", nine, 30, Rarity.Common);
+            var removed = new List<Pickup>();
+            _pickups.Removed += removed.Add;
+
+            var first = _pickups.DropWeaponItem(new Vector2(10f, 3f), 0, sword, float.PositiveInfinity);
+            for (var i = 1; i < PickupSystem.MaxSameWeaponDropped; i++)
+                _pickups.DropWeaponItem(new Vector2(10f + i, 3f), 0, sword, float.PositiveInfinity);
+            _pickups.DropWeaponItem(new Vector2(10f, 5f), 0, rifle, float.PositiveInfinity);
+            Assert.AreEqual(0, removed.Count, "At the cap, nothing went yet.");
+
+            _pickups.DropWeaponItem(new Vector2(10f, 6f), 0, sword, float.PositiveInfinity);
+            Assert.AreEqual(1, removed.Count);
+            Assert.AreSame(first, removed[0], "The oldest sword made room.");
+            Assert.IsFalse(removed[0].WasTaken);
+            Assert.AreEqual(PickupSystem.MaxSameWeaponDropped + 1, _pickups.Count, "Swords at the cap + the rifle.");
+        }
+
+        [Test]
         public void Drops_Medkit_HealsByItsKind_OnlyWhenHurt()
         {
             var small = ScriptableObject.CreateInstance<MedkitDefinition>();

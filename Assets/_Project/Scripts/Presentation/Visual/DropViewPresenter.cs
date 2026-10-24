@@ -110,7 +110,9 @@ namespace Purge.Presentation.Visual
                 if (item is ThrowableDefinition)
                     kind.Flying = await _assets.LoadAsync<GameObject>(visual.Flying, cancellation);
                 cancellation.ThrowIfCancellationRequested();
-                for (var i = 0; i < PickupPoolSize; i++) kind.FreePickups.Push(Create(kind.Pickup, item.Id));
+                // Weapons: the most monsters can leave of one + the player's two slots dropped.
+                var poolSize = item is WeaponDefinition ? PickupSystem.MaxSameWeaponDropped + 2 : PickupPoolSize;
+                for (var i = 0; i < poolSize; i++) kind.FreePickups.Push(Create(kind.Pickup, item.Id));
                 if (kind.Flying != null)
                     for (var i = 0; i < FlyingPoolSize; i++) kind.FreeFlying.Push(Create(kind.Flying, item.Id + " (flying)"));
             }

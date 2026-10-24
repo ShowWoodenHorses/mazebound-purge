@@ -188,6 +188,9 @@ namespace Purge.Presentation.Visual.Horde
                 var visual = settings.VisualOf(kinds[k].Definition);
                 if (visual == null || visual.Mesh == null || visual.Variants.Length == 0)
                 {
+                    // Wave levels keep the built-in kind only as a fallback slot: it is never spawned.
+                    if (kinds[k].Definition == null && _horde.UsesWaves)
+                        continue;
                     GameLog.Warning(LogChannel.Gameplay,
                         $"Horde: no look for monster '{kinds[k].Definition?.Id ?? "built-in"}' (Build Monsters) — not drawn.");
                     continue;

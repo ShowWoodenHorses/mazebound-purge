@@ -117,7 +117,8 @@ namespace Purge.Gameplay.Pickups
     /// (<see cref="TryTakeWeapon"/>, <see cref="TryTakeThrowable"/>): a weapon — the new one becomes active, a replaced one
     /// drops into the cell (a slot with the base pistol is filled first); a throwable of another kind — it replaces the
     /// stack, which drops. Monsters' drops (<see cref="DropAmmo"/> etc.) lie for a lifetime and at most
-    /// <see cref="MaxDropped"/> at once (the oldest goes); items the player drops stay. With a
+    /// <see cref="MaxDropped"/> at once, of one weapon <see cref="MaxSameWeaponDropped"/> (the oldest goes); items the
+    /// player drops stay. With a
     /// <see cref="MagnetRadius"/> (the run's cards) ammo, throwables the slot has room for and medkits (when hurt) that
     /// close fly to the player and are picked up on arrival; weapons and keys still only in their cell.
     /// </summary>
@@ -167,6 +168,9 @@ namespace Purge.Gameplay.Pickups
 
         /// <summary>Most monsters' drops lying at once (the drop table's).</summary>
         public int MaxDropped { get; set; } = 40;
+
+        /// <summary>Monsters' drops of one weapon lying at once (the oldest goes; its view pool holds as many).</summary>
+        public const int MaxSameWeaponDropped = 8;
 
         public int DroppedCount => _expiring.Count;
 
@@ -458,6 +462,8 @@ namespace Purge.Gameplay.Pickups
             {
                 while (_expiring.Count >= Math.Max(1, MaxDropped))
                     Take(_expiring[0], taken: false);
+                if (drop.Kind == PickupKind.Weapon)
+                    TrimSameWeapon(drop.Weapon.Definition);
                 _expiring.Add(drop);
             }
 
@@ -467,6 +473,21 @@ namespace Purge.Gameplay.Pickups
             if (_player.IsSpawned && drop.Cell == _player.Cell)
                 Enter(drop.Cell);
             return drop;
+        }
+
+        /// <summary>Makes room for one more monsters' drop of <paramref name="weapon"/>: the oldest ones of it go.</summary>
+        private void TrimSameWeapon(WeaponDefinition weapon)
+        {
+            var count = 0;
+            var oldest = -1;
+            for (var i = 0; i < _expiring.Count; i++)
+            {
+                if (_expiring[i].Kind != PickupKind.Weapon || _expiring[i].Weapon.Definition != weapon) continue;
+                if (count++ == 0) oldest = i;
+            }
+
+            if (count >= MaxSameWeaponDropped && oldest >= 0)
+                Take(_expiring[oldest], taken: false);
         }
 
         private void OnDropRequested(WeaponSlot slot) => DropWeapon(slot);

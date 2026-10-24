@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4239206973779736}
   - component: {fileID: 95739547400954098}
   m_Layer: 0
-  m_Name: "\u0421apture_Castle"
+  m_Name: Capture_Castle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -145,6 +145,22 @@ namespace Purge.Presentation.Localization
         public const string SettingsPrivacy = "settings.privacy";
         public const string SettingsPrivacyOpen = "settings.privacy.open";
         public const string SettingsResetTab = "settings.reset_tab";
+        public const string SettingsTabGame = "settings.tab.game";
+        public const string SettingsVibration = "settings.vibration";
+        public const string SettingsCameraDistance = "settings.camera_distance";
+        public const string SettingsCameraDistanceValue = "settings.camera_distance.value";
+        public const string SettingsCameraShake = "settings.camera_shake";
+        public const string SettingsResolution = "settings.resolution";
+        public const string SettingsCompare = "settings.compare";
+        public const string SettingsCompareArrows = "settings.compare.arrows";
+        public const string SettingsCompareColor = "settings.compare.color";
+        public const string SettingsCompareOff = "settings.compare.off";
+
+        // The panel over a weapon on the ground (stage 6e2).
+        public const string CompareDps = "compare.dps";
+        public const string CompareMagazine = "compare.magazine";
+        public const string CompareRange = "compare.range";
+        public const string CompareMobility = "compare.mobility";
 
         // Touch layout editor.
         public const string LayoutHint = "layout.hint";

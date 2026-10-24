@@ -267,6 +267,59 @@ namespace Purge.Tests.EditMode.Progress
         }
 
         [Test]
+        public void GameSettings_OldSaveZeros_ReadAsDefaults_PreviewSaved_ResetRestores()
+        {
+            // Stage 6e2: a save without the "Game" page (zeros) gets the defaults; vibration on.
+            _save.Data.Settings.Game = default;
+            var settings = new SettingsService(_save);
+            settings.InitializeAsync(CancellationToken.None);
+            Assert.AreEqual(GameSettings.Default, settings.Game);
+            Assert.IsTrue(settings.Game.CameraShake);
+            Assert.IsTrue(settings.Controls.Vibration);
+
+            var changes = 0;
+            settings.GameChanged += () => changes++;
+            var writes = _storage.Writes;
+            var game = settings.Game;
+            game.CameraDistance = 20;
+            game.ResolutionScale = 0.62f;
+            game.NoCameraShake = true;
+            game.Compare = PickupCompare.Color;
+            settings.PreviewGame(game);
+            settings.PreviewGame(game);
+            Assert.AreEqual(1, changes, "Once per real change.");
+            Assert.AreEqual(GameSettings.MaxCameraDistance, settings.Game.CameraDistance, "Clamped.");
+            Assert.AreEqual(0.6f, settings.Game.ResolutionScale, 1e-4f, "Whole steps of 0.05.");
+            Assert.AreEqual(writes, _storage.Writes, "Preview does not write.");
+
+            settings.SavePreviewed();
+            var save = new SaveService(_storage);
+            save.Load();
+            Assert.AreEqual(PickupCompare.Color, save.Data.Settings.Game.Compare);
+            Assert.IsFalse(save.Data.Settings.Game.CameraShake);
+
+            settings.ResetGame();
+            Assert.AreEqual(GameSettings.Default, settings.Game);
+        }
+
+        [Test]
+        public void Vibration_OffSaved_ControlsResetTurnsItOn()
+        {
+            var settings = new SettingsService(_save);
+            settings.InitializeAsync(CancellationToken.None);
+            var controls = settings.Controls;
+            controls.NoVibration = true;
+            settings.SetControls(controls);
+
+            var save = new SaveService(_storage);
+            save.Load();
+            Assert.IsFalse(save.Data.Settings.Controls.Vibration);
+
+            settings.ResetTouchControls();
+            Assert.IsTrue(settings.Controls.Vibration);
+        }
+
+        [Test]
         public void ControlsScheme_TwoSticksByDefault_Saved_BrokenValueClamped()
         {
             Assert.AreEqual(TouchScheme.TwoSticks, ControlsSettings.Default.Scheme);

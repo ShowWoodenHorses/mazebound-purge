@@ -95,16 +95,34 @@ namespace Purge.Presentation.Visual
         private float _shake;
         private float _shakeTime;
 
+        /// <summary>Kicks and shakes are shown (the player's setting «Camera shake»); off — the view stays still.</summary>
+        public bool FeelEnabled
+        {
+            get => _feelEnabled;
+            set
+            {
+                _feelEnabled = value;
+                if (value) return;
+                _kick = Vector3.zero;
+                _shake = 0f;
+            }
+        }
+
+        private bool _feelEnabled = true;
+
         /// <summary>The view jumps <paramref name="cells"/> against a shot along <paramref name="direction"/> (grid x, y) and springs back.</summary>
         public void Kick(Vector2 direction, float cells)
         {
-            if (cells <= 0f || direction.sqrMagnitude <= 0f) return;
+            if (!_feelEnabled || cells <= 0f || direction.sqrMagnitude <= 0f) return;
             var d = direction.normalized;
             _kick = Vector3.ClampMagnitude(_kick - new Vector3(d.x, 0f, d.y) * cells, MaxOffset);
         }
 
         /// <summary>Shakes the view by up to <paramref name="cells"/>; a stronger shake replaces a weaker one.</summary>
-        public void Shake(float cells) => _shake = Mathf.Min(MaxOffset, Mathf.Max(_shake, cells));
+        public void Shake(float cells)
+        {
+            if (_feelEnabled) _shake = Mathf.Min(MaxOffset, Mathf.Max(_shake, cells));
+        }
 
         private Vector3 Feel(float deltaTime)
         {

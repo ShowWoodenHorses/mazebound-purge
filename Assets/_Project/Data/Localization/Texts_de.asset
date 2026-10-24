@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - NACHLADEN
   - "{0}: zum Aufheben \u201EBenutzen\u201C dr\xFCcken"
   - 'Aufgehoben: {0}'
+  - Schaden/s
+  - Magazin
+  - Reichweite
+  - Beweglichkeit
   - "Verschlossen: Schl\xFCssel n\xF6tig"
   - "Verschlossen: roter Schl\xFCssel n\xF6tig"
   - "Verschlossen: blauer Schl\xFCssel n\xF6tig"
@@ -295,6 +313,16 @@ MonoBehaviour:
   - Datenschutz
   - "\xD6FFNEN"
   - "TAB ZUR\xDCCKSETZEN"
+  - SPIEL
+  - Vibration
+  - Kameraabstand
+  - "\xB1{0}"
+  - Kamerawackeln
+  - "Aufl\xF6sung"
+  - Waffenvergleich
+  - PFEILE
+  - FARBE
+  - AUS
   - "Stick und Tasten ziehen. Antippen, um die Gr\xF6\xDFe zu \xE4ndern."
   - "{0}: Gr\xF6\xDFe {1}"
   - Stick

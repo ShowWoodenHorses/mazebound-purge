@@ -325,7 +325,7 @@ namespace Purge.Editor.Dev
                     return;
             var abilities = new List<AbilityModule>(definition.Abilities);
             abilities.Insert(0,
-                new RageAbility { HealthBelow = 0.3f, Warning = RageWarning, Recovery = 0.2f, DamageFactor = 1.5f, SpeedFactor = 1f });
+                new RageAbility { HealthBelow = 0.3f, Warning = RageWarning, Recovery = 0.2f, DamageFactor = 1.5f, SpeedFactor = 1f, CastSound = "rage_roar" });
             definition.SetAbilities(abilities.ToArray());
             EditorUtility.SetDirty(definition);
         }
@@ -405,6 +405,7 @@ namespace Purge.Editor.Dev
             {
                 // Spits acid along an arc: a puddle where the player stood.
                 shot.Form = ProjectileForm.Arc;
+                shot.ReleaseSound = "spit";
                 shot.Speed = 9f;
                 shot.Damage = 8f;
                 shot.ArcRadius = 0.9f;
@@ -417,6 +418,7 @@ namespace Purge.Editor.Dev
             {
                 // A fan of three icicles: they slow.
                 shot.Form = ProjectileForm.Fan;
+                shot.ReleaseSound = "icicles";
                 shot.Count = 3;
                 shot.FanAngle = 30f;
                 shot.Speed = 12f;
@@ -429,6 +431,7 @@ namespace Purge.Editor.Dev
             {
                 // The skeleton archer: one arrow, damage only.
                 shot.Form = ProjectileForm.Straight;
+                shot.ReleaseSound = "arrow";
                 shot.Speed = 14f;
                 shot.Damage = 18f;
                 shot.Range = 12f;

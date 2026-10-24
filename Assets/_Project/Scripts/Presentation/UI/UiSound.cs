@@ -17,6 +17,14 @@ namespace Purge.Presentation.UI
 
         /// <summary>A click on an unavailable control (locked level). Played automatically, not chosen.</summary>
         Denied = 3,
+
+        /// <summary>A confirmation window opens (stage 6e2). Requested by code, not set on buttons.</summary>
+        Window = 4,
+
+        /// <summary>Cards of a level-up appear / a card is chosen / the cards are rerolled (stage 6e2). Requested by code.</summary>
+        CardsShown = 5,
+        CardChosen = 6,
+        CardReroll = 7,
     }
 
     /// <summary>

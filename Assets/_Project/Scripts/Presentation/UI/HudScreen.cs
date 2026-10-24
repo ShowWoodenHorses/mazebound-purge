@@ -113,6 +113,11 @@ namespace Purge.Presentation.UI
 
         [Tooltip("Arcs around the screen centre pointing where a blow came from (ТЗ: дуга у края экрана со стороны удара); textures made on start.")]
         [SerializeField] private RawImage[] _damageArcs = new RawImage[0];
+
+        [Tooltip("The panel over a weapon on the ground (stage 6e2), hidden until the player stands at one.")]
+        [SerializeField] private PickupComparePanel _comparePanel;
+
+        public PickupComparePanel ComparePanel => _comparePanel;
         [SerializeField] private Color _damageArcColor = new Color(1f, 0.12f, 0.08f, 0.9f);
         [SerializeField, Min(0.1f)] private float _damageArcTime = 0.9f;
 

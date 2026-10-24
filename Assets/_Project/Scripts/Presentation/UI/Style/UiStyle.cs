@@ -38,6 +38,9 @@ namespace Purge.Presentation.UI.Style
         [Tooltip("Low health and other warnings.")]
         public Color Danger = new Color(0.878f, 0.29f, 0.208f, 1f);
 
+        [Tooltip("A stat better than the compared one (the panel over a weapon on the ground); worse — Danger.")]
+        public Color Better = new Color(0.42f, 0.78f, 0.36f, 1f);
+
         [Tooltip("Rarities: gray, green, blue, purple, orange (cards, later weapons in the shop).")]
         public Color[] Rarities =
         {

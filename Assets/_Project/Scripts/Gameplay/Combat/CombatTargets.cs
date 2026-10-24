@@ -209,6 +209,9 @@ namespace Purge.Gameplay.Combat
         /// <summary>Nothing that stops bullets between the points.</summary>
         public bool IsClear(Vector2 from, Vector2 to, int floor) => _spatial.IsClear(from, to, CellFlags.BlocksBullets, floor);
 
+        /// <summary>(slot, where) a hit struck a monster's armored front (the ricochet's sound, stage 6e2).</summary>
+        public event Action<int, Vector2> ArmoredHit;
+
         /// <summary>Hits a monster's armored front took (tests, metrics).</summary>
         public int ArmoredHits { get; private set; }
 
@@ -228,6 +231,7 @@ namespace Purge.Gameplay.Combat
                 {
                     ArmoredHits++;
                     amount *= armor;
+                    ArmoredHit?.Invoke(target.Agent, at);
                 }
 
                 killed = _horde.Damage(target.Agent, amount);

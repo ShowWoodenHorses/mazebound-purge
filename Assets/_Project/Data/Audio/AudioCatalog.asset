@@ -2763,6 +2763,102 @@ MonoBehaviour:
     _maxVoices: 1
     _minInterval: 0
   _stingerRearm: 6
+  _monsterSounds:
+  - _name: arrow
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 7315564a5662a38469134c72f676b0a9, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: icicles
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 5310d3238ed87b44585dc79daa8697d7, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: rage_roar
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 603d51abeec43c14fb09962e905b1131, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: shaman_raise
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ac74e25dc89c7de43819b80f24f8bfc1, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: shaman_spell
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: b24d51e19277f4043bc6c05e691723f8, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: spit
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 419530abee68b25499d8d9c9f4286165, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  _monsterCall:
+    _clips:
+    - {fileID: 8300000, guid: 56402e0dc3433f847bc9b11a478b1902, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 16
+    _maxVoices: 2
+    _minInterval: 0.3
+  _armorHit:
+    _clips:
+    - {fileID: 8300000, guid: 2b97d0596c6d474409257c40b4043fbb, type: 3}
+    - {fileID: 8300000, guid: fb76566aeb1aafc4f843c989bca545be, type: 3}
+    _volume: 0.45
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 12
+    _maxVoices: 3
+    _minInterval: 0.06
+  _championAppear:
+    _clips:
+    - {fileID: 8300000, guid: 9cb23b3077a6a6b44bc9765817055609, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 16
+    _maxVoices: 2
+    _minInterval: 0.2
+  _doorHit:
+    _clips:
+    - {fileID: 8300000, guid: 6d0ec8f575b0ea94ea6be918ba765469, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.9, y: 1.1}
+    _range: 12
+    _maxVoices: 2
+    _minInterval: 0.1
+  _doorBroken:
+    _clips:
+    - {fileID: 8300000, guid: d50f116b6dbfe5d4ab5a8c50e39b895a, type: 3}
+    _volume: 0.9
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 14
+    _maxVoices: 1
+    _minInterval: 0
   _torchLoop:
     _clips:
     - {fileID: 8300000, guid: 044491aba8b03aa48940a25d4dd8ade6, type: 3}
@@ -2860,6 +2956,38 @@ MonoBehaviour:
     _pitch: {x: 1, y: 1}
     _range: 0
     _maxVoices: 3
+    _minInterval: 0
+  _cardsShown:
+    _clips:
+    - {fileID: 8300000, guid: a084403607df5f54aa5b4c0d6eea2f12, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _cardChosen:
+    _clips:
+    - {fileID: 8300000, guid: c2fc666b2b709914d9959f9a94610b0d, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _cardReroll:
+    _clips:
+    - {fileID: 8300000, guid: 920f6f882fddfaa4ebe3cdfc63df24df, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1.05, y: 1.1}
+    _range: 0
+    _maxVoices: 1
+    _minInterval: 0
+  _confirmOpen:
+    _clips:
+    - {fileID: 8300000, guid: 49745ffc6f97dec438b653ba1191ceae, type: 3}
+    _volume: 0.6
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 1
     _minInterval: 0
   _resultDelay: 0.5
   _starInterval: 0.4

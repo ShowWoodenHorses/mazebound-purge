@@ -99,16 +99,19 @@ namespace Purge.Presentation.UI
             Fill();
             _flow.OpenCards();
             Screen.Refresh();
+            _ui.RequestSound(UiSoundKind.CardsShown);
         }
 
         private void OnCardClicked(int index)
         {
             if (_flow.State != GameFlowState.Cards || _adShowing || index >= _cards.Offer.Count) return;
             _cards.Choose(index);
+            _ui.RequestSound(UiSoundKind.CardChosen);
             if (_cards.OpenNext())
             {
                 Fill();
                 Screen.Refresh();
+                _ui.RequestSound(UiSoundKind.CardsShown);
                 return;
             }
 
@@ -137,7 +140,11 @@ namespace Purge.Presentation.UI
             }
 
             if (cancellation.IsCancellationRequested || _flow.State != GameFlowState.Cards) return;
-            if (watched) _cards.Reroll();
+            if (watched)
+            {
+                _cards.Reroll();
+                _ui.RequestSound(UiSoundKind.CardReroll);
+            }
             Fill();
             Screen.Refresh();
         }

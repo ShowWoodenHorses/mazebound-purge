@@ -22,14 +22,16 @@ namespace Purge.Presentation.UI
         private readonly UIRoot _ui;
         private readonly LocalizationService _texts;
         private readonly PlatformService _platform;
+        private readonly VibrationService _vibration;
         private readonly List<string> _names = new List<string>();
         private bool _initialized;
 
         private TouchLayoutEditor LayoutEditor => _ui.TouchControls != null ? _ui.TouchControls.LayoutEditor : null;
 
         public SettingsPresenter(SettingsService settings, GameFlow flow, UIRoot ui, LocalizationService texts,
-            PlatformService platform = null)
+            PlatformService platform = null, VibrationService vibration = null)
         {
+            _vibration = vibration;
             _platform = platform;
             _texts = texts;
             _settings = settings;
@@ -44,6 +46,8 @@ namespace Purge.Presentation.UI
 
             _settings.ControlsChanged += ApplyControls;
             _settings.ShowFpsChanged += ApplyShowFps;
+            _settings.GameChanged += ApplyGame;
+            _ui.Settings.GameChanged += OnGameEdited;
             _ui.Settings.ShowFpsChanged += OnShowFpsEdited;
             _ui.Settings.VolumesChanged += OnVolumesEdited;
             _flow.StateChanged += OnStateChanged;
@@ -65,6 +69,7 @@ namespace Purge.Presentation.UI
 
             ApplyControls();
             ApplyShowFps();
+            ApplyGame();
         }
 
         public void Dispose()
@@ -75,6 +80,7 @@ namespace Purge.Presentation.UI
             _settings.SavePreviewed();
             _settings.ControlsChanged -= ApplyControls;
             _settings.ShowFpsChanged -= ApplyShowFps;
+            _settings.GameChanged -= ApplyGame;
             _texts.LanguageChanged -= ShowLanguage;
             _flow.StateChanged -= OnStateChanged;
             if (_ui == null) return; // Scene already destroyed on application quit.
@@ -85,6 +91,7 @@ namespace Purge.Presentation.UI
             _ui.Settings.ResetClicked -= OnReset;
             _ui.Settings.BackClicked -= Close;
             _ui.Settings.ShowFpsChanged -= OnShowFpsEdited;
+            _ui.Settings.GameChanged -= OnGameEdited;
             _ui.Settings.VolumesChanged -= OnVolumesEdited;
             _ui.Settings.EditLayoutClicked -= BeginLayoutEdit;
             _ui.Settings.LanguageListRequested -= OnLanguageListRequested;
@@ -97,7 +104,23 @@ namespace Purge.Presentation.UI
             }
         }
 
-        private void ApplyControls() => _ui.TouchControls.Apply(_settings.Controls);
+        private void ApplyControls()
+        {
+            _ui.TouchControls.Apply(_settings.Controls);
+            if (_vibration != null) _vibration.Enabled = _settings.Controls.Vibration;
+        }
+
+        /// <summary>
+        /// Render resolution — Android only (the web page sets its own pixel ratio). The camera's distance and shake are
+        /// applied by the level (<c>CameraSettingsPresenter</c>).
+        /// </summary>
+        private void ApplyGame()
+        {
+            if (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.Android) return;
+            WebPage.SetResolutionScale(_settings.Game.ResolutionScale);
+        }
+
+        private void OnGameEdited(GameSettings game) => _settings.PreviewGame(game);
 
         private void ApplyShowFps()
         {
@@ -118,6 +141,7 @@ namespace Purge.Presentation.UI
         private void Open()
         {
             _ui.Settings.SetValues(_settings.Controls);
+            _ui.Settings.SetGame(_settings.Game);
             _ui.Settings.SetVolumes(_settings.MusicVolume, _settings.SfxVolume);
             _ui.Settings.SetShowFps(_settings.ShowFps);
             _ui.Settings.SetSupport(_platform?.Traits.SupportEmail); // the site's traits are known only after its start
@@ -195,10 +219,12 @@ namespace Purge.Presentation.UI
             {
                 case SettingsTab.Controls: _settings.ResetTouchControls(); break;
                 case SettingsTab.Shooting: _settings.ResetAim(); break;
+                case SettingsTab.Game: _settings.ResetGame(); break;
                 default: _settings.ResetOther(); break;
             }
 
             _ui.Settings.SetValues(_settings.Controls);
+            _ui.Settings.SetGame(_settings.Game);
             _ui.Settings.SetVolumes(_settings.MusicVolume, _settings.SfxVolume);
             _ui.Settings.SetShowFps(_settings.ShowFps);
         }

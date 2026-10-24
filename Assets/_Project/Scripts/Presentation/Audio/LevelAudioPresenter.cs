@@ -284,10 +284,9 @@ namespace Purge.Presentation.Audio
         private void OnInteracted(InteractionResult result, DoorData door)
         {
             if (door == null) return;
+            // Opening and closing sound by the door's change (anyone's, stage 6e2) — HordeAudioPresenter.
             var cue = result switch
             {
-                InteractionResult.DoorOpened => Catalog.DoorOpen,
-                InteractionResult.DoorClosed => Catalog.DoorClose,
                 InteractionResult.DoorUnlocked => Catalog.DoorUnlock,
                 InteractionResult.DoorLocked => Catalog.DoorLocked,
                 InteractionResult.DoorBlocked => Catalog.DoorLocked,

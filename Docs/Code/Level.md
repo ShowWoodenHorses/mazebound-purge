@@ -49,7 +49,7 @@
 - Требования к префабам пола/стен/декора: материалы на `Purge/Geometry`, меши Read/Write, только MeshRenderer — проверяет `EditorLevelValidator`. Декор склеивается в чанки так же (после слоёв клетки).
   - Модели декора из `Art/Decor` готовит **Purge → Dev → Build Decor** (`DecorBuilder`: копии материалов на `Purge/Geometry`, Read/Write, масштаб под клетку кроме тел, подъём плоских на 4 мм, набор `PlaceholderDecorSet` в теме).
 - Объекты (двери, пикапы) — `EntityView` в `EntityViewRegistry` по id; зомби и игрока создают их системы. Runtime-меши/текстуры — уничтожать явно (`UnityObjects.Destroy`), после выгрузки уровня `Resources.UnloadUnusedAssets`.
-- Камера уровня — `TopDownCamera` (сцена Game): наклон 88° (почти сверху), `Frame(bounds)` при загрузке, затем `Follow` за игроком на расстоянии, при котором ±`FollowHalfExtent` клеток помещаются при любом aspect (по умолчанию ±7; решение 2026-10-14 — настройка игрока ±4…±10, в настройках ещё нет).
+- Камера уровня — `TopDownCamera` (сцена Game): наклон 88° (почти сверху), `Frame(bounds)` при загрузке, затем `Follow` за игроком на расстоянии, при котором ±`FollowHalfExtent` клеток помещаются при любом aspect (по умолчанию ±7; настройка игрока ±4…±10 — вкладка Game, `CameraSettingsPresenter`, 6е2). `FeelEnabled` — толчок и тряска (настройка «Тряска камеры»).
   - Камера **не вращается по Y** — вверх экрана всегда North; ввод на это опирается.
 - Частота кадров: Android — `targetFrameRate` = 60 (`ApplicationEntryPoint`; умолчание Unity 30), веб — по экрану.
 

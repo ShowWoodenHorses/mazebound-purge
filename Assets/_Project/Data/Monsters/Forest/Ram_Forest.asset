@@ -38,6 +38,10 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+  _cost: 0
+  _money: 0
+  _experience: 0
+  _score: 0
   _drop: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
   _resistances: []
   _deathEffects: []
@@ -59,6 +63,8 @@ MonoBehaviour:
         _healthBelow: 1
         _warning: 0.7
         _recovery: 0.4
+        _castSound: 
+        _releaseSound: 
         _radius: 2.2
         _damage: 12
         _knockback: 2.5
@@ -75,6 +81,8 @@ MonoBehaviour:
         _healthBelow: 1
         _warning: 0.9
         _recovery: 0.6
+        _castSound: 
+        _releaseSound: 
         _distance: 9
         _speed: 10
         _damage: 25
@@ -91,5 +99,7 @@ MonoBehaviour:
         _healthBelow: 0.3
         _warning: 1
         _recovery: 0.2
+        _castSound: rage_roar
+        _releaseSound: 
         _damageFactor: 1.5
         _speedFactor: 1

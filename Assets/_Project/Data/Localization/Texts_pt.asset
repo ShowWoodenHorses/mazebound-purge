@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - RECARREGANDO
   - "{0}: pressione \u201CA\xE7\xE3o\u201D para pegar"
   - 'Pegou: {0}'
+  - Dano/s
+  - Pente
+  - Alcance
+  - Mobilidade
   - 'Trancada: precisa de uma chave'
   - 'Trancada: precisa da chave vermelha'
   - 'Trancada: precisa da chave azul'
@@ -295,6 +313,16 @@ MonoBehaviour:
   - "Pol\xEDtica de privacidade"
   - ABRIR
   - REDEFINIR ABA
+  - JOGO
+  - "Vibra\xE7\xE3o"
+  - "Dist\xE2ncia da c\xE2mera"
+  - "\xB1{0}"
+  - "Tremor da c\xE2mera"
+  - "Resolu\xE7\xE3o"
+  - "Compara\xE7\xE3o de armas"
+  - SETAS
+  - COR
+  - DESL.
   - "Arraste o anal\xF3gico e os bot\xF5es. Toque em um para mudar o tamanho."
   - '{0}: tamanho {1}'
   - "Anal\xF3gico"

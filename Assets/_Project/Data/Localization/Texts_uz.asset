@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - "QAYTA O\u02BBQLASH"
   - "{0}: olish uchun \xABHarakat\xBB tugmasini bosing"
   - 'Olindi: {0}'
+  - Zarar/s
+  - Magazin
+  - Masofa
+  - Harakatchanlik
   - 'Qulflangan: kalit kerak'
   - 'Qulflangan: qizil kalit kerak'
   - "Qulflangan: ko\u02BBk kalit kerak"
@@ -295,6 +313,16 @@ MonoBehaviour:
   - Maxfiylik siyosati
   - OCHISH
   - "BO\u02BBLIMNI TIKLASH"
+  - "O\u02BBYIN"
+  - Tebranish
+  - Kamera masofasi
+  - "\xB1{0}"
+  - Kamera silkinishi
+  - Aniqlik
+  - Qurollarni solishtirish
+  - STRELKALAR
+  - RANG
+  - "O\u02BBCHIQ"
   - "Stik va tugmalarni suring. O\u02BBlchamini o\u02BBzgartirish uchun birini bosing."
   - "{0}: o\u02BBlcham {1}"
   - Stik

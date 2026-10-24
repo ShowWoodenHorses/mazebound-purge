@@ -166,6 +166,10 @@ namespace Purge.Presentation.Audio
                 case UiSoundKind.Click: Play(Catalog.Click); break;
                 case UiSoundKind.Back: Play(Catalog.Back); break;
                 case UiSoundKind.Denied: Play(Catalog.Denied); break;
+                case UiSoundKind.Window: Play(Catalog.ConfirmOpen); break;
+                case UiSoundKind.CardsShown: Play(Catalog.CardsShown); break;
+                case UiSoundKind.CardChosen: Play(Catalog.CardChosen); break;
+                case UiSoundKind.CardReroll: Play(Catalog.CardReroll); break;
             }
         }
 

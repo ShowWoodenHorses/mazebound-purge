@@ -178,6 +178,26 @@ namespace Purge.Tests.EditMode.Monsters
         }
 
         [Test]
+        public void PlainAttack_HurtsThePlayer_FromItsSide()
+        {
+            // Stage 6e2: the HUD's damage arc also for an ordinary blow, not only abilities.
+            _monster.SetAbilities();
+            Build();
+            Spawn(PlayerAt.x + 0.7f, PlayerAt.y);
+            var hurts = 0;
+            var hurtFrom = Vector2.zero;
+            _health.Hurt += (amount, source) =>
+            {
+                hurts++;
+                hurtFrom = source;
+            };
+
+            Tick(2f);
+            Assert.That(hurts, Is.GreaterThan(0));
+            Assert.That(hurtFrom.x, Is.GreaterThan(PlayerAt.x), "the blow came from the east");
+        }
+
+        [Test]
         public void NoCast_WithoutLineOfSight()
         {
             _monster.SetAbilities(Shot());

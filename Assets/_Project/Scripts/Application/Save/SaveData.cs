@@ -165,6 +165,9 @@ namespace Purge.Application.Save
         public float SfxVolume = 1f;
         public ControlsSettings Controls = ControlsSettings.Default;
 
+        /// <summary>The "Game" page: camera, render resolution, comparison at a weapon (stage 6e2; old saves — zeros = defaults).</summary>
+        public GameSettings Game = GameSettings.Default;
+
         /// <summary>Frames-per-second counter on screen (off by default; old saves get false).</summary>
         public bool ShowFps;
 
@@ -179,6 +182,77 @@ namespace Purge.Application.Save
 
         /// <summary>Language code ("en", "ru", …); empty until the first start chooses one from the system language.</summary>
         public string Language = string.Empty;
+    }
+
+    /// <summary>How the panel over a weapon on the ground compares it with the weapon in hands (stage 6e2).</summary>
+    public enum PickupCompare
+    {
+        /// <summary>Values with an arrow up (better) or down (worse) — the default and old saves.</summary>
+        Arrows = 0,
+
+        /// <summary>Values coloured: better green, worse red; no arrows.</summary>
+        Color = 1,
+
+        /// <summary>No panel.</summary>
+        Off = 2,
+    }
+
+    /// <summary>
+    /// The "Game" settings page (stage 6e2): camera distance and shake, render resolution (Android), the comparison at a
+    /// weapon on the ground. Zeros (old saves) read as defaults (<see cref="Clamped"/>).
+    /// </summary>
+    [Serializable]
+    public struct GameSettings : IEquatable<GameSettings>
+    {
+        public const int MinCameraDistance = 4;
+        public const int MaxCameraDistance = 10;
+        public const int DefaultCameraDistance = 7;
+        public const float MinResolutionScale = 0.5f;
+        public const float MaxResolutionScale = 1f;
+        public const float ResolutionScaleStep = 0.05f;
+        public const float DefaultResolutionScale = 0.75f;
+
+        /// <summary>Cells from the player to the screen's nearer edge (±N, <c>TopDownCamera.FollowHalfExtent</c>).</summary>
+        public int CameraDistance;
+
+        /// <summary>The view does not shake nor kick (negated: old saves shake).</summary>
+        public bool NoCameraShake;
+
+        /// <summary>Render resolution relative to the screen's (Android only).</summary>
+        public float ResolutionScale;
+
+        public PickupCompare Compare;
+
+        public bool CameraShake => !NoCameraShake;
+
+        public static GameSettings Default => new GameSettings
+        {
+            CameraDistance = DefaultCameraDistance,
+            ResolutionScale = DefaultResolutionScale,
+            Compare = PickupCompare.Arrows,
+        };
+
+        public GameSettings Clamped()
+        {
+            var result = this;
+            result.CameraDistance = CameraDistance == 0
+                ? DefaultCameraDistance
+                : UnityEngine.Mathf.Clamp(CameraDistance, MinCameraDistance, MaxCameraDistance);
+            result.ResolutionScale = ResolutionScale <= 0f || float.IsNaN(ResolutionScale)
+                ? DefaultResolutionScale
+                : UnityEngine.Mathf.Clamp(UnityEngine.Mathf.Round(ResolutionScale / ResolutionScaleStep) * ResolutionScaleStep,
+                    MinResolutionScale, MaxResolutionScale);
+            if (!Enum.IsDefined(typeof(PickupCompare), Compare)) result.Compare = PickupCompare.Arrows;
+            return result;
+        }
+
+        public bool Equals(GameSettings other) =>
+            CameraDistance == other.CameraDistance && NoCameraShake == other.NoCameraShake &&
+            UnityEngine.Mathf.Approximately(ResolutionScale, other.ResolutionScale) && Compare == other.Compare;
+
+        public override bool Equals(object obj) => obj is GameSettings other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(CameraDistance, NoCameraShake, ResolutionScale, Compare);
     }
 
     /// <summary>How a phone's on-screen controls attack (decision 2026-10-19).</summary>
@@ -234,6 +308,11 @@ namespace Purge.Application.Save
         /// <summary>On-screen attack scheme (old saves: zero — two sticks, the default).</summary>
         public TouchScheme Scheme;
 
+        /// <summary>The phone does not vibrate (negated: old saves vibrate; stage 6e2).</summary>
+        public bool NoVibration;
+
+        public bool Vibration => !NoVibration;
+
         /// <summary>Aim help is on by default on mobile (touch), off elsewhere.</summary>
         public static ControlsSettings Default => new ControlsSettings
         {
@@ -272,11 +351,12 @@ namespace Purge.Application.Save
             AimMode == other.AimMode &&
             AimAssist == other.AimAssist &&
             Scheme == other.Scheme &&
+            NoVibration == other.NoVibration &&
             Layout.Equals(other.Layout);
 
         public override bool Equals(object obj) => obj is ControlsSettings other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout, Scheme);
+        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout, Scheme, NoVibration);
 
         private static float Clamp(float value, float min, float max, float fallback) =>
             float.IsNaN(value) ? fallback : UnityEngine.Mathf.Clamp(value, min, max);

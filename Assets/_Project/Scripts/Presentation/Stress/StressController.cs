@@ -68,11 +68,15 @@ namespace Purge.Presentation.Stress
         private float _shownSimAvg, _shownSimMax;
         private double _simSum, _renderSum, _weaponSum, _effectsSum, _drawnSum, _aliveSum, _drawCallSum, _trianglesSum;
         private int _metricFrames;
+        private readonly Application.Services.SettingsService _playerSettings;
 
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
-            PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null, Gameplay.Doors.DoorSystem doors = null)
+            PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null, Gameplay.Doors.DoorSystem doors = null,
+            Application.Services.SettingsService playerSettings = null)
         {
+            _playerSettings = playerSettings;
+            _resolutionScale = PlayerResolutionScale; // what the screen renders at now
             _doors = doors;
             _feel = feel;
             _sandbox = sandbox;
@@ -321,6 +325,12 @@ namespace Purge.Presentation.Stress
 
         public void SetFrameRateCap(int fps) => UnityEngine.Application.targetFrameRate = fps;
 
+        /// <summary>The player's render resolution (Android, settings «Game»); 1 elsewhere.</summary>
+        private float PlayerResolutionScale =>
+            UnityEngine.Application.platform == RuntimePlatform.Android && _playerSettings != null
+                ? _playerSettings.Game.ResolutionScale
+                : 1f;
+
         public void SetResolutionScale(float scale)
         {
             _resolutionScale = scale;
@@ -401,8 +411,8 @@ namespace Purge.Presentation.Stress
             _overlay = null;
             _feelOverlay?.Dispose();
             _feelOverlay = null;
-            if (!Mathf.Approximately(_resolutionScale, 1f))
-                WebPage.SetResolutionScale(1f);
+            if (!Mathf.Approximately(_resolutionScale, PlayerResolutionScale))
+                WebPage.SetResolutionScale(PlayerResolutionScale); // back to the player's setting
             if (_settings != null)
                 UnityEngine.Application.targetFrameRate = _previousFrameRate;
         }

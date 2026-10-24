@@ -17,4 +17,12 @@ namespace Purge.Core.Audio
     public sealed class WeaponSoundPartAttribute : PropertyAttribute
     {
     }
+
+    /// <summary>
+    /// A string field naming a monster sound (<see cref="AudioCatalog.MonsterSound"/>): a dropdown of the folders
+    /// Sounds/Monster/&lt;sound&gt; (stage 6e2: casts of abilities).
+    /// </summary>
+    public sealed class MonsterSoundAttribute : PropertyAttribute
+    {
+    }
 }

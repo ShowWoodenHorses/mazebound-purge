@@ -19,6 +19,9 @@ namespace Purge.Presentation.UI
         /// <summary>Aim directions, auto-aim.</summary>
         Shooting,
 
+        /// <summary>Camera distance and shake, render resolution (Android), comparison at a weapon (stage 6e2).</summary>
+        Game,
+
         /// <summary>Everything else: language, music and sound volumes, FPS counter.</summary>
         Other,
     }
@@ -53,10 +56,20 @@ namespace Purge.Presentation.UI
         [SerializeField] private TMP_Text _opacityLabel;
         [SerializeField] private Toggle _floatingStick;
         [SerializeField] private Toggle _leftHanded;
+        [SerializeField] private Toggle _vibration;
         [SerializeField] private Button _editLayoutButton;
         [Tooltip("Aim direction segments: Free, Eight, Four (AimMode order); the chosen one in the accent.")]
         [SerializeField] private UiButton[] _aimButtons;
         [SerializeField] private Toggle _aimAssist;
+        [SerializeField] private Slider _cameraDistance;
+        [SerializeField] private TMP_Text _cameraDistanceLabel;
+        [SerializeField] private Toggle _cameraShake;
+        [Tooltip("Render resolution row: shown only where it applies (Android; the editor for testing).")]
+        [SerializeField] private GameObject _resolutionRow;
+        [SerializeField] private Slider _resolution;
+        [SerializeField] private TMP_Text _resolutionLabel;
+        [Tooltip("Comparison segments: Arrows, Colour, Off (PickupCompare order); the chosen one in the accent.")]
+        [SerializeField] private UiButton[] _compareButtons;
         [SerializeField] private Slider _musicVolume;
         [SerializeField] private TMP_Text _musicVolumeLabel;
         [SerializeField] private Slider _sfxVolume;
@@ -76,6 +89,9 @@ namespace Purge.Presentation.UI
         [SerializeField] private Button _backButton;
 
         public event Action<ControlsSettings> Changed;
+
+        /// <summary>The "Game" page was edited.</summary>
+        public event Action<GameSettings> GameChanged;
         /// <summary>"Reset to defaults" on the shown page.</summary>
         public event Action<SettingsTab> ResetClicked;
 
@@ -98,6 +114,7 @@ namespace Purge.Presentation.UI
         public event Action BackClicked;
 
         private AimMode _aimMode;
+        private GameSettings _game = GameSettings.Default;
         private TouchScheme _scheme;
         private LocalizationService _texts;
 
@@ -105,20 +122,29 @@ namespace Purge.Presentation.UI
 
         private void Awake()
         {
-            Range(_deadZone, ControlsSettings.MinDeadZone, ControlsSettings.MaxDeadZone);
-            Range(_sensitivity, 0f, 1f);
-            Range(_size, ControlsSettings.MinSize, ControlsSettings.MaxSize);
-            Range(_opacity, ControlsSettings.MinOpacity, ControlsSettings.MaxOpacity);
+            Ranges();
             foreach (var slider in new[] { _deadZone, _sensitivity, _size, _opacity })
                 slider.onValueChanged.AddListener(_ => OnEdited());
             _floatingStick.onValueChanged.AddListener(_ => OnEdited());
             _leftHanded.onValueChanged.AddListener(_ => OnEdited());
             _aimAssist.onValueChanged.AddListener(_ => OnEdited());
+            if (_vibration != null) _vibration.onValueChanged.AddListener(_ => OnEdited());
+            if (_cameraDistance != null) _cameraDistance.onValueChanged.AddListener(_ => OnGameEdited());
+            if (_resolution != null) _resolution.onValueChanged.AddListener(_ => OnGameEdited());
+
+            if (_cameraShake != null) _cameraShake.onValueChanged.AddListener(_ => OnGameEdited());
+            if (_compareButtons != null)
+                for (var i = 0; i < _compareButtons.Length; i++)
+                {
+                    var compare = (PickupCompare)i;
+                    Bind(_compareButtons[i], () => OnCompareClicked(compare));
+                }
+
+            if (_resolutionRow != null) _resolutionRow.SetActive(ResolutionShown);
             if (_showFps != null) _showFps.onValueChanged.AddListener(value => ShowFpsChanged?.Invoke(value));
             foreach (var slider in new[] { _musicVolume, _sfxVolume })
             {
                 if (slider == null) continue;
-                Range(slider, 0f, 1f);
                 slider.onValueChanged.AddListener(_ => OnVolumesEdited());
             }
             for (var i = 0; i < _aimButtons.Length; i++)
@@ -152,6 +178,10 @@ namespace Purge.Presentation.UI
         /// </summary>
         private static bool ControlsTabShown => HudScreen.TouchShown || Debug.isDebugBuild;
 
+        /// <summary>Render resolution is set on Android only (the web follows the page); the editor shows it for testing.</summary>
+        private static bool ResolutionShown =>
+            UnityEngine.Application.platform == RuntimePlatform.Android || UnityEngine.Application.isEditor;
+
         private void OnEnable()
         {
             var controls = (int)SettingsTab.Controls;
@@ -176,6 +206,7 @@ namespace Purge.Presentation.UI
         {
             _texts = texts;
             UpdateLabels(_values);
+            UpdateGameLabels();
             if (_musicVolume != null && _sfxVolume != null) UpdateVolumeLabels();
         }
 
@@ -213,6 +244,7 @@ namespace Purge.Presentation.UI
 
         public void SetValues(ControlsSettings settings)
         {
+            Ranges();
             _values = settings;
             _deadZone.SetValueWithoutNotify(settings.StickDeadZone);
             _sensitivity.SetValueWithoutNotify(settings.StickSensitivity);
@@ -221,6 +253,7 @@ namespace Purge.Presentation.UI
             _floatingStick.SetIsOnWithoutNotify(settings.FloatingStick);
             _leftHanded.SetIsOnWithoutNotify(settings.LeftHanded);
             _aimAssist.SetIsOnWithoutNotify(settings.AimAssist);
+            if (_vibration != null) _vibration.SetIsOnWithoutNotify(settings.Vibration);
             _aimMode = settings.AimMode;
             _scheme = settings.Scheme;
             UpdateLabels(settings);
@@ -240,7 +273,76 @@ namespace Purge.Presentation.UI
             settings.AimMode = _aimMode;
             settings.AimAssist = _aimAssist.isOn;
             settings.Scheme = _scheme;
+            if (_vibration != null) settings.NoVibration = !_vibration.isOn;
             return settings;
+        }
+
+        /// <summary>
+        /// Ranges of all sliders. Also before every Set*: the screen is filled before its first Awake (it opens hidden),
+        /// and a value set into the default 0..1 range would be cut (a size of 1.2 read back as 1 and saved).
+        /// </summary>
+        private void Ranges()
+        {
+            Range(_deadZone, ControlsSettings.MinDeadZone, ControlsSettings.MaxDeadZone);
+            Range(_sensitivity, 0f, 1f);
+            Range(_size, ControlsSettings.MinSize, ControlsSettings.MaxSize);
+            Range(_opacity, ControlsSettings.MinOpacity, ControlsSettings.MaxOpacity);
+            if (_musicVolume != null) Range(_musicVolume, 0f, 1f);
+            if (_sfxVolume != null) Range(_sfxVolume, 0f, 1f);
+
+            if (_cameraDistance != null)
+            {
+                _cameraDistance.minValue = GameSettings.MinCameraDistance;
+                _cameraDistance.maxValue = GameSettings.MaxCameraDistance;
+                _cameraDistance.wholeNumbers = true;
+            }
+
+            if (_resolution != null)
+            {
+                // Whole steps of ResolutionScaleStep: the slider runs over step numbers.
+                _resolution.minValue = Mathf.Round(GameSettings.MinResolutionScale / GameSettings.ResolutionScaleStep);
+                _resolution.maxValue = Mathf.Round(GameSettings.MaxResolutionScale / GameSettings.ResolutionScaleStep);
+                _resolution.wholeNumbers = true;
+            }
+        }
+
+        public void SetGame(GameSettings game)
+        {
+            Ranges();
+            _game = game;
+            if (_cameraDistance != null) _cameraDistance.SetValueWithoutNotify(game.CameraDistance);
+            if (_cameraShake != null) _cameraShake.SetIsOnWithoutNotify(game.CameraShake);
+            if (_resolution != null) _resolution.SetValueWithoutNotify(Mathf.Round(game.ResolutionScale / GameSettings.ResolutionScaleStep));
+            UpdateGameLabels();
+        }
+
+        private void OnCompareClicked(PickupCompare compare)
+        {
+            if (_game.Compare == compare) return;
+            _game.Compare = compare;
+            OnGameEdited();
+        }
+
+        private void OnGameEdited()
+        {
+            if (_cameraDistance != null) _game.CameraDistance = Mathf.RoundToInt(_cameraDistance.value);
+            if (_cameraShake != null) _game.NoCameraShake = !_cameraShake.isOn;
+            if (_resolution != null) _game.ResolutionScale = _resolution.value * GameSettings.ResolutionScaleStep;
+            _game = _game.Clamped();
+            UpdateGameLabels();
+            GameChanged?.Invoke(_game);
+        }
+
+        private void UpdateGameLabels()
+        {
+            if (_cameraDistanceLabel != null)
+                _cameraDistanceLabel.text = _texts != null
+                    ? _texts.Format(TextKeys.SettingsCameraDistanceValue, _game.CameraDistance)
+                    : _game.CameraDistance.ToString();
+            if (_resolutionLabel != null) _resolutionLabel.text = Percent(_game.ResolutionScale);
+            if (_compareButtons != null)
+                for (var i = 0; i < _compareButtons.Length; i++)
+                    _compareButtons[i].Accent = i == (int)_game.Compare;
         }
 
         private void OnAimModeClicked(AimMode mode)

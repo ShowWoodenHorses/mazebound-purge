@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - DOLDURMA
   - "{0}: almak i\xE7in Kullan'a bas\u0131n"
   - "Al\u0131nd\u0131: {0}"
+  - Hasar/sn
+  - "\u015Earj\xF6r"
+  - Menzil
+  - Hareketlilik
   - 'Kilitli: anahtar gerekli'
   - "Kilitli: k\u0131rm\u0131z\u0131 anahtar gerekli"
   - 'Kilitli: mavi anahtar gerekli'
@@ -295,6 +313,16 @@ MonoBehaviour:
   - "Gizlilik politikas\u0131"
   - "A\xC7"
   - "SEKMEY\u0130 SIFIRLA"
+  - OYUN
+  - "Titre\u015Fim"
+  - "Kamera uzakl\u0131\u011F\u0131"
+  - "\xB1{0}"
+  - "Kamera sars\u0131nt\u0131s\u0131"
+  - "\xC7\xF6z\xFCn\xFCrl\xFCk"
+  - "Silah kar\u015F\u0131la\u015Ft\u0131rma"
+  - OKLAR
+  - RENK
+  - KAPALI
   - "\xC7ubu\u011Fu ve d\xFC\u011Fmeleri s\xFCr\xFCkleyin. Boyutunu de\u011Fi\u015Ftirmek
     i\xE7in birine dokunun."
   - '{0} boyutu: {1}'

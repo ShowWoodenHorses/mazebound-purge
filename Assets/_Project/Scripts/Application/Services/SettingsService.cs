@@ -166,6 +166,29 @@ namespace Purge.Application.Services
             SetControls(controls);
         }
 
+        /// <summary>Raised when <see cref="Game"/> changes (also once after loading).</summary>
+        public event Action GameChanged;
+
+        /// <summary>The "Game" page: camera, render resolution, comparison at a weapon (stage 6e2).</summary>
+        public GameSettings Game => _save.Data.Settings.Game;
+
+        /// <summary>Applies the "Game" settings at once; they are written by <see cref="SavePreviewed"/>.</summary>
+        public void PreviewGame(GameSettings game)
+        {
+            game = game.Clamped();
+            if (game.Equals(Game)) return;
+            _save.Data.Settings.Game = game;
+            _previewDirty = true;
+            GameChanged?.Invoke();
+        }
+
+        /// <summary>Defaults of the "Game" page.</summary>
+        public void ResetGame()
+        {
+            PreviewGame(GameSettings.Default);
+            SavePreviewed();
+        }
+
         /// <summary>Defaults of the "Other" settings page: full volumes, no FPS counter.</summary>
         public void ResetOther()
         {
@@ -189,7 +212,9 @@ namespace Purge.Application.Services
             settings.MusicVolume = Mathf.Clamp01(settings.MusicVolume);
             settings.SfxVolume = Mathf.Clamp01(settings.SfxVolume);
             settings.Controls = settings.Controls.Clamped();
+            settings.Game = settings.Game.Clamped();
             ControlsChanged?.Invoke();
+            GameChanged?.Invoke();
             ShowFpsChanged?.Invoke();
             VolumeChanged?.Invoke();
             return UniTask.CompletedTask;

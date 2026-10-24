@@ -293,6 +293,20 @@ namespace Purge.Core.Audio
         [Tooltip("The stinger plays again only after this many seconds without any zombie noticing the player.")]
         [SerializeField, Min(0f)] private float _stingerRearm = 6f;
 
+        [Header("Monsters (stage 6e2)")]
+        [Tooltip("Sounds of abilities by name: a folder Sounds/Monster/<name> each (abilities name them in Cast/Release Sound).")]
+        [SerializeField] private List<SoundPart> _monsterSounds = new List<SoundPart>();
+        [Tooltip("A caller monster calls the horde (Monster/call*).")]
+        [SerializeField] private SoundCue _monsterCall = new SoundCue(0.7f, 16f, 2, new Vector2(0.95f, 1.05f), 0.3f);
+        [Tooltip("A hit rings off a monster's armored front (Monster/armor_hit*).")]
+        [SerializeField] private SoundCue _armorHit = new SoundCue(0.45f, 12f, 3, new Vector2(0.9f, 1.1f), 0.06f);
+        [Tooltip("A champion appears (Monster/champion*).")]
+        [SerializeField] private SoundCue _championAppear = new SoundCue(0.7f, 16f, 2, new Vector2(0.95f, 1.05f), 0.2f);
+        [Tooltip("A monster strikes a closed door (Other/door_hit*).")]
+        [SerializeField] private SoundCue _doorHit = new SoundCue(0.7f, 12f, 2, new Vector2(0.9f, 1.1f), 0.1f);
+        [Tooltip("A monster breaks a door (Other/door_broken*).")]
+        [SerializeField] private SoundCue _doorBroken = new SoundCue(0.9f, 14f, 1, new Vector2(0.95f, 1.05f));
+
         [Header("World")]
         [Tooltip("Loop of a burning torch at every light source; only the nearest ones play.")]
         [SerializeField] private SoundCue _torchLoop = new SoundCue(0.7f, 5f, 3, Vector2.one);
@@ -313,6 +327,14 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _levelFailed = new SoundCue(0.8f, 0f, 1, Vector2.one);
         [Tooltip("Each star of the result, one after another, pitch rising.")]
         [SerializeField] private SoundCue _star = new SoundCue(0.8f, 0f, 3, Vector2.one);
+        [Tooltip("Cards of a level-up appear (UI/cards_show*).")]
+        [SerializeField] private SoundCue _cardsShown = new SoundCue(0.7f, 0f, 1, Vector2.one);
+        [Tooltip("A card is chosen (UI/card_pick*).")]
+        [SerializeField] private SoundCue _cardChosen = new SoundCue(0.7f, 0f, 1, Vector2.one);
+        [Tooltip("The cards are rerolled (UI/card_reroll*).")]
+        [SerializeField] private SoundCue _cardReroll = new SoundCue(0.6f, 0f, 1, new Vector2(1.05f, 1.1f));
+        [Tooltip("A confirmation window opens (UI/window_exit_level).")]
+        [SerializeField] private SoundCue _confirmOpen = new SoundCue(0.6f, 0f, 1, Vector2.one);
         [Tooltip("Seconds after the level ends before its jingle (lets the death or exit sound be heard).")]
         [SerializeField, Min(0f)] private float _resultDelay = 0.5f;
         [Tooltip("Seconds between star sounds.")]
@@ -443,6 +465,37 @@ namespace Purge.Core.Audio
         internal List<WeaponSound> MutableWeaponSounds => _weaponSounds;
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
         internal List<SoundPart> MutableParts => _parts;
+        internal List<SoundPart> MutableMonsterSounds => _monsterSounds;
+        internal SoundCue MonsterCallCue => _monsterCall;
+        internal SoundCue ArmorHitCue => _armorHit;
+        internal SoundCue ChampionAppearCue => _championAppear;
+        internal SoundCue DoorHitCue => _doorHit;
+        internal SoundCue DoorBrokenCue => _doorBroken;
+        internal SoundCue CardsShownCue => _cardsShown;
+        internal SoundCue CardChosenCue => _cardChosen;
+        internal SoundCue CardRerollCue => _cardReroll;
+        internal SoundCue ConfirmOpenCue => _confirmOpen;
+
+        public IReadOnlyList<SoundPart> MonsterSounds => _monsterSounds;
+        public SoundCue MonsterCall => _monsterCall;
+        public SoundCue ArmorHit => _armorHit;
+        public SoundCue ChampionAppear => _championAppear;
+        public SoundCue DoorHit => _doorHit;
+        public SoundCue DoorBroken => _doorBroken;
+        public SoundCue CardsShown => _cardsShown;
+        public SoundCue CardChosen => _cardChosen;
+        public SoundCue CardReroll => _cardReroll;
+        public SoundCue ConfirmOpen => _confirmOpen;
+
+        /// <summary>A monster sound by name (<see cref="MonsterSoundAttribute"/>), or null when there is none.</summary>
+        public SoundCue MonsterSound(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            foreach (var sound in _monsterSounds)
+                if (sound != null && string.Equals(sound.Name, name, StringComparison.OrdinalIgnoreCase))
+                    return NonEmpty(sound.Cue);
+            return null;
+        }
 
         /// <summary>A shared part's sound, or null when there is none (or it has no clips).</summary>
         public SoundCue Part(string name)
@@ -514,6 +567,12 @@ namespace Purge.Core.Audio
             yield return _click; yield return _back; yield return _denied; yield return _pauseOpen; yield return _pauseResume;
             yield return _mapOpen; yield return _mapClose;
             yield return _levelComplete; yield return _levelFailed; yield return _star; yield return _waveCleared;
+            foreach (var sound in _monsterSounds)
+                if (sound != null)
+                    yield return sound.Cue;
+            yield return _monsterCall; yield return _armorHit; yield return _championAppear;
+            yield return _doorHit; yield return _doorBroken;
+            yield return _cardsShown; yield return _cardChosen; yield return _cardReroll; yield return _confirmOpen;
         }
     }
 }

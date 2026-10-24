@@ -6,7 +6,8 @@
 
 ## Способности и офицеры (5в)
 - **Модули способностей** — `AbilityModule` (`Core/Monsters/AbilityModules.cs`), список `MonsterDefinition.Abilities` (`[ModuleList]`, порядок = приоритет).
-  - Общее у модуля: перезарядка, `FirstDelay` (не раньше N с погони), дистанция min/max, `NeedsSight`, `HealthBelow` (условие по HP), `Warning` (0,2–2 с, по ТЗ 0,5–1), `Recovery`.
+  - Общее у модуля: перезарядка, `FirstDelay` (не раньше N с погони), дистанция min/max, `NeedsSight`, `HealthBelow` (условие по HP), `Warning` (0,2–2 с, по ТЗ 0,5–1), `Recovery`, `CastSound`/`ReleaseSound` (6е2, звуки `Sounds/Monster/<звук>` — Audio.md).
+  - Обычная атака рядового ранит с направлением (`PlayerHealth.Damage(amount, позиция монстра)`) — дуга урона HUD и от неё (6е2).
   - Модули: **`ProjectileAbility`** (форма `Straight` / `Arc` / `Fan`, число и угол веера, скорость, урон, дальность, радиус и высота дуги, состояние на игрока, **эффекты попадания** — вложенный список `EffectModule`, инспектор рисует вложенные `[ModuleList]`) и **`StrikeAbility`** (сектор перед монстром: досягаемость, угол, урон, состояние).
   - Рывок и отталкивание — 5г (ниже); «крик» Крикуна — это зов восприятия (`MonsterPerception.Caller`), отдельного модуля нет.
 - **`MonsterAbilities`** (Gameplay/Horde, после `HordeSystem`): на слот — индекс каста, фаза `AbilityPhase` (Warning → Recovery), начало фазы, точка/направление прицела, готовность по способностям (`MaxAbilities` 4).

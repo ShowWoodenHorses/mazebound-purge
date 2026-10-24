@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - RECHARGEMENT
   - "{0} : appuyez sur \xAB Action \xBB pour ramasser"
   - "Ramass\xE9 : {0}"
+  - "D\xE9g\xE2ts/s"
+  - Chargeur
+  - "Port\xE9e"
+  - "Mobilit\xE9"
   - "Verrouill\xE9e : il faut une cl\xE9"
   - "Verrouill\xE9e : il faut la cl\xE9 rouge"
   - "Verrouill\xE9e : il faut la cl\xE9 bleue"
@@ -295,6 +313,16 @@ MonoBehaviour:
   - "Confidentialit\xE9"
   - OUVRIR
   - "R\xC9INITIALISER L\u2019ONGLET"
+  - JEU
+  - Vibration
+  - "Distance de la cam\xE9ra"
+  - "\xB1{0}"
+  - "Tremblement de la cam\xE9ra"
+  - "R\xE9solution"
+  - Comparaison des armes
+  - "FL\xC8CHES"
+  - COULEUR
+  - NON
   - "D\xE9placez le joystick et les boutons. Touchez-en un pour changer sa taille."
   - '{0} : taille {1}'
   - Joystick

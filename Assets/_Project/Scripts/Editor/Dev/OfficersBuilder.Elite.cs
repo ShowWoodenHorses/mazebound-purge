@@ -207,12 +207,12 @@ namespace Purge.Editor.Dev
             var raise = new RaiseAbility
             {
                 Cooldown = 9f, FirstDelay = 1.5f, MinRange = 0f, MaxRange = 16f, NeedsSight = false, Warning = 1.2f, Recovery = 0.5f,
-                Radius = 7f, Count = RaiseAbility.MaxCount, MaxAge = 20f, RiseTime = 2f,
+                Radius = 7f, Count = RaiseAbility.MaxCount, MaxAge = 20f, RiseTime = 2f, CastSound = "shaman_raise",
             };
             var area = new AreaStrikeAbility
             {
                 Cooldown = 5f, FirstDelay = 1f, MinRange = 2f, MaxRange = 10f, NeedsSight = true, Warning = 1.2f, Recovery = 0.4f,
-                Radius = 1.6f,
+                Radius = 1.6f, CastSound = "shaman_spell",
             };
             if (prefabName.EndsWith("_Castle", StringComparison.Ordinal))
             {

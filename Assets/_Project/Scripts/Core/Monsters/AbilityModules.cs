@@ -46,7 +46,13 @@ namespace Purge.Core.Monsters
         [SerializeField, Range(0.2f, 2f)] private float _warning = 0.8f;
         [Tooltip("Seconds the monster still stands after it went off.")]
         [SerializeField, Min(0f)] private float _recovery = 0.35f;
+        [Tooltip("Played where the monster stands when the cast begins (the warning): a roar, a spell. Folders Sounds/Monster.")]
+        [SerializeField, Audio.MonsterSound] private string _castSound;
+        [Tooltip("Played when it goes off: a shot, a spit. Folders Sounds/Monster.")]
+        [SerializeField, Audio.MonsterSound] private string _releaseSound;
 
+        public string CastSound { get => _castSound; internal set => _castSound = value; }
+        public string ReleaseSound { get => _releaseSound; internal set => _releaseSound = value; }
         public float Cooldown { get => _cooldown; internal set => _cooldown = value; }
         public float FirstDelay { get => _firstDelay; internal set => _firstDelay = value; }
         public float MinRange { get => _minRange; internal set => _minRange = value; }

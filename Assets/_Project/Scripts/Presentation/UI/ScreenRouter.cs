@@ -293,7 +293,10 @@ namespace Purge.Presentation.UI
         private void StartNewRun(Action start)
         {
             if ((_flow.IsRunActive || _flow.HasSavedRun) && _ui.Confirm != null)
+            {
                 _ui.Confirm.Open(_texts.Get(TextKeys.ConfirmNewRun), start);
+                _ui.RequestSound(UiSoundKind.Window);
+            }
             else
                 start();
         }

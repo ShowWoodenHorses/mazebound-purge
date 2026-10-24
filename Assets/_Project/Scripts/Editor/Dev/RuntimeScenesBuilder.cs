@@ -225,6 +225,7 @@ namespace Purge.Editor.Dev
                 else if (screen is PauseScreen && name == "ResumeButton") kind = UiSoundKind.None;
                 else if (screen is MapScreen && name == "CloseButton") kind = UiSoundKind.None;
                 else if (screen is TutorialScreen && name == "ContinueButton") kind = UiSoundKind.None; // resume sound
+                else if (screen is CardsScreen && name != "RerollButton") kind = UiSoundKind.None; // a card: its choice sound
                 else if (name == "BackButton" || name == "NoButton") kind = UiSoundKind.Back;
 
                 var sound = selectable.gameObject.AddComponent<UiSound>();
@@ -557,6 +558,7 @@ namespace Purge.Editor.Dev
 
             SetReference(screen, "_style", _style);
             SetReference(screen, "_levelName", levelName);
+            var comparePanel = BuildComparePanel(root, icons);
             // The kills' coins fly to the money of the run (stage 6e): a full-screen layer over the HUD, the hidden template
             // first; the presenter pools copies of it at load.
             var coinLayer = Rect(root, "Coins", Center, Vector2.zero, Vector2.zero);
@@ -601,7 +603,53 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_throwSlot", throwSlot);
             SetReference(screen, "_damageFlash", damageFlash);
             SetReferences(screen, "_damageArcs", damageArcs);
+            SetReference(screen, "_comparePanel", comparePanel);
             return screen;
+        }
+
+        /// <summary>
+        /// The panel over a weapon on the ground (stage 6e2): the frame and name in the rarity colour, four rows "stat —
+        /// value — arrow". Bottom-centre pivot: the presenter puts it over the weapon. Hidden until the player stands there.
+        /// </summary>
+        private static PickupComparePanel BuildComparePanel(Transform parent, UiIconSet icons)
+        {
+            const float width = 330f, rowHeight = 32f, top = 50f;
+            var height = top + rowHeight * PickupComparePanel.RowCount + 14f;
+            var rect = Rect(parent, "ComparePanel", Center, Vector2.zero, new Vector2(width, height));
+            rect.pivot = new Vector2(0.5f, 0f);
+            var frame = Shape(rect, "Frame", Center, Vector2.zero, Vector2.zero);
+            Stretch(frame.rectTransform);
+            frame.CornerRadius = 10f;
+            frame.StrokeWidth = 2f;
+            var name = Text(rect, "Name", "", 26f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -10f),
+                new Vector2(width - 28f, 34f), TextAlignmentOptions.Center);
+            name.textWrappingMode = TextWrappingModes.NoWrap;
+            name.overflowMode = TextOverflowModes.Ellipsis;
+
+            var captions = new List<Object>();
+            var values = new List<Object>();
+            var arrows = new List<Object>();
+            for (var i = 0; i < PickupComparePanel.RowCount; i++)
+            {
+                var y = -top - rowHeight * (i + 0.5f);
+                captions.Add(Text(rect, "Caption" + i, "", 22f, false, new Vector2(0f, 1f), new Vector2(0f, 0.5f),
+                    new Vector2(16f, y), new Vector2(170f, rowHeight), TextAlignmentOptions.MidlineLeft, _style.MutedText));
+                values.Add(Text(rect, "Value" + i, "", 24f, true, new Vector2(1f, 1f), new Vector2(1f, 0.5f),
+                    new Vector2(-44f, y), new Vector2(110f, rowHeight), TextAlignmentOptions.MidlineRight));
+                var arrow = Icon(rect, "Arrow" + i, icons.ChevronRight, new Vector2(1f, 1f), new Vector2(-26f, y), 22f);
+                arrow.enabled = false;
+                arrows.Add(arrow);
+            }
+
+            var panel = rect.gameObject.AddComponent<PickupComparePanel>();
+            SetReference(panel, "_style", _style);
+            SetReference(panel, "_frame", frame);
+            SetReference(panel, "_name", name);
+            SetReferences(panel, "_captions", captions);
+            SetReferences(panel, "_values", values);
+            SetReferences(panel, "_arrows", arrows);
+            rect.gameObject.SetActive(false);
+            return panel;
         }
 
         private static readonly Vector2 TopLeft = new Vector2(0f, 1f);
@@ -1664,7 +1712,7 @@ namespace Purge.Editor.Dev
 
         /// <summary>
         /// Settings (mock-up): an opaque screen over the main menu or the pause. Back and the title at the top; tabs
-        /// Controls / Shooting / Other (SettingsTab order) with the open one underlined in the accent; rows "caption —
+        /// Controls / Shooting / Game / Other (SettingsTab order) with the open one underlined in the accent; rows "caption —
         /// control (value)"; Reset tab at the bottom right.
         /// </summary>
         private static SettingsScreen BuildSettings(Transform parent)
@@ -1699,7 +1747,7 @@ namespace Purge.Editor.Dev
             var tabButtons = new List<Object>();
             var tabLabels = new List<Object>();
             var tabUnderlines = new List<Object>();
-            foreach (var (name, caption) in new[] { ("ControlsTab", Loc(TextKeys.SettingsTabControls)), ("ShootingTab", Loc(TextKeys.SettingsTabShooting)), ("OtherTab", Loc(TextKeys.SettingsTabOther)) })
+            foreach (var (name, caption) in new[] { ("ControlsTab", Loc(TextKeys.SettingsTabControls)), ("ShootingTab", Loc(TextKeys.SettingsTabShooting)), ("GameTab", Loc(TextKeys.SettingsTabGame)), ("OtherTab", Loc(TextKeys.SettingsTabOther)) })
             {
                 var (button, label, underline) = TabButton(tabs.transform, name, caption);
                 tabButtons.Add(button);
@@ -1732,6 +1780,7 @@ namespace Purge.Editor.Dev
             var (opacity, opacityLabel) = SliderSetting(controlsPage, "Opacity", Loc(TextKeys.SettingsControlsOpacity));
             var floating = SwitchSetting(controlsPage, "FloatingStick", Loc(TextKeys.SettingsFloatingStick));
             var leftHanded = SwitchSetting(controlsPage, "LeftHanded", Loc(TextKeys.SettingsLeftHanded));
+            var vibration = SwitchSetting(controlsPage, "Vibration", Loc(TextKeys.SettingsVibration));
             var editLayout = ButtonSetting(controlsPage, "EditLayoutButton", Loc(TextKeys.SettingsButtonLayout), Loc(TextKeys.SettingsEdit));
 
             var shootingPage = Page(pages.transform, "ShootingPage");
@@ -1745,6 +1794,19 @@ namespace Purge.Editor.Dev
             }
 
             var aimAssist = SwitchSetting(shootingPage, "AimAssist", Loc(TextKeys.SettingsAimAssist));
+
+            var gamePage = Page(pages.transform, "GamePage");
+            var (cameraDistance, cameraDistanceLabel) = SliderSetting(gamePage, "CameraDistance", Loc(TextKeys.SettingsCameraDistance));
+            var cameraShake = SwitchSetting(gamePage, "CameraShake", Loc(TextKeys.SettingsCameraShake));
+            var (resolution, resolutionLabel) = SliderSetting(gamePage, "Resolution", Loc(TextKeys.SettingsResolution));
+            var compareRow = SettingRow(gamePage, "Compare", Loc(TextKeys.SettingsCompare));
+            var compareButtons = new List<Object>();
+            foreach (var (name, caption) in new[] { ("CompareArrowsButton", Loc(TextKeys.SettingsCompareArrows)), ("CompareColorButton", Loc(TextKeys.SettingsCompareColor)), ("CompareOffButton", Loc(TextKeys.SettingsCompareOff)) })
+            {
+                var segment = TextButton(compareRow, name, caption, false, null, 60f, 24f);
+                segment.GetComponent<LayoutElement>().preferredWidth = 180f;
+                compareButtons.Add(segment);
+            }
 
             var otherPage = Page(pages.transform, "OtherPage");
             var languageRow = SettingRow(otherPage, "Language", Loc(TextKeys.SettingsLanguage));
@@ -1778,7 +1840,7 @@ namespace Purge.Editor.Dev
             SetReferences(screen, "_tabButtons", tabButtons);
             SetReferences(screen, "_tabLabels", tabLabels);
             SetReferences(screen, "_tabUnderlines", tabUnderlines);
-            SetReferences(screen, "_pages", new List<Object> { controlsPage.gameObject, shootingPage.gameObject, otherPage.gameObject });
+            SetReferences(screen, "_pages", new List<Object> { controlsPage.gameObject, shootingPage.gameObject, gamePage.gameObject, otherPage.gameObject });
             SetReference(screen, "_editLayoutButton", editLayout);
             SetReference(screen, "_languageName", languageName);
             SetReference(screen, "_languageButton", languageButton);
@@ -1793,6 +1855,14 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_opacityLabel", opacityLabel);
             SetReference(screen, "_floatingStick", floating);
             SetReference(screen, "_leftHanded", leftHanded);
+            SetReference(screen, "_vibration", vibration);
+            SetReference(screen, "_cameraDistance", cameraDistance);
+            SetReference(screen, "_cameraDistanceLabel", cameraDistanceLabel);
+            SetReference(screen, "_cameraShake", cameraShake);
+            SetReference(screen, "_resolutionRow", resolution.transform.parent.gameObject);
+            SetReference(screen, "_resolution", resolution);
+            SetReference(screen, "_resolutionLabel", resolutionLabel);
+            SetReferences(screen, "_compareButtons", compareButtons);
             SetReferences(screen, "_aimButtons", aimButtons);
             SetReferences(screen, "_schemeButtons", schemeButtons);
             SetReference(screen, "_aimAssist", aimAssist);
@@ -2101,7 +2171,7 @@ namespace Purge.Editor.Dev
             layout.childAlignment = TextAnchor.MiddleLeft;
             layout.childControlWidth = layout.childControlHeight = true;
             layout.childForceExpandWidth = layout.childForceExpandHeight = false;
-            row.AddComponent<LayoutElement>().preferredHeight = 80f;
+            row.AddComponent<LayoutElement>().preferredHeight = 74f; // 9 rows of Controls stay above Reset tab
 
             var label = Text(row.transform, "Caption", caption, 30f, false, Center, Center, Vector2.zero, new Vector2(10f, 40f),
                 TextAlignmentOptions.MidlineLeft);

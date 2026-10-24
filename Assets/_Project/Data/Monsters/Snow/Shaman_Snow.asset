@@ -38,6 +38,10 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+  _cost: 0
+  _money: 0
+  _experience: 0
+  _score: 0
   _drop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
   _resistances: []
   _deathEffects: []
@@ -58,6 +62,8 @@ MonoBehaviour:
         _healthBelow: 1
         _warning: 1.2
         _recovery: 0.5
+        _castSound: shaman_raise
+        _releaseSound: 
         _radius: 7
         _count: 5
         _maxAge: 20
@@ -73,6 +79,8 @@ MonoBehaviour:
         _healthBelow: 1
         _warning: 1.2
         _recovery: 0.4
+        _castSound: shaman_spell
+        _releaseSound: 
         _radius: 1.6
         _damage: 6
         _status: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}

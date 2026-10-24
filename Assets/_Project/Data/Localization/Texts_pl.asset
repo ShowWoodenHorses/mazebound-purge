@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - "PRZE\u0141ADOWANIE"
   - "{0}: naci\u015Bnij \u201EAkcja\u201D, aby podnie\u015B\u0107"
   - 'Podniesiono: {0}'
+  - "Obra\u017Cenia/s"
+  - Magazynek
+  - "Zasi\u0119g"
+  - "Mobilno\u015B\u0107"
   - "Zamkni\u0119te: potrzebny klucz"
   - "Zamkni\u0119te: potrzebny czerwony klucz"
   - "Zamkni\u0119te: potrzebny niebieski klucz"
@@ -295,6 +313,16 @@ MonoBehaviour:
   - "Polityka prywatno\u015Bci"
   - "OTW\xD3RZ"
   - "RESETUJ KART\u0118"
+  - GRA
+  - Wibracje
+  - "Odleg\u0142o\u015B\u0107 kamery"
+  - "\xB1{0}"
+  - "Wstrz\u0105sy kamery"
+  - "Rozdzielczo\u015B\u0107"
+  - "Por\xF3wnanie broni"
+  - "STRZA\u0141KI"
+  - KOLOR
+  - "WY\u0141."
   - "Przeci\u0105gaj ga\u0142k\u0119 i przyciski. Dotknij jednego, aby zmieni\u0107
     jego rozmiar."
   - '{0}: rozmiar {1}'

@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - RELOAD
   - '{0}: press Use to pick up'
   - Picked up {0}
+  - DPS
+  - Magazine
+  - Range
+  - Mobility
   - 'Locked: needs a key'
   - 'Locked: needs the red key'
   - 'Locked: needs the blue key'
@@ -295,6 +313,16 @@ MonoBehaviour:
   - Privacy policy
   - OPEN
   - RESET TAB
+  - GAME
+  - Vibration
+  - Camera distance
+  - "\xB1{0}"
+  - Camera shake
+  - Resolution
+  - Weapon comparison
+  - ARROWS
+  - COLOUR
+  - OFF
   - Drag the stick and buttons. Tap one to resize it.
   - '{0} size: {1}'
   - Stick

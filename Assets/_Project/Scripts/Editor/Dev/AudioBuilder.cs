@@ -33,6 +33,9 @@ namespace Purge.Editor.Dev
         internal const string PartsFolderName = "_Parts";
         internal const string WeaponPartsFolder = WeaponGroupsFolder + "/" + PartsFolderName;
 
+        /// <summary>Files right in it are fixed monster cues (call, armor, champion); folders under it — sounds of abilities.</summary>
+        internal const string MonsterFolder = SoundsFolder + "/Monster";
+
         private static readonly Regex AttackFile = new Regex(@"^attack\d*$", RegexOptions.IgnoreCase);
         private static readonly Regex StartFile = new Regex(@"^start\d*$", RegexOptions.IgnoreCase);
         private static readonly Regex LoopFile = new Regex(@"^loop\d*$", RegexOptions.IgnoreCase);
@@ -91,6 +94,15 @@ namespace Purge.Editor.Dev
             ("Player", @"^level_up\d*$", c => c.LevelUpCue),
             ("Player", @"^revive\d*$", c => c.ReviveCue),
             ("Other", @"^coin\d*$", c => c.CoinCue),
+            ("Other", @"^door_hit\d*$", c => c.DoorHitCue),
+            ("Other", @"^door_broken\d*$", c => c.DoorBrokenCue),
+            ("Monster", @"^call\d*$", c => c.MonsterCallCue),
+            ("Monster", @"^armor_hit\d*$", c => c.ArmorHitCue),
+            ("Monster", @"^champion\d*$", c => c.ChampionAppearCue),
+            ("UI", @"^cards_show\d*$", c => c.CardsShownCue),
+            ("UI", @"^card_pick\d*$", c => c.CardChosenCue),
+            ("UI", @"^card_reroll\d*$", c => c.CardRerollCue),
+            ("UI", @"^window_exit_level$", c => c.ConfirmOpenCue),
 
             ("Zombie", @"^zombie-idle\d*$", c => c.ZombieGroan),
             ("Zombie", @"^zombie-scream\d*$", c => c.ZombieRoar),
@@ -159,6 +171,8 @@ namespace Purge.Editor.Dev
             }
 
             FillParts(catalog, sounds, used);
+            FillFolders(catalog.MutableMonsterSounds, MonsterFolder, sounds, used,
+                _ => new SoundCue(0.75f, 16f, 3, new Vector2(0.95f, 1.05f), 0.08f));
             FillWeaponSounds(catalog, sounds, used);
 
             foreach (var (name, track, volume, overlap) in Music)
@@ -205,6 +219,9 @@ namespace Purge.Editor.Dev
         /// <summary>Names of the shared weapon sound folders (Sounds/Weapon/_Parts/&lt;part&gt;), sorted.</summary>
         internal static List<string> WeaponParts() => SubFolders(WeaponPartsFolder);
 
+        /// <summary>Names of the monster sound folders (Sounds/Monster/&lt;sound&gt;), sorted.</summary>
+        internal static List<string> MonsterSounds() => SubFolders(MonsterFolder);
+
         private static List<string> SubFolders(string folder) =>
             AssetDatabase.IsValidFolder(folder)
                 ? AssetDatabase.GetSubFolders(folder)
@@ -217,28 +234,33 @@ namespace Purge.Editor.Dev
         /// Shared weapon sounds: every folder under <see cref="WeaponPartsFolder"/> is a part (its name), all its files are
         /// variants. A part keeps its tuning; parts whose folder is gone are removed.
         /// </summary>
-        private static void FillParts(AudioCatalog catalog, List<string> sounds, HashSet<string> used)
+        private static void FillParts(AudioCatalog catalog, List<string> sounds, HashSet<string> used) =>
+            FillFolders(catalog.MutableParts, WeaponPartsFolder, sounds, used, DefaultPartCue);
+
+        /// <summary>Every folder right under <paramref name="root"/> is a named sound, its files the variants; tuning kept.</summary>
+        private static void FillFolders(List<SoundPart> list, string root, List<string> sounds, HashSet<string> used,
+            Func<string, SoundCue> defaultCue)
         {
             var folders = sounds
                 .Where(p => string.Equals(Path.GetDirectoryName(Path.GetDirectoryName(p))?.Replace('\\', '/'),
-                    WeaponPartsFolder, StringComparison.OrdinalIgnoreCase))
+                    root, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(p => Path.GetFileName(Path.GetDirectoryName(p)), StringComparer.OrdinalIgnoreCase)
                 .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
 
             var parts = new List<SoundPart>();
             foreach (var folder in folders)
             {
-                var part = catalog.MutableParts.FirstOrDefault(p => p != null &&
+                var part = list.FirstOrDefault(p => p != null &&
                                string.Equals(p.Name, folder.Key, StringComparison.OrdinalIgnoreCase))
-                           ?? new SoundPart(folder.Key, DefaultPartCue(folder.Key));
+                           ?? new SoundPart(folder.Key, defaultCue(folder.Key));
                 var files = folder.OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
                 part.Cue.Clips = files.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).ToArray();
                 used.UnionWith(files);
                 parts.Add(part);
             }
 
-            catalog.MutableParts.Clear();
-            catalog.MutableParts.AddRange(parts);
+            list.Clear();
+            list.AddRange(parts);
         }
 
         /// <summary>Tuning of a new part by its kind (name prefix): tails and shells are quiet and limited.</summary>

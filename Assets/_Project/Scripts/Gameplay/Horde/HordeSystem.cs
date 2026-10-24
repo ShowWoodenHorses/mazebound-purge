@@ -441,8 +441,12 @@ namespace Purge.Gameplay.Horde
             _speed[agent] *= data.SpeedFactor;
             _attackRate[agent] = Mathf.Max(0.1f, data.AttackRateFactor);
             ChampionsMade++;
+            ChampionMade?.Invoke(agent);
             return true;
         }
+
+        /// <summary>(slot) a monster became a champion (its appearance sound, stage 6e2).</summary>
+        public event Action<int> ChampionMade;
 
         /// <summary>A monster of the waves is a champion now and then (<see cref="ChampionRules.Chance"/>), its affix evenly.</summary>
         private void RollChampion(int slot)
@@ -1023,7 +1027,7 @@ namespace Purge.Gameplay.Horde
                         if (!GodMode && stats.Damage > 0 && !_playerHealth.IsDead)
                         {
                             var amount = Mathf.RoundToInt(stats.Damage * _damageFactor[i]);
-                            _playerHealth.Damage(amount);
+                            _playerHealth.Damage(amount, position); // from the monster: the HUD's damage arc
                             ReportPlayerHit(i, _generation[i], amount);
                         }
                     }

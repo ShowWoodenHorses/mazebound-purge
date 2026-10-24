@@ -29,6 +29,10 @@ MonoBehaviour:
   - hud.reload
   - hud.weapon_here
   - hud.weapon_taken
+  - compare.dps
+  - compare.magazine
+  - compare.range
+  - compare.mobility
   - hud.locked
   - hud.locked.red
   - hud.locked.blue
@@ -102,6 +106,16 @@ MonoBehaviour:
   - settings.privacy
   - settings.privacy.open
   - settings.reset_tab
+  - settings.tab.game
+  - settings.vibration
+  - settings.camera_distance
+  - settings.camera_distance.value
+  - settings.camera_shake
+  - settings.resolution
+  - settings.compare
+  - settings.compare.arrows
+  - settings.compare.color
+  - settings.compare.off
   - layout.hint
   - layout.size
   - layout.element.stick
@@ -222,6 +236,10 @@ MonoBehaviour:
   - RECARGA
   - '{0}: pulsa Usar para recoger'
   - 'Recogido: {0}'
+  - "Da\xF1o/s"
+  - Cargador
+  - Alcance
+  - Movilidad
   - 'Cerrada: necesitas una llave'
   - 'Cerrada: necesitas la llave roja'
   - 'Cerrada: necesitas la llave azul'
@@ -295,6 +313,16 @@ MonoBehaviour:
   - "Pol\xEDtica de privacidad"
   - ABRIR
   - "RESTABLECER PESTA\xD1A"
+  - JUEGO
+  - "Vibraci\xF3n"
+  - "Distancia de la c\xE1mara"
+  - "\xB1{0}"
+  - "Temblor de la c\xE1mara"
+  - "Resoluci\xF3n"
+  - "Comparaci\xF3n de armas"
+  - FLECHAS
+  - COLOR
+  - NO
   - "Arrastra el stick y los botones. Toca uno para cambiar su tama\xF1o."
   - "{0}: tama\xF1o {1}"
   - Stick

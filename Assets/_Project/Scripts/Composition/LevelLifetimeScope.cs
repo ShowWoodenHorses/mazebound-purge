@@ -143,6 +143,8 @@ namespace Purge.Composition
             builder.RegisterComponent(_viewRoot);
             builder.RegisterComponent(_camera);
             builder.Register<CameraAimPointer>(Lifetime.Singleton).As<IAimPointer>();
+            // The player's camera distance and shake (stage 6e2).
+            builder.Register<CameraSettingsPresenter>(Lifetime.Singleton).As<ILevelLoadStep>();
             builder.Register<EntityViewRegistry>(Lifetime.Singleton);
             builder.Register<LevelVisualSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LightFixturesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
@@ -162,6 +164,8 @@ namespace Purge.Composition
             builder.Register<RunFeedbackPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             // The run's level under the HP and the cards of a level-up (stage 6c).
             builder.Register<CardsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            // The panel over a weapon on the ground compared with the one in hands (stage 6e2).
+            builder.Register<PickupComparePresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             // The death window: revive by an ad or the skill, or give up (stage 6d).
             builder.Register<DeathPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MapPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -200,6 +204,8 @@ namespace Purge.Composition
             // After the gameplay systems and the zombie views: it listens to them and ticks after the simulation.
             builder.Register<LevelAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<WeaponAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
+            // Abilities, calls, armor, champions, doors (stage 6e2).
+            builder.Register<HordeAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep>();
             builder.Register<FootprintsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Weather: emitted in the tick (nothing on pause), paused in the late tick.
             builder.Register<SnowfallView>(Lifetime.Singleton).AsSelf()

@@ -41,6 +41,9 @@ namespace Purge.Editor.LevelDesigner
 
             var cell = _state.SelectedCell.Value;
             EditorGUILayout.LabelField($"Cell {cell}  ·  {Level.Geometry.GetCell(cell)}", EditorStyles.boldLabel);
+            var tags = CellTags(cell);
+            if (tags.Length > 0)
+                EditorGUILayout.LabelField(tags, EditorStyles.miniLabel);
             DrawCellVisual(cell);
 
             var entities = Level.AllEntities().Where(e => e.Position == cell).ToList();
@@ -59,6 +62,24 @@ namespace Purge.Editor.LevelDesigner
         }
 
         // ------------------------------------------------------------ Cell
+
+        /// <summary>Spawn point, arena, locked area, hand-edit mark of the cell.</summary>
+        private string CellTags(GridPosition cell)
+        {
+            var tags = new List<string>();
+            var spawn = Level.MonsterSpawns.FirstOrDefault(s => s.Position == cell);
+            if (spawn != null) tags.Add($"spawn point {spawn.Id}");
+            var arena = Level.Arena;
+            if (!arena.IsEmpty && arena.Floor == cell.Floor)
+            {
+                if (arena.Rect.Contains(cell)) tags.Add("arena");
+                else if (arena.Outer.Contains(cell)) tags.Add("arena ring");
+            }
+
+            if (Level.Marks.IsLocked(cell)) tags.Add("locked area");
+            if (Level.Marks.IsManual(Level.Geometry, cell)) tags.Add("edited by hand");
+            return string.Join("  ·  ", tags);
+        }
 
         private void DrawCellVisual(GridPosition cell)
         {
@@ -161,6 +182,16 @@ namespace Purge.Editor.LevelDesigner
                 case ZombieSpawnData zombie: DrawZombie(zombie); break;
                 case WeaponPickupData weapon: DrawWeapon(weapon); break;
                 case PlayerStartData start: DrawStart(start); break;
+                case BarrelData barrel:
+                    var barrelKind = (BarrelKind)EditorGUILayout.EnumPopup("Kind", barrel.Kind);
+                    if (barrelKind != barrel.Kind)
+                        Apply("Set Barrel Kind", () => LevelEditing.SetBarrelKind(barrel, barrelKind));
+                    break;
+                case ChestData chest:
+                    var chestKind = (ChestKind)EditorGUILayout.EnumPopup("Kind", chest.Kind);
+                    if (chestKind != chest.Kind)
+                        Apply("Set Chest Kind", () => LevelEditing.SetChestKind(chest, chestKind));
+                    break;
             }
 
             if (VisualKinds.TryGetForEntity(entity, out var kind, out _) && Level.VisualTheme != null)
@@ -224,6 +255,12 @@ namespace Purge.Editor.LevelDesigner
                 if (hits != door.IceHits)
                     Apply("Set Ice Hits", () => LevelEditing.SetDoorIce(door, hits));
             }
+
+            var strength = EditorGUILayout.DelayedIntField(new GUIContent("Strength",
+                $"Damage from door-breaking monsters (the Brute, bosses) before the door falls; 0 = default ({DoorData.DefaultStrength})."),
+                door.Strength);
+            if (strength != door.Strength)
+                Apply("Set Door Strength", () => LevelEditing.SetDoorStrength(door, strength));
         }
 
         private void DrawKey(KeyData key)

@@ -7,8 +7,9 @@ namespace Purge.Core.Level
 {
     /// <summary>
     /// What the biome generator must not touch when it runs again ("Generate", stage 7): cells edited by hand in the
-    /// Level Designer (every cell edit marks its cell) and locked areas (rectangles; brush — stage 7б). Such cells keep
+    /// Level Designer (every cell edit marks its cell) and locked areas (rectangles). Such cells keep
     /// their structure, surface, obstacle, objects and visual overrides. Editor data only; runtime never reads it.
+    /// Locked areas are drawn with the Lock Area brush of the Level Designer (stage 7б).
     /// </summary>
     [Serializable]
     public sealed class AuthoringMarks
@@ -38,12 +39,15 @@ namespace Purge.Core.Level
             return _manual[geometry.ToIndex(position)] != 0;
         }
 
-        public bool IsLocked(GridPosition position)
+        public bool IsLocked(GridPosition position) => FindLockedArea(position) != null;
+
+        /// <summary>The last added locked area holding the cell; null when none does.</summary>
+        public LockedArea FindLockedArea(GridPosition position)
         {
-            foreach (var area in _lockedAreas)
-                if (area.Floor == position.Floor && area.Rect.Contains(position))
-                    return true;
-            return false;
+            for (var i = _lockedAreas.Count - 1; i >= 0; i--)
+                if (_lockedAreas[i].Floor == position.Floor && _lockedAreas[i].Rect.Contains(position))
+                    return _lockedAreas[i];
+            return null;
         }
 
         /// <summary>The generator keeps the cell: edited by hand or in a locked area.</summary>

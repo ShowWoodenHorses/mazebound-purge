@@ -146,6 +146,25 @@ namespace Purge.Tests.EditMode.Level
             }
         }
 
+        /// <summary>Stage 7б: the validator's layout checks agree with the generator — a generated Forest passes them.</summary>
+        [Test]
+        public void Forest_PassesTheLayoutValidator_OnManySeeds()
+        {
+            var codes = new[]
+            {
+                Purge.Core.Validation.ValidationCodes.LevelDisconnected, Purge.Core.Validation.ValidationCodes.ArenaTooSmall,
+                Purge.Core.Validation.ValidationCodes.ArenaFewEntries, Purge.Core.Validation.ValidationCodes.SpawnInStartView,
+                Purge.Core.Validation.ValidationCodes.SpawnUnreachable, Purge.Core.Validation.ValidationCodes.SpawnNoBodyPath,
+                Purge.Core.Validation.ValidationCodes.ObstacleBudget,
+            };
+            for (var seed = 0; seed < 12; seed++)
+            {
+                var report = Purge.Core.Validation.LevelValidator.Validate(Level(seed));
+                var issues = report.Issues.Where(i => codes.Contains(i.Code)).Select(i => i.ToString()).ToList();
+                CollectionAssert.IsEmpty(issues, $"seed {seed}");
+            }
+        }
+
         [Test]
         public void Grass_Burns_AndIsNotOnTrailsOrUnderObstacles()
         {

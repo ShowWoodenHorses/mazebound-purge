@@ -116,6 +116,62 @@ namespace Purge.Core.Level
         public ZombieDefinition Definition { get => _definition; internal set => _definition = value; }
     }
 
+    /// <summary>What a barrel spills when it blows up (stage 7в).</summary>
+    public enum BarrelKind
+    {
+        Gas = 0,
+        Fire = 1,
+        Acid = 2,
+    }
+
+    /// <summary>
+    /// An explosive barrel (ТЗ 7в): shot or hit, it blows up and leaves a zone of its kind; the cell is free afterwards.
+    /// Placed by the Level Designer brush (stage 7б); gameplay and look — stage 7в.
+    /// </summary>
+    [Serializable]
+    public sealed class BarrelData : LevelEntityData
+    {
+        public const string IdPrefix = "barrel";
+
+        [SerializeField] private BarrelKind _kind;
+
+        public BarrelData(string id, GridPosition position, BarrelKind kind) : base(id, position)
+        {
+            _kind = kind;
+        }
+
+        public BarrelKind Kind { get => _kind; internal set => _kind = value; }
+    }
+
+    /// <summary>What it takes to open a chest and what it gives (stage 7в).</summary>
+    public enum ChestKind
+    {
+        /// <summary>Use → one item of the officer drop table.</summary>
+        Common = 0,
+
+        /// <summary>Needs the chest key → a weapon a rarity step above the officer drop.</summary>
+        Locked = 1,
+
+        /// <summary>Use → champions climb out around it; the locked chest's reward after they die.</summary>
+        Challenge = 2,
+    }
+
+    /// <summary>A chest (ТЗ 7в): opened once per run. Placed by the Level Designer brush (7б); gameplay and look — 7в.</summary>
+    [Serializable]
+    public sealed class ChestData : LevelEntityData
+    {
+        public const string IdPrefix = "chest";
+
+        [SerializeField] private ChestKind _kind;
+
+        public ChestData(string id, GridPosition position, ChestKind kind) : base(id, position)
+        {
+            _kind = kind;
+        }
+
+        public ChestKind Kind { get => _kind; internal set => _kind = value; }
+    }
+
     [Serializable]
     public sealed class WeaponPickupData : LevelEntityData
     {

@@ -20,10 +20,15 @@ namespace Purge.Editor.LevelDesigner
         Zombie,
         Weapon,
         Medkit,
+        Spawn,
+        Arena,
+        Barrel,
+        Chest,
         Decor,
         Snowdrift,
         Grass,
         Obstacle,
+        LockArea,
         Erase,
     }
 
@@ -66,6 +71,14 @@ namespace Purge.Editor.LevelDesigner
         public Direction ZombieFacing { get; set; } = Direction.South;
         public WeaponDefinition WeaponDefinition { get; set; }
         public ObstacleDefinition ObstacleDefinition { get; set; }
+        public BarrelKind BarrelKind { get; set; }
+        public ChestKind ChestKind { get; set; }
+
+        /// <summary>Ring width of an arena drawn with the Arena brush.</summary>
+        public int ArenaRing { get; set; } = 2;
+
+        /// <summary>Corner where the rectangle of the Arena / Lock Area brush was started.</summary>
+        private GridPosition? _rectAnchor;
 
         public DecorBrushMode DecorMode { get; set; }
         public string DecorVariantId { get; set; }
@@ -91,6 +104,10 @@ namespace Purge.Editor.LevelDesigner
                     PaintSurface(cell, CellSurface.None);
                 else if (ActiveTool == EditTool.Obstacle)
                     PaintObstacle(cell, null);
+                else if (ActiveTool == EditTool.Spawn)
+                    RemoveSpawn(cell);
+                else if (ActiveTool == EditTool.LockArea)
+                    RemoveLockedArea(cell);
                 return;
             }
 
@@ -98,6 +115,14 @@ namespace Purge.Editor.LevelDesigner
             {
                 case EditTool.Select:
                     SelectAt(cell);
+                    break;
+                case EditTool.Arena:
+                case EditTool.LockArea:
+                    _rectAnchor = cell;
+                    _state.RectDrag = GridRect.FromCorners(cell, cell);
+                    break;
+                case EditTool.Spawn:
+                    AddSpawn(cell);
                     break;
                 case EditTool.Wall:
                 case EditTool.Floor:
@@ -153,6 +178,11 @@ namespace Purge.Editor.LevelDesigner
 
             switch (ActiveTool)
             {
+                case EditTool.Arena:
+                case EditTool.LockArea:
+                    if (_rectAnchor.HasValue)
+                        _state.RectDrag = GridRect.FromCorners(_rectAnchor.Value, cell);
+                    break;
                 case EditTool.Wall:
                 case EditTool.Floor:
                 case EditTool.Door:
@@ -185,6 +215,10 @@ namespace Purge.Editor.LevelDesigner
             }
 
             _state.DragTarget = null;
+            if (_rectAnchor.HasValue && _state.RectDrag.HasValue)
+                CommitRect(_state.RectDrag.Value);
+            _rectAnchor = null;
+            _state.RectDrag = null;
 
             if (_changed)
             {
@@ -312,9 +346,51 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Weapon:
                     Apply("Add Weapon", () => created = LevelEditing.AddWeapon(Level, cell, WeaponDefinition));
                     break;
+                case EditTool.Barrel:
+                    Apply("Add Barrel", () => created = LevelEditing.AddBarrel(Level, cell, BarrelKind));
+                    break;
+                case EditTool.Chest:
+                    Apply("Add Chest", () => created = LevelEditing.AddChest(Level, cell, ChestKind));
+                    break;
             }
 
             _state.Select(created);
+        }
+
+        /// <summary>Spawn points only on walkable floor; they do not take the cell (objects may share it).</summary>
+        private void AddSpawn(GridPosition cell)
+        {
+            if (Level.Geometry.GetCell(cell) != CellType.Floor || !ArenaLayout.IsWalkable(Level.Geometry, cell))
+            {
+                _notify("Spawn points can only be placed on free floor cells.");
+                return;
+            }
+
+            if (Level.MonsterSpawns.Any(s => s.Position == cell))
+                return;
+            Apply("Add Spawn Point", () => LevelEditing.AddMonsterSpawn(Level, cell));
+        }
+
+        private void RemoveSpawn(GridPosition cell)
+        {
+            if (Level.MonsterSpawns.Any(s => s.Position == cell))
+                Apply("Remove Spawn Point", () => LevelEditing.RemoveMonsterSpawn(Level, cell));
+        }
+
+        private void RemoveLockedArea(GridPosition cell)
+        {
+            var area = Level.Marks.FindLockedArea(cell);
+            if (area != null)
+                Apply("Remove Locked Area", () => LevelEditing.RemoveLockedArea(Level, area));
+        }
+
+        /// <summary>The rectangle of the Arena / Lock Area brush is released.</summary>
+        private void CommitRect(GridRect rect)
+        {
+            if (Tool == EditTool.Arena)
+                Apply("Set Arena", () => LevelEditing.SetArena(Level, rect, ArenaRing));
+            else if (Tool == EditTool.LockArea)
+                Apply("Lock Area", () => LevelEditing.AddLockedArea(Level, rect));
         }
 
         private bool CanPlace(GridPosition cell, out string reason)
@@ -323,6 +399,13 @@ namespace Purge.Editor.LevelDesigner
             if (Level.Geometry.GetCell(cell) != CellType.Floor)
             {
                 reason = "Objects can only be placed on floor cells.";
+                return false;
+            }
+
+            var obstacle = Level.Geometry.GetObstacle(cell);
+            if (obstacle != null && obstacle.BlocksMovement)
+            {
+                reason = $"Cell {cell} has obstacle '{obstacle.name}' that blocks movement.";
                 return false;
             }
 

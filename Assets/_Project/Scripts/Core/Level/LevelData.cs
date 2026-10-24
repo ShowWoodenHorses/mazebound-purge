@@ -25,6 +25,8 @@ namespace Purge.Core.Level
         [SerializeField] private List<MedkitData> _medkits = new List<MedkitData>();
         [SerializeField] private List<LightSourceData> _lights = new List<LightSourceData>();
         [SerializeField] private List<MonsterSpawnData> _monsterSpawns = new List<MonsterSpawnData>();
+        [SerializeField] private List<BarrelData> _barrels = new List<BarrelData>();
+        [SerializeField] private List<ChestData> _chests = new List<ChestData>();
 
         [Tooltip("The boss arena (made by the biome generator); an empty rectangle = none.")]
         [SerializeField] private ArenaData _arena = new ArenaData(default, 0);
@@ -78,6 +80,8 @@ namespace Purge.Core.Level
         public IReadOnlyList<WeaponPickupData> Weapons => _weapons;
         public IReadOnlyList<KeyData> Keys => _keys;
         public IReadOnlyList<MedkitData> Medkits => _medkits;
+        public IReadOnlyList<BarrelData> Barrels => _barrels;
+        public IReadOnlyList<ChestData> Chests => _chests;
 
         /// <summary>Light sources (visual only, not in <see cref="AllEntities"/>).</summary>
         public IReadOnlyList<LightSourceData> Lights => _lights;
@@ -99,6 +103,8 @@ namespace Purge.Core.Level
         internal List<MedkitData> MutableMedkits => _medkits;
         internal List<LightSourceData> MutableLights => _lights;
         internal List<MonsterSpawnData> MutableMonsterSpawns => _monsterSpawns;
+        internal List<BarrelData> MutableBarrels => _barrels;
+        internal List<ChestData> MutableChests => _chests;
 
         /// <summary>All placed objects, in a stable order.</summary>
         public IEnumerable<LevelEntityData> AllEntities()
@@ -109,6 +115,8 @@ namespace Purge.Core.Level
             foreach (var e in _weapons) yield return e;
             foreach (var e in _keys) yield return e;
             foreach (var e in _medkits) yield return e;
+            foreach (var e in _barrels) yield return e;
+            foreach (var e in _chests) yield return e;
         }
 
         /// <summary>Ids of all placed objects and light sources. Used for uniqueness checks.</summary>
@@ -152,6 +160,8 @@ namespace Purge.Core.Level
             _weapons.Clear();
             _keys.Clear();
             _medkits.Clear();
+            _barrels.Clear();
+            _chests.Clear();
         }
 
         /// <summary>Returns "{prefix}_{N}" where N is one greater than the largest existing N for that prefix.</summary>

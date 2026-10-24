@@ -53,8 +53,8 @@ namespace Purge.Presentation.Visual
             var missingObjects = 0;
             foreach (var entity in _level.AllEntities())
             {
-                if (entity is PlayerStartData || entity is ZombieSpawnData)
-                    continue;
+                if (entity is PlayerStartData || entity is ZombieSpawnData || entity is BarrelData || entity is ChestData)
+                    continue; // barrels and chests: their look comes with their gameplay (stage 7в)
 
                 var view = EntityViews.Create(_level, entity, _root.transform);
                 if (view != null) _entities.Add(view);

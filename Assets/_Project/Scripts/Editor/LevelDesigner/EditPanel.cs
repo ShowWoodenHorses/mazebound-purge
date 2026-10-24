@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using Purge.Core.Authoring;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
+using Purge.Core.Level;
 using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
@@ -43,6 +45,21 @@ namespace Purge.Editor.LevelDesigner
                     if (tools.ObstacleDefinition != null)
                         EditorGUILayout.LabelField("Blocks", Blocks(tools.ObstacleDefinition), EditorStyles.miniLabel);
                     break;
+                case EditTool.Barrel:
+                    tools.BarrelKind = (BarrelKind)EditorGUILayout.EnumPopup("Kind", tools.BarrelKind);
+                    break;
+                case EditTool.Chest:
+                    tools.ChestKind = (ChestKind)EditorGUILayout.EnumPopup("Kind", tools.ChestKind);
+                    break;
+                case EditTool.Spawn:
+                    EditorGUILayout.LabelField("Spawn points", state.Level.MonsterSpawns.Count.ToString());
+                    break;
+                case EditTool.Arena:
+                    ArenaOptions(state, tools);
+                    break;
+                case EditTool.LockArea:
+                    EditorGUILayout.LabelField("Locked areas", state.Level.Marks.LockedAreas.Count.ToString());
+                    break;
                 case EditTool.Key when tools.PendingKeyDoorId != null:
                     EditorGUILayout.HelpBox($"The next key you place opens '{tools.PendingKeyDoorId}'.", MessageType.Info);
                     break;
@@ -75,6 +92,25 @@ namespace Purge.Editor.LevelDesigner
             tools.DecorRotation = EditorGUILayout.Popup("Rotation", tools.DecorRotation, RotationNames);
         }
 
+        private static void ArenaOptions(LevelDesignerState state, EditToolController tools)
+        {
+            tools.ArenaRing = Mathf.Clamp(EditorGUILayout.IntField("Ring", tools.ArenaRing), 0, 8);
+            var arena = state.Level.Arena;
+            if (arena.IsEmpty)
+            {
+                EditorGUILayout.LabelField("Arena", "none");
+                return;
+            }
+
+            var wide = arena.Entries.Count(e => e.Width >= Purge.Core.Validation.LevelValidator.MinArenaEntryWidth);
+            EditorGUILayout.LabelField("Arena", $"{arena.Rect}, ring {arena.Ring}, entries {wide} of {arena.Entries.Count}");
+            if (GUILayout.Button("Remove Arena"))
+            {
+                LevelEditorCommands.Modify(state.Level, "Remove Arena", () => LevelEditing.RemoveArena(state.Level));
+                state.Revalidate();
+            }
+        }
+
         private static string Blocks(ObstacleDefinition obstacle)
         {
             var parts = new System.Collections.Generic.List<string>();
@@ -91,6 +127,7 @@ namespace Purge.Editor.LevelDesigner
             switch (tool)
             {
                 case EditTool.PlayerStart: return "Start";
+                case EditTool.LockArea: return "Lock Area";
                 default: return tool.ToString();
             }
         }
@@ -108,6 +145,11 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Snowdrift: return "Click or drag on floor cells to make snowdrifts: the player and zombies move slower there, zombie routes go around them when the detour is short. Right-click or right-drag removes them. The cell gets a drift floor of the theme (if it has one) and no auto decor.";
                 case EditTool.Grass: return "Click or drag on floor cells to grow grass: fire spreads over it; the cell gets grass decor of the theme (tall grass). Right-click or right-drag removes it.";
                 case EditTool.Obstacle: return "Click or drag on floor cells to place the obstacle (Data/Obstacles: what it blocks — movement, bullets, sight — is set in its asset). Right-click or right-drag removes obstacles. The cell shows a Decor variant of the theme bound to the obstacle.";
+                case EditTool.Spawn: return "Click a free floor cell to add a spawn point of the waves' monsters (M); right-click removes it. Keep them out of the start's view (more than 10 cells) with a 3x3 path to the arena.";
+                case EditTool.Arena: return "Drag a rectangle: the open cells of the boss arena (A). The ring of the given width around it is drawn by hand with Wall; its entries are the gaps in the ring (at least 3, each 3 cells wide). The arena and ring are marked as edited, so Generate keeps them.";
+                case EditTool.Barrel: return "Click a floor cell to place an explosive barrel of the chosen kind (B). Gameplay comes in stage 7в.";
+                case EditTool.Chest: return "Click a floor cell to place a chest of the chosen kind (C). Gameplay comes in stage 7в.";
+                case EditTool.LockArea: return "Drag a rectangle: Generate leaves its cells as they are (blue tint). Right-click inside an area removes it.";
                 case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts, grass, obstacles and decor are removed, walls, void and doors become floor.";
                 default: return "Click a floor cell to place.";
             }

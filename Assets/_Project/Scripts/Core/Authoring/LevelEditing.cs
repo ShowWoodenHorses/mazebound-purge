@@ -58,6 +58,7 @@ namespace Purge.Core.Authoring
                 VisualAssigner.AssignObject(level, door);
             }
 
+            RefreshArenaEntries(level, position);
             return true;
         }
 
@@ -98,6 +99,7 @@ namespace Purge.Core.Authoring
             level.VisualData.ClearCellOverride(position, CellLayer.Decor);
             level.VisualData.ClearDecorPlacement(position);
             VisualAssigner.AssignDecor(level, position);
+            RefreshArenaEntries(level, position);
             return true;
         }
 
@@ -175,6 +177,14 @@ namespace Purge.Core.Authoring
         public static WeaponPickupData AddWeapon(LevelData level, GridPosition position, WeaponDefinition definition) =>
             Add(level, level.MutableWeapons, new WeaponPickupData(level.CreateUniqueId(WeaponPickupData.IdPrefix), position, definition));
 
+        /// <summary>An explosive barrel of <paramref name="kind"/> (gameplay — stage 7в).</summary>
+        public static BarrelData AddBarrel(LevelData level, GridPosition position, BarrelKind kind) =>
+            Add(level, level.MutableBarrels, new BarrelData(level.CreateUniqueId(BarrelData.IdPrefix), position, kind));
+
+        /// <summary>A chest of <paramref name="kind"/> (gameplay — stage 7в).</summary>
+        public static ChestData AddChest(LevelData level, GridPosition position, ChestKind kind) =>
+            Add(level, level.MutableChests, new ChestData(level.CreateUniqueId(ChestData.IdPrefix), position, kind));
+
         /// <summary>
         /// Adds a key; if <paramref name="door"/> is given, links it (one key = one door) and colours both.
         /// The key wins its cell: auto decor there is removed (decor placed by hand stays).
@@ -223,6 +233,8 @@ namespace Purge.Core.Authoring
                 case PlayerStartData start: level.MutablePlayerStarts.Remove(start); break;
                 case MedkitData medkit: level.MutableMedkits.Remove(medkit); break;
                 case WeaponPickupData weapon: level.MutableWeapons.Remove(weapon); break;
+                case BarrelData barrel: level.MutableBarrels.Remove(barrel); break;
+                case ChestData chest: level.MutableChests.Remove(chest); break;
             }
 
             level.VisualData.RemoveObject(entity.Id);
@@ -302,6 +314,12 @@ namespace Purge.Core.Authoring
             }
 
             VisualAssigner.UpdateOrientation(level, entity);
+            if (entity is DoorData)
+            {
+                RefreshArenaEntries(level, from);
+                RefreshArenaEntries(level, to);
+            }
+
             return true;
         }
 
@@ -366,7 +384,14 @@ namespace Purge.Core.Authoring
             if (door.IsFrozen) door.IsInitiallyOpen = false;
         }
 
+        /// <summary>Damage from door-breaking monsters before the door falls; 0 = <see cref="DoorData.DefaultStrength"/>.</summary>
+        public static void SetDoorStrength(DoorData door, int strength) => door.Strength = strength;
+
         // ------------------------------------------------------------ Definitions
+
+        public static void SetBarrelKind(BarrelData barrel, BarrelKind kind) => barrel.Kind = kind;
+
+        public static void SetChestKind(ChestData chest, ChestKind kind) => chest.Kind = kind;
 
         public static void SetZombie(LevelData level, ZombieSpawnData zombie, ZombieDefinition definition, Direction facing)
         {
@@ -654,10 +679,53 @@ namespace Purge.Core.Authoring
             return true;
         }
 
-        /// <summary>A rectangle the generator leaves as it is (brush — stage 7б).</summary>
+        /// <summary>A rectangle the generator leaves as it is (the Lock Area brush).</summary>
         public static void AddLockedArea(LevelData level, GridRect rect, int floor = 0) => level.Marks.AddLockedArea(rect, floor);
 
         public static bool RemoveLockedArea(LevelData level, LockedArea area) => level.Marks.RemoveLockedArea(area);
+
+        // ------------------------------------------------------------ Arena
+
+        /// <summary>
+        /// The arena brush: <paramref name="rect"/> (open cells) with a ring <paramref name="ring"/> cells wide becomes the
+        /// level's arena. Cells are not changed — walls and entries are drawn by hand; the entries are read from the
+        /// ring (<see cref="ArenaLayout.FindEntries"/>). The arena with its ring is marked as edited, so "Generate" keeps it.
+        /// </summary>
+        public static ArenaData SetArena(LevelData level, GridRect rect, int ring, int floor = 0)
+        {
+            var arena = new ArenaData(rect, System.Math.Max(0, ring), floor);
+            var outer = arena.Outer;
+            for (var y = outer.Y; y < outer.YMax; y++)
+            for (var x = outer.X; x < outer.XMax; x++)
+                Mark(level, new GridPosition(x, y, floor));
+            level.SetArena(arena);
+            RefreshArenaEntries(level);
+            return arena;
+        }
+
+        public static bool RemoveArena(LevelData level)
+        {
+            if (level.Arena.IsEmpty) return false;
+            level.SetArena(null);
+            return true;
+        }
+
+        /// <summary>The arena's entries follow its ring as the cells show it.</summary>
+        public static void RefreshArenaEntries(LevelData level)
+        {
+            var arena = level.Arena;
+            if (arena.IsEmpty) return;
+            arena.MutableEntries.Clear();
+            arena.MutableEntries.AddRange(ArenaLayout.FindEntries(level.Geometry, arena));
+        }
+
+        /// <summary>A cell of the arena's ring changed: its entries are read again.</summary>
+        private static void RefreshArenaEntries(LevelData level, GridPosition position)
+        {
+            var arena = level.Arena;
+            if (!arena.IsEmpty && arena.Floor == position.Floor && arena.Outer.Contains(position) && !arena.Rect.Contains(position))
+                RefreshArenaEntries(level);
+        }
 
         private static void RemoveDoorData(LevelData level, DoorData door)
         {

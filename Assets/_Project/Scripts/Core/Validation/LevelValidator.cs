@@ -12,7 +12,7 @@ namespace Purge.Core.Validation
     /// Level validator (ТЗ §90–92): structural, visual and gameplay checks.
     /// Read-only: never changes the level and never "fixes" anything silently.
     /// </summary>
-    public static class LevelValidator
+    public static partial class LevelValidator
     {
         private const ValidationCategory Structural = ValidationCategory.Structural;
         private const ValidationCategory Visual = ValidationCategory.Visual;
@@ -696,10 +696,11 @@ namespace Purge.Core.Validation
                 ReportUnreachable(key, starts, results, ValidationCodes.KeyUnreachable, report);
 
             foreach (var entity in level.Weapons.Cast<LevelEntityData>()
-                         .Concat(level.Medkits).Concat(level.ZombieSpawns))
+                         .Concat(level.Medkits).Concat(level.ZombieSpawns).Concat(level.Chests))
                 ReportUnreachable(entity, starts, results, ValidationCodes.ObjectUnreachable, report);
 
             ValidateDoorPassages(level, report);
+            ValidateLayout(level, starts, report);
         }
 
         private static void ReportUnreachable(LevelEntityData entity, List<PlayerStartData> starts,

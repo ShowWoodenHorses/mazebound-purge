@@ -67,5 +67,14 @@ namespace Purge.Core.Validation
         public const string KeyUnreachable = "KeyUnreachable";
         public const string ObjectUnreachable = "ObjectUnreachable";
         public const string DoorWithoutPassage = "DoorWithoutPassage";
+
+        // Layout of a location (stage 7б)
+        public const string LevelDisconnected = "LevelDisconnected";
+        public const string ArenaTooSmall = "ArenaTooSmall";
+        public const string ArenaFewEntries = "ArenaFewEntries";
+        public const string SpawnInStartView = "SpawnInStartView";
+        public const string SpawnUnreachable = "SpawnUnreachable";
+        public const string SpawnNoBodyPath = "SpawnNoBodyPath";
+        public const string ObstacleBudget = "ObstacleBudget";
     }
 }

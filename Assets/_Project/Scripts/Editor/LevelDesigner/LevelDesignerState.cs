@@ -20,6 +20,9 @@ namespace Purge.Editor.LevelDesigner
         /// <summary>Cell an object is being dragged to with the Select tool.</summary>
         public GridPosition? DragTarget { get; set; }
 
+        /// <summary>Rectangle being drawn with the Arena / Lock Area brush.</summary>
+        public GridRect? RectDrag { get; set; }
+
         /// <summary>Set when the canvas should re-fit the level (new level, new size).</summary>
         public bool FitRequested { get; set; }
 
@@ -43,6 +46,7 @@ namespace Purge.Editor.LevelDesigner
             SelectedEntityId = null;
             FocusedIssue = null;
             DragTarget = null;
+            RectDrag = null;
         }
 
         public void Select(LevelEntityData entity)

@@ -39,6 +39,11 @@ namespace Purge.Editor.LevelDesigner
         private static readonly Color SelectedColor = new Color(1f, 0.85f, 0.1f);
         private static readonly Color ErrorColor = new Color(1f, 0.2f, 0.2f);
         private static readonly Color WarningColor = new Color(1f, 0.65f, 0.1f);
+        private static readonly Color LockedColor = new Color(0.3f, 0.6f, 1f);
+        private static readonly Color LockedFill = new Color(0.3f, 0.6f, 1f, 0.22f);
+        private static readonly Color ArenaColor = new Color(1f, 0.35f, 0.9f);
+        private static readonly Color EntryFill = new Color(0.3f, 1f, 0.4f, 0.45f);
+        private static readonly Color NarrowEntryFill = new Color(1f, 0.65f, 0.1f, 0.45f);
 
         private readonly Dictionary<GridPosition, (string Text, Color Color)> _glyphs = new Dictionary<GridPosition, (string, Color)>();
         private static readonly Color SelectedEntityColor = new Color(0.2f, 1f, 1f);
@@ -255,6 +260,7 @@ namespace Purge.Editor.LevelDesigner
 
             PaintDecor(level, local);
             PaintLights(level, local);
+            PaintAreas(state);
             PaintGlyphs(level, local);
             PaintIssues(state);
 
@@ -319,16 +325,47 @@ namespace Purge.Editor.LevelDesigner
             }
         }
 
+        /// <summary>
+        /// Locked areas (blue tint), the arena (magenta: its open cells and the ring; entries through the ring — green) and
+        /// the rectangle being drawn with the Arena / Lock Area brush.
+        /// </summary>
+        private void PaintAreas(LevelDesignerState state)
+        {
+            var level = state.Level;
+            var height = level.Geometry.Height;
+            foreach (var area in level.Marks.LockedAreas)
+            {
+                if (area.Floor != 0) continue;
+                var r = AreaRect(area.Rect, height);
+                EditorGUI.DrawRect(r, LockedFill);
+                DrawOutline(r, LockedColor, 1f);
+            }
+
+            var arena = level.Arena;
+            if (!arena.IsEmpty && arena.Floor == 0)
+            {
+                foreach (var entry in ArenaLayout.FindEntries(level.Geometry, arena))
+                    EditorGUI.DrawRect(AreaRect(entry.Gap, height),
+                        entry.Width >= Purge.Core.Validation.LevelValidator.MinArenaEntryWidth ? EntryFill : NarrowEntryFill);
+                DrawOutline(AreaRect(arena.Outer, height), ArenaColor, 1f);
+                DrawOutline(AreaRect(arena.Rect, height), ArenaColor, 2f);
+            }
+
+            if (state.RectDrag.HasValue)
+                DrawOutline(AreaRect(state.RectDrag.Value, height), Color.white, 2f);
+        }
+
+        private Rect AreaRect(GridRect rect, int height) =>
+            new Rect(_origin.x + rect.X * _cellSize, _origin.y + (height - rect.YMax) * _cellSize,
+                rect.Width * _cellSize, rect.Height * _cellSize);
+
         private void PaintGlyphs(LevelData level, Rect local)
         {
             _glyphs.Clear();
             foreach (var entity in level.AllEntities())
-            {
-                var glyph = EntityGlyphs.For(level, entity);
-                _glyphs[entity.Position] = _glyphs.TryGetValue(entity.Position, out var existing)
-                    ? (existing.Text.Length < 2 ? existing.Text + glyph.Text : existing.Text, existing.Color)
-                    : glyph;
-            }
+                AddGlyph(entity.Position, EntityGlyphs.For(level, entity));
+            foreach (var spawn in level.MonsterSpawns)
+                AddGlyph(spawn.Position, EntityGlyphs.Spawn);
 
             if (_glyphStyle == null)
                 _glyphStyle = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleCenter, clipping = TextClipping.Overflow };
@@ -355,6 +392,11 @@ namespace Purge.Editor.LevelDesigner
                 GUI.Label(r, pair.Value.Text, _glyphStyle);
             }
         }
+
+        private void AddGlyph(GridPosition cell, (string Text, Color Color) glyph) =>
+            _glyphs[cell] = _glyphs.TryGetValue(cell, out var existing)
+                ? (existing.Text.Length < 2 ? existing.Text + glyph.Text : existing.Text, existing.Color)
+                : glyph;
 
         private void PaintIssues(LevelDesignerState state)
         {
@@ -407,7 +449,32 @@ namespace Purge.Editor.LevelDesigner
                 case ZombieSpawnData _: return ("Z", new Color(1f, 0.25f, 0.25f));
                 case WeaponPickupData _: return ("W", new Color(1f, 0.6f, 0.15f));
                 case MedkitData _: return ("+", new Color(1f, 0.4f, 0.8f));
+                case BarrelData barrel: return ("B", BarrelColor(barrel.Kind));
+                case ChestData chest: return ("C", ChestColor(chest.Kind));
                 default: return ("?", Color.gray);
+            }
+        }
+
+        /// <summary>A spawn point of the waves' monsters.</summary>
+        public static readonly (string Text, Color Color) Spawn = ("M", new Color(1f, 0.5f, 0.45f));
+
+        private static Color BarrelColor(BarrelKind kind)
+        {
+            switch (kind)
+            {
+                case BarrelKind.Fire: return new Color(1f, 0.4f, 0.1f);
+                case BarrelKind.Acid: return new Color(0.9f, 1f, 0.15f);
+                default: return new Color(0.55f, 0.85f, 0.35f);
+            }
+        }
+
+        private static Color ChestColor(ChestKind kind)
+        {
+            switch (kind)
+            {
+                case ChestKind.Locked: return new Color(1f, 0.85f, 0.2f);
+                case ChestKind.Challenge: return new Color(0.75f, 0.45f, 1f);
+                default: return new Color(0.85f, 0.65f, 0.4f);
             }
         }
 

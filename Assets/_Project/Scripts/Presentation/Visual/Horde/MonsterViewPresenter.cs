@@ -91,6 +91,12 @@ namespace Purge.Presentation.Visual.Horde
         /// <summary>Views shown now (metrics).</summary>
         public int ShownCount { get; private set; }
 
+        /// <summary>Views handed to slots now, shown or not (metrics).</summary>
+        public int HeldCount { get; private set; }
+
+        /// <summary>Animator monsters left without a view now: their kind's pool is empty (metrics).</summary>
+        public int MissingCount { get; private set; }
+
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var settings = _level.Horde;
@@ -148,7 +154,7 @@ namespace Purge.Presentation.Visual.Horde
             var kinds = _horde.Kinds;
             var generations = _horde.Generations;
             var high = _horde.HighWater;
-            var shown = 0;
+            int shown = 0, held = 0, missing = 0;
             for (var i = 0; i < _slots.Length; i++)
             {
                 var view = _slots[i];
@@ -164,9 +170,14 @@ namespace Purge.Presentation.Visual.Horde
                 if (view == null)
                 {
                     view = Acquire(i, pool);
-                    if (view == null) continue;
+                    if (view == null)
+                    {
+                        missing++;
+                        continue;
+                    }
                 }
 
+                held++;
                 var p = positions[i];
                 var visible = !_visibility.HasResult ||
                               _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f)));
@@ -187,6 +198,8 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             ShownCount = shown;
+            HeldCount = held;
+            MissingCount = missing;
         }
 
         public void Dispose()

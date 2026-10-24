@@ -193,6 +193,10 @@ namespace Purge.Composition
             // After the horde views: measures them and drives the stress test overlay.
             builder.Register<StressController>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
+#if PURGE_DEV_LEVELS || UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Stage 6e1: the frames of each wave of a real run, to the Performance log (dev builds only).
+            builder.Register<WavePerformanceLog>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
+#endif
             // After the gameplay systems and the zombie views: it listens to them and ticks after the simulation.
             builder.Register<LevelAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<WeaponAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();

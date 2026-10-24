@@ -11,7 +11,8 @@ namespace Purge.Core.Authoring
     /// <summary>
     /// Manual level editing operations (ТЗ §15): every operation keeps the level consistent —
     /// door cells and DoorData stay in sync, references follow renames, and visuals are updated locally
-    /// without re-randomizing anything else. Editor/level-creation only.
+    /// without re-randomizing anything else. Every edit of a cell marks it as edited by hand
+    /// (<see cref="AuthoringMarks"/>): "Generate" with a biome recipe leaves such cells alone. Editor/level-creation only.
     /// </summary>
     internal static class LevelEditing
     {
@@ -33,6 +34,7 @@ namespace Purge.Core.Authoring
                 return false;
 
             geometry.SetCell(position, type);
+            Mark(level, position);
 
             if (old == CellType.Door)
                 foreach (var door in level.Doors.Where(d => d.Position == position).ToList())
@@ -71,6 +73,7 @@ namespace Purge.Core.Authoring
                 return false;
 
             geometry.SetSurface(position, surface);
+            Mark(level, position);
             if (level.VisualData.HasCellAssignments(geometry.CellCount))
                 level.VisualData.SetCellAssignment(CellLayer.Floor, geometry.ToIndex(position),
                     VisualAssigner.ChooseCell(level, position, CellLayer.Floor));
@@ -91,6 +94,7 @@ namespace Purge.Core.Authoring
                 return false;
 
             geometry.SetObstacle(position, obstacle);
+            Mark(level, position);
             level.VisualData.ClearCellOverride(position, CellLayer.Decor);
             level.VisualData.ClearDecorPlacement(position);
             VisualAssigner.AssignDecor(level, position);
@@ -107,6 +111,8 @@ namespace Purge.Core.Authoring
             var floor = geometry.AddFloor(CellType.Void);
             if (hadAssignments)
                 level.VisualData.ResizeCellAssignments(geometry.CellCount); // Void cells have no visual layers
+            if (level.Marks.ManualCount > 0)
+                level.Marks.Resize(geometry.CellCount);
             return floor;
         }
 
@@ -134,6 +140,8 @@ namespace Purge.Core.Authoring
             geometry.RemoveTopFloor();
             if (hadAssignments)
                 level.VisualData.ResizeCellAssignments(geometry.CellCount);
+            if (level.Marks.ManualCount > 0)
+                level.Marks.Resize(geometry.CellCount);
             return true;
         }
 
@@ -150,6 +158,7 @@ namespace Purge.Core.Authoring
                     return existing;
             var spawn = new MonsterSpawnData(level.CreateUniqueId(MonsterSpawnData.IdPrefix), position);
             level.MutableMonsterSpawns.Add(spawn);
+            Mark(level, position);
             return spawn;
         }
 
@@ -182,6 +191,7 @@ namespace Purge.Core.Authoring
         private static T Add<T>(LevelData level, List<T> list, T entity) where T : LevelEntityData
         {
             list.Add(entity);
+            Mark(level, entity.Position);
             VisualAssigner.AssignObject(level, entity);
             return entity;
         }
@@ -228,6 +238,7 @@ namespace Purge.Core.Authoring
             if (!level.Geometry.IsInside(position))
                 return false;
 
+            Mark(level, position);
             var changed = false;
             foreach (var entity in level.AllEntities().Where(e => e.Position == position).ToList())
             {
@@ -268,6 +279,8 @@ namespace Purge.Core.Authoring
 
             var from = entity.Position;
             entity.Position = to;
+            Mark(level, from);
+            Mark(level, to);
             if (from != to)
                 level.VisualData.ClearObjectPlacement(entity.Id); // Another cell, another surrounding: back to its centre.
 
@@ -375,8 +388,11 @@ namespace Purge.Core.Authoring
 
         // ------------------------------------------------------------ Visual overrides
 
-        public static void SetCellOverride(LevelData level, GridPosition position, CellLayer layer, VisualChoice choice) =>
+        public static void SetCellOverride(LevelData level, GridPosition position, CellLayer layer, VisualChoice choice)
+        {
             level.VisualData.SetCellOverride(position, layer, choice);
+            Mark(level, position);
+        }
 
         /// <summary>
         /// Moves / lifts / turns the decor of a floor cell (values clamped: shift ≤ half a cell, height
@@ -390,6 +406,7 @@ namespace Purge.Core.Authoring
             if (decor.IsEmpty)
                 return false;
 
+            Mark(level, cell);
             var before = DecorPose(level, cell, decor);
             var after = new Pose(offset, height, yaw);
             var group = new List<(LevelEntityData Entity, Pose Pose)>();
@@ -482,6 +499,7 @@ namespace Purge.Core.Authoring
         public static void SetDecorRotation(LevelData level, GridPosition cell, int rotation)
         {
             var decor = VisualResolver.ResolveDecor(level, cell);
+            Mark(level, cell);
             if (!decor.IsEmpty)
                 MoveWithDecor(level, cell,
                     () => level.VisualData.SetCellOverride(cell, CellLayer.Decor, new VisualChoice(decor.VariantId, rotation)));
@@ -591,8 +609,11 @@ namespace Purge.Core.Authoring
         /// <summary>Recreates the auto placed decor (density, max auto height, VisualSeed); manual decor stays.</summary>
         public static void PlaceDecor(LevelData level) => VisualAssigner.AssignAllDecor(level);
 
-        public static void ClearCellOverride(LevelData level, GridPosition position, CellLayer layer) =>
+        public static void ClearCellOverride(LevelData level, GridPosition position, CellLayer layer)
+        {
             level.VisualData.ClearCellOverride(position, layer);
+            Mark(level, position);
+        }
 
         public static void SetObjectOverride(LevelData level, LevelEntityData entity, VisualChoice choice)
         {
@@ -618,6 +639,25 @@ namespace Purge.Core.Authoring
         }
 
         // ------------------------------------------------------------ Helpers
+
+        /// <summary>The cell was edited by hand: "Generate" keeps it.</summary>
+        private static void Mark(LevelData level, GridPosition position) => level.Marks.MarkManual(level.Geometry, position);
+
+        /// <summary>
+        /// Drops every hand-edit mark ("Generate" may change those cells again); locked areas stay. False when there
+        /// were none.
+        /// </summary>
+        public static bool ClearManualMarks(LevelData level)
+        {
+            if (level.Marks.ManualCount == 0) return false;
+            level.Marks.ClearManual();
+            return true;
+        }
+
+        /// <summary>A rectangle the generator leaves as it is (brush — stage 7б).</summary>
+        public static void AddLockedArea(LevelData level, GridRect rect, int floor = 0) => level.Marks.AddLockedArea(rect, floor);
+
+        public static bool RemoveLockedArea(LevelData level, LockedArea area) => level.Marks.RemoveLockedArea(area);
 
         private static void RemoveDoorData(LevelData level, DoorData door)
         {
@@ -660,6 +700,7 @@ namespace Purge.Core.Authoring
                 preset.Radius, preset.Intensity, preset.Flicker, isGenerated: false);
             light.Visual = VisualAssigner.ChooseLight(level, light.Id);
             level.MutableLights.Add(light);
+            Mark(level, cell);
             return light;
         }
 

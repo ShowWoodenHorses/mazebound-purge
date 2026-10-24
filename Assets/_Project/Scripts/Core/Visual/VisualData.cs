@@ -286,6 +286,13 @@ namespace Purge.Core.Visual
         }
 
         /// <summary>Drops overrides and decor placements of the cells of <paramref name="floor"/> (a removed floor).</summary>
+        /// <summary>Drops the overrides and decor placements of the cells <paramref name="match"/> picks.</summary>
+        internal void ClearCells(Predicate<GridPosition> match)
+        {
+            _cellOverrides.RemoveAll(entry => match(entry.Position));
+            _decorPlacements.RemoveAll(placement => match(placement.Cell));
+        }
+
         internal void ClearFloor(int floor)
         {
             _cellOverrides.RemoveAll(entry => entry.Position.Floor == floor);

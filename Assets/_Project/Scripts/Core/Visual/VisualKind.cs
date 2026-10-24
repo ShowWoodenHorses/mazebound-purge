@@ -37,5 +37,8 @@ namespace Purge.Core.Visual
 
         /// <summary>Floor of a snowdrift cell (<see cref="Grid.CellSurface.Snowdrift"/>).</summary>
         Snowdrift = 8,
+
+        /// <summary>Decor of a grass cell (<see cref="Grid.CellSurface.Grass"/>), e.g. tall grass; picked only there.</summary>
+        Grass = 9,
     }
 }

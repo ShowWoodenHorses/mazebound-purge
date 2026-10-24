@@ -6,6 +6,8 @@
 // Snowdrifts (PURGE_SNOWDRIFT, SnowdriftMask): the global _PurgeDrift mask (texel per cell, bilinear) lifts the colour of
 // low up-facing surfaces towards the drift snow; noise makes the edge uneven, a band outside it gets a light shadow.
 // One texture fetch; the mask is continuous, so neighbouring drift cells have no seams.
+// Foliage (leaves, tall grass cards): _ALPHATEST_ON clips pixels with albedo alpha below _Cutoff; _Cull = Off draws
+// both sides of the cards (materials made by Build Decor from the vegetation shaders of the packs).
 Shader "Purge/Geometry"
 {
     Properties
@@ -16,12 +18,16 @@ Shader "Purge/Geometry"
         _Glossiness ("Smoothness", Range(0, 1)) = 0.2
         [Gamma] _Metallic ("Metallic", Range(0, 1)) = 0
         [HDR] _EmissionColor ("Emission", Color) = (0, 0, 0, 0)
+        [Toggle(_ALPHATEST_ON)] _AlphaTest ("Alpha Test", Float) = 0
+        _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
     }
 
     SubShader
     {
         Tags { "RenderType" = "Opaque" }
         LOD 200
+        Cull [_Cull]
 
         CGPROGRAM
         // target 3.5: vertex texture fetch (GLES 3 / WebGL 2).
@@ -29,6 +35,7 @@ Shader "Purge/Geometry"
         #pragma target 3.5
         #pragma multi_compile _ PURGE_VISIBILITY
         #pragma multi_compile _ PURGE_SNOWDRIFT
+        #pragma shader_feature_local _ALPHATEST_ON
         #include "PurgeLighting.cginc"
 
         sampler2D _MainTex;
@@ -37,6 +44,7 @@ Shader "Purge/Geometry"
         half _Glossiness;
         half _Metallic;
         half4 _EmissionColor;
+        half _Cutoff;
 
         #if PURGE_VISIBILITY
         sampler2D _PurgeVisibility;
@@ -104,6 +112,9 @@ Shader "Purge/Geometry"
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
             fixed4 albedo = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+            #if _ALPHATEST_ON
+            clip(albedo.a - _Cutoff);
+            #endif
             #if PURGE_SNOWDRIFT
             albedo.rgb = PurgeSnowdrift(albedo.rgb, IN.worldPos, normalize(IN.purgeNormal));
             #endif

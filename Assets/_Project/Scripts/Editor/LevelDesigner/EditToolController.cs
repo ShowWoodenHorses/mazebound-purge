@@ -22,6 +22,7 @@ namespace Purge.Editor.LevelDesigner
         Medkit,
         Decor,
         Snowdrift,
+        Grass,
         Obstacle,
         Erase,
     }
@@ -86,7 +87,7 @@ namespace Purge.Editor.LevelDesigner
             {
                 if (ActiveTool == EditTool.Decor)
                     PaintDecor(cell, DecorBrushMode.None);
-                else if (ActiveTool == EditTool.Snowdrift)
+                else if (ActiveTool == EditTool.Snowdrift || ActiveTool == EditTool.Grass)
                     PaintSurface(cell, CellSurface.None);
                 else if (ActiveTool == EditTool.Obstacle)
                     PaintObstacle(cell, null);
@@ -109,6 +110,9 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Snowdrift:
                     PaintSurface(cell, CellSurface.Snowdrift);
                     break;
+                case EditTool.Grass:
+                    PaintSurface(cell, CellSurface.Grass);
+                    break;
                 case EditTool.Obstacle:
                     if (ObstacleDefinition == null) _notify("Choose an obstacle first.");
                     else PaintObstacle(cell, ObstacleDefinition);
@@ -130,9 +134,10 @@ namespace Purge.Editor.LevelDesigner
                 return;
             }
 
-            if (ActiveTool == EditTool.Snowdrift && (e.button == 0 || e.button == 1))
+            if ((ActiveTool == EditTool.Snowdrift || ActiveTool == EditTool.Grass) && (e.button == 0 || e.button == 1))
             {
-                PaintSurface(cell, e.button == 1 ? CellSurface.None : CellSurface.Snowdrift);
+                PaintSurface(cell, e.button == 1 ? CellSurface.None
+                    : ActiveTool == EditTool.Grass ? CellSurface.Grass : CellSurface.Snowdrift);
                 return;
             }
 
@@ -256,7 +261,7 @@ namespace Purge.Editor.LevelDesigner
             if (geometry.GetCell(cell) != CellType.Floor || geometry.GetSurface(cell) == surface)
                 return;
 
-            Apply(surface == CellSurface.None ? "Remove Snowdrift" : "Paint Snowdrift",
+            Apply(surface == CellSurface.None ? "Remove Surface" : "Paint " + surface,
                 () => LevelEditing.SetSurface(Level, cell, surface));
         }
 

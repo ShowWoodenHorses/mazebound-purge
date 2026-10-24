@@ -43,8 +43,15 @@ namespace Purge.Core.Grid
             }
         }
 
-        public static CellFlags SurfaceFlags(CellSurface surface) =>
-            surface == CellSurface.Snowdrift ? CellFlags.Slows : CellFlags.None;
+        public static CellFlags SurfaceFlags(CellSurface surface)
+        {
+            switch (surface)
+            {
+                case CellSurface.Snowdrift: return CellFlags.Slows;
+                case CellSurface.Grass: return CellFlags.Flammable;
+                default: return CellFlags.None;
+            }
+        }
 
         /// <summary>Obstacles and surfaces exist only on Floor cells.</summary>
         public static bool CanHaveContent(CellType type) => type == CellType.Floor;

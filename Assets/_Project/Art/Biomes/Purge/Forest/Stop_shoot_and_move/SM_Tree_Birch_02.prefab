@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753339864997930}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -66,8 +66,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 45f78d57c831abe43a9f7102116e69af, type: 2}
-  - {fileID: 2100000, guid: d3a600439af714f4280d93e74cc75853, type: 2}
+  - {fileID: 2100000, guid: 1dbaf50770171fe42abe3dbb36e413cc, type: 2}
+  - {fileID: 2100000, guid: 25438a4be6ea1ca4d9f6a2d426a3de67, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -117,7 +117,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.57371145, y: 0.57371145, z: 0.57371145}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4764303357180422}

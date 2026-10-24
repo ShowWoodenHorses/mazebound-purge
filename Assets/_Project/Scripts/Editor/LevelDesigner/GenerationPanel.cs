@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Purge.Editor.LevelDesigner
 {
-    /// <summary>Generation settings and the destructive "Generate New" command (ТЗ §12–16).</summary>
+    /// <summary>Generation settings, the biome recipe, "Generate" (keeps hand edits) and "Generate New" (ТЗ §12–16, stage 7).</summary>
     internal sealed class GenerationPanel
     {
         public void OnGUI(LevelDesignerState state)
@@ -16,18 +16,24 @@ namespace Purge.Editor.LevelDesigner
             EditorGUILayout.LabelField("Generation Settings", EditorStyles.boldLabel);
 
             EditorGUI.BeginChangeCheck();
+            var recipe = (BiomeRecipe)EditorGUILayout.ObjectField(new GUIContent("Biome Recipe",
+                    "Steps of the biome generator (Data/Recipes). Empty = an open field with a border wall (dev levels)."),
+                settings.Recipe, typeof(BiomeRecipe), false);
             var width = EditorGUILayout.IntField("Width", settings.Width);
             var height = EditorGUILayout.IntField("Height", settings.Height);
             var layoutSeed = SeedField("Layout Seed", settings.LayoutSeed);
             var visualSeed = SeedField("Visual Seed", settings.VisualSeed);
-            var obstacles = EditorGUILayout.Slider(new GUIContent("Obstacle Density",
-                "Single-cell pillars inside the field (cells with both coordinates even); 0 = open field."),
-                settings.ObstacleDensity, 0f, 1f);
+            var obstacles = settings.ObstacleDensity;
+            if (recipe == null)
+                obstacles = EditorGUILayout.Slider(new GUIContent("Obstacle Density",
+                    "Single-cell pillars inside the field (cells with both coordinates even); 0 = open field."),
+                    settings.ObstacleDensity, 0f, 1f);
 
             if (EditorGUI.EndChangeCheck())
             {
                 LevelEditorCommands.Modify(level, "Change Generation Settings", () =>
                 {
+                    settings.Recipe = recipe;
                     settings.Width = width;
                     settings.Height = height;
                     settings.LayoutSeed = layoutSeed;
@@ -37,27 +43,53 @@ namespace Purge.Editor.LevelDesigner
             }
 
             var canGenerate = true;
-            if (settings.Width < OpenFieldGenerator.MinSize || settings.Height < OpenFieldGenerator.MinSize)
+            var minSize = settings.Recipe != null ? BiomeGenerator.MinSize : OpenFieldGenerator.MinSize;
+            if (settings.Width < minSize || settings.Height < minSize)
             {
-                EditorGUILayout.HelpBox($"Minimum size is {OpenFieldGenerator.MinSize}x{OpenFieldGenerator.MinSize}.", MessageType.Error);
+                EditorGUILayout.HelpBox($"Minimum size is {minSize}x{minSize}.", MessageType.Error);
                 canGenerate = false;
             }
 
+            if (settings.Recipe != null)
+                foreach (var problem in BiomeGenerator.Validate(settings.Recipe))
+                    EditorGUILayout.HelpBox(problem, MessageType.Warning);
+
             var geometry = level.Geometry;
             if (geometry != null && (geometry.Width != settings.Width || geometry.Height != settings.Height))
-                EditorGUILayout.HelpBox($"Current level is {geometry.Width}x{geometry.Height}. New size applies on Generate New.", MessageType.Info);
+                EditorGUILayout.HelpBox($"Current level is {geometry.Width}x{geometry.Height}. New size applies on the next generation " +
+                                        "(hand-edit marks are dropped).", MessageType.Info);
 
             EditorGUILayout.Space();
             using (new EditorGUI.DisabledScope(!canGenerate))
+            using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Generate New", GUILayout.Height(30f)) && LevelEditorCommands.GenerateNew(level))
+                using (new EditorGUI.DisabledScope(settings.Recipe == null))
+                    if (GUILayout.Button(new GUIContent("Generate", "Again with the recipe; hand-edited cells and locked areas stay."),
+                            GUILayout.Height(30f)) && LevelEditorCommands.Generate(level))
+                        state.OnLevelReplaced();
+
+                if (GUILayout.Button(new GUIContent("Generate New", "Everything from scratch, marks and locked areas too."),
+                        GUILayout.Height(30f)) && LevelEditorCommands.GenerateNew(level))
                     state.OnLevelReplaced();
             }
 
+            foreach (var problem in LevelEditorCommands.LastProblems)
+                EditorGUILayout.HelpBox(problem, MessageType.Warning);
+
+            var marks = level.Marks;
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.LabelField($"Hand-edited cells: {marks.ManualCount}, locked areas: {marks.LockedAreas.Count}");
+                using (new EditorGUI.DisabledScope(marks.ManualCount == 0))
+                    if (GUILayout.Button("Clear Marks", GUILayout.Width(90f)) && LevelEditorCommands.ClearManualMarks(level))
+                        state.Revalidate();
+            }
+
             EditorGUILayout.HelpBox(
-                "Generate New is destructive: geometry, all objects and the visual design (including overrides) are replaced. " +
-                "It never runs automatically. For now it makes an open field with a border wall and one start in the centre " +
-                "(biome recipes come later).", MessageType.None);
+                "Generate runs the biome recipe again and keeps the cells edited by hand (every edit marks its cell) and the " +
+                "locked areas, with their objects and visual overrides. Generate New is destructive: geometry, all objects, " +
+                "the visual design, marks and locked areas are replaced. Neither runs automatically. Without a recipe both " +
+                "make an open field with a border wall and one start in the centre.", MessageType.None);
 
             TutorialGUI(state);
         }

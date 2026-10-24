@@ -1,0 +1,258 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4059f11680f60145b7d0f9b59619e3b, type: 3}
+  m_Name: ForestBiomeDecorSet
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.VisualSet
+  _kind: 9
+  _defaultVariantId: 
+  _variants:
+  - _id: SM_Env_Grass_Tall_Clump_04
+    _prefab:
+      m_AssetGUID: bc7131aaa4fe24d4db5b644f6f02cf6d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 9
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0.52
+  - _id: SM_Env_Grass_Tall_Clump_05
+    _prefab:
+      m_AssetGUID: 9290850bbe7deb045a8fb86a2b17bed2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 9
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0.389
+  - _id: SM_Env_Grass_Short_Clump_01
+    _prefab:
+      m_AssetGUID: 79f97213352b97d45960ae8dead335f2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0.223
+  - _id: SM_Env_Grass_Short_Clump_02
+    _prefab:
+      m_AssetGUID: d701131d6feb34d4e8f55054c3c5d81b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0.133
+  - _id: SM_Env_Grass_Short_Clump_03
+    _prefab:
+      m_AssetGUID: 1a9c1d7591e8f6344b9184a0c08696f8
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0.117
+  - _id: SM_Env_Bush_01
+    _prefab:
+      m_AssetGUID: 355eb473393c75346a3fb76ba4c2fd6f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 47e074f3cf2dcae47a6996b7f3a181ad, type: 2}
+    _colorTag: 
+    _height: 1.277
+  - _id: SM_Env_Bush_02
+    _prefab:
+      m_AssetGUID: 1ac87911e5209f24b8a10eea348cbfee
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 47e074f3cf2dcae47a6996b7f3a181ad, type: 2}
+    _colorTag: 
+    _height: 0.444
+  - _id: SM_Env_Rock_Pile_05
+    _prefab:
+      m_AssetGUID: cd7df39fdbef3dd4195d32633ca37b7d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: e74038749402533478c64197ac9db16b, type: 2}
+    _colorTag: 
+    _height: 0.645
+  - _id: SM_Tree_Stump_01
+    _prefab:
+      m_AssetGUID: 2ddd9f4cb1c294448b54ab7c196332c9
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: e74038749402533478c64197ac9db16b, type: 2}
+    _colorTag: 
+    _height: 0.541
+  - _id: SM_Env_Rock_Cliff_01
+    _prefab:
+      m_AssetGUID: 1f7d879f11a8b294e97072aee132272f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.259
+  - _id: SM_Env_Tree_Birch_01
+    _prefab:
+      m_AssetGUID: fcd4b54980ccc974f856c64dbb32f536
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.986
+  - _id: SM_Env_Tree_Birch_02
+    _prefab:
+      m_AssetGUID: cee968484c3371f498f56f15137d6832
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.549
+  - _id: SM_Env_Tree_Fruit_01
+    _prefab:
+      m_AssetGUID: a5044dae602b0a34ea4bdc44729c9b30
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 1.585
+  - _id: SM_Env_Tree_Fruit_02
+    _prefab:
+      m_AssetGUID: b152f62dac1c7d74b9556d6b347fc540
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 1.644
+  - _id: SM_Prop_Pillar_01
+    _prefab:
+      m_AssetGUID: d35215c6dfb41df48a776fb5c9066906
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.813
+  - _id: SM_Prop_Pillar_Broken_Moss_02
+    _prefab:
+      m_AssetGUID: b53557fceb92aa74986ad02787552e18
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 1.561
+  - _id: SM_Tree_Birch_02
+    _prefab:
+      m_AssetGUID: 93a13348aec89fd47991d731c79c3c40
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 4
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 3.098
+  - _id: SM_Tree_Birch_Small_01
+    _prefab:
+      m_AssetGUID: e6bf428527c7fba44addc5cedb678859
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 4
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 1.875
+  - _id: SM_Tree_Pine_01
+    _prefab:
+      m_AssetGUID: 644540a58a13a274182a8be8b1684a95
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 4
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.872
+  - _id: SM_Tree_Pine_02
+    _prefab:
+      m_AssetGUID: 4ba6d82f9da3420499aea23a7afc77f5
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 4
+    _category: 0
+    _definition: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+    _colorTag: 
+    _height: 2.453
+  _shapelessWalls: 0

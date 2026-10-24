@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4059f11680f60145b7d0f9b59619e3b, type: 3}
+  m_Name: ForestBiomeWallSet
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.VisualSet
+  _kind: 1
+  _defaultVariantId: SM_Tree_Birch_02
+  _variants:
+  - _id: SM_Env_Tree_Birch_01
+    _prefab:
+      m_AssetGUID: fcd4b54980ccc974f856c64dbb32f536
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Env_Tree_Birch_02
+    _prefab:
+      m_AssetGUID: cee968484c3371f498f56f15137d6832
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Env_Tree_Fruit_01
+    _prefab:
+      m_AssetGUID: a5044dae602b0a34ea4bdc44729c9b30
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Env_Tree_Fruit_02
+    _prefab:
+      m_AssetGUID: b152f62dac1c7d74b9556d6b347fc540
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 0
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Tree_Birch_02
+    _prefab:
+      m_AssetGUID: 93a13348aec89fd47991d731c79c3c40
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Tree_Birch_Small_01
+    _prefab:
+      m_AssetGUID: e6bf428527c7fba44addc5cedb678859
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Tree_Pine_01
+    _prefab:
+      m_AssetGUID: 644540a58a13a274182a8be8b1684a95
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  - _id: SM_Tree_Pine_02
+    _prefab:
+      m_AssetGUID: 4ba6d82f9da3420499aea23a7afc77f5
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _weight: 1
+    _category: 0
+    _definition: {fileID: 0}
+    _colorTag: 
+    _height: 0
+  _shapelessWalls: 1

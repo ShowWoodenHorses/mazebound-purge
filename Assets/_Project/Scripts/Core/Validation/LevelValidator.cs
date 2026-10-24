@@ -606,6 +606,7 @@ namespace Purge.Core.Validation
             var wallSet = theme.GetSet(VisualKind.Wall);
             foreach (var pair in wallCategoriesWithoutVariants)
             {
+                if (wallSet != null && wallSet.ShapelessWalls) break; // any variant fits any shape
                 var hasDefault = wallSet != null && wallSet.FindVariant(wallSet.DefaultVariantId) != null;
                 report.Add(hasDefault ? Warning : Error, Visual, ValidationCodes.WallCategoryWithoutVariants,
                     $"{pair.Value} wall cell(s) of category {pair.Key} have no matching variants" +

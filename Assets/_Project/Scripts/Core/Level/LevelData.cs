@@ -25,6 +25,12 @@ namespace Purge.Core.Level
         [SerializeField] private List<MedkitData> _medkits = new List<MedkitData>();
         [SerializeField] private List<LightSourceData> _lights = new List<LightSourceData>();
         [SerializeField] private List<MonsterSpawnData> _monsterSpawns = new List<MonsterSpawnData>();
+
+        [Tooltip("The boss arena (made by the biome generator); an empty rectangle = none.")]
+        [SerializeField] private ArenaData _arena = new ArenaData(default, 0);
+
+        [Tooltip("Cells edited by hand and locked areas: the biome generator leaves them as they are (editor only).")]
+        [SerializeField] private AuthoringMarks _marks = new AuthoringMarks();
         [SerializeField] private VisualTheme _visualTheme;
         [SerializeField] private VisualData _visualData = new VisualData();
 
@@ -79,6 +85,12 @@ namespace Purge.Core.Level
         /// <summary>Where the waves' monsters appear (not in <see cref="AllEntities"/>).</summary>
         public IReadOnlyList<MonsterSpawnData> MonsterSpawns => _monsterSpawns;
 
+        /// <summary>The boss arena; <see cref="ArenaData.IsEmpty"/> when the level has none.</summary>
+        public ArenaData Arena => _arena ??= new ArenaData(default, 0);
+
+        /// <summary>Hand-edited cells and locked areas (editor; the generator keeps them).</summary>
+        public AuthoringMarks Marks => _marks ??= new AuthoringMarks();
+
         internal List<DoorData> MutableDoors => _doors;
         internal List<PlayerStartData> MutablePlayerStarts => _playerStarts;
         internal List<ZombieSpawnData> MutableZombieSpawns => _zombieSpawns;
@@ -109,6 +121,8 @@ namespace Purge.Core.Level
 
         internal void ReplaceGeometry(LevelGeometry geometry) => _geometry = geometry;
 
+        internal void SetArena(ArenaData arena) => _arena = arena ?? new ArenaData(default, 0);
+
         /// <summary>
         /// Destructive "Generate New": replaces geometry, removes every placed object and the whole
         /// visual design (assignments and overrides), then adds the generated player starts.
@@ -120,9 +134,13 @@ namespace Purge.Core.Level
             _visualData.Clear();
             _lights.Clear();
             _monsterSpawns.Clear();
+            Marks.Clear();
+            SetArena(result.Arena);
 
             foreach (var position in result.PlayerStarts)
                 _playerStarts.Add(new PlayerStartData(CreateUniqueId(PlayerStartData.IdPrefix), position));
+            foreach (var position in result.MonsterSpawns)
+                _monsterSpawns.Add(new MonsterSpawnData(CreateUniqueId(MonsterSpawnData.IdPrefix), position));
         }
 
         /// <summary>Removes every placed object. Geometry is left untouched.</summary>

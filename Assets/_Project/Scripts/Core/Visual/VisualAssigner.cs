@@ -67,7 +67,8 @@ namespace Purge.Core.Visual
         /// (stable per cell and VisualSeed), a weighted General variant not taller than
         /// <see cref="LevelGenerationSettings.MaxAutoDecorHeight"/>, a stable quarter turn. No set default.
         /// Never in a key's cell — a small key gets lost in a pile of props; only decor placed by hand may be there.
-        /// Never on a snowdrift either (the drift is the cell's look). Variants bound to a definition (obstacles) are
+        /// Never on a snowdrift either (the drift is the cell's look). A grass cell gets a Grass variant (any height) with
+        /// probability <see cref="LevelGenerationSettings.GrassDecorDensity"/>. Variants bound to a definition (obstacles) are
         /// never auto decor. A cell with an obstacle always shows it: a weighted Decor variant bound to the obstacle's
         /// definition (none in the theme = nothing shown, the validator warns).
         /// </summary>
@@ -89,16 +90,20 @@ namespace Purge.Core.Visual
                     : new VisualChoice(look.Id, (int)(StableHash.Mix(key ^ DecorRotationSalt) & 3UL));
             }
 
-            if (HasKey(level, position) || geometry.GetSurface(position) != CellSurface.None)
+            var surface = geometry.GetSurface(position);
+            if (HasKey(level, position) || (surface != CellSurface.None && surface != CellSurface.Grass))
                 return VisualChoice.None;
 
+            var grass = surface == CellSurface.Grass;
             var roll = (StableHash.Mix(key ^ DecorChanceSalt) >> 40) / (float)(1UL << 24);
-            if (roll >= settings.DecorDensity)
+            if (roll >= (grass ? settings.GrassDecorDensity : settings.DecorDensity))
                 return VisualChoice.None;
 
             var maxHeight = settings.MaxAutoDecorHeight;
-            var variant = VisualSelector.Pick(theme.GetSet(VisualKind.Decor), VisualCategory.General, null, key,
-                v => v.Definition == null && v.Height <= maxHeight);
+            var variant = grass
+                ? VisualSelector.Pick(theme.GetSet(VisualKind.Decor), VisualCategory.Grass, null, key, v => v.Definition == null)
+                : VisualSelector.Pick(theme.GetSet(VisualKind.Decor), VisualCategory.General, null, key,
+                    v => v.Definition == null && v.Height <= maxHeight);
             if (variant == null)
                 return VisualChoice.None;
 
@@ -317,7 +322,10 @@ namespace Purge.Core.Visual
             return variant != null && variant.HasColor ? variant.ColorTag : null;
         }
 
-        /// <summary>Floor layer: weighted floor variant for every cell. Wall layer: wall variant by neighbour shape.</summary>
+        /// <summary>
+        /// Floor layer: weighted floor variant for every cell. Wall layer: wall variant by neighbour shape; a shapeless Wall
+        /// set (<see cref="VisualSet.ShapelessWalls"/>, trees of the forest wall) — any General variant, a stable random quarter turn.
+        /// </summary>
         public static VisualChoice ChooseCell(LevelData level, GridPosition position, CellLayer layer)
         {
             var theme = level.VisualTheme;
@@ -329,13 +337,15 @@ namespace Purge.Core.Visual
             var category = VisualCategory.General;
             var rotation = 0;
 
-            if (layer == CellLayer.Wall)
+            var key = VisualSelector.CellKey(level.Generation.VisualSeed, kind, geometry.ToIndex(position));
+            if (layer == CellLayer.Wall && theme.GetSet(kind) != null && theme.GetSet(kind).ShapelessWalls)
+                rotation = (int)(StableHash.Mix(key ^ DecorRotationSalt) & 3UL); // shapeless walls (trees): any turn
+            else if (layer == CellLayer.Wall)
                 (category, rotation) = WallShapes.Classify(new CellVisualContext(geometry, position).WallConnections);
             else if (layer == CellLayer.Floor && geometry.GetSurface(position) == CellSurface.Snowdrift &&
                      HasAutoVariant(theme.GetSet(kind), VisualCategory.Snowdrift))
                 category = VisualCategory.Snowdrift; // a theme without drift floors shows the ordinary floor
 
-            var key = VisualSelector.CellKey(level.Generation.VisualSeed, kind, geometry.ToIndex(position));
             var variant = VisualSelector.PickOrDefault(theme.GetSet(kind), category, null, key);
             return variant == null ? VisualChoice.None : new VisualChoice(variant.Id, rotation);
         }

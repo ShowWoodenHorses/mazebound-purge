@@ -16,7 +16,10 @@ namespace Purge.Core.Level
         [SerializeField, FormerlySerializedAs("_mazeSeed")] private int _layoutSeed;
         [SerializeField] private int _visualSeed;
 
-        [Tooltip("Single-cell pillars inside the field: share of the cells with both coordinates even (0 = open field).")]
+        [Tooltip("Steps of the biome generator (stage 7). Empty = an open field with a border wall (dev levels).")]
+        [SerializeField] private Generation.BiomeRecipe _recipe;
+
+        [Tooltip("Open field only (no recipe): single-cell pillars inside the field: share of the cells with both coordinates even (0 = open field).")]
         [SerializeField, Range(0f, 1f)] private float _obstacleDensity;
 
         [Tooltip("Auto placed light sources: 0 = none, 1 = as many as fit (about every 3 cells along walls).")]
@@ -28,6 +31,9 @@ namespace Purge.Core.Level
         [Tooltip("Decor taller than this (metres) is never placed automatically, only with the Decor brush.")]
         [SerializeField, Min(0f)] private float _maxAutoDecorHeight = 0.3f;
 
+        [Tooltip("Auto placed decor on grass cells: share of them with a Grass decor variant (tall grass).")]
+        [SerializeField, Range(0f, 1f)] private float _grassDecorDensity = 0.7f;
+
         public int Width { get => _width; internal set => _width = value; }
         public int Height { get => _height; internal set => _height = value; }
         public int LayoutSeed { get => _layoutSeed; internal set => _layoutSeed = value; }
@@ -36,5 +42,9 @@ namespace Purge.Core.Level
         public float LightDensity { get => _lightDensity; internal set => _lightDensity = value; }
         public float DecorDensity { get => _decorDensity; internal set => _decorDensity = value; }
         public float MaxAutoDecorHeight { get => _maxAutoDecorHeight; internal set => _maxAutoDecorHeight = value; }
+        public float GrassDecorDensity { get => _grassDecorDensity; internal set => _grassDecorDensity = value; }
+
+        /// <summary>The biome generator's steps; null = open field (<see cref="Generation.OpenFieldGenerator"/>).</summary>
+        public Generation.BiomeRecipe Recipe { get => _recipe; internal set => _recipe = value; }
     }
 }

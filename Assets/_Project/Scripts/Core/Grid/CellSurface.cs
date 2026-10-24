@@ -10,5 +10,8 @@ namespace Purge.Core.Grid
 
         /// <summary>Deep snow: the player and zombies move slower, zombie routes avoid it when a detour is short.</summary>
         Snowdrift = 1,
+
+        /// <summary>Grass (stage 7): fire spreads over it; the cell shows grass decor (<see cref="Visual.VisualCategory.Grass"/>).</summary>
+        Grass = 2,
     }
 }

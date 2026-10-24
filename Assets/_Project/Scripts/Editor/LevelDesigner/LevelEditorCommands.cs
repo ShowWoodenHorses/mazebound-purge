@@ -22,23 +22,56 @@ namespace Purge.Editor.LevelDesigner
             EditorUtility.SetDirty(level);
         }
 
+        /// <summary>Problems the last generation reported (arena did not fit…); shown by the Generation panel.</summary>
+        public static System.Collections.Generic.IReadOnlyList<string> LastProblems { get; private set; } =
+            Array.Empty<string>();
+
         public static bool GenerateNew(LevelData level)
         {
             if (HasDesign(level) && !EditorUtility.DisplayDialog("Generate New",
                     "Generate New replaces the geometry, removes every object and the whole visual design, " +
-                    "including manual overrides.\n\nYou can undo it with Ctrl+Z.",
+                    "including manual overrides, hand-edit marks and locked areas.\n\nYou can undo it with Ctrl+Z.",
                     "Generate", "Cancel"))
                 return false;
 
-            Undo.RegisterCompleteObjectUndo(level, "Generate New Level");
+            return Run(level, "Generate New Level", () => LevelAuthoring.GenerateNew(level));
+        }
+
+        /// <summary>Generates again with the level's recipe, keeping hand-edited cells and locked areas.</summary>
+        public static bool Generate(LevelData level)
+        {
+            var kept = level.Marks.ManualCount;
+            if (HasDesign(level) && !EditorUtility.DisplayDialog("Generate",
+                    $"Generate replaces everything except {kept} hand-edited cell(s) and {level.Marks.LockedAreas.Count} " +
+                    "locked area(s): they keep their cells, objects and visual overrides.\n\nYou can undo it with Ctrl+Z.",
+                    "Generate", "Cancel"))
+                return false;
+
+            return Run(level, "Generate Level", () => LevelAuthoring.Generate(level));
+        }
+
+        public static bool ClearManualMarks(LevelData level)
+        {
+            if (!EditorUtility.DisplayDialog("Clear Hand-Edit Marks",
+                    $"{level.Marks.ManualCount} cell(s) are marked as edited by hand. Without the marks, Generate may " +
+                    "change them again. Locked areas stay.", "Clear", "Cancel"))
+                return false;
+
+            Modify(level, "Clear Hand-Edit Marks", () => LevelEditing.ClearManualMarks(level));
+            return true;
+        }
+
+        private static bool Run(LevelData level, string undoName, Func<Purge.Core.Generation.GenerationResult> generate)
+        {
+            Undo.RegisterCompleteObjectUndo(level, undoName);
             DecorHeights.Refresh(level.VisualTheme);
             try
             {
-                LevelAuthoring.GenerateNew(level);
+                LastProblems = generate().Problems;
             }
             catch (ArgumentException exception)
             {
-                EditorUtility.DisplayDialog("Generate New", exception.Message, "OK");
+                EditorUtility.DisplayDialog(undoName, exception.Message, "OK");
                 return false;
             }
 

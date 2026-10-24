@@ -106,8 +106,9 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Key: return "Click a floor cell to place a key. Link it to a door from the door's inspector (one key = one door).";
                 case EditTool.Decor: return "Click or drag on floor cells to paint decor (Paint: a variant, None = no decor, Automatic = back to auto placement). Right-click or right-drag removes decor. Decor is only visual.";
                 case EditTool.Snowdrift: return "Click or drag on floor cells to make snowdrifts: the player and zombies move slower there, zombie routes go around them when the detour is short. Right-click or right-drag removes them. The cell gets a drift floor of the theme (if it has one) and no auto decor.";
+                case EditTool.Grass: return "Click or drag on floor cells to grow grass: fire spreads over it; the cell gets grass decor of the theme (tall grass). Right-click or right-drag removes it.";
                 case EditTool.Obstacle: return "Click or drag on floor cells to place the obstacle (Data/Obstacles: what it blocks — movement, bullets, sight — is set in its asset). Right-click or right-drag removes obstacles. The cell shows a Decor variant of the theme bound to the obstacle.";
-                case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts, obstacles and decor are removed, walls, void and doors become floor.";
+                case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts, grass, obstacles and decor are removed, walls, void and doors become floor.";
                 default: return "Click a floor cell to place.";
             }
         }

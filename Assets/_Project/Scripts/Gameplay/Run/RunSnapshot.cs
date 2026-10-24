@@ -45,6 +45,15 @@ namespace Purge.Gameplay.Run
         public string ThrowableId;
         public int ThrowableCount;
 
+        /// <summary>Barrels blown up (level object ids, stage 7в): a continued run has them gone.</summary>
+        public List<string> BrokenBarrels = new List<string>();
+
+        /// <summary>Chests opened (a challenge only when its champions were beaten): once per run.</summary>
+        public List<string> OpenedChests = new List<string>();
+
+        /// <summary>The chest key has dropped: a continued run gives it to the player while the locked chest is shut.</summary>
+        public bool ChestKeyDropped;
+
         /// <summary>The wave a continued run starts with (after its pause).</summary>
         public int NextWave => WaveInProgress ? System.Math.Max(0, Wave) : Wave + 1;
     }

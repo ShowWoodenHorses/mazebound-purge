@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - VAGUE {0} DANS {1}
   - PASSER +{0}
   - ESPACE
+  - "D\xD4ME {0}"
+  - "Le d\xF4me est \xE9teint jusqu\u2019\xE0 la pause"
+  - "Verrouill\xE9 : la cl\xE9 tombe d\u2019une \xE9lite"
+  - "Cl\xE9 du coffre !"
+  - "\xC9preuve : battez les champions"
+  - "\xC9preuve r\xE9ussie !"
   - 9 mm
   - 5,45
   - 7,62

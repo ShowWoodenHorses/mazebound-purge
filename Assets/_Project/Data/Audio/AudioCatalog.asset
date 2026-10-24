@@ -2859,6 +2859,30 @@ MonoBehaviour:
     _range: 14
     _maxVoices: 1
     _minInterval: 0
+  _chestOpen:
+    _clips:
+    - {fileID: 8300000, guid: c1e548a63a9bd7b4aa0e7d5ac673b501, type: 3}
+    _volume: 0.8
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 12
+    _maxVoices: 1
+    _minInterval: 0
+  _chestLocked:
+    _clips:
+    - {fileID: 8300000, guid: b1f10af765d9d0f4ebaa1ce7912181f2, type: 3}
+    _volume: 0.7
+    _pitch: {x: 0.95, y: 1.05}
+    _range: 8
+    _maxVoices: 1
+    _minInterval: 0.3
+  _domeLoop:
+    _clips:
+    - {fileID: 8300000, guid: 85e7a60fede370b4abd2100550a52f1b, type: 3}
+    _volume: 0.35
+    _pitch: {x: 1, y: 1}
+    _range: 8
+    _maxVoices: 1
+    _minInterval: 0
   _torchLoop:
     _clips:
     - {fileID: 8300000, guid: 044491aba8b03aa48940a25d4dd8ade6, type: 3}

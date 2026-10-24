@@ -245,7 +245,8 @@ namespace Purge.Presentation.Visual
         private void OnInteracted(InteractionResult result, DoorData door)
         {
             if (result == InteractionResult.WeaponTaken || result == InteractionResult.DoorOpened ||
-                result == InteractionResult.DoorClosed || result == InteractionResult.DoorUnlocked)
+                result == InteractionResult.DoorClosed || result == InteractionResult.DoorUnlocked ||
+                result == InteractionResult.ChestOpening)
                 SetTrigger(P.UseHash);
         }
 

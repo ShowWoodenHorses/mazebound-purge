@@ -118,6 +118,25 @@ namespace Purge.Presentation.UI
         [SerializeField] private PickupComparePanel _comparePanel;
 
         public PickupComparePanel ComparePanel => _comparePanel;
+
+        [Tooltip("The bar over a chest being opened (stage 7в).")]
+        [SerializeField] private HudWorldBar _chestBar;
+
+        [Tooltip("Under the time: the safe dome's seconds left in this wave, while the player is inside (stage 7в).")]
+        [SerializeField] private TMP_Text _refugeText;
+
+        public HudWorldBar ChestBar => _chestBar;
+
+        /// <summary>The dome's line under the time; <paramref name="text"/> — only when it changed (null = keep).</summary>
+        public void SetRefuge(bool shown, string text = null, bool warning = false)
+        {
+            if (_refugeText == null) return;
+            if (_refugeText.gameObject.activeSelf != shown) _refugeText.gameObject.SetActive(shown);
+            if (!shown) return;
+            if (text != null) _refugeText.text = text;
+            var color = warning && _style != null ? _style.Danger : _style != null ? _style.Accent : Color.white;
+            if (_refugeText.color != color) _refugeText.color = color;
+        }
         [SerializeField] private Color _damageArcColor = new Color(1f, 0.12f, 0.08f, 0.9f);
         [SerializeField, Min(0.1f)] private float _damageArcTime = 0.9f;
 

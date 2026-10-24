@@ -408,7 +408,18 @@ namespace Purge.Editor.Dev
         {
             var path = $"{RecipesFolder}/ForestRecipe.asset";
             var recipe = AssetDatabase.LoadAssetAtPath<BiomeRecipe>(path);
-            if (recipe != null) return recipe;
+            if (recipe != null)
+            {
+                // Stage 7в: barrels and chests before the decor, once.
+                if (!recipe.MutableSteps.Exists(step => step is ObjectsStep))
+                {
+                    var decor = recipe.MutableSteps.FindIndex(step => step is DecorStep);
+                    recipe.MutableSteps.Insert(decor >= 0 ? decor : recipe.MutableSteps.Count, new ObjectsStep());
+                    EditorUtility.SetDirty(recipe);
+                }
+
+                return recipe;
+            }
 
             if (!AssetDatabase.IsValidFolder(RecipesFolder))
                 AssetDatabase.CreateFolder("Assets/_Project/Data", "Recipes");
@@ -420,7 +431,7 @@ namespace Purge.Editor.Dev
             recipe.MutableSteps.AddRange(new GenerationStep[]
             {
                 new PerimeterStep(), new StartStep(), new ArenaStep(), new SpawnPointsStep(), new ClearingsStep(),
-                new TrailsStep(), obstacles, new GrassStep(), new DecorStep(),
+                new TrailsStep(), obstacles, new GrassStep(), new ObjectsStep(), new DecorStep(),
             });
             AssetDatabase.CreateAsset(recipe, path);
             return recipe;

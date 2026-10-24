@@ -273,6 +273,7 @@ namespace Purge.Presentation.Audio
             var cue = pickup.Kind switch
             {
                 PickupKind.Key => Catalog.PickupKey,
+                PickupKind.ChestKey => Catalog.PickupKey,
                 PickupKind.Medkit => Catalog.PickupMedkit,
                 PickupKind.Ammo => Catalog.PickupAmmo,
                 PickupKind.Throwable => Catalog.PickupThrowable,

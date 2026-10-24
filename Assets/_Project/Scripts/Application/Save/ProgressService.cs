@@ -146,6 +146,9 @@ namespace Purge.Application.Save
             };
             run.WavesCleared = run.NextWave;
             run.Cards.AddRange(save.Cards);
+            if (save.BrokenBarrels != null) run.BrokenBarrels.AddRange(save.BrokenBarrels);
+            if (save.OpenedChests != null) run.OpenedChests.AddRange(save.OpenedChests);
+            run.ChestKeyDropped = save.ChestKeyDropped;
             for (var i = 0; i < save.Weapons.Count && i < run.Weapons.Length; i++)
             {
                 run.Weapons[i] = save.Weapons[i].Id;
@@ -181,6 +184,9 @@ namespace Purge.Application.Save
             save.ThrowableId = run.ThrowableId;
             save.ThrowableCount = run.ThrowableCount;
             save.Cards.AddRange(run.Cards);
+            save.BrokenBarrels.AddRange(run.BrokenBarrels);
+            save.OpenedChests.AddRange(run.OpenedChests);
+            save.ChestKeyDropped = run.ChestKeyDropped;
             for (var i = 0; i < run.Weapons.Length; i++)
                 save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0 });
             _save.Save();

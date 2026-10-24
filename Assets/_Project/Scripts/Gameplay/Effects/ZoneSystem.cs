@@ -10,6 +10,7 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Spatial;
 using UnityEngine;
 
 namespace Purge.Gameplay.Effects
@@ -176,6 +177,27 @@ namespace Purge.Gameplay.Effects
             return placed;
         }
 
+        /// <summary>Removes the zones of the cells whose centres are inside the barrier (the safe dome lights up).</summary>
+        public int ClearInside(IShotBarrier barrier)
+        {
+            if (barrier == null || _kind == null) return 0;
+            var floorSize = _grid.FloorSize;
+            var width = _grid.Width;
+            var removed = 0;
+            for (var i = Count - 1; i >= 0; i--)
+            {
+                var index = _cells[i];
+                var floor = index / floorSize;
+                if (!barrier.Contains(new Vector2(index % floorSize % width, index % floorSize / width), floor)) continue;
+                _kind[index] = 0;
+                _cells[i] = _cells[--Count];
+                removed++;
+            }
+
+            if (removed > 0) Version++;
+            return removed;
+        }
+
         /// <summary>Removes every zone (level stop, tests).</summary>
         public void Clear()
         {
@@ -260,6 +282,9 @@ namespace Purge.Gameplay.Effects
                 _ => new GridPosition(x - 1, y, floor),
             };
             if (!_grid.Has(cell, CellFlags.Flammable)) return;
+            // Fire does not creep over the safe dome's edge.
+            var barrier = _targets.Spatial.Barrier;
+            if (barrier != null && barrier.Crosses(new Vector2(x, y), new Vector2(cell.X, cell.Y), floor, out _)) return;
             var neighbour = _grid.ToIndex(cell);
             if (_kind[neighbour] != 0 && _kinds[_kind[neighbour] - 1] == zone) return;
             Place(cell, zone, _duration[index] * zone.Spread.FlammableDuration, _strength[index], _hostile[index], _steps[index] + 1);

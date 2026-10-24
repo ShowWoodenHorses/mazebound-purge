@@ -134,6 +134,7 @@ namespace Purge.Presentation.UI
             {
                 InteractionTarget.Weapon => UseTarget.PickUp,
                 InteractionTarget.Throwable => UseTarget.PickUp,
+                InteractionTarget.Chest => UseTarget.PickUp,
                 InteractionTarget.Door => UseTarget.Door,
                 _ => UseTarget.None,
             });
@@ -207,6 +208,10 @@ namespace Purge.Presentation.UI
                 var tag = VisualColorTags.TagOf(_level, VisualKind.Key, key);
                 _keyColors.Add(VisualColorTags.TryGetColor(tag, out var color) ? color : Color.white);
             }
+
+            // The chest key (stage 7в): gold.
+            for (var i = 0; i < _inventory.ChestKeys; i++)
+                _keyColors.Add(new Color(0.914f, 0.714f, 0.31f, 1f));
 
             _ui.Hud.SetKeys(_keyColors);
         }

@@ -67,6 +67,15 @@ namespace Purge.Core.Generation
         public int KeptSpawnCount { get; internal set; }
 
         public List<Clearing> Clearings { get; } = new List<Clearing>();
+
+        /// <summary>Barrels (stage 7в): kept ones first (<see cref="KeptBarrelCount"/>), then the generated ones.</summary>
+        public List<LayoutObject<BarrelKind>> Barrels { get; } = new List<LayoutObject<BarrelKind>>();
+        public int KeptBarrelCount { get; internal set; }
+
+        /// <summary>Chests: kept ones first (<see cref="KeptChestCount"/>), then the generated ones.</summary>
+        public List<LayoutObject<ChestKind>> Chests { get; } = new List<LayoutObject<ChestKind>>();
+        public int KeptChestCount { get; internal set; }
+
         public List<string> Problems { get; } = new List<string>();
         public DecorSettings Decor { get; internal set; }
 
@@ -293,5 +302,18 @@ namespace Purge.Core.Generation
 
         public GridPosition Center { get; }
         public float Radius { get; }
+    }
+
+    /// <summary>A level object placed by a step (a barrel, a chest) and its kind.</summary>
+    public readonly struct LayoutObject<TKind>
+    {
+        public LayoutObject(GridPosition cell, TKind kind)
+        {
+            Cell = cell;
+            Kind = kind;
+        }
+
+        public GridPosition Cell { get; }
+        public TKind Kind { get; }
     }
 }

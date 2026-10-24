@@ -468,6 +468,7 @@ namespace Purge.Gameplay.Horde
         private void AreaStrike(int i, AreaStrikeAbility area, Vector2 at)
         {
             var floor = _player.Floor;
+            if (_targets.IsShielded(at, floor)) return; // the safe dome takes the blow
             if (_player.IsSpawned && (_player.Position - at).magnitude <= area.Radius + PlayerRadius &&
                 _targets.IsClear(at, _player.Position, floor))
                 HurtPlayer(i, _horde.Generations[i], area.Damage * _horde.DamageFactorOf(i), at, area.Status, area.StatusDuration);
@@ -549,6 +550,13 @@ namespace Purge.Gameplay.Horde
                     // Lands: the player near the spot takes the damage, the effects happen there.
                     var at = _to[p];
                     _position[p] = at;
+                    if (_targets.IsShielded(at, floor))
+                    {
+                        // Lands on the safe dome: nothing happens under it.
+                        End(p, at, floor, false, impact: false);
+                        continue;
+                    }
+
                     var hit = _player.IsSpawned && (_player.Position - at).magnitude <= ability.ArcRadius + PlayerRadius;
                     if (hit) HurtPlayer(_projectileOwner[p], _projectileGeneration[p], ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, hit);
@@ -588,7 +596,7 @@ namespace Purge.Gameplay.Horde
             }
         }
 
-        private void End(int p, Vector2 at, int floor, bool hitPlayer)
+        private void End(int p, Vector2 at, int floor, bool hitPlayer, bool impact = true)
         {
             var ability = _projectile[p];
             var kind = _projectileKind[p];
@@ -606,7 +614,7 @@ namespace Purge.Gameplay.Horde
             _projectileSerial[p] = _projectileSerial[last];
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
-            if (ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);
+            if (impact && ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);
             ProjectileEnded?.Invoke(at, kind, hitPlayer);
         }
 

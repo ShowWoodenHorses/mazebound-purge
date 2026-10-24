@@ -5,6 +5,7 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Sound;
 using UnityEngine;
@@ -26,6 +27,10 @@ namespace Purge.Gameplay.Player
         DoorFrozen = 6,
         /// <summary>A throwable of another kind replaced the stack (which dropped).</summary>
         ThrowableTaken = 7,
+        /// <summary>The opening of a chest started (stage 7в).</summary>
+        ChestOpening = 8,
+        /// <summary>A locked chest and no chest key.</summary>
+        ChestLocked = 9,
     }
 
     /// <summary>What Interact would act on now (for the Use button).</summary>
@@ -35,12 +40,14 @@ namespace Purge.Gameplay.Player
         Weapon = 1,
         Door = 2,
         Throwable = 3,
+        Chest = 4,
     }
 
     /// <summary>
     /// The Interact action (ТЗ §63 Interaction, §64 "door" button, §67 weapon pickup). Order:
     /// 1) a weapon lying in the player's cell is picked up;
     /// 2) otherwise a throwable of another kind lying there replaces the stack (the same kind is picked up by walking);
+    /// 2½) otherwise a closed chest next to the player (stage 7в) starts opening (<see cref="ChestSystem"/>);
     /// 3) otherwise the door next to the player (the one they face first) is used: a locked door is unlocked with
     ///    its key (the door stays closed, the key is spent); an unlocked door opens or closes. A door is never closed
     ///    on the player or on a monster; a broken door (stage 5d) is not offered at all.
@@ -56,10 +63,13 @@ namespace Purge.Gameplay.Player
         private readonly OccupancyMap _occupancy;
         private readonly SoundEventBus _sounds;
         private readonly HordeSystem _horde;
+        private readonly ChestSystem _chests;
 
         public PlayerInteraction(IPlayerInput input, PlayerSystem player, PickupSystem pickups, DoorSystem doors,
-            PlayerInventory inventory, OccupancyMap occupancy, SoundEventBus sounds, HordeSystem horde = null)
+            PlayerInventory inventory, OccupancyMap occupancy, SoundEventBus sounds, HordeSystem horde = null,
+            ChestSystem chests = null)
         {
+            _chests = chests;
             _sounds = sounds;
             _horde = horde;
             _input = input;
@@ -88,6 +98,7 @@ namespace Purge.Gameplay.Player
                 if (here[i].Kind == PickupKind.Weapon)
                     return InteractionTarget.Weapon;
             if (_pickups.ThrowableToSwap(_player.Cell) != null) return InteractionTarget.Throwable;
+            if (_chests != null && _chests.FindUsable() != null) return InteractionTarget.Chest;
             return FindDoor() != null ? InteractionTarget.Door : InteractionTarget.None;
         }
 
@@ -104,6 +115,19 @@ namespace Purge.Gameplay.Player
             {
                 Interacted?.Invoke(InteractionResult.ThrowableTaken, null);
                 return true;
+            }
+
+            var chest = _chests?.FindUsable();
+            if (chest != null)
+            {
+                var use = _chests.TryUse(chest);
+                if (use != ChestUse.None)
+                {
+                    if (use == ChestUse.Opening)
+                        _sounds.Emit(SoundType.Door, chest.Position, _player.Definition.InteractionSoundRadius, chest.Cell.Floor);
+                    Interacted?.Invoke(use == ChestUse.Opening ? InteractionResult.ChestOpening : InteractionResult.ChestLocked, null);
+                    return true;
+                }
             }
 
             var door = FindDoor();

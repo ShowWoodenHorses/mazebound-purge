@@ -145,6 +145,12 @@ namespace Purge.Application.Save
         public string ThrowableId;
         public int ThrowableCount;
 
+        /// <summary>Level objects (stage 7в): barrels blown up, chests opened (ids of the level), the chest key dropped.</summary>
+        public List<string> BrokenBarrels = new List<string>();
+
+        public List<string> OpenedChests = new List<string>();
+        public bool ChestKeyDropped;
+
         /// <summary>No run any more (death, finish, abandon).</summary>
         public void Clear()
         {
@@ -174,6 +180,11 @@ namespace Purge.Application.Save
             Weapons.Clear();
             ThrowableId = null;
             ThrowableCount = 0;
+            BrokenBarrels ??= new List<string>();
+            OpenedChests ??= new List<string>();
+            BrokenBarrels.Clear();
+            OpenedChests.Clear();
+            ChestKeyDropped = false;
         }
 
         public void Normalize()
@@ -181,6 +192,10 @@ namespace Purge.Application.Save
             Cards ??= new List<string>();
             Boosters ??= new List<string>();
             Weapons ??= new List<RunWeapon>();
+            BrokenBarrels ??= new List<string>();
+            OpenedChests ??= new List<string>();
+            BrokenBarrels.RemoveAll(string.IsNullOrEmpty);
+            OpenedChests.RemoveAll(string.IsNullOrEmpty);
             Cards.RemoveAll(string.IsNullOrEmpty);
             Boosters.RemoveAll(string.IsNullOrEmpty);
             Weapons.RemoveAll(weapon => weapon == null);

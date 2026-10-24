@@ -29,6 +29,24 @@ namespace Purge.Gameplay.Player
             KeysChanged?.Invoke();
         }
 
+        /// <summary>Chest keys carried (stage 7в): one opens the locked chest.</summary>
+        public int ChestKeys { get; private set; }
+
+        public void AddChestKey()
+        {
+            ChestKeys++;
+            KeysChanged?.Invoke();
+        }
+
+        /// <summary>Spends a chest key; false when there is none.</summary>
+        public bool UseChestKey()
+        {
+            if (ChestKeys <= 0) return false;
+            ChestKeys--;
+            KeysChanged?.Invoke();
+            return true;
+        }
+
         /// <summary>Removes a used key (1 key = 1 door). False when the player does not have it.</summary>
         public bool UseKey(string keyId)
         {

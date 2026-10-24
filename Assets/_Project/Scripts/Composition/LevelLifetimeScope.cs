@@ -11,6 +11,7 @@ using Purge.Gameplay.Horde;
 using Purge.Gameplay.Waves;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Run;
@@ -70,6 +71,8 @@ namespace Purge.Composition
             // Gameplay
             builder.Register(resolver => new LevelGrid(resolver.Resolve<LevelData>().Geometry), Lifetime.Singleton);
             builder.Register<DoorSystem>(Lifetime.Singleton);
+            // Barrels and chests standing in cells (stage 7в): walkability reads them.
+            builder.Register<CellBlockers>(Lifetime.Singleton);
             builder.Register<LevelPassability>(Lifetime.Singleton);
             builder.Register<OccupancyMap>(Lifetime.Singleton);
             builder.Register<SoundEventBus>(Lifetime.Singleton);
@@ -109,6 +112,10 @@ namespace Purge.Composition
             builder.Register<StatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<ZoneSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<DropSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            // Level objects (stage 7в): barrels blow up as the player's own effects (after the zones they burn in),
+            // chests open by Use and give from the drop pool (before the views gather the items' looks).
+            builder.Register<BarrelSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<ChestSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<MonsterDeathEffects>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Champions' affixes (stage 5e2): trails, death blasts, a hit's state, the vampire.
             builder.Register<ChampionSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -124,6 +131,8 @@ namespace Purge.Composition
             builder.Register<RunLoadout>(Lifetime.Singleton).As<ILevelLoadStep>();
             // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
             builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // The safe dome at the start (stage 7в): its limit follows the waves' phase.
+            builder.Register<RefugeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Checkpoints of the run for its save (stage 6e): after the waves and the run's counters.
             builder.Register<RunCheckpoints>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -155,6 +164,10 @@ namespace Purge.Composition
             builder.Register<FrozenDoorsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<PickupViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<DropViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // Barrels, chests and the safe dome (stage 7в).
+            builder.Register<LevelObjectsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<RefugeView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<LevelObjectsHudPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
@@ -206,6 +219,8 @@ namespace Purge.Composition
             builder.Register<WeaponAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             // Abilities, calls, armor, champions, doors (stage 6e2).
             builder.Register<HordeAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep>();
+            // Chests and the safe dome's loop (stage 7в).
+            builder.Register<LevelObjectsAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<FootprintsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Weather: emitted in the tick (nothing on pause), paused in the late tick.
             builder.Register<SnowfallView>(Lifetime.Singleton).AsSelf()

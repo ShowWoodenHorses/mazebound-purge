@@ -99,7 +99,7 @@ namespace Purge.Gameplay.Waves
         public int WaveSize => _spawns.Count;
 
         /// <summary>Enemies of the current wave left: alive (raised by a Shaman too) and still to appear; 0 between waves.</summary>
-        public int RemainingCount => Phase == WavePhase.Running ? _horde.AliveCount + PendingCount : 0;
+        public int RemainingCount => Phase == WavePhase.Running ? _horde.WaveAliveCount + PendingCount : 0;
 
         /// <summary>Seconds the current pause has lasted (0 outside one).</summary>
         public float PauseElapsed => Phase == WavePhase.Pause ? Mathf.Max(0f, Scenario.PauseTime - TimeLeft) : 0f;
@@ -156,7 +156,7 @@ namespace Purge.Gameplay.Waves
                 case WavePhase.Running:
                     _waveTime += deltaTime;
                     SpawnDue();
-                    if (_next >= _spawns.Count && _horde.AliveCount == 0) ClearWave();
+                    if (_next >= _spawns.Count && _horde.WaveAliveCount == 0) ClearWave();
                     break;
             }
         }
@@ -225,7 +225,7 @@ namespace Purge.Gameplay.Waves
             for (var n = 0; n < SpawnsPerTick && _next < _spawns.Count; n++)
             {
                 var spawn = _spawns[_next];
-                if (spawn.Time > _waveTime || _horde.AliveCount >= limit) return;
+                if (spawn.Time > _waveTime || _horde.WaveAliveCount >= limit) return;
 
                 var kind = _kinds[_next];
                 if (kind < 0)

@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - ONDA {0} EM {1}
   - PULAR +{0}
   - "ESPA\xC7O"
+  - "C\xDAPULA {0}"
+  - "A c\xFApula apagou at\xE9 a pausa"
+  - 'Trancado: a chave cai de um elite'
+  - "Chave do ba\xFA!"
+  - "Desafio: derrote os campe\xF5es"
+  - "Desafio conclu\xEDdo!"
   - 9 mm
   - 5,45
   - 7,62

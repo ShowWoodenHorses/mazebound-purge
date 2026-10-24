@@ -308,6 +308,7 @@ namespace Purge.Gameplay.Combat
             _targets.Collect(origin, definition.Attack.AimRange, floor, _found, wanted, minCos);
             foreach (var target in _found)
             {
+                if (target.Object != null && !target.Object.IsAimTarget) continue; // barrels: shot only on purpose
                 var offset = _targets.PositionOf(target) - origin;
                 var distance = offset.magnitude;
                 if (distance <= 1e-4f) continue;

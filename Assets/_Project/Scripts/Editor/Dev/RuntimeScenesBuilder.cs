@@ -515,6 +515,23 @@ namespace Purge.Editor.Dev
             money.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
             waveRow.gameObject.SetActive(false); // Shown on a level with waves.
 
+            // Under the wave row (stage 7в): the safe dome's seconds left in this wave while the player is inside.
+            var refugeText = Text(root, "Refuge", "DOME 0:10", 26f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0f, -140f), new Vector2(420f, 34f), TextAlignmentOptions.Center, _style.Accent, 4f);
+            refugeText.textWrappingMode = TextWrappingModes.NoWrap;
+            refugeText.gameObject.SetActive(false);
+
+            // Over a chest being opened (stage 7в): a thin bar, bottom-centre pivot — the presenter puts it over the chest.
+            var chestBar = Rect(root, "ChestBar", Center, Vector2.zero, new Vector2(120f, 14f));
+            chestBar.pivot = new Vector2(0.5f, 0f);
+            var chestBack = BarFill(chestBar, "Back", Fade(_style.Line, 0.4f));
+            chestBack.anchorMax = Vector2.one;
+            var chestFill = BarFill(chestBar, "Fill", _style.Accent);
+            chestFill.anchorMax = new Vector2(0f, 1f);
+            var chestBarView = chestBar.gameObject.AddComponent<HudWorldBar>();
+            SetReference(chestBarView, "_fill", chestFill);
+            chestBar.gameObject.SetActive(false);
+
             // The pause between waves: the countdown, «Пропустить +N» (Space), the ammo reserve by type.
             var countdown = Rect(root, "Countdown", new Vector2(0.5f, 1f), new Vector2(0f, -232f), new Vector2(760f, 200f));
             countdown.pivot = new Vector2(0.5f, 1f);
@@ -604,6 +621,8 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_damageFlash", damageFlash);
             SetReferences(screen, "_damageArcs", damageArcs);
             SetReference(screen, "_comparePanel", comparePanel);
+            SetReference(screen, "_chestBar", chestBarView);
+            SetReference(screen, "_refugeText", refugeText);
             return screen;
         }
 

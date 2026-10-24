@@ -99,6 +99,12 @@ namespace Purge.Editor.Dev
                 Add(prefabs, item.Flying?.editorAsset as GameObject);
             }
 
+            // Barrels and chests (stage 7в, Build Level Objects).
+            foreach (var barrel in Load<Purge.Core.Objects.BarrelDefinition>())
+                Add(prefabs, barrel.Prefab?.editorAsset as GameObject);
+            foreach (var chest in Load<Purge.Core.Objects.ChestDefinition>())
+                Add(prefabs, chest.Prefab?.editorAsset as GameObject);
+
             return prefabs
                 .SelectMany(prefab => prefab.GetComponentsInChildren<Renderer>(true))
                 .Where(renderer => !(renderer is ParticleSystemRenderer))

@@ -201,3 +201,6 @@ Other/door_hit1.wav	06_Попадание_по_врагу\Тук_удар_по_�
 UI/cards_show1.wav	16_Интерфейс_и_мета\Смена_вкладки\Menu_Zoom07.wav
 UI/card_pick1.wav	12_Прогресс_и_волны\Выбор_карточки_переброс\Menu_Magic11.wav
 UI/card_reroll1.wav	12_Прогресс_и_волны\Выбор_карточки_переброс\Menu_Magic11.wav
+Other/chest_open1.wav	12_Прогресс_и_волны\Сундук_открыть\Door_LargeWood_Unlock.wav
+Other/chest_locked1.wav	12_Прогресс_и_волны\Сундук_заперт_ключом\Door_Locked_HandleRattle3.wav
+Other/dome_loop.wav	12_Прогресс_и_волны\Колпак_безопасной_зоны\Scifi_DomeShield_Loop2.wav

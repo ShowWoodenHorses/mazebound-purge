@@ -58,6 +58,9 @@ namespace Purge.Core.Visual
                 case VisualKind.Zombie: return _zombie;
                 case VisualKind.Decor: return _decor;
                 case VisualKind.Light: return _light;
+                case VisualKind.Barrel:
+                case VisualKind.Chest:
+                    return null; // their looks are their kinds' assets (stage 7в), not the theme's
                 default: throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
             }
         }

@@ -67,7 +67,7 @@ namespace Purge.Gameplay.Effects
                     case ExplosionEffect explosion:
                         // The player's own explosions are changed by the run's cards (damage, radius), the monsters' never.
                         var radius = _targets.Blast(at, explosion.Damage, explosion.Radius, explosion.EdgeDamage, floor,
-                            kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion);
+                            kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion, hostile: hostile);
                         if (hostile) BlastPlayer(at, explosion, floor);
                         _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
                         Exploded?.Invoke(at, radius, explosion);

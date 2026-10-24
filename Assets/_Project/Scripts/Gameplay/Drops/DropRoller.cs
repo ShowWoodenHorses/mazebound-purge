@@ -63,19 +63,22 @@ namespace Purge.Gameplay.Drops
     /// </summary>
     public static class DropRoller
     {
-        public static DropRoll Roll(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
+        /// <param name="never">Without the "nothing" kind (a common chest, stage 7в): always an item while one can be given.</param>
+        public static DropRoll Roll(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random,
+            bool never = false)
         {
             if (table == null || pool == null) return DropRoll.Nothing;
 
+            var nothingWeight = never ? 0f : table.NothingWeight;
             var ammoWeight = HasAmmo(pool, context) ? table.AmmoWeight : 0f;
             var medkitWeight = MedkitTotal(table) > 0f ? table.MedkitWeight * (context.FullHealth ? table.MedkitAtFullHealth : 1f) : 0f;
             var throwableWeight = ThrowableTotal(table, pool, context) > 0f ? table.ThrowableWeight : 0f;
             var weaponWeight = WeaponTotal(table, pool, context) > 0f ? table.WeaponWeight : 0f;
-            var total = table.NothingWeight + ammoWeight + medkitWeight + throwableWeight + weaponWeight;
+            var total = nothingWeight + ammoWeight + medkitWeight + throwableWeight + weaponWeight;
             if (total <= 0f) return DropRoll.Nothing;
 
             var pick = (float)random.NextDouble() * total;
-            if ((pick -= table.NothingWeight) < 0f) return DropRoll.Nothing;
+            if ((pick -= nothingWeight) < 0f) return DropRoll.Nothing;
             if ((pick -= ammoWeight) < 0f) return RollAmmo(table, pool, context, random);
             if ((pick -= medkitWeight) < 0f) return RollMedkit(table, random);
             if ((pick -= throwableWeight) < 0f) return RollThrowable(table, pool, context, random);
@@ -189,6 +192,19 @@ namespace Purge.Gameplay.Drops
             foreach (var weapon in pool.Weapons)
                 if (!InSlots(weapon, context)) total += Weight(table, weapon.Rarity, context);
             return total;
+        }
+
+        /// <summary>
+        /// A weapon of the pool by the table's rarities (a locked chest, stage 7в), not one in the slots; when the slots
+        /// hold every weapon of the pool, any of them; nothing only with an empty pool.
+        /// </summary>
+        public static DropRoll Weapon(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
+        {
+            if (table == null || pool == null || pool.Weapons.Count == 0) return DropRoll.Nothing;
+            if (WeaponTotal(table, pool, context) > 0f) return RollWeapon(table, pool, context, random);
+            var any = context;
+            any.First = any.Second = null;
+            return WeaponTotal(table, pool, any) > 0f ? RollWeapon(table, pool, any, random) : DropRoll.Nothing;
         }
 
         private static DropRoll RollWeapon(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)

@@ -64,6 +64,7 @@ namespace Purge.Editor.Dev
             LevelAuthoring.GenerateNew(level);
             PlaceSpawnPoints(level);
             LayOutWeapons(level);
+            LayOutObjects(level);
             EditorUtility.SetDirty(level);
             AssetDatabase.SaveAssets();
 
@@ -116,6 +117,37 @@ namespace Purge.Editor.Dev
                 LevelEditing.ClearCell(level, cell);
                 LevelEditing.AddWeapon(level, cell, weapon);
                 x += 2;
+            }
+        }
+
+        /// <summary>
+        /// Stage 7в: the safe dome at the start; three barrels (one of each kind) and the four chests of the card
+        /// outside the start's view (Chebyshev 13–15).
+        /// </summary>
+        private static void LayOutObjects(LevelData level)
+        {
+            level.Settings.Refuge = true;
+            level.Settings.RefugeRadius = 2;
+            var start = level.PlayerStarts[0].Position;
+            GridPosition At(int dx, int dy) => new GridPosition(start.X + dx, start.Y + dy, start.Floor);
+
+            foreach (var (cell, kind) in new[]
+                     {
+                         (At(13, 0), BarrelKind.Gas), (At(-13, 4), BarrelKind.Fire), (At(2, 14), BarrelKind.Acid),
+                     })
+            {
+                LevelEditing.ClearCell(level, cell);
+                LevelEditing.AddBarrel(level, cell, kind);
+            }
+
+            foreach (var (cell, kind) in new[]
+                     {
+                         (At(14, 14), ChestKind.Common), (At(-14, -14), ChestKind.Common),
+                         (At(14, -15), ChestKind.Locked), (At(-14, 15), ChestKind.Challenge),
+                     })
+            {
+                LevelEditing.ClearCell(level, cell);
+                LevelEditing.AddChest(level, cell, kind);
             }
         }
 

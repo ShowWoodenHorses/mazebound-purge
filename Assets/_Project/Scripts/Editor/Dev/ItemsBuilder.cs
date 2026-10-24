@@ -38,6 +38,8 @@ namespace Purge.Editor.Dev
         private const string MedkitsPath = "Assets/_Project/Data/Medkits";
         private const string CatalogPath = "Assets/_Project/Data/Items/ItemVisuals.asset";
         private const string WeaponSetPath = "Assets/_Project/Data/Themes/PlaceholderWeaponSet.asset";
+        private const string ChestKeyModel = "Assets/_Project/Art/Keys/Purge/Key_01.prefab";
+        private const string ChestKeyPath = "Assets/_Project/Data/Objects/ChestKey.asset";
 
         /// <summary>Largest horizontal size of an item lying in a cell, cells.</summary>
         private const float PickupSize = 0.45f;
@@ -90,6 +92,17 @@ namespace Purge.Editor.Dev
                     used.Add(pickup);
                     catalog.MutableItems.Add(new ItemVisualDefinition(medkit, Reference(settings, group, pickup)));
                 }
+
+                // The chest key (stage 7в): one definition, its look from the key model.
+                if (AssetDatabase.LoadAssetAtPath<GameObject>(ChestKeyModel) != null)
+                {
+                    EnsureFolder(Path.GetDirectoryName(ChestKeyPath).Replace('\\', '/'));
+                    var key = LoadOrCreate<Purge.Core.Objects.ChestKeyDefinition>(ChestKeyPath, created);
+                    var pickup = BuildPrefab(ChestKeyModel, "_Pickup", PickupSize, onFloor: true);
+                    used.Add(pickup);
+                    catalog.MutableItems.Add(new ItemVisualDefinition(key, Reference(settings, group, pickup)));
+                }
+                else Debug.LogWarning($"[Purge] No chest key model at {ChestKeyModel}.");
 
                 var ammoModels = Models(AmmoModels).ToList();
                 var missingAmmo = new List<string>();

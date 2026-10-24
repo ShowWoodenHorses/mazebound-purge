@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - OLEADA {0} EN {1}
   - SALTAR +{0}
   - ESPACIO
+  - "C\xDAPULA {0}"
+  - "La c\xFApula se apag\xF3 hasta la pausa"
+  - "Cerrado: la llave cae de un \xE9lite"
+  - "\xA1Llave del cofre!"
+  - "Desaf\xEDo: vence a los campeones"
+  - "\xA1Desaf\xEDo superado!"
   - 9 mm
   - 5,45
   - 7,62

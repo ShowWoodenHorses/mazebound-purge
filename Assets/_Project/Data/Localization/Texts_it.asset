@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - ONDATA {0} TRA {1}
   - SALTA +{0}
   - SPAZIO
+  - CUPOLA {0}
+  - "La cupola \xE8 spenta fino alla pausa"
+  - "Chiuso: la chiave cade da un \xE9lite"
+  - Chiave del forziere!
+  - 'Sfida: sconfiggi i campioni'
+  - Sfida superata!
   - 9 mm
   - 5,45
   - 7,62

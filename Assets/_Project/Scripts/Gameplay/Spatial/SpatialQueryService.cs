@@ -31,6 +31,25 @@ namespace Purge.Gameplay.Spatial
 
         /// <param name="direction">Unit direction the hit came from (attacker → target).</param>
         void ApplyDamage(float amount, Vector2 direction);
+
+        /// <summary>Auto-aim turns to it (a barrel is shot only on purpose).</summary>
+        bool IsAimTarget => true;
+
+        /// <summary>The monsters' blasts hurt it too (a barrel only takes the player's damage).</summary>
+        bool HurtByMonsters => true;
+    }
+
+    /// <summary>
+    /// A round edge that stops shots both ways (stage 7в: the safe dome): bullets, projectiles, blasts and zones do not
+    /// cross it; sight does. <see cref="SpatialQueryService.Barrier"/>.
+    /// </summary>
+    public interface IShotBarrier
+    {
+        /// <summary>The point is inside the barrier (on that floor, while it stands).</summary>
+        bool Contains(Vector2 point, int floor);
+
+        /// <summary>First fraction 0..1 of the segment where it crosses the edge; false when it does not.</summary>
+        bool Crosses(Vector2 from, Vector2 to, int floor, out float t);
     }
 
     public enum SegmentHitKind
@@ -94,6 +113,9 @@ namespace Purge.Gameplay.Spatial
         /// closed door lies between the points on the floor (objects ignored).
         /// </summary>
         bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0);
+
+        /// <summary>The edge that stops shots (the safe dome); null = none.</summary>
+        IShotBarrier Barrier { get; }
     }
 
     public sealed class SpatialQueryService : ISpatialQueryService
@@ -109,6 +131,9 @@ namespace Purge.Gameplay.Spatial
         }
 
         public IReadOnlyList<ISpatialObject> Objects => _objects;
+
+        /// <summary>The edge that stops shots both ways (set by the safe dome); null = none.</summary>
+        public IShotBarrier Barrier { get; set; }
 
         public void Add(ISpatialObject spatialObject)
         {
@@ -158,6 +183,14 @@ namespace Purge.Gameplay.Spatial
 
             ISpatialObject nearest = null;
             var nearestT = blocked ? wallT : float.PositiveInfinity;
+            // The dome's edge stops the shot like a wall (the cell is where it crosses).
+            if (Barrier != null && Barrier.Crosses(from, to, floor, out var edgeT) && edgeT < nearestT)
+            {
+                blocked = true;
+                wallT = nearestT = edgeT;
+                wallCell = PlayerMovement.CellOf(from + delta * edgeT, floor);
+            }
+
             foreach (var item in _objects)
             {
                 if (item.Floor != floor || item is IDamageable damageable && !damageable.IsAlive)
@@ -180,8 +213,13 @@ namespace Purge.Gameplay.Spatial
         public SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance, int floor = 0) =>
             QuerySegment(origin, origin + direction.normalized * distance, floor);
 
-        public bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0) =>
-            !GridRaycast.Cast(from, to, new LevelOpacity(_grid, _doors, blockers), out _, out _, floor);
+        public bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0)
+        {
+            // Shots do not cross the dome's edge; sight does.
+            if ((blockers & CellFlags.BlocksBullets) != 0 && Barrier != null && Barrier.Crosses(from, to, floor, out _))
+                return false;
+            return !GridRaycast.Cast(from, to, new LevelOpacity(_grid, _doors, blockers), out _, out _, floor);
+        }
 
         /// <summary>Smallest t in [0, 1] where the segment from + delta·t touches the circle; inside counts as t = 0.</summary>
         private static bool SegmentCircle(Vector2 from, Vector2 delta, Vector2 center, float radius, out float t)

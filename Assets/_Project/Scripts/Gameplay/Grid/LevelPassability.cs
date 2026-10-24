@@ -5,23 +5,30 @@ namespace Purge.Gameplay.Grid
 {
     /// <summary>
     /// Walkability of cells (ТЗ §52): a cell whose flags do not block movement (floor, a walkable obstacle), a door only
-    /// while open; walls, void, blocking obstacles and everything outside the grid are not. Occupancy (player, zombies)
-    /// is a separate question (<see cref="OccupancyMap"/>).
+    /// while open, no level object standing in it (<see cref="CellBlockers"/>: barrels, chests); walls, void, blocking
+    /// obstacles and everything outside the grid are not. Occupancy (player, zombies) is a separate question
+    /// (<see cref="OccupancyMap"/>).
     /// </summary>
     public sealed class LevelPassability
     {
         private readonly LevelGrid _grid;
         private readonly DoorSystem _doors;
+        private readonly CellBlockers _blockers;
 
-        public LevelPassability(LevelGrid grid, DoorSystem doors)
+        public LevelPassability(LevelGrid grid, DoorSystem doors, CellBlockers blockers = null)
         {
             _grid = grid;
             _doors = doors;
+            _blockers = blockers;
         }
+
+        /// <summary>Level objects in cells (null in tests without them).</summary>
+        public CellBlockers Blockers => _blockers;
 
         public bool IsWalkable(GridPosition cell)
         {
             if (_grid.Has(cell, CellFlags.BlocksMovement)) return false; // outside the grid too
+            if (_blockers != null && _blockers.BlocksMovement(cell)) return false;
             return _grid.GetCell(cell) != CellType.Door || _doors.IsOpenAt(cell);
         }
 

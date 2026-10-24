@@ -7,7 +7,9 @@ using Purge.Application.Levels;
 using Purge.Application.Services;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Navigation;
+using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Waves;
 using Purge.Gameplay.Tutorial;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Zombies;
@@ -54,12 +56,16 @@ namespace Purge.Application.Platform
         private readonly ZombieSystem _zombies;
         private readonly TutorialSystem _tutorial;
         private readonly string _levelId;
+        private readonly ChestSystem _chests;
+        private readonly WaveSystem _waves;
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
-            TutorialSystem tutorial = null)
+            TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null)
         {
+            _chests = chests;
+            _waves = waves;
             _tutorial = tutorial;
             _stats = stats;
             _analytics = analytics;
@@ -78,6 +84,13 @@ namespace Purge.Application.Platform
             _pickups.Removed += OnPickupRemoved;
             _zombies.Attacked += OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted += OnTutorialStep;
+            if (_chests != null)
+            {
+                _chests.Opened += OnChestOpened;
+                _chests.ChallengeDone += OnChallengeDone;
+                _chests.KeyDroppedAt += OnChestKey;
+            }
+
             _subscribed = true;
             // The first step started at an earlier load stage.
             if (_tutorial != null && _tutorial.Current != null) OnTutorialStep(_tutorial.StepIndex);
@@ -103,7 +116,41 @@ namespace Purge.Application.Platform
             _pickups.Removed -= OnPickupRemoved;
             _zombies.Attacked -= OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted -= OnTutorialStep;
+            if (_chests != null)
+            {
+                _chests.Opened -= OnChestOpened;
+                _chests.ChallengeDone -= OnChallengeDone;
+                _chests.KeyDroppedAt -= OnChestKey;
+            }
+
             _subscribed = false;
+        }
+
+        private int Wave => _waves != null ? _waves.WaveIndex + 1 : 0;
+
+        private void OnChestOpened(Chest chest)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["kind"] = chest.Kind.ToString().ToLowerInvariant();
+            parameters["wave"] = Wave;
+            _analytics.Send(AnalyticsEvents.ChestOpen);
+        }
+
+        private void OnChallengeDone(Chest chest)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["wave"] = Wave;
+            _analytics.Send(AnalyticsEvents.ChallengeDone);
+        }
+
+        private void OnChestKey(Vector2 at)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["wave"] = Wave;
+            _analytics.Send(AnalyticsEvents.ChestKey);
         }
 
         private void OnPickupRemoved(Pickup pickup)

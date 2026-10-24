@@ -317,3 +317,11 @@ MonoBehaviour:
     Flat: 0
     Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 0.6
+  - Source: {fileID: 1657702766857390, guid: 89e35a83dcbef2349897d34e9e57e49a, type: 3}
+    Name: FX_Refuge_Dome
+    Scale: 1
+    Radius: 0
+    Loop: 1
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 1

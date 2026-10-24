@@ -60,6 +60,7 @@ namespace Purge.Core.Authoring
                 level.MutablePlayerStarts.Add(new PlayerStartData(level.CreateUniqueId(PlayerStartData.IdPrefix), position));
             foreach (var position in result.MonsterSpawns)
                 level.MutableMonsterSpawns.Add(new MonsterSpawnData(level.CreateUniqueId(MonsterSpawnData.IdPrefix), position));
+            level.AddGeneratedObjects(result);
 
             ApplyDecor(level, result);
             VisualAssigner.AssignAll(level, clearOverrides: false);

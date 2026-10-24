@@ -209,6 +209,9 @@ namespace Purge.Gameplay.Combat
         /// <summary>Nothing that stops bullets between the points.</summary>
         public bool IsClear(Vector2 from, Vector2 to, int floor) => _spatial.IsClear(from, to, CellFlags.BlocksBullets, floor);
 
+        /// <summary>The point is under the safe dome (stage 7в): the monsters' strikes and landings there do nothing.</summary>
+        public bool IsShielded(Vector2 at, int floor) => _spatial.Barrier != null && _spatial.Barrier.Contains(at, floor);
+
         /// <summary>(slot, where) a hit struck a monster's armored front (the ricochet's sound, stage 6e2).</summary>
         public event Action<int, Vector2> ArmoredHit;
 
@@ -273,12 +276,14 @@ namespace Purge.Gameplay.Combat
         /// Returns the radius it reached.
         /// </summary>
         public float Blast(Vector2 at, float damage, float radius, float edgeShare, int floor, WeaponDefinition weapon = null,
-            PlayerDamage kind = PlayerDamage.None)
+            PlayerDamage kind = PlayerDamage.None, bool hostile = false)
         {
             if (Modifier != null && kind == PlayerDamage.Explosion) radius *= Modifier.ExplosionRadiusFactor;
             Collect(at, radius, floor, _blast);
             foreach (var target in _blast)
             {
+                // The monsters' blasts leave the level's objects alone (barrels take the player's damage only).
+                if (hostile && target.Object != null && !target.Object.HurtByMonsters) continue;
                 var position = PositionOf(target);
                 if (!IsClear(at, position, floor)) continue;
                 var offset = position - at;

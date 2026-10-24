@@ -148,6 +148,11 @@ namespace Purge.Gameplay.Horde
         private int _passableDoors; // closed doors in _doorWalkable
         private FlowField _flow;
         private FlowField _doorFlow;
+        private bool[] _outsideWave;
+        private bool _refuge;
+        private Vector2 _refugeCenter;
+        private float _refugeEdge;
+        private int _refugeFloor;
         private CellBuckets _buckets;
         private DeterministicRandom _random;
         private GridPosition _flowTarget;
@@ -353,7 +358,7 @@ namespace Purge.Gameplay.Horde
             _fallenUsed[index] = false;
             var position = _fallenAt[index];
             var cell = CellIndex(position);
-            if (cell < 0 || !_walkable[cell]) return -1;
+            if (!CanStand(cell)) return -1;
             var slot = Place(cell, true, MonsterPerception.Hunter, position, _fallenKind[index], riseTime);
             if (slot >= 0) Raised++;
             return slot;
@@ -694,6 +699,8 @@ namespace Purge.Gameplay.Horde
             _affix = new byte[capacity];
             _maxHealth = new float[capacity];
             _attackRate = new float[capacity];
+            _outsideWave = new bool[capacity];
+            OutsideWaveAlive = 0;
             for (var i = 0; i < capacity; i++)
             {
                 _hitTime[i] = -100f;
@@ -719,6 +726,7 @@ namespace Purge.Gameplay.Horde
             if (!_subscribed)
             {
                 _doors.DoorChanged += OnDoorChanged;
+                if (_passability.Blockers != null) _passability.Blockers.Changed += OnBlockerChanged;
                 _subscribed = true;
             }
 
@@ -759,6 +767,11 @@ namespace Purge.Gameplay.Horde
                 if (farthest < 0) break;
                 _states[farthest] = HordeAgentState.Inactive;
                 AliveCount--;
+                if (_outsideWave[farthest])
+                {
+                    _outsideWave[farthest] = false;
+                    OutsideWaveAlive--;
+                }
             }
         }
 
@@ -769,6 +782,8 @@ namespace Purge.Gameplay.Horde
             for (var i = 0; i < _highWater; i++)
                 _states[i] = HordeAgentState.Inactive;
             AliveCount = 0;
+            Array.Clear(_outsideWave, 0, _outsideWave.Length);
+            OutsideWaveAlive = 0;
             _highWater = 0;
             Array.Clear(_fallenUsed, 0, FallenMemory);
             if (Stress == null) return;
@@ -859,6 +874,12 @@ namespace Purge.Gameplay.Horde
             _stunned[agent] = false;
             _dashLeft[agent] = 0f;
             AliveCount--;
+            if (_outsideWave[agent])
+            {
+                _outsideWave[agent] = false;
+                OutsideWaveAlive--;
+            }
+
             Kills++;
             RememberFallen(agent);
             Killed?.Invoke(agent, _positions[agent]);
@@ -947,13 +968,14 @@ namespace Purge.Gameplay.Horde
         }
 
         public bool IsWalkable(int x, int y) =>
-            x >= 0 && x < _grid.Width && y >= 0 && y < _grid.Height && _walkable[y * _grid.Width + x];
+            x >= 0 && x < _grid.Width && y >= 0 && y < _grid.Height && CanStand(y * _grid.Width + x);
 
         public void Dispose()
         {
             if (_subscribed)
             {
                 _doors.DoorChanged -= OnDoorChanged;
+                if (_passability.Blockers != null) _passability.Blockers.Changed -= OnBlockerChanged;
                 _subscribed = false;
             }
 
@@ -1024,7 +1046,7 @@ namespace Purge.Gameplay.Horde
                         _attackTimer[i] += AttackIntervalOf(i);
                         _attackStart[i] = Time;
                         PlayerHits++;
-                        if (!GodMode && stats.Damage > 0 && !_playerHealth.IsDead)
+                        if (!GodMode && stats.Damage > 0 && !_playerHealth.IsDead && !PlayerUnderRefuge)
                         {
                             var amount = Mathf.RoundToInt(stats.Damage * _damageFactor[i]);
                             _playerHealth.Damage(amount, position); // from the monster: the HUD's damage arc
@@ -1387,7 +1409,7 @@ namespace Purge.Gameplay.Horde
             {
                 var offset = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 6f;
                 var cell = CellIndex(center + offset);
-                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
                 if (Place(cell, false, spawned == 0 && leader.HasValue ? leader.Value : perception) < 0) break;
                 spawned++;
             }
@@ -1403,7 +1425,7 @@ namespace Purge.Gameplay.Horde
         {
             if (!IsActive) return -1;
             var cell = CellIndex(position);
-            return cell >= 0 && _walkable[cell] ? Place(cell, false, perception, position, kind) : -1;
+            return CanStand(cell) ? Place(cell, false, perception, position, kind) : -1;
         }
 
         /// <summary>
@@ -1420,7 +1442,7 @@ namespace Purge.Gameplay.Horde
                 var angle = (float)(_random.NextDouble() * Math.PI * 2.0);
                 var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (2f + (float)_random.NextDouble());
                 var cell = CellIndex(center + offset);
-                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
                 return Place(cell, false, perception, null, kind);
             }
 
@@ -1441,7 +1463,7 @@ namespace Purge.Gameplay.Horde
                     ? Vector2.zero
                     : new Vector2((float)_random.NextDouble() * 2f - 1f, (float)_random.NextDouble() * 2f - 1f) * radius;
                 var cell = CellIndex(center + offset);
-                if (cell < 0 || !_walkable[cell] || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
                 var slot = Place(cell, true, null, null, kind);
                 if (slot >= 0) RollChampion(slot);
                 return slot;
@@ -1449,6 +1471,98 @@ namespace Purge.Gameplay.Horde
 
             return -1;
         }
+
+        /// <summary>
+        /// A chest's challenge (stage 7в): a champion of <paramref name="kind"/> with affix <paramref name="affix"/> climbs
+        /// out on a reachable cell within <paramref name="radius"/> of <paramref name="center"/> and hunts the player at
+        /// once; it is not one of the wave's (<see cref="WaveAliveCount"/> leaves it out). Its slot, or -1.
+        /// </summary>
+        public int SpawnChampion(Vector2 center, int kind, float radius, int affix)
+        {
+            if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
+            for (var attempt = 0; attempt < 24; attempt++)
+            {
+                var angle = (float)(_random.NextDouble() * Math.PI * 2.0);
+                var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (radius * (0.35f + 0.65f * (float)_random.NextDouble()));
+                var cell = CellIndex(center + offset);
+                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                var slot = Place(cell, true, MonsterPerception.Hunter, null, kind);
+                if (slot < 0) return -1;
+                MakeChampion(slot, affix);
+                _outsideWave[slot] = true;
+                OutsideWaveAlive++;
+                return slot;
+            }
+
+            return -1;
+        }
+
+        /// <summary>Living monsters that are not the waves' (a chest's challenge).</summary>
+        public int OutsideWaveAlive { get; private set; }
+
+        /// <summary>Living monsters of the waves: a wave is cleared when it is 0.</summary>
+        public int WaveAliveCount => AliveCount - OutsideWaveAlive;
+
+        // ------------------------------------------------------------------ The safe dome (stage 7в)
+
+        /// <summary>The safe dome stands: monsters do not step into the cells it covers.</summary>
+        public bool HasRefuge => _refuge;
+
+        /// <summary>
+        /// The safe dome lights up around <paramref name="center"/> (edge <paramref name="edge"/> cells): the cells it
+        /// touches are closed to monsters (the flow still leads to the player — they crowd at the edge), monsters inside
+        /// are put out at its edge, and their plain blows do not reach the player under it.
+        /// </summary>
+        public void SetRefuge(Vector2 center, float edge, int floor)
+        {
+            _refuge = true;
+            _refugeCenter = center;
+            _refugeEdge = edge;
+            _refugeFloor = floor;
+            if (_positions == null) return;
+            for (var i = 0; i < _highWater; i++)
+            {
+                if (!IsAlive(_states[i]) || !InRefugeCell(CellIndex(_positions[i]))) continue;
+                _positions[i] = OutOfRefuge(_positions[i], RadiusOf(i));
+            }
+        }
+
+        public void ClearRefuge() => _refuge = false;
+
+        private bool InRefugeCell(int cell)
+        {
+            if (!_refuge || cell < 0 || _player.Floor != _refugeFloor) return false;
+            // A cell any part of which is inside the edge.
+            var dx = Mathf.Max(0f, Mathf.Abs(cell % _grid.Width - _refugeCenter.x) - 0.5f);
+            var dy = Mathf.Max(0f, Mathf.Abs(cell / _grid.Width - _refugeCenter.y) - 0.5f);
+            return dx * dx + dy * dy < _refugeEdge * _refugeEdge;
+        }
+
+        private bool PlayerUnderRefuge =>
+            _refuge && _player.Floor == _refugeFloor && (_player.Position - _refugeCenter).sqrMagnitude < _refugeEdge * _refugeEdge;
+
+        /// <summary>Nearest standing place out of the dome's cells (round the edge from the monster's side).</summary>
+        private Vector2 OutOfRefuge(Vector2 position, float radius)
+        {
+            var away = position - _refugeCenter;
+            var start = away.sqrMagnitude > 1e-6f ? Mathf.Atan2(away.y, away.x) : 0f;
+            for (var step = 0; step < 16; step++)
+            {
+                var angle = start + (step % 2 == 0 ? 1f : -1f) * (step + 1) / 2 * (Mathf.PI / 8f);
+                var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                for (var extra = 0.6f; extra < 3f; extra += 0.5f)
+                {
+                    var candidate = _refugeCenter + direction * (_refugeEdge + radius + extra);
+                    var cell = CellIndex(candidate);
+                    if (CanStand(cell) && FootprintFree(candidate, radius)) return candidate;
+                }
+            }
+
+            return position;
+        }
+
+        /// <summary>A monster may stand in the cell: walkable and not under the safe dome.</summary>
+        private bool CanStand(int cell) => cell >= 0 && _walkable[cell] && !InRefugeCell(cell);
 
         /// <summary>Flow distance from the cell to the player (orthogonal step 2, diagonal 3), or <see cref="FlowField.Unreachable"/>.</summary>
         public int FlowDistance(int x, int y)
@@ -1559,6 +1673,7 @@ namespace Purge.Gameplay.Horde
             _retreatStuck[slot] = 0f;
             _dashLeft[slot] = 0f;
             _doorAt[slot] = -1;
+            _outsideWave[slot] = false;
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
             var definition = _kinds[kind].Definition;
@@ -1610,6 +1725,13 @@ namespace Purge.Gameplay.Horde
             if (UsesDoorFlow) _doorFlow.Build(_flowTarget, new FloorMask(_grid.Width, _doorWalkable, _flowTarget.Floor));
             _flowDirty = false;
             FlowBuilds++;
+        }
+
+        /// <summary>A barrel blew up (its cell is free now), a chest stands: paths change as for a door.</summary>
+        private void OnBlockerChanged(GridPosition cell)
+        {
+            RefreshWalkable();
+            _flowDirty = true;
         }
 
         private void OnDoorChanged(DoorData door, bool open)

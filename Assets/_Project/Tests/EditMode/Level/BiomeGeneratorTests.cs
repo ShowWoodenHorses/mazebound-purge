@@ -34,8 +34,44 @@ namespace Purge.Tests.EditMode.Level
             _recipe.MutableSteps.AddRange(new GenerationStep[]
             {
                 new PerimeterStep(), new StartStep(), new ArenaStep(), new SpawnPointsStep(), new ClearingsStep(),
-                new TrailsStep(), obstacles, new GrassStep(), new DecorStep(),
+                new TrailsStep(), obstacles, new GrassStep(), new ObjectsStep(), new DecorStep(),
             });
+        }
+
+        [Test]
+        public void Objects_BarrelsAndChests_OutOfTheStartsView_NoCellCutOff()
+        {
+            var generator = new BiomeGenerator();
+            for (var seed = 0; seed < 12; seed++)
+            {
+                var result = generator.Generate(Settings(seed), _recipe);
+                var tag = $"seed {seed}";
+                var start = result.PlayerStarts.Single();
+                Assert.That(result.Barrels.Count, Is.InRange(3, 5), tag);
+                Assert.AreEqual(2, result.Chests.Count(c => c.Kind == ChestKind.Common), tag);
+                Assert.AreEqual(1, result.Chests.Count(c => c.Kind == ChestKind.Locked), tag);
+                Assert.AreEqual(1, result.Chests.Count(c => c.Kind == ChestKind.Challenge), tag);
+                foreach (var cell in result.Barrels.Select(b => b.Cell).Concat(result.Chests.Select(c => c.Cell)))
+                {
+                    Assert.Greater(Math.Max(Math.Abs(cell.X - start.X), Math.Abs(cell.Y - start.Y)), 10, tag);
+                    Assert.IsTrue(result.Geometry.GetCell(cell) == CellType.Floor && result.Geometry.GetObstacle(cell) == null, tag);
+                }
+
+                var locked = result.Chests.Single(c => c.Kind == ChestKind.Locked).Cell;
+                Assert.GreaterOrEqual(Math.Sqrt((locked.X - start.X) * (locked.X - start.X) + (locked.Y - start.Y) * (locked.Y - start.Y)), 20, tag);
+                for (var i = 0; i < result.Barrels.Count; i++)
+                for (var j = i + 1; j < result.Barrels.Count; j++)
+                {
+                    float dx = result.Barrels[i].Cell.X - result.Barrels[j].Cell.X, dy = result.Barrels[i].Cell.Y - result.Barrels[j].Cell.Y;
+                    Assert.GreaterOrEqual(Math.Sqrt(dx * dx + dy * dy), 4, tag);
+                }
+            }
+
+            // On the level: the validator's connectivity goes around them (Forest_PassesTheValidator covers the errors).
+            var level = Level(3);
+            Assert.That(level.Barrels.Count, Is.InRange(3, 5));
+            Assert.AreEqual(4, level.Chests.Count);
+            Assert.IsTrue(level.Barrels.All(b => b.Id.StartsWith("barrel_")) && level.Chests.All(c => c.Id.StartsWith("chest_")));
         }
 
         [TearDown]

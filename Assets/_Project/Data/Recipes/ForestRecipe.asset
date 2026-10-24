@@ -22,6 +22,7 @@ MonoBehaviour:
   - rid: 1763807423339692106
   - rid: 1763807423339692107
   - rid: 1763807423339692108
+  - rid: 1763807423339692122
   - rid: 1763807423339692109
   references:
     version: 2
@@ -90,3 +91,18 @@ MonoBehaviour:
         _density: 0.15
         _maxHeight: 0.3
         _grassDensity: 0.7
+    - rid: 1763807423339692122
+      type: {class: ObjectsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _minBarrels: 3
+        _maxBarrels: 5
+        _barrelKinds: 000000000100000002000000
+        _barrelStartDistance: 8
+        _barrelSpacing: 4
+        _commonChests: 2
+        _lockedChests: 1
+        _challengeChests: 1
+        _lockedStartDistance: 20
+        _challengeRadius: 6
+        _chestSpacing: 8
+        _startViewRadius: 10

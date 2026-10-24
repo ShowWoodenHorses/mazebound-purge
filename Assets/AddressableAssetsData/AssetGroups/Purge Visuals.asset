@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05d6494c4691634418fa6bb8a85eceec
+    m_Address: Assets/_Project/Art/Items/Purge/Barrel/barrel_gas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 086988b3054a1da499ddf4e0b981f3b6
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_02.prefab
     m_ReadOnly: 0
@@ -67,6 +72,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1321646b0ec40ed4fad6766376806244
     m_Address: Assets/_Project/Art/Decor/SM_Prop_TreasurePile_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1395f73d28c0b064c8c7f7fd746ed874
+    m_Address: Assets/_Project/Art/Items/Purge/Chest/Chest_03.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -97,6 +107,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1be988901817f664f8fc5bdf1a4619ce
     m_Address: Assets/_Project/Art/Zombie/Zombie_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bef80b707cc4ad449456459a57b7e41
+    m_Address: Assets/_Project/Art/Items/Purge/Barrel/barrel_fuel.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -290,6 +305,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4874b8c6b8c00db4ca0c8ec9c6799c1c
+    m_Address: Assets/_Project/Art/Items/Purge/Chest/Chest_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4a7f6226c286e934c916f1179f6f95ac
     m_Address: Assets/_Project/Art/Biomes/Snow/Prefabs/floor_snowdrift_03.prefab
     m_ReadOnly: 0
@@ -435,6 +455,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68b8ff7f10e6cb448a8b7247fbccfac0
+    m_Address: Assets/_Project/Art/Items/Purge/Barrel/barrel_acid.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6e2c72ff95094e2448471676c582b910
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/RifleMuzzleStandard.prefab
     m_ReadOnly: 0
@@ -557,6 +582,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b3ad0b31d4acb54eb31040339252903
     m_Address: Assets/_Project/Art/Placeholders/floor_special_blood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92847db8695d1104a8a850eb6717b35a
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Refuge_Dome.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -757,6 +787,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c023baa0fe42b8a46813a0eb570bfbaf
     m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_grass.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c08ee03f2f293ee4c86aec43c78884f6
+    m_Address: Assets/_Project/Art/Items/Pickups/Key_01_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1002,6 +1037,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fa1191450b9f48c4a80e9bce9118a334
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Stream_Gas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fabc5d8abe7930740888548bf9e3cda0
+    m_Address: Assets/_Project/Art/Items/Purge/Chest/Chest_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -82,10 +82,31 @@ namespace Purge.Gameplay.Drops
                     _medkits.Add(medkit.Medkit);
         }
 
+        /// <summary>
+        /// Another table drops from the pool too (a chest's reward, stage 7в): its medkits join the pool's. Call at load
+        /// (InitializeSystems), before the views gather the looks.
+        /// </summary>
+        public void Include(DropTable table)
+        {
+            if (table == null) return;
+            foreach (var medkit in table.Medkits)
+                if (medkit?.Medkit != null && !_medkits.Contains(medkit.Medkit))
+                    _medkits.Add(medkit.Medkit);
+        }
+
+        /// <summary>An item that is not rolled but may lie on the ground (the chest key): its look is loaded too.</summary>
+        public void Include(ContentDefinition item)
+        {
+            if (item != null && !_extra.Contains(item)) _extra.Add(item);
+        }
+
+        private readonly List<ContentDefinition> _extra = new List<ContentDefinition>();
+
         /// <summary>Every item kind the pool can drop (their looks are loaded with the level).</summary>
         public void GetItems(List<ContentDefinition> result)
         {
             result.Clear();
+            result.AddRange(_extra);
             if (Table == null) return;
             result.AddRange(_weapons);
             result.AddRange(_throwables);

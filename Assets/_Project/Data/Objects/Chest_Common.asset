@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96cbb281402914948bc6926e2f47c425, type: 3}
+  m_Name: Chest_Common
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Objects.ChestDefinition
+  _id: chest_common
+  _kind: 0
+  _openTime: 1
+  _reward: {fileID: 11400000, guid: 1f7485dd2133e5d4bad289f5627851ed, type: 2}
+  _champions: 6
+  _championRadius: 6
+  _prefab:
+    m_AssetGUID: fabc5d8abe7930740888548bf9e3cda0
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

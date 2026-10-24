@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96cbb281402914948bc6926e2f47c425, type: 3}
+  m_Name: Chest_Challenge
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Objects.ChestDefinition
+  _id: chest_challenge
+  _kind: 2
+  _openTime: 1
+  _reward: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
+  _champions: 6
+  _championRadius: 6
+  _prefab:
+    m_AssetGUID: 4874b8c6b8c00db4ca0c8ec9c6799c1c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

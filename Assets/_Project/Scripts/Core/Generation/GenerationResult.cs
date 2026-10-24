@@ -33,6 +33,10 @@ namespace Purge.Core.Generation
 
         /// <summary>Decor settings set by the recipe's decor step; null = keep the level's.</summary>
         public DecorSettings Decor { get; internal set; }
+
+        /// <summary>Generated barrels and chests (stage 7в); ones kept on hand-edited cells are not repeated.</summary>
+        public IReadOnlyList<LayoutObject<BarrelKind>> Barrels { get; internal set; } = Array.Empty<LayoutObject<BarrelKind>>();
+        public IReadOnlyList<LayoutObject<ChestKind>> Chests { get; internal set; } = Array.Empty<LayoutObject<ChestKind>>();
     }
 
     /// <summary>Auto decor settings a recipe writes into <see cref="LevelGenerationSettings"/>.</summary>

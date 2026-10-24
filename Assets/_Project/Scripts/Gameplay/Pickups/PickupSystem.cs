@@ -23,6 +23,8 @@ namespace Purge.Gameplay.Pickups
         Weapon = 2,
         Ammo = 3,
         Throwable = 4,
+        /// <summary>The locked chest's key (stage 7в): picked up on entering, never expires.</summary>
+        ChestKey = 5,
     }
 
     /// <summary>An item lying in a cell. Pickups never block movement (ТЗ §51).</summary>
@@ -45,9 +47,10 @@ namespace Purge.Gameplay.Pickups
         /// <summary>Dropped during play (not an object of the level): its own id, a point in the cell, maybe a lifetime.</summary>
         internal Pickup(string id, PickupKind kind, GridPosition cell, Vector2 position, float expiresAt,
             AmmoDefinition ammo = null, ThrowableDefinition throwable = null, MedkitDefinition medkitItem = null,
-            WeaponRuntime weapon = null, int amount = 1)
+            WeaponRuntime weapon = null, int amount = 1, ContentDefinition chestKey = null)
         {
             _id = id;
+            ChestKey = chestKey;
             Kind = kind;
             Cell = cell;
             Position = position;
@@ -87,6 +90,9 @@ namespace Purge.Gameplay.Pickups
         /// <summary>A dropped medkit's kind.</summary>
         public MedkitDefinition MedkitItem { get; }
 
+        /// <summary>The chest key's definition (its look) of a <see cref="PickupKind.ChestKey"/>.</summary>
+        public ContentDefinition ChestKey { get; }
+
         /// <summary>Rounds of ammo, or throwables in the stack.</summary>
         public int Amount { get; internal set; }
 
@@ -107,7 +113,7 @@ namespace Purge.Gameplay.Pickups
 
         /// <summary>Content kind of a dropped item (its look): ammo, throwable, medkit or weapon definition.</summary>
         public ContentDefinition Item =>
-            (ContentDefinition)Ammo ?? (ContentDefinition)Throwable ?? (ContentDefinition)MedkitItem ?? Weapon?.Definition;
+            (ContentDefinition)Ammo ?? (ContentDefinition)Throwable ?? (ContentDefinition)MedkitItem ?? ChestKey ?? Weapon?.Definition;
     }
 
     /// <summary>
@@ -390,24 +396,50 @@ namespace Purge.Gameplay.Pickups
 
         // ------------------------------------------------------------------ Monsters' drops
 
-        public Pickup DropAmmo(Vector2 at, int floor, AmmoDefinition ammo, int rounds, float lifetime) =>
+        // keep: a chest's reward (stage 7в) — lies until taken, not counted with the monsters' drops, not cleared by a wave.
+
+        public Pickup DropAmmo(Vector2 at, int floor, AmmoDefinition ammo, int rounds, float lifetime, bool keep = false) =>
             ammo == null || rounds <= 0 ? null
-                : AddDrop(Dropped(PickupKind.Ammo, at, floor, lifetime, ammo: ammo, amount: rounds), expires: true);
+                : AddDrop(Dropped(PickupKind.Ammo, at, floor, keep ? float.PositiveInfinity : lifetime, ammo: ammo, amount: rounds),
+                    expires: !keep);
 
-        public Pickup DropThrowable(Vector2 at, int floor, ThrowableDefinition throwable, int count, float lifetime) =>
+        public Pickup DropThrowable(Vector2 at, int floor, ThrowableDefinition throwable, int count, float lifetime, bool keep = false) =>
             throwable == null || count <= 0 ? null
-                : AddDrop(Dropped(PickupKind.Throwable, at, floor, lifetime, throwable: throwable, amount: count), expires: true);
+                : AddDrop(Dropped(PickupKind.Throwable, at, floor, keep ? float.PositiveInfinity : lifetime, throwable: throwable,
+                    amount: count), expires: !keep);
 
-        public Pickup DropMedkit(Vector2 at, int floor, MedkitDefinition medkit, float lifetime) =>
-            medkit == null ? null : AddDrop(Dropped(PickupKind.Medkit, at, floor, lifetime, medkit: medkit), expires: true);
+        public Pickup DropMedkit(Vector2 at, int floor, MedkitDefinition medkit, float lifetime, bool keep = false) =>
+            medkit == null ? null
+                : AddDrop(Dropped(PickupKind.Medkit, at, floor, keep ? float.PositiveInfinity : lifetime, medkit: medkit),
+                    expires: !keep);
 
-        public Pickup DropWeaponItem(Vector2 at, int floor, WeaponDefinition weapon, float lifetime)
+        public Pickup DropWeaponItem(Vector2 at, int floor, WeaponDefinition weapon, float lifetime, bool keep = false)
         {
             if (weapon == null) return null;
             var cell = CellOf(at, floor);
             var runtime = CreateWeapon(weapon, cell);
-            return AddDrop(new Pickup(runtime.Id, PickupKind.Weapon, cell, Inside(at, cell), Time + lifetime, weapon: runtime),
-                expires: true);
+            return AddDrop(new Pickup(runtime.Id, PickupKind.Weapon, cell, Inside(at, cell),
+                keep ? float.PositiveInfinity : Time + lifetime, weapon: runtime), expires: !keep);
+        }
+
+        /// <summary>The locked chest's key (stage 7в): lies until taken, never cleared by a wave.</summary>
+        public Pickup DropChestKey(Vector2 at, int floor, ContentDefinition key)
+        {
+            var cell = CellOf(at, floor);
+            return AddDrop(new Pickup(NextId(), PickupKind.ChestKey, cell, Inside(at, cell), float.PositiveInfinity,
+                chestKey: key), expires: false);
+        }
+
+        /// <summary>A chest key lies somewhere in the level.</summary>
+        public bool ChestKeyLying
+        {
+            get
+            {
+                foreach (var list in _byCell.Values)
+                    for (var i = 0; i < list.Count; i++)
+                        if (list[i].Kind == PickupKind.ChestKey) return true;
+                return false;
+            }
         }
 
         /// <summary>
@@ -510,6 +542,11 @@ namespace Purge.Gameplay.Pickups
                         Take(pickup, taken: true);
                         _inventory.AddKey(pickup.Key);
                         GameLog.Info(LogChannel.Gameplay, $"Picked up key '{pickup.Id}'.");
+                        break;
+                    case PickupKind.ChestKey:
+                        Take(pickup, taken: true);
+                        _inventory.AddChestKey();
+                        GameLog.Info(LogChannel.Gameplay, "Picked up the chest key.");
                         break;
                     case PickupKind.Ammo:
                         Take(pickup, taken: true);

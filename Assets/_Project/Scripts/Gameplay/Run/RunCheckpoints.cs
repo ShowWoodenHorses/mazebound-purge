@@ -8,6 +8,7 @@ using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Throwing;
@@ -109,13 +110,18 @@ namespace Purge.Gameplay.Run
         private readonly ThrowableSlot _throwables;
         private readonly LevelProgress _progress;
         private readonly LevelLaunchOptions _options;
+        private readonly BarrelSystem _barrels;
+        private readonly ChestSystem _chests;
         private int _skipBonus;
         private bool _subscribed;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
-            LevelLaunchOptions options = null, PlayerRevival revival = null)
+            LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
+            ChestSystem chests = null)
         {
+            _barrels = barrels;
+            _chests = chests;
             _waves = waves;
             _wallet = wallet;
             _score = score;
@@ -196,6 +202,14 @@ namespace Purge.Gameplay.Run
                 var weapon = _weapons.Get((WeaponSlot)i);
                 run.Weapons[i] = weapon == null || weapon.IsBase ? null : weapon.Definition.Id;
                 run.Ammo[i] = weapon?.Ammo ?? 0;
+            }
+
+            // Level objects (stage 7в): what is gone or opened stays so; a challenge still on is not opened yet.
+            if (_barrels != null) run.BrokenBarrels.AddRange(_barrels.BrokenIds);
+            if (_chests != null)
+            {
+                run.OpenedChests.AddRange(_chests.OpenedIds);
+                run.ChestKeyDropped = _chests.KeyDropped;
             }
 
             return run;

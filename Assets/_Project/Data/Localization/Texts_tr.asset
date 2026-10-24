@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -343,6 +349,12 @@ MonoBehaviour:
   - "DALGA {0} \xB7 {1}"
   - ATLA +{0}
   - "BO\u015ELUK"
+  - KUBBE {0}
+  - "Kubbe moladan \xF6nce kapand\u0131"
+  - "Kilitli: anahtar elitten d\xFC\u015Fer"
+  - "Sand\u0131k anahtar\u0131!"
+  - "Meydan okuma: \u015Fampiyonlar\u0131 yen"
+  - Meydan okuma tamam!
   - 9 mm
   - 5,45
   - 7,62

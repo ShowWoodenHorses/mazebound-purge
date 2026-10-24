@@ -16,6 +16,10 @@ namespace Purge.Core.Visual
 
         /// <summary>Fixture of a light source on a wall, e.g. a torch (<see cref="Level.LightSourceData"/>).</summary>
         Light = 10,
+
+        /// <summary>A barrel or a chest (stage 7в): the model of its kind's asset, no visual set.</summary>
+        Barrel = 11,
+        Chest = 12,
     }
 
     /// <summary>

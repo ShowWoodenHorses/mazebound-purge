@@ -423,6 +423,9 @@ namespace Purge.Tests.EditMode.Progress
             run.Cards.Add("card_a");
             run.Weapons[1] = "ak_74";
             run.Ammo[1] = 9;
+            run.BrokenBarrels.Add("barrel_2");
+            run.OpenedChests.Add("chest_1");
+            run.ChestKeyDropped = true;
             _progress.SaveRun("first", 0, run);
 
             _save.Load();
@@ -451,6 +454,9 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(9, loaded.Ammo[1]);
             Assert.AreEqual("grenade", loaded.ThrowableId);
             Assert.AreEqual(4, loaded.ThrowableCount);
+            CollectionAssert.AreEqual(new[] { "barrel_2" }, loaded.BrokenBarrels, "level objects (stage 7в)");
+            CollectionAssert.AreEqual(new[] { "chest_1" }, loaded.OpenedChests);
+            Assert.IsTrue(loaded.ChestKeyDropped);
 
             var money = _progress.Money;
             _progress.AbandonRun(loaded.Money);

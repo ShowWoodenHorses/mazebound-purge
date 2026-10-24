@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - WAVE {0} IN {1}
   - SKIP +{0}
   - SPACE
+  - DOME {0}
+  - The dome is out until the pause
+  - 'Locked: the key drops from an elite'
+  - Chest key!
+  - 'Challenge: beat the champions'
+  - Challenge done!
   - 9 mm
   - 5.45
   - 7.62

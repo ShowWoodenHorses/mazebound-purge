@@ -36,6 +36,11 @@ namespace Purge.Application.Platform
         public const string SessionStart = "session_start";
         public const string TutorialStep = "tutorial_step";
         public const string SignIn = "sign_in";
+
+        // Level objects (stage 7в).
+        public const string ChestOpen = "chest_open";
+        public const string ChestKey = "chest_key";
+        public const string ChallengeDone = "challenge_done";
     }
 
     /// <summary>

@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -342,6 +348,12 @@ MonoBehaviour:
   - WELLE {0} IN {1}
   - "\xDCBERSPRINGEN +{0}"
   - LEERTASTE
+  - KUPPEL {0}
+  - Die Kuppel ist bis zur Pause aus
+  - "Verschlossen: Der Schl\xFCssel f\xE4llt von einer Elite"
+  - "Truhenschl\xFCssel!"
+  - "Pr\xFCfung: Besiege die Champions"
+  - "Pr\xFCfung bestanden!"
   - 9 mm
   - 5,45
   - 7,62

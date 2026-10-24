@@ -56,6 +56,8 @@ namespace Purge.Core.Generation
                 layout.Arena, layout.Problems)
             {
                 Decor = layout.Decor,
+                Barrels = layout.Barrels.GetRange(layout.KeptBarrelCount, layout.Barrels.Count - layout.KeptBarrelCount),
+                Chests = layout.Chests.GetRange(layout.KeptChestCount, layout.Chests.Count - layout.KeptChestCount),
             };
             return result;
         }
@@ -83,6 +85,15 @@ namespace Purge.Core.Generation
                 if (spawn.Position.Floor == 0 && layout.IsKept(layout.Index(spawn.Position)))
                     layout.Spawns.Add(spawn.Position);
             layout.KeptSpawnCount = layout.Spawns.Count;
+
+            foreach (var barrel in level.Barrels)
+                if (barrel.Position.Floor == 0 && layout.IsKept(layout.Index(barrel.Position)))
+                    layout.Barrels.Add(new LayoutObject<BarrelKind>(barrel.Position, barrel.Kind));
+            layout.KeptBarrelCount = layout.Barrels.Count;
+            foreach (var chest in level.Chests)
+                if (chest.Position.Floor == 0 && layout.IsKept(layout.Index(chest.Position)))
+                    layout.Chests.Add(new LayoutObject<ChestKind>(chest.Position, chest.Kind));
+            layout.KeptChestCount = layout.Chests.Count;
 
             var arena = level.Arena;
             if (arena.IsEmpty || arena.Floor != 0) return;

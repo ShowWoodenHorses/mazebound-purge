@@ -44,17 +44,24 @@ namespace Purge.Core.Validation
             var geometry = level.Geometry;
             var reached = new bool[geometry.CellCount];
             var queue = new Queue<int>();
+            // Barrels and chests stand in their cells (stage 7в): the way goes around them.
+            var blocked = new HashSet<int>();
+            foreach (var barrel in level.Barrels)
+                if (geometry.IsInside(barrel.Position)) blocked.Add(geometry.ToIndex(barrel.Position));
+            foreach (var chest in level.Chests)
+                if (geometry.IsInside(chest.Position)) blocked.Add(geometry.ToIndex(chest.Position));
             foreach (var start in starts)
                 if (ArenaLayout.IsWalkable(geometry, start.Position))
-                    Flood(geometry, geometry.ToIndex(start.Position), reached, queue);
+                    Flood(geometry, geometry.ToIndex(start.Position), reached, queue, blocked);
 
             var floors = new HashSet<int>(starts.Select(s => s.Position.Floor));
             var region = new bool[geometry.CellCount];
             for (var i = 0; i < geometry.CellCount; i++)
             {
                 var p = geometry.ToPosition(i);
-                if (reached[i] || region[i] || !floors.Contains(p.Floor) || !ArenaLayout.IsWalkable(geometry, p)) continue;
-                var size = Flood(geometry, i, region, queue);
+                if (reached[i] || region[i] || blocked.Contains(i) || !floors.Contains(p.Floor) || !ArenaLayout.IsWalkable(geometry, p))
+                    continue;
+                var size = Flood(geometry, i, region, queue, blocked);
                 report.Add(Error, Gameplay, ValidationCodes.LevelDisconnected,
                     $"{size} walkable cell(s) around {p} cannot be reached from the start.", p);
             }
@@ -63,7 +70,7 @@ namespace Purge.Core.Validation
         }
 
         /// <summary>Marks the walkable region of <paramref name="from"/> in <paramref name="mask"/>; returns its size.</summary>
-        private static int Flood(LevelGeometry geometry, int from, bool[] mask, Queue<int> queue)
+        private static int Flood(LevelGeometry geometry, int from, bool[] mask, Queue<int> queue, HashSet<int> blocked)
         {
             if (mask[from]) return 0;
             mask[from] = true;
@@ -78,7 +85,7 @@ namespace Purge.Core.Validation
                     var next = p.Neighbour(direction);
                     if (!ArenaLayout.IsWalkable(geometry, next)) continue;
                     var index = geometry.ToIndex(next);
-                    if (mask[index]) continue;
+                    if (mask[index] || blocked.Contains(index)) continue;
                     mask[index] = true;
                     queue.Enqueue(index);
                 }

@@ -139,6 +139,20 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     _icon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 31723374cd0b62642b1f5fc6f110bab0, type: 2}
+    _pickup:
+      m_AssetGUID: c08ee03f2f293ee4c86aec43c78884f6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 0}
   - _item: {fileID: 11400000, guid: 50942deae0b84f444b7c4caf61824f12, type: 2}
     _pickup:
       m_AssetGUID: d902398338f8a9c4eb9af38308572593

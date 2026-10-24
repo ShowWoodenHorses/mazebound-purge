@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e36ac8ac2329b9428dd5074b7531278, type: 3}
+  m_Name: Barrel_Gas
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Objects.BarrelDefinition
+  _id: barrel_gas
+  _kind: 0
+  _health: 30
+  _effects:
+  - rid: 1763807423339692120
+  - rid: 1763807423339692121
+  _prefab:
+    m_AssetGUID: 05d6494c4691634418fa6bb8a85eceec
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807423339692120
+      type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damage: 60
+        _radius: 2
+        _edgeDamage: 0.35
+        _soundRadius: 12
+        _look:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+    - rid: 1763807423339692121
+      type: {class: PlaceZoneEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 21233689e7b7d9340a34ac060e6b6698, type: 2}
+        _radius: 2
+        _duration: 6
+        _strength: 1

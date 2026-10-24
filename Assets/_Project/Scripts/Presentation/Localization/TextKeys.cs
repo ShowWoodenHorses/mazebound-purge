@@ -37,6 +37,14 @@ namespace Purge.Presentation.Localization
         public const string HudDoorBlocked = "hud.door_blocked";
         public const string HudDoorFrozen = "hud.door_frozen";
 
+        // Level objects (stage 7в).
+        public const string HudRefuge = "hud.refuge";
+        public const string HudRefugeOver = "hud.refuge.over";
+        public const string HudChestLocked = "hud.chest.locked";
+        public const string HudChestKey = "hud.chest.key";
+        public const string HudChallenge = "hud.chest.challenge";
+        public const string HudChallengeDone = "hud.chest.challenge_done";
+
         // Waves (stage 6b).
         public const string HudWave = "hud.wave";
         public const string HudWaveStart = "hud.wave.start";

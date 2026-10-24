@@ -135,6 +135,12 @@ MonoBehaviour:
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
+  - hud.refuge
+  - hud.refuge.over
+  - hud.chest.locked
+  - hud.chest.key
+  - hud.chest.challenge
+  - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
   - ammo.ammo_7_62
@@ -343,6 +349,12 @@ MonoBehaviour:
   - FALA {0} ZA {1}
   - "POMI\u0143 +{0}"
   - SPACJA
+  - "KOPU\u0141A {0}"
+  - "Kopu\u0142a zgas\u0142a do przerwy"
+  - "Zamkni\u0119te: klucz wypada z elity"
+  - Klucz do skrzyni!
+  - "Wyzwanie: pokonaj czempion\xF3w"
+  - Wyzwanie zaliczone!
   - 9 mm
   - 5,45
   - 7,62

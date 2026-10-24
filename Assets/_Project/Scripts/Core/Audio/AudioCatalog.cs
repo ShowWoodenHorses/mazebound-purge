@@ -306,6 +306,12 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _doorHit = new SoundCue(0.7f, 12f, 2, new Vector2(0.9f, 1.1f), 0.1f);
         [Tooltip("A monster breaks a door (Other/door_broken*).")]
         [SerializeField] private SoundCue _doorBroken = new SoundCue(0.9f, 14f, 1, new Vector2(0.95f, 1.05f));
+        [Tooltip("A chest opens (Other/chest_open*, stage 7в).")]
+        [SerializeField] private SoundCue _chestOpen = new SoundCue(0.8f, 12f, 1, new Vector2(0.95f, 1.05f));
+        [Tooltip("A locked chest without its key (Other/chest_locked*).")]
+        [SerializeField] private SoundCue _chestLocked = new SoundCue(0.7f, 8f, 1, new Vector2(0.95f, 1.05f), 0.3f);
+        [Tooltip("Loop of the safe dome while it stands (Other/dome_loop*), heard near it.")]
+        [SerializeField] private SoundCue _domeLoop = new SoundCue(0.35f, 8f, 1, Vector2.one);
 
         [Header("World")]
         [Tooltip("Loop of a burning torch at every light source; only the nearest ones play.")]
@@ -471,6 +477,9 @@ namespace Purge.Core.Audio
         internal SoundCue ChampionAppearCue => _championAppear;
         internal SoundCue DoorHitCue => _doorHit;
         internal SoundCue DoorBrokenCue => _doorBroken;
+        internal SoundCue ChestOpenCue => _chestOpen;
+        internal SoundCue ChestLockedCue => _chestLocked;
+        internal SoundCue DomeLoopCue => _domeLoop;
         internal SoundCue CardsShownCue => _cardsShown;
         internal SoundCue CardChosenCue => _cardChosen;
         internal SoundCue CardRerollCue => _cardReroll;
@@ -482,6 +491,9 @@ namespace Purge.Core.Audio
         public SoundCue ChampionAppear => _championAppear;
         public SoundCue DoorHit => _doorHit;
         public SoundCue DoorBroken => _doorBroken;
+        public SoundCue ChestOpen => _chestOpen;
+        public SoundCue ChestLocked => _chestLocked;
+        public SoundCue DomeLoop => _domeLoop;
         public SoundCue CardsShown => _cardsShown;
         public SoundCue CardChosen => _cardChosen;
         public SoundCue CardReroll => _cardReroll;
@@ -572,6 +584,7 @@ namespace Purge.Core.Audio
                     yield return sound.Cue;
             yield return _monsterCall; yield return _armorHit; yield return _championAppear;
             yield return _doorHit; yield return _doorBroken;
+            yield return _chestOpen; yield return _chestLocked; yield return _domeLoop;
             yield return _cardsShown; yield return _cardChosen; yield return _cardReroll; yield return _confirmOpen;
         }
     }

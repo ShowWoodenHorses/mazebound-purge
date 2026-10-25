@@ -35,7 +35,26 @@ namespace Purge.Presentation.Visual
         public static readonly int GroundSizeId = Shader.PropertyToID("_PurgeGroundSize");
         public static readonly int GroundParamsId = Shader.PropertyToID("_PurgeGroundParams");
 
+        /// <summary>Cheap foliage (leaves, grass cards): the same cell visibility, Lambert per vertex.</summary>
+        public const string FoliageName = "Purge/Foliage";
+
+        /// <summary>
+        /// LOD of the simplified sub-shader of <see cref="Name"/> (Lambert, no normal map or reflections) used on phones
+        /// (Android and mobile browsers; Progress: «Производительность Леса», 7г).
+        /// </summary>
+        public const int SimpleLod = 150;
+
         public static bool Supports(Material material) =>
-            material != null && material.shader != null && material.shader.name == Name;
+            material != null && material.shader != null && (material.shader.name == Name || material.shader.name == FoliageName);
+
+        /// <summary>
+        /// Picks the sub-shader of <see cref="Name"/> for the device. Per shader object: the shader comes with the level's
+        /// bundles, so it is set when the level geometry is built.
+        /// </summary>
+        public static void ApplyQuality(Shader shader)
+        {
+            if (shader != null && shader.name == Name)
+                shader.maximumLOD = UnityEngine.Application.isMobilePlatform ? SimpleLod : -1;
+        }
     }
 }

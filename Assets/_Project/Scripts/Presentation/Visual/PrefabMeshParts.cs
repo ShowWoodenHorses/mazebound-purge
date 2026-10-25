@@ -102,7 +102,7 @@ namespace Purge.Presentation.Visual
                     if (material == null)
                         continue;
 
-                    ReportUnsupported(material, prefab);
+                    CheckMaterial(material, prefab);
                     parts.Add(new MeshPart(source, subMesh, material, matrix));
                 }
             }
@@ -123,10 +123,17 @@ namespace Purge.Presentation.Visual
             return source;
         }
 
-        private void ReportUnsupported(Material material, GameObject prefab)
+        // Once per material: the device's sub-shader for supported ones, a warning for the rest.
+        private void CheckMaterial(Material material, GameObject prefab)
         {
-            if (GeometryShader.Supports(material) || !_reportedMaterials.Add(material))
+            if (!_reportedMaterials.Add(material))
                 return;
+
+            if (GeometryShader.Supports(material))
+            {
+                GeometryShader.ApplyQuality(material.shader);
+                return;
+            }
 
             GameLog.Warning(LogChannel.Visual,
                 $"Material '{material.name}' of geometry prefab '{prefab.name}' does not use the '{GeometryShader.Name}' shader: " +

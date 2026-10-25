@@ -141,9 +141,9 @@ namespace Purge.Editor.Dev
             Tune = (theme, fog) =>
             {
                 var l = theme.Lighting;
-                l.Ambient = Hex("2E3A2A");
+                l.Ambient = Hex("4A5C44"); // 7г: lighter, the forest read too dark on a phone
                 l.MoonColor = Hex("CFE3B8");
-                l.MoonIntensity = 0.35f;
+                l.MoonIntensity = 0.6f;
                 l.LanternColor = Hex("FFDCA0");
                 l.LanternIntensity = 0.9f;
                 l.LightPresets = new List<LightPreset>

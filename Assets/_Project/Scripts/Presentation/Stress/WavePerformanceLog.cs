@@ -18,11 +18,14 @@ namespace Purge.Presentation.Stress
     /// logs to the Performance channel a line every <see cref="WindowSeconds"/> and a summary when the wave ends —
     /// frames (avg FPS, 1% low, median), the horde (alive, drawn), the Animator monsters (held views, shown, left
     /// without a view), simulation and draw calls. Read from logcat / the browser console.
+    /// Any single frame longer than <see cref="SpikeSeconds"/> while the level ticks is logged at once (`WAVES spike`,
+    /// with the wave's phase): freezes outside the measured windows (wave end, pause) show up too.
     /// </summary>
     public sealed class WavePerformanceLog : ILevelLoadStep, ILevelTickable, IDisposable
     {
         public const float WindowSeconds = 10f;
         private const int MaxSamples = 1 << 16;
+        private const float SpikeSeconds = 0.08f;
 
         private readonly WaveSystem _waves;
         private readonly HordeSystem _horde;
@@ -67,8 +70,12 @@ namespace Purge.Presentation.Stress
 
         public void Tick(float deltaTime)
         {
-            if (!_active || _waveIndex < 0 || _waves.Phase != WavePhase.Running) return;
+            if (!_active) return;
             var frame = Time.unscaledDeltaTime;
+            if (frame > SpikeSeconds)
+                GameLog.Info(LogChannel.Performance,
+                    $"WAVES spike {frame * 1000f:0} ms | wave {_waves.WaveIndex + 1} {_waves.Phase} | t {Time.realtimeSinceStartup:0.0}");
+            if (_waveIndex < 0 || _waves.Phase != WavePhase.Running) return;
             var drawCalls = _drawCalls.Valid ? _drawCalls.LastValue : -1;
             _wave.Add(frame, _horde, _renderer, _monsterViews, drawCalls);
             _window.Add(frame, _horde, _renderer, _monsterViews, drawCalls);

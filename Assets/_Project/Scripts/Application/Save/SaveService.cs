@@ -129,6 +129,7 @@ namespace Purge.Application.Save
         /// </summary>
         public bool Save()
         {
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
             string json;
             try
             {
@@ -146,8 +147,15 @@ namespace Purge.Application.Save
                 if (!_cloudLoop) CloudLoopAsync().Forget();
             }
 
-            return WriteLocal(json);
+            var written = WriteLocal(json);
+            var ms = (System.Diagnostics.Stopwatch.GetTimestamp() - started) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+            if (ms >= SlowSaveMs)
+                GameLog.Info(LogChannel.Save, $"Slow save: {ms:0} ms, {json.Length} chars.");
+            return written;
         }
+
+        /// <summary>Saves at least this long (serialisation + local write) are logged: they stall the frame.</summary>
+        private const double SlowSaveMs = 4.0;
 
         /// <summary>
         /// After the player signed in: the cloud now holds the account's save. Its progress and this one are merged

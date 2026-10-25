@@ -368,7 +368,10 @@ namespace Purge.Gameplay.Objects
 
         private void GiveWeapon(Chest chest) => Give(chest, DropRoller.Weapon(TableOf(chest), _pool, Context(), _random));
 
-        /// <summary>The reward lies in the free cell next to the chest nearest the player.</summary>
+        /// <summary>
+        /// The reward lies in the free cell next to the chest nearest the player — not the player's own cell (it would be
+        /// picked up at once, unseen), unless no other is free.
+        /// </summary>
         private void Give(Chest chest, DropRoll roll)
         {
             if (roll.Kind == DropKind.Nothing)
@@ -401,6 +404,7 @@ namespace Purge.Gameplay.Objects
                 if (!_passability.IsWalkable(cell)) continue;
                 var point = new Vector2(cell.X, cell.Y);
                 var distance = (point - target).sqrMagnitude;
+                if (_player.IsSpawned && cell == _player.Cell) distance += 1000f; // only when nothing else is free
                 if (distance >= bestDistance) continue;
                 bestDistance = distance;
                 best = point;

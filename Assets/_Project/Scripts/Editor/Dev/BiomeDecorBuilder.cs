@@ -4,6 +4,7 @@ using Purge.Core.Definitions;
 using Purge.Core.Generation;
 using Purge.Core.Visual;
 using Purge.Editor.LevelDesigner;
+using Purge.Presentation.Visual;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -16,9 +17,11 @@ namespace Purge.Editor.Dev
     /// <c>Stop_shoot_and_move</c> — obstacle Tree (movement + bullets), its light trees also make the shapeless forest
     /// wall; <c>Stop_move</c> — Bush (bushes, burn) or Stone (the rest: movement only); <c>Floor_decor</c> — plain decor,
     /// <c>Floor_decor/For_fire</c> — decor of grass cells (category Grass).
-    /// <para>Every prefab gets materials on <c>Purge/Geometry</c> (copies in <c>Materials</c>): the Synty vegetation
+    /// <para>Every prefab gets materials on <c>Purge/Geometry</c>, leaves and grass cards on the cheaper
+    /// <c>Purge/Foliage</c> (copies in <c>Materials</c>): the Synty vegetation
     /// shader keeps trunk and leaves in one material told apart by vertex colour (blue &gt; 0.5 = leaf), so such meshes
-    /// are split into a trunk and a leaf sub-mesh (copies in <c>Meshes</c>); leaves are alpha-tested and two-sided.
+    /// are split into a trunk and a leaf sub-mesh (copies in <c>Meshes</c>); leaves are two-sided and alpha-tested when
+    /// their texture has alpha.
     /// Root scale fits the footprint per folder (trees overlap their neighbours a little); grass is squashed to a fixed
     /// height. Heavy models (more than <see cref="MaxAutoTriangles"/> triangles) and huge patches stay out of the auto
     /// sets (weight 0 / skipped). Weights of existing variants stay. Repeatable.</para>
@@ -29,7 +32,8 @@ namespace Purge.Editor.Dev
         private const string ThemesFolder = "Assets/_Project/Data/Themes";
         private const string ObstaclesFolder = "Assets/_Project/Data/Obstacles";
         private const string RecipesFolder = "Assets/_Project/Data/Recipes";
-        private const string GeometryShaderName = "Purge/Geometry";
+        private const string GeometryShaderName = GeometryShader.Name;
+        private const string FoliageShaderName = GeometryShader.FoliageName;
         private const string VegetationShader = "SyntyStudios/VegitationShader";
         private const string TreesShader = "SyntyStudios/Trees";
         private const string TriplanarShader = "SyntyStudios/TriplanarBasic";
@@ -106,7 +110,7 @@ namespace Purge.Editor.Dev
             EditorUtility.SetDirty(decorSet);
 
             var theme = Theme(biome, wallSet, decorSet);
-            var recipe = ForestRecipe(tree, bush, stone);
+            var recipe = ForestRecipe(tree, stone);
             Debug.Log($"[Purge] Biome decor built: {theme.name} — {wallSet.Variants.Count} wall and {decorSet.Variants.Count} " +
                       $"decor variants; recipe {AssetDatabase.GetAssetPath(recipe)}" +
                       (skipped.Count > 0 ? $"; skipped (too big): {string.Join(", ", skipped)}" : "") + ".");
@@ -157,12 +161,19 @@ namespace Purge.Editor.Dev
             }
         }
 
-        /// <summary>Materials onto Purge/Geometry; vegetation sub-meshes split into trunk and leaves.</summary>
+        /// <summary>Materials onto Purge/Geometry (leaves — Purge/Foliage); vegetation sub-meshes split into trunk and leaves.</summary>
         private static void Convert(MeshFilter filter, MeshRenderer renderer, string folder, string prefabName)
         {
             var mesh = filter.sharedMesh;
             var materials = renderer.sharedMaterials;
-            if (materials.All(m => m == null || m.shader.name == GeometryShaderName)) return; // done before
+            if (materials.All(m => m == null || GeometryShader.Supports(m)))
+            {
+                // Done before: leaves made on Purge/Geometry before Purge/Foliage existed move to it.
+                foreach (var material in materials)
+                    if (material != null && material.shader.name == GeometryShaderName && material.IsKeywordEnabled("_ALPHATEST_ON"))
+                        ToFoliage(material);
+                return;
+            }
 
             var split = materials.Any(m => m != null && m.shader.name == VegetationShader);
             if (!split)
@@ -275,13 +286,36 @@ namespace Purge.Editor.Dev
             copy.SetFloat("_Glossiness", 0.1f);
             copy.SetFloat("_Metallic", 0f);
             copy.SetColor("_EmissionColor", Color.black);
+            // Leaves go to the cheap foliage shader; the alpha test (no early depth rejection) only for textures with alpha.
+            var foliage = cutout;
+            cutout = cutout && HasAlpha(main);
+            copy.shader = Shader.Find(foliage ? FoliageShaderName : GeometryShaderName);
             copy.SetFloat("_AlphaTest", cutout ? 1f : 0f);
             copy.SetFloat("_Cutoff", cutoff);
             copy.SetFloat("_Cull", cutout ? (float)UnityEngine.Rendering.CullMode.Off : (float)UnityEngine.Rendering.CullMode.Back);
             if (cutout) copy.EnableKeyword("_ALPHATEST_ON");
             else copy.DisableKeyword("_ALPHATEST_ON");
+            copy.renderQueue = foliage && !cutout ? (int)UnityEngine.Rendering.RenderQueue.Geometry : -1;
             EditorUtility.SetDirty(copy);
             return copy;
+        }
+
+        private static void ToFoliage(Material material)
+        {
+            var cutout = HasAlpha(material.GetTexture("_MainTex"));
+            material.shader = Shader.Find(FoliageShaderName);
+            material.SetFloat("_AlphaTest", cutout ? 1f : 0f);
+            material.SetFloat("_Cull", cutout ? (float)UnityEngine.Rendering.CullMode.Off : (float)UnityEngine.Rendering.CullMode.Back);
+            if (cutout) material.EnableKeyword("_ALPHATEST_ON");
+            else material.DisableKeyword("_ALPHATEST_ON");
+            material.renderQueue = cutout ? -1 : (int)UnityEngine.Rendering.RenderQueue.Geometry;
+            EditorUtility.SetDirty(material);
+        }
+
+        private static bool HasAlpha(Texture texture)
+        {
+            var importer = texture != null ? AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(texture)) as TextureImporter : null;
+            return importer != null && importer.DoesSourceTextureHaveAlpha() && importer.alphaSource != TextureImporterAlphaSource.None;
         }
 
         private static Color AverageColor(Texture texture)
@@ -404,7 +438,7 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>The Forest recipe with the steps of the stage 7 card; an existing recipe is left as it is.</summary>
-        private static BiomeRecipe ForestRecipe(ObstacleDefinition tree, ObstacleDefinition bush, ObstacleDefinition stone)
+        private static BiomeRecipe ForestRecipe(ObstacleDefinition tree, ObstacleDefinition stone)
         {
             var path = $"{RecipesFolder}/ForestRecipe.asset";
             var recipe = AssetDatabase.LoadAssetAtPath<BiomeRecipe>(path);
@@ -425,9 +459,9 @@ namespace Purge.Editor.Dev
                 AssetDatabase.CreateFolder("Assets/_Project/Data", "Recipes");
             recipe = ScriptableObject.CreateInstance<BiomeRecipe>();
             var obstacles = new ObstaclesStep();
+            // No blocking bushes (7г): on a phone they look like the passable burning grass — stones and stumps only.
             obstacles.MutableObstacles.Add(new WeightedObstacle(tree, 60));
-            obstacles.MutableObstacles.Add(new WeightedObstacle(bush, 25));
-            obstacles.MutableObstacles.Add(new WeightedObstacle(stone, 15));
+            obstacles.MutableObstacles.Add(new WeightedObstacle(stone, 40));
             recipe.MutableSteps.AddRange(new GenerationStep[]
             {
                 new PerimeterStep(), new StartStep(), new ArenaStep(), new SpawnPointsStep(), new ClearingsStep(),

@@ -17,7 +17,7 @@ namespace Purge.Presentation.Visual
     /// <summary>
     /// The safe dome's look (stage 7в): <see cref="RefugeDefinition.Look"/> (a looping effect, radius 1 at scale 1)
     /// loaded with the level, scaled to the dome's edge, shown while it stands; in the last seconds of a wave's time with
-    /// the player inside it flickers.
+    /// the player inside it flickers — by its renderers: the particles keep running (a restart per flash was costly).
     /// </summary>
     public sealed class RefugeView : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -30,6 +30,8 @@ namespace Purge.Presentation.Visual
         private readonly ContentCatalog _content;
         private GameObject _dome;
         private ParticleSystem[] _systems;
+        private Renderer[] _renderers;
+        private bool _rendered = true;
         private float _time;
 
         public RefugeView(LevelData level, RefugeSystem refuge, IAssetOwner assets, LevelViewRoot root,
@@ -69,6 +71,7 @@ namespace Purge.Presentation.Visual
             }
 
             _systems = CombatEffect.RootSystems(_dome);
+            _renderers = _dome.GetComponentsInChildren<Renderer>(true);
             _dome.SetActive(false);
         }
 
@@ -82,8 +85,6 @@ namespace Purge.Presentation.Visual
             if (_dome == null) return;
             _time += deltaTime;
             var shown = _refuge.IsUp;
-            if (shown && _refuge.IsLimited && _refuge.PlayerInside && _refuge.TimeLeft < WarnTime)
-                shown = Mathf.Repeat(_time, 0.25f) > 0.08f;
             if (_dome.activeSelf != shown)
             {
                 _dome.SetActive(shown);
@@ -91,6 +92,15 @@ namespace Purge.Presentation.Visual
             }
 
             if (!shown) return;
+            var rendered = !(_refuge.IsLimited && _refuge.PlayerInside && _refuge.TimeLeft < WarnTime) ||
+                           Mathf.Repeat(_time, 0.25f) > 0.08f;
+            if (_rendered != rendered)
+            {
+                _rendered = rendered;
+                foreach (var renderer in _renderers)
+                    renderer.enabled = rendered;
+            }
+
             var transform = _dome.transform;
             transform.localPosition = new Vector3(_refuge.Center.x, _refuge.Floor * GridPosition.FloorHeight, _refuge.Center.y);
             transform.localScale = Vector3.one * _refuge.Edge;

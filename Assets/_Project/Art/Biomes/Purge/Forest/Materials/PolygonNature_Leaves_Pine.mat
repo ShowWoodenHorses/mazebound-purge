@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PolygonNature_Leaves_Pine
-  m_Shader: {fileID: 4800000, guid: bfea5a2a82000c54482c881fc1a91dc5, type: 3}
+  m_Shader: {fileID: 4800000, guid: 804891ccd802a0640a5d54712a461a7f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:

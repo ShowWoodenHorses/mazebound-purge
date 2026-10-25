@@ -60,12 +60,12 @@ MonoBehaviour:
       data:
         _minCount: 3
         _maxCount: 5
-        _minSize: 6
-        _maxSize: 10
+        _minSize: 8
+        _maxSize: 12
     - rid: 1763807423339692106
       type: {class: TrailsStep, ns: Purge.Core.Generation, asm: Purge.Core}
       data:
-        _width: 3
+        _width: 4
         _wander: 1.5
         _wanderScale: 0.15
     - rid: 1763807423339692107
@@ -74,12 +74,10 @@ MonoBehaviour:
         _obstacles:
         - _obstacle: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
           _weight: 60
-        - _obstacle: {fileID: 11400000, guid: 47e074f3cf2dcae47a6996b7f3a181ad, type: 2}
-          _weight: 25
         - _obstacle: {fileID: 11400000, guid: e74038749402533478c64197ac9db16b, type: 2}
-          _weight: 15
+          _weight: 40
         _density: 0.4
-        _maxChunkShare: 0.35
+        _maxChunkShare: 0.2
         _groveScale: 0.15
     - rid: 1763807423339692108
       type: {class: GrassStep, ns: Purge.Core.Generation, asm: Purge.Core}
@@ -91,7 +89,7 @@ MonoBehaviour:
       data:
         _density: 0.15
         _maxHeight: 0.3
-        _grassDensity: 0.7
+        _grassDensity: 0.35
     - rid: 1763807423339692122
       type: {class: ObjectsStep, ns: Purge.Core.Generation, asm: Purge.Core}
       data:

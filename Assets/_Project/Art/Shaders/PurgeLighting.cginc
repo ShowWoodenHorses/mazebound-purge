@@ -54,6 +54,14 @@ float3 PurgeGridLight(float3 worldPos, float3 worldNormal)
     return light.rgb * _PurgeLightMapSize.z * lerp(1, PurgeFlicker(gridPos), light.a);
 }
 
+// Same in a vertex program (Purge/Foliage lights per vertex): an explicit mip level.
+float3 PurgeGridLightVertex(float3 worldPos, float3 worldNormal)
+{
+    float2 gridPos = worldPos.xz + worldNormal.xz * 0.15;
+    float4 light = tex2Dlod(_PurgeLightMap, float4((gridPos + 0.5) * _PurgeLightMapSize.xy, 0, 0));
+    return light.rgb * _PurgeLightMapSize.z * lerp(1, PurgeFlicker(gridPos), light.a);
+}
+
 // Light of the sources keeps low, like a torch shining downwards: full on the floor, fading up the walls, only a
 // small share on wall tops (the most visible part of a wall from the top-down camera).
 float PurgeLightCeiling(float height)
@@ -72,6 +80,13 @@ float3 PurgeExtraLightGeometry(float3 worldPos, float3 worldNormal)
 {
     return PurgeLantern(worldPos, worldNormal) + PurgeShotLight(worldPos, worldNormal) +
            PurgeGridLight(worldPos, worldNormal) * PurgeLightCeiling(worldPos.y);
+}
+
+// Same in a vertex program (Purge/Foliage).
+float3 PurgeExtraLightGeometryVertex(float3 worldPos, float3 worldNormal)
+{
+    return PurgeLantern(worldPos, worldNormal) + PurgeShotLight(worldPos, worldNormal) +
+           PurgeGridLightVertex(worldPos, worldNormal) * PurgeLightCeiling(worldPos.y);
 }
 
 #endif

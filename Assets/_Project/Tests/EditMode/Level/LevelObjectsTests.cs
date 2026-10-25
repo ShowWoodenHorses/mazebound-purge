@@ -293,6 +293,7 @@ namespace Purge.Tests.EditMode.Level
             Tick(1.1f);
             Assert.AreEqual(ChestState.Open, chest.State, "damage does not stop it");
             Assert.AreEqual(1, _pickups.Count, "one item, never nothing (the table is 100 nothing : 1 weapon)");
+            Assert.AreEqual(0, _pickups.At(new GridPosition(6, 10)).Count, "not under the player: it would be taken unseen");
             CollectionAssert.AreEqual(new[] { "chest_1" }, _chests.OpenedIds);
             Assert.IsNull(_chests.FindUsable(), "once per run");
 

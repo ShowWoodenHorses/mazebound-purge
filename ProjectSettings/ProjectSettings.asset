@@ -488,7 +488,7 @@ PlayerSettings:
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
   m_TemplateCustomTags:
-    PURGE_PLATFORM_HEAD: 
+    PURGE_PLATFORM_HEAD: <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
   mobileMTRendering:
     Android: 1
     iPhone: 1
@@ -897,7 +897,7 @@ PlayerSettings:
   hmiLoadingImage: {fileID: 0}
   platformRequiresReadableAssets: 0
   virtualTexturingSupportEnabled: 0
-  insecureHttpOption: 0
+  insecureHttpOption: 2
   androidVulkanDenyFilterList: []
   androidVulkanAllowFilterList: []
   androidVulkanDeviceFilterListAsset: {fileID: 0}

@@ -9,7 +9,10 @@
 // Ground (PURGE_GROUND, GroundMask; exclusive with snowdrifts): the global _PurgeGround mask (texel per cell, bilinear)
 // blends the low up-facing floor towards the theme's ground texture (_PurgeGroundTex, world space) with a noisy edge.
 // Foliage (leaves, tall grass cards): _ALPHATEST_ON clips pixels with albedo alpha below _Cutoff; _Cull = Off draws
-// both sides of the cards (materials made by Build Decor from the vegetation shaders of the packs).
+// both sides of the cards (materials made by Build Decor from the vegetation shaders of the packs; leaves of the biome
+// props are on the cheaper Purge/Foliage).
+// Two sub-shaders: LOD 200 — Standard (normal map, specular, reflections); LOD 150 — Lambert without the normal map,
+// for phones (GeometryShader.ApplyQuality sets the shader's maximumLOD; Progress: «Производительность Леса», 7г).
 Shader "Purge/Geometry"
 {
     Properties
@@ -25,26 +28,11 @@ Shader "Purge/Geometry"
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
     }
 
-    SubShader
-    {
-        Tags { "RenderType" = "Opaque" }
-        LOD 200
-        Cull [_Cull]
-
-        CGPROGRAM
-        // target 3.5: vertex texture fetch (GLES 3 / WebGL 2).
-        #pragma surface surf Standard vertex:vert noforwardadd nolightmap nodynlightmap nodirlightmap nometa
-        #pragma target 3.5
-        #pragma multi_compile _ PURGE_VISIBILITY
-        #pragma multi_compile _ PURGE_SNOWDRIFT PURGE_GROUND
-        #pragma shader_feature_local _ALPHATEST_ON
+    CGINCLUDE
         #include "PurgeLighting.cginc"
 
         sampler2D _MainTex;
-        sampler2D _BumpMap;
         fixed4 _Color;
-        half _Glossiness;
-        half _Metallic;
         half4 _EmissionColor;
         half _Cutoff;
 
@@ -115,6 +103,50 @@ Shader "Purge/Geometry"
         }
         #endif
 
+        // Hides the vertices of the cells hidden by visibility (the cell in UV3).
+        void PurgeCollapseHidden(inout appdata_full v)
+        {
+            #if PURGE_VISIBILITY
+            float2 cell = floor(v.texcoord3.xy + 0.5);
+            float visible = tex2Dlod(_PurgeVisibility, float4((cell + 0.5) * _PurgeVisibilitySize.xy, 0, 0)).r;
+            v.vertex.xyz *= step(0.5, visible);
+            #endif
+        }
+
+        // Albedo with the alpha test, snowdrifts and ground.
+        fixed3 PurgeGeometryAlbedo(float2 uv, float3 worldPos, float3 normal)
+        {
+            fixed4 albedo = tex2D(_MainTex, uv) * _Color;
+            #if _ALPHATEST_ON
+            clip(albedo.a - _Cutoff);
+            #endif
+            #if PURGE_SNOWDRIFT
+            albedo.rgb = PurgeSnowdrift(albedo.rgb, worldPos, normal);
+            #elif PURGE_GROUND
+            albedo.rgb = PurgeGroundBlend(albedo.rgb, worldPos, normal);
+            #endif
+            return albedo.rgb;
+        }
+    ENDCG
+
+    SubShader
+    {
+        Tags { "RenderType" = "Opaque" }
+        LOD 200
+        Cull [_Cull]
+
+        CGPROGRAM
+        // target 3.5: vertex texture fetch (GLES 3 / WebGL 2).
+        #pragma surface surf Standard vertex:vert noforwardadd nolightmap nodynlightmap nodirlightmap nometa
+        #pragma target 3.5
+        #pragma multi_compile _ PURGE_VISIBILITY
+        #pragma multi_compile _ PURGE_SNOWDRIFT PURGE_GROUND
+        #pragma shader_feature_local _ALPHATEST_ON
+
+        sampler2D _BumpMap;
+        half _Glossiness;
+        half _Metallic;
+
         struct Input
         {
             float2 uv_MainTex;
@@ -127,29 +159,58 @@ Shader "Purge/Geometry"
         {
             UNITY_INITIALIZE_OUTPUT(Input, o);
             o.purgeNormal = UnityObjectToWorldNormal(v.normal);
-            #if PURGE_VISIBILITY
-            float2 cell = floor(v.texcoord3.xy + 0.5);
-            float visible = tex2Dlod(_PurgeVisibility, float4((cell + 0.5) * _PurgeVisibilitySize.xy, 0, 0)).r;
-            v.vertex.xyz *= step(0.5, visible);
-            #endif
+            PurgeCollapseHidden(v);
         }
 
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
-            fixed4 albedo = tex2D(_MainTex, IN.uv_MainTex) * _Color;
-            #if _ALPHATEST_ON
-            clip(albedo.a - _Cutoff);
-            #endif
-            #if PURGE_SNOWDRIFT
-            albedo.rgb = PurgeSnowdrift(albedo.rgb, IN.worldPos, normalize(IN.purgeNormal));
-            #elif PURGE_GROUND
-            albedo.rgb = PurgeGroundBlend(albedo.rgb, IN.worldPos, normalize(IN.purgeNormal));
-            #endif
-            o.Albedo = albedo.rgb;
+            float3 normal = normalize(IN.purgeNormal);
+            fixed3 albedo = PurgeGeometryAlbedo(IN.uv_MainTex, IN.worldPos, normal);
+            o.Albedo = albedo;
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Emission = _EmissionColor.rgb + albedo.rgb * PurgeExtraLightGeometry(IN.worldPos, normalize(IN.purgeNormal));
+            o.Emission = _EmissionColor.rgb + albedo * PurgeExtraLightGeometry(IN.worldPos, normal);
+            o.Alpha = 1;
+        }
+        ENDCG
+    }
+
+    // Phones: no normal map, specular or reflections.
+    SubShader
+    {
+        Tags { "RenderType" = "Opaque" }
+        LOD 150
+        Cull [_Cull]
+
+        CGPROGRAM
+        // target 3.5: vertex texture fetch (GLES 3 / WebGL 2).
+        #pragma surface surf Lambert vertex:vert noforwardadd nolightmap nodynlightmap nodirlightmap nometa
+        #pragma target 3.5
+        #pragma multi_compile _ PURGE_VISIBILITY
+        #pragma multi_compile _ PURGE_SNOWDRIFT PURGE_GROUND
+        #pragma shader_feature_local _ALPHATEST_ON
+
+        struct Input
+        {
+            float2 uv_MainTex;
+            float3 worldPos;
+            float3 purgeNormal; // world space
+        };
+
+        void vert(inout appdata_full v, out Input o)
+        {
+            UNITY_INITIALIZE_OUTPUT(Input, o);
+            o.purgeNormal = UnityObjectToWorldNormal(v.normal);
+            PurgeCollapseHidden(v);
+        }
+
+        void surf(Input IN, inout SurfaceOutput o)
+        {
+            float3 normal = normalize(IN.purgeNormal);
+            fixed3 albedo = PurgeGeometryAlbedo(IN.uv_MainTex, IN.worldPos, normal);
+            o.Albedo = albedo;
+            o.Emission = _EmissionColor.rgb + albedo * PurgeExtraLightGeometry(IN.worldPos, normal);
             o.Alpha = 1;
         }
         ENDCG

@@ -1080,6 +1080,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 804891ccd802a0640a5d54712a461a7f
+    m_Address: Assets/_Project/Art/Shaders/PurgeFoliage.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80ee0593ae5039843801241881342ca4
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Sword_01.fbx
     m_ReadOnly: 0
@@ -1670,11 +1675,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c6458d63cdcbc1a42acb5982d18a0fa1
-    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Normals/Grass_01_Normals.tga
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c6ecd50e8b76e4d46bb203c062686a20
     m_Address: Assets/_Project/Data/Medkits/MedicalBox_small.asset
     m_ReadOnly: 0
@@ -1697,11 +1697,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c8722ddf12087de4085adb7c8fffb51a
     m_Address: Assets/_Project/Data/Ammo/Ammo_Shells.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c8df7e36f2e606a468e1934e966ab862
-    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Normals/Grass_Short_01_Normals.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

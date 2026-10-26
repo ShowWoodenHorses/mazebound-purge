@@ -184,12 +184,27 @@ namespace Purge.Gameplay.Horde
                 return;
             }
 
-            if (!WaitsInArena || !PlayerInArena) return;
+            if (!WaitsInArena || !PlayerInArena || !PlayerClearOfEntries) return;
             _horde.SetHeld(Boss, false);
             SetGates(true);
         }
 
         private bool WaitsInArena => HasArena && _level.CloseArena;
+
+        /// <summary>
+        /// The player's whole footprint is on the arena's cells: a gate coming down on a cell the body still overlaps
+        /// would lock the player in place (every step would overlap a blocked cell).
+        /// </summary>
+        private bool PlayerClearOfEntries
+        {
+            get
+            {
+                var rect = _level.Arena.Rect;
+                var half = new Vector2(1f, 1f) * (_player.Definition.BodyHalfSize - 0.001f);
+                return rect.Contains(PlayerMovement.CellOf(_player.Position - half)) &&
+                       rect.Contains(PlayerMovement.CellOf(_player.Position + half));
+            }
+        }
 
         private void OnKilled(int slot, Vector2 position)
         {
@@ -222,6 +237,10 @@ namespace Purge.Gameplay.Horde
                     if (closed) _blockers.Add(cell);
                     else _blockers.Remove(cell);
                 }
+
+            if (closed && _blockers != null)
+                foreach (var entry in _entries)
+                    _horde.PushOutOf(entry.Gap, entry.Side, _level.Arena.Floor);
 
             GameLog.Info(LogChannel.Gameplay, closed ? "Arena closed." : "Arena opened.");
             GatesChanged?.Invoke(closed);

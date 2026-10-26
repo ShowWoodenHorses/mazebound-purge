@@ -144,6 +144,7 @@ namespace Purge.Tests.EditMode.Monsters
             var passability = new LevelPassability(grid, doors, _blockers);
             var player = new PlayerSystem(_level, _playerDefinition, new FakePlayerInput(), passability, new OccupancyMap(grid),
                 new LevelLaunchOptions(startIndex: 0), new Aim());
+            _player = player;
             var health = new PlayerHealth(_playerDefinition);
             _horde = new HordeSystem(_level, grid, passability, doors, player, health, options: new LevelLaunchOptions(seed: 5));
             _horde.GodMode = true;
@@ -260,6 +261,53 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That((_bosses.Position - at).magnitude, Is.LessThan(0.05f), "waits in its place");
             Assert.That(_bosses.ShowArenaArrow, Is.True);
             Assert.That(CountAlive(_escort), Is.EqualTo(3));
+        }
+
+        [Test]
+        public void Arena_ClosesOnlyOnceTheBodyIsOffTheEntry_ThePlayerStillWalks()
+        {
+            ArenaLevel(EntryCell);
+            var (runtime, _) = Run(BossScenario());
+            Tick(runtime, 1.2f);
+            var player = _player;
+
+            player.Displace(new Vector2(0f, 0.6f));
+            Tick(runtime, 0.1f);
+            Assert.That(_bosses.PlayerInArena, Is.True, "the centre is inside");
+            Assert.That(_bosses.GatesClosed, Is.False, "the body still overlaps the entry: no gate on it");
+
+            player.Displace(new Vector2(0f, 0.5f));
+            Tick(runtime, 0.1f);
+            Assert.That(_bosses.GatesClosed, Is.True, "the whole body is inside");
+
+            var at = player.Position;
+            player.Displace(new Vector2(0.5f, 0.5f));
+            Assert.That((player.Position - at).magnitude, Is.GreaterThan(0.6f), "walks on in the arena");
+            player.Displace(new Vector2(0f, -3f));
+            Assert.That(player.Position.y, Is.GreaterThan(ArenaRect.Y - 0.5f), "the gate stops the way out");
+        }
+
+        [Test]
+        public void Arena_Closing_PutsMonstersInTheEntryOutToTheNearerEnd()
+        {
+            ArenaLevel(Inside);
+            var (runtime, _) = Run(BossScenario());
+            Tick(runtime, 0.95f);
+            var kind = _horde.KindIndexOf(_escort);
+            // The entry runs y 28..29 (edges 27.5..29.5), the arena from y 30.
+            var inner = _horde.SpawnSummoned(new Vector2(35f, 29.1f), kind);
+            var outer = _horde.SpawnSummoned(new Vector2(36f, 27.9f), kind);
+            Assert.That(inner, Is.GreaterThanOrEqualTo(0));
+            Assert.That(outer, Is.GreaterThanOrEqualTo(0));
+            Tick(runtime, 0.2f);
+
+            Assert.That(_bosses.GatesClosed, Is.True);
+            Assert.That(_horde.Positions[inner].y, Is.GreaterThan(29.5f), "nearer the arena: put in");
+            Assert.That(_horde.Positions[outer].y, Is.LessThan(27.5f), "nearer the outside: put out");
+
+            var at = _horde.Positions[inner];
+            Tick(runtime, 0.5f);
+            Assert.That((_horde.Positions[inner] - at).magnitude, Is.GreaterThan(0.3f), "walks on to the player");
         }
 
         [Test]

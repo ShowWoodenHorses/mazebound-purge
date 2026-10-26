@@ -1636,6 +1636,63 @@ namespace Purge.Gameplay.Horde
 
         public void ClearRefuge() => _refuge = false;
 
+        // ------------------------------------------------------------------ The arena's gates (stage 8a)
+
+        /// <summary>
+        /// A gate came down on <paramref name="gap"/> (an arena entry on its <paramref name="side"/>): monsters whose
+        /// body overlaps it are put out to the nearer end of the passage — into the arena or out of it — else they would
+        /// stand locked in the blocked cells.
+        /// </summary>
+        public void PushOutOf(GridRect gap, Direction side, int floor)
+        {
+            if (_positions == null || floor != _player.Floor) return;
+            var min = new Vector2(gap.X - 0.5f, gap.Y - 0.5f);
+            var max = new Vector2(gap.XMax - 0.5f, gap.YMax - 0.5f);
+            var offset = side.ToOffset();
+            var outward = new Vector2(offset.X, offset.Y);
+            for (var i = 0; i < _highWater; i++)
+            {
+                if (!IsAlive(_states[i])) continue;
+                var position = _positions[i];
+                var radius = RadiusOf(i);
+                var half = radius * 0.9f;
+                if (position.x + half <= min.x || position.x - half >= max.x ||
+                    position.y + half <= min.y || position.y - half >= max.y)
+                    continue;
+                _positions[i] = OutOfGap(position, radius, min, max, outward);
+            }
+        }
+
+        /// <summary>Nearest standing place past an end of the passage (the nearer end first, then along it).</summary>
+        private Vector2 OutOfGap(Vector2 position, float radius, Vector2 min, Vector2 max, Vector2 outward)
+        {
+            var a = Vector2.Dot(min, outward);
+            var b = Vector2.Dot(max, outward);
+            var inner = Mathf.Min(a, b);
+            var outer = Mathf.Max(a, b);
+            var along = Vector2.Dot(position, outward);
+            var clear = radius * 0.9f + 0.05f;
+            var toInner = inner - clear - along;
+            var toOuter = outer + clear - along;
+            var first = along - inner <= outer - along ? toInner : toOuter;
+            var second = first == toInner ? toOuter : toInner;
+            var across = new Vector2(-outward.y, outward.x);
+            for (var end = 0; end < 2; end++)
+            {
+                var shift = outward * (end == 0 ? first : second);
+                var further = outward * Mathf.Sign(end == 0 ? first : second);
+                for (var deeper = 0f; deeper < 2f; deeper += 0.5f)
+                for (var step = 0; step < 7; step++)
+                {
+                    var side = (step % 2 == 0 ? 1f : -1f) * ((step + 1) / 2) * 0.5f;
+                    var candidate = position + shift + further * deeper + across * side;
+                    if (CanStand(CellIndex(candidate)) && FootprintFree(candidate, radius)) return candidate;
+                }
+            }
+
+            return position;
+        }
+
         private bool InRefugeCell(int cell)
         {
             if (!_refuge || cell < 0 || _player.Floor != _refugeFloor) return false;

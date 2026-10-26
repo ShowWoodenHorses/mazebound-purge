@@ -209,6 +209,8 @@ namespace Purge.Composition
             builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<AbilityWarningView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MonsterProjectileView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // Chains of the hooks (stage 8b): after the views — from the hand where the pose put it.
+            builder.Register<MonsterHookView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Dust of climbing out, puffs of sinking corpses, the rage's flash, what falls onto area strikes (stage Э3).
             builder.Register<MonsterEffectsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<PlayerStatusView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();

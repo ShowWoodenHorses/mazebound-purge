@@ -285,7 +285,7 @@ Transform:
   - {fileID: 4006391880727938}
   - {fileID: 4864400065070428}
   - {fileID: 4597772255256518}
-  - {fileID: 5501615704265686186}
+  - {fileID: 1652863466982290816}
   m_Father: {fileID: 4959718228480724}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1128592035060558
@@ -2104,7 +2104,7 @@ Transform:
   - {fileID: 4141779442089080}
   m_Father: {fileID: 4006391880727938}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5499885678451189764
+--- !u!1 &1655644780460450094
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2112,9 +2112,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5501615704265686186}
-  - component: {fileID: 5485579777672024992}
-  - component: {fileID: 5477620414521448002}
+  - component: {fileID: 1652863466982290816}
+  - component: {fileID: 1623896739669957258}
+  - component: {fileID: 1634215658465976168}
   m_Layer: 0
   m_Name: Equipment_SM_Wep_Hammer_05
   m_TagString: Untagged
@@ -2122,13 +2122,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5501615704265686186
+--- !u!4 &1652863466982290816
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5499885678451189764}
+  m_GameObject: {fileID: 1655644780460450094}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -2137,21 +2137,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4271998681340350}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5485579777672024992
+--- !u!33 &1623896739669957258
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5499885678451189764}
+  m_GameObject: {fileID: 1655644780460450094}
   m_Mesh: {fileID: 4300000, guid: 40ca5f1d29e672a4c92689e4bae2e1a7, type: 3}
---- !u!23 &5477620414521448002
+--- !u!23 &1634215658465976168
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5499885678451189764}
+  m_GameObject: {fileID: 1655644780460450094}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1

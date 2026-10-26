@@ -110,6 +110,10 @@ MonoBehaviour:
       _count: 1
       _time: 10
       _point: -1
+    - _monster: {fileID: 11400000, guid: e2729b2e2788eac41bc2b8079be6f1fe, type: 2}
+      _count: 1
+      _time: 30
+      _point: -1
     - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
       _count: 1
       _time: 35

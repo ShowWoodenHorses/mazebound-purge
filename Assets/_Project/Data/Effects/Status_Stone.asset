@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ce58fd58f95df4ba0be00e64d77b8a, type: 3}
+  m_Name: Status_Stone
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Effects.StatusDefinition
+  _id: status_stone
+  _color: {r: 0.62, g: 0.6, b: 0.56, a: 1}
+  _particles:
+    m_AssetGUID: 2d109d16ae44ca84f860dd570f1e8275
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _particlesAtHead: 0
+  _modules:
+  - rid: 1763807467480285255
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807467480285255
+      type: {class: StunStatus, ns: Purge.Core.Effects, asm: Purge.Core}
+      data: 

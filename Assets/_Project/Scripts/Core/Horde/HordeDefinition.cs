@@ -122,6 +122,11 @@ namespace Purge.Core.Horde
 
             foreach (var monster in OnDemandMonsters)
                 if (monster != null && !all.Contains(monster)) all.Add(monster);
+            // Those the others summon (stage 8b), and whom these summon in turn.
+            for (var m = 0; m < all.Count; m++)
+                foreach (var ability in all[m].Abilities)
+                    if (ability is SummonAbility summon && summon.Monster != null && !all.Contains(summon.Monster))
+                        all.Add(summon.Monster);
             return all;
         }
 

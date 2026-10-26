@@ -34,3 +34,5 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  _tether: {fileID: 0}
+  _tetherWidth: 0.14

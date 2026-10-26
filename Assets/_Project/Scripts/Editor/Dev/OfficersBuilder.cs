@@ -236,6 +236,8 @@ namespace Purge.Editor.Dev
             EnsureChampionAffixes();
             // The bosses' (stage 8a).
             EnsureBossDrop();
+            // The gaze's stone (stage 8b).
+            EnsureStone();
             AssetDatabase.SaveAssets();
         }
 
@@ -250,6 +252,7 @@ namespace Purge.Editor.Dev
             var armadillos = BuildController(ArmadilloControllerPath, ArmadilloClips);
             var shamans = BuildController(ShamanControllerPath, ShamanClips);
             var bosses = BuildController(BossControllerPath, BossClips);
+            var hooks = BuildController(HookControllerPath, HookClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
             foreach (var (prefab, definition) in officers)
@@ -261,6 +264,7 @@ namespace Purge.Editor.Dev
                 }
                 else if (IsArmadillo(prefab.name)) views.Add(SetupElite(prefab, definition, armadillos, ArmadilloClips, report));
                 else if (IsShaman(prefab.name)) views.Add(SetupElite(prefab, definition, shamans, ShamanClips, report));
+                else if (IsHook(prefab.name)) views.Add(SetupElite(prefab, definition, hooks, HookClips, report));
                 else if (IsBuiltBoss(prefab.name)) views.Add(SetupBoss(prefab, definition, bosses, report));
                 else views.Add(Setup(prefab, definition, controller, report));
             }
@@ -579,6 +583,21 @@ namespace Purge.Editor.Dev
                 case "Shaman_Snow":
                     equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("Magic/SM_Wep_Staff_09") });
                     splash = prefabName == "Shaman_Snow" ? new Color(0.7f, 0.8f, 1f, 1f) : new Color(0.55f, 0.75f, 0.3f, 1f);
+                    break;
+                case "Capture_Castle":
+                case "Capture_Snow":
+                    // A sickle in the hand, a sickle at the end of the chain (stage 8b).
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("Capture/SM_Wep_Sickle_01") });
+                    projectile = Weapon("Capture/SM_Wep_Sickle_01");
+                    size = 1f;
+                    splash = prefabName == "Capture_Snow" ? new Color(0.7f, 0.8f, 1f, 1f) : new Color(0.7f, 0.25f, 0.2f, 1f);
+                    break;
+                case "Capture_Forest":
+                    // The vine's end at the end of the vine.
+                    equipment.Add(new HordeEquipment { Bone = HumanBodyBones.RightHand, Model = Weapon("Capture/SM_Wep_Sickle_01") });
+                    projectile = Weapon("Capture/SM_Tree_Vines_01");
+                    size = 0.35f;
+                    splash = new Color(0.55f, 0.75f, 0.3f, 1f);
                     break;
             }
 

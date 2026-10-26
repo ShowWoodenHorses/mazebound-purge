@@ -325,3 +325,11 @@ MonoBehaviour:
     Flat: 0
     Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 1
+  - Source: {fileID: 1450638143650814, guid: 9fe1ddc0da27cb44ebeeb8c2befa68bd, type: 3}
+    Name: FX_Stone
+    Scale: 0.6
+    Radius: 0
+    Loop: 0
+    Flat: 0
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6

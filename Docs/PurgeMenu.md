@@ -426,7 +426,7 @@ Boss. Подробно — [Code/Bosses.md](Code/Bosses.md).
 [ярость ≤ 30 % HP ×1,5, отталкивание r 2,2, рывок 9 кл. на 10 кл/с]; ярость добавляется первой и в уже созданные
 определения Громил (если её нет). Рык у всех офицеров ускоряется не больше чем в 2× (длинный рёв играет начало).
 Во всех контроллерах — состояние подъёма `Rise` (поднятый Шаманом; офицеры — `Officer_Rise` = `GetBackUpFrontCombat`).
-**Элита** (5д1, папка `Special`; `Capture_*` пока пропускается): **Броненосец** `Armadillo_*` — клипы `Elite_Shield_*`
+**Элита** (5д1, папка `Special`; Крюк `Capture_*` — 8б: `Hook.controller`, клипы `Elite_Hook_*`, материалы и текстуры цепи/лианы в `Art/Monster/Hook` (текстуры рисует билдер), `Status_Stone` для взгляда — подробно [Code/Elite.md](Code/Elite.md)): **Броненосец** `Armadillo_*` — клипы `Elite_Shield_*`
 (UAC Sword&Shield), `Art/Monster/Armadillo.controller`, щит `Shield_04` в левой руке и меч `Sword_09` в правой;
 **Шаманы** `Shaman_*` — клипы `Elite_Wizard_*` (UAC Wizard), `Art/Monster/Shaman.controller` (каст 0 — подъём, 1 — удар
 по площади), посох `Staff_09`. Рост головы **1,45 м**, дроп `Data/Drops/EliteDrop`; заодно создаются `Status_Freeze`,
@@ -584,7 +584,8 @@ PolygonParticleFX `Art/Effects/PolygonParticleFX/Materials/Smoke_Mat_01.mat`; н
 **Pack effects**, этап Э3 — вылезание, пых трупа, вспышка ярости). Взрыв под радиус растёт **разлётом** (`CombatEffect.SetSpread`:
 корень × масштаб, размер частиц × 1/√масштаба, число × масштаб до ×2,5).
 Затем — **Collect Used Third-Party Assets** (перенесёт текстуры и меши; сам список в расчёт не берётся).
-Запускать: после правки списка.
+Запускать: после правки списка. **Ловушка (8б):** купол колпака `FX_Refuge_Dome` и его материал `PolyShieldBlue` доведены
+вручную после сборки — пересборка их затирает; после запуска вернуть их из git (`git checkout` обоих файлов).
 
 #### Build Damage Numbers
 Атлас цифр для полосок здоровья и всплывающих цифр урона/лечения: вырезает «0–9», «+», «-» из SDF-атласа жирного

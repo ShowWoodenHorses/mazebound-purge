@@ -114,6 +114,10 @@ MonoBehaviour:
       _count: 1
       _time: 20
       _point: -1
+    - _monster: {fileID: 11400000, guid: e2729b2e2788eac41bc2b8079be6f1fe, type: 2}
+      _count: 1
+      _time: 30
+      _point: -1
     _spawnTime: 45
     _packSize: 8
     _maxAlive: 200

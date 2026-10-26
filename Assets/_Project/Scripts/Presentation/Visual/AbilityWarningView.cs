@@ -19,7 +19,8 @@ namespace Purge.Presentation.Visual
     /// <see cref="CombatVisualDefinition.AbilityWarning"/> (shader Purge/Warning) — lines along the shot (one per
     /// projectile of a fan), a circle where an arc lands, a sector in front of a strike, a body-wide line as far as a
     /// charge rushes, a circle around a monster that shoves (stage 5d), a circle under the player for an area strike and
-    /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars), a circle where an
+    /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars), the line of a hook,
+    /// small circles where the summoned climb out and the cone of a gaze (stage 8b), a circle where an
     /// explosive champion died (<see cref="ChampionSystem"/>, stage 5e2); the fill grows until it goes off. Drawn whether or not the monster is in view: a shot out of the fog must be seen.
     /// Allocation-free per frame.
     /// </summary>
@@ -149,6 +150,30 @@ namespace Purge.Presentation.Visual
                         Draw(2f, progress, Mathf.Min(strike.Angle, 359.9f) * 0.5f * Mathf.Deg2Rad, 0.06f,
                             Matrix4x4.TRS(new Vector3(origin.x, height, origin.y), Quaternion.LookRotation(forward),
                                 new Vector3(strike.Reach * 2f, 1f, strike.Reach * 2f)));
+                        break;
+                    case PullAbility _:
+                        // The hook's line, as far as the head flies (stage 8b).
+                        var hookLine = new Vector3(aims[i].x, 0f, aims[i].y);
+                        var hookReach = Mathf.Max(0.3f, _abilities.ChargeLength(i));
+                        Draw(1f, progress, 0f, 0.18f, Matrix4x4.TRS(new Vector3(origin.x, height, origin.y) + hookLine * (hookReach * 0.5f),
+                            Quaternion.LookRotation(hookLine), new Vector3(LineWidth, 1f, hookReach)));
+                        break;
+                    case SummonAbility _:
+                        // A small circle where each summoned climbs out (stage 8b).
+                        for (var n = _abilities.SummonCount(i) - 1; n >= 0; n--)
+                        {
+                            var spot = _abilities.SummonPoint(i, n);
+                            Draw(0f, progress, 0f, 0.07f / RaiseMark, Matrix4x4.TRS(new Vector3(spot.x, height, spot.y),
+                                Quaternion.identity, new Vector3(RaiseMark * 2f, 1f, RaiseMark * 2f)));
+                        }
+
+                        break;
+                    case GazeAbility gaze:
+                        // The cone of the gaze fills (stage 8b).
+                        var look = new Vector3(aims[i].x, 0f, aims[i].y);
+                        Draw(2f, progress, gaze.Angle * 0.5f * Mathf.Deg2Rad, 0.03f,
+                            Matrix4x4.TRS(new Vector3(origin.x, height, origin.y), Quaternion.LookRotation(look),
+                                new Vector3(gaze.Reach * 2f, 1f, gaze.Reach * 2f)));
                         break;
                 }
             }

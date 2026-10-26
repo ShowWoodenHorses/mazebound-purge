@@ -1572,6 +1572,38 @@ namespace Purge.Gameplay.Horde
             return -1;
         }
 
+        /// <summary>
+        /// A summon's spot (stage 8b): a walkable cell the player can be reached from, within <paramref name="radius"/>
+        /// of <paramref name="center"/> (a cell's jitter around its centre); false when none was found.
+        /// </summary>
+        public bool FindSummonSpot(Vector2 center, float radius, out Vector2 spot)
+        {
+            spot = center;
+            if (!IsActive) return false;
+            for (var attempt = 0; attempt < 16; attempt++)
+            {
+                var angle = (float)(_random.NextDouble() * Math.PI * 2.0);
+                var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (radius * (0.3f + 0.7f * (float)_random.NextDouble()));
+                var cell = CellIndex(center + offset);
+                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
+                spot = center + offset;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Summoned (stage 8b): a monster of <paramref name="kind"/> climbs out exactly at <paramref name="spot"/> (its
+        /// kind's emerge time) and hunts the player; one of the wave's. Its slot, or -1 (no free slot, not walkable).
+        /// </summary>
+        public int SpawnSummoned(Vector2 spot, int kind)
+        {
+            if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
+            var cell = CellIndex(spot);
+            return CanStand(cell) ? Place(cell, true, MonsterPerception.Hunter, spot, kind) : -1;
+        }
+
         /// <summary>Living monsters that are not the waves' (a chest's challenge).</summary>
         public int OutsideWaveAlive { get; private set; }
 

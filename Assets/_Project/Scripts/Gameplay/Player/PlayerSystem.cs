@@ -211,8 +211,17 @@ namespace Purge.Gameplay.Player
         /// <summary>The push in progress, cells per second (views, tests).</summary>
         public Vector2 PushVelocity => _push;
 
+        /// <summary>
+        /// Cells per second the player is dragged this tick whatever the stick says (a monster's hook, stage 8b; zero =
+        /// none). Set by <c>PlayerStatusSystem</c> while the pull lasts, which holds the player (<see cref="Stunned"/>);
+        /// walls stop it as a step.
+        /// </summary>
+        public Vector2 Drag { get; set; }
+
         private void ApplyPush(float deltaTime)
         {
+            if (Drag.sqrMagnitude > 1e-8f && deltaTime > 0f)
+                Position = PlayerMovement.Move(Position, Drag * deltaTime, _definition.BodyHalfSize, _definition.CornerAssist, this);
             if (_push.sqrMagnitude < 1e-4f || deltaTime <= 0f)
             {
                 _push = Vector2.zero;
@@ -253,6 +262,7 @@ namespace Purge.Gameplay.Player
             Facing = InitialFacing(start.Position);
             _moved = false;
             _push = Vector2.zero;
+            Drag = Vector2.zero;
             SpeedFactor = 0f;
             MoveDirection = Vector2.zero;
             IsSpawned = true;

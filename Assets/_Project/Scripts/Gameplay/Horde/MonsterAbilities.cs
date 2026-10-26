@@ -20,8 +20,23 @@ namespace Purge.Gameplay.Horde
         Warning = 1,
         /// <summary>It went off; the monster still stands for the ability's recovery.</summary>
         Recovery = 2,
-        /// <summary>It goes on after it went off: a charge rushes (<see cref="HordeSystem.IsDashing"/>); then the recovery.</summary>
+        /// <summary>
+        /// It goes on after it went off: a charge rushes (<see cref="HordeSystem.IsDashing"/>), a hook flies, drags, comes
+        /// back (<see cref="HookStage"/>); then the recovery.
+        /// </summary>
         Active = 3,
+    }
+
+    /// <summary>Where the head of a monster's hook is (stage 8b).</summary>
+    public enum HookStage : byte
+    {
+        None = 0,
+        /// <summary>Flies out along the warned line.</summary>
+        Out = 1,
+        /// <summary>Drawn back to the monster (a miss, a wall, a player it could not pull).</summary>
+        Back = 2,
+        /// <summary>Caught the player and drags them to the monster.</summary>
+        Pull = 3,
     }
 
     /// <summary>
@@ -49,6 +64,12 @@ namespace Purge.Gameplay.Horde
     /// chosen when the cast begins — the warning marks them); they get up where they fell (<see cref="HordeSystem.Raise"/>).</item>
     /// <item><b>Rage</b> (<see cref="RageAbility"/>, stage 5e): roars through the warning, then <see cref="HordeSystem.Enrage"/>;
     /// once per life. The damage of every attack and ability is × <see cref="HordeSystem.DamageFactorOf"/>.</item>
+    /// <item><b>Pull</b> (<see cref="PullAbility"/>, stage 8b): the head flies along the warned line
+    /// (<see cref="HookStage"/>); what stops bullets or the end of its range draws it back; the player hit is hurt and
+    /// dragged to the monster (<see cref="PlayerStatusSystem.Pull"/>: a control — immune, only hurt).</item>
+    /// <item><b>Summon</b> (<see cref="SummonAbility"/>, stage 8b): spots chosen when the cast begins (the warning marks
+    /// them), as many as its limit of living summoned leaves; they climb out there (<see cref="HordeSystem.SpawnSummoned"/>).</item>
+    /// <item><b>Gaze</b> (<see cref="GazeAbility"/>, stage 8b): the player in the cone and in a clear line gets its state.</item>
     /// </list>
     /// Also keeps <see cref="HordeSystem.SetSeesPlayer"/> (line of sight, <see cref="SightInterval"/>) for the ranged
     /// monsters' tactics. In <see cref="HordeSystem.GodMode"/> the player takes neither damage nor states — knocks still
@@ -90,6 +111,15 @@ namespace Purge.Gameplay.Horde
         private byte[][] _kindPhaseNumber; // per kind and ability: the phase a PhaseAbility switches to (1, 2…), else 0
         private byte[] _healthPhase; // the phase by HP the monster is in (stage 8a)
         private float[] _tempo; // × its cooldowns (its phases)
+        private int[][] _kindSummon; // per kind and ability: the horde kind a SummonAbility calls, else -1 (stage 8b)
+        private Vector2[] _summonPoint; // agent · SummonAbility.MaxCount + n: where the summoned climb out
+        private byte[] _summonCount;
+        private int[] _summoner; // per slot: the slot that summoned it + 1 (0 = none)
+        private int[] _summonerGeneration; // … and that slot's generation then
+        private int[] _summonedGeneration; // the summoned's own generation (a reused slot is not summoned)
+        private HookStage[] _hook;
+        private Vector2[] _hookHead;
+        private float[] _hookUntil; // the drag ends (HookStage.Pull)
 
         private int _projectileCount;
         private readonly Vector2[] _from = new Vector2[MaxProjectiles];
@@ -142,8 +172,59 @@ namespace Purge.Gameplay.Horde
         /// <summary>Charges that ran into the player (tests, metrics).</summary>
         public int ChargeHits { get; private set; }
 
-        /// <summary>How far the charge of the monster in <paramref name="agent"/> rushes (its warning line), cells.</summary>
+        /// <summary>Hooks that caught the player and dragged them (tests, metrics).</summary>
+        public int Pulls { get; private set; }
+
+        /// <summary>Monsters summoned (tests, metrics).</summary>
+        public int Summoned { get; private set; }
+
+        /// <summary>Gazes that caught the player (tests, metrics).</summary>
+        public int GazeHits { get; private set; }
+
+        /// <summary>(slot) a hook caught the player and drags them (sound).</summary>
+        public event Action<int> PlayerPulled;
+
+        /// <summary>
+        /// How far the charge of the monster in <paramref name="agent"/> rushes, or its hook flies (its warning line), cells.
+        /// </summary>
         public float ChargeLength(int agent) => IsActive && (uint)agent < (uint)_length.Length ? _length[agent] : 0f;
+
+        /// <summary>Where the hook of the monster in <paramref name="agent"/> is (<see cref="HookStage.None"/> = not thrown).</summary>
+        public HookStage HookOf(int agent) => IsActive && (uint)agent < (uint)_hook.Length ? _hook[agent] : HookStage.None;
+
+        /// <summary>Where its head is now.</summary>
+        public Vector2 HookHead(int agent) => _hookHead[agent];
+
+        /// <summary>How many monsters the summon of the monster in <paramref name="agent"/> calls (its warning marks the spots).</summary>
+        public int SummonCount(int agent) => IsActive && (uint)agent < (uint)_summonCount.Length ? _summonCount[agent] : 0;
+
+        /// <summary>Where the summoned <paramref name="n"/> of <see cref="SummonCount"/> climbs out.</summary>
+        public Vector2 SummonPoint(int agent, int n) => _summonPoint[agent * SummonAbility.MaxCount + n];
+
+        /// <summary>The slot that summoned the living monster in <paramref name="agent"/> (-1 = not summoned, or its summoner is gone).</summary>
+        public int SummonerOf(int agent)
+        {
+            if (!IsActive || (uint)agent >= (uint)_summoner.Length || _summoner[agent] == 0) return -1;
+            var summoner = _summoner[agent] - 1;
+            return _summonedGeneration[agent] == _horde.Generations[agent] &&
+                   _summonerGeneration[agent] == _horde.Generations[summoner] && HordeSystem.IsAlive(_horde.States[summoner])
+                ? summoner
+                : -1;
+        }
+
+        /// <summary>Living monsters the monster in <paramref name="agent"/> summoned.</summary>
+        public int SummonedAlive(int agent)
+        {
+            if (!IsActive) return 0;
+            var count = 0;
+            var states = _horde.States;
+            var generations = _horde.Generations;
+            for (var s = 0; s < _horde.HighWater; s++)
+                if (_summoner[s] == agent + 1 && _summonedGeneration[s] == generations[s] &&
+                    _summonerGeneration[s] == generations[agent] && HordeSystem.IsAlive(states[s]))
+                    count++;
+            return count;
+        }
 
         /// <summary>How many of the fallen the raise of the monster in <paramref name="agent"/> lifts (its warning marks them).</summary>
         public int RaiseCount(int agent) => IsActive && (uint)agent < (uint)_raiseCount.Length ? _raiseCount[agent] : 0;
@@ -204,6 +285,7 @@ namespace Purge.Gameplay.Horde
             var kinds = _horde.KindList;
             _kindAbilities = new AbilityModule[kinds.Count][];
             _kindPhaseNumber = new byte[kinds.Count][];
+            _kindSummon = new int[kinds.Count][];
             for (var k = 0; k < kinds.Count; k++)
             {
                 var list = kinds[k].Definition != null ? kinds[k].Definition.Abilities : null;
@@ -222,6 +304,11 @@ namespace Purge.Gameplay.Horde
                     if (abilities[a] is PhaseAbility && phase < AbilityModule.MaxPhase)
                         numbers[a] = (byte)++phase;
                 _kindPhaseNumber[k] = numbers;
+                // Whom its summons call (the horde has them: HordeDefinition.AllMonsters).
+                var summons = new int[count];
+                for (var a = 0; a < count; a++)
+                    summons[a] = abilities[a] is SummonAbility summon && summon.Monster != null ? _horde.KindIndexOf(summon.Monster) : -1;
+                _kindSummon[k] = summons;
             }
 
             var capacity = _horde.Capacity;
@@ -240,6 +327,14 @@ namespace Purge.Gameplay.Horde
             _raiseCount = new byte[capacity];
             _healthPhase = new byte[capacity];
             _tempo = new float[capacity];
+            _summonPoint = new Vector2[capacity * SummonAbility.MaxCount];
+            _summonCount = new byte[capacity];
+            _summoner = new int[capacity];
+            _summonerGeneration = new int[capacity];
+            _summonedGeneration = new int[capacity];
+            _hook = new HookStage[capacity];
+            _hookHead = new Vector2[capacity];
+            _hookUntil = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _generation[i] = -1;
@@ -277,6 +372,8 @@ namespace Purge.Gameplay.Horde
                     for (var a = 0; a < MaxAbilities; a++) _ready[i * MaxAbilities + a] = 0f;
                     _healthPhase[i] = 0;
                     _tempo[i] = 1f;
+                    _hook[i] = HookStage.None;
+                    _summonCount[i] = 0;
                 }
 
                 var state = states[i];
@@ -304,7 +401,8 @@ namespace Purge.Gameplay.Horde
                         else if (time - _phaseStart[i] >= casting.Warning) Release(i, casting, time);
                         break;
                     case AbilityPhase.Active:
-                        TickCharge(i, abilities[_cast[i]] as ChargeAbility, time);
+                        if (abilities[_cast[i]] is PullAbility pull) TickHook(i, pull, time, deltaTime);
+                        else TickCharge(i, abilities[_cast[i]] as ChargeAbility, time);
                         break;
                     case AbilityPhase.Recovery:
                         if (time - _phaseStart[i] >= abilities[_cast[i]].Recovery) Finish(i);
@@ -353,6 +451,8 @@ namespace Purge.Gameplay.Horde
                 var found = 0;
                 if (ability is RaiseAbility raise &&
                     (found = _horde.FindFallen(position, raise.Radius, raise.MaxAge, _found, raise.Count)) == 0) continue;
+                // A summon chooses its spots now (the warning marks them), no more than its limit leaves room for.
+                if (ability is SummonAbility summon && PlanSummon(i, summon, _kindSummon[_horde.Kinds[i]][a], position) == 0) continue;
                 Begin(i, a, ability, position, toPlayer, distance, time);
                 // A raise chooses its spots now: the warning marks them.
                 for (var n = 0; n < found; n++) _raise[i * RaiseAbility.MaxCount + n] = _found[n];
@@ -374,10 +474,13 @@ namespace Purge.Gameplay.Horde
                 AreaStrikeAbility => _player.Position,
                 PushAbility => position,
                 RaiseAbility => position,
+                SummonAbility => position,
                 _ => direction,
             };
             if (ability is ChargeAbility charge)
                 _length[i] = _horde.DashReach(position, direction, charge.Distance, _horde.RadiusOf(i));
+            else if (ability is PullAbility pull)
+                _length[i] = Mathf.Max(0.5f, ShotReach(position, direction, pull.Range));
             _horde.SetCasting(i, true, direction);
             CastStarted?.Invoke(i, index);
         }
@@ -436,6 +539,19 @@ namespace Purge.Gameplay.Horde
                     _dashFrom[i] = position;
                     _horde.BeginDash(i, _aim[i], charge.Speed, _length[i], charge.CrowdPush);
                     break;
+                case PullAbility _:
+                    // The head flies from the body's edge along the warned line; the recovery begins when it is back.
+                    _phase[i] = AbilityPhase.Active;
+                    _hook[i] = HookStage.Out;
+                    _hookHead[i] = position + _aim[i] * _horde.RadiusOf(i);
+                    _origin[i] = position;
+                    break;
+                case SummonAbility _:
+                    Summon(i, _kindSummon[_horde.Kinds[i]][index]);
+                    break;
+                case GazeAbility gaze:
+                    Gaze(i, gaze, position, _aim[i]);
+                    break;
             }
 
             Released?.Invoke(i, index);
@@ -471,9 +587,133 @@ namespace Purge.Gameplay.Horde
             if (!_health.IsDead) _player.Knock(offset.sqrMagnitude > 1e-6f ? offset : Vector2.up, push.Knockback);
         }
 
+        /// <summary>
+        /// The head of a hook (stage 8b): flies out until what stops bullets or the end of the warned line, then is drawn
+        /// back; the player it touches is hurt and dragged to the monster — if the pull takes (a player held by control
+        /// or immune to it is only hurt), the head stays on them until the drag ends.
+        /// </summary>
+        private void TickHook(int i, PullAbility pull, float time, float deltaTime)
+        {
+            var position = _horde.Positions[i];
+            switch (_hook[i])
+            {
+                case HookStage.Out:
+                    var from = _hookHead[i];
+                    var left = _length[i] - (from - _origin[i]).magnitude;
+                    var next = from + _aim[i] * Mathf.Min(pull.Speed * deltaTime, Mathf.Max(0f, left));
+                    var wall = 2f;
+                    var segment = _targets.Spatial.QuerySegment(from, next, _player.Floor);
+                    if (segment.Kind == SegmentHitKind.Blocker) wall = segment.T;
+                    if (_player.IsSpawned && SegmentCircle(from, next - from, _player.Position, PlayerRadius, out var t) && t <= wall)
+                    {
+                        _hookHead[i] = Vector2.Lerp(from, next, t);
+                        Catch(i, pull, position, time);
+                        return;
+                    }
+
+                    if (wall <= 1f)
+                    {
+                        _hookHead[i] = Vector2.Lerp(from, next, wall);
+                        _hook[i] = HookStage.Back;
+                        return;
+                    }
+
+                    _hookHead[i] = next;
+                    if (left <= 1e-3f) _hook[i] = HookStage.Back;
+                    return;
+                case HookStage.Pull:
+                    _hookHead[i] = _player.Position;
+                    if (time >= _hookUntil[i]) _hook[i] = HookStage.Back;
+                    return;
+                case HookStage.Back:
+                    var offset = position - _hookHead[i];
+                    var step = pull.Speed * 1.5f * deltaTime;
+                    if (offset.magnitude > step + _horde.RadiusOf(i))
+                    {
+                        _hookHead[i] += offset.normalized * step;
+                        return;
+                    }
+
+                    break;
+            }
+
+            // Back at the body (or never thrown): the recovery.
+            _hook[i] = HookStage.None;
+            _phase[i] = AbilityPhase.Recovery;
+            _phaseStart[i] = time;
+        }
+
+        /// <summary>The hook touched the player: hurt, then dragged to the edge of the monster's body for its pull time.</summary>
+        private void Catch(int i, PullAbility pull, Vector2 position, float time)
+        {
+            HurtPlayer(i, _horde.Generations[i], pull.Damage * _horde.DamageFactorOf(i), position, null, 0f);
+            var offset = _player.Position - position;
+            var direction = offset.sqrMagnitude > 1e-6f ? offset.normalized : -_aim[i];
+            var target = position + direction * (_horde.RadiusOf(i) + PlayerRadius + 0.15f);
+            var velocity = (target - _player.Position) / pull.PullTime;
+            if (_health.IsDead || _statuses == null || !_statuses.Pull(velocity, pull.PullTime))
+            {
+                _hook[i] = HookStage.Back;
+                return;
+            }
+
+            Pulls++;
+            _hook[i] = HookStage.Pull;
+            _hookUntil[i] = time + pull.PullTime;
+            PlayerPulled?.Invoke(i);
+        }
+
+        /// <summary>
+        /// Chooses where a summon's monsters climb out: as many as <see cref="SummonAbility.Count"/> and the room its
+        /// <see cref="SummonAbility.Limit"/> of living summoned leaves; 0 = no cast.
+        /// </summary>
+        private int PlanSummon(int i, SummonAbility summon, int kind, Vector2 position)
+        {
+            _summonCount[i] = 0;
+            if (kind < 0) return 0;
+            var room = Mathf.Min(summon.Count, summon.Limit - SummonedAlive(i));
+            var found = 0;
+            for (var n = 0; n < room; n++)
+                if (_horde.FindSummonSpot(position, summon.Radius, out var spot))
+                    _summonPoint[i * SummonAbility.MaxCount + found++] = spot;
+            _summonCount[i] = (byte)found;
+            return found;
+        }
+
+        private void Summon(int i, int kind)
+        {
+            var generation = _horde.Generations[i];
+            for (var n = 0; n < _summonCount[i]; n++)
+            {
+                var slot = _horde.SpawnSummoned(_summonPoint[i * SummonAbility.MaxCount + n], kind);
+                if (slot < 0) continue;
+                _summoner[slot] = i + 1;
+                _summonerGeneration[slot] = generation;
+                _summonedGeneration[slot] = _horde.Generations[slot];
+                Summoned++;
+            }
+
+            _summonCount[i] = 0;
+        }
+
+        /// <summary>The cone: the player in it and in a clear line from the monster gets the state (stone).</summary>
+        private void Gaze(int i, GazeAbility gaze, Vector2 position, Vector2 direction)
+        {
+            if (!_player.IsSpawned) return;
+            var offset = _player.Position - position;
+            var distance = offset.magnitude;
+            if (distance > gaze.Reach + PlayerRadius) return;
+            if (distance > PlayerRadius && Vector2.Angle(direction, offset) > gaze.Angle * 0.5f) return;
+            if (!_targets.IsClear(position, _player.Position, _player.Floor)) return;
+            // Its state is control: refused while one holds or the immunity lasts (and in god mode).
+            if (!_horde.GodMode && !_health.IsDead && _statuses != null && _statuses.Apply(gaze.Status, gaze.StatusDuration)) GazeHits++;
+        }
+
         private void Finish(int i)
         {
             _raiseCount[i] = 0;
+            _summonCount[i] = 0;
+            _hook[i] = HookStage.None;
             _cast[i] = -1;
             _phase[i] = AbilityPhase.None;
             _horde.SetCasting(i, false);

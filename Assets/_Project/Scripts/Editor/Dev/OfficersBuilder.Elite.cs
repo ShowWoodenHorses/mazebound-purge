@@ -23,7 +23,7 @@ namespace Purge.Editor.Dev
     /// the Castle — a fireball (explosion), the Forest — a poison cloud (zone), the Snow — a freeze (state).</item>
     /// </list>
     /// Clips are taken in place like the officers' (attacks, hits, the rise: the drift goes into root motion, never
-    /// applied; the presenter keeps the hips at the monster's point). Other "Special" prefabs (the Hook) wait for their stage.
+    /// applied; the presenter keeps the hips at the monster's point). The Hook (Capture_*, stage 8b) — OfficersBuilder.Hook.cs.
     /// </summary>
     internal static partial class OfficersBuilder
     {
@@ -74,11 +74,28 @@ namespace Purge.Editor.Dev
             ("Elite_Wizard_Death_Left", "Humanoid@DeathLeftWizard"),
             ("Elite_Wizard_Death_Right", "Humanoid@DeathRightWizard"),
             ("Elite_Wizard_Rise", "Humanoid@GetBackUpFrontWizard"),
+
+            // The Hook (stage 8b): one-handed melee; the throw of the hook — the overhand swing forward.
+            ("Elite_Hook_Idle", "Humanoid@IdleCombat1hMelee"),
+            ("Elite_Hook_Walk", "Humanoid@WalkForwardCombat1hMelee"),
+            ("Elite_Hook_Run", "Humanoid@RunForward1hMelee"),
+            ("Elite_Hook_Attack_1", "Humanoid@AttackA1hMelee"),
+            ("Elite_Hook_Attack_2", "Humanoid@AttackB1hMelee"),
+            ("Elite_Hook_Attack_3", "Humanoid@AttackC1hMelee"),
+            ("Elite_Hook_Throw", "Humanoid@AttackCForward1hMelee"),
+            ("Elite_Hook_Hit_Front", "Humanoid@GetHitLightFront1hMelee"),
+            ("Elite_Hook_Hit_Left", "Humanoid@GetHitLightLeft1hMelee"),
+            ("Elite_Hook_Hit_Right", "Humanoid@GetHitLightRight1hMelee"),
+            ("Elite_Hook_Death_Front", "Humanoid@DeathFront1hMelee"),
+            ("Elite_Hook_Death_Back", "Humanoid@DeathBack1hMelee"),
+            ("Elite_Hook_Death_Left", "Humanoid@DeathLeft1hMelee"),
+            ("Elite_Hook_Death_Right", "Humanoid@DeathRight1hMelee"),
         };
 
         private static readonly string[] EliteLooping =
         {
             "Elite_Shield_Idle", "Elite_Shield_Walk", "Elite_Shield_Run", "Elite_Wizard_Idle", "Elite_Wizard_Walk", "Elite_Wizard_Run",
+            "Elite_Hook_Idle", "Elite_Hook_Walk", "Elite_Hook_Run",
         };
 
         /// <summary>The Armadillo: no abilities — its plain attacks with the sword and the shield.</summary>
@@ -106,8 +123,8 @@ namespace Purge.Editor.Dev
         public static bool IsArmadillo(string prefabName) => prefabName.StartsWith("Armadillo", StringComparison.Ordinal);
         public static bool IsShaman(string prefabName) => prefabName.StartsWith("Shaman", StringComparison.Ordinal);
 
-        /// <summary>The elite this stage builds (the Hook — later).</summary>
-        public static bool IsBuiltElite(string prefabName) => IsArmadillo(prefabName) || IsShaman(prefabName);
+        /// <summary>The elite Build Monsters builds (the Hook — stage 8b).</summary>
+        public static bool IsBuiltElite(string prefabName) => IsArmadillo(prefabName) || IsShaman(prefabName) || IsHook(prefabName);
 
         /// <summary>Copies the missing "Elite_*" clips and imports them (in place but the loops); returns how many were copied.</summary>
         private static int PrepareEliteClips(Dictionary<string, string> uac)
@@ -147,6 +164,7 @@ namespace Purge.Editor.Dev
                 SeedLook(view, prefab.name);
             }
 
+            if (IsHook(prefab.name)) SetupHookLook(view, prefab.name);
             var path = AssetDatabase.GetAssetPath(prefab);
             var scale = SetupPrefab(path, controller, view.Equipment, EliteHeadHeight);
             prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -192,6 +210,12 @@ namespace Purge.Editor.Dev
                 stats.FrontArc = 120f;
                 definition.SetAbilities();
                 EditorUtility.SetDirty(definition);
+                return;
+            }
+
+            if (IsHook(prefabName))
+            {
+                SeedHook(definition, prefabName);
                 return;
             }
 

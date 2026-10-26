@@ -56,7 +56,16 @@ namespace Purge.Core.Horde
                  "empty = none.")]
         [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _projectileTrail;
 
+        [Header("Hook")]
+        [Tooltip("Stage 8b: the chain or vine from its hand to the head of its hook (a line with this material, the texture " +
+                 "tiles along it; shader Purge/Tether); the head is the projectile model above.")]
+        [SerializeField] private Material _tether;
+        [Tooltip("Width of the chain, m.")]
+        [SerializeField, Min(0.02f)] private float _tetherWidth = 0.14f;
+
         public string MonsterId => _monsterId;
+        public Material Tether { get => _tether; internal set => _tether = value; }
+        public float TetherWidth { get => _tetherWidth; internal set => _tetherWidth = value; }
         public GameObject Prefab => _prefab;
         public HordeEquipment[] Equipment => _equipment ??= Array.Empty<HordeEquipment>();
         public float RunSpeed => _runSpeed;

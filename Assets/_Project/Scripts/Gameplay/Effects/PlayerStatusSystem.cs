@@ -14,8 +14,8 @@ namespace Purge.Gameplay.Effects
     /// (registered before the player's systems, so they act this tick); damage over time is dealt every
     /// <see cref="StatusSystem.DamageInterval"/>. Monsters' zones (<see cref="ZoneSystem.IsHostileAt"/>) put their state
     /// on the player standing in them.
-    /// <para><b>Immunity to control</b> (ТЗ: иначе комбинации монстров запирают игрока до смерти): a control state (stun —
-    /// later freezing, stone, pull) cannot be renewed while it holds, and for <see cref="ControlImmunity"/> seconds after it
+    /// <para><b>Immunity to control</b> (ТЗ: иначе комбинации монстров запирают игрока до смерти): a control state (stun,
+    /// freezing, stone — states with a stun; a hook's pull, <see cref="Pull"/>) cannot be renewed while it holds, and for <see cref="ControlImmunity"/> seconds after it
     /// ends no control state takes.</para>
     /// Allocation-free per tick (kinds are registered on first use).
     /// </summary>
@@ -33,6 +33,9 @@ namespace Purge.Gameplay.Effects
         private float _damage;
         private float _zoneTimer;
         private bool _controlled;
+        private float _pullLeft;
+        private Vector2 _pullVelocity;
+        private bool _pullTick;
 
         public PlayerStatusSystem(PlayerSystem player, PlayerHealth health, ZoneSystem zones = null, HordeSystem horde = null)
         {
@@ -76,10 +79,28 @@ namespace Purge.Gameplay.Effects
             return true;
         }
 
+        /// <summary>
+        /// A monster's hook drags the player (stage 8b): at <paramref name="velocity"/> cells per second for
+        /// <paramref name="duration"/> s, held meanwhile — a control, refused while one holds or the immunity lasts. Unlike
+        /// the states it works in god mode too (as a knock: the stand must feel it). True when it took.
+        /// </summary>
+        public bool Pull(Vector2 velocity, float duration)
+        {
+            if (duration <= 0f || _health.IsDead || _controlled || IsImmune) return false;
+            _pullLeft = duration;
+            _pullVelocity = velocity;
+            Refresh();
+            return true;
+        }
+
+        /// <summary>Seconds the hook still drags the player (0 = none).</summary>
+        public float PullLeft => _pullLeft;
+
         /// <summary>Removes every state and the immunity (level restart, tests).</summary>
         public void Clear()
         {
             for (var i = 0; i < _left.Count; i++) _left[i] = 0f;
+            _pullLeft = 0f;
             ImmunityLeft = 0f;
             _controlled = false;
             _damage = 0f;
@@ -100,8 +121,12 @@ namespace Purge.Gameplay.Effects
                 _left[i] = Mathf.Max(0f, _left[i] - deltaTime);
             }
 
+            // The drag acts on every tick its time covers, the last one too.
+            _pullTick = _pullLeft > 0f;
+            if (_pullTick) _pullLeft = Mathf.Max(0f, _pullLeft - deltaTime);
             var wasControlled = _controlled;
             Refresh();
+            _pullTick = false;
             // A control state just ended: a moment of freedom before the next one.
             if (wasControlled && !_controlled) ImmunityLeft = ControlImmunity;
 
@@ -142,10 +167,12 @@ namespace Purge.Gameplay.Effects
                 stunned |= _kinds[i].Stuns;
             }
 
-            _controlled = stunned;
+            var pulled = _pullLeft > 0f || _pullTick;
+            _controlled = stunned || pulled;
             SpeedFactor = factor;
             _player.StatusSpeed = factor;
-            _player.Stunned = stunned;
+            _player.Stunned = _controlled;
+            _player.Drag = pulled ? _pullVelocity : Vector2.zero;
         }
 
         private int IndexOf(StatusDefinition status)

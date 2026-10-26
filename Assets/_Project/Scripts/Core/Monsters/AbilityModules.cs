@@ -340,6 +340,117 @@ namespace Purge.Core.Monsters
     }
 
     /// <summary>
+    /// A hook (stage 8b, ТЗ «притягивание»; the Hook elite): the red line shows for the warning, then the head flies along
+    /// it as a bullet — what stops bullets ends it and it is drawn back, a miss is drawn back too. The player it hits takes
+    /// the damage and is pulled to the monster for <see cref="PullTime"/> s with an ordinary move (a wall stops them);
+    /// the pull is control — then the immunity to control (a player immune or held by control is only hurt).
+    /// </summary>
+    [Serializable, ModuleInfo("Pull", Category = "Ability", AllowMultiple = false)]
+    public sealed class PullAbility : AbilityModule
+    {
+        [Tooltip("Cells per second the head flies (drawn back × 1.5).")]
+        [SerializeField, Min(1f)] private float _speed = 16f;
+        [Tooltip("How far the head flies, cells.")]
+        [SerializeField, Min(1f)] private float _range = 8f;
+        [Tooltip("Damage to the player hit.")]
+        [SerializeField, Min(0f)] private float _damage = 6f;
+        [Tooltip("Seconds the player is dragged to the monster.")]
+        [SerializeField, Range(0.1f, 1f)] private float _pullTime = 0.3f;
+
+        public PullAbility()
+        {
+            Warning = 0.6f;
+            Cooldown = 6f;
+            MinRange = 2.5f;
+            MaxRange = 8f;
+        }
+
+        public float Speed { get => _speed; internal set => _speed = value; }
+        public float Range { get => _range; internal set => _range = value; }
+        public float Damage { get => _damage; internal set => _damage = value; }
+        public float PullTime { get => _pullTime; internal set => _pullTime = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Line;
+    }
+
+    /// <summary>
+    /// Calls monsters up (stage 8b, ТЗ «призыв»; bosses): <see cref="Count"/> monsters of <see cref="Monster"/> climb out
+    /// of the ground within <see cref="Radius"/> of the caster (their own emerge time; the warning marks the spots) and
+    /// hunt the player. No more than <see cref="Limit"/> of its summoned live at once — the cast calls only the rest, and
+    /// none when the limit is reached.
+    /// </summary>
+    [Serializable, ModuleInfo("Summon", Category = "Ability", AllowMultiple = true)]
+    public sealed class SummonAbility : AbilityModule
+    {
+        public const int MaxCount = 12;
+
+        [Tooltip("Who climbs out (it joins the level's horde by itself).")]
+        [SerializeField] private MonsterDefinition _monster;
+        [Tooltip("How many a cast.")]
+        [SerializeField, Range(1, MaxCount)] private int _count = 6;
+        [Tooltip("Within this many cells of the caster.")]
+        [SerializeField, Min(1f)] private float _radius = 4f;
+        [Tooltip("At most this many of its summoned alive at once (all its Summon modules together).")]
+        [SerializeField, Range(1, 64)] private int _limit = 12;
+
+        public SummonAbility()
+        {
+            NeedsSight = false;
+            MaxRange = 30f;
+            Warning = 1f;
+            Cooldown = 15f;
+        }
+
+        public MonsterDefinition Monster { get => _monster; internal set => _monster = value; }
+        public int Count { get => Mathf.Clamp(_count, 1, MaxCount); internal set => _count = value; }
+        public float Radius { get => _radius; internal set => _radius = value; }
+        public int Limit { get => Mathf.Max(1, _limit); internal set => _limit = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Points;
+
+        public override void Validate(List<string> problems)
+        {
+            if (_monster == null) problems.Add("summon: no monster.");
+        }
+    }
+
+    /// <summary>
+    /// A gaze (stage 8b, ТЗ «конус взгляда»; the Gorgon): a sector in front of the monster fills red for the warning;
+    /// the player in it and in a straight line of sight then gets <see cref="Status"/> (stone: no step, no shot) — a
+    /// control state, so the immunity to control follows.
+    /// </summary>
+    [Serializable, ModuleInfo("Gaze", Category = "Ability", AllowMultiple = false)]
+    public sealed class GazeAbility : AbilityModule
+    {
+        [Tooltip("Length of the cone, cells.")]
+        [SerializeField, Min(1f)] private float _reach = 8f;
+        [Tooltip("Width of the cone, degrees.")]
+        [SerializeField, Range(10f, 180f)] private float _angle = 60f;
+        [Tooltip("The state put on the player caught (stone).")]
+        [SerializeField] private StatusDefinition _status;
+        [SerializeField, Min(0.1f)] private float _statusDuration = 1f;
+
+        public GazeAbility()
+        {
+            Warning = 0.5f;
+            Cooldown = 6f;
+            MaxRange = 8f;
+        }
+
+        public float Reach { get => _reach; internal set => _reach = value; }
+        public float Angle { get => _angle; internal set => _angle = value; }
+        public StatusDefinition Status { get => _status; internal set => _status = value; }
+        public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.Sector;
+
+        public override void Validate(List<string> problems)
+        {
+            if (_status == null) problems.Add("gaze: no state.");
+        }
+    }
+
+    /// <summary>
     /// A phase by HP (stage 8a, bosses; ТЗ «порог → другой набор/темп способностей, рык»): once the HP falls to
     /// <see cref="AbilityModule.HealthBelow"/> the monster stops and roars for the warning (it may begin in melee), then
     /// it is in the next phase — the Phase modules of its list count 1, 2… in order, each after the one before; abilities

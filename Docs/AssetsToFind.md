@@ -134,7 +134,7 @@
 ### Элита
 - [x] **[5]** Броненосец (общий) — `Common/Special/Armadillo_Common`; щиты — `For_monsters/Shield` ×3
 - [x] **[5]** Шаман — `Shaman_Forest`, `Shaman_Castle`, `Shaman_Snow`; посохи — `For_monsters/Magic`
-- [x] **[5]** Крюк / лиана — `Capture_Forest`, `Capture_Castle`, `Capture_Snow`; наконечники — `For_monsters/Capture` (серп, лиана). Текстуры цепи/лианы для линии нет
+- [x] **[5]** Крюк / лиана — `Capture_Forest`, `Capture_Castle`, `Capture_Snow`; наконечники — `For_monsters/Capture` (серп, лиана). Текстуры цепи/лианы для линии нет — рисует Build Monsters (8б)
 
 ### Боссы (крупные, Animator)
 - [x] **[8]** 4 общих промежуточных — `Common/Boss/Demon_Common`, `Golem_Common`, `Medusa_Common`, `ZombieBoss_Common`

@@ -2839,6 +2839,33 @@ MonoBehaviour:
       _range: 16
       _maxVoices: 3
       _minInterval: 0.08
+  - _name: gaze_stone
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 6b3b663e278775a4a903716b70596cbe, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: hook_chain
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 3c5f0aafc4bd3924a8e855e9ae5b4435, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: hook_vine
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 1ee893291220d4d4487d8fd14b420405, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
   - _name: icicles
     _cue:
       _clips:
@@ -2879,6 +2906,15 @@ MonoBehaviour:
     _cue:
       _clips:
       - {fileID: 8300000, guid: 419530abee68b25499d8d9c9f4286165, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: summon
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 9ec0003d8a0b05c419ad3841fc53b171, type: 3}
       _volume: 0.75
       _pitch: {x: 0.95, y: 1.05}
       _range: 16

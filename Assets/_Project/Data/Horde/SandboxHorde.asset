@@ -50,6 +50,7 @@ MonoBehaviour:
   _onDemandMonsters:
   - {fileID: 11400000, guid: 1f8a534da70c88348837cd5089456c5f, type: 2}
   - {fileID: 11400000, guid: 395fa8870844ec64abbbcccbcef32cc5, type: 2}
+  - {fileID: 11400000, guid: 15c00ee315600ce439b3990a02b005bc, type: 2}
   - {fileID: 11400000, guid: 9ea2b7d6705917344b9c0ed4f1148807, type: 2}
   - {fileID: 11400000, guid: ae6321e2dfe487d428724459e3734e44, type: 2}
   - {fileID: 11400000, guid: e53ac584f9cf9c14ab128896e5baa658, type: 2}
@@ -60,9 +61,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7312a3b097175d44d9599c486efd9c41, type: 2}
   - {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
   - {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+  - {fileID: 11400000, guid: e2729b2e2788eac41bc2b8079be6f1fe, type: 2}
   - {fileID: 11400000, guid: 5d93e767a67414e49a76e99be9b5c9a7, type: 2}
   - {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
   - {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+  - {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
   - {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
   _waves: {fileID: 0}
   _monsterVisuals:
@@ -74,6 +77,7 @@ MonoBehaviour:
   _monsterViews:
   - {fileID: 11400000, guid: f252ca0c80f63934a9cc276a2ec2dfed, type: 2}
   - {fileID: 11400000, guid: 2201a4e3e9616e44db62f651426261cd, type: 2}
+  - {fileID: 11400000, guid: a76557991b4f3b546a18130c25ffb2fa, type: 2}
   - {fileID: 11400000, guid: 6876c3ae0f852554aba9a7f4c310458e, type: 2}
   - {fileID: 11400000, guid: 3b9202af9d1ea3040a737c121af943f6, type: 2}
   - {fileID: 11400000, guid: 255f1aecb93db0748a58b99518921e51, type: 2}
@@ -84,9 +88,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: caaea0a7325e0334fad01c82f2f1b82e, type: 2}
   - {fileID: 11400000, guid: 5007ed8e61216874fb3589c8e9f735b1, type: 2}
   - {fileID: 11400000, guid: 2f9ba67d81e07a64989e88bb30acd0d2, type: 2}
+  - {fileID: 11400000, guid: d4a4a6da66223894b80b7c10e3e7e3b5, type: 2}
   - {fileID: 11400000, guid: d49aaafd2027e4f4eba080a895771fb6, type: 2}
   - {fileID: 11400000, guid: e4b37603c2a3baa4daba8a4a59273952, type: 2}
   - {fileID: 11400000, guid: 5429444a236be9744b6721a92672ff10, type: 2}
+  - {fileID: 11400000, guid: fa94ebfb0647a5e43b887eff97ffbf5e, type: 2}
   - {fileID: 11400000, guid: 357330b921e342844863635edbe4b6f2, type: 2}
   _maxAlive: 300
   _reserveSlots: 64

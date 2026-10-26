@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: Capture_Castle
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: capture_castle
+  _rank: 2
+  _biome: 1
+  _perception: 0
+  _stats:
+    MaxHp: 220
+    Speed: 1.8
+    Radius: 0.38
+    AttackReach: 1
+    Damage: 12
+    AttackInterval: 1.3
+    TurnSpeed: 300
+    Separation: 0.5
+    CorpseTime: 4
+    EmergeTime: 0
+    WanderSpeed: 0.4
+    SightRange: 9
+    CallRadius: 12
+    HoldRange: 7
+    RetreatRange: 5
+    Mass: 0
+    Immovable: 0
+    Doors: 0
+    DoorDamage: 20
+    FrontArmor: 0
+    FrontArc: 120
+    ControlFactor: 0
+  _cost: 0
+  _money: 0
+  _experience: 0
+  _score: 0
+  _drop: {fileID: 11400000, guid: 4c92cdb4d2e187a4bba2c6865456a6cf, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities:
+  - rid: 1763807467480285257
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807467480285257
+      type: {class: PullAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 6
+        _firstDelay: 1
+        _minRange: 2.5
+        _maxRange: 7.5
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.6
+        _recovery: 0.3
+        _castSound: 
+        _releaseSound: hook_chain
+        _fromPhase: 0
+        _untilPhase: 4
+        _speed: 16
+        _range: 8
+        _damage: 6
+        _pullTime: 0.3

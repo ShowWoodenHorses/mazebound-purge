@@ -14,15 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Level.LevelData
   _settings:
     _displayName: Sandbox
+    _refuge: 0
+    _refugeRadius: 2
   _generation:
     _width: 40
     _height: 40
     _layoutSeed: 4040
     _visualSeed: 4040
+    _recipe: {fileID: 0}
     _obstacleDensity: 0.06
     _lightDensity: 0.5
     _decorDensity: 0.15
     _maxAutoDecorHeight: 0.3
+    _grassDecorDensity: 0.7
   _geometry:
     _width: 40
     _height: 40
@@ -460,6 +464,20 @@ MonoBehaviour:
       _variantId: SM_Prop_Torch_02
       _rotation: 0
   _monsterSpawns: []
+  _barrels: []
+  _chests: []
+  _arena:
+    _rect:
+      _x: 0
+      _y: 0
+      _width: 0
+      _height: 0
+    _floor: 0
+    _ring: 0
+    _entries: []
+  _marks:
+    _manual: 
+    _lockedAreas: []
   _visualTheme: {fileID: 11400000, guid: ad23ba20b94ed7a45b12d5a6627c3e0f, type: 2}
   _visualData:
     _floorAssignments:
@@ -10105,3 +10123,5 @@ MonoBehaviour:
   _tutorial: {fileID: 0}
   _horde: {fileID: 11400000, guid: 97d197dde962ce940ade8385e0bb74f8, type: 2}
   _stressTest: {fileID: 11400000, guid: bc88733bd64205649ad0f68eb28fadb0, type: 2}
+  _startWeapon: {fileID: 0}
+  _closeArena: 1

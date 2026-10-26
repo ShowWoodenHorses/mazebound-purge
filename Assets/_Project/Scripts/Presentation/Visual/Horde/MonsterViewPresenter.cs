@@ -106,6 +106,17 @@ namespace Purge.Presentation.Visual.Horde
         /// <summary>Animator monsters left without a view now: their kind's pool is empty (metrics).</summary>
         public int MissingCount { get; private set; }
 
+        /// <summary>
+        /// The right hand of the shown view of the monster in <paramref name="agent"/> (a hook's chain starts there, stage
+        /// 8b); null when it has none or is not shown.
+        /// </summary>
+        public Transform HandOf(int agent)
+        {
+            if (!IsActive || (uint)agent >= (uint)_slots.Length) return null;
+            var view = _slots[agent];
+            return view != null && view.GameObject.activeSelf ? view.Hand : null;
+        }
+
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var settings = _level.Horde;
@@ -444,6 +455,7 @@ namespace Purge.Presentation.Visual.Horde
             public readonly Transform Transform;
             public readonly Animator Animator;
             public readonly Transform Hips;
+            public readonly Transform Hand;
             public readonly Vector3 BaseScale;
             /// <summary>Carries the champion's glow (<c>_Glow</c> of Purge/Lit); null when no material has it.</summary>
             public readonly HitFlash Glow;
@@ -457,6 +469,7 @@ namespace Purge.Presentation.Visual.Horde
                 Transform = gameObject.transform;
                 Animator = gameObject.GetComponentInChildren<Animator>(true);
                 Hips = Animator != null && Animator.isHuman ? Animator.GetBoneTransform(HumanBodyBones.Hips) : null;
+                Hand = Animator != null && Animator.isHuman ? Animator.GetBoneTransform(HumanBodyBones.RightHand) : null;
                 Pool = pool;
                 BaseScale = Transform.localScale;
                 Glow = HitFlash.Create(gameObject);

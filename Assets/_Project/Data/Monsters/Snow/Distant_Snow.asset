@@ -78,6 +78,7 @@ MonoBehaviour:
         _statusDuration: 2
         _impact:
         - rid: 1763807284696973431
+        _impactSound: 
     - rid: 1763807284696973431
       type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

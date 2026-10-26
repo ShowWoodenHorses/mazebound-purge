@@ -2830,6 +2830,15 @@ MonoBehaviour:
       _range: 16
       _maxVoices: 3
       _minInterval: 0.08
+  - _name: boss_smash
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: b7c7093356d5b4d46a73bffb4480af2c, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
   - _name: boss_stinger
     _cue:
       _clips:

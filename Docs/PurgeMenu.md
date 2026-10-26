@@ -416,7 +416,11 @@ Zombie_Animations и UAC в `Import` (один раз) и импортирует
 **Боссы** (этап 8а, `OfficersBuilder.Boss.cs`): Мутант и четыре промежуточных из `Boss/` (Горгулья, Элементаль — этапы 13, 14) —
 клипы `Boss_*` (UAC Creature: атаки, выход Roar4, смерть), контроллер `Art/Monster/Boss.controller`, рост головы 2,2 / 2,7 м
 (тело 2×2 / 3×3), черновые HP/скорость/тело/фаза из карточки этапа 8, дроп `Data/Drops/BossDrop`; песочнице — кнопки строки
-Boss. Подробно — [Code/Bosses.md](Code/Bosses.md).
+Boss. **Мутант** (8в) — свой `Art/Monster/Mutant.controller` (каст на способность: рык фазы, рык призыва ×2, рык рывка,
+`Boss_Slam` — UAC Bare Fists `SmashingFists`, бросок — `Brute_Push`), способности добавляются и в существующий ассет (есть
+рывок — не трогает), валун `Art/Monster/Mutant/Mutant_Boulder.prefab` (скала PolygonNature, палитра `PolygonNature_01`);
+эффекты удара и валуна — `FX_Ground_Slam`, `FX_Boulder_Hit` (сначала Build Pack Effects, иначе без эффектов + предупреждение).
+Подробно — [Code/Bosses.md](Code/Bosses.md).
 **Громилы** `Ram_*` (5г): клипы `Brute_*` из UAC Creature Animset (ожидание, ходьба, бег, 3 атаки когтями, 3 реакции,
 рёв, `Brute_Push` — удар двумя руками, `Brute_Charge` — рёв перед рывком; атаки и реакции — с выпадом в root motion),
 свой контроллер `Art/Monster/Brute.controller` (те же состояния, каст по `CastIndex`: 0 — ярость `Brute_Rage`

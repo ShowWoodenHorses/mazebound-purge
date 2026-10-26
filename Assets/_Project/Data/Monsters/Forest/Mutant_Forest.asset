@@ -48,6 +48,11 @@ MonoBehaviour:
   _deathEffects: []
   _abilities:
   - rid: 1763807467480285249
+  - rid: 1763807473633067073
+  - rid: 1763807473633067074
+  - rid: 1763807473633067075
+  - rid: 1763807473633067076
+  - rid: 1763807473633067077
   references:
     version: 2
     RefIds:
@@ -70,3 +75,138 @@ MonoBehaviour:
         _speedFactor: 1
         _cooldownFactor: 1
         _rage: 1
+    - rid: 1763807473633067073
+      type: {class: SummonAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 15
+        _firstDelay: 4
+        _minRange: 0
+        _maxRange: 30
+        _needsSight: 0
+        _healthBelow: 1
+        _warning: 1.2
+        _recovery: 0.4
+        _castSound: summon
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 0
+        _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 6
+        _radius: 4.5
+        _limit: 12
+    - rid: 1763807473633067074
+      type: {class: SummonAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 15
+        _firstDelay: 0
+        _minRange: 0
+        _maxRange: 30
+        _needsSight: 0
+        _healthBelow: 1
+        _warning: 1.2
+        _recovery: 0.4
+        _castSound: summon
+        _releaseSound: 
+        _fromPhase: 1
+        _untilPhase: 4
+        _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 12
+        _radius: 5
+        _limit: 24
+    - rid: 1763807473633067075
+      type: {class: ChargeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 8
+        _firstDelay: 2
+        _minRange: 4
+        _maxRange: 11
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.8
+        _recovery: 0.6
+        _castSound: boss_roar
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _distance: 10
+        _speed: 11
+        _damage: 40
+        _knockback: 3
+        _crowdPush: 8
+    - rid: 1763807473633067076
+      type: {class: AreaStrikeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 7
+        _firstDelay: 3
+        _minRange: 0
+        _maxRange: 9
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 1
+        _recovery: 0.6
+        _castSound: 
+        _releaseSound: boss_smash
+        _fromPhase: 0
+        _untilPhase: 4
+        _radius: 3
+        _damage: 30
+        _status: {fileID: 0}
+        _statusDuration: 1
+        _impact:
+        - rid: 1763807473633067078
+        _fall:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _fallTime: 0.45
+        _closing: 1
+    - rid: 1763807473633067077
+      type: {class: ProjectileAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 5
+        _firstDelay: 1.5
+        _minRange: 4
+        _maxRange: 14
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.9
+        _recovery: 0.4
+        _castSound: 
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _form: 1
+        _count: 3
+        _fanAngle: 30
+        _speed: 10
+        _damage: 25
+        _range: 14
+        _arcRadius: 1.5
+        _arcHeight: 0.4
+        _status: {fileID: 0}
+        _statusDuration: 2
+        _impact:
+        - rid: 1763807473633067079
+        _impactSound: boss_smash
+    - rid: 1763807473633067078
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: 7f48616ace58aa842beee42c002a853f
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 3
+    - rid: 1763807473633067079
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: beb8bbc141f5cff4bba35157b3f82be0
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 1.5

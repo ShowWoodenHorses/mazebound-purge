@@ -33,6 +33,9 @@
 
 ## Контент
 - **Build Monsters** собирает боссов из `Art/Monster/<Биом>/Boss` (`OfficersBuilder.Boss.cs`; Горгулья и Элементаль — этапы 13, 14): контроллер `Art/Monster/Boss.controller` на клипах UAC Creature (ожидание/ходьба/бег/реакции — `Brute_*`, атаки `Boss_Attack_1–3`, выход — `Boss_Entrance` (Roar4) через состояние Rise за `EmergeTime`, рык фазы — `Brute_Rage`, смерть `Boss_Death` 4,5 с, оглушение — офицерское), рост головы 2,2 м (2×2) / 2,7 м (3×3).
+- **Мутант (8в)** — свой контроллер `Mutant.controller` (`MutantClips`, тайминг каста: рыки — под `Warning` способности, удары — по взмаху руки), способности `MutantAbilities` (порядок = приоритет = индекс каста):
+  - [фаза-ярость с 50 % ×1,5 урона · `Summon` 6 `zombie_forest` раз в 15 с, лимит 12 (до фазы 0) · `Summon` 12, лимит 24 (с фазы 1; решение пользователя 2026-10-26) · `Charge` линия 0,8 с, 10 кл, 11 кл/с, 40 урона, отброс 3 · `AreaStrike` r 3 под игроком, 1 с, 30 урона, `Closing` — кольцо стягивается, `FX_Ground_Slam` · `Projectile` дугой r 1,5, раз в 5 с, 25 урона, валун `Mutant_Boulder`, `FX_Boulder_Hit`].
+  - Звук `boss_smash` (удар и падение валуна), рыки — `rage_roar`, `summon`, `boss_roar` (рывок).
 - Черновые данные (новый ассет; дальше правятся в нём): HP — Мутант `mutant_forest` 6000 (3×3, 1,6 кл/с, фаза-ярость с 50 % ×1,5), Мясник `zombie_boss_common` 3000 (2×2, 1,8, ярость с 30 % ×1,5), Колосс `golem_common` 4000 (3×3, 1,4), Горгона `medusa_common` 3000, Демон `demon_common` 3500 (2×2, 2,0); `EmergeTime` 2,5 с, труп 8 с, удар — досягаемость радиус + 1. Способности — 8б–8г.
 - **Стенды**: песочница — строка **Boss** оверлея (`StressController.SpawnOfficer` → `BossSystem.Summon`, 9 клеток от игрока); `Level_Forest_01` — сценарий `Forest_01`: W3 — Мясник + свита (10 лесных зомби сразу, 10 Ходоков на 8 с), W5 — Мутант + свита (14 лесных, 2 плевуна на 10 с, Громила на 20 с).
-- Тесты — `Tests/EditMode/Monsters/BossTests.cs`.
+- Тесты — `Tests/EditMode/Monsters/BossTests.cs`; набор призыва по фазе и конец снаряда с модулем (8в) — `HookTests`.

@@ -20,7 +20,7 @@ namespace Purge.Presentation.Audio
     /// (<see cref="SoundCue.Attenuation"/>):
     /// abilities — <see cref="Core.Monsters.AbilityModule.CastSound"/> when a cast begins and
     /// <see cref="Core.Monsters.AbilityModule.ReleaseSound"/> when it goes off (named sounds of the catalog, data of the
-    /// ability); a caller's call (<see cref="SoundType.Call"/>), ricochets off armored fronts, a champion appearing;
+    /// ability), <see cref="Core.Monsters.ProjectileAbility.ImpactSound"/> where a projectile ends (stage 8c); a caller's call (<see cref="SoundType.Call"/>), ricochets off armored fronts, a champion appearing;
     /// doors opening and closing (by anyone — the player's own too, <see cref="DoorSystem.DoorChanged"/>), struck and
     /// broken by monsters. Bosses (stage 8a): the stinger and the roar when one comes, heard anywhere; its hurt roar now
     /// and then (<see cref="BossHurtInterval"/>); the long death; the arena's gates clanging down and up.
@@ -68,6 +68,7 @@ namespace Purge.Presentation.Audio
             _subscribed = true;
             _abilities.CastStarted += OnCastStarted;
             _abilities.Released += OnReleased;
+            _abilities.ProjectileEnded += OnProjectileEnded;
             _horde.ChampionMade += OnChampionMade;
             _targets.ArmoredHit += OnArmoredHit;
             _doors.DoorChanged += OnDoorChanged;
@@ -91,6 +92,7 @@ namespace Purge.Presentation.Audio
             _subscribed = false;
             _abilities.CastStarted -= OnCastStarted;
             _abilities.Released -= OnReleased;
+            _abilities.ProjectileEnded -= OnProjectileEnded;
             _horde.ChampionMade -= OnChampionMade;
             _targets.ArmoredHit -= OnArmoredHit;
             _doors.DoorChanged -= OnDoorChanged;
@@ -143,6 +145,12 @@ namespace Purge.Presentation.Audio
             if (abilities == null || (uint)ability >= (uint)abilities.Count || abilities[ability] == null) return;
             var module = abilities[ability];
             PlayAt(Catalog.MonsterSound(released ? module.ReleaseSound : module.CastSound), _horde.Positions[slot]);
+        }
+
+        /// <summary>Where a projectile ended — a boulder crashing down (stage 8c).</summary>
+        private void OnProjectileEnded(Vector2 at, int kind, Core.Monsters.ProjectileAbility ability, bool hitPlayer)
+        {
+            if (ability != null && !string.IsNullOrEmpty(ability.ImpactSound)) PlayAt(Catalog.MonsterSound(ability.ImpactSound), at);
         }
 
         private void OnChampionMade(int slot) => PlayAt(Catalog.ChampionAppear, _horde.Positions[slot]);

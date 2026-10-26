@@ -163,8 +163,8 @@ namespace Purge.Gameplay.Horde
         /// <summary>The phase by HP of the monster in <paramref name="agent"/> (0 — the first; stage 8a).</summary>
         public int HealthPhaseOf(int agent) => IsActive && (uint)agent < (uint)_healthPhase.Length ? _healthPhase[agent] : 0;
 
-        /// <summary>(where, the horde kind that shot it, hit the player) a projectile ended.</summary>
-        public event Action<Vector2, int, bool> ProjectileEnded;
+        /// <summary>(where, the horde kind that shot it, its ability, hit the player) a projectile ended.</summary>
+        public event Action<Vector2, int, ProjectileAbility, bool> ProjectileEnded;
 
         /// <summary>Casts that went off (tests, metrics).</summary>
         public int Casts { get; private set; }
@@ -888,7 +888,7 @@ namespace Purge.Gameplay.Horde
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
             if (impact && ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);
-            ProjectileEnded?.Invoke(at, kind, hitPlayer);
+            ProjectileEnded?.Invoke(at, kind, ability, hitPlayer);
         }
 
         /// <summary>

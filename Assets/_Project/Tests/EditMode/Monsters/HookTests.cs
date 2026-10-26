@@ -269,6 +269,55 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(_abilities.Summoned, Is.EqualTo(7), "room for one");
         }
 
+        /// <summary>Stage 8c (the Mutant): the rage switches to a summon of more a cast and a higher limit.</summary>
+        [Test]
+        public void Summon_TheNextPhase_CallsMore_UpToItsOwnLimit()
+        {
+            var phase = new PhaseAbility { HealthBelow = 0.5f, Warning = 0.3f, Recovery = 0.1f, DamageFactor = 1.5f, Rage = true };
+            var calm = Summon(2, 4);
+            calm.UntilPhase = 0;
+            var raging = Summon(4, 8);
+            raging.FromPhase = 1;
+            _elite.SetAbilities(phase, calm, raging);
+            Build();
+            _horde.Respawn = false;
+            var boss = Spawn(_elite, 25f, 10f);
+            Tick(3f);
+            Assert.That(_abilities.Summoned, Is.EqualTo(4), "the first set: 2 a cast, at most 4 alive");
+
+            _horde.Damage(boss, 120f);
+            Tick(0.6f);
+            Assert.That(_abilities.HealthPhaseOf(boss), Is.EqualTo(1));
+            Tick(3f);
+            Assert.That(_abilities.Summoned, Is.EqualTo(8), "the raging set: 4 a cast, at most 8 alive");
+            Assert.That(_abilities.SummonedAlive(boss), Is.EqualTo(8));
+        }
+
+        /// <summary>Stage 8c: where a projectile ends, its ability comes with the event (the boulder's crash).</summary>
+        [Test]
+        public void ArcProjectile_Ends_WithItsAbility()
+        {
+            var boulder = new ProjectileAbility
+            {
+                FirstDelay = 0f, Cooldown = 30f, MinRange = 0f, MaxRange = 20f, NeedsSight = true, Warning = 0.3f, Recovery = 0.1f,
+                Form = ProjectileForm.Arc, Speed = 10f, Damage = 25f, Range = 14f, ArcRadius = 1.5f, ImpactSound = "boss_smash",
+            };
+            _elite.SetAbilities(boulder);
+            Build();
+            ProjectileAbility ended = null;
+            var where = Vector2.zero;
+            _abilities.ProjectileEnded += (at, kind, ability, hit) =>
+            {
+                ended = ability;
+                where = at;
+            };
+            Spawn(_elite, 12f, 10f);
+            Tick(1.5f);
+            Assert.That(ended, Is.SameAs(boulder));
+            Assert.That((where - PlayerAt).magnitude, Is.LessThan(0.6f), "lands where the player stood");
+            Assert.That(_health.Current, Is.EqualTo(_health.Max - 25));
+        }
+
         [Test]
         public void HordeMonsters_IncludeWhomTheySummon()
         {

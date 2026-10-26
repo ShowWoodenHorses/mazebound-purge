@@ -252,6 +252,7 @@ namespace Purge.Editor.Dev
             var armadillos = BuildController(ArmadilloControllerPath, ArmadilloClips);
             var shamans = BuildController(ShamanControllerPath, ShamanClips);
             var bosses = BuildController(BossControllerPath, BossClips);
+            var mutants = BuildController(MutantControllerPath, MutantClips);
             var hooks = BuildController(HookControllerPath, HookClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
@@ -265,7 +266,12 @@ namespace Purge.Editor.Dev
                 else if (IsArmadillo(prefab.name)) views.Add(SetupElite(prefab, definition, armadillos, ArmadilloClips, report));
                 else if (IsShaman(prefab.name)) views.Add(SetupElite(prefab, definition, shamans, ShamanClips, report));
                 else if (IsHook(prefab.name)) views.Add(SetupElite(prefab, definition, hooks, HookClips, report));
-                else if (IsBuiltBoss(prefab.name)) views.Add(SetupBoss(prefab, definition, bosses, report));
+                else if (IsMutant(prefab.name))
+                {
+                    EnsureMutantAbilities(definition);
+                    views.Add(SetupBoss(prefab, definition, mutants, MutantClips, report));
+                }
+                else if (IsBuiltBoss(prefab.name)) views.Add(SetupBoss(prefab, definition, bosses, BossClips, report));
                 else views.Add(Setup(prefab, definition, controller, report));
             }
 

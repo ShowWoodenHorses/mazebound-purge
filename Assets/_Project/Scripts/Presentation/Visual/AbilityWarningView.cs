@@ -20,7 +20,8 @@ namespace Purge.Presentation.Visual
     /// projectile of a fan), a circle where an arc lands, a sector in front of a strike, a body-wide line as far as a
     /// charge rushes, a circle around a monster that shoves (stage 5d), a circle under the player for an area strike and
     /// small circles on the fallen a raise lifts (stage 5e; the rage shows nothing — the monster roars), the line of a hook,
-    /// small circles where the summoned climb out and the cone of a gaze (stage 8b), a circle where an
+    /// small circles where the summoned climb out and the cone of a gaze (stage 8b), a ring closing in over a blow on the
+    /// ground (<see cref="AreaStrikeAbility.Closing"/>, stage 8c), a circle where an
     /// explosive champion died (<see cref="ChampionSystem"/>, stage 5e2); the fill grows until it goes off. Drawn whether or not the monster is in view: a shot out of the fog must be seen.
     /// Allocation-free per frame.
     /// </summary>
@@ -118,7 +119,8 @@ namespace Purge.Presentation.Visual
                         break;
                     case AreaStrikeAbility area:
                         var areaRadius = area.WarningRadius;
-                        Draw(0f, progress, 0f, 0.07f / areaRadius,
+                        // The Mutant's blow on the ground (stage 8c): a ring closing in instead of the fill.
+                        Draw(area.Closing ? 3f : 0f, progress, 0f, (area.Closing ? 0.1f : 0.07f) / areaRadius,
                             Matrix4x4.TRS(new Vector3(aims[i].x, height, aims[i].y), Quaternion.identity,
                                 new Vector3(areaRadius * 2f, 1f, areaRadius * 2f)));
                         break;

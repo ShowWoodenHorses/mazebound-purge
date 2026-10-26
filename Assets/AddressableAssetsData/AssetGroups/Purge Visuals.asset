@@ -580,6 +580,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f48616ace58aa842beee42c002a853f
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Ground_Slam.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80829110669eccc459c625929fb933c4
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_red.prefab
     m_ReadOnly: 0
@@ -857,6 +862,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bc7131aaa4fe24d4db5b644f6f02cf6d
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Floor_decor/For_fire/SM_Env_Grass_Tall_Clump_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: beb8bbc141f5cff4bba35157b3f82be0
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_Boulder_Hit.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

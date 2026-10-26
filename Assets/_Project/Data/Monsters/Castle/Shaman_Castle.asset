@@ -99,6 +99,7 @@ MonoBehaviour:
           m_SubObjectGUID: 
           m_EditorAssetChanged: 0
         _fallTime: 0.45
+        _closing: 0
     - rid: 1763807284696973396
       type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

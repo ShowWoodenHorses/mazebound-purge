@@ -79,6 +79,7 @@ MonoBehaviour:
         _impact:
         - rid: 1763807262009983222
         - rid: 1763807284696973434
+        _impactSound: 
     - rid: 1763807262009983222
       type: {class: PlaceZoneEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

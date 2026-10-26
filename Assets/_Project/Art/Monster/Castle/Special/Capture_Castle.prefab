@@ -1762,10 +1762,10 @@ Transform:
   - {fileID: 4611069616273436}
   - {fileID: 4697891298235462}
   - {fileID: 4995969693824864}
-  - {fileID: 1423378244440408875}
+  - {fileID: 4003969992238515725}
   m_Father: {fileID: 4173997876213814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1768518635813575057
+--- !u!1 &4385140250008296631
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1773,9 +1773,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1423378244440408875}
-  - component: {fileID: 2625318677975452814}
-  - component: {fileID: 255568440452724804}
+  - component: {fileID: 4003969992238515725}
+  - component: {fileID: 17784511202609576}
+  - component: {fileID: 2872128480855506274}
   m_Layer: 0
   m_Name: Equipment_SM_Wep_Sickle_01
   m_TagString: Untagged
@@ -1783,13 +1783,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1423378244440408875
+--- !u!4 &4003969992238515725
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1768518635813575057}
+  m_GameObject: {fileID: 4385140250008296631}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1798,21 +1798,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4871309907629186}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2625318677975452814
+--- !u!33 &17784511202609576
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1768518635813575057}
+  m_GameObject: {fileID: 4385140250008296631}
   m_Mesh: {fileID: -607390739089190142, guid: 6bf9fc823c3af4f469bd31b47572a1f4, type: 3}
---- !u!23 &255568440452724804
+--- !u!23 &2872128480855506274
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1768518635813575057}
+  m_GameObject: {fileID: 4385140250008296631}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1

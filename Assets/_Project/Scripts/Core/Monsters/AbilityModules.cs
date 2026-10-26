@@ -119,7 +119,10 @@ namespace Purge.Core.Monsters
         [SerializeField, Min(0.1f)] private float _statusDuration = 2f;
         [Tooltip("What happens where it ends (a puddle of acid…); its zones are the monsters' — they hurt the player too.")]
         [SerializeReference, ModuleList] private List<EffectModule> _impact = new List<EffectModule>();
+        [Tooltip("Played where it ends (stage 8c: a boulder crashing down). Folders Sounds/Monster.")]
+        [SerializeField, Audio.MonsterSound] private string _impactSound;
 
+        public string ImpactSound { get => _impactSound; internal set => _impactSound = value; }
         public ProjectileForm Form { get => _form; internal set => _form = value; }
         public int Count { get => _form == ProjectileForm.Fan ? Mathf.Max(1, _count) : 1; internal set => _count = value; }
         public float FanAngle { get => _fanAngle; internal set => _fanAngle = value; }
@@ -251,7 +254,11 @@ namespace Purge.Core.Monsters
         [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _fall;
         [Tooltip("Seconds it falls: the last part of the warning.")]
         [SerializeField, Range(0.1f, 1.5f)] private float _fallTime = 0.45f;
+        [Tooltip("Look only (stage 8c, the Mutant's blow on the ground): a ring closes in from the rim to the centre over the " +
+                 "warning instead of the fill growing; the blow still covers the whole circle.")]
+        [SerializeField] private bool _closing;
 
+        public bool Closing { get => _closing; internal set => _closing = value; }
         public float Radius { get => _radius; internal set => _radius = value; }
         public float Damage { get => _damage; internal set => _damage = value; }
         public StatusDefinition Status { get => _status; internal set => _status = value; }

@@ -1,6 +1,7 @@
 // Warning of a monster's ability on the floor (ТЗ: опасная способность сначала показывает зону/линию): one flat quad,
 // the shape from _Shape — 0 circle (uv 0..1 → radius 0..1), 1 line (u across, v along from the monster), 2 sector
-// (centred on the monster, radius 1 = reach, _HalfAngle radians either side of +v). A bright edge, a faint inside and a
+// (centred on the monster, radius 1 = reach, _HalfAngle radians either side of +v), 3 closing circle (a ring runs from
+// the rim to the centre with _Progress). A bright edge, a faint inside and a
 // fill that grows with _Progress (0 → 1 when it goes off). Drawn over the floor and the crowd, under the UI.
 Shader "Purge/Warning"
 {
@@ -8,7 +9,7 @@ Shader "Purge/Warning"
     {
         _Color ("Color", Color) = (1, 0.12, 0.08, 0.85)
         _Progress ("Progress", Range(0, 1)) = 0
-        _Shape ("Shape (0 circle, 1 line, 2 sector)", Float) = 0
+        _Shape ("Shape (0 circle, 1 line, 2 sector, 3 closing)", Float) = 0
         _HalfAngle ("Sector half angle (radians)", Float) = 0.785
         _Edge ("Edge width (share of the size)", Range(0.005, 0.5)) = 0.06
     }
@@ -61,6 +62,23 @@ Shader "Purge/Warning"
                 half inside;
                 half edge;
                 half along; // 0 at the start of the fill, 1 at its end
+                if (_Shape > 2.5)
+                {
+                    // Closing circle (stage 8c): the rim stays, a bright ring runs from it to the centre; what it has passed
+                    // over is filled.
+                    float2 p = i.uv * 2 - 1;
+                    float r = length(p);
+                    float aa = fwidth(r) * 1.5;
+                    float closing = 1 - _Progress;
+                    half inCircle = 1 - smoothstep(1 - aa, 1, r);
+                    half ring = 1 - smoothstep(_Edge * 0.6, _Edge, abs(r - closing));
+                    half rimEdge = 1 - smoothstep(_Edge * 0.6, _Edge, 1 - r);
+                    half pulseRing = 0.85 + 0.15 * sin(_Time.y * 18);
+                    half passed = step(closing, r);
+                    half alphaRing = inCircle * max(max(rimEdge, ring) * pulseRing, lerp(0.16, 0.42, passed));
+                    return half4(_Color.rgb, _Color.a * alphaRing);
+                }
+
                 if (_Shape < 0.5)
                 {
                     float2 p = i.uv * 2 - 1;

@@ -41,4 +41,5 @@ MonoBehaviour:
   Help: {fileID: 21300000, guid: 3b2d75fb3d87b3a4db8d11e87a922082, type: 3}
   Ad: {fileID: 21300000, guid: fad084edd0a8f3d4ea8af889840f7a69, type: 3}
   Coin: {fileID: 21300000, guid: 036fa2fb36e284d4faecaa976882acb8, type: 3}
+  Pointer: {fileID: 21300000, guid: 34323e5618649de41bba173fbe9062ad, type: 3}
   Backdrop: {fileID: 2800000, guid: fbb64d402343584429d9663abb6f9b90, type: 3}

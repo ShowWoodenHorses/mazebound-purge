@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - "Kamera uzakl\u0131\u011F\u0131"
   - "\xB1{0}"
   - "Kamera sars\u0131nt\u0131s\u0131"
+  - "Ekran d\u0131\u015F\u0131 canavar oklar\u0131"
   - "\xC7\xF6z\xFCn\xFCrl\xFCk"
   - "Silah kar\u015F\u0131la\u015Ft\u0131rma"
   - OKLAR

@@ -224,7 +224,12 @@ namespace Purge.Application.Save
 
         public PickupCompare Compare;
 
+        /// <summary>No arrows at the screen edge towards off-screen monsters (negated: old saves show them).</summary>
+        public bool NoMonsterArrows;
+
         public bool CameraShake => !NoCameraShake;
+
+        public bool MonsterArrows => !NoMonsterArrows;
 
         public static GameSettings Default => new GameSettings
         {
@@ -249,11 +254,12 @@ namespace Purge.Application.Save
 
         public bool Equals(GameSettings other) =>
             CameraDistance == other.CameraDistance && NoCameraShake == other.NoCameraShake &&
-            UnityEngine.Mathf.Approximately(ResolutionScale, other.ResolutionScale) && Compare == other.Compare;
+            UnityEngine.Mathf.Approximately(ResolutionScale, other.ResolutionScale) && Compare == other.Compare &&
+            NoMonsterArrows == other.NoMonsterArrows;
 
         public override bool Equals(object obj) => obj is GameSettings other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(CameraDistance, NoCameraShake, ResolutionScale, Compare);
+        public override int GetHashCode() => HashCode.Combine(CameraDistance, NoCameraShake, ResolutionScale, Compare, NoMonsterArrows);
     }
 
     /// <summary>How a phone's on-screen controls attack (decision 2026-10-19).</summary>

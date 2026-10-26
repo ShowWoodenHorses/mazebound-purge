@@ -268,8 +268,8 @@ namespace Purge.Gameplay.Horde
         /// <summary>Monster hits on the player (counted also when <see cref="GodMode"/> ignores them).</summary>
         public int PlayerHits { get; private set; }
 
-        /// <summary>Monsters do not damage the player (stress test default).</summary>
-        public bool GodMode { get; set; } = true;
+        /// <summary>Monsters do not damage the player (only the stress test and the sandbox turn it on).</summary>
+        public bool GodMode { get; set; }
 
         /// <summary>Killed monsters are replaced to keep <see cref="TargetCount"/>.</summary>
         public bool Respawn { get; set; } = true;

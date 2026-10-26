@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - Jarak kamera
   - "\xB1{0}"
   - Guncangan kamera
+  - Panah ke monster di luar layar
   - Resolusi
   - Perbandingan senjata
   - PANAH

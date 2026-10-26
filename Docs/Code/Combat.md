@@ -4,7 +4,7 @@
 
 ## Бой
 - `PlayerCombat` (тик **до** `PlayerSystem`; код один раз на модуль атаки): **стрельба на ходу** — игрок идёт, корпус смотрит на прицел (`PlayerSystem.AimAt`, `IsAiming`): при атаке и **боевая стойка** `StanceTime` (1 с) после неё — прицел остаётся на последней цели, корпус не мечется между выстрелами
-  - **на ПК корпус всегда смотрит на курсор**; `Facing` — корпус, `MoveDirection` — ноги; вид поворачивает корпус в прицеле плавнее (`PlayerViewPresenter.AimTurnSpeed` 450°/с против 900°/с), скорость × `PlayerSystem.WeaponSpeed` (= `MobilityModule` активного оружия).
+  - **на ПК корпус всегда смотрит на курсор**; `Facing` — корпус, `MoveDirection` — ноги; вид поворачивает корпус мгновенно, как `Facing` (решение 2026-10-26), скорость × `PlayerSystem.WeaponSpeed` (= `MobilityModule` активного оружия).
   - Прицел: мышь (`IAimPointer` → `CameraAimPointer`, точка на полу; `Look` только `<Mouse>/position` — касания не целятся), правый стик, иначе стик движения/`Facing` — с автонаведением (`AssistedDirection`: цель в конусе ±30° в `Attack.AimRange`, без стен; у стика движения — затем ближайшая цель вокруг: убегая, игрок стреляет в толпу) или снапом.
   - Cooldown копит остаток кадра (≤ 0.05 с) — темп не зависит от FPS. Патроны: атака берёт `PerAttack` из магазина; пустой — перезарядка из `AmmoStock` (частичная, если мало); нет ничего — `DryFired` и `IsOutOfAmmo` (красная обводка).
   - Перезарядка вручную — Reload (R, геймпад North) или клавиша активного слота. Цели — `CombatTargets` (орда `HordeSystem` + `IDamageable` зомби Maze): `Segment`, `Collect` (круг/конус), `IsClear` (`BlocksBullets`), весь урон — `Damage` → событие `Damaged` для вида.

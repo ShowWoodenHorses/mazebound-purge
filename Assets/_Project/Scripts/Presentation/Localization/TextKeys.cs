@@ -159,6 +159,7 @@ namespace Purge.Presentation.Localization
         public const string SettingsCameraDistance = "settings.camera_distance";
         public const string SettingsCameraDistanceValue = "settings.camera_distance.value";
         public const string SettingsCameraShake = "settings.camera_shake";
+        public const string SettingsMonsterArrows = "settings.monster_arrows";
         public const string SettingsResolution = "settings.resolution";
         public const string SettingsCompare = "settings.compare";
         public const string SettingsCompareArrows = "settings.compare.arrows";

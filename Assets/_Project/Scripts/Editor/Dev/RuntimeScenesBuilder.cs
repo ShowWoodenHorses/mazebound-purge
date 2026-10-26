@@ -433,6 +433,18 @@ namespace Purge.Editor.Dev
             var icons = UiIcons();
             var root = screen.transform;
 
+            // Arrows at the edge towards off-screen monsters (2026-10-26): under the texts, its own Canvas (they move
+            // every frame); the hidden template points right, the presenter pools copies at load.
+            var arrowLayer = Rect(root, "MonsterArrows", Center, Vector2.zero, Vector2.zero);
+            Stretch(arrowLayer);
+            arrowLayer.gameObject.AddComponent<Canvas>();
+            var arrowTemplate = Icon(arrowLayer, "ArrowTemplate", icons.Pointer, Center, Vector2.zero, 26f);
+            arrowTemplate.color = Fade(_style.Danger, 0.9f);
+            arrowTemplate.raycastTarget = false;
+            arrowTemplate.gameObject.SetActive(false);
+            var monsterArrows = arrowLayer.gameObject.AddComponent<MonsterArrowsView>();
+            SetReference(monsterArrows, "_template", arrowTemplate);
+
             // Top left: heart ring, level name and HP number, the arrow-tipped bar.
             var heartRing = Shape(root, "HeartRing", TopLeft, new Vector2(82f, -78f), new Vector2(84f, 84f));
             heartRing.Kind = UiShapeKind.Capsule;
@@ -605,6 +617,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_moneyText", moneyText);
             SetReference(screen, "_moneyIcon", money.transform.Find("Icon").GetComponent<RectTransform>());
             SetReference(screen, "_coinLayer", coinLayer);
+            SetReference(screen, "_monsterArrows", monsterArrows);
             SetReference(screen, "_countdown", countdown.gameObject);
             SetReference(screen, "_countdownText", countdownText);
             SetReference(screen, "_skipButton", skip);
@@ -1046,6 +1059,11 @@ namespace Purge.Editor.Dev
             ringShape.Kind = UiShapeKind.Capsule;
             ringShape.Fill = Fade(_style.Fill, 0.35f / _style.Fill.a);
             ringShape.Stroke = Fade(_style.Line, 0.5f);
+            // Fire threshold: a slight deflection only turns the player (sized by TouchStick.Configure).
+            var fireRing = Shape(ringShape.transform, "FireRing", Center, Vector2.zero, new Vector2(travel, travel));
+            fireRing.Kind = UiShapeKind.Capsule;
+            fireRing.Fill = Color.clear;
+            fireRing.Stroke = Fade(_style.Line, 0.3f);
             var knobShape = Shape(ringShape.transform, "Knob", Center, Vector2.zero, new Vector2(knob, knob));
             knobShape.Kind = UiShapeKind.Capsule;
             knobShape.Fill = _style.PressedFill;
@@ -1054,8 +1072,10 @@ namespace Purge.Editor.Dev
             var stick = zone.gameObject.AddComponent<TouchStick>();
             SetReference(stick, "_ring", ringShape.rectTransform);
             SetReference(stick, "_knob", knobShape.rectTransform);
+            SetReference(stick, "_fireRing", fireRing);
             var serialized = new SerializedObject(stick);
             serialized.FindProperty("_controlPath").stringValue = Purge.Application.Services.TouchAimDevice.ControlPath;
+            serialized.FindProperty("_fireRingLit").colorValue = _style.Accent;
             // From the zone's bottom-left corner (the quarter's bounds): the rest point is (-rest, rest) from its right angle.
             serialized.FindProperty("_restFromCorner").vector2Value = new Vector2(radius - rest, rest);
             serialized.FindProperty("_radius").floatValue = travel;
@@ -1862,6 +1882,7 @@ namespace Purge.Editor.Dev
             var gamePage = Page(pages.transform, "GamePage");
             var (cameraDistance, cameraDistanceLabel) = SliderSetting(gamePage, "CameraDistance", Loc(TextKeys.SettingsCameraDistance));
             var cameraShake = SwitchSetting(gamePage, "CameraShake", Loc(TextKeys.SettingsCameraShake));
+            var monsterArrows = SwitchSetting(gamePage, "MonsterArrows", Loc(TextKeys.SettingsMonsterArrows));
             var (resolution, resolutionLabel) = SliderSetting(gamePage, "Resolution", Loc(TextKeys.SettingsResolution));
             var compareRow = SettingRow(gamePage, "Compare", Loc(TextKeys.SettingsCompare));
             var compareButtons = new List<Object>();
@@ -1923,6 +1944,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_cameraDistance", cameraDistance);
             SetReference(screen, "_cameraDistanceLabel", cameraDistanceLabel);
             SetReference(screen, "_cameraShake", cameraShake);
+            SetReference(screen, "_monsterArrows", monsterArrows);
             SetReference(screen, "_resolutionRow", resolution.transform.parent.gameObject);
             SetReference(screen, "_resolution", resolution);
             SetReference(screen, "_resolutionLabel", resolutionLabel);

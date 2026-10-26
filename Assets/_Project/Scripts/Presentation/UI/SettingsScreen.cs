@@ -64,6 +64,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private Slider _cameraDistance;
         [SerializeField] private TMP_Text _cameraDistanceLabel;
         [SerializeField] private Toggle _cameraShake;
+        [SerializeField] private Toggle _monsterArrows;
         [Tooltip("Render resolution row: shown only where it applies (Android; the editor for testing).")]
         [SerializeField] private GameObject _resolutionRow;
         [SerializeField] private Slider _resolution;
@@ -133,6 +134,7 @@ namespace Purge.Presentation.UI
             if (_resolution != null) _resolution.onValueChanged.AddListener(_ => OnGameEdited());
 
             if (_cameraShake != null) _cameraShake.onValueChanged.AddListener(_ => OnGameEdited());
+            if (_monsterArrows != null) _monsterArrows.onValueChanged.AddListener(_ => OnGameEdited());
             if (_compareButtons != null)
                 for (var i = 0; i < _compareButtons.Length; i++)
                 {
@@ -312,6 +314,7 @@ namespace Purge.Presentation.UI
             _game = game;
             if (_cameraDistance != null) _cameraDistance.SetValueWithoutNotify(game.CameraDistance);
             if (_cameraShake != null) _cameraShake.SetIsOnWithoutNotify(game.CameraShake);
+            if (_monsterArrows != null) _monsterArrows.SetIsOnWithoutNotify(game.MonsterArrows);
             if (_resolution != null) _resolution.SetValueWithoutNotify(Mathf.Round(game.ResolutionScale / GameSettings.ResolutionScaleStep));
             UpdateGameLabels();
         }
@@ -327,6 +330,7 @@ namespace Purge.Presentation.UI
         {
             if (_cameraDistance != null) _game.CameraDistance = Mathf.RoundToInt(_cameraDistance.value);
             if (_cameraShake != null) _game.NoCameraShake = !_cameraShake.isOn;
+            if (_monsterArrows != null) _game.NoMonsterArrows = !_monsterArrows.isOn;
             if (_resolution != null) _game.ResolutionScale = _resolution.value * GameSettings.ResolutionScaleStep;
             _game = _game.Clamped();
             UpdateGameLabels();

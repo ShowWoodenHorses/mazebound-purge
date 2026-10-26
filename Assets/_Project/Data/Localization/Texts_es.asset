@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - "Distancia de la c\xE1mara"
   - "\xB1{0}"
   - "Temblor de la c\xE1mara"
+  - Flechas a monstruos fuera de pantalla
   - "Resoluci\xF3n"
   - "Comparaci\xF3n de armas"
   - FLECHAS

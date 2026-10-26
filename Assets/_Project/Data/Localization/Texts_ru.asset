@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -344,6 +345,8 @@ MonoBehaviour:
   - "\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u0430\u043C\u0435\u0440\u044B"
   - "\xB1{0}"
   - "\u0422\u0440\u044F\u0441\u043A\u0430 \u043A\u0430\u043C\u0435\u0440\u044B"
+  - "\u0421\u0442\u0440\u0435\u043B\u043A\u0438 \u043D\u0430 \u043C\u043E\u043D\u0441\u0442\u0440\u043E\u0432
+    \u0437\u0430 \u044D\u043A\u0440\u0430\u043D\u043E\u043C"
   - "\u0420\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u0435"
   - "\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u043E\u0440\u0443\u0436\u0438\u044F"
   - "\u0421\u0422\u0420\u0415\u041B\u041A\u0418"

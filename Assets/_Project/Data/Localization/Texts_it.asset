@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - Distanza della telecamera
   - "\xB1{0}"
   - Scuotimento della telecamera
+  - Frecce verso i mostri fuori schermo
   - Risoluzione
   - Confronto armi
   - FRECCE

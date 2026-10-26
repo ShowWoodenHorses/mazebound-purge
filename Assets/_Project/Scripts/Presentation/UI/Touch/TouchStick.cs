@@ -1,3 +1,5 @@
+using Purge.Gameplay.Combat;
+using Purge.Presentation.UI.Shapes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
@@ -31,6 +33,11 @@ namespace Purge.Presentation.UI.Touch
         [Tooltip("Aim-mode marks around the ring; the one the stick points at lights up.")]
         [SerializeField] private TouchStickMarks _marks;
 
+        [Tooltip("Optional ring of the fire threshold (the aim stick): sized to PlayerCombat.StickFireFrom, lit past it.")]
+        [SerializeField] private UiShape _fireRing;
+
+        [SerializeField] private Color _fireRingLit = Color.white;
+
         [Tooltip("Ring centre at rest, from the zone's bottom outer corner (canvas units).")]
         [SerializeField] private Vector2 _restFromCorner = new Vector2(220f, 220f);
 
@@ -44,6 +51,8 @@ namespace Purge.Presentation.UI.Touch
         private float _exponent = 1.6f;
         private bool _floating = true;
         private bool _mirrored;
+        private Color? _fireRingIdle;
+        private bool _fireRingShown;
         private int _pointerId = NoPointer;
         private bool _moved;
         private Vector2 _restInSafeArea;
@@ -65,6 +74,13 @@ namespace Purge.Presentation.UI.Touch
             _exponent = exponent;
             _floating = floating;
             _mirrored = mirrored;
+            if (_fireRing != null)
+            {
+                if (_fireRingIdle == null) _fireRingIdle = _fireRing.Stroke;
+                var diameter = 2f * _radius * StickResponse.DeflectionFor(PlayerCombat.StickFireFrom, deadZone, exponent);
+                _fireRing.rectTransform.sizeDelta = new Vector2(diameter, diameter);
+            }
+
             if (!IsHeld) ResetToRest();
         }
 
@@ -137,13 +153,23 @@ namespace Purge.Presentation.UI.Touch
             if (_knob != null) _knob.anchoredPosition = Vector2.ClampMagnitude(offset, _radius);
             // Local space of a mirrored parent is flipped; the value is in screen directions.
             var screen = transform.lossyScale.x < 0f ? new Vector2(-offset.x, offset.y) : offset;
-            SendValueToControl(StickResponse.Shape(screen / _radius, _deadZone, _exponent));
+            var value = StickResponse.Shape(screen / _radius, _deadZone, _exponent);
+            SendValueToControl(value);
             if (_marks != null) _marks.Point(Vector2.ClampMagnitude(offset / _radius, 1f));
+            LightFireRing(value.sqrMagnitude >= PlayerCombat.StickFireFrom * PlayerCombat.StickFireFrom);
+        }
+
+        private void LightFireRing(bool lit)
+        {
+            if (_fireRing == null || _fireRingIdle == null || _fireRingShown == lit) return;
+            _fireRingShown = lit;
+            _fireRing.Stroke = lit ? _fireRingLit : _fireRingIdle.Value;
         }
 
         private void Release()
         {
             _pointerId = NoPointer;
+            LightFireRing(false);
             ResetToRest();
             if (_marks != null) _marks.Point(Vector2.zero);
         }

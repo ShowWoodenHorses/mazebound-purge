@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - "Distance de la cam\xE9ra"
   - "\xB1{0}"
   - "Tremblement de la cam\xE9ra"
+  - "Fl\xE8ches vers les monstres hors \xE9cran"
   - "R\xE9solution"
   - Comparaison des armes
   - "FL\xC8CHES"

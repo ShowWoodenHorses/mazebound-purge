@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - "Odleg\u0142o\u015B\u0107 kamery"
   - "\xB1{0}"
   - "Wstrz\u0105sy kamery"
+  - "Strza\u0142ki do potwor\xF3w poza ekranem"
   - "Rozdzielczo\u015B\u0107"
   - "Por\xF3wnanie broni"
   - "STRZA\u0141KI"

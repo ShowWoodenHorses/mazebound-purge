@@ -38,7 +38,8 @@ namespace Purge.Gameplay.Combat
     /// <see cref="AssistAngle"/>, in the attack's reach, not behind a wall; for the movement stick then the nearest one
     /// all around) or snapped (<see cref="Aim.Snap"/>).</para>
     /// <para>Two-stick scheme of a phone (decision 2026-10-19): the on-screen aim stick (<see cref="IPlayerInput.AimStick"/>)
-    /// attacks while deflected — automatic weapons continuously, the rest at their own pace — exactly where it points,
+    /// turns the body while slightly deflected and attacks past <see cref="StickFireFrom"/> — automatic weapons
+    /// continuously, the rest at their own pace — exactly where it points,
     /// with only a slight turn to a target within <see cref="StickAssistAngle"/> (aim assist on, no snapping). Not while a
     /// throw is aimed: then the stick aims the throw (<see cref="PlayerThrowing"/>).</para>
     /// <para>Ammo (<see cref="AmmoModule"/>): an attack takes rounds from the magazine; an empty magazine reloads
@@ -55,6 +56,12 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>Half-angle of the aim assist cone around the on-screen aim stick, degrees.</summary>
         public const float StickAssistAngle = 10f;
+
+        /// <summary>
+        /// Aim stick value (0..1) from which it fires; below it only turns the body (decision 2026-10-26). The stick
+        /// draws this threshold as a ring (<c>TouchStick</c>).
+        /// </summary>
+        public const float StickFireFrom = 0.6f;
 
         /// <summary>Seconds after the last attack the player still counts as firing (weapon speed).</summary>
         public const float FiringLinger = 0.25f;
@@ -167,15 +174,18 @@ namespace Purge.Gameplay.Combat
                 TryReload();
 
             var definition = weapon.Definition;
-            var stickFiring = StickFiring();
+            var stickAiming = StickAiming();
+            var stickFiring = stickAiming && _input.AimStick.sqrMagnitude >= StickFireFrom * StickFireFrom;
             var stickPressed = stickFiring && !_stickWasFiring;
             _stickWasFiring = stickFiring;
+            // A slight deflection only turns the body; the stance keeps it there after the stick is let go.
+            if (stickAiming) _stanceLeft = Mathf.Max(_stanceLeft, StanceTime);
             var wantsToAttack = stickFiring || WantsToAttack(weapon);
             if (wantsToAttack || _stanceLeft > 0f || pointerAim)
             {
                 // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
                 // right stick aims): the body does not follow the run direction.
-                var direction = stickFiring
+                var direction = stickAiming
                     ? StickAim(definition, _input.AimStick.normalized)
                     : wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
                 if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned)
@@ -246,7 +256,7 @@ namespace Purge.Gameplay.Combat
         }
 
         /// <summary>The on-screen aim stick is deflected and not aiming a throw.</summary>
-        private bool StickFiring() =>
+        private bool StickAiming() =>
             _input.AimStick.sqrMagnitude > 0f && (_throwing == null || !_throwing.IsAiming);
 
         /// <summary>Where the aim stick points, turned slightly to a target in a narrow cone (aim assist on).</summary>

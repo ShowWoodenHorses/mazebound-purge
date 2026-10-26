@@ -100,6 +100,9 @@ namespace Purge.Editor.Dev
                 .Polyline(true, 10f, 9f, 15.5f, 12f, 10f, 15f).Fill(new[] { 10f, 9f, 15.5f, 12f, 10f, 15f }));
             // A coin: rim, inner ring and an upright mark (money of the run).
             set.Coin = Draw("ui_coin", new Icon().Circle(12, 12, 8.5f).Circle(12, 12, 5.5f).Segment(12, 9.5f, 12, 14.5f));
+            // A filled arrowhead pointing right: arrows towards off-screen monsters.
+            set.Pointer = Draw("ui_pointer", new Icon().Polyline(true, 6f, 5f, 19.5f, 12f, 6f, 19f)
+                .Fill(new[] { 6f, 5f, 19.5f, 12f, 6f, 19f }));
             set.Backdrop = DrawBackdrop();
             BuildCardIcons();
 

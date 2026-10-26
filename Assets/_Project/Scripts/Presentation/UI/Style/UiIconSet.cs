@@ -41,6 +41,8 @@ namespace Purge.Presentation.UI.Style
         public Sprite Ad;
         [Tooltip("Money of the run (stage 6b): a coin.")]
         public Sprite Coin;
+        [Tooltip("A filled arrowhead pointing right (+X): arrows towards off-screen monsters.")]
+        public Sprite Pointer;
 
         [Tooltip("Background of the menu screens: a faint maze with a torch glow and a vignette.")]
         public Texture2D Backdrop;

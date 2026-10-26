@@ -25,10 +25,6 @@ namespace Purge.Presentation.Visual
     /// </summary>
     public sealed class PlayerViewPresenter : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
-        private const float TurnSpeed = 900f; // degrees per second
-
-        /// <summary>Turning while the body faces the aim (combat stance, the mouse): smoother than following the walk.</summary>
-        private const float AimTurnSpeed = 450f;
         private const string PlayerHeadId = "player";
 
         private readonly PlayerSystem _player;
@@ -158,15 +154,14 @@ namespace Purge.Presentation.Visual
             var facing = Quaternion.LookRotation(new Vector3(_player.Facing.x, 0f, _player.Facing.y), Vector3.up);
             var transform = _view.transform;
             transform.localPosition = position;
-            transform.localRotation = snap
-                ? facing
-                : Quaternion.RotateTowards(transform.localRotation, facing, (_player.IsAiming ? AimTurnSpeed : TurnSpeed) * deltaTime);
+            // Turns at once, like the gameplay facing (decision 2026-10-26: a smooth turn felt sluggish).
+            transform.localRotation = facing;
 
             if (_parameters.Count > 0)
             {
                 var weapon = _weapons.Active;
                 SetFloat(P.SpeedHash, _player.SpeedFactor);
-                // The walk relative to the body as it is shown (turned smoothly), so the legs match what is seen.
+                // The walk relative to the body as it is shown, so the legs match what is seen.
                 var move = Quaternion.Inverse(transform.localRotation) *
                            new Vector3(_player.MoveDirection.x, 0f, _player.MoveDirection.y) * _player.SpeedFactor;
                 SetFloat(P.MoveXHash, move.x);

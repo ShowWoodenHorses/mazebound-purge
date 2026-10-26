@@ -88,6 +88,8 @@ namespace Purge.Presentation.UI
         [SerializeField] private RectTransform _moneyIcon;
         [Tooltip("Full-screen layer under the HUD's controls for the flying coins; its first child is the coin template.")]
         [SerializeField] private RectTransform _coinLayer;
+        [Tooltip("Arrows at the screen edge towards off-screen monsters (2026-10-26).")]
+        [SerializeField] private MonsterArrowsView _monsterArrows;
 
         [Header("Experience (stage 6c)")]
         [Tooltip("Under the HP bar: the run's level and the way to the next one.")]
@@ -371,6 +373,9 @@ namespace Purge.Presentation.UI
 
         /// <summary>Layer of the flying coins (its first child is the template); null — no coins.</summary>
         public RectTransform CoinLayer => _coinLayer;
+
+        /// <summary>Arrows towards off-screen monsters; null in old scenes.</summary>
+        public MonsterArrowsView MonsterArrows => _monsterArrows;
 
         /// <summary>The mini-map (stage 7g); null in old scenes.</summary>
         public MiniMapView MiniMap => _miniMap;

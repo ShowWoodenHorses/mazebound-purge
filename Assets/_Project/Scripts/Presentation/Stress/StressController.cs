@@ -107,6 +107,8 @@ namespace Purge.Presentation.Stress
             }
 
             _autopilot?.Attach(_player);
+            // Stand and sandbox start in god mode (the overlay toggles it); real levels never do.
+            _horde.GodMode = true;
             // The sandbox is played by hand: its autopilot runs only in the benchmark.
             if (_settings.IsSandbox) Autopilot = false;
             // Unity caps mobile players at 30 FPS by default: measure up to the display's refresh rate.

@@ -112,6 +112,7 @@ MonoBehaviour:
   - settings.camera_distance
   - settings.camera_distance.value
   - settings.camera_shake
+  - settings.monster_arrows
   - settings.resolution
   - settings.compare
   - settings.compare.arrows
@@ -326,6 +327,7 @@ MonoBehaviour:
   - "Dist\xE2ncia da c\xE2mera"
   - "\xB1{0}"
   - "Tremor da c\xE2mera"
+  - Setas para monstros fora da tela
   - "Resolu\xE7\xE3o"
   - "Compara\xE7\xE3o de armas"
   - SETAS

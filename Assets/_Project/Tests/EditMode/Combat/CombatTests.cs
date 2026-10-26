@@ -354,7 +354,7 @@ namespace Purge.Tests.EditMode.Combat
                 AssertDirection(Vector2.down, direction, "Exactly where the stick points.");
             };
 
-            _input.AimStick = new Vector2(0f, -0.6f);
+            _input.AimStick = new Vector2(0f, -0.8f);
             for (var t = 0f; t < 0.6f; t += Dt) Frame();
             Assert.AreEqual(3, attacks, "A semi-automatic in its own pace: t ≈ 0, 0.25, 0.5.");
 
@@ -362,6 +362,27 @@ namespace Purge.Tests.EditMode.Combat
             for (var t = 0f; t < 0.5f; t += Dt) Frame();
             Assert.AreEqual(3, attacks, "Released: no more shots.");
             AssertDirection(Vector2.down, _player.Facing, "The stance keeps the aim.");
+        }
+
+        [Test]
+        public void AimStick_SlightDeflection_OnlyTurns_FiresPastTheThreshold()
+        {
+            Equip(Weapon("semi", Bullets(0.25f), Ammo(30)));
+            var attacks = 0;
+            _combat.Attacked += (_, _) => attacks++;
+
+            _input.AimStick = new Vector2(0f, -(PlayerCombat.StickFireFrom - 0.1f));
+            for (var t = 0f; t < 0.3f; t += Dt) Frame();
+            Assert.AreEqual(0, attacks, "Below the threshold: no shots.");
+            AssertDirection(Vector2.down, _player.Facing, "The body turns where the stick points.");
+
+            _input.AimStick = Vector2.zero;
+            Frame();
+            AssertDirection(Vector2.down, _player.Facing, "The stance keeps the turn after release.");
+
+            _input.AimStick = new Vector2(0f, -(PlayerCombat.StickFireFrom + 0.1f));
+            Frame();
+            Assert.AreEqual(1, attacks, "Past the threshold: fires.");
         }
 
         [Test]

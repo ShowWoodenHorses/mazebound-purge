@@ -29,5 +29,13 @@ namespace Purge.Presentation.UI.Touch
             var output = Mathf.Lerp(MinOutput, 1f, Mathf.Pow(t, exponent));
             return deflection * (output / magnitude);
         }
+
+        /// <summary>Deflection (0..1) at which <see cref="Shape"/> reaches <paramref name="output"/>.</summary>
+        public static float DeflectionFor(float output, float deadZone, float exponent)
+        {
+            deadZone = Mathf.Clamp(deadZone, 0f, FullAt - 0.05f);
+            var t = Mathf.Pow(Mathf.Clamp01((output - MinOutput) / (1f - MinOutput)), 1f / Mathf.Max(exponent, 0.01f));
+            return deadZone + t * (FullAt - deadZone);
+        }
     }
 }

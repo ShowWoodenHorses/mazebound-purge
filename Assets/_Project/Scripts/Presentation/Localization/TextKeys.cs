@@ -83,6 +83,12 @@ namespace Purge.Presentation.Localization
         /// <summary>"weapon.katana": weapon name by its definition id (falls back to the id).</summary>
         public const string WeaponPrefix = "weapon.";
 
+        /// <summary>"monster.mutant_forest": a boss's name on its bar (stage 8a; falls back to the id).</summary>
+        public const string MonsterPrefix = "monster.";
+
+        /// <summary>The banner when a boss falls (stage 8a).</summary>
+        public const string HudBossDefeated = "hud.boss.defeated";
+
         // Exit, pause, result, error.
         public const string PauseTitle = "pause.title";
         public const string PauseResume = "pause.resume";

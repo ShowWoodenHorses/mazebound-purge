@@ -24760,3 +24760,4 @@ MonoBehaviour:
   _horde: {fileID: 11400000, guid: 3ce3d9cf856df0f4b9b56f21d91e6d3e, type: 2}
   _stressTest: {fileID: 0}
   _startWeapon: {fileID: 0}
+  _closeArena: 1

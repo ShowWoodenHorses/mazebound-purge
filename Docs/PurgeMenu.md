@@ -413,6 +413,10 @@ Zombie_Animations и UAC в `Import` (один раз) и импортирует
 статы, восприятие, способности и дроп `Data/Drops/OfficerDrop`; заодно создаются `Status_Acid`, `Zone_Acid`,
 `Status_Slow` (`Data/Effects`). Песочнице офицеры ставятся в `On Demand Monsters` (кнопки Officer), обоим стендам —
 виды офицеров их списков (`Monster Views`).
+**Боссы** (этап 8а, `OfficersBuilder.Boss.cs`): Мутант и четыре промежуточных из `Boss/` (Горгулья, Элементаль — этапы 13, 14) —
+клипы `Boss_*` (UAC Creature: атаки, выход Roar4, смерть), контроллер `Art/Monster/Boss.controller`, рост головы 2,2 / 2,7 м
+(тело 2×2 / 3×3), черновые HP/скорость/тело/фаза из карточки этапа 8, дроп `Data/Drops/BossDrop`; песочнице — кнопки строки
+Boss. Подробно — [Code/Bosses.md](Code/Bosses.md).
 **Громилы** `Ram_*` (5г): клипы `Brute_*` из UAC Creature Animset (ожидание, ходьба, бег, 3 атаки когтями, 3 реакции,
 рёв, `Brute_Push` — удар двумя руками, `Brute_Charge` — рёв перед рывком; атаки и реакции — с выпадом в root motion),
 свой контроллер `Art/Monster/Brute.controller` (те же состояния, каст по `CastIndex`: 0 — ярость `Brute_Rage`

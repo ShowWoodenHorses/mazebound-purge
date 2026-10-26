@@ -38,6 +38,16 @@ namespace Purge.Core.Visual
         [Tooltip("Footsteps on the plain floor of the theme (no surface). Grass cells always sound as grass, Ground cells as ground.")]
         [SerializeField] private FloorStepSound _floorSteps;
 
+        [Tooltip("A section of the arena's gates (stage 8a): pivot at its right lower end, spanning along −X, closed upright; " +
+                 "stretched to fill an entry. Empty = no look (the gates still close).")]
+        [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _arenaGate;
+
+        [Tooltip("Length of one gate section along the entry, m (the model's).")]
+        [SerializeField, Min(0.5f)] private float _arenaGateLength = 2.5f;
+
+        public UnityEngine.AddressableAssets.AssetReferenceGameObject ArenaGate { get => _arenaGate; internal set => _arenaGate = value; }
+        public float ArenaGateLength => _arenaGateLength;
+
         public string Id => _id;
 
         public Material FogMaterial { get => _fogMaterial; internal set => _fogMaterial = value; }

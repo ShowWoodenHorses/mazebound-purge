@@ -28,9 +28,16 @@ namespace Purge.Presentation.Visual.Horde
     public sealed class MonsterViewPresenter : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
         public const int PoolPerKind = 12;
+
+        /// <summary>Views of a boss kind (stage 8a): one boss at a time, a second for the sandbox.</summary>
+        public const int BossPoolPerKind = 2;
+
         private const float MinPlayback = 0.5f;
         private const float MaxPlayback = 2f;
         private const float HitRestart = 0.35f;
+
+        /// <summary>A boss plays a hit reaction at most this often, s: it does not stop under fire (stage 8a), the flinch is rare.</summary>
+        private const float BossHitRestart = 2.5f;
         private const float SidePush = 1.5f;
 
         /// <summary>
@@ -64,6 +71,7 @@ namespace Purge.Presentation.Visual.Horde
         private readonly LevelViewRoot _root;
         private readonly BlobShadows _shadows;
         private readonly Core.Visual.CombatVisualDefinition _visual;
+        private readonly LevelClock _clock;
 
         private KindViews[] _kinds; // per horde kind (null = not an Animator kind)
         private View[] _slots;      // per slot: its view (null = none)
@@ -73,9 +81,10 @@ namespace Purge.Presentation.Visual.Horde
         private bool _warnedPool;
 
         public MonsterViewPresenter(LevelData level, HordeSystem horde, MonsterAbilities abilities, VisibilitySystem visibility,
-            LevelViewRoot root, BlobShadows shadows, Core.Visual.CombatVisualDefinition visual = null)
+            LevelViewRoot root, BlobShadows shadows, Core.Visual.CombatVisualDefinition visual = null, LevelClock clock = null)
         {
             _visual = visual;
+            _clock = clock;
             _level = level;
             _horde = horde;
             _abilities = abilities;
@@ -116,7 +125,8 @@ namespace Purge.Presentation.Visual.Horde
                 }
 
                 var pool = new KindViews(definition);
-                for (var n = 0; n < Mathf.Min(PoolPerKind, _horde.Capacity); n++)
+                var count = kinds[k].IsBoss ? BossPoolPerKind : PoolPerKind;
+                for (var n = 0; n < Mathf.Min(count, _horde.Capacity); n++)
                     pool.Free.Push(Create(pool, n));
                 _kinds[k] = pool;
                 any = true;
@@ -155,6 +165,8 @@ namespace Purge.Presentation.Visual.Horde
             var generations = _horde.Generations;
             var high = _horde.HighWater;
             int shown = 0, held = 0, missing = 0;
+            // A slow-down of the simulation (a boss's death, stage 8a): the clips slow with it.
+            var pace = _clock != null ? _clock.Scale : 1f;
             for (var i = 0; i < _slots.Length; i++)
             {
                 var view = _slots[i];
@@ -190,6 +202,7 @@ namespace Purge.Presentation.Visual.Horde
                 view.Transform.SetPositionAndRotation(new Vector3(p.x, -sink, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
                 if (!visible) continue;
                 shown++;
+                if (view.Animator != null && view.Animator.speed != pace) view.Animator.speed = pace;
                 Animate(i, view, pool.Definition, states[i]);
                 ShowGlow(i, view, states[i]);
                 // The pose of this frame is evaluated already: the body stays where the gameplay put it (deaths fall away;
@@ -293,7 +306,8 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             var hitTime = _horde.HitTime[i];
-            if (!casting && hitTime > _lastHit[i] + HitRestart && time - hitTime < 0.1f)
+            var restart = _horde.KindOf(i).IsBoss ? BossHitRestart : HitRestart;
+            if (!casting && hitTime > _lastHit[i] + restart && time - hitTime < 0.1f)
             {
                 _lastHit[i] = hitTime;
                 animator.SetInteger(HitIndexId, (i + (int)(hitTime * 7f)) % P.HitClips);

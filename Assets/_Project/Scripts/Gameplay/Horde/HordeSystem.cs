@@ -44,7 +44,24 @@ namespace Purge.Gameplay.Horde
             Doors = definition != null ? definition.DoorUse : MonsterDoorUse.Never;
             Mass = MonsterDefinition.MassOf(definition != null ? definition.Rank : MonsterRank.Mass, stats);
             InverseMass = float.IsPositiveInfinity(Mass) ? 0f : 1f / Mass;
+            Staggers = definition == null || definition.Staggers;
+            IsBoss = definition != null && definition.IsBoss;
+            BodyClearance = ClearanceOf(stats.Radius);
         }
+
+        /// <summary>A hit stops it for a moment (not bosses).</summary>
+        public bool Staggers { get; }
+
+        public bool IsBoss { get; }
+
+        /// <summary>
+        /// Cells around its centre cell the body covers (0 — a body within one cell; 1 — up to 3×3 cells, the bosses):
+        /// a wide body walks a path field where all of them are free (stage 8a).
+        /// </summary>
+        public int BodyClearance { get; }
+
+        /// <summary>The footprint (<c>radius · 0.9</c>, as walls test it) reaches this many cells beyond its centre cell.</summary>
+        public static int ClearanceOf(float radius) => Mathf.Max(0, Mathf.CeilToInt(radius * 0.9f - 0.5f));
 
         /// <summary>Body mass (rank resolved; infinity = immovable).</summary>
         public float Mass { get; }
@@ -80,7 +97,7 @@ namespace Purge.Gameplay.Horde
     /// Allocation-free per tick.
     /// Active only on levels with a <see cref="StressTestDefinition"/> (stage 2); stage 5 builds monsters on it.
     /// </summary>
-    public sealed class HordeSystem : ILevelLoadStep, ILevelTickable, IDisposable
+    public sealed partial class HordeSystem : ILevelLoadStep, ILevelTickable, IDisposable
     {
         private const float PlayerRadius = 0.3f;
         private const float DirectChaseDistance = 1.6f;
@@ -131,6 +148,7 @@ namespace Purge.Gameplay.Horde
         private byte[] _affix; // champion's affix: index in Champions.Affixes + 1; 0 = not a champion
         private float[] _maxHealth;
         private float[] _attackRate; // × how often it attacks (champions)
+        private bool[] _held; // stands where it is in the chase (a boss in its arena, stage 8a)
 
         // The fallen (stage 5e, the Shaman's raise): a ring of recent deaths of the rank-and-file and officers — where,
         // which kind, when. Bodies are not kept for it: a corpse still disappears after its CorpseTime.
@@ -390,6 +408,19 @@ namespace Purge.Gameplay.Horde
 
         public bool IsEnraged(int agent) => (uint)agent < (uint)_highWater && _enraged[agent];
 
+        /// <summary>
+        /// A phase by HP (<c>PhaseAbility</c>, stage 8a): from now on × <paramref name="damageFactor"/> damage and
+        /// × <paramref name="speedFactor"/> speed on top of what it had; <paramref name="rage"/> — it counts (and glows) as
+        /// enraged.
+        /// </summary>
+        public void Strengthen(int agent, float damageFactor, float speedFactor, bool rage)
+        {
+            if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent])) return;
+            _damageFactor[agent] *= Mathf.Max(0f, damageFactor);
+            _speed[agent] *= Mathf.Max(0.1f, speedFactor);
+            if (rage) _enraged[agent] = true;
+        }
+
         /// <summary>× the damage the monster deals (rage; 1 = as its data says).</summary>
         public float DamageFactorOf(int agent) => (uint)agent < (uint)_highWater ? _damageFactor[agent] : 1f;
 
@@ -561,7 +592,7 @@ namespace Purge.Gameplay.Horde
                 if (Mathf.Abs(position.x - cell.X) < reach && Mathf.Abs(position.y - cell.Y) < reach) return true;
             }
 
-            return false;
+            return WideBodyInCell(cell.X, cell.Y);
         }
 
         public ReadOnlySpan<Vector2> Positions => _positions;
@@ -612,6 +643,17 @@ namespace Purge.Gameplay.Horde
 
         public bool SeesPlayer(int agent) => (uint)agent < (uint)_highWater && _sees[agent];
 
+        /// <summary>
+        /// The chasing monster stands where it is (faces the player, attacks one in reach, casts) until released — a boss
+        /// waits in its arena until the player comes in (stage 8a).
+        /// </summary>
+        public void SetHeld(int agent, bool held)
+        {
+            if ((uint)agent < (uint)_highWater) _held[agent] = held;
+        }
+
+        public bool IsHeld(int agent) => (uint)agent < (uint)_highWater && _held[agent];
+
         /// <summary>(slot, where) a monster was killed (by anything: weapons, zones, states).</summary>
         public event Action<int, Vector2> Killed;
 
@@ -648,6 +690,7 @@ namespace Purge.Gameplay.Horde
         public void Stagger(int agent, float seconds)
         {
             if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || seconds <= 0f) return;
+            if (!_kinds[_kind[agent]].Staggers) return; // a boss walks on under fire
             _staggerUntil[agent] = Mathf.Max(_staggerUntil[agent], Time + seconds);
         }
 
@@ -700,6 +743,7 @@ namespace Purge.Gameplay.Horde
             _maxHealth = new float[capacity];
             _attackRate = new float[capacity];
             _outsideWave = new bool[capacity];
+            _held = new bool[capacity];
             OutsideWaveAlive = 0;
             for (var i = 0; i < capacity; i++)
             {
@@ -720,6 +764,7 @@ namespace Purge.Gameplay.Horde
 
             RefreshWalkable();
             _flow = new FlowField(_grid.Width, _grid.Height);
+            InitializeBodies();
             _buckets = new CellBuckets(_grid.Width, _grid.Height, capacity);
             _random = new DeterministicRandom((int)StableHash.Of(_level.name + "/horde"));
 
@@ -817,6 +862,7 @@ namespace Purge.Gameplay.Horde
             for (var i = 0; i < _highWater; i++)
                 if (IsAlive(_states[i]))
                     _buckets.Insert(i, CellIndex(_positions[i]));
+            CollectWide();
 
             if (!Frozen) Perception.Tick(Time);
 
@@ -923,7 +969,7 @@ namespace Purge.Gameplay.Horde
         {
             if (!IsActive) return 0;
             var count = 0;
-            var reach = range + 0.5f;
+            var reach = range + _maxRadius + 0.5f;
             var minX = Mathf.FloorToInt(origin.x - reach + 0.5f);
             var maxX = Mathf.FloorToInt(origin.x + reach + 0.5f);
             var minY = Mathf.FloorToInt(origin.y - reach + 0.5f);
@@ -1063,10 +1109,21 @@ namespace Purge.Gameplay.Horde
                 _attackStart[i] = Time - AttackIntervalOf(i) * 0.5f;
             }
 
+            if (_held[i] && _states[i] == HordeAgentState.Moving)
+            {
+                // Waits where it stands (a boss in its arena until the player comes in): faces the player, still casts.
+                var push = Separation(i, position, playerPosition, stats);
+                if (push.sqrMagnitude > 1e-10f) position = MoveWithWalls(position, push, stats.Radius);
+                _positions[i] = position;
+                _pace[i] = HordePace.Still;
+                Turn(i, toPlayerDirection, stats, deltaTime);
+                return;
+            }
+
             var doors = _kinds[_kind[i]].Doors;
-            var flow = UsesDoorFlow && (doors == MonsterDoorUse.Open || doors == MonsterDoorUse.Break) ? _doorFlow : _flow;
-            if (flow == _doorFlow && _states[i] == HordeAgentState.Moving &&
-                TickDoor(i, position, playerPosition, stats, doors, deltaTime))
+            var flow = ChaseFlow(i, doors);
+            if (UsesDoorFlow && (doors == MonsterDoorUse.Open || doors == MonsterDoorUse.Break) &&
+                _states[i] == HordeAgentState.Moving && TickDoor(i, position, playerPosition, stats, doors, flow, deltaTime))
                 return;
             _doorAt[i] = -1;
 
@@ -1076,9 +1133,9 @@ namespace Purge.Gameplay.Horde
                 return;
 
             var desired = toPlayerDirection;
-            if (_states[i] == HordeAgentState.Moving && distance > DirectChaseDistance)
+            if (_states[i] == HordeAgentState.Moving && distance > DirectChaseDistance + (stats.Radius > 0.5f ? stats.Radius : 0f))
             {
-                var next = flow.NextAt(CellIndex(position));
+                var next = flow == _bodyFlow ? BodyNext(CellIndex(position)) : flow.NextAt(CellIndex(position));
                 if (next >= 0)
                 {
                     var target = new Vector2(next % _grid.Width, next / _grid.Width);
@@ -1162,10 +1219,10 @@ namespace Purge.Gameplay.Horde
         /// walks on — false), or stands and beats it down, a blow per attack interval (true: this tick is spent).
         /// </summary>
         private bool TickDoor(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, MonsterDoorUse use,
-            float deltaTime)
+            FlowField flow, float deltaTime)
         {
             var cell = CellIndex(position);
-            var next = cell >= 0 ? _doorFlow.NextAt(cell) : -1;
+            var next = cell >= 0 ? flow.NextAt(cell) : -1;
             if (next < 0 || _walkable[next]) return false; // the way on is floor: not at a closed door
             var at = new Vector2(next % _grid.Width, next / _grid.Width);
             var toDoor = at - position;
@@ -1279,7 +1336,7 @@ namespace Purge.Gameplay.Horde
                 for (var x = cx - 1; x <= cx + 1; x++)
                 for (var other = _buckets.First(x, y); other >= 0; other = _buckets.Next(other))
                 {
-                    if (other == i) continue;
+                    if (other == i || _wideCount > 0 && IsWide(other)) continue; // wide bodies — below
                     var minDistance = radius + _kinds[_kind[other]].Stats.Radius;
                     var minSquared = minDistance * minDistance;
                     var offset = position - _positions[other];
@@ -1300,6 +1357,8 @@ namespace Purge.Gameplay.Horde
                     var length = Mathf.Sqrt(squared);
                     push += offset / length * ((minDistance - length) * share * stats.Separation);
                 }
+
+                if (_wideCount > 0) push += WideSeparation(i, position, radius, ownInverse, stats.Separation);
             }
 
             // The player's body — ResolvePlayerContacts, after everyone has moved.
@@ -1373,8 +1432,24 @@ namespace Purge.Gameplay.Horde
         private bool FootprintFree(Vector2 center, float radius)
         {
             var r = radius * 0.9f;
-            return IsWalkableAt(center.x - r, center.y - r) && IsWalkableAt(center.x + r, center.y - r) &&
-                   IsWalkableAt(center.x - r, center.y + r) && IsWalkableAt(center.x + r, center.y + r);
+            if (!IsWalkableAt(center.x - r, center.y - r) || !IsWalkableAt(center.x + r, center.y - r) ||
+                !IsWalkableAt(center.x - r, center.y + r) || !IsWalkableAt(center.x + r, center.y + r))
+                return false;
+            if (r <= 0.5f) return true;
+            // A body wider than a cell (bosses, stage 8a): the edges and the middle too, a point per cell at most.
+            var steps = Mathf.CeilToInt(2f * r);
+            for (var a = 1; a < steps; a++)
+            {
+                var along = -r + 2f * r * a / steps;
+                if (!IsWalkableAt(center.x + along, center.y - r) || !IsWalkableAt(center.x + along, center.y + r) ||
+                    !IsWalkableAt(center.x - r, center.y + along) || !IsWalkableAt(center.x + r, center.y + along))
+                    return false;
+                for (var b = 1; b < steps; b++)
+                    if (!IsWalkableAt(center.x + along, center.y - r + 2f * r * b / steps))
+                        return false;
+            }
+
+            return true;
         }
 
         private bool IsWalkableAt(float x, float y) => IsWalkable(Mathf.FloorToInt(x + 0.5f), Mathf.FloorToInt(y + 0.5f));
@@ -1673,9 +1748,11 @@ namespace Purge.Gameplay.Horde
             _retreatStuck[slot] = 0f;
             _dashLeft[slot] = 0f;
             _doorAt[slot] = -1;
+            _held[slot] = false;
             _outsideWave[slot] = false;
             _highWater = Math.Max(_highWater, slot + 1);
             AliveCount++;
+            if (_kinds[kind].BodyClearance > 0 && !_bodyFlowBuilt) _flowDirty = true; // its field, on the next tick
             var definition = _kinds[kind].Definition;
             Perception.OnSpawn(slot, perception ?? (definition != null ? definition.Perception : MonsterPerception.Hunter), Time);
             return slot;
@@ -1723,6 +1800,7 @@ namespace Purge.Gameplay.Horde
             _flowTarget = _player.Cell;
             _flow.Build(_flowTarget, _walkable);
             if (UsesDoorFlow) _doorFlow.Build(_flowTarget, _doorWalkable);
+            if (_wideKinds) RebuildBodyFlow();
             _flowDirty = false;
             FlowBuilds++;
         }

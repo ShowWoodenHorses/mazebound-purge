@@ -444,6 +444,18 @@ namespace Purge.Editor.Dev
             arrowTemplate.gameObject.SetActive(false);
             var monsterArrows = arrowLayer.gameObject.AddComponent<MonsterArrowsView>();
             SetReference(monsterArrows, "_template", arrowTemplate);
+            // The boss's arrow and the arena's (stage 8a): bigger, the boss's in full danger red, the arena's in the accent.
+            // The arena's first: the boss's is drawn over it (a boss waiting in its arena — both point the same way).
+            var arenaArrow = Icon(arrowLayer, "ArenaArrow", icons.Pointer, Center, Vector2.zero, 46f);
+            arenaArrow.color = _style.Accent;
+            arenaArrow.raycastTarget = false;
+            arenaArrow.enabled = false;
+            var bossArrow = Icon(arrowLayer, "BossArrow", icons.Pointer, Center, Vector2.zero, 54f);
+            bossArrow.color = _style.Danger;
+            bossArrow.raycastTarget = false;
+            bossArrow.enabled = false;
+            SetReference(monsterArrows, "_boss", bossArrow);
+            SetReference(monsterArrows, "_arena", arenaArrow);
 
             // Top left: heart ring, level name and HP number, the arrow-tipped bar.
             var heartRing = Shape(root, "HeartRing", TopLeft, new Vector2(82f, -78f), new Vector2(84f, 84f));
@@ -566,6 +578,10 @@ namespace Purge.Editor.Dev
             ammoTemplate.gameObject.SetActive(false); // Cloned per ammo type.
             countdown.gameObject.SetActive(false);
 
+            // The boss's bar (stage 8a): in the countdown's place (a boss fights within a wave, never in the pause) — the
+            // name over a wide bar with a trail and the notches of its phases.
+            var bossBar = BuildBossBar(root);
+
             // A big caption in the middle: «Волна 3», «Волна пройдена».
             var banner = AutoSize(Text(root, "Banner", "", 64f, true, Center, Center, new Vector2(0f, 200f),
                 new Vector2(1400f, 90f), TextAlignmentOptions.Center, _style.Text, 14f));
@@ -638,7 +654,46 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_comparePanel", comparePanel);
             SetReference(screen, "_chestBar", chestBarView);
             SetReference(screen, "_refugeText", refugeText);
+            SetReference(screen, "_bossBar", bossBar);
             return screen;
+        }
+
+        /// <summary>The boss's HP bar at the top centre (stage 8a), hidden until a boss comes.</summary>
+        private static BossBarView BuildBossBar(Transform root)
+        {
+            const float width = 720f;
+            var rect = Rect(root, "BossBar", new Vector2(0.5f, 1f), new Vector2(0f, -232f), new Vector2(width, 64f));
+            rect.pivot = new Vector2(0.5f, 1f);
+            var name = Text(rect, "Name", "BOSS", 28f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), Vector2.zero,
+                new Vector2(width, 34f), TextAlignmentOptions.Center, _style.Danger, 8f);
+            name.textWrappingMode = TextWrappingModes.NoWrap;
+            var frame = Shape(rect, "Frame", new Vector2(0.5f, 1f), new Vector2(0f, -40f - 10f), new Vector2(width, 20f));
+            frame.CornerRadius = 6f;
+            frame.Fill = Fade(_style.Fill, 0.6f / Mathf.Max(0.01f, _style.Fill.a));
+            frame.StrokeWidth = _style.ThinStroke + 0.5f;
+            var bar = Rect(frame.transform, "Bar", Center, Vector2.zero, Vector2.zero);
+            bar.anchorMin = Vector2.zero;
+            bar.anchorMax = Vector2.one;
+            bar.offsetMin = new Vector2(4f, 4f);
+            bar.offsetMax = new Vector2(-4f, -4f);
+            var trail = BarFill(bar, "Trail", Fade(_style.Text, 0.6f));
+            var fill = BarFill(bar, "Fill", _style.Danger);
+            var notch = Shape(bar, "NotchTemplate", Center, Vector2.zero, new Vector2(3f, 0f));
+            notch.StrokeWidth = 0f;
+            notch.Fill = _style.Text;
+            var notchRect = notch.rectTransform;
+            notchRect.anchorMin = new Vector2(0.5f, 0f);
+            notchRect.anchorMax = new Vector2(0.5f, 1f);
+            notchRect.sizeDelta = new Vector2(3f, 6f);
+            notch.gameObject.SetActive(false);
+
+            var view = rect.gameObject.AddComponent<BossBarView>();
+            SetReference(view, "_name", name);
+            SetReference(view, "_fill", fill);
+            SetReference(view, "_trail", trail);
+            SetReference(view, "_notchTemplate", notchRect);
+            rect.gameObject.SetActive(false);
+            return view;
         }
 
         /// <summary>

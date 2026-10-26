@@ -745,6 +745,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a828a07469e49824a8e27b92204cb0d4
+    m_Address: Art/Items/Gate/Gate_02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8c50428a313bb34d8d2b1915ff0a22d
     m_Address: Assets/_Project/Art/Decor/Forest_Ivy.prefab
     m_ReadOnly: 0

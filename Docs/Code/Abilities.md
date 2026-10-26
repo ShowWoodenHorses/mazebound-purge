@@ -5,7 +5,7 @@
 Монстры разбиты на справочники: [Zombies.md](Zombies.md) — зомби Maze · [Monsters.md](Monsters.md) — данные, вид рядовых, восприятие, сложность · [Abilities.md](Abilities.md) — способности, офицеры, Громила, двери, масса · [Elite.md](Elite.md) — элита, чемпионы, эффекты монстров · [Horde.md](Horde.md) — орда, песочница, стресс-тест.
 
 ## Способности и офицеры (5в)
-- **Модули способностей** — `AbilityModule` (`Core/Monsters/AbilityModules.cs`), список `MonsterDefinition.Abilities` (`[ModuleList]`, порядок = приоритет).
+- **Модули способностей** — `AbilityModule` (`Core/Monsters/AbilityModules.cs`), список `MonsterDefinition.Abilities` (`[ModuleList]`, порядок = приоритет; до `MonsterAbilities.MaxAbilities` 8).
   - Общее у модуля: перезарядка, `FirstDelay` (не раньше N с погони), дистанция min/max, `NeedsSight`, `HealthBelow` (условие по HP), `Warning` (0,2–2 с, по ТЗ 0,5–1), `Recovery`, `CastSound`/`ReleaseSound` (6е2, звуки `Sounds/Monster/<звук>` — Audio.md).
   - Обычная атака рядового ранит с направлением (`PlayerHealth.Damage(amount, позиция монстра)`) — дуга урона HUD и от неё (6е2).
   - Модули: **`ProjectileAbility`** (форма `Straight` / `Arc` / `Fan`, число и угол веера, скорость, урон, дальность, радиус и высота дуги, состояние на игрока, **эффекты попадания** — вложенный список `EffectModule`, инспектор рисует вложенные `[ModuleList]`) и **`StrikeAbility`** (сектор перед монстром: досягаемость, угол, урон, состояние).
@@ -28,6 +28,10 @@
 - **Офицеры 5в** (Build Monsters → `OfficersBuilder`, данные — черновые, правятся в ассетах): **Крикун** `shouter_common` — зовущий, HP 120, 2 кл/с, удар 10, зов 14
   - **Дальний** (бродяги, HP 70, 2,2 кл/с, `HoldRange` 7, `RetreatRange` 3, зрение 9): `distant_castle` — стрела (18 урона, 14 кл/с, перезарядка 2,5 с), `distant_forest` — плевок дугой (8 + лужа `Zone_Acid` r 1,2 на 5 с; `Status_Acid` 12/с, держится 1,5 с после лужи), `distant_snow` — веер 3 сосулек по 30° (10 урона, `Status_Slow` ×0,5 на 2 с).
   - Дроп — `Data/Drops/OfficerDrop` (пусто 25, патроны 35, аптечки 18, метательное 12, оружие 10). Громилы (`Ram_*`) — раздел 5г.
+
+## Фазы по HP (8а)
+- **`PhaseAbility`** («Phase», можно несколько): `HealthBelow` — порог, предупреждение — рык (может начаться в ближнем бою, как ярость), затем монстр в следующей фазе; фазы считаются 1, 2… по порядку модулей в списке, каждая — только после предыдущей. Поля: `DamageFactor`, `SpeedFactor` (умножаются поверх прежних, `HordeSystem.Strengthen`), `CooldownFactor` (× все перезарядки дальше, темп), `Rage` (считается яростью — красное свечение).
+- У каждой способности `FromPhase`/`UntilPhase` (0…`MaxPhase` 4) — «другой набор» после фазы. `MonsterAbilities.HealthPhaseOf(slot)`, событие `PhaseChanged`. Ярость (`RageAbility`) осталась отдельным модулем (Громила).
 
 ## Громила и двери (5г)
 - **Двери по рангам** — `MonsterStats.Doors` (`MonsterDoorUse`: `ByRank` по умолчанию — рядовые `Never`, офицеры и элита `Open`, боссы `Break`; явно — `Never/Open/Break`), `DoorDamage` (урон двери за удар); `MonsterDefinition.DoorUse`, `HordeKind.Doors` (ранг разрешён). Запертые и мёрзлые двери стоят для всех (`DoorSystem.IsPassableForMonsters`).

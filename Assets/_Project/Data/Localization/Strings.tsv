@@ -131,6 +131,12 @@ hud.tutorial	TUTORIAL	ОБУЧЕНИЕ	EĞİTİM	TUTORIAL	TUTORIAL	TUTORIAL	TUTO
 hud.wave	WAVE {0}/{1}	ВОЛНА {0}/{1}	DALGA {0}/{1}	OLEADA {0}/{1}	WELLE {0}/{1}	ONDA {0}/{1}	VAGUE {0}/{1}	ONDATA {0}/{1}	FALA {0}/{1}	GELOMBANG {0}/{1}	ТОЛҚЫН {0}/{1}	TOʻLQIN {0}/{1}	ХВАЛЯ {0}/{1}
 hud.wave.start	WAVE {0}	ВОЛНА {0}	DALGA {0}	OLEADA {0}	WELLE {0}	ONDA {0}	VAGUE {0}	ONDATA {0}	FALA {0}	GELOMBANG {0}	ТОЛҚЫН {0}	TOʻLQIN {0}	ХВАЛЯ {0}
 hud.wave.cleared	WAVE CLEARED	ВОЛНА ПРОЙДЕНА	DALGA TEMİZLENDİ	OLEADA SUPERADA	WELLE GESCHAFFT	ONDA CONCLUÍDA	VAGUE TERMINÉE	ONDATA SUPERATA	FALA POKONANA	GELOMBANG SELESAI	ТОЛҚЫН ӨТТІ	TOʻLQIN OʻTILDI	ХВАЛЯ ПРОЙДЗЕНА
+hud.boss.defeated	BOSS DEFEATED	БОСС ПОВЕРЖЕН	BOSS YENİLDİ	JEFE DERROTADO	BOSS BESIEGT	CHEFE DERROTADO	BOSS VAINCU	BOSS SCONFITTO	BOSS POKONANY	BOS DIKALAHKAN	БОСС ЖЕҢІЛДІ	BOSS YENGILDI	БОС ПАВАЛЕНЫ
+monster.mutant_forest	Mutant	Мутант	Mutant	Mutante	Mutant	Mutante	Mutant	Mutante	Mutant	Mutan	Мутант	Mutant	Мутант
+monster.zombie_boss_common	Butcher	Мясник	Kasap	Carnicero	Schlächter	Açougueiro	Boucher	Macellaio	Rzeźnik	Penjagal	Қасапшы	Qassob	Мяснік
+monster.golem_common	Colossus	Колосс	Dev	Coloso	Koloss	Colosso	Colosse	Colosso	Kolos	Kolosus	Алып	Ulkan	Колас
+monster.medusa_common	Gorgon	Горгона	Gorgon	Gorgona	Gorgo	Górgona	Gorgone	Gorgone	Gorgona	Gorgon	Горгона	Gorgona	Гаргона
+monster.demon_common	Demon	Демон	İblis	Demonio	Dämon	Demônio	Démon	Demone	Demon	Iblis	Жын	Iblis	Дэман
 hud.wave.countdown	WAVE {0} IN {1}	ВОЛНА {0} ЧЕРЕЗ {1}	DALGA {0} · {1}	OLEADA {0} EN {1}	WELLE {0} IN {1}	ONDA {0} EM {1}	VAGUE {0} DANS {1}	ONDATA {0} TRA {1}	FALA {0} ZA {1}	GELOMBANG {0} DALAM {1}	ТОЛҚЫН {0} · {1}	TOʻLQIN {0} · {1}	ХВАЛЯ {0} ПРАЗ {1}
 hud.wave.skip	SKIP +{0}	ПРОПУСТИТЬ +{0}	ATLA +{0}	SALTAR +{0}	ÜBERSPRINGEN +{0}	PULAR +{0}	PASSER +{0}	SALTA +{0}	POMIŃ +{0}	LEWATI +{0}	ӨТКІЗУ +{0}	OʻTKAZISH +{0}	ПРАПУСЦІЦЬ +{0}
 hud.key.space	SPACE	ПРОБЕЛ	BOŞLUK	ESPACIO	LEERTASTE	ESPAÇO	ESPACE	SPAZIO	SPACJA	SPASI	БОС ОРЫН	PROBEL	ПРАБЕЛ

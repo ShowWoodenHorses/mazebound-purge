@@ -73,8 +73,9 @@ namespace Purge.Presentation.Stress
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
             PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null, Gameplay.Doors.DoorSystem doors = null,
-            Application.Services.SettingsService playerSettings = null)
+            Application.Services.SettingsService playerSettings = null, BossSystem bosses = null)
         {
+            _bosses = bosses;
             _playerSettings = playerSettings;
             _resolutionScale = PlayerResolutionScale; // what the screen renders at now
             _doors = doors;
@@ -211,13 +212,27 @@ namespace Purge.Presentation.Stress
             if (_feelOverlay != null) _feelOverlay.Visible = OverlaysVisible;
         }
 
-        /// <summary>Sandbox (5c): officer <paramref name="index"/> 7–9 cells from the player (in view when possible).</summary>
+        private readonly BossSystem _bosses;
+
+        /// <summary>
+        /// Sandbox (5c): officer <paramref name="index"/> 7–9 cells from the player (in view when possible); a boss (8a)
+        /// climbs out as a boss — its bar, arrow, the slow-down of its death (no arena: it does not wait).
+        /// </summary>
         public void SpawnOfficer(int index)
         {
             var monster = _horde.Horde.OnDemandMonsters[index];
             var kind = _horde.KindIndexOf(monster);
             if (kind < 0) return;
             _groupRandom ??= new DeterministicRandom((int)StableHash.Of(_level.name + "/sandbox-groups"));
+            if (monster.IsBoss && _bosses != null)
+            {
+                var angle = (float)(_groupRandom.NextDouble() * System.Math.PI * 2.0);
+                var near = _player.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 9f;
+                var slot = _bosses.Summon(kind, near);
+                GameLog.Info(LogChannel.Gameplay, slot >= 0 ? $"Sandbox: boss '{monster.name}' in slot {slot}." : $"Sandbox: no room for '{monster.name}'.");
+                return;
+            }
+
             var best = -1;
             for (var attempt = 0; attempt < 32; attempt++)
             {

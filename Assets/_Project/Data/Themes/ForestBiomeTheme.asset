@@ -131,3 +131,10 @@ MonoBehaviour:
     EdgeNoise: 0.55
     NoiseScale: 1.3
   _floorSteps: 1
+  _arenaGate:
+    m_AssetGUID: a828a07469e49824a8e27b92204cb0d4
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _arenaGateLength: 2.5

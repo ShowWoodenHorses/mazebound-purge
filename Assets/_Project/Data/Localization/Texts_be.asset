@@ -134,6 +134,12 @@ MonoBehaviour:
   - hud.wave
   - hud.wave.start
   - hud.wave.cleared
+  - hud.boss.defeated
+  - monster.mutant_forest
+  - monster.zombie_boss_common
+  - monster.golem_common
+  - monster.medusa_common
+  - monster.demon_common
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
@@ -373,6 +379,12 @@ MonoBehaviour:
   - "\u0425\u0412\u0410\u041B\u042F {0}/{1}"
   - "\u0425\u0412\u0410\u041B\u042F {0}"
   - "\u0425\u0412\u0410\u041B\u042F \u041F\u0420\u041E\u0419\u0414\u0417\u0415\u041D\u0410"
+  - "\u0411\u041E\u0421 \u041F\u0410\u0412\u0410\u041B\u0415\u041D\u042B"
+  - "\u041C\u0443\u0442\u0430\u043D\u0442"
+  - "\u041C\u044F\u0441\u043D\u0456\u043A"
+  - "\u041A\u043E\u043B\u0430\u0441"
+  - "\u0413\u0430\u0440\u0433\u043E\u043D\u0430"
+  - "\u0414\u044D\u043C\u0430\u043D"
   - "\u0425\u0412\u0410\u041B\u042F {0} \u041F\u0420\u0410\u0417 {1}"
   - "\u041F\u0420\u0410\u041F\u0423\u0421\u0426\u0406\u0426\u042C +{0}"
   - "\u041F\u0420\u0410\u0411\u0415\u041B"

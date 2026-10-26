@@ -36,4 +36,5 @@
 - **Стоимость в бюджете волны** — `MonsterDefinition.Cost` (0 = по рангу: рядовой 1, офицер 10, элита 30, босс 100; `CostOf`).
 - **Деньги за убийство** (6б) — `MonsterDefinition.Money` (0 = по рангу 1 / 5 / 20 / 100; `MoneyOf`), платит `RunWallet` × `Difficulty.Money`.
 - **Опыт за убийство** (6в) — `MonsterDefinition.Experience` (0 = по рангу 1 / 4 / 15 / 50; `ExperienceOf`), считает `RunExperience` ([Cards.md](Cards.md)).
+- **Боссы (8а)** — ранг `Boss`: тело N×N (`Radius` до 1,5), `ControlFactor` (контроль ×0,25 по рангу), `Staggers` = false — [Bosses.md](Bosses.md).
 - Песочница: Ходок 3, Бегун 2, Скелет/Лесной зомби/Гуль по 1, `EmergeTime` 2 с.

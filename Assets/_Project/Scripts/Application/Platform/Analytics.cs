@@ -41,6 +41,10 @@ namespace Purge.Application.Platform
         public const string ChestOpen = "chest_open";
         public const string ChestKey = "chest_key";
         public const string ChallengeDone = "challenge_done";
+
+        // Bosses (stage 8a).
+        public const string BossStart = "boss_start";
+        public const string BossKill = "boss_kill";
     }
 
     /// <summary>

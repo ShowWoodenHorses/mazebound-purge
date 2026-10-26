@@ -36,6 +36,7 @@ namespace Purge.Presentation.UI
         private readonly TopDownCamera _camera;
         private readonly LevelViewRoot _root;
         private readonly SettingsService _settings;
+        private readonly BossSystem _bosses;
         private readonly int[] _agents = new int[Sectors];
         private readonly float[] _nearest = new float[Sectors];
         private Matrix4x4 _toClip;
@@ -45,8 +46,9 @@ namespace Purge.Presentation.UI
         private bool _subscribed;
 
         public MonsterArrowsPresenter(UIRoot ui, PlayerSystem player, TopDownCamera camera, LevelViewRoot root,
-            SettingsService settings, HordeSystem horde = null)
+            SettingsService settings, HordeSystem horde = null, BossSystem bosses = null)
         {
+            _bosses = bosses;
             _ui = ui;
             _player = player;
             _camera = camera;
@@ -91,7 +93,9 @@ namespace Purge.Presentation.UI
         {
             var view = View;
             if (view == null) return;
-            if (!_enabled || _horde == null || !_horde.IsActive || !_player.IsSpawned || _camera == null || _camera.Camera == null)
+            var bosses = _bosses != null && (_bosses.IsBossAlive || _bosses.ShowArenaArrow);
+            if (!_enabled && !bosses || _horde == null || !_horde.IsActive || !_player.IsSpawned || _camera == null ||
+                _camera.Camera == null)
             {
                 Forget(view);
                 return;
@@ -102,14 +106,77 @@ namespace Purge.Presentation.UI
             _toClip = camera.projectionMatrix * camera.worldToCameraMatrix * _root.transform.localToWorldMatrix;
             if (!TryScreen(_player.Position, out var origin)) return;
 
-            _refreshIn -= deltaTime;
-            if (_refreshIn <= 0f)
+            if (_enabled)
             {
-                _refreshIn = 1f / RefreshRate;
-                Pick(origin);
+                _refreshIn -= deltaTime;
+                if (_refreshIn <= 0f)
+                {
+                    _refreshIn = 1f / RefreshRate;
+                    Pick(origin);
+                }
+            }
+            else
+            {
+                for (var i = 0; i < Sectors; i++) _agents[i] = -1;
             }
 
             Place(view, origin);
+            PlaceSpecial(view, origin);
+        }
+
+        /// <summary>
+        /// The boss's arrow whenever it is off screen (ТЗ: боссы видны всегда — whatever the settings), the arena's while a
+        /// boss waits in it and the arena is off screen (stage 8a).
+        /// </summary>
+        private void PlaceSpecial(MonsterArrowsView view, Vector2 origin)
+        {
+            var boss = _bosses != null && _bosses.IsBossAlive;
+            var arena = _bosses != null && _bosses.ShowArenaArrow;
+            if (!TryBounds(view, origin, out var bounds, out var localOrigin))
+            {
+                view.HideSpecial(MonsterArrowsView.Special.Boss);
+                view.HideSpecial(MonsterArrowsView.Special.Arena);
+                return;
+            }
+
+            ShowSpecial(view, MonsterArrowsView.Special.Boss, boss, boss ? _bosses.Position : default, origin, bounds, localOrigin);
+            ShowSpecial(view, MonsterArrowsView.Special.Arena, arena, arena ? _bosses.ArenaCenter : default, origin, bounds,
+                localOrigin);
+        }
+
+        private void ShowSpecial(MonsterArrowsView view, MonsterArrowsView.Special which, bool wanted, Vector2 target, Vector2 origin,
+            Rect bounds, Vector2 localOrigin)
+        {
+            if (!wanted || !TryScreen(target, out var point) || _screen.Contains(point))
+            {
+                view.HideSpecial(which);
+                return;
+            }
+
+            var direction = (point - origin).normalized;
+            var local = localOrigin + direction * RayToEdge(localOrigin, direction, bounds);
+            view.ShowSpecial(which, local, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        }
+
+        /// <summary>The layer's rectangle less the edge inset, and the player's point in it (clamped inside).</summary>
+        private static bool TryBounds(MonsterArrowsView view, Vector2 origin, out Rect bounds, out Vector2 localOrigin)
+        {
+            var layer = view.Layer;
+            bounds = layer.rect;
+            var inset = view.EdgeInset;
+            bounds.xMin += inset;
+            bounds.yMin += inset;
+            bounds.xMax -= inset;
+            bounds.yMax -= inset;
+            if (bounds.width <= 0f || bounds.height <= 0f ||
+                !RectTransformUtility.ScreenPointToLocalPointInRectangle(layer, origin, null, out localOrigin))
+            {
+                localOrigin = default;
+                return false;
+            }
+
+            localOrigin = Vector2.Max(bounds.min, Vector2.Min(bounds.max, localOrigin));
+            return true;
         }
 
         private void Apply()
@@ -135,8 +202,10 @@ namespace Purge.Presentation.UI
 
             var positions = _horde.Positions;
             var states = _horde.States;
+            var boss = _bosses != null ? _bosses.Boss : -1;
             for (var agent = 0; agent < _horde.HighWater; agent++)
             {
+                if (agent == boss) continue; // its own arrow
                 if (!IsAlive(states[agent]) || !TryScreen(positions[agent], out var point) || _screen.Contains(point)) continue;
                 var offset = point - origin;
                 var distance = offset.sqrMagnitude;
@@ -149,21 +218,12 @@ namespace Purge.Presentation.UI
 
         private void Place(MonsterArrowsView view, Vector2 origin)
         {
-            var layer = view.Layer;
-            var bounds = layer.rect;
-            var inset = view.EdgeInset;
-            bounds.xMin += inset;
-            bounds.yMin += inset;
-            bounds.xMax -= inset;
-            bounds.yMax -= inset;
-            if (bounds.width <= 0f || bounds.height <= 0f ||
-                !RectTransformUtility.ScreenPointToLocalPointInRectangle(layer, origin, null, out var localOrigin))
+            if (!TryBounds(view, origin, out var bounds, out var localOrigin))
             {
                 view.HideAll();
                 return;
             }
 
-            localOrigin = Vector2.Max(bounds.min, Vector2.Min(bounds.max, localOrigin));
             var positions = _horde.Positions;
             var states = _horde.States;
             for (var i = 0; i < Sectors; i++)

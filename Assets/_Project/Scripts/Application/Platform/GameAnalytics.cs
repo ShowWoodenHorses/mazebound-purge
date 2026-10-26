@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
 using Purge.Application.Services;
+using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Navigation;
 using Purge.Gameplay.Objects;
@@ -58,12 +59,15 @@ namespace Purge.Application.Platform
         private readonly string _levelId;
         private readonly ChestSystem _chests;
         private readonly WaveSystem _waves;
+        private readonly BossSystem _bosses;
+        private float _bossSince;
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
-            TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null)
+            TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null)
         {
+            _bosses = bosses;
             _chests = chests;
             _waves = waves;
             _tutorial = tutorial;
@@ -89,6 +93,12 @@ namespace Purge.Application.Platform
                 _chests.Opened += OnChestOpened;
                 _chests.ChallengeDone += OnChallengeDone;
                 _chests.KeyDroppedAt += OnChestKey;
+            }
+
+            if (_bosses != null)
+            {
+                _bosses.Appeared += OnBossAppeared;
+                _bosses.Defeated += OnBossDefeated;
             }
 
             _subscribed = true;
@@ -123,6 +133,12 @@ namespace Purge.Application.Platform
                 _chests.KeyDroppedAt -= OnChestKey;
             }
 
+            if (_bosses != null)
+            {
+                _bosses.Appeared -= OnBossAppeared;
+                _bosses.Defeated -= OnBossDefeated;
+            }
+
             _subscribed = false;
         }
 
@@ -151,6 +167,29 @@ namespace Purge.Application.Platform
             parameters["level"] = _levelId;
             parameters["wave"] = Wave;
             _analytics.Send(AnalyticsEvents.ChestKey);
+        }
+
+        private string BossId => _bosses.Definition != null ? _bosses.Definition.Id : "unknown";
+
+        // A boss came / was killed (stage 8a): which, at which wave, how long the fight took.
+        private void OnBossAppeared(int slot)
+        {
+            _bossSince = _progress.Elapsed;
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["boss"] = BossId;
+            parameters["wave"] = Wave;
+            _analytics.Send(AnalyticsEvents.BossStart);
+        }
+
+        private void OnBossDefeated(int slot, Vector2 at)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["boss"] = BossId;
+            parameters["wave"] = Wave;
+            parameters["time"] = Mathf.RoundToInt(_progress.Elapsed - _bossSince);
+            _analytics.Send(AnalyticsEvents.BossKill);
         }
 
         private void OnPickupRemoved(Pickup pickup)

@@ -38,6 +38,7 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+    ControlFactor: 0
   _cost: 0
   _money: 0
   _experience: 0
@@ -64,6 +65,8 @@ MonoBehaviour:
         _recovery: 0.5
         _castSound: shaman_raise
         _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
         _radius: 7
         _count: 5
         _maxAge: 20
@@ -81,6 +84,8 @@ MonoBehaviour:
         _recovery: 0.4
         _castSound: shaman_spell
         _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
         _radius: 1.6
         _damage: 0
         _status: {fileID: 0}

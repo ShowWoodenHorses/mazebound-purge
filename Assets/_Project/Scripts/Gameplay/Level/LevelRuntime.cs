@@ -27,11 +27,13 @@ namespace Purge.Gameplay.Level
         private readonly ILevelLoadStep[] _steps;
         private readonly ILevelTickable[] _tickables;
         private readonly ILevelLateTickable[] _lateTickables;
+        private readonly LevelClock _clock;
 
         public LevelRuntime(LevelData level, IReadOnlyList<ILevelLoadStep> steps, IReadOnlyList<ILevelTickable> tickables,
-            IReadOnlyList<ILevelLateTickable> lateTickables = null)
+            IReadOnlyList<ILevelLateTickable> lateTickables = null, LevelClock clock = null)
         {
             Level = level != null ? level : throw new ArgumentNullException(nameof(level));
+            _clock = clock;
             // OrderBy is stable: steps of one stage keep their registration order.
             _steps = (steps ?? Array.Empty<ILevelLoadStep>()).OrderBy(s => s.Stage).ToArray();
             _tickables = (tickables ?? Array.Empty<ILevelTickable>()).ToArray();
@@ -86,6 +88,8 @@ namespace Purge.Gameplay.Level
             if (State != LevelRunState.Running)
                 return;
 
+            // A slow-down (a boss's death, stage 8a) — the simulation's seconds.
+            if (_clock != null) deltaTime = _clock.Advance(deltaTime);
             // Stops mid-frame when a tickable ended the level (e.g. the player died).
             for (var i = 0; i < _tickables.Length && State == LevelRunState.Running; i++)
                 _tickables[i].Tick(deltaTime);

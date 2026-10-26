@@ -185,8 +185,10 @@ namespace Purge.Editor.Dev
                 var report = new List<string>();
                 foreach (var (prefab, biome, rank) in FindPrefabs())
                 {
-                    // Officers and elite — Animator (stages 5c, 5e: the Armadillo and the Shamans; the Hook later); bosses — stage 7.
-                    if (rank == MonsterRank.Officer || rank == MonsterRank.Elite && OfficersBuilder.IsBuiltElite(prefab.name))
+                    // Officers, elite and bosses — Animator (stages 5c, 5e: the Armadillo and the Shamans; the Hook later;
+                    // 8a: the Mutant and the intermediate bosses).
+                    if (rank == MonsterRank.Officer || rank == MonsterRank.Elite && OfficersBuilder.IsBuiltElite(prefab.name) ||
+                        rank == MonsterRank.Boss && OfficersBuilder.IsBuiltBoss(prefab.name))
                     {
                         var officer = EnsureDefinition(prefab, biome, rank, out var created);
                         if (created) OfficersBuilder.Seed(officer, prefab.name);

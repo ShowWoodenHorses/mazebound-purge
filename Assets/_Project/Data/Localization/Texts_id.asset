@@ -134,6 +134,12 @@ MonoBehaviour:
   - hud.wave
   - hud.wave.start
   - hud.wave.cleared
+  - hud.boss.defeated
+  - monster.mutant_forest
+  - monster.zombie_boss_common
+  - monster.golem_common
+  - monster.medusa_common
+  - monster.demon_common
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
@@ -349,6 +355,12 @@ MonoBehaviour:
   - GELOMBANG {0}/{1}
   - GELOMBANG {0}
   - GELOMBANG SELESAI
+  - BOS DIKALAHKAN
+  - Mutan
+  - Penjagal
+  - Kolosus
+  - Gorgon
+  - Iblis
   - GELOMBANG {0} DALAM {1}
   - LEWATI +{0}
   - SPASI

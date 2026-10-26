@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab7689879d869a4ebc2550f8f50f498, type: 3}
+  m_Name: ZombieBoss_Common
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Monsters.MonsterDefinition
+  _id: zombie_boss_common
+  _rank: 3
+  _biome: 0
+  _perception: 2
+  _stats:
+    MaxHp: 3000
+    Speed: 1.8
+    Radius: 1
+    AttackReach: 2
+    Damage: 28
+    AttackInterval: 1.8
+    TurnSpeed: 200
+    Separation: 0.5
+    CorpseTime: 8
+    EmergeTime: 2.5
+    WanderSpeed: 0.4
+    SightRange: 14
+    CallRadius: 12
+    HoldRange: 0
+    RetreatRange: 0
+    Mass: 0
+    Immovable: 0
+    Doors: 0
+    DoorDamage: 60
+    FrontArmor: 0
+    FrontArc: 120
+    ControlFactor: 0
+  _cost: 0
+  _money: 0
+  _experience: 0
+  _score: 0
+  _drop: {fileID: 11400000, guid: 1fa41d4c2c303d54695a7cd940557447, type: 2}
+  _resistances: []
+  _deathEffects: []
+  _abilities:
+  - rid: 1763807467480285250
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807467480285250
+      type: {class: PhaseAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 0.1
+        _firstDelay: 0
+        _minRange: 0
+        _maxRange: 99
+        _needsSight: 0
+        _healthBelow: 0.3
+        _warning: 1.2
+        _recovery: 0.3
+        _castSound: rage_roar
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _damageFactor: 1.5
+        _speedFactor: 1
+        _cooldownFactor: 1
+        _rage: 1

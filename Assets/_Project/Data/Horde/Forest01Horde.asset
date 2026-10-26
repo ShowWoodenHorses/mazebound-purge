@@ -35,6 +35,7 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+    ControlFactor: 0
   _monsters: []
   _onDemandMonsters: []
   _waves: {fileID: 11400000, guid: 9e0100b46bad9cc418c12cdd7cc7177f, type: 2}
@@ -43,8 +44,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 32d9b60a0adf11f49aa052fce6ae2c45, type: 2}
   - {fileID: 11400000, guid: 53edea5b7886e02478f6d18c6ddb84ad, type: 2}
   _monsterViews:
+  - {fileID: 11400000, guid: bd6f03f34109a334fa538f7ef8367631, type: 2}
   - {fileID: 11400000, guid: 07cc53531cb2bc248ad89fe5dc4f47d7, type: 2}
   - {fileID: 11400000, guid: 76d7c472e59f04e40a6b23ca2683687b, type: 2}
+  - {fileID: 11400000, guid: caaea0a7325e0334fad01c82f2f1b82e, type: 2}
   - {fileID: 11400000, guid: 5007ed8e61216874fb3589c8e9f735b1, type: 2}
   - {fileID: 11400000, guid: 2f9ba67d81e07a64989e88bb30acd0d2, type: 2}
   - {fileID: 11400000, guid: d49aaafd2027e4f4eba080a895771fb6, type: 2}

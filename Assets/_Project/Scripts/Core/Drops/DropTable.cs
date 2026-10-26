@@ -86,6 +86,9 @@ namespace Purge.Core.Drops
             _fallbackRounds = fallbackRounds;
         }
 
+        /// <summary>For tests and tools: weights per rarity from Common up (a boss's drop — a step above the elite's).</summary>
+        internal void SetRarityWeights(params float[] weights) => _rarityWeights = weights;
+
         internal void ConfigureGround(float lifetime, int maxLying)
         {
             _lifetime = lifetime;

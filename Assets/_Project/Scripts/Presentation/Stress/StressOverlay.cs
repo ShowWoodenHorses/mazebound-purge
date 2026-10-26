@@ -130,6 +130,7 @@ namespace Purge.Presentation.Stress
 
                 OnDemandRow(bodyRect, "Officer", Core.Monsters.MonsterRank.Officer);
                 OnDemandRow(bodyRect, "Elite", Core.Monsters.MonsterRank.Elite);
+                OnDemandRow(bodyRect, "Boss", Core.Monsters.MonsterRank.Boss);
                 ChampionRow(bodyRect);
             }
 

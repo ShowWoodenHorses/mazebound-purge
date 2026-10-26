@@ -56,6 +56,7 @@ namespace Purge.Gameplay.Waves
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
         private readonly RunWallet _wallet;
+        private readonly BossSystem _bosses;
         private readonly List<WaveSpawn> _spawns = new List<WaveSpawn>();
         private readonly Dictionary<int, int> _packPoints = new Dictionary<int, int>();
         private readonly List<int> _allowed = new List<int>();
@@ -64,16 +65,36 @@ namespace Purge.Gameplay.Waves
         private int _next;
         private float _waveTime;
 
+        // A boss wave (stage 8a): the boss, its escort, and the budget's clock that runs only once the boss is dead.
+        private readonly List<WaveSpawn> _escort = new List<WaveSpawn>();
+        private readonly Dictionary<int, int> _escortPoints = new Dictionary<int, int>();
+        private int _escortNext;
+        private int _bossKind = -1;
+        private bool _bossPending;
+        private int _bossSlot = -1;
+        private int _bossGeneration;
+        private float _budgetTime;
+
         public WaveSystem(LevelData level, HordeSystem horde, PlayerSystem player, LevelLaunchOptions options = null,
-            PickupSystem pickups = null, RunWallet wallet = null)
+            PickupSystem pickups = null, RunWallet wallet = null, BossSystem bosses = null)
         {
             _level = level;
             _horde = horde;
             _player = player;
             _pickups = pickups;
             _wallet = wallet;
+            _bosses = bosses;
             Seed = options?.Seed ?? Environment.TickCount;
         }
+
+        /// <summary>The current wave is a boss wave and its boss has not come or still lives: the budget waits.</summary>
+        public bool BossHolds => _bossPending || BossAlive;
+
+        private bool BossAlive =>
+            _bossSlot >= 0 && _horde.Generations[_bossSlot] == _bossGeneration && HordeSystem.IsAlive(_horde.States[_bossSlot]);
+
+        /// <summary>The wave being fought is a boss wave.</summary>
+        public bool IsBossWave => Phase == WavePhase.Running && Scenario.Waves[WaveIndex].IsBossWave;
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
@@ -92,8 +113,9 @@ namespace Purge.Gameplay.Waves
         /// <summary>Seconds left of <see cref="WavePhase.Delay"/> or <see cref="WavePhase.Pause"/>.</summary>
         public float TimeLeft { get; private set; }
 
-        /// <summary>Monsters of the current wave still to appear.</summary>
-        public int PendingCount => Phase == WavePhase.Running ? _spawns.Count - _next : 0;
+        /// <summary>Monsters of the current wave still to appear (a boss wave's boss and escort too).</summary>
+        public int PendingCount =>
+            Phase == WavePhase.Running ? _spawns.Count - _next + _escort.Count - _escortNext + (_bossPending ? 1 : 0) : 0;
 
         /// <summary>Monsters of the current wave in total.</summary>
         public int WaveSize => _spawns.Count;
@@ -155,8 +177,13 @@ namespace Purge.Gameplay.Waves
                     break;
                 case WavePhase.Running:
                     _waveTime += deltaTime;
-                    SpawnDue();
-                    if (_next >= _spawns.Count && _horde.WaveAliveCount == 0) ClearWave();
+                    if (_bossPending) SpawnBoss();
+                    SpawnEscort();
+                    // ТЗ: обычное появление ждёт до смерти босса.
+                    if (!BossHolds) _budgetTime += deltaTime;
+                    if (!BossHolds) SpawnDue();
+                    if (_next >= _spawns.Count && _escortNext >= _escort.Count && !BossHolds && _horde.WaveAliveCount == 0)
+                        ClearWave();
                     break;
             }
         }
@@ -212,9 +239,22 @@ namespace Purge.Gameplay.Waves
             _packPoints.Clear();
             _next = 0;
             _waveTime = 0f;
+            _budgetTime = 0f;
+            // A boss wave (stage 8a): the boss and its escort first.
+            _escort.Clear();
+            _escortPoints.Clear();
+            _escortNext = 0;
+            _bossSlot = -1;
+            var boss = wave.Boss;
+            _bossKind = boss != null ? _horde.KindIndexOf(boss.Monster) : -1;
+            _bossPending = _bossKind >= 0;
+            if (boss != null && _bossKind < 0)
+                GameLog.Warning(LogChannel.Gameplay, $"Wave {index + 1}: boss '{boss.Monster.Id}' is not one of the horde's kinds (run Build Monsters).");
+            if (boss != null) _escort.AddRange(WaveGenerator.Escort(boss, _horde.Difficulty));
             TimeLeft = 0f;
             Phase = WavePhase.Running;
-            GameLog.Info(LogChannel.Gameplay, $"Wave {index + 1}/{Scenario.Count}: {_spawns.Count} monster(s).");
+            GameLog.Info(LogChannel.Gameplay, $"Wave {index + 1}/{Scenario.Count}: {_spawns.Count} monster(s)" +
+                                              (boss != null ? $", boss '{boss.Monster.Id}' with {_escort.Count}." : "."));
             WaveStarted?.Invoke(index);
         }
 
@@ -225,7 +265,7 @@ namespace Purge.Gameplay.Waves
             for (var n = 0; n < SpawnsPerTick && _next < _spawns.Count; n++)
             {
                 var spawn = _spawns[_next];
-                if (spawn.Time > _waveTime || _horde.WaveAliveCount >= limit) return;
+                if (spawn.Time > _budgetTime || _horde.WaveAliveCount >= limit) return;
 
                 var kind = _kinds[_next];
                 if (kind < 0)
@@ -246,6 +286,68 @@ namespace Purge.Gameplay.Waves
                     return; // no free slot or cell this tick: tries again
                 _next++;
             }
+        }
+
+        /// <summary>The boss climbs out in the arena's centre (no arena on this floor — at a far spawn point); tries every tick.</summary>
+        private void SpawnBoss()
+        {
+            var arena = _level.Arena;
+            Vector2 center;
+            if (!arena.IsEmpty && arena.Floor == _player.Floor) center = new Vector2(arena.Center.X, arena.Center.Y);
+            else
+            {
+                var point = PickPoint(-1);
+                center = point >= 0 ? CenterOf(point) : FallbackCenter();
+            }
+
+            var slot = _horde.SpawnBoss(center, _bossKind);
+            if (slot < 0) return; // no free slot or place this tick
+            _bossPending = false;
+            _bossSlot = slot;
+            _bossGeneration = _horde.Generations[slot];
+            _bosses?.Begin(slot);
+        }
+
+        /// <summary>The escort's packs, each from one of the spawn points nearest the arena.</summary>
+        private void SpawnEscort()
+        {
+            for (var n = 0; n < SpawnsPerTick && _escortNext < _escort.Count; n++)
+            {
+                var spawn = _escort[_escortNext];
+                if (spawn.Time > _waveTime) return;
+                var kind = _horde.KindIndexOf(spawn.Monster);
+                if (kind < 0)
+                {
+                    _escortNext++;
+                    continue;
+                }
+
+                if (!_escortPoints.TryGetValue(spawn.Pack, out var point))
+                {
+                    point = spawn.Point >= 0 ? PickPoint(spawn.Point) : PickNearArena(spawn.Pack);
+                    _escortPoints[spawn.Pack] = point;
+                }
+
+                var center = point >= 0 ? CenterOf(point) : FallbackCenter();
+                if (_horde.SpawnEmerging(center, kind, SpawnRadius) < 0) return;
+                _escortNext++;
+            }
+        }
+
+        /// <summary>
+        /// An allowed spawn point (far enough from the player, reachable) among the nearest to the arena: the packs of
+        /// the escort take the nearest ones in turn; no arena — any allowed one.
+        /// </summary>
+        private int PickNearArena(int pack)
+        {
+            var arena = _level.Arena;
+            if (arena.IsEmpty) return PickPoint(-1);
+            PickPoint(-1); // fills _allowed
+            if (_allowed.Count == 0) return PickPoint(-1);
+            var center = new Vector2(arena.Center.X, arena.Center.Y);
+            _allowed.Sort((a, b) => (CenterOf(a) - center).sqrMagnitude.CompareTo((CenterOf(b) - center).sqrMagnitude));
+            // The two nearest share the packs.
+            return _allowed[pack % Mathf.Min(2, _allowed.Count)];
         }
 
         private void ClearWave()

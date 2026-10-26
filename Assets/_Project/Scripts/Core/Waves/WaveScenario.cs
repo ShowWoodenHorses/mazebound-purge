@@ -58,6 +58,32 @@ namespace Purge.Core.Waves
     }
 
     /// <summary>
+    /// The boss of a wave (stage 8a, ТЗ «босс выходит со свитой, обычная волна ждёт»): it climbs out in the centre of
+    /// the level's arena when the wave starts; its <see cref="Escort"/> — groups from the spawn points nearest the arena
+    /// (their time — seconds after the wave starts); the wave's budget and groups begin only once the boss is dead.
+    /// </summary>
+    [Serializable]
+    public sealed class WaveBoss
+    {
+        [SerializeField] private MonsterDefinition _monster;
+        [Tooltip("Comes with the boss: × the difficulty's count factor (at least one), from the spawn points nearest the arena.")]
+        [SerializeField] private WaveGroup[] _escort = Array.Empty<WaveGroup>();
+
+        public MonsterDefinition Monster => _monster;
+        public WaveGroup[] Escort => _escort ??= Array.Empty<WaveGroup>();
+
+        public WaveBoss()
+        {
+        }
+
+        public WaveBoss(MonsterDefinition monster, params WaveGroup[] escort)
+        {
+            _monster = monster;
+            _escort = escort ?? Array.Empty<WaveGroup>();
+        }
+    }
+
+    /// <summary>
     /// One wave: the budget (points, × difficulty) the generator spends on <see cref="Monsters"/> by weight (a monster
     /// costs <see cref="MonsterDefinition.Cost"/>), the fixed <see cref="Groups"/>, how long the budget's monsters keep
     /// appearing and how many may live at once. The wave ends when everything has appeared and everyone is dead.
@@ -82,6 +108,17 @@ namespace Purge.Core.Waves
         [SerializeField, Min(0f)] private float _moneyBonus;
         [Tooltip("Score for clearing this wave (stage 6d, × the difficulty's score factor); 0 = 100 × the wave's number.")]
         [SerializeField, Min(0f)] private float _scoreBonus;
+        [Tooltip("A boss wave (stage 8a): the boss with its escort first; the budget and the groups above wait for its death. " +
+                 "Empty monster = an ordinary wave.")]
+        [SerializeField] private WaveBoss _boss = new WaveBoss();
+
+        /// <summary>The wave's boss; null for an ordinary wave.</summary>
+        public WaveBoss Boss => _boss != null && _boss.Monster != null ? _boss : null;
+
+        public bool IsBossWave => Boss != null;
+
+        /// <summary>For tests and tools.</summary>
+        internal void SetBoss(WaveBoss boss) => _boss = boss ?? new WaveBoss();
 
         public float Budget => _budget;
         public WaveMonster[] Monsters => _monsters ??= Array.Empty<WaveMonster>();

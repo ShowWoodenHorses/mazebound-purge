@@ -50,6 +50,20 @@ namespace Purge.Core.Monsters
         [SerializeField, Audio.MonsterSound] private string _castSound;
         [Tooltip("Played when it goes off: a shot, a spit. Folders Sounds/Monster.")]
         [SerializeField, Audio.MonsterSound] private string _releaseSound;
+        [Tooltip("Cast only from this phase on (stage 8a: Phase modules of the list switch the monster to 1, 2… as its HP " +
+                 "falls; 0 = from the start).")]
+        [SerializeField, Range(0, MaxPhase)] private int _fromPhase;
+        [Tooltip("Cast only up to this phase (another set after a phase: the old ability stops).")]
+        [SerializeField, Range(0, MaxPhase)] private int _untilPhase = MaxPhase;
+
+        /// <summary>Most phases a monster has (Phase modules in its list).</summary>
+        public const int MaxPhase = 4;
+
+        public int FromPhase { get => _fromPhase; internal set => _fromPhase = Mathf.Clamp(value, 0, MaxPhase); }
+        public int UntilPhase { get => _untilPhase; internal set => _untilPhase = Mathf.Clamp(value, 0, MaxPhase); }
+
+        /// <summary>The ability may be cast in <paramref name="phase"/>.</summary>
+        public bool InPhase(int phase) => phase >= _fromPhase && phase <= _untilPhase;
 
         public string CastSound { get => _castSound; internal set => _castSound = value; }
         public string ReleaseSound { get => _releaseSound; internal set => _releaseSound = value; }
@@ -321,6 +335,46 @@ namespace Purge.Core.Monsters
 
         public float DamageFactor { get => _damageFactor; internal set => _damageFactor = value; }
         public float SpeedFactor { get => _speedFactor; internal set => _speedFactor = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.None;
+    }
+
+    /// <summary>
+    /// A phase by HP (stage 8a, bosses; ТЗ «порог → другой набор/темп способностей, рык»): once the HP falls to
+    /// <see cref="AbilityModule.HealthBelow"/> the monster stops and roars for the warning (it may begin in melee), then
+    /// it is in the next phase — the Phase modules of its list count 1, 2… in order, each after the one before; abilities
+    /// choose their phases (<see cref="AbilityModule.FromPhase"/> / <see cref="AbilityModule.UntilPhase"/>). The phase may
+    /// also hit harder, move faster and cast more often (<see cref="CooldownFactor"/>, × every cooldown from now on).
+    /// Rage is the case of one phase with more damage (<see cref="Rage"/> — the red glow). The boss's HP bar marks the
+    /// thresholds.
+    /// </summary>
+    [Serializable, ModuleInfo("Phase", Category = "Ability", AllowMultiple = true)]
+    public sealed class PhaseAbility : AbilityModule
+    {
+        [Tooltip("× the damage of its attacks and abilities from this phase on (multiplies with the phases before).")]
+        [SerializeField, Range(0.5f, 4f)] private float _damageFactor = 1f;
+        [Tooltip("× its speed from this phase on.")]
+        [SerializeField, Range(0.5f, 2f)] private float _speedFactor = 1f;
+        [Tooltip("× the cooldowns of its abilities from this phase on (0.5 = casts twice as often).")]
+        [SerializeField, Range(0.2f, 2f)] private float _cooldownFactor = 1f;
+        [Tooltip("Rage: glows red from this phase on (as the Brute's rage).")]
+        [SerializeField] private bool _rage;
+
+        public PhaseAbility()
+        {
+            HealthBelow = 0.5f;
+            NeedsSight = false;
+            FirstDelay = 0f;
+            MaxRange = 99f;
+            Warning = 1.2f;
+            Recovery = 0.3f;
+            Cooldown = 0.1f;
+        }
+
+        public float DamageFactor { get => _damageFactor; internal set => _damageFactor = value; }
+        public float SpeedFactor { get => _speedFactor; internal set => _speedFactor = value; }
+        public float CooldownFactor { get => _cooldownFactor; internal set => _cooldownFactor = value; }
+        public bool Rage { get => _rage; internal set => _rage = value; }
 
         public override AbilityWarningShape Shape => AbilityWarningShape.None;
     }

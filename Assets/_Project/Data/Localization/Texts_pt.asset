@@ -134,6 +134,12 @@ MonoBehaviour:
   - hud.wave
   - hud.wave.start
   - hud.wave.cleared
+  - hud.boss.defeated
+  - monster.mutant_forest
+  - monster.zombie_boss_common
+  - monster.golem_common
+  - monster.medusa_common
+  - monster.demon_common
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
@@ -349,6 +355,12 @@ MonoBehaviour:
   - ONDA {0}/{1}
   - ONDA {0}
   - "ONDA CONCLU\xCDDA"
+  - CHEFE DERROTADO
+  - Mutante
+  - "A\xE7ougueiro"
+  - Colosso
+  - "G\xF3rgona"
+  - "Dem\xF4nio"
   - ONDA {0} EM {1}
   - PULAR +{0}
   - "ESPA\xC7O"

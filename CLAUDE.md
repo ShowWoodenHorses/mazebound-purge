@@ -70,6 +70,7 @@ Unity 6000.3.8f1 (6.3 LTS) · Built-in RP · VContainer 1.19 · UniTask 2.5 · A
 | [Monsters.md](Docs/Code/Monsters.md) | `MonsterDefinition` и Build Monsters, экипировка рядовых, виды в орде, сопротивления, эффекты смерти, вид рядовых (`HordeRenderer`), восприятие и шум `HordePerception`/`NoiseField`, сложность |
 | [Abilities.md](Docs/Code/Abilities.md) | Способности (`MonsterAbilities`, модули, предупреждения), снаряды монстров, офицеры на Animator (`MonsterViewPresenter`), Громила, рывок, `CrowdImpulse`, двери по рангам, масса тела |
 | [Elite.md](Docs/Code/Elite.md) | Элита (броня спереди, подъём павших, удар по площади, ярость, враждебные эффекты), чемпионы (аффиксы, `ChampionSystem`, свечение), бенчмарк песочницы, эффекты монстров (Э3) |
+| [Bosses.md](Docs/Code/Bosses.md) | Боссы: тело N×N и своё поле пути, `BossSystem`, босс-волна, закрытие арены и решётки, `LevelClock` (замедление), полоса HP, стрелки, звук, Build Monsters для боссов |
 | [Horde.md](Docs/Code/Horde.md) | Орда уровня `HordeDefinition`, волны (`WaveScenario`, `WaveGenerator`, `WaveSystem`, `Level_Run`), `HordeSystem` (массивы, тик, появление), рендер орды, боевая песочница, стресс-тест |
 | [Objects.md](Docs/Code/Objects.md) | Бочки (`BarrelSystem`), сундуки и ключ (`ChestSystem`), колпак (`RefugeSystem`, барьер выстрелов), `CellBlockers`, их вид, HUD, звук, сейв |
 | [Cards.md](Docs/Code/Cards.md) | Опыт забега, `CardDefinition`/`CardDeck`, `CardSystem`, `RunStats`/`RunDamage` (урон, крит, взрывы), магнит подбора, `GameFlowState.Cards`, экран карточек |

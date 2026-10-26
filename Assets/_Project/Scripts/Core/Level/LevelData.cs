@@ -48,7 +48,14 @@ namespace Purge.Core.Level
         [Tooltip("Dev, until the menu of stage 10: the weapon a new run starts with besides the basic pistol; empty = the pistol only.")]
         [SerializeField] private Definitions.WeaponDefinition _startWeapon;
 
+        [Tooltip("Dev, until the run choice of stage 11: a boss wave closes the arena with gates once the player is inside " +
+                 "(movement stops, bullets and sight go through) until the boss dies.")]
+        [SerializeField] private bool _closeArena = true;
+
         public LevelSettings Settings => _settings;
+
+        /// <summary>A boss wave closes the arena behind the player (dev, until stage 11; stage 8a).</summary>
+        public bool CloseArena { get => _closeArena; internal set => _closeArena = value; }
 
         /// <summary>The weapon a new run starts with (dev, until the menu of stage 10); null = the basic pistol only.</summary>
         public Definitions.WeaponDefinition StartWeapon { get => _startWeapon; internal set => _startWeapon = value; }

@@ -112,6 +112,12 @@ namespace Purge.Core.Horde
                         if (entry?.Monster != null && !all.Contains(entry.Monster)) all.Add(entry.Monster);
                     foreach (var group in wave.Groups)
                         if (group?.Monster != null && !all.Contains(group.Monster)) all.Add(group.Monster);
+                    // The boss and its escort (stage 8a).
+                    var boss = wave.Boss;
+                    if (boss == null) continue;
+                    if (!all.Contains(boss.Monster)) all.Add(boss.Monster);
+                    foreach (var group in boss.Escort)
+                        if (group?.Monster != null && !all.Contains(group.Monster)) all.Add(group.Monster);
                 }
 
             foreach (var monster in OnDemandMonsters)

@@ -134,6 +134,12 @@ MonoBehaviour:
   - hud.wave
   - hud.wave.start
   - hud.wave.cleared
+  - hud.boss.defeated
+  - monster.mutant_forest
+  - monster.zombie_boss_common
+  - monster.golem_common
+  - monster.medusa_common
+  - monster.demon_common
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
@@ -349,6 +355,12 @@ MonoBehaviour:
   - WELLE {0}/{1}
   - WELLE {0}
   - WELLE GESCHAFFT
+  - BOSS BESIEGT
+  - Mutant
+  - "Schl\xE4chter"
+  - Koloss
+  - Gorgo
+  - "D\xE4mon"
   - WELLE {0} IN {1}
   - "\xDCBERSPRINGEN +{0}"
   - LEERTASTE

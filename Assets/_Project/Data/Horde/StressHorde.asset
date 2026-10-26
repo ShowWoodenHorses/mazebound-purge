@@ -35,6 +35,7 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+    ControlFactor: 0
   _monsters: []
   _onDemandMonsters: []
   _waves: {fileID: 0}

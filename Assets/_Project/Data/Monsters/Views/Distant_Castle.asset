@@ -28,3 +28,9 @@ MonoBehaviour:
   _projectileModel: {fileID: 1322601074347522, guid: 53c36b732fdaf064f97a0a70431da61a, type: 3}
   _projectileColor: {r: 0.6, g: 1, b: 0.3, a: 1}
   _projectileSize: 0.35
+  _projectileTrail:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

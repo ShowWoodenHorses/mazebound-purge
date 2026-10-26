@@ -211,3 +211,9 @@ Player/step_ground1.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_B
 Player/step_ground2.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_BareRun05.wav
 Player/step_ground3.wav	15_Игрок\Шаги_листья_лес\Foot_Leaves_BareRun10.wav
 Ambient/forest/loop.wav	17_Эмбиент_биомов\Лес\Wind_Loop11.wav
+Monster/boss_roar/boss_roar1.wav	14_Боссы\Рёв_выход_босса\RockMonster_Roar4.wav
+Monster/boss_stinger/boss_stinger1.wav	14_Боссы\Стингер_удар\Magic_Spell_Appearance4.wav
+Monster/arena_gate/arena_gate1.wav	14_Боссы\Закрытие_арены_лязг\Door_LargeMetalClose.wav
+Monster/boss_death/boss_death1.wav	14_Боссы\Смерть_босса_длинная\Beast_Large_Death1.wav
+Monster/boss_hurt/boss_hurt1.wav	14_Боссы\Урон_босса\ApeMonster_HurtRoar1.wav
+Monster/boss_hurt/boss_hurt2.wav	14_Боссы\Урон_босса\HeatCreature_HurtRoar2.wav

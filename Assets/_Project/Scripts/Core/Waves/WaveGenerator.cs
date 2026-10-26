@@ -99,6 +99,29 @@ namespace Purge.Core.Waves
             return result;
         }
 
+        /// <summary>
+        /// The escort of a boss wave (stage 8a): each group × the difficulty's count (at least one) at its time, a pack per
+        /// group (the point — chosen when it appears: one of those nearest the arena).
+        /// </summary>
+        public static List<WaveSpawn> Escort(WaveBoss boss, DifficultyDefinition difficulty)
+        {
+            var result = new List<WaveSpawn>();
+            if (boss == null) return result;
+            var countFactor = difficulty != null ? difficulty.Count : 1f;
+            var pack = 0;
+            foreach (var group in boss.Escort)
+            {
+                if (group == null || group.Monster == null) continue;
+                var count = Math.Max(1, (int)Math.Round(group.Count * countFactor));
+                for (var i = 0; i < count && result.Count < MaxSpawns; i++)
+                    result.Add(new WaveSpawn(group.Time, group.Monster, pack, group.Point));
+                pack++;
+            }
+
+            SortByTime(result);
+            return result;
+        }
+
         /// <summary>The seed of wave <paramref name="index"/> of a run.</summary>
         public static int SeedOf(int runSeed, int index) => (int)StableHash.Of($"wave/{runSeed}/{index}");
 

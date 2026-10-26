@@ -215,6 +215,7 @@ namespace Purge.Editor.Dev
                 name => name == Scream ? (ScreamStart, ScreamEnd) : ((float, float)?)null,
                 name => name == Rise || Array.Exists(InPlaceCopies, copy => copy.Name == name));
             copied += PrepareEliteClips(uac);
+            copied += PrepareBossClips(uac);
             return copied;
         }
 
@@ -233,6 +234,8 @@ namespace Purge.Editor.Dev
             EnsurePoisonZone();
             // The champions' affixes (stage 5e2).
             EnsureChampionAffixes();
+            // The bosses' (stage 8a).
+            EnsureBossDrop();
             AssetDatabase.SaveAssets();
         }
 
@@ -246,6 +249,7 @@ namespace Purge.Editor.Dev
             var brutes = BuildController(BruteControllerPath, BruteClips);
             var armadillos = BuildController(ArmadilloControllerPath, ArmadilloClips);
             var shamans = BuildController(ShamanControllerPath, ShamanClips);
+            var bosses = BuildController(BossControllerPath, BossClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
             foreach (var (prefab, definition) in officers)
@@ -257,6 +261,7 @@ namespace Purge.Editor.Dev
                 }
                 else if (IsArmadillo(prefab.name)) views.Add(SetupElite(prefab, definition, armadillos, ArmadilloClips, report));
                 else if (IsShaman(prefab.name)) views.Add(SetupElite(prefab, definition, shamans, ShamanClips, report));
+                else if (IsBuiltBoss(prefab.name)) views.Add(SetupBoss(prefab, definition, bosses, report));
                 else views.Add(Setup(prefab, definition, controller, report));
             }
 
@@ -339,6 +344,12 @@ namespace Purge.Editor.Dev
             stats.CorpseTime = 4f;
             stats.EmergeTime = 0f;
             stats.SightRange = 9f;
+            if (IsBuiltBoss(prefabName))
+            {
+                SeedBoss(definition, prefabName);
+                return;
+            }
+
             if (IsBuiltElite(prefabName))
             {
                 SeedElite(definition, prefabName);

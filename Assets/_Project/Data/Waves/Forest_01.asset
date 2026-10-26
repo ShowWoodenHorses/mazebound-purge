@@ -25,6 +25,12 @@ MonoBehaviour:
     _spawnTime: 25
     _packSize: 6
     _maxAlive: 80
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
   - _budget: 70
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
@@ -47,6 +53,12 @@ MonoBehaviour:
     _spawnTime: 35
     _packSize: 6
     _maxAlive: 120
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
   - _budget: 110
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
@@ -69,6 +81,20 @@ MonoBehaviour:
     _spawnTime: 40
     _packSize: 8
     _maxAlive: 150
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: 954c2a9655ab2b047ace4faec39a8805, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 10
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+        _count: 10
+        _time: 8
+        _point: -1
   - _budget: 150
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
@@ -91,6 +117,12 @@ MonoBehaviour:
     _spawnTime: 45
     _packSize: 8
     _maxAlive: 200
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
   - _budget: 220
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
@@ -121,5 +153,23 @@ MonoBehaviour:
     _spawnTime: 55
     _packSize: 10
     _maxAlive: 250
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: 7312a3b097175d44d9599c486efd9c41, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 14
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+        _count: 2
+        _time: 10
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+        _count: 1
+        _time: 20
+        _point: -1
   _pauseTime: 20
   _firstDelay: 3

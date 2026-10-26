@@ -131,6 +131,11 @@ namespace Purge.Presentation.UI
 
         public HudWorldBar ChestBar => _chestBar;
 
+        [Tooltip("The boss's HP bar at the top centre (stage 8a).")]
+        [SerializeField] private BossBarView _bossBar;
+
+        public BossBarView BossBar => _bossBar;
+
         /// <summary>The dome's line under the time; <paramref name="text"/> — only when it changed (null = keep).</summary>
         public void SetRefuge(bool shown, string text = null, bool warning = false)
         {
@@ -644,16 +649,37 @@ namespace Purge.Presentation.UI
         public void PulseDamage()
         {
             if (_damageFlash == null) return;
+            _pulseColor = _damageColor;
+            _pulseTime = _damageTime;
+            _damageFlash.texture = _vignette;
             _damageElapsed = 0f;
             _damageFlash.enabled = true;
             UpdateDamagePulse();
         }
 
+        /// <summary>
+        /// The whole screen flashes <paramref name="color"/> (alpha — the peak) for <paramref name="seconds"/> (a boss's death,
+        /// stage 8a); a hurt's pulse after it takes the image back.
+        /// </summary>
+        public void Flash(Color color, float seconds)
+        {
+            if (_damageFlash == null) return;
+            _pulseColor = color;
+            _pulseTime = Mathf.Max(0.05f, seconds);
+            _damageFlash.texture = null;
+            _damageElapsed = 0f;
+            _damageFlash.enabled = true;
+            UpdateDamagePulse();
+        }
+
+        private Color _pulseColor;
+        private float _pulseTime;
+
         private void UpdateDamagePulse()
         {
             if (_damageFlash == null || !_damageFlash.enabled) return;
 
-            if (_damageElapsed >= _damageTime)
+            if (_damageElapsed >= _pulseTime)
             {
                 // Off when not shown: a full-screen transparent image still costs fill rate on phones.
                 _damageFlash.enabled = false;
@@ -662,9 +688,9 @@ namespace Purge.Presentation.UI
 
             var strength = _damageElapsed < DamageRise
                 ? _damageElapsed / DamageRise
-                : 1f - (_damageElapsed - DamageRise) / Mathf.Max(_damageTime - DamageRise, 0.01f);
+                : 1f - (_damageElapsed - DamageRise) / Mathf.Max(_pulseTime - DamageRise, 0.01f);
             strength = Mathf.Clamp01(strength);
-            var color = _damageColor;
+            var color = _pulseColor;
             color.a *= strength * strength * (3f - 2f * strength);
             _damageFlash.color = color;
             _damageElapsed += Time.unscaledDeltaTime;

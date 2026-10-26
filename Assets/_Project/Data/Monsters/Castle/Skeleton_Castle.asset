@@ -38,6 +38,11 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+    ControlFactor: 0
+  _cost: 0
+  _money: 0
+  _experience: 0
+  _score: 0
   _drop: {fileID: 11400000, guid: f105b54e73171d041900b83327502a1b, type: 2}
   _resistances: []
   _deathEffects: []

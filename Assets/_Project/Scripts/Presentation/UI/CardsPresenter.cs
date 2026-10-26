@@ -28,14 +28,16 @@ namespace Purge.Presentation.UI
         private readonly GameFlow _flow;
         private readonly LocalizationService _texts;
         private readonly AdsService _ads;
+        private readonly Gameplay.Level.LevelClock _clock;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
         private bool _bound;
         private bool _experienceDirty = true;
         private bool _adShowing;
 
         public CardsPresenter(UIRoot ui, CardSystem cards, RunExperience experience, GameFlow flow, LocalizationService texts,
-            AdsService ads = null)
+            AdsService ads = null, Gameplay.Level.LevelClock clock = null)
         {
+            _clock = clock;
             _ui = ui;
             _cards = cards;
             _experience = experience;
@@ -93,8 +95,10 @@ namespace Purge.Presentation.UI
                     _experience.Progress);
             }
 
-            // A level-up shows its cards when the game is played (not over the map, the pause or a tutorial window).
+            // A level-up shows its cards when the game is played (not over the map, the pause or a tutorial window) and
+            // not in the slow-down of a boss's death (stage 8a: the boss falls first).
             if (_flow.State != GameFlowState.Playing || _experience.Pending <= 0 || Screen == null) return;
+            if (_clock != null && _clock.IsSlowed) return;
             if (!_cards.OpenNext()) return;
             Fill();
             _flow.OpenCards();

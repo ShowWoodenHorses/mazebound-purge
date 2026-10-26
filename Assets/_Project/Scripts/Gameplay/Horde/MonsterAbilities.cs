@@ -57,7 +57,7 @@ namespace Purge.Gameplay.Horde
     /// </summary>
     public sealed class MonsterAbilities : ILevelLoadStep, ILevelTickable
     {
-        public const int MaxAbilities = 4;
+        public const int MaxAbilities = 8;
         public const int MaxProjectiles = 96;
         public const float SightInterval = 0.2f;
         public const float PlayerRadius = 0.35f;
@@ -87,6 +87,9 @@ namespace Purge.Gameplay.Horde
         private int[] _raise; // agent · RaiseAbility.MaxCount + n: the fallen a raise lifts (HordeSystem.FindFallen)
         private byte[] _raiseCount;
         private readonly int[] _found = new int[RaiseAbility.MaxCount];
+        private byte[][] _kindPhaseNumber; // per kind and ability: the phase a PhaseAbility switches to (1, 2…), else 0
+        private byte[] _healthPhase; // the phase by HP the monster is in (stage 8a)
+        private float[] _tempo; // × its cooldowns (its phases)
 
         private int _projectileCount;
         private readonly Vector2[] _from = new Vector2[MaxProjectiles];
@@ -123,6 +126,12 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>(slot, ability index) the ability went off.</summary>
         public event Action<int, int> Released;
+
+        /// <summary>(slot, phase) the monster went into its next phase by HP (stage 8a).</summary>
+        public event Action<int, int> PhaseChanged;
+
+        /// <summary>The phase by HP of the monster in <paramref name="agent"/> (0 — the first; stage 8a).</summary>
+        public int HealthPhaseOf(int agent) => IsActive && (uint)agent < (uint)_healthPhase.Length ? _healthPhase[agent] : 0;
 
         /// <summary>(where, the horde kind that shot it, hit the player) a projectile ended.</summary>
         public event Action<Vector2, int, bool> ProjectileEnded;
@@ -194,6 +203,7 @@ namespace Purge.Gameplay.Horde
 
             var kinds = _horde.KindList;
             _kindAbilities = new AbilityModule[kinds.Count][];
+            _kindPhaseNumber = new byte[kinds.Count][];
             for (var k = 0; k < kinds.Count; k++)
             {
                 var list = kinds[k].Definition != null ? kinds[k].Definition.Abilities : null;
@@ -205,6 +215,13 @@ namespace Purge.Gameplay.Horde
                 if (count == 0) continue;
                 if (count < abilities.Length) Array.Resize(ref abilities, count);
                 _kindAbilities[k] = abilities;
+                // Phases count in list order (stage 8a).
+                var numbers = new byte[count];
+                var phase = 0;
+                for (var a = 0; a < count; a++)
+                    if (abilities[a] is PhaseAbility && phase < AbilityModule.MaxPhase)
+                        numbers[a] = (byte)++phase;
+                _kindPhaseNumber[k] = numbers;
             }
 
             var capacity = _horde.Capacity;
@@ -221,11 +238,14 @@ namespace Purge.Gameplay.Horde
             _dashFrom = new Vector2[capacity];
             _raise = new int[capacity * RaiseAbility.MaxCount];
             _raiseCount = new byte[capacity];
+            _healthPhase = new byte[capacity];
+            _tempo = new float[capacity];
             for (var i = 0; i < capacity; i++)
             {
                 _generation[i] = -1;
                 _cast[i] = -1;
                 _chaseSince[i] = -1f;
+                _tempo[i] = 1f;
             }
 
             return UniTask.CompletedTask;
@@ -255,6 +275,8 @@ namespace Purge.Gameplay.Horde
                     _chaseSince[i] = -1f;
                     _nextSight[i] = time + i % 8 * 0.025f; // spread the line-of-sight checks over ticks
                     for (var a = 0; a < MaxAbilities; a++) _ready[i * MaxAbilities + a] = 0f;
+                    _healthPhase[i] = 0;
+                    _tempo[i] = 1f;
                 }
 
                 var state = states[i];
@@ -314,10 +336,15 @@ namespace Purge.Gameplay.Horde
             var toPlayer = _player.Position - position;
             var distance = toPlayer.magnitude;
             var health = _horde.Health[i] / Mathf.Max(1f, _horde.MaxHealthOf(i));
+            var phases = _kindPhaseNumber[_horde.Kinds[i]];
+            var current = _healthPhase[i];
             for (var a = 0; a < abilities.Length; a++)
             {
                 var ability = abilities[a];
-                if (inMelee && !(ability is RageAbility)) continue;
+                var phaseNumber = phases[a];
+                // The roars (rage, a phase) may begin in melee: a monster at the player still turns at its threshold.
+                if (inMelee && !(ability is RageAbility) && phaseNumber == 0) continue;
+                if (phaseNumber > 0 ? phaseNumber != current + 1 : !ability.InPhase(current)) continue;
                 if (time < _ready[i * MaxAbilities + a] || time - _chaseSince[i] < ability.FirstDelay) continue;
                 if (distance < ability.MinRange || distance > ability.MaxRange) continue;
                 if (health > ability.HealthBelow) continue;
@@ -360,7 +387,7 @@ namespace Purge.Gameplay.Horde
             var index = _cast[i];
             _phase[i] = AbilityPhase.Recovery;
             _phaseStart[i] = time;
-            _ready[i * MaxAbilities + index] = time + ability.Cooldown;
+            _ready[i * MaxAbilities + index] = time + ability.Cooldown * _tempo[i];
             Casts++;
             // Shoots from where it stands now (the crowd may have nudged it); the aim stays as warned.
             var position = _horde.Positions[i];
@@ -396,6 +423,12 @@ namespace Purge.Gameplay.Horde
                     break;
                 case RageAbility rage:
                     _horde.Enrage(i, rage.DamageFactor, rage.SpeedFactor);
+                    break;
+                case PhaseAbility phase:
+                    _healthPhase[i] = _kindPhaseNumber[_horde.Kinds[i]][index];
+                    _tempo[i] *= phase.CooldownFactor;
+                    _horde.Strengthen(i, phase.DamageFactor, phase.SpeedFactor, phase.Rage);
+                    PhaseChanged?.Invoke(i, _healthPhase[i]);
                     break;
                 case ChargeAbility charge:
                     // Rushes along the warned line (from where it stands now); the recovery begins when it stops.

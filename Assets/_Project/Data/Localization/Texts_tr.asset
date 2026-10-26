@@ -134,6 +134,12 @@ MonoBehaviour:
   - hud.wave
   - hud.wave.start
   - hud.wave.cleared
+  - hud.boss.defeated
+  - monster.mutant_forest
+  - monster.zombie_boss_common
+  - monster.golem_common
+  - monster.medusa_common
+  - monster.demon_common
   - hud.wave.countdown
   - hud.wave.skip
   - hud.key.space
@@ -350,6 +356,12 @@ MonoBehaviour:
   - DALGA {0}/{1}
   - DALGA {0}
   - "DALGA TEM\u0130ZLEND\u0130"
+  - "BOSS YEN\u0130LD\u0130"
+  - Mutant
+  - Kasap
+  - Dev
+  - Gorgon
+  - "\u0130blis"
   - "DALGA {0} \xB7 {1}"
   - ATLA +{0}
   - "BO\u015ELUK"

@@ -384,7 +384,7 @@ namespace Purge.Presentation.Map
         public void AddMonsterIcons(MapIconSet set, List<MapIcon> icons, int slots, bool shown, Rect? window)
         {
             var added = 0;
-            if (shown && _horde != null && _horde.IsActive && _visibility != null)
+            if (_horde != null && _horde.IsActive && _visibility != null)
             {
                 var positions = _horde.Positions;
                 var states = _horde.States;
@@ -395,15 +395,18 @@ namespace Purge.Presentation.Map
                     if (state == HordeAgentState.Inactive || state == HordeAgentState.Dying) continue;
                     var position = positions[agent];
                     if (window.HasValue && !window.Value.Contains(position)) continue;
-                    if (!InView(PlayerMovement.CellOf(position, floor))) continue;
                     var definition = _horde.DefinitionOf(agent);
                     var rank = definition != null ? definition.Rank : MonsterRank.Mass;
+                    // ТЗ: боссы видны всегда — out of view and with the layer off too (stage 8a).
+                    var boss = rank == MonsterRank.Boss;
+                    if (!boss && (!shown || !InView(PlayerMovement.CellOf(position, floor)))) continue;
                     var champion = _horde.IsChampion(agent);
                     icons.Add(new MapIcon
                     {
                         Kind = MapIconKind.Monster,
                         Center = MapIconLayout.CenterOf(position),
-                        Size = rank == MonsterRank.Mass && !champion ? set.MonsterSize : set.BigMonsterSize,
+                        Size = boss ? set.BigMonsterSize * BossIconScale :
+                            rank == MonsterRank.Mass && !champion ? set.MonsterSize : set.BigMonsterSize,
                         Color = champion ? set.ChampionColor : RankColor(set, rank),
                         Visible = true,
                     });
@@ -414,6 +417,9 @@ namespace Purge.Presentation.Map
             for (; added < slots; added++)
                 icons.Add(new MapIcon { Kind = MapIconKind.Monster });
         }
+
+        /// <summary>× the big dot of a boss (stage 8a).</summary>
+        private const float BossIconScale = 1.8f;
 
         private static Color RankColor(MapIconSet set, MonsterRank rank) => rank switch
         {

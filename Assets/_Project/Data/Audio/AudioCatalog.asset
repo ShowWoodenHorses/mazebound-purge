@@ -2784,10 +2784,56 @@ MonoBehaviour:
     _minInterval: 0
   _stingerRearm: 6
   _monsterSounds:
+  - _name: arena_gate
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: ad1b2399b65207147ab92453d6710829, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
   - _name: arrow
     _cue:
       _clips:
       - {fileID: 8300000, guid: 7315564a5662a38469134c72f676b0a9, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: boss_death
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 84cc00482236055429336f8151978120, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: boss_hurt
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: db726006002a2c74a889079b2638ce64, type: 3}
+      - {fileID: 8300000, guid: 80dc860250b3b0b4785d5b6bbefe0bfc, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: boss_roar
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 77ce01a0ed30515498981296c5c91323, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: boss_stinger
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: a6ed6ef1e9554e54a992c47d04987c5f, type: 3}
       _volume: 0.75
       _pitch: {x: 0.95, y: 1.05}
       _range: 16

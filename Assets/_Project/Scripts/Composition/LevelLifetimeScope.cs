@@ -131,6 +131,8 @@ namespace Purge.Composition
             builder.Register<RunLoadout>(Lifetime.Singleton).As<ILevelLoadStep>();
             // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
             builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // The boss of a boss wave (stage 8a): its arena's gates, the slow-down of its death.
+            builder.Register<BossSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // The safe dome at the start (stage 7в): its limit follows the waves' phase.
             builder.Register<RefugeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Checkpoints of the run for its save (stage 6e): after the waves and the run's counters.
@@ -143,6 +145,8 @@ namespace Purge.Composition
             // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
             builder.Register<TutorialSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelAnalytics>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
+            // The simulation's pace (stage 8a: a boss's death slows it for a moment).
+            builder.Register<LevelClock>(Lifetime.Singleton);
             builder.Register<LevelRuntime>(Lifetime.Singleton);
             builder.Register<PlayerDeathRule>(Lifetime.Singleton);
             builder.Register<AllKilledRule>(Lifetime.Singleton);
@@ -168,12 +172,16 @@ namespace Purge.Composition
             // Barrels, chests and the safe dome (stage 7в).
             builder.Register<LevelObjectsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<RefugeView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            // The arena's gates (stage 8a): rise while a boss wave holds the player in.
+            builder.Register<ArenaGatesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<LevelObjectsHudPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             // The waves on the HUD (stage 6b): wave, enemies, money, the pause's countdown and skip.
             builder.Register<WaveHudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
+            // The boss's bar and the flash of its death (stage 8a).
+            builder.Register<BossHudPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             // The run's coins to the HUD and the level-up flash (stage 6e).
             builder.Register<RunFeedbackPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             // The run's level under the HP and the cards of a level-up (stage 6c).

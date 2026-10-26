@@ -63,8 +63,9 @@ namespace Purge.Core.Monsters
         [Min(1f)] public float MaxHp = 30f;
         [Tooltip("Cells per second.")]
         [Min(0.1f)] public float Speed = 2.2f;
-        [Tooltip("Body radius in cells (crowd spacing, hits).")]
-        [Range(0.1f, 0.5f)] public float Radius = 0.3f;
+        [Tooltip("Body radius in cells (crowd spacing, hits). Bosses (stage 8a): 1 — a 2×2 body, 1.5 — 3×3; a body wider " +
+                 "than a cell walks its own path field — only where it fits.")]
+        [Range(0.1f, 1.5f)] public float Radius = 0.3f;
         [Tooltip("Attacks when the distance between centres is at most this.")]
         [Min(0.3f)] public float AttackReach = 0.8f;
         [Min(0f)] public int Damage = 5;
@@ -111,6 +112,11 @@ namespace Purge.Core.Monsters
         [Range(0f, 0.9f)] public float FrontArmor;
         [Tooltip("Width of the armored front, degrees around the facing.")]
         [Range(30f, 270f)] public float FrontArc = 120f;
+
+        [Header("Control (stage 8a)")]
+        [Tooltip("× how long stunning states (stun, freeze, stone) last on it; 0 = by rank: bosses 0.25, the rest 1. " +
+                 "Resistances multiply on top.")]
+        [Range(0f, 1f)] public float ControlFactor;
 
         /// <summary>Ground speed of the packs' walk clips at 1× (they shuffle at 0.2–0.6 cells/s).</summary>
         public const float WalkClipSpeed = 0.4f;
@@ -279,15 +285,32 @@ namespace Purge.Core.Monsters
             };
         }
 
-        /// <summary>× a state's duration on this monster (1 = no resistance).</summary>
+        /// <summary>
+        /// × a state's duration on this monster (1 = no resistance): its resistance, and for a stunning state × the
+        /// control factor (bosses — a quarter, stage 8a).
+        /// </summary>
         public float DurationFactor(StatusDefinition status)
         {
             if (status == null) return 1f;
+            var factor = status.Stuns ? ControlFactor : 1f;
             for (var i = 0; i < _resistances.Count; i++)
                 if (_resistances[i] != null && _resistances[i].Status == status)
-                    return _resistances[i].DurationFactor;
-            return 1f;
+                    return _resistances[i].DurationFactor * factor;
+            return factor;
         }
+
+        /// <summary>Control by rank when <see cref="MonsterStats.ControlFactor"/> is 0 (ТЗ: контроль на боссе ×0,25).</summary>
+        public const float BossControlFactor = 0.25f;
+
+        /// <summary>× how long stunning states last on it, the rank resolved.</summary>
+        public float ControlFactor =>
+            _stats != null && _stats.ControlFactor > 0f ? _stats.ControlFactor : _rank == MonsterRank.Boss ? BossControlFactor : 1f;
+
+        /// <summary>A hit stops its step and attack for a moment (bosses never: a machine gun would hold one for good; stage 8a).</summary>
+        public bool Staggers => _rank != MonsterRank.Boss;
+
+        /// <summary>A boss (stage 8): its wave, the HP bar, the arena, always on the map.</summary>
+        public bool IsBoss => _rank == MonsterRank.Boss;
 
         public void Validate(List<string> problems)
         {

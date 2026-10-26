@@ -38,6 +38,7 @@ MonoBehaviour:
     DoorDamage: 20
     FrontArmor: 0
     FrontArc: 120
+    ControlFactor: 0
   _cost: 0
   _money: 0
   _experience: 0
@@ -63,6 +64,8 @@ MonoBehaviour:
         _recovery: 0.35
         _castSound: 
         _releaseSound: arrow
+        _fromPhase: 0
+        _untilPhase: 4
         _form: 0
         _count: 3
         _fanAngle: 30

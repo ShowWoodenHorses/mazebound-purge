@@ -16,6 +16,36 @@ namespace Purge.Presentation.UI
         [Tooltip("Arrow centres keep this far from the layer's edges, canvas units.")]
         [SerializeField, Min(0f)] private float _edgeInset = 24f;
 
+        [Tooltip("The boss's arrow (stage 8a: shown whenever the boss is off screen, whatever the settings), points along +X.")]
+        [SerializeField] private Image _boss;
+
+        [Tooltip("The arrow to the arena while a boss waits there (stage 8a), points along +X.")]
+        [SerializeField] private Image _arena;
+
+        /// <summary>The boss's and the arena's arrows (stage 8a).</summary>
+        public enum Special
+        {
+            Boss = 0,
+            Arena = 1,
+        }
+
+        /// <summary>The special arrow at <paramref name="local"/> (layer space), turned to <paramref name="degrees"/>.</summary>
+        public void ShowSpecial(Special which, Vector2 local, float degrees)
+        {
+            var arrow = which == Special.Boss ? _boss : _arena;
+            if (arrow == null) return;
+            var rect = arrow.rectTransform;
+            rect.anchoredPosition = local;
+            rect.localRotation = Quaternion.Euler(0f, 0f, degrees);
+            if (!arrow.enabled) arrow.enabled = true;
+        }
+
+        public void HideSpecial(Special which)
+        {
+            var arrow = which == Special.Boss ? _boss : _arena;
+            if (arrow != null && arrow.enabled) arrow.enabled = false;
+        }
+
         private readonly List<Image> _arrows = new List<Image>();
         private readonly List<bool> _shown = new List<bool>();
         private Color _color;
@@ -66,6 +96,8 @@ namespace Purge.Presentation.UI
         public void HideAll()
         {
             for (var i = 0; i < _arrows.Count; i++) Hide(i);
+            HideSpecial(Special.Boss);
+            HideSpecial(Special.Arena);
         }
 
         /// <summary>Removes the copies (the level is unloaded).</summary>

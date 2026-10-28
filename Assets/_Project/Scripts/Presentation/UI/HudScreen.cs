@@ -131,6 +131,11 @@ namespace Purge.Presentation.UI
 
         public HudWorldBar ChestBar => _chestBar;
 
+        [Tooltip("The HP bar over the vehicle the player drives (stage 9b).")]
+        [SerializeField] private HudWorldBar _vehicleBar;
+
+        public HudWorldBar VehicleBar => _vehicleBar;
+
         [Tooltip("The boss's HP bar at the top centre (stage 8a).")]
         [SerializeField] private BossBarView _bossBar;
 

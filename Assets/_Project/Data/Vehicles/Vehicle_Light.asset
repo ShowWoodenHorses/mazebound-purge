@@ -18,6 +18,7 @@ MonoBehaviour:
   - rid: 1763807473633067113
   - rid: 1763807473633067114
   - rid: 1763807473633067115
+  - rid: 1763807473633067121
   - rid: 1763807473633067116
   references:
     version: 2
@@ -39,14 +40,23 @@ MonoBehaviour:
       type: {class: HullModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
         _health: 300
-        _length: 4.7
-        _width: 1.8
+        _length: 3.5
+        _width: 1.4
         _wallSafeSpeed: 3
         _wallDamage: 4
     - rid: 1763807473633067115
       type: {class: RamModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
         _mass: 8
+        _minSpeed: 2
+        _killShare: 0.5
+        _wear: 4
+        _officerWear: 12
+        _heavyShare: 0.15
+        _bounce: 0.35
+        _bounceDamage: 25
+        _stun: {fileID: 11400000, guid: 0aa7530f0d5b5ce4daf704fd3c40b6f4, type: 2}
+        _stunTime: 1
     - rid: 1763807473633067116
       type: {class: VehicleLookModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
@@ -61,3 +71,31 @@ MonoBehaviour:
         _drive: light_drive_loop
         _start: light_start
         _rev: light_rev
+        _smoke:
+          m_AssetGUID: 29a162ba02cea4c409c7454dbe28646c
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+    - rid: 1763807473633067121
+      type: {class: WreckModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _breakTime: 1.5
+        _pushRadius: 3
+        _pushSpeed: 9
+        _invulnerability: 1
+        _effects:
+        - rid: 1763807473633067122
+    - rid: 1763807473633067122
+      type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damage: 150
+        _radius: 3
+        _edgeDamage: 0.4
+        _soundRadius: 16
+        _look:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0

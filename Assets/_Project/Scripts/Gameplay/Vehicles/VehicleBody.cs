@@ -75,6 +75,39 @@ namespace Purge.Gameplay.Vehicles
             return Mathf.Sqrt(along * along + side * side);
         }
 
+        /// <summary>
+        /// The step that puts a circle (<paramref name="radius"/>) at <paramref name="point"/> just out of the rectangle
+        /// (stage 9b: monsters out of a driven vehicle): along the nearest normal; false when they do not overlap.
+        /// </summary>
+        public static bool PushOut(Vector2 point, float radius, Vector2 center, float heading, float halfLength, float halfWidth,
+            out Vector2 step)
+        {
+            step = Vector2.zero;
+            var forward = Forward(heading);
+            var right = Right(forward);
+            var d = point - center;
+            var a = Vector2.Dot(d, forward);
+            var s = Vector2.Dot(d, right);
+            var outA = Mathf.Abs(a) - halfLength;
+            var outS = Mathf.Abs(s) - halfWidth;
+            if (outA > 0f && outS > 0f)
+            {
+                // By a corner: away from it.
+                var corner = forward * (Mathf.Sign(a) * halfLength) + right * (Mathf.Sign(s) * halfWidth);
+                var away = d - corner;
+                var distance = away.magnitude;
+                if (distance >= radius || distance < 1e-5f) return false;
+                step = away / distance * (radius - distance);
+                return true;
+            }
+
+            if (outA >= radius || outS >= radius) return false;
+            // Beside a side (or inside): out through the nearer side.
+            if (outA > outS) step = forward * (Mathf.Sign(a == 0f ? 1f : a) * (radius - outA));
+            else step = right * (Mathf.Sign(s == 0f ? 1f : s) * (radius - outS));
+            return true;
+        }
+
         /// <summary>First fraction 0..1 of the segment inside the rectangle (0 when it starts inside); false when it misses.</summary>
         public static bool Segment(Vector2 from, Vector2 to, Vector2 center, float heading, float halfLength, float halfWidth,
             out float t)

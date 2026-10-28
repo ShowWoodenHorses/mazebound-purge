@@ -227,6 +227,8 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(horde.AliveCount, Is.EqualTo(0), "the blast killed the rest");
             Assert.That(deaths.Pending, Is.EqualTo(9), "their own blasts wait for the next tick");
             deaths.Tick(Dt);
+            Assert.That(deaths.Pending, Is.EqualTo(9 - MonsterDeathEffects.MaxPerTick), "a burst goes out a few a tick (9b)");
+            deaths.Tick(Dt);
             Assert.That(deaths.Pending, Is.EqualTo(0));
             deaths.Dispose();
         }

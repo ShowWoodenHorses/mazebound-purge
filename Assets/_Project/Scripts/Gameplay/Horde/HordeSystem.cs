@@ -299,6 +299,12 @@ namespace Purge.Gameplay.Horde
         /// <summary>Monsters do not damage the player (only the stress test and the sandbox turn it on).</summary>
         public bool GodMode { get; set; }
 
+        /// <summary>
+        /// The body the player is in (a vehicle, stage 9b): monsters reach for it and hit it (the player's damage goes to
+        /// it through <see cref="PlayerHealth.Shield"/>), and are put out of it instead of shoving the player. Null on foot.
+        /// </summary>
+        public IPlayerShell Shell { get; set; }
+
         /// <summary>Killed monsters are replaced to keep <see cref="TargetCount"/>.</summary>
         public bool Respawn { get; set; } = true;
 
@@ -1089,6 +1095,8 @@ namespace Purge.Gameplay.Horde
             var toPlayer = playerPosition - position;
             var distance = toPlayer.magnitude;
             var toPlayerDirection = distance > 1e-4f ? toPlayer / distance : Vector2.up;
+            // In a vehicle (stage 9b): its body is what they reach for and hit.
+            if (Shell != null) distance = Shell.DistanceTo(position) + PlayerRadius;
 
             if (_states[i] == HordeAgentState.Attacking)
             {
@@ -1388,6 +1396,12 @@ namespace Purge.Gameplay.Horde
         private void ResolvePlayerContacts()
         {
             if (!_player.IsSpawned) return;
+            if (Shell != null)
+            {
+                ResolveShellContacts(Shell);
+                return;
+            }
+
             var center = _player.Position;
             var playerInverse = 1f / _player.Definition.Mass;
             var reach = PlayerRadius + _maxRadius;
@@ -1430,6 +1444,31 @@ namespace Purge.Gameplay.Horde
             if (deepest <= 0f) return;
             if (playerMove.sqrMagnitude > deepest * deepest) playerMove = playerMove.normalized * deepest;
             _player.Displace(playerMove);
+        }
+
+        /// <summary>
+        /// Monsters overlapping the vehicle the player drives (stage 9b) step out of it whole (it outweighs them; walls
+        /// may stop them). The immovable stay: the vehicle itself bounces off them.
+        /// </summary>
+        private void ResolveShellContacts(IPlayerShell shell)
+        {
+            var center = _player.Position;
+            var reach = shell.Reach + _maxRadius;
+            var minX = Mathf.FloorToInt(center.x - reach + 0.5f);
+            var maxX = Mathf.FloorToInt(center.x + reach + 0.5f);
+            var minY = Mathf.FloorToInt(center.y - reach + 0.5f);
+            var maxY = Mathf.FloorToInt(center.y + reach + 0.5f);
+            for (var y = minY - 1; y <= maxY + 1; y++)
+            for (var x = minX - 1; x <= maxX + 1; x++)
+            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            {
+                if (!IsAlive(_states[agent])) continue;
+                var kind = _kinds[_kind[agent]];
+                if (kind.InverseMass <= 0f) continue;
+                var position = _positions[agent];
+                if (shell.PushOut(position, kind.Stats.Radius, out var step))
+                    _positions[agent] = MoveWithWalls(position, step, kind.Stats.Radius);
+            }
         }
 
         /// <summary>Moves by axis so the square footprint never enters an unwalkable cell (slides along walls).</summary>

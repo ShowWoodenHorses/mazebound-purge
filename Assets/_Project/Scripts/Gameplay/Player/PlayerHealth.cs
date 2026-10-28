@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace Purge.Gameplay.Player
 {
+    /// <summary>Something that takes the player's damage instead of them (<see cref="PlayerHealth.Shield"/>).</summary>
+    public interface IPlayerShield
+    {
+        /// <summary>True when it took the <paramref name="amount"/> (the player is not hurt).</summary>
+        bool Absorb(int amount);
+    }
+
     /// <summary>
     /// The player's HP (runtime state, ТЗ §86). Starts full; damage comes with combat, healing with medkits. The dead are
     /// not healed — only <see cref="Revive"/> brings them back (stage 6d); <see cref="Invulnerable"/> takes no damage.
@@ -57,10 +64,13 @@ namespace Purge.Gameplay.Player
             if (!IsDead) Set(amount <= 0 ? Max : Math.Min(Max, Current + amount));
         }
 
+        /// <summary>Takes the player's damage first (the vehicle they drive, stage 9b); null — none.</summary>
+        public IPlayerShield Shield { get; set; }
+
         public void Damage(int amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
-            if (Invulnerable) return;
+            if (Invulnerable || amount > 0 && Shield != null && Shield.Absorb(amount)) return;
             Set(Math.Max(0, Current - amount));
         }
 
@@ -68,7 +78,8 @@ namespace Purge.Gameplay.Player
         public void Damage(int amount, Vector2 source)
         {
             if (amount <= 0 || IsDead || Invulnerable) return;
-            Damage(amount);
+            if (Shield != null && Shield.Absorb(amount)) return;
+            Set(Math.Max(0, Current - amount));
             Hurt?.Invoke(amount, source);
         }
 

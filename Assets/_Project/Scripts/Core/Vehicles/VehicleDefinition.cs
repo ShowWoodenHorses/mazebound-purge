@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Purge.Core.Audio;
 using Purge.Core.Content;
+using Purge.Core.Effects;
 using Purge.Core.Modules;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,7 +11,7 @@ namespace Purge.Core.Vehicles
 {
     /// <summary>
     /// A module of a vehicle (<see cref="VehicleDefinition.Modules"/>, ТЗ 9а): the vehicle is assembled from them in the
-    /// inspector. Engine, steering and hull are required; ram and look are optional.
+    /// inspector. Engine, steering and hull are required; ram, wreck and look are optional.
     /// </summary>
     [Serializable]
     public abstract class VehicleModule : ContentModule
@@ -56,7 +57,7 @@ namespace Purge.Core.Vehicles
     [Serializable, ModuleInfo("Hull")]
     public sealed class HullModule : VehicleModule
     {
-        [Tooltip("Damage it takes before it breaks down (stage 9b).")]
+        [Tooltip("Damage it takes before it breaks down (stage 9b): rams, monsters' blows, walls.")]
         [SerializeField, Min(1f)] private float _health = 300f;
         [Tooltip("Length of the body rectangle, cells (front to back).")]
         [SerializeField, Min(0.5f)] private float _length = 4.6f;
@@ -74,14 +75,71 @@ namespace Purge.Core.Vehicles
         public float WallDamage { get => _wallDamage; internal set => _wallDamage = value; }
     }
 
-    /// <summary>The weight it rams the horde with (stage 9b: damage = mass × speed).</summary>
+    /// <summary>
+    /// How it rams the horde (stage 9b): rank-and-file and officers take mass × speed (rank-and-file die outright at
+    /// <see cref="KillShare"/> of the top speed), each one hit brakes it by its mass and costs the hull
+    /// <see cref="Wear"/>; elite and bosses throw it back (<see cref="Bounce"/>), hurt a little and stunned.
+    /// </summary>
     [Serializable, ModuleInfo("Ram")]
     public sealed class RamModule : VehicleModule
     {
-        [Tooltip("Mass (the player is 1, a common monster about 1).")]
+        [Tooltip("Mass (the player is 1, a rank-and-file monster 0.15): damage = mass × speed; the heavier, the less a hit brakes it.")]
         [SerializeField, Min(0.1f)] private float _mass = 10f;
+        [Tooltip("Slower than this, cells per second, it only pushes monsters aside (no ram).")]
+        [SerializeField, Min(0f)] private float _minSpeed = 2f;
+        [Tooltip("From this share of the top speed a rank-and-file monster dies outright.")]
+        [SerializeField, Range(0f, 1f)] private float _killShare = 0.5f;
+        [Tooltip("Damage the hull takes per rank-and-file monster rammed.")]
+        [SerializeField, Min(0f)] private float _wear = 4f;
+        [Tooltip("Damage the hull takes per officer rammed.")]
+        [SerializeField, Min(0f)] private float _officerWear = 12f;
+        [Tooltip("Elite and bosses: share of the ram damage they take.")]
+        [SerializeField, Range(0f, 1f)] private float _heavyShare = 0.15f;
+        [Tooltip("Elite and bosses: share of the speed it is thrown back with.")]
+        [SerializeField, Range(0f, 1f)] private float _bounce = 0.35f;
+        [Tooltip("Elite and bosses: damage the hull takes per bounce.")]
+        [SerializeField, Min(0f)] private float _bounceDamage = 25f;
+        [Tooltip("Elite and bosses: the state put on them (a stun).")]
+        [SerializeField] private StatusDefinition _stun;
+        [SerializeField, Min(0f)] private float _stunTime = 1f;
 
         public float Mass { get => _mass; internal set => _mass = value; }
+        public float MinSpeed { get => _minSpeed; internal set => _minSpeed = value; }
+        public float KillShare { get => _killShare; internal set => _killShare = value; }
+        public float Wear { get => _wear; internal set => _wear = value; }
+        public float OfficerWear { get => _officerWear; internal set => _officerWear = value; }
+        public float HeavyShare { get => _heavyShare; internal set => _heavyShare = value; }
+        public float Bounce { get => _bounce; internal set => _bounce = value; }
+        public float BounceDamage { get => _bounceDamage; internal set => _bounceDamage = value; }
+        public StatusDefinition Stun { get => _stun; internal set => _stun = value; }
+        public float StunTime { get => _stunTime; internal set => _stunTime = value; }
+    }
+
+    /// <summary>
+    /// How it breaks down (stage 9b): at 0 HP it smokes for <see cref="BreakTime"/>, throws the player out beside it
+    /// (monsters around pushed off, the player unhurt for <see cref="Invulnerability"/>), then blows up — its
+    /// <see cref="Effects"/> are the player's (they hurt monsters, not the player) — and is gone.
+    /// </summary>
+    [Serializable, ModuleInfo("Wreck")]
+    public sealed class WreckModule : VehicleModule
+    {
+        [Tooltip("Seconds it smokes from 0 HP to the blast.")]
+        [SerializeField, Min(0f)] private float _breakTime = 1.5f;
+        [Tooltip("Monsters this close to the player thrown out are pushed off, cells.")]
+        [SerializeField, Min(0f)] private float _pushRadius = 3f;
+        [Tooltip("Speed of that push, cells per second.")]
+        [SerializeField, Min(0f)] private float _pushSpeed = 9f;
+        [Tooltip("Seconds the player thrown out takes no damage.")]
+        [SerializeField, Min(0f)] private float _invulnerability = 1f;
+        [Tooltip("The blast (an explosion, a fire zone…): the player's effects — they do not hurt the player.")]
+        [SerializeReference, ModuleList] private List<EffectModule> _effects = new List<EffectModule>();
+
+        public float BreakTime { get => _breakTime; internal set => _breakTime = value; }
+        public float PushRadius { get => _pushRadius; internal set => _pushRadius = value; }
+        public float PushSpeed { get => _pushSpeed; internal set => _pushSpeed = value; }
+        public float Invulnerability { get => _invulnerability; internal set => _invulnerability = value; }
+        public IReadOnlyList<EffectModule> Effects => _effects;
+        internal List<EffectModule> MutableEffects => _effects ??= new List<EffectModule>();
     }
 
     /// <summary>Display only: the model, the camera while driving, the engine's sounds.</summary>
@@ -100,8 +158,11 @@ namespace Purge.Core.Vehicles
         [SerializeField, VehicleSound] private string _start;
         [Tooltip("Engine roars (throttle from a standstill).")]
         [SerializeField, VehicleSound] private string _rev;
+        [Tooltip("Smoke over the broken-down vehicle (a pack effect; it loops while it smokes).")]
+        [SerializeField] private AssetReferenceGameObject _smoke;
 
         public AssetReferenceGameObject Prefab => _prefab;
+        public AssetReferenceGameObject Smoke => _smoke;
         public float CameraZoom { get => _cameraZoom; internal set => _cameraZoom = value; }
         public string Idle => _idle;
         public string Drive => _drive;
@@ -109,6 +170,7 @@ namespace Purge.Core.Vehicles
         public string Rev => _rev;
 
         internal void SetPrefab(AssetReferenceGameObject prefab) => _prefab = prefab;
+        internal void SetSmoke(AssetReferenceGameObject smoke) => _smoke = smoke;
 
         internal void SetSounds(string idle, string drive, string start, string rev)
         {
@@ -131,6 +193,7 @@ namespace Purge.Core.Vehicles
         private static readonly SteeringModule DefaultSteering = new SteeringModule();
         private static readonly HullModule DefaultHull = new HullModule();
         private static readonly RamModule DefaultRam = new RamModule();
+        private static readonly WreckModule DefaultWreck = new WreckModule();
 
         [SerializeReference, ModuleList] private List<VehicleModule> _modules = new List<VehicleModule>();
 
@@ -140,6 +203,7 @@ namespace Purge.Core.Vehicles
         public SteeringModule Steering => TryGet(out SteeringModule module) ? module : DefaultSteering;
         public HullModule Hull => TryGet(out HullModule module) ? module : DefaultHull;
         public RamModule Ram => TryGet(out RamModule module) ? module : DefaultRam;
+        public WreckModule Wreck => TryGet(out WreckModule module) ? module : DefaultWreck;
 
         /// <summary>Null without a look module.</summary>
         public VehicleLookModule Look => TryGet(out VehicleLookModule module) ? module : null;

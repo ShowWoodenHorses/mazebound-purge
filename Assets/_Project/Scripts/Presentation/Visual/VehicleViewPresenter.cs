@@ -18,7 +18,8 @@ namespace Purge.Presentation.Visual
     /// vehicle), an entity view (hidden outside the player's view like any object; a driven one is where the player is).
     /// Every late tick it follows its vehicle: position, heading, the wheels roll by the distance covered and the front
     /// ones turn with the wheel (children named *Wheel*, the front ones *Wheel_f*). While the player drives, the camera
-    /// pulls back with the speed (the look's camera zoom at full speed), eased.
+    /// pulls back with the speed (the look's camera zoom at full speed), eased. A broken-down one smokes (the look's
+    /// smoke, followed over the body, stage 9b); a blown-up one is gone.
     /// </summary>
     public sealed class VehicleViewPresenter : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
@@ -28,24 +29,30 @@ namespace Purge.Presentation.Visual
         /// <summary>Seconds the camera takes to settle on its new distance.</summary>
         private const float ZoomSmoothTime = 0.6f;
 
+        /// <summary>Where the smoke rises: metres up, and forward of the centre (over the engine) × the half length.</summary>
+        private const float SmokeHeight = 1f;
+        private const float SmokeForward = 0.55f;
+
         private readonly VehicleSystem _vehicles;
         private readonly EntityViewRegistry _entities;
         private readonly IAssetOwner _assets;
         private readonly LevelViewRoot _root;
         private readonly TopDownCamera _camera;
+        private readonly PackEffectsPlayer _effects;
         private readonly List<View> _views = new List<View>();
         private readonly List<GameObject> _all = new List<GameObject>();
         private float _zoom;
         private float _zoomVelocity;
 
         public VehicleViewPresenter(VehicleSystem vehicles, EntityViewRegistry entities, IAssetOwner assets, LevelViewRoot root,
-            TopDownCamera camera = null)
+            TopDownCamera camera = null, PackEffectsPlayer effects = null)
         {
             _vehicles = vehicles;
             _entities = entities;
             _assets = assets;
             _root = root;
             _camera = camera;
+            _effects = effects;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.BuildVisuals;
@@ -101,6 +108,16 @@ namespace Purge.Presentation.Visual
         private void Pose(View view, float deltaTime)
         {
             var vehicle = view.Vehicle;
+            if (view.Gone) return;
+            if (vehicle.State == VehicleState.Destroyed)
+            {
+                view.Gone = true;
+                StopSmoke(view);
+                _entities.Remove(view.Entity.EntityId);
+                view.Root.SetActive(false);
+                return;
+            }
+
             var transform = view.Root.transform;
             var position = new Vector3(vehicle.Position.x, vehicle.Floor * GridPosition.FloorHeight, vehicle.Position.y);
             var travelled = (new Vector2(position.x, position.z) - new Vector2(transform.localPosition.x, transform.localPosition.z))
@@ -123,6 +140,25 @@ namespace Purge.Presentation.Visual
 
             var cell = PlayerMovement.CellOf(vehicle.Position, vehicle.Floor);
             if (cell != view.Entity.Cell) _entities.Move(view.Entity, cell);
+            if (vehicle.Broken) Smoke(view, position);
+        }
+
+        /// <summary>The wreck's smoke over its engine (started when its cell is seen, carried every frame).</summary>
+        private void Smoke(View view, Vector3 position)
+        {
+            var smoke = view.Vehicle.Definition.Look?.Smoke;
+            if (_effects == null || smoke == null) return;
+            var vehicle = view.Vehicle;
+            var front = vehicle.Forward * (vehicle.HalfLength * SmokeForward);
+            var at = position + new Vector3(front.x, SmokeHeight, front.y);
+            if (view.Smoke < 0) view.Smoke = _effects.Follow(smoke, at, Quaternion.identity);
+            else _effects.Move(view.Smoke, at, Quaternion.identity);
+        }
+
+        private void StopSmoke(View view)
+        {
+            if (_effects != null && view.Smoke >= 0) _effects.Unfollow(view.Smoke);
+            view.Smoke = -1;
         }
 
         private async UniTask<GameObject> Load(AssetReferenceGameObject reference, Dictionary<string, GameObject> loaded,
@@ -174,6 +210,12 @@ namespace Purge.Presentation.Visual
             public readonly EntityView Entity;
             public readonly List<Wheel> Wheels = new List<Wheel>();
             public float Steer;
+
+            /// <summary>The followed smoke's handle (-1 — none).</summary>
+            public int Smoke = -1;
+
+            /// <summary>Blown up: hidden, out of the registry.</summary>
+            public bool Gone;
         }
     }
 }

@@ -556,6 +556,17 @@ namespace Purge.Editor.Dev
             SetReference(chestBarView, "_fill", chestFill);
             chestBar.gameObject.SetActive(false);
 
+            // Over the vehicle the player drives (stage 9b): its HP, wider, the colour of the player's health.
+            var vehicleBar = Rect(root, "VehicleBar", Center, Vector2.zero, new Vector2(160f, 14f));
+            vehicleBar.pivot = new Vector2(0.5f, 0f);
+            var vehicleBack = BarFill(vehicleBar, "Back", Fade(_style.Line, 0.4f));
+            vehicleBack.anchorMax = Vector2.one;
+            var vehicleFill = BarFill(vehicleBar, "Fill", _style.Health);
+            vehicleFill.anchorMax = Vector2.one;
+            var vehicleBarView = vehicleBar.gameObject.AddComponent<HudWorldBar>();
+            SetReference(vehicleBarView, "_fill", vehicleFill);
+            vehicleBar.gameObject.SetActive(false);
+
             // The pause between waves: the countdown, «Пропустить +N» (Space), the ammo reserve by type.
             var countdown = Rect(root, "Countdown", new Vector2(0.5f, 1f), new Vector2(0f, -232f), new Vector2(760f, 200f));
             countdown.pivot = new Vector2(0.5f, 1f);
@@ -653,6 +664,7 @@ namespace Purge.Editor.Dev
             SetReferences(screen, "_damageArcs", damageArcs);
             SetReference(screen, "_comparePanel", comparePanel);
             SetReference(screen, "_chestBar", chestBarView);
+            SetReference(screen, "_vehicleBar", vehicleBarView);
             SetReference(screen, "_refugeText", refugeText);
             SetReference(screen, "_bossBar", bossBar);
             return screen;

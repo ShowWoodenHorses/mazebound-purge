@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Purge.Core.Effects;
 using Purge.Core.Vehicles;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -12,19 +13,25 @@ namespace Purge.Editor.Dev
 {
     /// <summary>
     /// Purge → Dev → Build Vehicles (stage 9a): a <see cref="VehicleDefinition"/> in <c>Data/Vehicles</c> for every model
-    /// in <c>Art/Vehicles</c> (the same name). A new one gets draft modules from the model's size — the body rectangle
-    /// from its bounds; a long one (over 5.5 m) is heavy: slower, stronger, wider turns — and the engine sounds whose
-    /// folders start with its name's last word (<c>Vehicle_Light</c> → <c>Sounds/Vehicle/light_idle_loop</c>…). An
-    /// existing one keeps its numbers: only its model is set. Models are Addressable in Purge Visuals (a level loads only
-    /// those it has). Then the content catalog. A new vehicle = a model in the folder + this command.
+    /// in <c>Art/Vehicles</c> (the same name). A new one gets draft modules from the model's size (its root scale counts:
+    /// the models are at 0.75) — the body rectangle from its bounds; a long one (over 4.2 m) is heavy: slower, stronger,
+    /// wider turns, a bigger blast — and the engine sounds whose folders start with its name's last word
+    /// (<c>Vehicle_Light</c> → <c>Sounds/Vehicle/light_idle_loop</c>…). An existing one keeps its numbers: only its model
+    /// is set, and what stage 9b added when missing — the wreck module, the ram's stun, the smoke. Models are Addressable
+    /// in Purge Visuals (a level loads only those it has). Then the content catalog. A new vehicle = a model in the
+    /// folder + this command.
     /// </summary>
     internal static class VehiclesBuilder
     {
         public const string ModelsPath = "Assets/_Project/Art/Vehicles";
         private const string DataPath = "Assets/_Project/Data/Vehicles";
+        private const string StunPath = "Assets/_Project/Data/Effects/Status_Stun.asset";
+
+        /// <summary>The wreck's smoke (a copy of Build Pack Effects).</summary>
+        private const string SmokePath = "Assets/_Project/Art/Effects/PolygonParticleFX/FX_Vehicle_Smoke.prefab";
 
         /// <summary>Longer than this, cells, the drafts are of a heavy vehicle.</summary>
-        private const float HeavyLength = 5.5f;
+        private const float HeavyLength = 4.2f;
 
         [MenuItem("Purge/Dev/Build Vehicles")]
         public static void Build()
@@ -65,6 +72,7 @@ namespace Purge.Editor.Dev
                     }
 
                     look.SetPrefab(new AssetReferenceGameObject(guid));
+                    AddStage9b(vehicle, look);
                     var problems = new List<string>();
                     vehicle.Validate(problems);
                     foreach (var problem in problems) Debug.LogWarning("[Purge] " + problem);
@@ -109,13 +117,39 @@ namespace Purge.Editor.Dev
                 WallSafeSpeed = 3f,
                 WallDamage = 4f,
             };
-            var ram = new RamModule { Mass = heavy ? 20f : 8f };
+            var ram = new RamModule { Mass = heavy ? 20f : 8f, BounceDamage = heavy ? 30f : 25f };
             var look = new VehicleLookModule { CameraZoom = 3f };
             var prefix = name.Substring(name.LastIndexOf('_') + 1).ToLowerInvariant();
             var sounds = AudioBuilder.VehicleSounds();
             look.SetSounds(Sound(sounds, prefix, "idle_loop"), Sound(sounds, prefix, "drive_loop"), Sound(sounds, prefix, "start"),
                 Sound(sounds, prefix, "rev"));
-            vehicle.Configure(vehicle.Id, engine, steering, hull, ram, look);
+            vehicle.Configure(vehicle.Id, engine, steering, hull, ram, Wreck(heavy), look);
+        }
+
+        /// <summary>What stage 9b added, for a vehicle built before it: the wreck, the ram's stun, the smoke.</summary>
+        private static void AddStage9b(VehicleDefinition vehicle, VehicleLookModule look)
+        {
+            if (!vehicle.TryGet(out WreckModule _))
+                vehicle.MutableModules.Insert(Mathf.Max(0, vehicle.MutableModules.IndexOf(look)),
+                    Wreck(vehicle.Hull.Length > HeavyLength));
+            if (vehicle.TryGet(out RamModule ram) && ram.Stun == null)
+                ram.Stun = AssetDatabase.LoadAssetAtPath<StatusDefinition>(StunPath);
+            if (look.Smoke == null || !look.Smoke.RuntimeKeyIsValid())
+            {
+                var smoke = AssetDatabase.AssetPathToGUID(SmokePath);
+                if (string.IsNullOrEmpty(smoke)) Debug.LogWarning($"[Purge] Build Vehicles: no {SmokePath} (Build Pack Effects first).");
+                else look.SetSmoke(new AssetReferenceGameObject(smoke));
+            }
+        }
+
+        /// <summary>Draft wreck: the heavy one (a tanker truck) blows up wider and harder.</summary>
+        private static WreckModule Wreck(bool heavy)
+        {
+            var wreck = new WreckModule();
+            var explosion = new ExplosionEffect { Damage = heavy ? 260f : 150f, EdgeDamage = 0.4f, SoundRadius = 16f };
+            explosion.SetRadius(heavy ? 4f : 3f);
+            wreck.MutableEffects.Add(explosion);
+            return wreck;
         }
 
         private static string Sound(List<string> sounds, string prefix, string role)

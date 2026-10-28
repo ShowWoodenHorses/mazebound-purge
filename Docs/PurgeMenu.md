@@ -100,8 +100,9 @@
 2. Звуки двигателя — папки `Sounds/Vehicle/<имя>_idle_loop`, `_drive_loop`, `_start`, `_rev` (`<имя>` — последнее слово
    имени префаба, `Vehicle_Light` → `light`), **Build Audio**.
 3. **Purge → Dev → Build Vehicles** — определение `Data/Vehicles/<префаб>.asset` с черновыми модулями (Engine, Steering,
-   Hull — прямоугольник по размеру модели, Ram, Look со звуками); дальше числа — в инспекторе. Затем **Convert Object
-   Materials to Purge Lit**. Код не нужен.
+   Hull — прямоугольник по размеру модели с учётом масштаба корня (машины — ×0,75), Ram, Wreck — взрыв, Look со звуками
+   и дымом `FX_Vehicle_Smoke`); у существующих дополняет недостающее (Wreck, оглушение тарана, дым); дальше числа — в
+   инспекторе. Затем **Convert Object Materials to Purge Lit**. Код не нужен.
 
 ### Звуки оружия
 Звуки оружия выбираются по **звуковой группе** — полю `Sound` в определении оружия (`Data/Weapons/<имя>.asset`). Это

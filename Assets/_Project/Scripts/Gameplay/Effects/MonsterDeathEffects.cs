@@ -17,6 +17,9 @@ namespace Purge.Gameplay.Effects
     /// </summary>
     public sealed class MonsterDeathEffects : ILevelLoadStep, ILevelTickable, IDisposable
     {
+        /// <summary>Death effects applied in one tick at most; the rest wait for the next ones.</summary>
+        public const int MaxPerTick = 6;
+
         private readonly HordeSystem _horde;
         private readonly EffectSystem _effects;
         private readonly PlayerSystem _player;
@@ -57,9 +60,11 @@ namespace Purge.Gameplay.Effects
         public void Tick(float deltaTime)
         {
             if (_pending.Count == 0) return;
-            // Effects of this batch may kill more: those wait for the next tick.
-            _applying.AddRange(_pending);
-            _pending.Clear();
+            // Effects of this batch may kill more: those wait for the next tick. A burst of deaths (a ramming vehicle,
+            // stage 9b) goes out at most MaxPerTick a tick, the oldest first.
+            var count = Mathf.Min(_pending.Count, MaxPerTick);
+            for (var i = 0; i < count; i++) _applying.Add(_pending[i]);
+            _pending.RemoveRange(0, count);
             var floor = _player.Floor; // the horde lives on the player's floor
             foreach (var (effects, at) in _applying)
                 _effects.Apply(effects, at, floor, hostile: true);

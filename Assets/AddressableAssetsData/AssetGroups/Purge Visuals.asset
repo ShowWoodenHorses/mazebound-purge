@@ -190,6 +190,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29a162ba02cea4c409c7454dbe28646c
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Vehicle_Smoke.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2bf304437e5febf4ab790bdf8259bd60
     m_Address: Assets/_Project/Art/Placeholders/wall_end.prefab
     m_ReadOnly: 0

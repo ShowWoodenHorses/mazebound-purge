@@ -5,7 +5,10 @@ using Cysharp.Threading.Tasks;
 using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Core.Vehicles;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Effects;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
@@ -16,16 +19,18 @@ using UnityEngine;
 
 namespace Purge.Gameplay.Vehicles
 {
-    /// <summary>A vehicle stands (nobody in it) or the player drives it.</summary>
+    /// <summary>A vehicle stands (nobody in it), the player drives it, or it has blown up (gone).</summary>
     public enum VehicleState
     {
         Parked = 0,
         Driven = 1,
+        Destroyed = 2,
     }
 
     /// <summary>
     /// A vehicle of the level (stage 9a): its body on the grid, its speed and HP. Parked, it is a wall for everyone and
-    /// stops shots (decision 2026-10-28); driven, it carries the player.
+    /// stops shots (decision 2026-10-28); driven, it carries the player. At 0 HP it is broken down (stage 9b): it smokes,
+    /// the engine is dead, and in <see cref="BreakLeft"/> seconds it blows up.
     /// </summary>
     public sealed class Vehicle : IShotBlocker
     {
@@ -64,7 +69,16 @@ namespace Purge.Gameplay.Vehicles
         public bool Throttle { get; internal set; }
 
         public float Health { get; internal set; }
+
+        /// <summary>HP of the hull's full HP, 0..1 (the HUD's bar).</summary>
+        public float HealthShare => Mathf.Clamp01(Health / Mathf.Max(1f, Definition.Hull.Health));
+
         public VehicleState State { get; internal set; }
+
+        /// <summary>0 HP: it smokes, the engine is dead, it blows up in <see cref="BreakLeft"/> seconds.</summary>
+        public bool Broken { get; internal set; }
+
+        public float BreakLeft { get; internal set; }
 
         /// <summary>The body touches a wall this tick.</summary>
         public bool InContact { get; internal set; }
@@ -93,9 +107,15 @@ namespace Purge.Gameplay.Vehicles
     /// <para>Driving: throttle and brake/reverse (<see cref="PlayerAction.Gas"/>, <see cref="PlayerAction.Brake"/>), the
     /// wheel — the stick's x. The body is a rectangle moved along its heading without physics: a wall stops it, or, met
     /// at under 45°, it slides along; a hit faster than the hull's safe speed damages it. It turns only while moving.</para>
+    /// <para>Ramming (stage 9b, <see cref="RamModule"/>): monsters its body sweeps over at speed — rank-and-file and
+    /// officers take mass × speed (rank-and-file die outright from half the top speed), fly aside and brake it by their
+    /// mass; elite and bosses throw it back, a little hurt and stunned. Each one hit wears the hull; monsters reach for
+    /// the body and hit it (<see cref="HordeSystem.Shell"/>), and the player's damage goes to it
+    /// (<see cref="PlayerHealth.Shield"/>). At 0 HP (<see cref="WreckModule"/>) it smokes, then throws the player out
+    /// (monsters around pushed off, a second unhurt), blows up as the player's own effects and is gone.</para>
     /// Must be registered right after <see cref="PlayerSystem"/>: it carries the player (<see cref="PlayerSystem.Ride"/>).
     /// </summary>
-    public sealed class VehicleSystem : ILevelLoadStep, ILevelTickable, IPlayerBlockers, IDisposable
+    public sealed class VehicleSystem : ILevelLoadStep, ILevelTickable, IPlayerBlockers, IPlayerShield, IPlayerShell, IDisposable
     {
         /// <summary>Cells from the player to the body within which Use gets in.</summary>
         public const float EnterReach = 1f;
@@ -112,6 +132,9 @@ namespace Purge.Gameplay.Vehicles
         /// <summary>The turn widens with speed: cells of radius added per cell per second.</summary>
         private const float TurnWidening = 0.25f;
 
+        /// <summary>Seconds a rammed monster is not rammed again (it is pushed aside meanwhile).</summary>
+        public const float RamCooldown = 0.5f;
+
         private static readonly float SlideSine = Mathf.Sin(SlideAngle * Mathf.Deg2Rad);
 
         private readonly LevelData _level;
@@ -122,11 +145,22 @@ namespace Purge.Gameplay.Vehicles
         private readonly SpatialQueryService _spatial;
         private readonly WeaponSystem _weapons;
         private readonly HordeSystem _horde;
+        private readonly CombatTargets _targets;
+        private readonly StatusSystem _statuses;
+        private readonly EffectSystem _effects;
+        private readonly PlayerHealth _health;
         private readonly List<Vehicle> _vehicles = new List<Vehicle>();
         private int _floor;
+        private float _time;
+        private float _shieldLeft;
+        private float[] _rammedAt;
+        private int[] _rammedGeneration;
+        private int _tickHits;
+        private int _tickKills;
 
         public VehicleSystem(LevelData level, PlayerSystem player, IPlayerInput input, LevelPassability passability,
-            CellBlockers blockers, SpatialQueryService spatial, WeaponSystem weapons = null, HordeSystem horde = null)
+            CellBlockers blockers, SpatialQueryService spatial, WeaponSystem weapons = null, HordeSystem horde = null,
+            CombatTargets targets = null, StatusSystem statuses = null, EffectSystem effects = null, PlayerHealth health = null)
         {
             _level = level;
             _player = player;
@@ -136,6 +170,10 @@ namespace Purge.Gameplay.Vehicles
             _spatial = spatial;
             _weapons = weapons;
             _horde = horde;
+            _targets = targets;
+            _statuses = statuses;
+            _effects = effects;
+            _health = health;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeSystems;
@@ -154,6 +192,26 @@ namespace Purge.Gameplay.Vehicles
         /// <summary>(vehicle, speed into the wall, cells per second) it hit a wall (once per contact).</summary>
         public event Action<Vehicle, float> WallHit;
 
+        /// <summary>(vehicle, monsters rammed, of them killed) once per tick it rammed any.</summary>
+        public event Action<Vehicle, int, int> Rammed;
+
+        /// <summary>(vehicle, where the monster stands) it bounced off an elite monster or a boss.</summary>
+        public event Action<Vehicle, Vector2> Bounced;
+
+        /// <summary>(vehicle) its HP ran out: it smokes, the engine is dead.</summary>
+        public event Action<Vehicle> BrokeDown;
+
+        /// <summary>(vehicle) the broken-down vehicle threw the player out (just before it blows up).</summary>
+        public event Action<Vehicle> Ejected;
+
+        /// <summary>(vehicle) it blew up and is gone.</summary>
+        public event Action<Vehicle> Exploded;
+
+        /// <summary>Monsters rammed and killed by ramming (all vehicles, the level).</summary>
+        public int RamHits { get; private set; }
+
+        public int RamKills { get; private set; }
+
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             foreach (var data in _level.Vehicles)
@@ -169,7 +227,12 @@ namespace Purge.Gameplay.Vehicles
                 Park(vehicle);
             }
 
-            if (_vehicles.Count > 0) GameLog.Info(LogChannel.Gameplay, $"Vehicles: {_vehicles.Count}.");
+            if (_vehicles.Count > 0)
+            {
+                GameLog.Info(LogChannel.Gameplay, $"Vehicles: {_vehicles.Count}.");
+                if (_health != null) _health.Shield = this;
+            }
+
             return UniTask.CompletedTask;
         }
 
@@ -178,15 +241,30 @@ namespace Purge.Gameplay.Vehicles
             foreach (var vehicle in _vehicles)
                 _spatial.RemoveShotBlocker(vehicle);
             _vehicles.Clear();
+            if (_health != null && _health.Shield == this) _health.Shield = null;
+            if (_horde != null && _horde.Shell == this) _horde.Shell = null;
             Current = null;
         }
 
         public void Tick(float deltaTime)
         {
+            if (deltaTime <= 0f || _vehicles.Count == 0) return;
+            _time += deltaTime;
+            if (_shieldLeft > 0f) _shieldLeft -= deltaTime;
             var vehicle = Current;
-            if (vehicle == null || deltaTime <= 0f) return;
-            Drive(vehicle, deltaTime);
-            _player.Ride(vehicle.Position, vehicle.Forward, deltaTime);
+            if (vehicle != null)
+            {
+                Drive(vehicle, deltaTime);
+                _player.Ride(vehicle.Position, vehicle.Forward, deltaTime);
+            }
+
+            for (var i = 0; i < _vehicles.Count; i++)
+            {
+                var wreck = _vehicles[i];
+                if (!wreck.Broken || wreck.State == VehicleState.Destroyed) continue;
+                wreck.BreakLeft -= deltaTime;
+                if (wreck.BreakLeft <= 0f) Explode(wreck);
+            }
         }
 
         /// <summary>A parked vehicle within <see cref="EnterReach"/> of the player (the nearest); null when none or driving.</summary>
@@ -197,7 +275,7 @@ namespace Purge.Gameplay.Vehicles
             var bestDistance = EnterReach;
             foreach (var vehicle in _vehicles)
             {
-                if (vehicle.State != VehicleState.Parked || vehicle.Floor != _player.Floor) continue;
+                if (vehicle.State != VehicleState.Parked || vehicle.Broken || vehicle.Floor != _player.Floor) continue;
                 var distance = VehicleBody.Distance(_player.Position, vehicle.Position, vehicle.Heading, vehicle.HalfLength,
                     vehicle.HalfWidth);
                 if (distance > bestDistance) continue;
@@ -211,7 +289,8 @@ namespace Purge.Gameplay.Vehicles
         /// <summary>The player gets into <paramref name="vehicle"/> (parked, within reach — <see cref="FindEnterable"/>).</summary>
         public bool Enter(Vehicle vehicle)
         {
-            if (vehicle == null || vehicle.State != VehicleState.Parked || Current != null || _player.InVehicle) return false;
+            if (vehicle == null || vehicle.State != VehicleState.Parked || vehicle.Broken || Current != null ||
+                _player.InVehicle) return false;
             Unpark(vehicle);
             vehicle.State = VehicleState.Driven;
             vehicle.Speed = 0f;
@@ -219,6 +298,7 @@ namespace Purge.Gameplay.Vehicles
             _floor = vehicle.Floor;
             _player.EnterVehicle(vehicle.Position, vehicle.Forward);
             if (_weapons != null) _weapons.InputLocked = true;
+            if (_horde != null) _horde.Shell = this;
             Entered?.Invoke(vehicle);
             return true;
         }
@@ -243,9 +323,7 @@ namespace Purge.Gameplay.Vehicles
             vehicle.Steer = 0f;
             vehicle.Throttle = false;
             vehicle.InContact = vehicle.IsScraping = false;
-            Current = null;
-            _player.ExitVehicle(spot);
-            if (_weapons != null) _weapons.InputLocked = false;
+            LeaveVehicle(spot);
             Exited?.Invoke(vehicle);
             return true;
         }
@@ -256,13 +334,120 @@ namespace Purge.Gameplay.Vehicles
 
         int IPlayerBlockers.Floor => _floor;
 
+        // ------------------------------------------------------------------ Damage
+
+        /// <summary>The player's damage: the driven vehicle takes it; the player thrown out of a wreck takes none for a while.</summary>
+        bool IPlayerShield.Absorb(int amount)
+        {
+            if (_shieldLeft > 0f) return true;
+            var vehicle = Current;
+            if (vehicle == null) return false;
+            Hurt(vehicle, amount);
+            return true;
+        }
+
+        float IPlayerShell.Reach
+        {
+            get
+            {
+                var vehicle = Current;
+                return vehicle == null ? 0f : Mathf.Sqrt(vehicle.HalfLength * vehicle.HalfLength + vehicle.HalfWidth * vehicle.HalfWidth);
+            }
+        }
+
+        float IPlayerShell.DistanceTo(Vector2 point)
+        {
+            var vehicle = Current;
+            return vehicle == null
+                ? float.MaxValue
+                : VehicleBody.Distance(point, vehicle.Position, vehicle.Heading, vehicle.HalfLength, vehicle.HalfWidth);
+        }
+
+        bool IPlayerShell.PushOut(Vector2 point, float radius, out Vector2 step)
+        {
+            var vehicle = Current;
+            step = Vector2.zero;
+            return vehicle != null &&
+                   VehicleBody.PushOut(point, radius, vehicle.Position, vehicle.Heading, vehicle.HalfLength, vehicle.HalfWidth, out step);
+        }
+
+        /// <summary>Damage to the hull; at 0 HP it breaks down (a broken one takes no more).</summary>
+        public void Hurt(Vehicle vehicle, float amount)
+        {
+            if (vehicle == null || vehicle.Broken || vehicle.State == VehicleState.Destroyed || amount <= 0f) return;
+            vehicle.Health = Mathf.Max(0f, vehicle.Health - amount);
+            if (vehicle.Health > 0f) return;
+            vehicle.Broken = true;
+            vehicle.BreakLeft = vehicle.Definition.Wreck.BreakTime;
+            vehicle.Throttle = false;
+            BrokeDown?.Invoke(vehicle); // it blows up in the tick (never in the middle of a move)
+        }
+
+        /// <summary>
+        /// The wreck blows up: the player inside is thrown out beside it first (monsters around pushed off, a while
+        /// unhurt); its effects are the player's (they hurt monsters, not the player); then it is gone.
+        /// </summary>
+        private void Explode(Vehicle vehicle)
+        {
+            var wreck = vehicle.Definition.Wreck;
+            if (Current == vehicle)
+            {
+                // The parked body shows where the player fits beside it.
+                Park(vehicle);
+                if (!TryFindExit(vehicle, out var spot)) spot = vehicle.Position;
+                Unpark(vehicle);
+                LeaveVehicle(spot);
+                _shieldLeft = wreck.Invulnerability;
+                if (_horde != null && _horde.IsActive && wreck.PushRadius > 0f) PushAway(spot, wreck.PushRadius, wreck.PushSpeed);
+                Ejected?.Invoke(vehicle);
+            }
+            else
+            {
+                Unpark(vehicle);
+            }
+
+            vehicle.State = VehicleState.Destroyed;
+            vehicle.Speed = 0f;
+            vehicle.Steer = 0f;
+            vehicle.InContact = vehicle.IsScraping = false;
+            _effects?.Apply(wreck.Effects, vehicle.Position, vehicle.Floor, hostile: false);
+            Exploded?.Invoke(vehicle);
+        }
+
+        private void LeaveVehicle(Vector2 spot)
+        {
+            Current = null;
+            if (_horde != null && _horde.Shell == this) _horde.Shell = null;
+            _player.ExitVehicle(spot);
+            if (_weapons != null) _weapons.InputLocked = false;
+        }
+
+        /// <summary>Living monsters within <paramref name="radius"/> of <paramref name="center"/> are pushed straight away.</summary>
+        private void PushAway(Vector2 center, float radius, float speed)
+        {
+            var reach = radius + _horde.MaxRadius;
+            var positions = _horde.Positions;
+            var states = _horde.States;
+            for (var y = Mathf.FloorToInt(center.y - reach + 0.5f); y <= Mathf.FloorToInt(center.y + reach + 0.5f); y++)
+            for (var x = Mathf.FloorToInt(center.x - reach + 0.5f); x <= Mathf.FloorToInt(center.x + reach + 0.5f); x++)
+            for (var agent = _horde.FirstInCell(x, y); agent >= 0; agent = _horde.NextInCell(agent))
+            {
+                if (!HordeSystem.IsAlive(states[agent])) continue;
+                var offset = positions[agent] - center;
+                var distance = offset.magnitude;
+                if (distance > radius + _horde.RadiusOf(agent)) continue;
+                var away = distance > 1e-4f ? offset / distance : new Vector2((agent & 1) == 0 ? 1f : -1f, 0f);
+                _horde.Push(agent, away * speed);
+            }
+        }
+
         // ------------------------------------------------------------------ Driving
 
         private void Drive(Vehicle vehicle, float deltaTime)
         {
             var engine = vehicle.Definition.Engine;
             var active = !_player.Down;
-            var gas = active && _input.IsHeld(PlayerAction.Gas);
+            var gas = active && !vehicle.Broken && _input.IsHeld(PlayerAction.Gas); // a wreck's engine is dead
             var brake = active && _input.IsHeld(PlayerAction.Brake);
             var steer = active ? Mathf.Clamp(_input.Move.x, -1f, 1f) : 0f;
             if (Mathf.Abs(steer) < SteerDeadZone) steer = 0f;
@@ -283,9 +468,17 @@ namespace Purge.Gameplay.Vehicles
 
             vehicle.Speed = speed;
             Move(vehicle, deltaTime);
+            if (_tickHits == 0) return;
+            RamHits += _tickHits;
+            RamKills += _tickKills;
+            Rammed?.Invoke(vehicle, _tickHits, _tickKills);
+            _tickHits = _tickKills = 0;
         }
 
-        /// <summary>One tick of motion: turn, then move along the heading in small steps; walls stop or deflect it.</summary>
+        /// <summary>
+        /// One tick of motion: turn, then move along the heading in small steps; walls stop or deflect it, monsters in
+        /// its way are rammed (<see cref="Ram"/>).
+        /// </summary>
         private void Move(Vehicle vehicle, float deltaTime)
         {
             var speed = vehicle.Speed;
@@ -306,10 +499,12 @@ namespace Purge.Gameplay.Vehicles
                 var delta = VehicleBody.Forward(vehicle.Heading) * (speed * deltaTime / steps);
                 var length = delta.magnitude;
                 if (length < 1e-6f) continue;
-                var target = vehicle.Position + delta;
+                var before = vehicle.Position;
+                var target = before + delta;
                 if (!Overlaps(target, vehicle.Heading))
                 {
                     vehicle.Position = target;
+                    if (Ram(vehicle, before, ref speed)) break;
                     continue;
                 }
 
@@ -342,6 +537,7 @@ namespace Purge.Gameplay.Vehicles
                 {
                     vehicle.Position += slide;
                     scraping = true;
+                    if (Ram(vehicle, before, ref speed)) break;
                     continue;
                 }
 
@@ -360,9 +556,115 @@ namespace Purge.Gameplay.Vehicles
         private void HitWall(Vehicle vehicle, float impact)
         {
             var hull = vehicle.Definition.Hull;
-            var damage = Mathf.Max(0f, impact - hull.WallSafeSpeed) * hull.WallDamage;
-            if (damage > 0f) vehicle.Health = Mathf.Max(0f, vehicle.Health - damage);
+            Hurt(vehicle, Mathf.Max(0f, impact - hull.WallSafeSpeed) * hull.WallDamage);
             if (impact > 0.5f) WallHit?.Invoke(vehicle, impact);
+        }
+
+        // ------------------------------------------------------------------ Ramming
+
+        /// <summary>
+        /// Monsters the body overlaps after a step from <paramref name="before"/>: at ramming speed rank-and-file and
+        /// officers are hit (damage mass × speed, rank-and-file outright from <see cref="RamModule.KillShare"/> of the
+        /// top speed), fly aside (corpses — on along the way) and brake it by their mass; each wears the hull. Elite and
+        /// bosses ahead: at ramming speed it bounces back (they take a little, stunned; the hull takes
+        /// <see cref="RamModule.BounceDamage"/>), slower it just stops. True when it stopped or bounced (the move ends).
+        /// </summary>
+        private bool Ram(Vehicle vehicle, Vector2 before, ref float speed)
+        {
+            if (_horde == null || !_horde.IsActive || vehicle.Floor != _player.Floor) return false;
+            var ram = vehicle.Definition.Ram;
+            var magnitude = Mathf.Abs(speed);
+            var ramming = magnitude >= ram.MinSpeed;
+            var travel = vehicle.Forward * Mathf.Sign(speed);
+            EnsureRamMemory();
+            var center = vehicle.Position;
+            var reach = Mathf.Sqrt(vehicle.HalfLength * vehicle.HalfLength + vehicle.HalfWidth * vehicle.HalfWidth) + _horde.MaxRadius;
+            var minX = Mathf.FloorToInt(center.x - reach + 0.5f);
+            var maxX = Mathf.FloorToInt(center.x + reach + 0.5f);
+            var minY = Mathf.FloorToInt(center.y - reach + 0.5f);
+            var maxY = Mathf.FloorToInt(center.y + reach + 0.5f);
+            var positions = _horde.Positions;
+            var states = _horde.States;
+            for (var y = minY; y <= maxY; y++)
+            for (var x = minX; x <= maxX; x++)
+            for (var agent = _horde.FirstInCell(x, y); agent >= 0; agent = _horde.NextInCell(agent))
+            {
+                if (!HordeSystem.IsAlive(states[agent])) continue;
+                var position = positions[agent];
+                if (VehicleBody.Distance(position, center, vehicle.Heading, vehicle.HalfLength, vehicle.HalfWidth) >=
+                    _horde.RadiusOf(agent)) continue;
+                var kind = _horde.KindOf(agent);
+                var rank = kind.Definition != null ? kind.Definition.Rank : MonsterRank.Mass;
+                if (rank >= MonsterRank.Elite)
+                {
+                    // Only one ahead stops it: backing away from a boss is free.
+                    if (Vector2.Dot(position - center, travel) <= 0f) continue;
+                    vehicle.Position = before;
+                    if (ramming && !RecentlyRammed(agent))
+                    {
+                        Remember(agent);
+                        Damage(agent, ram.Mass * magnitude * ram.HeavyShare, travel);
+                        if (ram.Stun != null && _statuses != null)
+                            _statuses.Apply(CombatTarget.OfAgent(agent), ram.Stun, ram.StunTime);
+                        speed = -speed * ram.Bounce;
+                        Hurt(vehicle, ram.BounceDamage);
+                        Bounced?.Invoke(vehicle, position);
+                    }
+                    else
+                    {
+                        speed = 0f;
+                    }
+
+                    return true;
+                }
+
+                // Slow: the horde puts them out of the body at the end of its tick.
+                if (!ramming || RecentlyRammed(agent)) continue;
+                Remember(agent);
+                var damage = ram.Mass * magnitude;
+                if (rank == MonsterRank.Mass && magnitude >= ram.KillShare * vehicle.Definition.Engine.MaxSpeed)
+                    damage = Mathf.Max(damage, _horde.Health[agent] + 1f);
+                var killed = Damage(agent, damage, travel);
+
+                // Aside, to the side it stands on (dead centre: by slot); a corpse flies on along the way.
+                var side = new Vector2(-travel.y, travel.x);
+                var cross = Vector2.Dot(position - center, side);
+                if (Mathf.Abs(cross) < 1e-3f ? (agent & 1) == 1 : cross < 0f) side = -side;
+                _horde.Push(agent, killed
+                    ? (travel + side * 0.5f) * magnitude
+                    : (side + travel * 0.35f).normalized * magnitude);
+
+                // The impulse: the heavier the monster and the weaker the engine, the more it brakes.
+                var push = ram.Mass * Mathf.Max(0.1f, vehicle.Definition.Engine.Power);
+                if (!float.IsInfinity(kind.Mass)) speed *= push / (push + kind.Mass);
+                Hurt(vehicle, rank == MonsterRank.Officer ? ram.OfficerWear : ram.Wear);
+                _tickHits++;
+                if (killed) _tickKills++;
+                magnitude = Mathf.Abs(speed);
+                ramming = magnitude >= ram.MinSpeed;
+            }
+
+            return false;
+        }
+
+        private bool Damage(int agent, float amount, Vector2 direction) =>
+            _targets != null ? _targets.Damage(CombatTarget.OfAgent(agent), amount, direction) : _horde.Damage(agent, amount);
+
+        private void EnsureRamMemory()
+        {
+            if (_rammedAt != null && _rammedAt.Length == _horde.Capacity) return;
+            _rammedAt = new float[_horde.Capacity];
+            _rammedGeneration = new int[_horde.Capacity];
+            for (var i = 0; i < _rammedAt.Length; i++) _rammedAt[i] = float.NegativeInfinity;
+        }
+
+        private bool RecentlyRammed(int agent) =>
+            _rammedGeneration[agent] == _horde.Generations[agent] && _time - _rammedAt[agent] < RamCooldown;
+
+        private void Remember(int agent)
+        {
+            _rammedAt[agent] = _time;
+            _rammedGeneration[agent] = _horde.Generations[agent];
         }
 
         /// <summary>The farthest point along <paramref name="delta"/> the body fits (halving the step).</summary>

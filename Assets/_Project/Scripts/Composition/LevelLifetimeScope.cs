@@ -179,6 +179,7 @@ namespace Purge.Composition
             // The arena's gates (stage 8a): rise while a boss wave holds the player in.
             builder.Register<ArenaGatesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<LevelObjectsHudPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
+            builder.Register<VehicleHudPresenter>(Lifetime.Singleton).As<ILevelLateTickable>();
             builder.Register<ThrowAimView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<ZoneView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             builder.Register<HudPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();

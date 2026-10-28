@@ -14,14 +14,24 @@ namespace Purge.Presentation.Audio
     /// Sounds of the vehicles (stage 9a), all of the one the player drives (they are in it: no distance, no pan): the
     /// door and the engine starting on getting in, the door on getting out; the engine — idling and driving loops
     /// crossfaded by the speed, the driving one's pitch rising with it; a roar on the throttle from a standstill; wall
-    /// hits (louder the harder) and the scrape loop while sliding along a wall. Names: the look's engine sounds and the
-    /// shared folders <c>Sounds/Vehicle/door</c>, <c>wall_hit</c>, <c>scrape_loop</c>.
+    /// hits (louder the harder) and the scrape loop while sliding along a wall. Ramming (stage 9b): one thud a tick for
+    /// all the monsters hit (louder the more), a bounce off the big ones, the engine stalling at 0 HP and the smoke loop
+    /// while the wreck smokes (the blast is the wreck's explosion effect). Names: the look's engine sounds and the shared
+    /// folders <c>Sounds/Vehicle/door</c>, <c>wall_hit</c>, <c>scrape_loop</c>, <c>monster_hit</c>, <c>bounce</c>,
+    /// <c>stall</c>, <c>smoke_loop</c>.
     /// </summary>
     public sealed class VehicleAudioPresenter : ILevelLoadStep, ILevelTickable, IDisposable
     {
         public const string DoorSound = "door";
         public const string WallHitSound = "wall_hit";
         public const string ScrapeSound = "scrape_loop";
+        public const string MonsterHitSound = "monster_hit";
+        public const string BounceSound = "bounce";
+        public const string StallSound = "stall";
+        public const string SmokeSound = "smoke_loop";
+
+        /// <summary>Monsters rammed in a tick for the thud at full volume.</summary>
+        private const float LoudHits = 6f;
 
         /// <summary>Share of the top speed at which the idle has faded out and the drive loop is full.</summary>
         private const float DriveFadeShare = 0.25f;
@@ -39,6 +49,7 @@ namespace Purge.Presentation.Audio
         private Loop _idle;
         private Loop _drive;
         private Loop _scrape;
+        private Loop _smoke;
         private bool _throttle;
         private bool _subscribed;
 
@@ -58,6 +69,9 @@ namespace Purge.Presentation.Audio
             _vehicles.Entered += OnEntered;
             _vehicles.Exited += OnExited;
             _vehicles.WallHit += OnWallHit;
+            _vehicles.Rammed += OnRammed;
+            _vehicles.Bounced += OnBounced;
+            _vehicles.BrokeDown += OnBrokeDown;
             _subscribed = true;
             return UniTask.CompletedTask;
         }
@@ -67,10 +81,14 @@ namespace Purge.Presentation.Audio
             Stop(ref _idle);
             Stop(ref _drive);
             Stop(ref _scrape);
+            Stop(ref _smoke);
             if (!_subscribed) return;
             _vehicles.Entered -= OnEntered;
             _vehicles.Exited -= OnExited;
             _vehicles.WallHit -= OnWallHit;
+            _vehicles.Rammed -= OnRammed;
+            _vehicles.Bounced -= OnBounced;
+            _vehicles.BrokeDown -= OnBrokeDown;
             _subscribed = false;
         }
 
@@ -81,7 +99,10 @@ namespace Purge.Presentation.Audio
             var look = vehicle?.Definition.Look;
             var share = vehicle != null ? vehicle.SpeedShare : 0f;
             var drive = Mathf.Clamp01(share / DriveFadeShare);
-            Fade(ref _idle, look != null ? Catalog.VehicleSound(look.Idle) : null, vehicle != null ? 1f - drive : 0f, 1f, deltaTime);
+            // A wreck's engine is dead: no idling, the driving loop fades with the rolling.
+            var running = vehicle != null && !vehicle.Broken;
+            Fade(ref _idle, look != null ? Catalog.VehicleSound(look.Idle) : null, running ? 1f - drive : 0f, 1f, deltaTime);
+            Fade(ref _smoke, Catalog.VehicleSound(SmokeSound), vehicle != null && vehicle.Broken ? 1f : 0f, 1f, deltaTime);
             Fade(ref _drive, look != null ? Catalog.VehicleSound(look.Drive) : null, vehicle != null ? drive : 0f,
                 Mathf.Lerp(MinDrivePitch, MaxDrivePitch, share), deltaTime);
             Fade(ref _scrape, Catalog.VehicleSound(ScrapeSound), vehicle != null && vehicle.IsScraping ? 1f : 0f,
@@ -105,6 +126,16 @@ namespace Purge.Presentation.Audio
         {
             var hard = Mathf.Clamp01(impact / Mathf.Max(0.01f, vehicle.Definition.Engine.MaxSpeed));
             Play(Catalog.VehicleSound(WallHitSound), Mathf.Lerp(0.35f, 1f, hard));
+        }
+
+        private void OnRammed(Vehicle vehicle, int hits, int kills) =>
+            Play(Catalog.VehicleSound(MonsterHitSound), Mathf.Lerp(0.45f, 1f, Mathf.Clamp01((hits - 1) / (LoudHits - 1f))));
+
+        private void OnBounced(Vehicle vehicle, Vector2 at) => Play(Catalog.VehicleSound(BounceSound), 1f);
+
+        private void OnBrokeDown(Vehicle vehicle)
+        {
+            if (vehicle == _vehicles.Current) Play(Catalog.VehicleSound(StallSound), 1f);
         }
 
         private void Play(SoundCue cue, float volume)

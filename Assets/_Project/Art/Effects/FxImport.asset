@@ -349,3 +349,11 @@ MonoBehaviour:
     Flat: 0
     Tint: {r: 1, g: 1, b: 1, a: 0}
     Particles: 0.6
+  - Source: {fileID: 1707441736110878, guid: 192584c2ae3aee840bbbccfb7b034c71, type: 3}
+    Name: FX_Vehicle_Smoke
+    Scale: 0.7
+    Radius: 0
+    Loop: 0
+    Flat: 1
+    Tint: {r: 1, g: 1, b: 1, a: 0}
+    Particles: 0.6

@@ -306,6 +306,13 @@ namespace Purge.Presentation.Visual
             {
                 foreach (var pickup in _level.Weapons) AddWeapon(wanted, pickup.Definition);
                 AddWeapon(wanted, _level.StartWeapon); // the run's start weapon (stage 6e)
+                foreach (var vehicle in _level.Vehicles)
+                {
+                    // A wreck's smoke and blast (stage 9b).
+                    if (vehicle.Definition == null) continue;
+                    Add(wanted, vehicle.Definition.Look?.Smoke);
+                    AddEffects(wanted, vehicle.Definition.Wreck.Effects);
+                }
             }
             if (_drops != null)
             {

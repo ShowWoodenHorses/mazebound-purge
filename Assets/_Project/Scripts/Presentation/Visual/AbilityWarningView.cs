@@ -99,10 +99,16 @@ namespace Purge.Presentation.Visual
                 var origin = origins[i];
                 switch (ability)
                 {
-                    case ProjectileAbility projectile when projectile.Form == ProjectileForm.Arc:
+                    case ProjectileAbility projectile when projectile.IsArc:
+                        // A circle where each arc lands (one, or a fan — stage 8d).
                         var radius = projectile.LandingRadius;
-                        Draw(0f, progress, 0f, 0.07f / radius,
-                            Matrix4x4.TRS(new Vector3(aims[i].x, height, aims[i].y), Quaternion.identity, new Vector3(radius * 2f, 1f, radius * 2f)));
+                        for (var n = _abilities.LandingCount(i) - 1; n >= 0; n--)
+                        {
+                            var spot = _abilities.Landing(i, n);
+                            Draw(0f, progress, 0f, 0.07f / radius,
+                                Matrix4x4.TRS(new Vector3(spot.x, height, spot.y), Quaternion.identity, new Vector3(radius * 2f, 1f, radius * 2f)));
+                        }
+
                         break;
                     case ProjectileAbility projectile:
                         var count = projectile.Count;

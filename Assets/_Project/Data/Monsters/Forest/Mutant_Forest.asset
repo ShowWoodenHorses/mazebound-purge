@@ -148,7 +148,7 @@ MonoBehaviour:
         _releaseSound: boss_smash
         _fromPhase: 0
         _untilPhase: 4
-        _radius: 3
+        _radius: 2
         _damage: 30
         _status: {fileID: 0}
         _statusDuration: 1
@@ -162,6 +162,7 @@ MonoBehaviour:
           m_EditorAssetChanged: 0
         _fallTime: 0.45
         _closing: 1
+        _aroundSelf: 0
     - rid: 1763807473633067077
       type: {class: ProjectileAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
       data:
@@ -199,7 +200,7 @@ MonoBehaviour:
           m_SubObjectType: 
           m_SubObjectGUID: 
           m_EditorAssetChanged: 0
-        _radius: 3
+        _radius: 2
     - rid: 1763807473633067079
       type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

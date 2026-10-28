@@ -16,7 +16,8 @@ namespace Purge.Gameplay.Horde
     /// What champions' affixes do beyond their numbers (stage 5e2; HP, speed, attack rate and armor are the horde's,
     /// <see cref="HordeSystem.MakeChampion"/>): a hit on the player puts the affix's state on them
     /// (<c>HitStatusAffix</c>) and heals a vampire (<c>LifestealAffix</c>, <see cref="HordeSystem.PlayerHurt"/>); a
-    /// trail champion leaves its zone on every cell it walks off (the monsters' zone; it spares the champion itself —
+    /// trail champion — and a kind with a <see cref="TrailAbility"/> (stage 8d, the Demon: every cell of its footprint) —
+    /// leaves its zone on every cell it walks off (the monsters' zone; it spares the champion itself —
     /// <see cref="HordeSystem.IgnoresZone"/>); an explosive one goes off where it died after the affix's delay — a
     /// warning circle meanwhile (<see cref="BlastCount"/>, drawn by the abilities' warning view), then its effects as the
     /// monsters' (<see cref="EffectSystem.Apply"/>, hostile). The horde lives on the player's floor. Allocation-free per tick.
@@ -74,8 +75,11 @@ namespace Purge.Gameplay.Horde
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var rules = _horde.Champions;
-            if (!_horde.IsActive || _subscribed || rules == null || rules.Affixes.Length == 0)
-                return UniTask.CompletedTask;
+            if (!_horde.IsActive || _subscribed) return UniTask.CompletedTask;
+            // Also for the kinds with a trail of their own (stage 8d, the Demon).
+            var trails = false;
+            foreach (var kind in _horde.KindList) trails |= kind.Trail != null;
+            if (!trails && (rules == null || rules.Affixes.Length == 0)) return UniTask.CompletedTask;
 
             _trailCell = new int[_horde.Capacity];
             _trailGeneration = new int[_horde.Capacity];
@@ -107,16 +111,38 @@ namespace Purge.Gameplay.Horde
             var states = _horde.States;
             var positions = _horde.Positions;
             var generations = _horde.Generations;
+            var kinds = _horde.Kinds;
+            var kindList = _horde.KindList;
             var floor = _player.Floor;
             for (var i = 0; i < _horde.HighWater; i++)
             {
-                if (affixes[i] == 0) continue;
-                var trail = _horde.AffixOf(i)?.Trail;
-                if (trail == null || trail.Zone == null) continue;
+                var kind = kindList[kinds[i]];
+                ZoneDefinition zone;
+                float duration, strength;
+                var width = 1;
+                var affix = affixes[i] != 0 ? _horde.AffixOf(i)?.Trail : null;
+                if (affix != null && affix.Zone != null)
+                {
+                    zone = affix.Zone;
+                    duration = affix.Duration;
+                    strength = affix.Strength;
+                }
+                else if (kind.Trail != null)
+                {
+                    // The kind's own (stage 8d): under all of its footprint.
+                    zone = kind.Trail.Zone;
+                    duration = kind.Trail.Duration;
+                    strength = kind.Trail.Strength;
+                    width = kind.TrailWidth;
+                }
+                else continue;
+
                 var state = states[i];
                 if (state != HordeAgentState.Moving && state != HordeAgentState.Attacking) continue;
                 var p = positions[i];
-                var cell = new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f), floor);
+                // The corner cell of the footprint: the width × width cells nearest the body's centre.
+                var shift = (width - 1) * 0.5f;
+                var cell = new GridPosition(Mathf.FloorToInt(p.x - shift + 0.5f), Mathf.FloorToInt(p.y - shift + 0.5f), floor);
                 var code = cell.Y * 65536 + cell.X;
                 if (_trailGeneration[i] != generations[i])
                 {
@@ -127,9 +153,18 @@ namespace Purge.Gameplay.Horde
                 }
 
                 if (_trailCell[i] == code) continue;
-                var left = new GridPosition(_trailCell[i] % 65536, _trailCell[i] / 65536, floor);
+                var leftX = _trailCell[i] % 65536;
+                var leftY = _trailCell[i] / 65536;
                 _trailCell[i] = code;
-                if (_zones.Place(left, trail.Zone, trail.Duration, trail.Strength, hostile: true)) TrailCells++;
+                // The cells of the old footprint the new one no longer covers.
+                for (var dy = 0; dy < width; dy++)
+                for (var dx = 0; dx < width; dx++)
+                {
+                    var x = leftX + dx;
+                    var y = leftY + dy;
+                    if (x >= cell.X && x < cell.X + width && y >= cell.Y && y < cell.Y + width) continue;
+                    if (_zones.Place(new GridPosition(x, y, floor), zone, duration, strength, hostile: true)) TrailCells++;
+                }
             }
         }
 

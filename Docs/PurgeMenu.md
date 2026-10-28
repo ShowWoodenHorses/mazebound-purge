@@ -420,7 +420,11 @@ Boss. **Мутант** (8в) — свой `Art/Monster/Mutant.controller` (ка�
 `Boss_Slam` — UAC Bare Fists `SmashingFists`, бросок — `Brute_Push`), способности добавляются и в существующий ассет (есть
 рывок — не трогает), валун `Art/Monster/Mutant/Mutant_Boulder.prefab` (скала PolygonNature, палитра `PolygonNature_01`);
 эффекты удара и валуна — `FX_Ground_Slam`, `FX_Boulder_Hit` (сначала Build Pack Effects, иначе без эффектов + предупреждение).
-Подробно — [Code/Bosses.md](Code/Bosses.md).
+**Промежуточные** (8г) — у каждого свой контроллер (`Butcher`, `Colossus`, `Gorgon`, `Demon.controller`; касты Creature /
+Wizard, взмах `Boss_Sweep` — UAC `AttackDoubleClawsCreature`), способности (добавляются в ассет, где есть только фаза),
+снаряды (валун у Колосса, яд Горгоны, огонь Демона) и **палитры по биому** вида (Fantasy Rivals `01_A/C/D`, Boss Zombies
+`01_A/B/C` для Леса/Замка/Снега; материал из Import получает шейдер базового; потом — Collect Used Third-Party Assets).
+Биом уровня — поле `Biome` темы (`VisualTheme`). Подробно — [Code/Bosses.md](Code/Bosses.md).
 **Громилы** `Ram_*` (5г): клипы `Brute_*` из UAC Creature Animset (ожидание, ходьба, бег, 3 атаки когтями, 3 реакции,
 рёв, `Brute_Push` — удар двумя руками, `Brute_Charge` — рёв перед рывком; атаки и реакции — с выпадом в root motion),
 свой контроллер `Art/Monster/Brute.controller` (те же состояния, каст по `CastIndex`: 0 — ярость `Brute_Rage`

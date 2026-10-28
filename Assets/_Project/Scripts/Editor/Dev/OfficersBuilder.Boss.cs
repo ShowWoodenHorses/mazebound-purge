@@ -39,6 +39,8 @@ namespace Purge.Editor.Dev
             ("Boss_Death", "Humanoid@Death"),
             // The Mutant's blow on the ground (stage 8c): both fists brought down (Bare Fists set).
             ("Boss_Slam", "Humanoid@SmashingFists"),
+            // The Butcher's sweep (stage 8d): both claws across.
+            ("Boss_Sweep", "Humanoid@AttackDoubleClawsCreature"),
         };
 
         /// <summary>The bosses: abilities [phase] for now — the phase's roar is the cast.</summary>
@@ -69,15 +71,40 @@ namespace Purge.Editor.Dev
             "Assets/_Project/Import/PolygonNature/Materials/PolygonNature_01.mat",
         };
 
-        private static readonly ClipSet MutantClips = new ClipSet
+        private static readonly ClipSet MutantClips =
+            BossCasts("Brute_Rage", "Brute_Roar", "Brute_Roar", "Brute_Charge", "Boss_Slam", "Brute_Push");
+
+        /// <summary>
+        /// The intermediate bosses (stage 8d), a controller each — the bosses' states, a cast clip per ability (order of
+        /// their abilities): the Butcher — the rage's roar, the roar before the charge, the sweep of both claws; the
+        /// Colossus — the shove, the stomp (fists on the ground), the boulder heaved; the Gorgon — the summon, the gaze, the
+        /// fan (the Wizard's spells); the Demon — the fire from above, the fire balls (spells; its trail is never cast).
+        /// </summary>
+        private static readonly ClipSet ButcherClips = BossCasts("Brute_Rage", "Brute_Charge", "Boss_Sweep");
+        private static readonly ClipSet ColossusClips = BossCasts("Brute_Push", "Boss_Slam", "Brute_Push");
+        private static readonly ClipSet GorgonClips = BossCasts("Elite_Wizard_Raise", "Elite_Wizard_Roar", "Elite_Wizard_Attack_1");
+        private static readonly ClipSet DemonClips = BossCasts("Elite_Wizard_Area", "Elite_Wizard_Attack_2");
+
+        private static ClipSet BossCasts(params string[] casts) => new ClipSet
         {
             Idle = BossClips.Idle, Walk = BossClips.Walk, Run = BossClips.Run, Stun = BossClips.Stun, Roar = BossClips.Roar,
             Attacks = BossClips.Attacks, Hits = BossClips.Hits, Deaths = BossClips.Deaths, Rise = BossClips.Rise,
-            Casts = new[] { "Brute_Rage", "Brute_Roar", "Brute_Roar", "Brute_Charge", "Boss_Slam", "Brute_Push" },
+            Casts = casts,
         };
 
-        /// <summary>Cast clips timed by the swing of the hands (the rest — roars — play through their warning).</summary>
-        private static readonly string[] SwingCasts = { "Boss_Slam", "Brute_Push" };
+        /// <summary>The controller of a built boss and its clips.</summary>
+        private static (string Controller, ClipSet Clips) BossKitOf(string prefabName) => prefabName switch
+        {
+            "Mutant_Forest" => (MutantControllerPath, MutantClips),
+            "ZombieBoss_Common" => ("Assets/_Project/Art/Monster/Butcher.controller", ButcherClips),
+            "Golem_Common" => ("Assets/_Project/Art/Monster/Colossus.controller", ColossusClips),
+            "Medusa_Common" => ("Assets/_Project/Art/Monster/Gorgon.controller", GorgonClips),
+            "Demon_Common" => ("Assets/_Project/Art/Monster/Demon.controller", DemonClips),
+            _ => (BossControllerPath, BossClips),
+        };
+
+        /// <summary>Cast clips timed by the swing of the hands (the rest — roars, spells — play through their warning).</summary>
+        private static readonly string[] SwingCasts = { "Boss_Slam", "Brute_Push", "Boss_Sweep" };
 
         public static bool IsMutant(string prefabName) => prefabName == "Mutant_Forest";
 
@@ -125,7 +152,7 @@ namespace Purge.Editor.Dev
                 SeedLook(view, prefab.name);
             }
 
-            if (IsMutant(prefab.name)) SetupMutantLook(view);
+            SetupBossLook(view, prefab);
             var path = AssetDatabase.GetAssetPath(prefab);
             var head = IsBigBoss(prefab.name) ? BigBossHeadHeight : BossHeadHeight;
             var scale = SetupPrefab(path, controller, view.Equipment, head);
@@ -158,14 +185,96 @@ namespace Purge.Editor.Dev
             return view;
         }
 
-        /// <summary>The Mutant's boulder (kept when set: edited in the asset).</summary>
-        private static void SetupMutantLook(MonsterViewDefinition view)
+        /// <summary>
+        /// A boss's projectiles and palettes (kept when set: edited in the asset): the Mutant and the Colossus throw the
+        /// boulder, the Gorgon spits venom, the Demon fire balls; the common bosses wear a palette per biome (stage 8d).
+        /// </summary>
+        private static void SetupBossLook(MonsterViewDefinition view, GameObject prefab)
         {
-            if (view.ProjectileModel != null) return;
-            var boulder = EnsureBoulder();
-            if (boulder == null) return;
-            view.ConfigureLook(view.Equipment, view.SplashColor, boulder, view.ProjectileColor, 1f);
+            var name = prefab.name;
+            if (view.ProjectileModel == null && (IsMutant(name) || name == "Golem_Common"))
+            {
+                var boulder = EnsureBoulder();
+                if (boulder != null) view.ConfigureLook(view.Equipment, view.SplashColor, boulder, view.ProjectileColor, 1f);
+            }
+            else if (view.ProjectileModel == null && view.ProjectileSize < 0.36f)
+            {
+                // A fresh look (the default size): venom or fire.
+                if (name == "Medusa_Common")
+                    view.ConfigureLook(view.Equipment, view.SplashColor, null, new Color(0.55f, 1f, 0.35f, 1f), 0.3f);
+                else if (name == "Demon_Common")
+                    view.ConfigureLook(view.Equipment, view.SplashColor, null, new Color(1f, 0.45f, 0.1f, 1f), 0.55f);
+            }
+
+            if (view.BasePalette == null) SetupPalettes(view, prefab);
             EditorUtility.SetDirty(view);
+        }
+
+        /// <summary>
+        /// The colouring per biome of a common boss (stage 8d, decision of 2026-10-26: one model, the pack's palettes): the
+        /// prefab's palette is the base; Forest / Castle / Snow — the pack's variants (Fantasy Rivals 01 A/C/D, Boss Zombies
+        /// 01 A/B/C). A palette still in Import gets the base's shader (Purge/Lit).
+        /// </summary>
+        private static void SetupPalettes(MonsterViewDefinition view, GameObject prefab)
+        {
+            string stem;
+            string[] variants;
+            if (prefab.name == "ZombieBoss_Common")
+            {
+                stem = "Polygon_ZombieBoss_01_";
+                variants = new[] { "A", "B", "C" };
+            }
+            else if (prefab.name == "Golem_Common" || prefab.name == "Medusa_Common" || prefab.name == "Demon_Common")
+            {
+                stem = "FantasyRivals_01_";
+                variants = new[] { "A", "C", "D" };
+            }
+            else return;
+
+            Material basePalette = null;
+            foreach (var renderer in prefab.GetComponentsInChildren<Renderer>(true))
+            foreach (var material in renderer.sharedMaterials)
+                if (basePalette == null && material != null && material.name.StartsWith(stem, StringComparison.Ordinal))
+                    basePalette = material;
+            if (basePalette == null)
+            {
+                Debug.LogWarning($"[Purge] Build Monsters: '{prefab.name}' has no '{stem}*' material — no palettes by biome.");
+                return;
+            }
+
+            var biomes = new[] { MonsterBiome.Forest, MonsterBiome.Castle, MonsterBiome.Snow };
+            var palettes = new List<BiomePalette>();
+            for (var b = 0; b < biomes.Length; b++)
+            {
+                var palette = FindPalette(stem + variants[b]);
+                if (palette == null) continue;
+                if (palette.shader != basePalette.shader)
+                {
+                    palette.shader = basePalette.shader;
+                    EditorUtility.SetDirty(palette);
+                }
+
+                palettes.Add(new BiomePalette(biomes[b], palette));
+            }
+
+            view.SetPalettes(basePalette, palettes.ToArray());
+        }
+
+        /// <summary>A material of the packs by name: collected (Art/ThirdParty) first, else still in Import.</summary>
+        private static Material FindPalette(string name)
+        {
+            Material found = null;
+            foreach (var guid in AssetDatabase.FindAssets($"{name} t:Material", new[] { "Assets/_Project/Art/ThirdParty", "Assets/_Project/Import" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (System.IO.Path.GetFileNameWithoutExtension(path) != name) continue;
+                var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (path.StartsWith("Assets/_Project/Art/", StringComparison.Ordinal)) return material;
+                found ??= material;
+            }
+
+            if (found == null) Debug.LogWarning($"[Purge] Build Monsters: palette '{name}' is missing.");
+            return found;
         }
 
         /// <summary>Diameter of the Mutant's boulder, m (its landing circle is r 1.5).</summary>
@@ -261,32 +370,181 @@ namespace Purge.Editor.Dev
             }
 
             if (phase != null) phase.Warning = PhaseWarning;
-            if (IsMutant(prefabName)) definition.SetAbilities(MutantAbilities(phase));
-            else if (phase != null) definition.SetAbilities(phase);
-            else definition.SetAbilities();
-
+            definition.SetAbilities(BossAbilities(prefabName, phase));
             EditorUtility.SetDirty(definition);
         }
 
         /// <summary>
-        /// The Mutant's abilities (stage 8c) into a definition made before them (stage 8a: only the phase) — its phase and
-        /// other numbers are kept; added once (a charge in the list = done).
+        /// A boss's abilities (the Mutant — stage 8c, the intermediate ones — 8d) into a definition made before them
+        /// (stage 8a: only the phase) — its phase and other numbers are kept; added once (anything but a phase in the
+        /// list = done).
         /// </summary>
-        private static void EnsureMutantAbilities(MonsterDefinition definition)
+        private static void EnsureBossAbilities(MonsterDefinition definition, string prefabName)
         {
             PhaseAbility phase = null;
             foreach (var ability in definition.Abilities)
             {
-                if (ability is ChargeAbility) return;
+                if (ability != null && !(ability is PhaseAbility)) return;
                 if (ability is PhaseAbility existing && phase == null) phase = existing;
             }
 
-            phase ??= new PhaseAbility
-            {
-                HealthBelow = 0.5f, DamageFactor = 1.5f, Rage = true, Warning = PhaseWarning, CastSound = "rage_roar",
-            };
-            definition.SetAbilities(MutantAbilities(phase));
+            if (phase == null && (IsMutant(prefabName) || prefabName == "ZombieBoss_Common"))
+                phase = new PhaseAbility
+                {
+                    HealthBelow = IsMutant(prefabName) ? 0.5f : 0.3f, DamageFactor = 1.5f, Rage = true, Warning = PhaseWarning,
+                    CastSound = "rage_roar",
+                };
+            definition.SetAbilities(BossAbilities(prefabName, phase));
             EditorUtility.SetDirty(definition);
+        }
+
+        /// <summary>Order = priority and the cast clip of <see cref="BossKitOf"/>.</summary>
+        private static AbilityModule[] BossAbilities(string prefabName, PhaseAbility phase)
+        {
+            switch (prefabName)
+            {
+                case "Mutant_Forest": return MutantAbilities(phase);
+                case "ZombieBoss_Common": return ButcherAbilities(phase);
+                case "Golem_Common": return ColossusAbilities();
+                case "Medusa_Common": return GorgonAbilities();
+                case "Demon_Common": return DemonAbilities();
+                default: return phase != null ? new AbilityModule[] { phase } : Array.Empty<AbilityModule>();
+            }
+        }
+
+        /// <summary>
+        /// The Butcher (card 8d): [rage from 30 % (the phase), charge (line 0.8 s), sweep — sector 120°, r 2 beyond the
+        /// body (reach 3 from the centre of the 2×2 body)].
+        /// </summary>
+        private static AbilityModule[] ButcherAbilities(PhaseAbility phase)
+        {
+            var charge = new ChargeAbility
+            {
+                Cooldown = 8f, FirstDelay = 2f, MinRange = 4f, MaxRange = 10f, NeedsSight = true, Warning = 0.8f, Recovery = 0.6f,
+                Distance = 9f, Speed = 11f, Damage = 30f, Knockback = 2.5f, CrowdPush = 8f, CastSound = "boss_roar",
+            };
+            var sweep = new StrikeAbility
+            {
+                Cooldown = 4f, FirstDelay = 1f, MinRange = 0f, MaxRange = 3f, NeedsSight = true, Warning = 0.7f, Recovery = 0.5f,
+                Reach = 3f, Angle = 120f, Damage = 30f, ReleaseSound = "boss_swing",
+            };
+            return phase != null ? new AbilityModule[] { phase, charge, sweep } : new AbilityModule[] { charge, sweep };
+        }
+
+        /// <summary>
+        /// The Colossus (card 8d; decision of 2026-10-26): [shove — r 2.5, knocked 3 cells; stomp — circle r 4 around
+        /// itself, 1 s, damage and slow ×0.5 for 2 s, no knock; boulder along an arc (as the Mutant's)].
+        /// </summary>
+        private static AbilityModule[] ColossusAbilities()
+        {
+            var shove = new PushAbility
+            {
+                Cooldown = 5f, FirstDelay = 1f, MinRange = 0f, MaxRange = 2.5f, NeedsSight = true, Warning = 0.5f, Recovery = 0.4f,
+                Radius = 2.5f, Damage = 15f, Knockback = 3f, ReleaseSound = "boss_swing",
+            };
+            var stomp = new AreaStrikeAbility
+            {
+                Cooldown = 7f, FirstDelay = 2f, MinRange = 0f, MaxRange = 4f, NeedsSight = false, Warning = 1f, Recovery = 0.6f,
+                AroundSelf = true, Radius = 4f, Damage = 25f, ReleaseSound = "boss_smash",
+                Status = AssetDatabase.LoadAssetAtPath<StatusDefinition>(EffectsPath + "/Status_Slow.asset"), StatusDuration = 2f,
+            };
+            var dustLook = PackEffect("PolygonArsenal/FX_Ground_Slam");
+            if (dustLook != null)
+            {
+                var dust = new LookEffect { Look = dustLook };
+                dust.SetRadius(4f);
+                stomp.SetImpact(dust);
+            }
+
+            return new AbilityModule[] { shove, stomp, Boulder(4.5f) };
+        }
+
+        /// <summary>The Gorgon (card 8d): [summon 4 rank-and-file of the wave (≤ 8 alive), gaze — cone 60° × 8 (stone 1 s), venom in a fan ×5].</summary>
+        private static AbilityModule[] GorgonAbilities()
+        {
+            var summon = new SummonAbility
+            {
+                Cooldown = 15f, FirstDelay = 5f, NeedsSight = false, MaxRange = 30f, Warning = 1.2f, Recovery = 0.4f,
+                Monster = null, Count = 4, Radius = 4f, Limit = 8, CastSound = "summon",
+            };
+            var gaze = new GazeAbility
+            {
+                Cooldown = 6f, FirstDelay = 2f, MinRange = 0f, MaxRange = 8f, NeedsSight = true, Warning = 0.5f, Recovery = 0.5f,
+                Reach = 8f, Angle = 60f, Status = EnsureStone(), StatusDuration = 1f, ReleaseSound = "gaze_stone",
+            };
+            var fan = new ProjectileAbility
+            {
+                Cooldown = 4f, FirstDelay = 1f, MinRange = 2f, MaxRange = 12f, NeedsSight = true, Warning = 0.7f, Recovery = 0.4f,
+                Form = ProjectileForm.Fan, Count = 5, FanAngle = 60f, Speed = 11f, Damage = 12f, Range = 12f, ReleaseSound = "spit",
+            };
+            return new AbilityModule[] { summon, gaze, fan };
+        }
+
+        /// <summary>
+        /// The Demon (card 8d): [fire from above — r 2.5 under the player, 1 s, fire on the ground; fire balls along arcs
+        /// in a fan ×3 (a fire zone where each lands); a burning trail under all of its body (decision of 2026-10-26)].
+        /// </summary>
+        private static AbilityModule[] DemonAbilities()
+        {
+            var fire = AssetDatabase.LoadAssetAtPath<ZoneDefinition>(EffectsPath + "/Zone_Fire.asset");
+            var area = new AreaStrikeAbility
+            {
+                Cooldown = 8f, FirstDelay = 3f, MinRange = 0f, MaxRange = 10f, NeedsSight = true, Warning = 1f, Recovery = 0.5f,
+                Radius = 2.5f, Damage = 25f, CastSound = "fireball", ReleaseSound = "fire_burst",
+                Fall = PackEffect("PolygonParticleFX/FX_Fall_Fireball"), FallTime = 0.45f,
+            };
+            area.SetImpact(FireImpact(fire, 2.5f));
+            var balls = new ProjectileAbility
+            {
+                Cooldown = 4f, FirstDelay = 1f, MinRange = 3f, MaxRange = 12f, NeedsSight = true, Warning = 0.8f, Recovery = 0.4f,
+                Form = ProjectileForm.ArcFan, Count = 3, FanAngle = 40f, Speed = 9f, Damage = 15f, Range = 12f, ArcRadius = 1.2f,
+                ArcHeight = 0.35f, CastSound = "fireball", ImpactSound = "fire_burst",
+            };
+            balls.SetImpact(FireImpact(fire, 1.2f));
+            var trail = new TrailAbility { Zone = fire, Duration = 3f, Strength = 1f };
+            return new AbilityModule[] { area, balls, trail };
+        }
+
+        /// <summary>Fire on the ground in <paramref name="radius"/> for 4 s and the burst of the pack.</summary>
+        private static EffectModule[] FireImpact(ZoneDefinition fire, float radius)
+        {
+            var effects = new List<EffectModule>();
+            if (fire != null)
+            {
+                var zone = new PlaceZoneEffect { Zone = fire, Duration = 4f, Strength = 1f };
+                zone.SetRadius(radius);
+                effects.Add(zone);
+            }
+
+            var burstLook = PackEffect("PolygonArsenal/FX_Fireball_Explosion");
+            if (burstLook != null)
+            {
+                var burst = new LookEffect { Look = burstLook };
+                burst.SetRadius(radius);
+                effects.Add(burst);
+            }
+
+            return effects.ToArray();
+        }
+
+        /// <summary>A boulder along an arc (circle r 1.5, every 5 s): the Mutant's and the Colossus's.</summary>
+        private static ProjectileAbility Boulder(float minRange)
+        {
+            var boulder = new ProjectileAbility
+            {
+                Cooldown = 5f, FirstDelay = 1.5f, MinRange = minRange, MaxRange = 14f, NeedsSight = true, Warning = 0.9f, Recovery = 0.4f,
+                Form = ProjectileForm.Arc, Speed = 10f, Damage = 25f, Range = 14f, ArcRadius = 1.5f, ArcHeight = 0.4f,
+                ImpactSound = "boss_smash",
+            };
+            var boulderLook = PackEffect("PolygonArsenal/FX_Boulder_Hit");
+            if (boulderLook != null)
+            {
+                var debris = new LookEffect { Look = boulderLook };
+                debris.SetRadius(1.5f);
+                boulder.SetImpact(debris);
+            }
+
+            return boulder;
         }
 
         /// <summary>
@@ -316,31 +574,17 @@ namespace Purge.Editor.Dev
             var slam = new AreaStrikeAbility
             {
                 Cooldown = 7f, FirstDelay = 3f, MinRange = 0f, MaxRange = 9f, NeedsSight = true, Warning = 1f, Recovery = 0.6f,
-                Radius = 3f, Damage = 30f, Closing = true, ReleaseSound = "boss_smash",
+                Radius = 2f, Damage = 30f, Closing = true, ReleaseSound = "boss_smash",
             };
             var slamLook = PackEffect("PolygonArsenal/FX_Ground_Slam");
             if (slamLook != null)
             {
                 var dust = new LookEffect { Look = slamLook };
-                dust.SetRadius(3f);
+                dust.SetRadius(2f);
                 slam.SetImpact(dust);
             }
 
-            var boulder = new ProjectileAbility
-            {
-                Cooldown = 5f, FirstDelay = 1.5f, MinRange = 4f, MaxRange = 14f, NeedsSight = true, Warning = 0.9f, Recovery = 0.4f,
-                Form = ProjectileForm.Arc, Speed = 10f, Damage = 25f, Range = 14f, ArcRadius = 1.5f, ArcHeight = 0.4f,
-                ImpactSound = "boss_smash",
-            };
-            var boulderLook = PackEffect("PolygonArsenal/FX_Boulder_Hit");
-            if (boulderLook != null)
-            {
-                var debris = new LookEffect { Look = boulderLook };
-                debris.SetRadius(1.5f);
-                boulder.SetImpact(debris);
-            }
-
-            return new AbilityModule[] { phase, summon, ragingSummon, charge, slam, boulder };
+            return new AbilityModule[] { phase, summon, ragingSummon, charge, slam, Boulder(4f) };
         }
 
         /// <summary>A built pack effect of Art/Effects (Build Pack Effects), or null when it is not built yet.</summary>

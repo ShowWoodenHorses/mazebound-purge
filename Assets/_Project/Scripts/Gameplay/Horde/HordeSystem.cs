@@ -47,7 +47,17 @@ namespace Purge.Gameplay.Horde
             Staggers = definition == null || definition.Staggers;
             IsBoss = definition != null && definition.IsBoss;
             BodyClearance = ClearanceOf(stats.Radius);
+            if (definition != null)
+                foreach (var ability in definition.Abilities)
+                    if (ability is TrailAbility trail && trail.Zone != null)
+                        Trail = trail;
         }
+
+        /// <summary>The zone it leaves on the cells it walks off (stage 8d, the Demon), or null.</summary>
+        public TrailAbility Trail { get; }
+
+        /// <summary>Cells per side of the footprint a trail covers: 1 for a body within a cell, 2 for 2×2, 3 for 3×3.</summary>
+        public int TrailWidth => Mathf.Max(1, Mathf.RoundToInt(Stats.Radius * 2f));
 
         /// <summary>A hit stops it for a moment (not bosses).</summary>
         public bool Staggers { get; }
@@ -500,11 +510,14 @@ namespace Purge.Gameplay.Horde
             _health[agent] = Mathf.Min(_maxHealth[agent], _health[agent] + amount);
         }
 
-        /// <summary>The monster's affix spares it this zone (its own trail).</summary>
+        /// <summary>The monster's affix or its kind's trail (stage 8d) spares it this zone (its own trail).</summary>
         public bool IgnoresZone(int agent, ZoneDefinition zone)
         {
+            if (zone == null) return false;
             var trail = AffixOf(agent)?.Trail;
-            return trail != null && zone != null && trail.Zone == zone;
+            if (trail != null && trail.Zone == zone) return true;
+            var own = _kinds[_kind[agent]].Trail;
+            return own != null && own.Zone == zone;
         }
 
         /// <summary>(slot, damage) a monster's attack or ability hurt the player (vampire, a hit's state).</summary>

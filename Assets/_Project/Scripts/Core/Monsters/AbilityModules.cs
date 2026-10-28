@@ -77,6 +77,9 @@ namespace Purge.Core.Monsters
         public float Recovery { get => _recovery; internal set => _recovery = value; }
 
         public abstract AbilityWarningShape Shape { get; }
+
+        /// <summary>Never cast: works all the time by itself (stage 8d: the Demon's trail).</summary>
+        public virtual bool Passive => false;
     }
 
     /// <summary>How a projectile ability flies.</summary>
@@ -88,6 +91,11 @@ namespace Purge.Core.Monsters
         Arc = 1,
         /// <summary>Several straight ones in a fan (icicles).</summary>
         Fan = 2,
+        /// <summary>
+        /// Several along arcs in a fan (stage 8d, the Demon's fire balls): the landing spots spread around the aimed one at
+        /// its distance; walls cut each short.
+        /// </summary>
+        ArcFan = 3,
     }
 
     /// <summary>
@@ -100,9 +108,9 @@ namespace Purge.Core.Monsters
     public sealed class ProjectileAbility : AbilityModule
     {
         [SerializeField] private ProjectileForm _form;
-        [Tooltip("Fan: projectiles in the fan.")]
-        [SerializeField, Range(1, 9)] private int _count = 3;
-        [Tooltip("Fan: degrees between the outer projectiles.")]
+        [Tooltip("Fan, arc fan: projectiles in the fan.")]
+        [SerializeField, Range(1, MaxCount)] private int _count = 3;
+        [Tooltip("Fan, arc fan: degrees between the outer projectiles.")]
         [SerializeField, Range(5f, 120f)] private float _fanAngle = 30f;
         [Tooltip("Cells per second.")]
         [SerializeField, Min(1f)] private float _speed = 12f;
@@ -124,7 +132,17 @@ namespace Purge.Core.Monsters
 
         public string ImpactSound { get => _impactSound; internal set => _impactSound = value; }
         public ProjectileForm Form { get => _form; internal set => _form = value; }
-        public int Count { get => _form == ProjectileForm.Fan ? Mathf.Max(1, _count) : 1; internal set => _count = value; }
+        public const int MaxCount = 9;
+
+        public int Count
+        {
+            get => _form == ProjectileForm.Fan || _form == ProjectileForm.ArcFan ? Mathf.Clamp(_count, 1, MaxCount) : 1;
+            internal set => _count = value;
+        }
+
+        /// <summary>Flies along an arc and lands (<see cref="ProjectileForm.Arc"/>, <see cref="ProjectileForm.ArcFan"/>).</summary>
+        public bool IsArc => _form == ProjectileForm.Arc || _form == ProjectileForm.ArcFan;
+
         public float FanAngle { get => _fanAngle; internal set => _fanAngle = value; }
         public float Speed { get => _speed; internal set => _speed = value; }
         public float Damage { get => _damage; internal set => _damage = value; }
@@ -135,7 +153,7 @@ namespace Purge.Core.Monsters
         public float StatusDuration { get => _statusDuration; internal set => _statusDuration = value; }
         public IReadOnlyList<EffectModule> Impact => _impact;
 
-        public override AbilityWarningShape Shape => _form == ProjectileForm.Arc ? AbilityWarningShape.Circle : AbilityWarningShape.Line;
+        public override AbilityWarningShape Shape => IsArc ? AbilityWarningShape.Circle : AbilityWarningShape.Line;
 
         /// <summary>Radius of the landing circle the warning shows (the larger of the damage and the effects).</summary>
         public float LandingRadius
@@ -257,8 +275,11 @@ namespace Purge.Core.Monsters
         [Tooltip("Look only (stage 8c, the Mutant's blow on the ground): a ring closes in from the rim to the centre over the " +
                  "warning instead of the fill growing; the blow still covers the whole circle.")]
         [SerializeField] private bool _closing;
+        [Tooltip("Stage 8d (the Colossus's stomp): the circle is around the monster itself, not under the player.")]
+        [SerializeField] private bool _aroundSelf;
 
         public bool Closing { get => _closing; internal set => _closing = value; }
+        public bool AroundSelf { get => _aroundSelf; internal set => _aroundSelf = value; }
         public float Radius { get => _radius; internal set => _radius = value; }
         public float Damage { get => _damage; internal set => _damage = value; }
         public StatusDefinition Status { get => _status; internal set => _status = value; }
@@ -391,7 +412,8 @@ namespace Purge.Core.Monsters
     {
         public const int MaxCount = 12;
 
-        [Tooltip("Who climbs out (it joins the level's horde by itself).")]
+        [Tooltip("Who climbs out (it joins the level's horde by itself). Empty — rank-and-file by the weights of the " +
+                 "current wave, each one picked anew (stage 8d, the Gorgon).")]
         [SerializeField] private MonsterDefinition _monster;
         [Tooltip("How many a cast.")]
         [SerializeField, Range(1, MaxCount)] private int _count = 6;
@@ -414,10 +436,32 @@ namespace Purge.Core.Monsters
         public int Limit { get => Mathf.Max(1, _limit); internal set => _limit = value; }
 
         public override AbilityWarningShape Shape => AbilityWarningShape.Points;
+    }
+
+    /// <summary>
+    /// A trail (stage 8d, the Demon's «огненный след»; as the fiery champion's): the cells the body walks off — all of
+    /// its footprint — get the zone, the monsters' (it hurts the player and the monsters in it); the monster itself takes
+    /// nothing from this zone. Never cast.
+    /// </summary>
+    [Serializable, ModuleInfo("Trail", Category = "Ability", AllowMultiple = false)]
+    public sealed class TrailAbility : AbilityModule
+    {
+        [SerializeField] private ZoneDefinition _zone;
+        [Tooltip("Seconds a cell of the trail lasts.")]
+        [SerializeField, Min(0.2f)] private float _duration = 3f;
+        [Tooltip("Multiplier of the zone's damage.")]
+        [SerializeField, Min(0f)] private float _strength = 1f;
+
+        public ZoneDefinition Zone { get => _zone; internal set => _zone = value; }
+        public float Duration { get => _duration; internal set => _duration = value; }
+        public float Strength { get => _strength; internal set => _strength = value; }
+
+        public override AbilityWarningShape Shape => AbilityWarningShape.None;
+        public override bool Passive => true;
 
         public override void Validate(List<string> problems)
         {
-            if (_monster == null) problems.Add("summon: no monster.");
+            if (_zone == null) problems.Add("trail: no zone.");
         }
     }
 

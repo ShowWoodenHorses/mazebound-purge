@@ -417,6 +417,7 @@ namespace Purge.Presentation.Visual.Horde
             var parent = _root != null ? _root.transform : null;
             var instance = UnityEngine.Object.Instantiate(definition.Prefab, parent);
             instance.name = $"{definition.Prefab.name} #{number + 1}";
+            ApplyPalette(definition, instance);
             _shadows?.Attach(instance);
             // The shadow is a child of the scaled model: keep it the size of the others'.
             var shadow = instance.transform.Find("BlobShadow");
@@ -426,6 +427,32 @@ namespace Purge.Presentation.Visual.Horde
             var view = new View(instance, pool);
             pool.All.Add(view);
             return view;
+        }
+
+        /// <summary>
+        /// The palette of the level's biome (its theme's) in place of the prefab's base one (stage 8d: one model of a common
+        /// boss, a colouring per biome); at load, on the pooled instance.
+        /// </summary>
+        private void ApplyPalette(MonsterViewDefinition definition, GameObject instance)
+        {
+            var theme = _level.VisualTheme;
+            var palette = theme != null ? definition.PaletteFor(theme.Biome) : null;
+            if (palette == null) return;
+            // By name: in a build the prefab and this definition may carry copies of the material (other bundles).
+            var baseName = definition.BasePalette.name;
+            foreach (var renderer in instance.GetComponentsInChildren<Renderer>(true))
+            {
+                var materials = renderer.sharedMaterials;
+                var changed = false;
+                for (var m = 0; m < materials.Length; m++)
+                    if (materials[m] != null && materials[m].name == baseName)
+                    {
+                        materials[m] = palette;
+                        changed = true;
+                    }
+
+                if (changed) renderer.sharedMaterials = materials;
+            }
         }
 
         /// <summary>Death clip side by the killing push: pushed backwards = hit in the front (0), back 1, left 2, right 3.</summary>

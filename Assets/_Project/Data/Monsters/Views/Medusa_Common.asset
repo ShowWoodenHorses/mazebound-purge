@@ -17,13 +17,17 @@ MonoBehaviour:
   _equipment: []
   _runSpeed: 2.5946207
   _walkSpeed: 0.44382232
-  _castMoment: 0.79999995
-  _castLength: 1.5000001
-  _moreCasts: []
+  _castMoment: 0.28125
+  _castLength: 4.266667
+  _moreCasts:
+  - Moment: 0.14999999
+    Length: 3.3333335
+  - Moment: 0.21
+    Length: 3.3333335
   _splashColor: {r: 0.55, g: 0.85, b: 0.25, a: 1}
   _projectileModel: {fileID: 0}
-  _projectileColor: {r: 0.6, g: 1, b: 0.3, a: 1}
-  _projectileSize: 0.35
+  _projectileColor: {r: 0.55, g: 1, b: 0.35, a: 1}
+  _projectileSize: 0.3
   _projectileTrail:
     m_AssetGUID: 
     m_SubObjectName: 
@@ -32,3 +36,11 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _tether: {fileID: 0}
   _tetherWidth: 0.14
+  _basePalette: {fileID: 2100000, guid: caf01dd5152f3934d8079e6160aa3b1e, type: 2}
+  _biomePalettes:
+  - Biome: 2
+    Material: {fileID: 2100000, guid: caf01dd5152f3934d8079e6160aa3b1e, type: 2}
+  - Biome: 1
+    Material: {fileID: 2100000, guid: d4faeff94cff2794a82d1a9a3b9d4e02, type: 2}
+  - Biome: 3
+    Material: {fileID: 2100000, guid: 25e01712a1f68ef48a57dea7551cd8a4, type: 2}

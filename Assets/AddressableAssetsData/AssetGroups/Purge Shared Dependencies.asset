@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03336d372b3854043b18096209507e9b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/ZombieBoss_Wretch.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 033d75e7ef3e80a42bd46c84029aff49
     m_Address: Assets/_Project/Data/Weapons/Hunter_sniper.asset
     m_ReadOnly: 0
@@ -57,6 +62,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 041380d58bee7cb4b9b7eaadee9653f4
     m_Address: Assets/_Project/Data/Zombies/ForestZombieListener.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0419114ba44aab040b4136a65396d4a2
+    m_Address: Assets/_Project/Art/Monster/Common/Boss/ZombieBoss_Common.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -80,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07cc23542e9b41949804f2fd5fd4b15b
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Death_Front.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 07cc53531cb2bc248ad89fe5dc4f47d7
     m_Address: Assets/_Project/Data/Monsters/Views/Shouter_Common.asset
     m_ReadOnly: 0
@@ -90,8 +105,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 085dae20b00ed694d9fde39f982bde5a
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Death_Right.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0935b85ca21466b4882db6f7179e8780
     m_Address: Assets/_Project/Art/ThirdParty/PolygonCyberCity/Models/SM_Wep_Sword_04.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09e3039a616899d4f8a664d816ff9e1e
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Hit_Left.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -205,6 +230,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15c00ee315600ce439b3990a02b005bc
+    m_Address: Assets/_Project/Data/Monsters/Castle/Capture_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1630a075154625f459c330841c5c48fb
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_SMG_Barrel_01.fbx
     m_ReadOnly: 0
@@ -230,8 +260,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18e07e7f0a2a6e1498a6d9aabe57f5ac
+    m_Address: Assets/_Project/Art/Monster/Mutant/Mutant_Boulder.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 18f698a95ab215742a622c214015079e
     m_Address: Assets/_Project/Art/ThirdParty/PolygonCyberCity/Textures/Alts/PolygonCyberCity_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19baf5a78d2bf6644b5690beff1d72d5
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/Capture/SM_Tree_Vines_01.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -242,6 +282,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1b96d7b7e85668e4a8fd7c823e9962f2
     m_Address: Assets/_Project/Art/Characters/SM_Chr_Zombie_Male_02.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bd9c42314e7df44c8ab8e581f7f5310
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Materials/Misc/PolygonNature_Vines.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -262,6 +307,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d02df5d75461c74194583253809b84e
     m_Address: Assets/_Project/Data/Weapons/Tesla.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d0b1b1ddbc273541947e5d50713052d
+    m_Address: Assets/_Project/Art/Monster/Hook/hook_vine.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -292,6 +342,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1f8a534da70c88348837cd5089456c5f
     m_Address: Assets/_Project/Data/Monsters/Castle/Distant_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1fa41d4c2c303d54695a7cd940557447
+    m_Address: Assets/_Project/Data/Drops/BossDrop.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -327,6 +382,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 241610e08b02e144e910dea891469100
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Prop_Barrel_Nuke_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24efe3655b1c7264e9641273b53c28d8
+    m_Address: Assets/_Project/Data/Monsters/Snow/Capture_Snow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -385,6 +445,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a6e619ed3c95cd41affc02eee55caa8
+    m_Address: Assets/_Project/Data/Effects/Status_Stone.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2ba97cbdd0d9a934f8a49a498393a993
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Models/SM_Wep_Grenade_Launcher_01.fbx
     m_ReadOnly: 0
@@ -407,6 +472,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2de05214307d17e4a8276713c0e65894
     m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Textures/Misc/PolygonDarkFantasy_Texture_01_Normals.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e1dffc7ed57f054497b59494cfc3879
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Attack_3.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -437,6 +507,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fa09797b27ada84abb30998ce58a37f
     m_Address: Assets/_Project/Art/Biomes/Forest/Textures/wall_forest_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 304079cd97236424fb69d62ea4de0f59
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Materials/Glass_02.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -522,6 +597,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 397c9793a8d32b3489a917fc257e56c2
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Preset_A_Rifle_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bf1797a1e906ed419074e5bd4b7ff3b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Models/SM_Rock_Boulder_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -640,6 +720,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4aaf5eafc291ee24ba7cefe12e6677a8
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/Misc/Noise_Big.tga
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4acd14eba63311248a643351bcb29dcc
     m_Address: Assets/_Project/Data/Effects/Status_Poison.asset
     m_ReadOnly: 0
@@ -657,6 +742,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4cc44080e090eeb4587abd21b38ba962
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_F2D91A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cc7fa5bf73eeb04584bd9ce7c8f3294
+    m_Address: Assets/_Project/Art/Animations/Boss_Entrance.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -700,6 +790,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50540c57d6ae48f4391396e060cf8796
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Attack_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 508e743aa78920745bdf83f9d5324eac
     m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Textures/FantasyRivals_01_Elemental_Emissive.png
     m_ReadOnly: 0
@@ -707,6 +802,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 50942deae0b84f444b7c4caf61824f12
     m_Address: Assets/_Project/Data/Ammo/Ammo_5_45.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51458a003eb22714c97c02dae7881420
+    m_Address: Assets/_Project/Art/Animations/Boss_Sweep.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -777,6 +877,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 57fb4f9b141b4a0418f288a6e500075c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Textures/Weapons/PolygonMilitary_Weapons_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58e6f69c4479d594e917da1e20dda81e
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/SM_Chr_Attach_Wretch_Hair_02.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -855,6 +960,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6050d6d656056d04f962ae9050809fc6
+    m_Address: Assets/_Project/Art/Shaders/PurgeTether.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 607b1c6d68d9194418c08110c92fa65c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_Superheavy_01.fbx
     m_ReadOnly: 0
@@ -872,6 +982,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61ac7834342a27c4c9ea51af6feb08dd
     m_Address: Assets/_Project/Data/Monsters/Forest/Ram_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61e10a0eec0a01a4eb2159d322ee8d54
+    m_Address: Assets/_Project/Art/Monster/Hook/Hook_Vine_Forest.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -915,6 +1030,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67c5e78dd75926f41aac29d397938966
+    m_Address: Assets/_Project/Art/Monster/Hook.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68021691667e41745913058504a1d954
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Materials/Polygon_ZombieBoss_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 692cccc442174b64da6ebead3da6b283
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Roar.fbx
     m_ReadOnly: 0
@@ -945,6 +1070,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bf3533520e37974ebfce03011a1605e
+    m_Address: Assets/_Project/Art/Animations/Boss_Attack_3.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bf9fc823c3af4f469bd31b47572a1f4
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/SM_Wep_Sickle_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c0ccb954ec6b574496d77ee89b411c3
+    m_Address: Assets/_Project/Art/Monster/Forest/Boss/Mutant_Forest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dcbd837340a66e4d8e6a64c605179e4
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Materials/Alts/PolygonApocalypseWasteland_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6edf3064276963546a1242f6b8262cc8
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Machete_01.fbx
     m_ReadOnly: 0
@@ -955,6 +1100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f33311a646c0304d91bbf952f195201
+    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/Materials/PolygonParticleFX_Rock_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fa6e3a289a54da4387f58e1eb847ef8
     m_Address: Assets/_Project/Art/ThirdParty/PolygonPirates/Textures/Texture_01_A.png
     m_ReadOnly: 0
@@ -962,6 +1112,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7022d254909acf94a9b32351c48eea5a
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Emissive/Characters/PolygonApocalypseWasteland_Character_Emissive_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70fb501bace414a44b107f0fb9a5b34c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Textures/PolygonZombieBoss_Texture_01_A.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -977,6 +1132,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 72b7690f1bc6b194981389b952c5b3c3
     m_Address: Assets/_Project/Data/Obstacles/Tree.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7312a3b097175d44d9599c486efd9c41
+    m_Address: Assets/_Project/Data/Monsters/Forest/Mutant_Forest.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1032,6 +1192,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76fdf51f2468a424597593b8321ceda6
     m_Address: Assets/_Project/Art/Animations/Brute_Hit_Right.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 780c052f0fede104286d71d2bede8154
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Materials/Polygon_ZombieBoss_01_C.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1140,6 +1305,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84ed9d926e946bf4283b9ccc7c0dceea
+    m_Address: Assets/_Project/Art/Monster/Mutant.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 86c49ab8f27d0194989bd16b2389ff73
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Textures/PolygonBattleRoyale_Vehicles_01_Emmision.png
     m_ReadOnly: 0
@@ -1190,6 +1360,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89d5f4db88546fd4fadf6d661b38a4a7
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Models/SM_Tree_Vines_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89dad3b823b0fbc4c95914579993dae9
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Shaders/SyntyStudios_Vines.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8a8287d908400554299614e050c14ec4
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Hit_Right.fbx
     m_ReadOnly: 0
@@ -1235,6 +1415,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f4ca7a7eabdf544591f5a66f257514c
+    m_Address: Assets/_Project/Art/Monster/Butcher.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ffce8b93f03c304d8a632d992750457
     m_Address: Assets/_Project/Art/Animations/Brute_Roar.fbx
     m_ReadOnly: 0
@@ -1255,6 +1440,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 926a71a71abc3e949829c77f02578965
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/Capture/SM_Wep_Sickle_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 931a8223b8cb7e449bd50e42d6c0a2d8
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Materials/PolygonBattleRoyale_Wep_01.mat
     m_ReadOnly: 0
@@ -1262,6 +1452,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 932c6f4d36dc1fb43bd49335d7c66e86
     m_Address: Assets/_Project/Art/Monster/Shaman.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 954c2a9655ab2b047ace4faec39a8805
+    m_Address: Assets/_Project/Data/Monsters/Common/ZombieBoss_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1292,6 +1487,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9841c20c900ed354dbc135cc4571d48e
     m_Address: Assets/_Project/Art/Biomes/Snow/Textures/floor_snow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98dc0a7dbd8342d4eb57422247474d0e
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Characters/SM_Chr_Attach_Jar_Head_Helmet_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1445,6 +1645,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab22268a5332e2f41a33d06d22435735
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Death_Left.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ab4973c6dd2d6a7448107e6b5f7afe05
     m_Address: Assets/_Project/Data/Weapons/Grenade_Launcher.asset
     m_ReadOnly: 0
@@ -1485,6 +1690,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae6321e2dfe487d428724459e3734e44
+    m_Address: Assets/_Project/Data/Monsters/Common/Demon_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aea32fe75a11cb247a0fb9adcb79d3de
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Mod_Silencer_02.fbx
     m_ReadOnly: 0
@@ -1497,6 +1707,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: af44758f83ced144cac639c4e6a9abde
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Walk.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b129ceb687b65cf41802c9c54ce422c2
+    m_Address: Assets/_Project/Art/Animations/Boss_Attack_2.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1550,6 +1765,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b72e16591230315448c77c827b522ae1
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Materials/PolygonNature_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b733ec61742d91345b3f4027205340fa
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Props/SM_Prop_Trailer_Cage_02.fbx
     m_ReadOnly: 0
@@ -1562,6 +1782,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7d977faf4f9e524ba1da41e3e1ebbc3
     m_Address: Assets/_Project/Data/Weapons/RPG.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8426bd737c34d7438b07a0114fa8184
+    m_Address: Assets/_Project/Art/Animations/Boss_Slam.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8926db2f081d1c4c87d221847f2473d
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Run.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8a5aaf3241322645b44ac9e04467cbb
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Hit_Front.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1595,6 +1830,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd6f03f34109a334fa538f7ef8367631
+    m_Address: Assets/_Project/Data/Monsters/Views/ZombieBoss_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bd948e954d146054e87e4bd8308c40a7
     m_Address: Assets/_Project/Data/Weapons/AK-74.asset
     m_ReadOnly: 0
@@ -1622,6 +1862,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bfea5a2a82000c54482c881fc1a91dc5
     m_Address: Assets/_Project/Art/Shaders/PurgeGeometry.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c08b6253185002649b6bf227e38215b0
+    m_Address: Assets/_Project/Art/Animations/Boss_Attack_1.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1730,6 +1975,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca4b5335040f6fa4993b8dbf0d52c6be
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Textures/Leaves/Undergrowth_Texture.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caaea0a7325e0334fad01c82f2f1b82e
+    m_Address: Assets/_Project/Data/Monsters/Views/Mutant_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: caf01dd5152f3934d8079e6160aa3b1e
     m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Materials/Alts/FantasyRivals_01_A.mat
     m_ReadOnly: 0
@@ -1765,6 +2020,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd4245c34a120354a8da3f2868888b6f
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Throw.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cd49c43ab2981b145a9aa20def950e8e
     m_Address: Assets/_Project/Art/Animations/Monster_Death_Left.fbx
     m_ReadOnly: 0
@@ -1782,6 +2042,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ceec1fe9f5ec65848973ff21c3ec4673
     m_Address: Assets/_Project/Data/Weapons/Shock_cannon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf08c176298584e418893f8a701e392b
+    m_Address: Assets/_Project/Data/Monsters/Common/Medusa_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1840,6 +2105,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3fdff42f4b55b9488122cc9c1f68a7d
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Death_Back.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d411cc6e22f7c024fbcfa952569612e1
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Attack_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4373ee8ff1b94041b6c9e6b185be6db
+    m_Address: Assets/_Project/Art/Monster/Forest/Special/Capture_Forest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d46fe2db97ef68841a40fb2dbcc72ab4
     m_Address: Assets/_Project/Art/Animations/Brute_Push.fbx
     m_ReadOnly: 0
@@ -1847,6 +2127,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d49aaafd2027e4f4eba080a895771fb6
     m_Address: Assets/_Project/Data/Monsters/Views/Shaman_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4a4a6da66223894b80b7c10e3e7e3b5
+    m_Address: Assets/_Project/Data/Monsters/Views/Capture_Forest.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1882,6 +2167,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d82630c95af72ef439a97df3f1f4d651
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Materials/Alts/PolygonApocalypseWasteland_Mat_05_B.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8c73bb445f0a95419d95b8d708419a8
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Hit_Right.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1980,6 +2270,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e25d0ecfd92737e4aa7c89e1e377472c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Alts/PolygonApocalypseWasteland_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2729b2e2788eac41bc2b8079be6f1fe
+    m_Address: Assets/_Project/Data/Monsters/Forest/Capture_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e436f1c05d7495f4ba683b39f364552e
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Hybrid_02.fbx
     m_ReadOnly: 0
@@ -1987,6 +2287,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e44f05f90fed0e446b142333febf4f9e
     m_Address: Assets/_Project/Art/Fog/Fog.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e53ac584f9cf9c14ab128896e5baa658
+    m_Address: Assets/_Project/Data/Monsters/Common/Golem_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2050,6 +2355,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea92e2f928ab2fe4287f5b3be16a9c93
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Idle.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eafdf1935eb98494e85039d52d9b1be6
     m_Address: Assets/_Project/Data/Ammo/Ammo_7_62.asset
     m_ReadOnly: 0
@@ -2082,6 +2392,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed3306fa68b49484694c79eae24ae359
     m_Address: Assets/_Project/Data/Weapons/FlameGun.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed4904158979f7f4ca95107ea44d9c2a
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Walk.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2121,6 +2436,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f19d80585bf203643b5528e0eb2f9bee
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/SM_Chr_Attach_Wretch_Hair_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f23d1cdf4b40737488ce8a40b040b22d
     m_Address: Assets/_Project/Art/ThirdParty/FX/Polygon Arsenal/Models/PolySphereSmall.FBX
     m_ReadOnly: 0
@@ -2133,6 +2453,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f294deab423140143987aca118dd1ef5
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Death_Back.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f399146b3b4667e45bedf8c749f86fe5
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Materials/Polygon_ZombieBoss_01_B.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2183,6 +2508,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f932dc705e6143a4daf475d0957bca78
     m_Address: Assets/_Project/Art/Effects/fx_tracer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9a0603964774db4ead162f2ee3d5c58
+    m_Address: Assets/_Project/Art/Animations/Boss_Death.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

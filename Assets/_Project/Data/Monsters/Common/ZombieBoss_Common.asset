@@ -48,6 +48,8 @@ MonoBehaviour:
   _deathEffects: []
   _abilities:
   - rid: 1763807467480285250
+  - rid: 1763807473633067085
+  - rid: 1763807473633067086
   references:
     version: 2
     RefIds:
@@ -70,3 +72,43 @@ MonoBehaviour:
         _speedFactor: 1
         _cooldownFactor: 1
         _rage: 1
+    - rid: 1763807473633067085
+      type: {class: ChargeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 8
+        _firstDelay: 2
+        _minRange: 4
+        _maxRange: 10
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.8
+        _recovery: 0.6
+        _castSound: boss_roar
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _distance: 9
+        _speed: 11
+        _damage: 30
+        _knockback: 2.5
+        _crowdPush: 8
+    - rid: 1763807473633067086
+      type: {class: StrikeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 4
+        _firstDelay: 1
+        _minRange: 0
+        _maxRange: 3
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.7
+        _recovery: 0.5
+        _castSound: 
+        _releaseSound: boss_swing
+        _fromPhase: 0
+        _untilPhase: 4
+        _reach: 3
+        _angle: 120
+        _damage: 30
+        _status: {fileID: 0}
+        _statusDuration: 1

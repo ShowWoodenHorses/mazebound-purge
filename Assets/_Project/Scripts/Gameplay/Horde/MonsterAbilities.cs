@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Common;
 using Purge.Core.Effects;
 using Purge.Core.Monsters;
+using Purge.Core.Waves;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
@@ -70,6 +72,9 @@ namespace Purge.Gameplay.Horde
     /// <item><b>Summon</b> (<see cref="SummonAbility"/>, stage 8b): spots chosen when the cast begins (the warning marks
     /// them), as many as its limit of living summoned leaves; they climb out there (<see cref="HordeSystem.SpawnSummoned"/>).</item>
     /// <item><b>Gaze</b> (<see cref="GazeAbility"/>, stage 8b): the player in the cone and in a clear line gets its state.</item>
+    /// <item>Stage 8d: an arc fan (<see cref="ProjectileForm.ArcFan"/>) — landing spots chosen when the cast begins
+    /// (<see cref="LandingCount"/>); a summon with no monster calls the wave's rank-and-file (<see cref="SetWave"/>);
+    /// passive modules (<see cref="AbilityModule.Passive"/>: the trail — <see cref="ChampionSystem"/>) are never cast.</item>
     /// </list>
     /// Also keeps <see cref="HordeSystem.SetSeesPlayer"/> (line of sight, <see cref="SightInterval"/>) for the ranged
     /// monsters' tactics. In <see cref="HordeSystem.GodMode"/> the player takes neither damage nor states — knocks still
@@ -111,9 +116,20 @@ namespace Purge.Gameplay.Horde
         private byte[][] _kindPhaseNumber; // per kind and ability: the phase a PhaseAbility switches to (1, 2…), else 0
         private byte[] _healthPhase; // the phase by HP the monster is in (stage 8a)
         private float[] _tempo; // × its cooldowns (its phases)
-        private int[][] _kindSummon; // per kind and ability: the horde kind a SummonAbility calls, else -1 (stage 8b)
+        private int[][] _kindSummon; // per kind and ability: the horde kind a SummonAbility calls, FromWave, else -1 (stage 8b)
         private Vector2[] _summonPoint; // agent · SummonAbility.MaxCount + n: where the summoned climb out
+        private int[] _summonKind; // … and who
         private byte[] _summonCount;
+        private Vector2[] _landing; // agent · ProjectileAbility.MaxCount + n: where the arcs of a cast land (stage 8d)
+        private byte[] _landingCount;
+        private readonly System.Collections.Generic.List<int> _poolKinds = new System.Collections.Generic.List<int>();
+        private readonly System.Collections.Generic.List<float> _poolWeights = new System.Collections.Generic.List<float>();
+        private readonly System.Collections.Generic.List<int> _hordePoolKinds = new System.Collections.Generic.List<int>();
+        private readonly System.Collections.Generic.List<float> _hordePoolWeights = new System.Collections.Generic.List<float>();
+        private DeterministicRandom _random;
+
+        /// <summary>A summon with no monster calls rank-and-file by the weights of the current wave (stage 8d).</summary>
+        private const int FromWave = -2;
         private int[] _summoner; // per slot: the slot that summoned it + 1 (0 = none)
         private int[] _summonerGeneration; // … and that slot's generation then
         private int[] _summonedGeneration; // the summoned's own generation (a reused slot is not summoned)
@@ -201,6 +217,66 @@ namespace Purge.Gameplay.Horde
         /// <summary>Where the summoned <paramref name="n"/> of <see cref="SummonCount"/> climbs out.</summary>
         public Vector2 SummonPoint(int agent, int n) => _summonPoint[agent * SummonAbility.MaxCount + n];
 
+        /// <summary>How many arcs the cast of the monster in <paramref name="agent"/> throws (its warning circles).</summary>
+        public int LandingCount(int agent) => IsActive && (uint)agent < (uint)_landingCount.Length ? _landingCount[agent] : 0;
+
+        /// <summary>Where the arc <paramref name="n"/> of <see cref="LandingCount"/> lands.</summary>
+        public Vector2 Landing(int agent, int n) => _landing[agent * ProjectileAbility.MaxCount + n];
+
+        /// <summary>
+        /// Whom a summon with no monster calls from now on (stage 8d): the wave's rank-and-file by their weights — none
+        /// in its budget, those of its groups and escort by their counts; null or none of them — the horde's.
+        /// The wave system sets it when a wave starts.
+        /// </summary>
+        public void SetWave(WaveDefinition wave)
+        {
+            _poolKinds.Clear();
+            _poolWeights.Clear();
+            if (!IsActive || wave == null) return;
+            foreach (var entry in wave.Monsters)
+                if (entry?.Monster != null && entry.Weight > 0f)
+                    AddToPool(entry.Monster, entry.Weight);
+            if (_poolKinds.Count > 0) return;
+            foreach (var group in wave.Groups)
+                if (group?.Monster != null)
+                    AddToPool(group.Monster, group.Count);
+            if (wave.Boss == null) return;
+            foreach (var group in wave.Boss.Escort)
+                if (group?.Monster != null)
+                    AddToPool(group.Monster, group.Count);
+        }
+
+        private void AddToPool(MonsterDefinition monster, float weight)
+        {
+            if (monster.Rank != MonsterRank.Mass) return;
+            var kind = _horde.KindIndexOf(monster);
+            if (kind < 0) return;
+            var at = _poolKinds.IndexOf(kind);
+            if (at >= 0)
+            {
+                _poolWeights[at] += weight;
+                return;
+            }
+
+            _poolKinds.Add(kind);
+            _poolWeights.Add(weight);
+        }
+
+        /// <summary>A rank-and-file kind of the wave's pool (else the horde's) by weight; -1 = none.</summary>
+        private int PickPoolKind()
+        {
+            var kinds = _poolKinds.Count > 0 ? _poolKinds : _hordePoolKinds;
+            var weights = _poolKinds.Count > 0 ? _poolWeights : _hordePoolWeights;
+            if (kinds.Count == 0) return -1;
+            var total = 0f;
+            foreach (var weight in weights) total += weight;
+            var pick = (float)_random.NextDouble() * total;
+            for (var k = 0; k < kinds.Count; k++)
+                if ((pick -= weights[k]) < 0f)
+                    return kinds[k];
+            return kinds[kinds.Count - 1];
+        }
+
         /// <summary>The slot that summoned the living monster in <paramref name="agent"/> (-1 = not summoned, or its summoner is gone).</summary>
         public int SummonerOf(int agent)
         {
@@ -262,7 +338,7 @@ namespace Purge.Gameplay.Horde
         public float ProjectileHeight(int index)
         {
             var ability = _projectile[index];
-            if (ability.Form != ProjectileForm.Arc) return 0f;
+            if (!ability.IsArc) return 0f;
             var travel = (_to[index] - _from[index]).magnitude;
             var p = travel > 1e-3f ? Mathf.Clamp01(_age[index] * ability.Speed / travel) : 1f;
             return ability.ArcHeight * travel * 4f * p * (1f - p);
@@ -307,9 +383,25 @@ namespace Purge.Gameplay.Horde
                 // Whom its summons call (the horde has them: HordeDefinition.AllMonsters).
                 var summons = new int[count];
                 for (var a = 0; a < count; a++)
-                    summons[a] = abilities[a] is SummonAbility summon && summon.Monster != null ? _horde.KindIndexOf(summon.Monster) : -1;
+                    summons[a] = abilities[a] is SummonAbility summon
+                        ? summon.Monster != null ? _horde.KindIndexOf(summon.Monster) : FromWave
+                        : -1;
                 _kindSummon[k] = summons;
             }
+
+            // Without a wave (the sandbox) a summon from the wave calls the horde's rank-and-file by their weights.
+            _poolKinds.Clear();
+            _poolWeights.Clear();
+            _hordePoolKinds.Clear();
+            _hordePoolWeights.Clear();
+            for (var k = 0; k < kinds.Count; k++)
+                if (kinds[k].Definition != null && kinds[k].Definition.Rank == MonsterRank.Mass && kinds[k].Weight > 0f)
+                {
+                    _hordePoolKinds.Add(k);
+                    _hordePoolWeights.Add(kinds[k].Weight);
+                }
+
+            _random = new DeterministicRandom((int)StableHash.Of("monster-abilities/summon"));
 
             var capacity = _horde.Capacity;
             _generation = new int[capacity];
@@ -328,7 +420,10 @@ namespace Purge.Gameplay.Horde
             _healthPhase = new byte[capacity];
             _tempo = new float[capacity];
             _summonPoint = new Vector2[capacity * SummonAbility.MaxCount];
+            _summonKind = new int[capacity * SummonAbility.MaxCount];
             _summonCount = new byte[capacity];
+            _landing = new Vector2[capacity * ProjectileAbility.MaxCount];
+            _landingCount = new byte[capacity];
             _summoner = new int[capacity];
             _summonerGeneration = new int[capacity];
             _summonedGeneration = new int[capacity];
@@ -439,6 +534,7 @@ namespace Purge.Gameplay.Horde
             for (var a = 0; a < abilities.Length; a++)
             {
                 var ability = abilities[a];
+                if (ability.Passive) continue;
                 var phaseNumber = phases[a];
                 // The roars (rage, a phase) may begin in melee: a monster at the player still turns at its threshold.
                 if (inMelee && !(ability is RageAbility) && phaseNumber == 0) continue;
@@ -470,8 +566,8 @@ namespace Purge.Gameplay.Horde
             _origin[i] = position;
             _aim[i] = ability switch
             {
-                ProjectileAbility { Form: ProjectileForm.Arc } => LandingPoint(position, _player.Position),
-                AreaStrikeAbility => _player.Position,
+                ProjectileAbility { IsArc: true } => LandingPoint(position, _player.Position),
+                AreaStrikeAbility area => area.AroundSelf ? position : _player.Position,
                 PushAbility => position,
                 RaiseAbility => position,
                 SummonAbility => position,
@@ -481,6 +577,7 @@ namespace Purge.Gameplay.Horde
                 _length[i] = _horde.DashReach(position, direction, charge.Distance, _horde.RadiusOf(i));
             else if (ability is PullAbility pull)
                 _length[i] = Mathf.Max(0.5f, ShotReach(position, direction, pull.Range));
+            else if (ability is ProjectileAbility { IsArc: true } arc) PlanLandings(i, arc, position);
             _horde.SetCasting(i, true, direction);
             CastStarted?.Invoke(i, index);
         }
@@ -496,8 +593,10 @@ namespace Purge.Gameplay.Horde
             var position = _horde.Positions[i];
             switch (ability)
             {
-                case ProjectileAbility projectile when projectile.Form == ProjectileForm.Arc:
-                    Launch(projectile, i, position, Vector2.zero, _aim[i]);
+                case ProjectileAbility projectile when projectile.IsArc:
+                    for (var n = 0; n < _landingCount[i]; n++)
+                        Launch(projectile, i, position, Vector2.zero, _landing[i * ProjectileAbility.MaxCount + n]);
+                    _landingCount[i] = 0;
                     break;
                 case ProjectileAbility projectile:
                     var count = projectile.Count;
@@ -547,7 +646,7 @@ namespace Purge.Gameplay.Horde
                     _origin[i] = position;
                     break;
                 case SummonAbility _:
-                    Summon(i, _kindSummon[_horde.Kinds[i]][index]);
+                    Summon(i);
                     break;
                 case GazeAbility gaze:
                     Gaze(i, gaze, position, _aim[i]);
@@ -670,22 +769,47 @@ namespace Purge.Gameplay.Horde
         private int PlanSummon(int i, SummonAbility summon, int kind, Vector2 position)
         {
             _summonCount[i] = 0;
-            if (kind < 0) return 0;
+            if (kind < 0 && kind != FromWave) return 0;
             var room = Mathf.Min(summon.Count, summon.Limit - SummonedAlive(i));
             var found = 0;
             for (var n = 0; n < room; n++)
-                if (_horde.FindSummonSpot(position, summon.Radius, out var spot))
-                    _summonPoint[i * SummonAbility.MaxCount + found++] = spot;
+            {
+                // From the wave: each one picked anew by the weights (stage 8d).
+                var who = kind == FromWave ? PickPoolKind() : kind;
+                if (who < 0) break;
+                if (!_horde.FindSummonSpot(position, summon.Radius, out var spot)) continue;
+                _summonKind[i * SummonAbility.MaxCount + found] = who;
+                _summonPoint[i * SummonAbility.MaxCount + found++] = spot;
+            }
+
             _summonCount[i] = (byte)found;
             return found;
         }
 
-        private void Summon(int i, int kind)
+        /// <summary>
+        /// Where the arcs of a cast land (stage 8d): one — the aimed spot; a fan — spread around it at its distance from
+        /// the monster, walls cutting each short.
+        /// </summary>
+        private void PlanLandings(int i, ProjectileAbility arc, Vector2 position)
+        {
+            var count = arc.Count;
+            var offset = _aim[i] - position;
+            for (var n = 0; n < count; n++)
+            {
+                var angle = count > 1 ? Mathf.Lerp(-0.5f, 0.5f, n / (count - 1f)) * arc.FanAngle : 0f;
+                _landing[i * ProjectileAbility.MaxCount + n] =
+                    angle == 0f ? _aim[i] : LandingPoint(position, position + Rotate(offset, angle));
+            }
+
+            _landingCount[i] = (byte)count;
+        }
+
+        private void Summon(int i)
         {
             var generation = _horde.Generations[i];
             for (var n = 0; n < _summonCount[i]; n++)
             {
-                var slot = _horde.SpawnSummoned(_summonPoint[i * SummonAbility.MaxCount + n], kind);
+                var slot = _horde.SpawnSummoned(_summonPoint[i * SummonAbility.MaxCount + n], _summonKind[i * SummonAbility.MaxCount + n]);
                 if (slot < 0) continue;
                 _summoner[slot] = i + 1;
                 _summonerGeneration[slot] = generation;
@@ -713,6 +837,7 @@ namespace Purge.Gameplay.Horde
         {
             _raiseCount[i] = 0;
             _summonCount[i] = 0;
+            _landingCount[i] = 0;
             _hook[i] = HookStage.None;
             _cast[i] = -1;
             _phase[i] = AbilityPhase.None;
@@ -780,6 +905,7 @@ namespace Purge.Gameplay.Horde
         {
             if (_projectileCount >= MaxProjectiles) return;
             var p = _projectileCount++;
+            var arc = ability.IsArc;
             _projectile[p] = ability;
             _projectileKind[p] = _horde.Kinds[agent];
             _projectileFactor[p] = _horde.DamageFactorOf(agent);
@@ -790,7 +916,7 @@ namespace Purge.Gameplay.Horde
             _position[p] = origin;
             _to[p] = target;
             _age[p] = 0f;
-            if (ability.Form == ProjectileForm.Arc)
+            if (arc)
             {
                 var offset = target - origin;
                 _direction[p] = offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up;
@@ -810,7 +936,7 @@ namespace Purge.Gameplay.Horde
             {
                 var ability = _projectile[p];
                 _age[p] += deltaTime;
-                if (ability.Form == ProjectileForm.Arc)
+                if (ability.IsArc)
                 {
                     var travel = (_to[p] - _from[p]).magnitude;
                     var progress = travel > 1e-3f ? _age[p] * ability.Speed / travel : 1f;

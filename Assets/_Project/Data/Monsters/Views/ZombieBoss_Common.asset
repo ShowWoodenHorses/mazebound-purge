@@ -19,7 +19,11 @@ MonoBehaviour:
   _walkSpeed: 0.44382256
   _castMoment: 0.79999995
   _castLength: 1.5000001
-  _moreCasts: []
+  _moreCasts:
+  - Moment: 0.17142856
+    Length: 4.666667
+  - Moment: 0.325
+    Length: 2.5000002
   _splashColor: {r: 0.55, g: 0.85, b: 0.25, a: 1}
   _projectileModel: {fileID: 0}
   _projectileColor: {r: 0.6, g: 1, b: 0.3, a: 1}
@@ -32,3 +36,11 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _tether: {fileID: 0}
   _tetherWidth: 0.14
+  _basePalette: {fileID: 2100000, guid: 68021691667e41745913058504a1d954, type: 2}
+  _biomePalettes:
+  - Biome: 2
+    Material: {fileID: 2100000, guid: 68021691667e41745913058504a1d954, type: 2}
+  - Biome: 1
+    Material: {fileID: 2100000, guid: f399146b3b4667e45bedf8c749f86fe5, type: 2}
+  - Biome: 3
+    Material: {fileID: 2100000, guid: 780c052f0fede104286d71d2bede8154, type: 2}

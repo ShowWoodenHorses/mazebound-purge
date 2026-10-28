@@ -17,6 +17,20 @@ namespace Purge.Core.Horde
         }
     }
 
+    /// <summary>The palette a monster wears in levels of a biome (stage 8d: the common bosses).</summary>
+    [Serializable]
+    public struct BiomePalette
+    {
+        public Monsters.MonsterBiome Biome;
+        public Material Material;
+
+        public BiomePalette(Monsters.MonsterBiome biome, Material material)
+        {
+            Biome = biome;
+            Material = material;
+        }
+    }
+
     /// <summary>
     /// Look of an officer, elite or boss (ТЗ: Animator, not baked): a prefab with a Humanoid Animator whose controller
     /// Build Monsters makes, the equipment in sockets on the hand bones (built into the prefab), the measured ground
@@ -63,7 +77,31 @@ namespace Purge.Core.Horde
         [Tooltip("Width of the chain, m.")]
         [SerializeField, Min(0.02f)] private float _tetherWidth = 0.14f;
 
+        [Header("Palette by biome")]
+        [Tooltip("Stage 8d: the prefab's material that the biome's palette replaces (the common bosses: one model, a " +
+                 "colouring per biome); empty = none is replaced.")]
+        [SerializeField] private Material _basePalette;
+        [Tooltip("The palette in levels of each biome (the level's theme names it); a biome missing — the prefab's own.")]
+        [SerializeField] private BiomePalette[] _biomePalettes = Array.Empty<BiomePalette>();
+
         public string MonsterId => _monsterId;
+        public Material BasePalette => _basePalette;
+
+        /// <summary>The palette that replaces <see cref="BasePalette"/> in a level of <paramref name="biome"/>; null = none.</summary>
+        public Material PaletteFor(Monsters.MonsterBiome biome)
+        {
+            if (_basePalette == null || _biomePalettes == null) return null;
+            foreach (var palette in _biomePalettes)
+                if (palette.Biome == biome && palette.Material != null)
+                    return palette.Material;
+            return null;
+        }
+
+        internal void SetPalettes(Material basePalette, params BiomePalette[] palettes)
+        {
+            _basePalette = basePalette;
+            _biomePalettes = palettes ?? Array.Empty<BiomePalette>();
+        }
         public Material Tether { get => _tether; internal set => _tether = value; }
         public float TetherWidth { get => _tetherWidth; internal set => _tetherWidth = value; }
         public GameObject Prefab => _prefab;

@@ -57,6 +57,7 @@ namespace Purge.Gameplay.Waves
         private readonly PickupSystem _pickups;
         private readonly RunWallet _wallet;
         private readonly BossSystem _bosses;
+        private readonly MonsterAbilities _abilities;
         private readonly List<WaveSpawn> _spawns = new List<WaveSpawn>();
         private readonly Dictionary<int, int> _packPoints = new Dictionary<int, int>();
         private readonly List<int> _allowed = new List<int>();
@@ -76,7 +77,7 @@ namespace Purge.Gameplay.Waves
         private float _budgetTime;
 
         public WaveSystem(LevelData level, HordeSystem horde, PlayerSystem player, LevelLaunchOptions options = null,
-            PickupSystem pickups = null, RunWallet wallet = null, BossSystem bosses = null)
+            PickupSystem pickups = null, RunWallet wallet = null, BossSystem bosses = null, MonsterAbilities abilities = null)
         {
             _level = level;
             _horde = horde;
@@ -84,6 +85,7 @@ namespace Purge.Gameplay.Waves
             _pickups = pickups;
             _wallet = wallet;
             _bosses = bosses;
+            _abilities = abilities;
             Seed = options?.Seed ?? Environment.TickCount;
         }
 
@@ -251,6 +253,8 @@ namespace Purge.Gameplay.Waves
             if (boss != null && _bossKind < 0)
                 GameLog.Warning(LogChannel.Gameplay, $"Wave {index + 1}: boss '{boss.Monster.Id}' is not one of the horde's kinds (run Build Monsters).");
             if (boss != null) _escort.AddRange(WaveGenerator.Escort(boss, _horde.Difficulty));
+            // A summon with no monster calls this wave's rank-and-file (stage 8d, the Gorgon).
+            _abilities?.SetWave(wave);
             TimeLeft = 0f;
             Phase = WavePhase.Running;
             GameLog.Info(LogChannel.Gameplay, $"Wave {index + 1}/{Scenario.Count}: {_spawns.Count} monster(s)" +

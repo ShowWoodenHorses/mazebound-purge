@@ -46,7 +46,108 @@ MonoBehaviour:
   _drop: {fileID: 11400000, guid: 1fa41d4c2c303d54695a7cd940557447, type: 2}
   _resistances: []
   _deathEffects: []
-  _abilities: []
+  _abilities:
+  - rid: 1763807473633067087
+  - rid: 1763807473633067088
+  - rid: 1763807473633067089
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1763807473633067087
+      type: {class: PushAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 5
+        _firstDelay: 1
+        _minRange: 0
+        _maxRange: 2.5
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.5
+        _recovery: 0.4
+        _castSound: 
+        _releaseSound: boss_swing
+        _fromPhase: 0
+        _untilPhase: 4
+        _radius: 2.5
+        _damage: 15
+        _knockback: 3
+        _status: {fileID: 0}
+        _statusDuration: 1
+    - rid: 1763807473633067088
+      type: {class: AreaStrikeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 7
+        _firstDelay: 2
+        _minRange: 0
+        _maxRange: 4
+        _needsSight: 0
+        _healthBelow: 1
+        _warning: 1
+        _recovery: 0.6
+        _castSound: 
+        _releaseSound: boss_smash
+        _fromPhase: 0
+        _untilPhase: 4
+        _radius: 4
+        _damage: 25
+        _status: {fileID: 11400000, guid: a9195dea1d40850439ddbfe023afd719, type: 2}
+        _statusDuration: 2
+        _impact:
+        - rid: 1763807473633067090
+        _fall:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _fallTime: 0.45
+        _closing: 0
+        _aroundSelf: 1
+    - rid: 1763807473633067089
+      type: {class: ProjectileAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 5
+        _firstDelay: 1.5
+        _minRange: 4.5
+        _maxRange: 14
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.9
+        _recovery: 0.4
+        _castSound: 
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _form: 1
+        _count: 3
+        _fanAngle: 30
+        _speed: 10
+        _damage: 25
+        _range: 14
+        _arcRadius: 1.5
+        _arcHeight: 0.4
+        _status: {fileID: 0}
+        _statusDuration: 2
+        _impact:
+        - rid: 1763807473633067091
+        _impactSound: boss_smash
+    - rid: 1763807473633067090
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: 7f48616ace58aa842beee42c002a853f
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 4
+    - rid: 1763807473633067091
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: beb8bbc141f5cff4bba35157b3f82be0
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 1.5

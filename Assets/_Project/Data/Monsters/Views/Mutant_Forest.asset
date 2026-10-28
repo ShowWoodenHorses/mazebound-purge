@@ -42,3 +42,5 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _tether: {fileID: 0}
   _tetherWidth: 0.14
+  _basePalette: {fileID: 0}
+  _biomePalettes: []

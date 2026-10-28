@@ -46,7 +46,122 @@ MonoBehaviour:
   _drop: {fileID: 11400000, guid: 1fa41d4c2c303d54695a7cd940557447, type: 2}
   _resistances: []
   _deathEffects: []
-  _abilities: []
+  _abilities:
+  - rid: 1763807473633067092
+  - rid: 1763807473633067093
+  - rid: 1763807473633067094
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1763807473633067092
+      type: {class: AreaStrikeAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 8
+        _firstDelay: 3
+        _minRange: 0
+        _maxRange: 10
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 1
+        _recovery: 0.5
+        _castSound: fireball
+        _releaseSound: fire_burst
+        _fromPhase: 0
+        _untilPhase: 4
+        _radius: 2.5
+        _damage: 25
+        _status: {fileID: 0}
+        _statusDuration: 1
+        _impact:
+        - rid: 1763807473633067095
+        - rid: 1763807473633067096
+        _fall:
+          m_AssetGUID: f3c0ce2e4a62f3a4190ef0546d171d13
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _fallTime: 0.45
+        _closing: 0
+        _aroundSelf: 0
+    - rid: 1763807473633067093
+      type: {class: ProjectileAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 4
+        _firstDelay: 1
+        _minRange: 3
+        _maxRange: 12
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.8
+        _recovery: 0.4
+        _castSound: fireball
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _form: 3
+        _count: 3
+        _fanAngle: 40
+        _speed: 9
+        _damage: 15
+        _range: 12
+        _arcRadius: 1.2
+        _arcHeight: 0.35
+        _status: {fileID: 0}
+        _statusDuration: 2
+        _impact:
+        - rid: 1763807473633067097
+        - rid: 1763807473633067098
+        _impactSound: fire_burst
+    - rid: 1763807473633067094
+      type: {class: TrailAbility, ns: Purge.Core.Monsters, asm: Purge.Core}
+      data:
+        _cooldown: 3
+        _firstDelay: 1
+        _minRange: 0
+        _maxRange: 8
+        _needsSight: 1
+        _healthBelow: 1
+        _warning: 0.8
+        _recovery: 0.35
+        _castSound: 
+        _releaseSound: 
+        _fromPhase: 0
+        _untilPhase: 4
+        _zone: {fileID: 11400000, guid: 83307b75801c02741aa4297c1ce82be8, type: 2}
+        _duration: 3
+        _strength: 1
+    - rid: 1763807473633067095
+      type: {class: PlaceZoneEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 83307b75801c02741aa4297c1ce82be8, type: 2}
+        _radius: 2.5
+        _duration: 4
+        _strength: 1
+    - rid: 1763807473633067096
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: ef80f724a4f186b4faef6c72e18dcf86
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 2.5
+    - rid: 1763807473633067097
+      type: {class: PlaceZoneEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 83307b75801c02741aa4297c1ce82be8, type: 2}
+        _radius: 1.2
+        _duration: 4
+        _strength: 1
+    - rid: 1763807473633067098
+      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _look:
+          m_AssetGUID: ef80f724a4f186b4faef6c72e18dcf86
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _radius: 1.2

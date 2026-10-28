@@ -2848,6 +2848,33 @@ MonoBehaviour:
       _range: 16
       _maxVoices: 3
       _minInterval: 0.08
+  - _name: boss_swing
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 16b4c978bc30d8d42a1df9b435b23733, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: fireball
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 662e1a2037295b14cb1867a3141b55ea, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
+  - _name: fire_burst
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 996204f4d6dfa99488244d0e89288ad9, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
   - _name: gaze_stone
     _cue:
       _clips:

@@ -251,8 +251,7 @@ namespace Purge.Editor.Dev
             var brutes = BuildController(BruteControllerPath, BruteClips);
             var armadillos = BuildController(ArmadilloControllerPath, ArmadilloClips);
             var shamans = BuildController(ShamanControllerPath, ShamanClips);
-            var bosses = BuildController(BossControllerPath, BossClips);
-            var mutants = BuildController(MutantControllerPath, MutantClips);
+            var bosses = new Dictionary<string, AnimatorController>();
             var hooks = BuildController(HookControllerPath, HookClips);
             EnsureFolder(OverridesPath);
             EnsureFolder(ViewsPath);
@@ -266,12 +265,15 @@ namespace Purge.Editor.Dev
                 else if (IsArmadillo(prefab.name)) views.Add(SetupElite(prefab, definition, armadillos, ArmadilloClips, report));
                 else if (IsShaman(prefab.name)) views.Add(SetupElite(prefab, definition, shamans, ShamanClips, report));
                 else if (IsHook(prefab.name)) views.Add(SetupElite(prefab, definition, hooks, HookClips, report));
-                else if (IsMutant(prefab.name))
+                else if (IsBuiltBoss(prefab.name))
                 {
-                    EnsureMutantAbilities(definition);
-                    views.Add(SetupBoss(prefab, definition, mutants, MutantClips, report));
+                    // Each boss its own controller and casts (the Mutant — stage 8c, the intermediate ones — 8d).
+                    EnsureBossAbilities(definition, prefab.name);
+                    var (controllerPath, clips) = BossKitOf(prefab.name);
+                    if (!bosses.TryGetValue(controllerPath, out var bossController))
+                        bosses[controllerPath] = bossController = BuildController(controllerPath, clips);
+                    views.Add(SetupBoss(prefab, definition, bossController, clips, report));
                 }
-                else if (IsBuiltBoss(prefab.name)) views.Add(SetupBoss(prefab, definition, bosses, BossClips, report));
                 else views.Add(Setup(prefab, definition, controller, report));
             }
 

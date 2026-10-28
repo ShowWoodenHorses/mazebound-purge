@@ -43,6 +43,12 @@
 - **Вид**: `AbilityWarningView` — линия крюка, кружки призыва, конус взгляда. **`MonsterHookView`** (Presentation/Visual/Horde, после `MonsterProjectileView`): пул `MaxHooks` 8 `LineRenderer` (Tile, по взгляду камеры) от правой руки (`MonsterViewPresenter.HandOf`, иначе грудь 1,1 м) до наконечника; материал — `MonsterViewDefinition.Tether` (шейдер `Purge/Tether`: альфа-тест, без освещения), ширина `TetherWidth`; наконечник — `ProjectileModel` × `ProjectileSize`. Рисуется, если видны монстр или наконечник.
 - Тесты — `Tests/EditMode/Monsters/HookTests.cs`.
 
+## Веер дугой, призыв из волны, след, удар вокруг себя (8г)
+- **`ProjectileForm.ArcFan`** — `Count` дуг веером `FanAngle` вокруг точки прицела на её расстоянии (стены укорачивают каждую); точки — в начале каста (`MonsterAbilities.LandingCount/Landing`, по кругу предупреждения на каждую), `ProjectileAbility.IsArc` — обе дуговые формы, `MaxCount` 9.
+- **`SummonAbility.Monster` пусто** — рядовые (`MonsterRank.Mass`) по весам текущей волны, каждый заново (`_summonKind` на точку): `MonsterAbilities.SetWave(wave)` зовёт `WaveSystem.StartWave` (в бюджете нет рядовых — группы и свита по числу); волны нет (песочница) — рядовые орды с весом > 0 (решение пользователя 2026-10-26).
+- **`TrailAbility`** («Trail», пассивный: `AbilityModule.Passive` — не кастуется): зона на клетки, с которых сошло тело, — весь отпечаток `HordeKind.TrailWidth` (2×2, 3×3; решение пользователя 2026-10-26); кладёт `ChampionSystem.LayTrails` (система активна и без чемпионов, если у вида есть след), `HordeKind.Trail`, `IgnoresZone` — своя зона его не ранит.
+- **`AreaStrikeAbility.AroundSelf`** — круг на самом монстре (топот Колосса), не под игроком.
+
 ## Громила и двери (5г)
 - **Двери по рангам** — `MonsterStats.Doors` (`MonsterDoorUse`: `ByRank` по умолчанию — рядовые `Never`, офицеры и элита `Open`, боссы `Break`; явно — `Never/Open/Break`), `DoorDamage` (урон двери за удар); `MonsterDefinition.DoorUse`, `HordeKind.Doors` (ранг разрешён). Запертые и мёрзлые двери стоят для всех (`DoorSystem.IsPassableForMonsters`).
 - **`HordeSystem`**: если есть виды, проходящие двери, и закрытые проходимые двери — второе поле пути `DoorFlow` (маска `_doorWalkable` = проходимо + такие двери; строится вместе с основным, в `RefreshWalkable` считается `_passableDoors`). Такие монстры в погоне идут по нему

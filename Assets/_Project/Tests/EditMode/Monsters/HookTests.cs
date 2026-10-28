@@ -318,6 +318,109 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(_health.Current, Is.EqualTo(_health.Max - 25));
         }
 
+        /// <summary>Stage 8d (the Demon's fire balls): a fan of arcs — a circle each, all land apart at the aimed distance.</summary>
+        [Test]
+        public void ArcFan_ThrowsAFanOfArcs_EachLandsApart()
+        {
+            var balls = new ProjectileAbility
+            {
+                FirstDelay = 0f, Cooldown = 30f, MinRange = 0f, MaxRange = 20f, NeedsSight = true, Warning = 0.3f, Recovery = 0.1f,
+                Form = ProjectileForm.ArcFan, Count = 3, FanAngle = 40f, Speed = 10f, Damage = 10f, Range = 14f, ArcRadius = 1f,
+            };
+            _elite.SetAbilities(balls);
+            Build();
+            var ends = new List<Vector2>();
+            _abilities.ProjectileEnded += (at, kind, ability, hit) => ends.Add(at);
+            var demon = Spawn(_elite, 12f, 10f);
+            Tick(0.1f);
+            Assert.That(_abilities.LandingCount(demon), Is.EqualTo(3), "a warning circle per ball");
+            Tick(1.5f);
+            Assert.That(ends.Count, Is.EqualTo(3));
+            foreach (var at in ends)
+                Assert.That((at - new Vector2(12f, 10f)).magnitude, Is.EqualTo(7f).Within(0.3f), "at the aimed distance");
+            Assert.That((ends[0] - ends[2]).magnitude, Is.GreaterThan(3f), "spread apart");
+            Assert.That(_health.Current, Is.EqualTo(_health.Max - 10), "only the middle one hits the player");
+        }
+
+        /// <summary>Stage 8d (the Gorgon): a summon with no monster calls rank-and-file of the wave, else of the horde.</summary>
+        [Test]
+        public void Summon_WithNoMonster_CallsTheWavesRankAndFile()
+        {
+            var other = Monster("other", MonsterRank.Mass, new MonsterStats { MaxHp = 30f, Speed = 2f, Damage = 0 });
+            _hordeData.ConfigureMonsters(new[]
+            {
+                new HordeSpawn(_elite, 1f), new HordeSpawn(_mass, 1f), new HordeSpawn(_officer, 1f), new HordeSpawn(other, 0f),
+            });
+            var summon = Summon(3, 6);
+            summon.Monster = null;
+            _elite.SetAbilities(summon);
+            Build();
+            _horde.Respawn = false;
+            var gorgon = Spawn(_elite, 25f, 10f);
+            Tick(0.5f);
+            Assert.That(_abilities.Summoned, Is.EqualTo(3), "no wave: the horde's rank-and-file");
+            for (var i = 0; i < _horde.HighWater; i++)
+                if (_abilities.SummonerOf(i) == gorgon)
+                    Assert.That(_horde.DefinitionOf(i), Is.SameAs(_mass), "the horde's only weighted rank-and-file");
+
+            _abilities.SetWave(new Purge.Core.Waves.WaveDefinition(10f, new[]
+            {
+                new Purge.Core.Waves.WaveMonster(other, 1f), new Purge.Core.Waves.WaveMonster(_officer, 5f),
+            }));
+            Tick(1f);
+            Assert.That(_abilities.Summoned, Is.EqualTo(6));
+            var fromWave = 0;
+            for (var i = 0; i < _horde.HighWater; i++)
+                if (_abilities.SummonerOf(i) == gorgon && _horde.DefinitionOf(i) == other)
+                    fromWave++;
+            Assert.That(fromWave, Is.EqualTo(3), "the wave's rank-and-file, not its officer");
+        }
+
+        /// <summary>Stage 8d (the Demon): a trail of its own under all of a 2×2 body; its own fire spares it.</summary>
+        [Test]
+        public void Trail_LaysTheZoneUnderTheWholeBody_SparesItsOwner()
+        {
+            var fire = ScriptableObject.CreateInstance<ZoneDefinition>();
+            _created.Add(fire);
+            fire.Configure("fire", new ZoneDamage { DamagePerSecond = 20f });
+            _elite.Stats.Radius = 1f;
+            _elite.SetAbilities(new TrailAbility { Zone = fire, Duration = 5f, Strength = 1f });
+            Build();
+            var champions = new ChampionSystem(_horde, _effects, _zones, _player, _playerStatuses);
+            champions.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+            Assert.That(champions.IsActive, Is.True, "a kind with a trail, no champions");
+            var demon = Spawn(_elite, 25.5f, 10.5f);
+            for (var t = 0f; t < 2f; t += Dt)
+            {
+                Tick(Dt);
+                champions.Tick(Dt);
+            }
+
+            Assert.That(_horde.Positions[demon].x, Is.LessThan(23f), "it walked");
+            Assert.That(champions.TrailCells, Is.GreaterThanOrEqualTo(4));
+            Assert.That(_zones.ZoneAt(new GridPosition(24, 10)), Is.SameAs(fire));
+            Assert.That(_zones.ZoneAt(new GridPosition(24, 11)), Is.SameAs(fire), "two cells wide");
+            Assert.That(_horde.Health[demon], Is.EqualTo(200f).Within(1e-3f), "its own fire spares it");
+            champions.Dispose();
+        }
+
+        /// <summary>Stage 8d (the Colossus's stomp): an area strike around the monster itself.</summary>
+        [Test]
+        public void AreaStrike_AroundSelf_HitsThePlayerNearTheMonster()
+        {
+            _elite.SetAbilities(new AreaStrikeAbility
+            {
+                FirstDelay = 0f, Cooldown = 30f, MinRange = 0f, MaxRange = 4f, NeedsSight = false, Warning = 0.5f, Recovery = 0.1f,
+                AroundSelf = true, Radius = 4f, Damage = 20f,
+            });
+            Build();
+            var colossus = Spawn(_elite, 8f, 10f);
+            Tick(0.1f);
+            Assert.That((_abilities.Aims[colossus] - _horde.Positions[colossus]).magnitude, Is.LessThan(0.1f), "the circle is on itself");
+            Tick(0.6f);
+            Assert.That(_health.Current, Is.EqualTo(_health.Max - 20));
+        }
+
         [Test]
         public void HordeMonsters_IncludeWhomTheySummon()
         {

@@ -45,6 +45,11 @@ namespace Purge.Core.Visual
         [Tooltip("Length of one gate section along the entry, m (the model's).")]
         [SerializeField, Min(0.5f)] private float _arenaGateLength = 2.5f;
 
+        [Tooltip("Stage 8d: the biome of the theme's levels — the common bosses wear its palette (MonsterViewDefinition).")]
+        [SerializeField] private Monsters.MonsterBiome _biome;
+
+        public Monsters.MonsterBiome Biome { get => _biome; internal set => _biome = value; }
+
         public UnityEngine.AddressableAssets.AssetReferenceGameObject ArenaGate { get => _arenaGate; internal set => _arenaGate = value; }
         public float ArenaGateLength => _arenaGateLength;
 

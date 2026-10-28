@@ -57,7 +57,11 @@ namespace Purge.Gameplay.Player
         /// <summary>The character's revive skill is open.</summary>
         public bool HasSkill => Definition != null && Definition.ReviveSkill;
 
-        public bool CanRevive(ReviveKind kind) => kind == ReviveKind.Ad ? !AdReviveUsed : HasSkill && !SkillReviveUsed;
+        /// <summary>Off — no revives at all: the fallen player dies for good without the window (the balance bot, 10a).</summary>
+        public bool Allowed { get; set; } = true;
+
+        public bool CanRevive(ReviveKind kind) =>
+            Allowed && (kind == ReviveKind.Ad ? !AdReviveUsed : HasSkill && !SkillReviveUsed);
 
         public bool CanReviveAtAll => CanRevive(ReviveKind.Ad) || CanRevive(ReviveKind.Skill);
 

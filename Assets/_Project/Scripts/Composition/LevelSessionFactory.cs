@@ -6,6 +6,7 @@ using Purge.Application.Flow;
 using Purge.Core.Common;
 using Purge.Core.Level;
 using Purge.Application.Services;
+using Purge.Gameplay.Balance;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Waves;
 using Purge.Gameplay.Level;
@@ -64,6 +65,14 @@ namespace Purge.Composition
                                builder.Register(resolver => new StressAutopilotInput(
                                        (IPlayerInput)resolver.Resolve<IInputService>(), level), Lifetime.Singleton)
                                    .As<IPlayerInput>();
+                           // The balance bot's run (stage 10a): its input instead of the player's, the bot and its
+                           // recorder tick after every gameplay system (this configuration comes after the scope's own).
+                           else if (options?.Bot != null)
+                           {
+                               builder.Register<BotInput>(Lifetime.Singleton).AsSelf().As<IPlayerInput>();
+                               builder.Register<BalanceBot>(Lifetime.Singleton).As<ILevelTickable>();
+                               builder.Register<BotRecorder>(Lifetime.Singleton).As<ILevelTickable>();
+                           }
                        }))
                 {
                     scope.Build();

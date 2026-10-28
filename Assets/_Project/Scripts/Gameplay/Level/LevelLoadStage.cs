@@ -52,13 +52,17 @@ namespace Purge.Gameplay.Level
         public static readonly LevelLaunchOptions Default = new LevelLaunchOptions();
 
         public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null,
-            Run.RunSnapshot resume = null)
+            Run.RunSnapshot resume = null, Balance.BotRun bot = null)
         {
             StartIndex = startIndex;
             Seed = resume != null ? resume.Seed : seed;
             Difficulty = difficulty;
             Resume = resume;
+            Bot = bot;
         }
+
+        /// <summary>The balance bot plays this run (stage 10a) and writes its statistics there; null — the player.</summary>
+        public Balance.BotRun Bot { get; }
 
         /// <summary>A saved run to continue (stage 6e): its seed, state and the wave to start with; null = a new run.</summary>
         public Run.RunSnapshot Resume { get; }

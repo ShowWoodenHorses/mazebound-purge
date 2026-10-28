@@ -351,14 +351,17 @@ namespace Purge.Gameplay.Pickups
             return true;
         }
 
-        /// <summary>Picks up the first weapon lying in <paramref name="cell"/>. False when there is none.</summary>
-        public bool TryTakeWeapon(GridPosition cell)
+        /// <summary>
+        /// Picks up the first weapon lying in <paramref name="cell"/> (or exactly <paramref name="only"/>, when given:
+        /// the balance bot). False when there is none.
+        /// </summary>
+        public bool TryTakeWeapon(GridPosition cell, Pickup only = null)
         {
             var list = At(cell);
             for (var i = 0; i < list.Count; i++)
             {
                 var pickup = list[i];
-                if (pickup.Kind != PickupKind.Weapon) continue;
+                if (pickup.Kind != PickupKind.Weapon || only != null && pickup != only) continue;
 
                 Take(pickup, taken: true);
                 var dropped = _weapons.Equip(pickup.Weapon);

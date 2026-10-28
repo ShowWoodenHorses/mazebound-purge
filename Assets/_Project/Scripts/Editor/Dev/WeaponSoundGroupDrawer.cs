@@ -36,6 +36,14 @@ namespace Purge.Editor.Dev
             FolderPopup.Draw(position, property, label, "None", AudioBuilder.MonsterSounds());
     }
 
+    /// <summary>Dropdown for <see cref="VehicleSoundAttribute"/> fields: "None" and every folder under Sounds/Vehicle.</summary>
+    [CustomPropertyDrawer(typeof(VehicleSoundAttribute))]
+    internal sealed class VehicleSoundDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) =>
+            FolderPopup.Draw(position, property, label, "None", AudioBuilder.VehicleSounds());
+    }
+
     internal static class FolderPopup
     {
         public static void Draw(Rect position, SerializedProperty property, GUIContent label, string emptyLabel, List<string> names)

@@ -4,7 +4,7 @@
 
 ## Игрок, ввод, тики
 - Тики уровня: `ILevelTickable` (симуляция, только в Running) → `ILevelLateTickable` (синхронизация вьюх, также в Paused). Порядок шагов внутри одной стадии и тиков = порядок регистрации в `LevelLifetimeScope` (геймплей раньше своих вьюх).
-- Ввод: `IPlayerInput` (Gameplay) реализует `InputService` (Application) — карта действий в коде: Move, Look, Attack, Interact, Slot1, Slot2, Reload, Throw (G, LT), OpenMap, Pause; касание по самой игре (не по UI и тач-контролам) — `IPlayerInput.TryGetGroundTap` (`IUiPointer.IsOverUiAt`).
+- Ввод: `IPlayerInput` (Gameplay) реализует `InputService` (Application) — карта действий в коде: Move, Look, Attack, Interact, Slot1, Slot2, Reload, Throw (G, LT), Gas (W, ↑, RT) и Brake (S, ↓, LT) — педали машины (9а, [Vehicles.md](Vehicles.md)), OpenMap, Pause; касание по самой игре (не по UI и тач-контролам) — `IPlayerInput.TryGetGroundTap` (`IUiPointer.IsOverUiAt`).
   - Клавиши — по физическому месту (US), не по символу: `<Keyboard>/#(m)` на русской раскладке не находит клавишу; в текстах для AZERTY — ZQSD и Tab вместо M. Кнопки геймплея **опрашиваются из тиков** `WasPressed(PlayerAction)` (нажатия на паузе не применяются позже)
   - Pause — событие `IInputService.PauseRequested`. Мышь — отдельное действие: нажатие, начатое над UI (`IUiPointer` → `UiPointer`, `UIRoot.EventSystem`), не атакует до отпускания.
   - Тач-контролы (`OnScreenButton`, свой стик `TouchStick` с мёртвой зоной и кривой `StickResponse`, плавающий/фиксированный) эмулируют геймпад — новые экранные кнопки биндить на `<Gamepad>/...`.
@@ -30,6 +30,7 @@
   - `Revive(ReviveKind.Ad | Skill)` — каждое раз за забег (`HasSkill` = `PlayerDefinition.ReviveSkill`, до дерева этапа 11 — флаг, сейчас включён): `PlayerStatusSystem.Clear`, `PlayerHealth.Revive` (полное HP), `Invulnerable` на `ReviveInvulnerability` (2 с), `ReviveEffects` в точке игрока через `EffectSystem` (сейчас: `PushEffect` r5, `AreaStatusEffect` оглушение r5 2 с, `LookEffect` `FX_Revive_Nova` — Polygon Arsenal `HolyNova`, 6д); звук `AudioCatalog.Revive`. `GiveUp()` → `Died`.
   - `PlayerDeathRule` (Gameplay/Level, резолвится в `LevelSessionFactory`): `Died` → `LevelRuntime.Finish(Failed)` (`Finish` работает и из паузы). `PlayerHealth.Heal/HealToFull` мёртвого не лечат; `Damage` при `Invulnerable` не проходит.
   - `PlayerViewPresenter`: при HP 0 → `Dead`, вес `UpperBody` 0; при воскрешении — `Dead` false и вес назад (переход Any State → стойка набора).
+- **В машине (9а)**: `PlayerSystem.InVehicle`, позицию ведёт `VehicleSystem` (`Ride`, клетка — не чаще 4 раз/с), `WeaponSystem.InputLocked` — клавиши слотов не работают; подробно — [Vehicles.md](Vehicles.md).
 - `PlayerSystem.CellChanged(from, to)` = PlayerCellChanged из ТЗ; `Spawned` — после появления. Старт: `LevelLaunchOptions` (StartIndex для Test from Start #N, Seed), иначе случайный через `DeterministicRandom`.
 - Общие определения (`PlayerDefinition` "Player/Definition", `PlayerVisualDefinition` "Player/Visual", `ContentCatalog` "Content/Catalog") грузит `SharedDefinitionsService` при старте приложения; в LevelScope прокинуты из проектного. Build/Sync держит их Addressable (группа Purge Shared).
 

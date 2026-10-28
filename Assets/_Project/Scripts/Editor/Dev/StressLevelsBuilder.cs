@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using Purge.Core.Authoring;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using Purge.Core.Visual;
 using Purge.Editor.LevelDesigner;
 using UnityEditor;
@@ -91,6 +93,7 @@ namespace Purge.Editor.Dev
                     LayOutWeapons(level, sandbox);
                     PlantBushes(level);
                     BuildRoom(level);
+                    ParkVehicles(level);
                 }
                 EditorUtility.SetDirty(level);
                 AssetDatabase.SaveAssets();
@@ -153,6 +156,43 @@ namespace Purge.Editor.Dev
             // In front of the door: free to walk up to it.
             for (var x = x1 + 1; x <= x1 + 2; x++)
                 LevelEditing.SetObstacle(level, new GridPosition(x, start.Y, start.Floor), null);
+        }
+
+        /// <summary>
+        /// Every vehicle of <c>Data/Vehicles</c> (stage 9a) south-east of the start, facing East, one below the other four
+        /// cells apart, each on a cleared strip: its body plus a straight run of 14 cells ahead to speed up.
+        /// </summary>
+        private static void ParkVehicles(LevelData level)
+        {
+            var vehicles = AssetDatabase.FindAssets("t:VehicleDefinition", new[] { "Assets/_Project/Data/Vehicles" })
+                .Select(guid => AssetDatabase.LoadAssetAtPath<VehicleDefinition>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Where(vehicle => vehicle != null)
+                .OrderBy(vehicle => vehicle.name, System.StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (vehicles.Count == 0)
+            {
+                Debug.LogWarning("[Purge] No vehicles in Data/Vehicles (Build Vehicles): the sandbox has none.");
+                return;
+            }
+
+            var start = level.PlayerStarts[0].Position;
+            var width = level.Geometry.Width;
+            var height = level.Geometry.Height;
+            for (var i = 0; i < vehicles.Count; i++)
+            {
+                var center = new GridPosition(start.X + 2, start.Y - 7 - i * 4, start.Floor);
+                var back = Mathf.CeilToInt(vehicles[i].Hull.Length * 0.5f) + 1;
+                for (var y = center.Y - 2; y <= center.Y + 2; y++)
+                for (var x = center.X - back; x <= center.X + 14; x++)
+                {
+                    if (x < 2 || y < 2 || x > width - 3 || y > height - 3) continue; // the perimeter stays
+                    var cell = new GridPosition(x, y, start.Floor);
+                    LevelEditing.SetCellType(level, cell, CellType.Floor);
+                    LevelEditing.SetObstacle(level, cell, null);
+                }
+
+                LevelEditing.AddVehicle(level, center, vehicles[i], 90f);
+            }
         }
 
         /// <summary>The sandbox's weapons in a row two cells south of the start, on free cells.</summary>

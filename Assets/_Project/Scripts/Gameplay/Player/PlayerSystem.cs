@@ -47,6 +47,14 @@ namespace Purge.Gameplay.Player
         /// <summary>Strongest push, cells per second.</summary>
         private const float MaxPush = 8f;
 
+        /// <summary>
+        /// Seconds between updates of the logical cell while riding (ТЗ 9а: the flow field and the view are rebuilt at
+        /// most 4 times a second at a vehicle's speed).
+        /// </summary>
+        public const float RideCellInterval = 0.25f;
+
+        private float _rideCellTimer;
+
         private Vector2 _push;
 
         private readonly LevelData _level;
@@ -116,6 +124,12 @@ namespace Purge.Gameplay.Player
         /// <summary>The player is dead and waits for a revive (stage 6d): no step, no attack, no throw (<c>PlayerDeathRule</c>).</summary>
         public bool Down { get; set; }
 
+        /// <summary>
+        /// The player drives a vehicle (stage 9a): no step, no attack, no throw; the position is the vehicle's
+        /// (<see cref="Ride"/>), pushes do not move them.
+        /// </summary>
+        public bool InVehicle { get; private set; }
+
         /// <summary>Actual speed this tick relative to <see cref="PlayerDefinition.MoveSpeed"/>, 0..1 (for animation).</summary>
         public float SpeedFactor { get; private set; }
 
@@ -151,6 +165,12 @@ namespace Purge.Gameplay.Player
             var aiming = _aiming;
             _aiming = false;
             IsAiming = aiming;
+            if (InVehicle)
+            {
+                IsAiming = false;
+                return; // the vehicle moves the player (Ride)
+            }
+
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
             if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned || Down)
             {
@@ -182,6 +202,7 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public void Push(Vector2 velocity)
         {
+            if (InVehicle) return;
             _push += velocity;
             if (_push.sqrMagnitude > MaxPush * MaxPush) _push = _push.normalized * MaxPush;
         }
@@ -192,7 +213,7 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public void Knock(Vector2 direction, float distance)
         {
-            if (distance <= 0f || direction.sqrMagnitude < 1e-8f) return;
+            if (distance <= 0f || direction.sqrMagnitude < 1e-8f || InVehicle) return;
             // A push of v fades to v / damping cells in all.
             _push = direction.normalized * (distance * PushDamping);
         }
@@ -203,7 +224,7 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public void Displace(Vector2 delta)
         {
-            if (!IsSpawned || delta.sqrMagnitude < 1e-10f) return;
+            if (!IsSpawned || delta.sqrMagnitude < 1e-10f || InVehicle) return;
             Position = PlayerMovement.Move(Position, delta, _definition.BodyHalfSize, _definition.CornerAssist, this);
             UpdateCell();
         }
@@ -217,6 +238,44 @@ namespace Purge.Gameplay.Player
         /// walls stop it as a step.
         /// </summary>
         public Vector2 Drag { get; set; }
+
+        /// <summary>The player gets into a vehicle standing at <paramref name="position"/> (stage 9a).</summary>
+        public void EnterVehicle(Vector2 position, Vector2 facing)
+        {
+            if (!IsSpawned) return;
+            InVehicle = true;
+            _push = Vector2.zero;
+            Drag = Vector2.zero;
+            _rideCellTimer = 0f;
+            Ride(position, facing, 0f);
+        }
+
+        /// <summary>
+        /// Where the vehicle carries the player this tick. The logical cell (and with it <see cref="CellChanged"/>: the
+        /// view, the horde's flow field, pickups) follows at most every <see cref="RideCellInterval"/> seconds.
+        /// </summary>
+        public void Ride(Vector2 position, Vector2 facing, float deltaTime)
+        {
+            if (!InVehicle) return;
+            Position = position;
+            if (facing.sqrMagnitude > 1e-8f) Facing = facing.normalized;
+            SpeedFactor = 0f;
+            MoveDirection = Vector2.zero;
+            _rideCellTimer -= deltaTime;
+            if (_rideCellTimer > 0f) return;
+            _rideCellTimer = RideCellInterval;
+            UpdateCell();
+        }
+
+        /// <summary>The player gets out at <paramref name="position"/> (a free spot beside the vehicle).</summary>
+        public void ExitVehicle(Vector2 position)
+        {
+            if (!InVehicle) return;
+            InVehicle = false;
+            Position = position;
+            _moved = false;
+            UpdateCell();
+        }
 
         private void ApplyPush(float deltaTime)
         {
@@ -265,6 +324,7 @@ namespace Purge.Gameplay.Player
             Drag = Vector2.zero;
             SpeedFactor = 0f;
             MoveDirection = Vector2.zero;
+            InVehicle = false;
             IsSpawned = true;
 
             GameLog.Info(LogChannel.Gameplay, $"Player spawned at start #{startIndex} {start.Position}.");

@@ -19,6 +19,7 @@ using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Tutorial;
+using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Weapons;
 using Purge.Gameplay.Zombies;
@@ -98,6 +99,8 @@ namespace Purge.Composition
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponFeelSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<PlayerSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            // Right after the player: it carries them (stage 9a).
+            builder.Register<VehicleSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<PlayerFootsteps>(Lifetime.Singleton).As<ILevelTickable>();
             builder.Register<PickupSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<PlayerInteraction>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
@@ -171,6 +174,7 @@ namespace Purge.Composition
             builder.Register<DropViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Barrels, chests and the safe dome (stage 7в).
             builder.Register<LevelObjectsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<VehicleViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<RefugeView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // The arena's gates (stage 8a): rise while a boss wave holds the player in.
             builder.Register<ArenaGatesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
@@ -234,6 +238,7 @@ namespace Purge.Composition
             builder.Register<HordeAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep>();
             // Chests and the safe dome's loop (stage 7в).
             builder.Register<LevelObjectsAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<VehicleAudioPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable>();
             builder.Register<FootprintsView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Weather: emitted in the tick (nothing on pause), paused in the late tick.
             builder.Register<SnowfallView>(Lifetime.Singleton).AsSelf()

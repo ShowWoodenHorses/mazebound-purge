@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - 'Terkunci: kunci jatuh dari elite'
   - Kunci peti!
   - 'Tantangan: kalahkan para juara'
+  - Tidak ada ruang untuk keluar
   - Tantangan selesai!
   - 9 mm
   - 5,45

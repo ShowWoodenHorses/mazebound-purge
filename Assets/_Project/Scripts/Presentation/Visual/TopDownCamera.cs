@@ -47,8 +47,14 @@ namespace Purge.Presentation.Visual
             set => _followHalfExtent = Mathf.Max(1f, value);
         }
 
-        /// <summary>Distance at which a square of ±<see cref="_followHalfExtent"/> around the target fits the view.</summary>
-        public float FollowDistance => _followHalfExtent / Mathf.Tan(NarrowHalfFov());
+        /// <summary>
+        /// Cells added to <see cref="FollowHalfExtent"/> for now (stage 9a: a vehicle at speed pulls the camera back); the
+        /// caller eases it, the player's setting stays as it is.
+        /// </summary>
+        public float ExtraHalfExtent { get; set; }
+
+        /// <summary>Distance at which a square of ±(<see cref="_followHalfExtent"/> + extra) around the target fits the view.</summary>
+        public float FollowDistance => (_followHalfExtent + Mathf.Max(0f, ExtraHalfExtent)) / Mathf.Tan(NarrowHalfFov());
 
         /// <summary>The smaller of the vertical and horizontal half field of view, in radians.</summary>
         private float NarrowHalfFov()

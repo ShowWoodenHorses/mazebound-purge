@@ -104,6 +104,12 @@ namespace Purge.Presentation.UI.Touch
             if (_cluster != null) _cluster.SetThrowable(state);
         }
 
+        /// <summary>The player drives a vehicle (stage 9a): Gas and Brake instead of the attack, slots and throwable.</summary>
+        public void SetDriving(bool driving)
+        {
+            if (_cluster != null) _cluster.SetDriving(driving);
+        }
+
         /// <summary>What Use would do now (lights the button).</summary>
         public void SetUse(UseTarget target)
         {

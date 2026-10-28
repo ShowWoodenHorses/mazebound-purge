@@ -16,6 +16,7 @@
 | Декор | Theme → Decor Set | 0 | 18 (Synty, `Art/Decor`) | низкие для авторасстановки + высокие для ручной |
 | Светильник (факел) | Theme → Light Set | 0 | 2 (`Art/Lighting`) | 1–3 |
 | Игрок | `Data/Player/PlayerVisual` | 1 | 1 | 1 |
+| Машина | `Art/Vehicles` → Build Vehicles → `Data/Vehicles` (модуль Look) | 0 | 2 (PolygonMilitary: легковая, грузовик с цистерной) | лёгкая + тяжёлая на биом; колёса — дети `*Wheel*`, передние `*Wheel_f*` |
 | Пуля (трассер) | `Data/Combat/CombatVisual` → Bullet | 0–1 | 1 | 1 |
 | Вспышка у дула | `CombatVisual` → Muzzle Flash | 0–1 | 1 | 1 |
 | Гильза | `CombatVisual` → Shell Casing | 0–1 | 1 | 1 |

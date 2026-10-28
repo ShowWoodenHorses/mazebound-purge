@@ -143,6 +143,31 @@ namespace Purge.Core.Level
         public BarrelKind Kind { get => _kind; internal set => _kind = value; }
     }
 
+    /// <summary>
+    /// A vehicle standing on the level from the start of the run (ТЗ 9, «Машина-таран»): the player gets in with Use and
+    /// rams the horde; single use. <see cref="LevelEntityData.Position"/> is the cell under the centre of its body.
+    /// </summary>
+    [Serializable]
+    public sealed class VehicleData : LevelEntityData
+    {
+        public const string IdPrefix = "vehicle";
+
+        [SerializeField] private Vehicles.VehicleDefinition _definition;
+
+        [Tooltip("Where its front points, degrees clockwise from North (0 = North, 90 = East).")]
+        [SerializeField] private float _heading;
+
+        public VehicleData(string id, GridPosition position, Vehicles.VehicleDefinition definition, float heading)
+            : base(id, position)
+        {
+            _definition = definition;
+            _heading = heading;
+        }
+
+        public Vehicles.VehicleDefinition Definition { get => _definition; internal set => _definition = value; }
+        public float Heading { get => _heading; internal set => _heading = Mathf.Repeat(value, 360f); }
+    }
+
     /// <summary>What it takes to open a chest and what it gives (stage 7в).</summary>
     public enum ChestKind
     {

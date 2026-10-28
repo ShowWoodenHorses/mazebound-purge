@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -396,6 +397,7 @@ MonoBehaviour:
   - "\u041A\u043B\u044E\u0447 \u043E\u0442 \u0441\u0443\u043D\u0434\u0443\u043A\u0430!"
   - "\u0418\u0441\u043F\u044B\u0442\u0430\u043D\u0438\u0435: \u043F\u043E\u0431\u0435\u0434\u0438\u0442\u0435
     \u0447\u0435\u043C\u043F\u0438\u043E\u043D\u043E\u0432"
+  - "\u041D\u0435\u0433\u0434\u0435 \u0432\u044B\u0439\u0442\u0438"
   - "\u0418\u0441\u043F\u044B\u0442\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0439\u0434\u0435\u043D\u043E!"
   - "9 \u043C\u043C"
   - 5,45

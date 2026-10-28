@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -370,6 +371,7 @@ MonoBehaviour:
   - "Zamkni\u0119te: klucz wypada z elity"
   - Klucz do skrzyni!
   - "Wyzwanie: pokonaj czempion\xF3w"
+  - "Brak miejsca, by wysi\u0105\u015B\u0107"
   - Wyzwanie zaliczone!
   - 9 mm
   - 5,45

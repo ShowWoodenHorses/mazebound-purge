@@ -2956,6 +2956,145 @@ MonoBehaviour:
       _range: 16
       _maxVoices: 3
       _minInterval: 0.08
+  _vehicleSounds:
+  - _name: bounce
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 8b6149bb0c4711b4d8797c6d214606fe, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: door
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 73cb7bacbf80cfc41a9a1f35a386841e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: heavy_drive_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 970123f2db8a34943bd784d74817237b, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: heavy_idle_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 67a5322c4522b744890690472e652630, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: heavy_rev
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: bc218161db1cd2d4084175139590a183, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: heavy_start
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 1de459815b4e528419e1c08eb5cf8b1e, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: light_drive_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 68eecb0b9e0a18746b01a2a064eed269, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: light_idle_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 95cda9acf654bc24baa46db5ca462393, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: light_rev
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 0d8de1f0ba6ca22489f89e3dd3f6e1c4, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: light_start
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: f741349d72482764fb2496f7bd3db6cf, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: monster_hit
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: f4284eddfa2567541852d3ea2705b6b9, type: 3}
+      - {fileID: 8300000, guid: ed5be4d799b588146b4ace6b69aea5bc, type: 3}
+      - {fileID: 8300000, guid: 9dcda22458b50174b8ef1590146dc8b4, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.94, y: 1.06}
+      _range: 0
+      _maxVoices: 3
+      _minInterval: 0.06
+  - _name: scrape_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 346737a69dfcb2649a473521f4053f1f, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: smoke_loop
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 517550c7b1bf98745b76354551800269, type: 3}
+      _volume: 0.5
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: stall
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 13271e20f5db19e4b93966daffafe925, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.97, y: 1.03}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: wall_hit
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 9b185199283d5a14cab09feed95f5357, type: 3}
+      - {fileID: 8300000, guid: e07dc342da69cc744b85ac8470829d48, type: 3}
+      _volume: 0.7
+      _pitch: {x: 0.94, y: 1.06}
+      _range: 0
+      _maxVoices: 3
+      _minInterval: 0.06
   _monsterCall:
     _clips:
     - {fileID: 8300000, guid: 56402e0dc3433f847bc9b11a478b1902, type: 3}

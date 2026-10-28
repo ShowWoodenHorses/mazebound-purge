@@ -93,6 +93,16 @@
 2. Вид: в набор **Decor** темы добавить вариант с моделью и **Definition** = это препятствие (вес > 0).
 3. Ставить кистью **Obstacle** в Level Designer. Код не нужен.
 
+### Добавить машину (этап 9)
+1. Модель — префаб в `Assets/_Project/Art/Vehicles/` (перед +Z, начало координат — на земле в центре корпуса; колёса —
+   дети с `Wheel` в имени, передние — `Wheel_f…`: крутятся и поворачиваются). Из пака — без коллайдеров, затем
+   **Collect Used Third-Party Assets**.
+2. Звуки двигателя — папки `Sounds/Vehicle/<имя>_idle_loop`, `_drive_loop`, `_start`, `_rev` (`<имя>` — последнее слово
+   имени префаба, `Vehicle_Light` → `light`), **Build Audio**.
+3. **Purge → Dev → Build Vehicles** — определение `Data/Vehicles/<префаб>.asset` с черновыми модулями (Engine, Steering,
+   Hull — прямоугольник по размеру модели, Ram, Look со звуками); дальше числа — в инспекторе. Затем **Convert Object
+   Materials to Purge Lit**. Код не нужен.
+
 ### Звуки оружия
 Звуки оружия выбираются по **звуковой группе** — полю `Sound` в определении оружия (`Data/Weapons/<имя>.asset`). Это
 **выпадающий список** папок групп (вписывать руками ничего не надо); `Default` = группа с именем id оружия, если такая
@@ -138,6 +148,11 @@
 определении монстра поля **Cast Sound** (начало каста) и **Release Sound** (срабатывание) — выпадающие списки этих папок.
 Новый звук: подпапка с файлами → **Build Audio** → выбрать в способности. Звуки дверей от монстров — `Other/door_hit*`,
 `Other/door_broken*`; карточки — `UI/cards_show*`, `card_pick*`, `card_reroll*`; окно подтверждения — `UI/window_exit_level`.
+
+**Звуки машин (9а)** — `Sounds/Vehicle/<звук>/` (папка = именованный звук, файлы — варианты): двигатели машин — у модуля
+Look поля Idle / Drive / Start / Rev (выпадающие списки папок; Build Vehicles ставит `<имя>_idle_loop` и т. д.); общие —
+`door` (сесть/выйти), `wall_hit` (удар о стену), `scrape_loop` (скольжение вдоль стены); для 9б уже лежат `monster_hit`,
+`bounce`, `stall`, `smoke_loop`.
 
 Общие звуки боя (`Sounds/Weapon`, `Sounds/Combat`): `empty_click` (пустой магазин), `low_ammo` (каждый выстрел, когда в
 магазине ≤ 25 %), `monster_hit` (попадание), `kill_pop` + `kill_splat` (убийство), `explosion_small/medium/large` (по
@@ -375,6 +390,14 @@ Id в инспекторе только для чтения; строковые 
 10 с, 5 %/с), существующий сохраняет числа и эффекты — обновляются только модель и пустая таблица. Модели Addressable в Purge
 Visuals; в конце — каталог контента. Запускать: после новых моделей бочек/сундуков; затем Convert Object Materials to Purge Lit.
 
+#### Build Vehicles
+Машины (этап 9а): на каждый префаб `Art/Vehicles` — `VehicleDefinition` `Data/Vehicles/<имя>.asset` (то же имя). Новый — с
+черновыми модулями по размеру модели (длина > 5,5 м — тяжёлая: 8,5 кл/с, разгон 4,5, радиус 5, HP 500, масса 20; иначе
+11 кл/с, 7, 3,5, HP 300, масса 8; прямоугольник корпуса — 0,95 длины и 0,85 ширины модели; камера +3) и звуками двигателя
+по имени (`Vehicle_Light` → `Sounds/Vehicle/light_*`); существующий сохраняет числа — обновляется только модель. Модели
+Addressable в Purge Visuals; в конце — каталог контента. Запускать: после новой модели машины (и Build Audio — для звуков);
+затем Convert Object Materials to Purge Lit.
+
 #### Build Zombie Animations
 Клипы Mixamo `Zombie_*` → Humanoid; общий `Art/Zombie/Zombie.controller` (Idle ×2, Walk, Scream (Alert), Run, 3 атаки,
 смерть; замеряет скорость шага клипов); каждому префабу в `Art/Zombie` — контроллер и масштаб; набор зомби темы —
@@ -456,7 +479,8 @@ Wizard, взмах `Boss_Sweep` — UAC `AttackDoubleClawsCreature`), спосо
 `StressTest.asset` и `StressHorde.asset`) и **боевая песочница** `Level_Sandbox` (40×40, реже столбы, `Data/Horde/Sandbox.asset`
 и `SandboxHorde.asset` — создаются один раз копиями стресс-теста; дальше правятся руками: число монстров и патроны
 `Sandbox Ammo` — в `Sandbox`, виды, дроп и пул оружия/метательного — в `SandboxHorde`; список `Sandbox Weapons` ложится рядом
-к югу от старта) — Generate New + Build / Sync. Запускать после Build Horde Visuals; повторный запуск перегенерирует их.
+к югу от старта; все машины `Data/Vehicles` — к юго-востоку, носом на восток, на расчищенной полосе для разгона) —
+Generate New + Build / Sync. Запускать после Build Horde Visuals; повторный запуск перегенерирует их.
 В игре: страница DEV в выборе уровней; слева — оверлей. Стресс-тест: FPS, мс по системам, кнопки нагрузки, RUN BENCH —
 автобенчмарк, результаты в консоль, канал `Performance`. Песочница (SANDBOX): число монстров, God, AMMO — патроны до
 `Sandbox Ammo` и полная стопка метательного, THROW — стопка следующего вида (`Sandbox Throwables`); оружие берётся с

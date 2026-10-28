@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - 'Trancado: a chave cai de um elite'
   - "Chave do ba\xFA!"
   - "Desafio: derrote os campe\xF5es"
+  - "Sem espa\xE7o para sair"
   - "Desafio conclu\xEDdo!"
   - 9 mm
   - 5,45

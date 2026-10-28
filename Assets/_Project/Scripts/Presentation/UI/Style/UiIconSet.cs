@@ -44,6 +44,13 @@ namespace Purge.Presentation.UI.Style
         [Tooltip("A filled arrowhead pointing right (+X): arrows towards off-screen monsters.")]
         public Sprite Pointer;
 
+        [Tooltip("A car from the side (Use: get into a vehicle or out of it, stage 9a).")]
+        public Sprite Vehicle;
+        [Tooltip("A vehicle's throttle: a pedal with an arrow up.")]
+        public Sprite Gas;
+        [Tooltip("A vehicle's brake and reverse: a pedal with an arrow down.")]
+        public Sprite Brake;
+
         [Tooltip("Background of the menu screens: a faint maze with a torch glow and a vignette.")]
         public Texture2D Backdrop;
     }

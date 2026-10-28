@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - 'Qulflangan: kalit elitadan tushadi'
   - Sandiq kaliti!
   - 'Sinov: chempionlarni yenging'
+  - "Chiqishga joy yo\u02BBq"
   - "Sinov o\u2018tildi!"
   - 9 mm
   - 5,45

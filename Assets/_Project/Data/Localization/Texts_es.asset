@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - "Cerrado: la llave cae de un \xE9lite"
   - "\xA1Llave del cofre!"
   - "Desaf\xEDo: vence a los campeones"
+  - No hay sitio para salir
   - "\xA1Desaf\xEDo superado!"
   - 9 mm
   - 5,45

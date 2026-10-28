@@ -8,6 +8,7 @@ using Purge.Gameplay.Level;
 using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Sound;
+using Purge.Gameplay.Vehicles;
 using UnityEngine;
 
 namespace Purge.Gameplay.Player
@@ -31,6 +32,12 @@ namespace Purge.Gameplay.Player
         ChestOpening = 8,
         /// <summary>A locked chest and no chest key.</summary>
         ChestLocked = 9,
+        /// <summary>The player got into a vehicle (stage 9a).</summary>
+        VehicleEntered = 10,
+        /// <summary>The player got out of the vehicle.</summary>
+        VehicleExited = 11,
+        /// <summary>No room around the vehicle to get out.</summary>
+        VehicleExitBlocked = 12,
     }
 
     /// <summary>What Interact would act on now (for the Use button).</summary>
@@ -41,6 +48,8 @@ namespace Purge.Gameplay.Player
         Door = 2,
         Throwable = 3,
         Chest = 4,
+        /// <summary>A parked vehicle to get in, or — driving — getting out.</summary>
+        Vehicle = 5,
     }
 
     /// <summary>
@@ -48,6 +57,8 @@ namespace Purge.Gameplay.Player
     /// 1) a weapon lying in the player's cell is picked up;
     /// 2) otherwise a throwable of another kind lying there replaces the stack (the same kind is picked up by walking);
     /// 2½) otherwise a closed chest next to the player (stage 7в) starts opening (<see cref="ChestSystem"/>);
+    /// 2¾) otherwise the player gets into a parked vehicle next to them (stage 9a, <see cref="VehicleSystem"/>);
+    ///    driving, Interact only gets out;
     /// 3) otherwise the door next to the player (the one they face first) is used: a locked door is unlocked with
     ///    its key (the door stays closed, the key is spent); an unlocked door opens or closes. A door is never closed
     ///    on the player or on a monster; a broken door (stage 5d) is not offered at all.
@@ -64,11 +75,13 @@ namespace Purge.Gameplay.Player
         private readonly SoundEventBus _sounds;
         private readonly HordeSystem _horde;
         private readonly ChestSystem _chests;
+        private readonly VehicleSystem _vehicles;
 
         public PlayerInteraction(IPlayerInput input, PlayerSystem player, PickupSystem pickups, DoorSystem doors,
             PlayerInventory inventory, OccupancyMap occupancy, SoundEventBus sounds, HordeSystem horde = null,
-            ChestSystem chests = null)
+            ChestSystem chests = null, VehicleSystem vehicles = null)
         {
+            _vehicles = vehicles;
             _chests = chests;
             _sounds = sounds;
             _horde = horde;
@@ -93,18 +106,28 @@ namespace Purge.Gameplay.Player
         public InteractionTarget CurrentTarget()
         {
             if (!_player.IsSpawned) return InteractionTarget.None;
+            if (_player.InVehicle) return InteractionTarget.Vehicle;
             var here = _pickups.At(_player.Cell);
             for (var i = 0; i < here.Count; i++)
                 if (here[i].Kind == PickupKind.Weapon)
                     return InteractionTarget.Weapon;
             if (_pickups.ThrowableToSwap(_player.Cell) != null) return InteractionTarget.Throwable;
             if (_chests != null && _chests.FindUsable() != null) return InteractionTarget.Chest;
+            if (_vehicles != null && _vehicles.FindEnterable() != null) return InteractionTarget.Vehicle;
             return FindDoor() != null ? InteractionTarget.Door : InteractionTarget.None;
         }
 
         /// <summary>Performs the Interact action now. False when there was nothing to interact with.</summary>
         public bool Interact()
         {
+            if (_player.InVehicle)
+            {
+                if (_vehicles == null) return false;
+                var exited = _vehicles.TryExit();
+                Interacted?.Invoke(exited ? InteractionResult.VehicleExited : InteractionResult.VehicleExitBlocked, null);
+                return true;
+            }
+
             if (_pickups.TryTakeWeapon(_player.Cell))
             {
                 Interacted?.Invoke(InteractionResult.WeaponTaken, null);
@@ -128,6 +151,13 @@ namespace Purge.Gameplay.Player
                     Interacted?.Invoke(use == ChestUse.Opening ? InteractionResult.ChestOpening : InteractionResult.ChestLocked, null);
                     return true;
                 }
+            }
+
+            var vehicle = _vehicles?.FindEnterable();
+            if (vehicle != null && _vehicles.Enter(vehicle))
+            {
+                Interacted?.Invoke(InteractionResult.VehicleEntered, null);
+                return true;
             }
 
             var door = FindDoor();

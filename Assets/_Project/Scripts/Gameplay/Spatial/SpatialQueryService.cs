@@ -52,6 +52,16 @@ namespace Purge.Gameplay.Spatial
         bool Crosses(Vector2 from, Vector2 to, int floor, out float t);
     }
 
+    /// <summary>
+    /// A solid shape that stops shots like a wall (stage 9a: a parked vehicle): bullets, projectiles and blasts stop at
+    /// it; sight passes. <see cref="SpatialQueryService.AddShotBlocker"/>.
+    /// </summary>
+    public interface IShotBlocker
+    {
+        /// <summary>First fraction 0..1 of the segment inside the shape (0 when it starts inside); false when it misses.</summary>
+        bool Crosses(Vector2 from, Vector2 to, int floor, out float t);
+    }
+
     public enum SegmentHitKind
     {
         None = 0,
@@ -123,6 +133,7 @@ namespace Purge.Gameplay.Spatial
         private readonly LevelGrid _grid;
         private readonly DoorSystem _doors;
         private readonly List<ISpatialObject> _objects = new List<ISpatialObject>();
+        private readonly List<IShotBlocker> _shotBlockers = new List<IShotBlocker>();
 
         public SpatialQueryService(LevelGrid grid, DoorSystem doors)
         {
@@ -143,6 +154,14 @@ namespace Purge.Gameplay.Spatial
         }
 
         public bool Remove(ISpatialObject spatialObject) => _objects.Remove(spatialObject);
+
+        /// <summary>A shape that stops shots like a wall from now on (a parked vehicle).</summary>
+        public void AddShotBlocker(IShotBlocker blocker)
+        {
+            if (blocker != null && !_shotBlockers.Contains(blocker)) _shotBlockers.Add(blocker);
+        }
+
+        public bool RemoveShotBlocker(IShotBlocker blocker) => _shotBlockers.Remove(blocker);
 
         public void GetObjectsInCell(GridPosition cell, List<ISpatialObject> results)
         {
@@ -191,6 +210,14 @@ namespace Purge.Gameplay.Spatial
                 wallCell = PlayerMovement.CellOf(from + delta * edgeT, floor);
             }
 
+            for (var i = 0; i < _shotBlockers.Count; i++)
+                if (_shotBlockers[i].Crosses(from, to, floor, out var blockT) && blockT < nearestT)
+                {
+                    blocked = true;
+                    wallT = nearestT = blockT;
+                    wallCell = PlayerMovement.CellOf(from + delta * blockT, floor);
+                }
+
             foreach (var item in _objects)
             {
                 if (item.Floor != floor || item is IDamageable damageable && !damageable.IsAlive)
@@ -216,8 +243,14 @@ namespace Purge.Gameplay.Spatial
         public bool IsClear(Vector2 from, Vector2 to, CellFlags blockers = CellFlags.BlocksSight, int floor = 0)
         {
             // Shots do not cross the dome's edge; sight does.
-            if ((blockers & CellFlags.BlocksBullets) != 0 && Barrier != null && Barrier.Crosses(from, to, floor, out _))
-                return false;
+            if ((blockers & CellFlags.BlocksBullets) != 0)
+            {
+                if (Barrier != null && Barrier.Crosses(from, to, floor, out _)) return false;
+                for (var i = 0; i < _shotBlockers.Count; i++)
+                    if (_shotBlockers[i].Crosses(from, to, floor, out _))
+                        return false;
+            }
+
             return !GridRaycast.Cast(from, to, new LevelOpacity(_grid, _doors, blockers), out _, out _, floor);
         }
 

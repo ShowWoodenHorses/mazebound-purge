@@ -78,6 +78,16 @@ namespace Purge.Presentation.UI.Touch
         [SerializeField] private Image _useIcon;
         [SerializeField] private Sprite _doorIcon;
         [SerializeField] private Sprite _pickUpIcon;
+        [SerializeField] private Sprite _vehicleIcon;
+
+        [Tooltip("Shown only on foot: the attack quarter, the slots, the throwable (and their icons).")]
+        [SerializeField] private GameObject[] _combatOnly;
+
+        [Tooltip("Shown only while driving (stage 9a): the Gas and Brake buttons.")]
+        [SerializeField] private GameObject[] _driveOnly;
+
+        [SerializeField] private UiShape _gas;
+        [SerializeField] private UiShape _brake;
 
         [Header("Throwable sector (LT)")]
         [SerializeField] private UiShape _throw;
@@ -86,12 +96,16 @@ namespace Purge.Presentation.UI.Touch
         [SerializeField] private Sprite _throwIconFallback;
 
         private UseTarget _useTarget;
+        private TouchScheme _scheme;
+        private bool _driving;
         private WeaponSlotState _throwState;
         private TouchPress _throwPress;
         private bool _mirrored;
         private TouchPress _attackPress;
         private TouchPress _aimPress;
         private TouchPress _usePress;
+        private TouchPress _gasPress;
+        private TouchPress _brakePress;
         private int _shownThrowCount = int.MinValue;
 
         private void Awake()
@@ -102,6 +116,8 @@ namespace Purge.Presentation.UI.Touch
             _ranged.Press = Watch(_ranged.Shape);
             _usePress = Watch(_use);
             _throwPress = Watch(_throw);
+            _gasPress = Watch(_gas);
+            _brakePress = Watch(_brake);
             Refresh();
         }
 
@@ -115,11 +131,32 @@ namespace Purge.Presentation.UI.Touch
         /// <summary>The aim stick (two sticks) or the Attack button (auto) in the Attack quarter.</summary>
         public void SetScheme(TouchScheme scheme)
         {
-            var sticks = scheme == TouchScheme.TwoSticks;
-            if (_aimStick != null) _aimStick.gameObject.SetActive(sticks);
-            if (_attackOnly != null)
-                foreach (var part in _attackOnly)
-                    if (part != null) part.SetActive(!sticks);
+            _scheme = scheme;
+            ApplyParts();
+        }
+
+        /// <summary>Driving a vehicle (stage 9a): Gas and Brake in place of the attack, the slots and the throwable.</summary>
+        public void SetDriving(bool driving)
+        {
+            if (_driving == driving) return;
+            _driving = driving;
+            ApplyParts();
+        }
+
+        private void ApplyParts()
+        {
+            var sticks = _scheme == TouchScheme.TwoSticks;
+            if (_aimStick != null) _aimStick.gameObject.SetActive(sticks && !_driving);
+            SetActive(_attackOnly, !sticks && !_driving);
+            SetActive(_combatOnly, !_driving);
+            SetActive(_driveOnly, _driving);
+        }
+
+        private static void SetActive(GameObject[] parts, bool active)
+        {
+            if (parts == null) return;
+            foreach (var part in parts)
+                if (part != null) part.SetActive(active);
         }
 
         /// <summary>The aim stick of the two-stick scheme (null in old scenes).</summary>
@@ -175,6 +212,8 @@ namespace Purge.Presentation.UI.Touch
             if (_style == null) return;
             PaintButton(_attack, true, false, _attackPress);
             PaintButton(_aimStick, true, false, _aimPress);
+            PaintButton(_gas, true, false, _gasPress);
+            PaintButton(_brake, true, false, _brakePress);
             PaintSlot(_melee);
             PaintSlot(_ranged);
             PaintUse();
@@ -319,6 +358,7 @@ namespace Purge.Presentation.UI.Touch
             if (_useIcon == null) return;
             if (_useTarget == UseTarget.PickUp && _pickUpIcon != null) _useIcon.sprite = _pickUpIcon;
             else if (_useTarget == UseTarget.Door && _doorIcon != null) _useIcon.sprite = _doorIcon;
+            else if (_useTarget == UseTarget.Vehicle && _vehicleIcon != null) _useIcon.sprite = _vehicleIcon;
             var color = available ? _style.Accent : _style.Text;
             if (!available) color.a *= 0.45f;
             _useIcon.color = color;

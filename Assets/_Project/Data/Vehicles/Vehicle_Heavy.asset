@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec667569fc3e584e91a3b76c91886f0, type: 3}
+  m_Name: Vehicle_Heavy
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Vehicles.VehicleDefinition
+  _id: vehicle_heavy
+  _modules:
+  - rid: 1763807473633067107
+  - rid: 1763807473633067108
+  - rid: 1763807473633067109
+  - rid: 1763807473633067110
+  - rid: 1763807473633067111
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807473633067107
+      type: {class: EngineModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _maxSpeed: 8.5
+        _acceleration: 4.5
+        _braking: 10
+        _rolling: 2.5
+        _reverseSpeed: 3
+        _power: 2
+    - rid: 1763807473633067108
+      type: {class: SteeringModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _turnRadius: 5
+    - rid: 1763807473633067109
+      type: {class: HullModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _health: 500
+        _length: 6.9
+        _width: 2.6
+        _wallSafeSpeed: 3
+        _wallDamage: 4
+    - rid: 1763807473633067110
+      type: {class: RamModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _mass: 20
+    - rid: 1763807473633067111
+      type: {class: VehicleLookModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
+      data:
+        _prefab:
+          m_AssetGUID: 6f354e8359085e54ba63d7ab45b7eb74
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _cameraZoom: 3
+        _idle: heavy_idle_loop
+        _drive: heavy_drive_loop
+        _start: heavy_start
+        _rev: heavy_rev

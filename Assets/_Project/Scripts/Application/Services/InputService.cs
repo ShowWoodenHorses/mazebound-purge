@@ -35,7 +35,7 @@ namespace Purge.Application.Services
         private InputAction _aimStick;
         private InputAction _attack;
         private InputAction _pointerAttack;
-        private readonly InputAction[] _buttons = new InputAction[7];
+        private readonly InputAction[] _buttons = new InputAction[9];
         private readonly IUiPointer _uiPointer;
         private bool _pointerBlocked;
         private int _pointerCheckedFrame = -1;
@@ -172,6 +172,9 @@ namespace Purge.Application.Services
             Button(PlayerAction.Slot2, "<Keyboard>/2", "<Gamepad>/rightShoulder");
             Button(PlayerAction.Reload, "<Keyboard>/r", "<Gamepad>/buttonNorth");
             Button(PlayerAction.Throw, "<Keyboard>/g", "<Gamepad>/leftTrigger"); // also the HUD's throw button
+            // Driving (stage 9a): W/S are also the walk's up/down — on foot they only walk, in a vehicle only these count.
+            Button(PlayerAction.Gas, "<Keyboard>/w", "<Keyboard>/upArrow", "<Gamepad>/rightTrigger"); // also the HUD's Gas
+            Button(PlayerAction.Brake, "<Keyboard>/s", "<Keyboard>/downArrow", "<Gamepad>/leftTrigger"); // also the HUD's Brake
             // Map and pause also work while gameplay is paused (to close the map), so they are events
             // rather than polled by level ticks. Android Back arrives as Escape.
             // Keys are bound by their place (US layout), not by the letter: a letter binding ("#(m)") finds no key on

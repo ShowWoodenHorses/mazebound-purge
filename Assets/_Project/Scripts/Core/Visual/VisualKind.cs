@@ -20,6 +20,9 @@ namespace Purge.Core.Visual
         /// <summary>A barrel or a chest (stage 7в): the model of its kind's asset, no visual set.</summary>
         Barrel = 11,
         Chest = 12,
+
+        /// <summary>A vehicle (stage 9a): the model of its definition's look, no visual set.</summary>
+        Vehicle = 13,
     }
 
     /// <summary>

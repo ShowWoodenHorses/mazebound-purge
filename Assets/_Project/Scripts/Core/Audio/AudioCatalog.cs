@@ -300,6 +300,11 @@ namespace Purge.Core.Audio
         [Header("Monsters (stage 6e2)")]
         [Tooltip("Sounds of abilities by name: a folder Sounds/Monster/<name> each (abilities name them in Cast/Release Sound).")]
         [SerializeField] private List<SoundPart> _monsterSounds = new List<SoundPart>();
+        [Header("Vehicles (stage 9a)")]
+        [Tooltip("Sounds of vehicles by name: a folder Sounds/Vehicle/<name> each (engines are named in a vehicle's Look; " +
+                 "door, wall_hit, scrape_loop are shared).")]
+        [SerializeField] private List<SoundPart> _vehicleSounds = new List<SoundPart>();
+
         [Tooltip("A caller monster calls the horde (Monster/call*).")]
         [SerializeField] private SoundCue _monsterCall = new SoundCue(0.7f, 16f, 2, new Vector2(0.95f, 1.05f), 0.3f);
         [Tooltip("A hit rings off a monster's armored front (Monster/armor_hit*).")]
@@ -482,6 +487,7 @@ namespace Purge.Core.Audio
         internal List<ZombieVoice> MutableZombieVoices => _zombieVoices;
         internal List<SoundPart> MutableParts => _parts;
         internal List<SoundPart> MutableMonsterSounds => _monsterSounds;
+        internal List<SoundPart> MutableVehicleSounds => _vehicleSounds;
         internal List<SoundPart> MutableAmbiences => _ambiences;
         internal SoundCue MonsterCallCue => _monsterCall;
         internal SoundCue ArmorHitCue => _armorHit;
@@ -497,6 +503,7 @@ namespace Purge.Core.Audio
         internal SoundCue ConfirmOpenCue => _confirmOpen;
 
         public IReadOnlyList<SoundPart> MonsterSounds => _monsterSounds;
+        public IReadOnlyList<SoundPart> VehicleSounds => _vehicleSounds;
         public SoundCue MonsterCall => _monsterCall;
         public SoundCue ArmorHit => _armorHit;
         public SoundCue ChampionAppear => _championAppear;
@@ -527,6 +534,16 @@ namespace Purge.Core.Audio
         {
             if (string.IsNullOrEmpty(name)) return null;
             foreach (var sound in _monsterSounds)
+                if (sound != null && string.Equals(sound.Name, name, StringComparison.OrdinalIgnoreCase))
+                    return NonEmpty(sound.Cue);
+            return null;
+        }
+
+        /// <summary>A vehicle sound by name (<see cref="VehicleSoundAttribute"/>), or null when there is none.</summary>
+        public SoundCue VehicleSound(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            foreach (var sound in _vehicleSounds)
                 if (sound != null && string.Equals(sound.Name, name, StringComparison.OrdinalIgnoreCase))
                     return NonEmpty(sound.Cue);
             return null;
@@ -603,6 +620,9 @@ namespace Purge.Core.Audio
             yield return _mapOpen; yield return _mapClose;
             yield return _levelComplete; yield return _levelFailed; yield return _star; yield return _waveCleared;
             foreach (var sound in _monsterSounds)
+                if (sound != null)
+                    yield return sound.Cue;
+            foreach (var sound in _vehicleSounds)
                 if (sound != null)
                     yield return sound.Cue;
             yield return _monsterCall; yield return _armorHit; yield return _championAppear;

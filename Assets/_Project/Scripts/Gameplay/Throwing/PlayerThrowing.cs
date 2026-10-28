@@ -93,7 +93,7 @@ namespace Purge.Gameplay.Throwing
         {
             ConsumedAttack = false;
             _cooldown = Mathf.Max(0f, _cooldown - deltaTime);
-            if (!_player.IsSpawned || _slot.IsEmpty)
+            if (!_player.IsSpawned || _slot.IsEmpty || _player.InVehicle)
             {
                 StopAiming();
                 return;
@@ -150,7 +150,8 @@ namespace Purge.Gameplay.Throwing
         /// <summary>Throws one now at <paramref name="target"/> (clamped to reach and walls), ignoring input (tests, tools).</summary>
         public bool TryThrow(Vector2 target)
         {
-            if (!_player.IsSpawned || _slot.IsEmpty || _cooldown > 0f || _player.Stunned || _player.Down) return false;
+            if (!_player.IsSpawned || _slot.IsEmpty || _cooldown > 0f || _player.Stunned || _player.Down || _player.InVehicle)
+                return false;
             var definition = _slot.Definition;
             var origin = _player.Position;
             target = Clamp(target);

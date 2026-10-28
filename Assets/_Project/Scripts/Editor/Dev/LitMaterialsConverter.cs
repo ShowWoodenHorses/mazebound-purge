@@ -105,6 +105,10 @@ namespace Purge.Editor.Dev
             foreach (var chest in Load<Purge.Core.Objects.ChestDefinition>())
                 Add(prefabs, chest.Prefab?.editorAsset as GameObject);
 
+            // Vehicles (stage 9a, Build Vehicles).
+            foreach (var vehicle in Load<Purge.Core.Vehicles.VehicleDefinition>())
+                Add(prefabs, vehicle.Look?.Prefab?.editorAsset as GameObject);
+
             return prefabs
                 .SelectMany(prefab => prefab.GetComponentsInChildren<Renderer>(true))
                 .Where(renderer => !(renderer is ParticleSystemRenderer))

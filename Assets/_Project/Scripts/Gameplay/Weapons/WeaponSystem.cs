@@ -184,9 +184,18 @@ namespace Purge.Gameplay.Weapons
             return true;
         }
 
+        /// <summary>The slot keys do nothing (the player drives a vehicle, stage 9a: no switching, reloading or dropping).</summary>
+        public bool InputLocked { get; set; }
+
         public void Tick(float deltaTime)
         {
             ReloadRequested = false;
+            if (InputLocked)
+            {
+                _held[0] = _held[1] = -1f; // a key held while getting out does not drop the weapon
+                return;
+            }
+
             Key(WeaponSlot.First, PlayerAction.Slot1, deltaTime);
             Key(WeaponSlot.Second, PlayerAction.Slot2, deltaTime);
         }

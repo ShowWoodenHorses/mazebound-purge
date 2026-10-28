@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - 'Locked: the key drops from an elite'
   - Chest key!
   - 'Challenge: beat the champions'
+  - No room to get out
   - Challenge done!
   - 9 mm
   - 5.45

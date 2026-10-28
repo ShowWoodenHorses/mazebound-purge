@@ -41,6 +41,7 @@ namespace Purge.Presentation.Localization
         public const string HudRefuge = "hud.refuge";
         public const string HudRefugeOver = "hud.refuge.over";
         public const string HudChestLocked = "hud.chest.locked";
+        public const string HudVehicleBlocked = "hud.vehicle.blocked";
         public const string HudChestKey = "hud.chest.key";
         public const string HudChallenge = "hud.chest.challenge";
         public const string HudChallengeDone = "hud.chest.challenge_done";

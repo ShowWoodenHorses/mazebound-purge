@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - "Chiuso: la chiave cade da un \xE9lite"
   - Chiave del forziere!
   - 'Sfida: sconfiggi i campioni'
+  - "Non c\u2019\xE8 spazio per scendere"
   - Sfida superata!
   - 9 mm
   - 5,45

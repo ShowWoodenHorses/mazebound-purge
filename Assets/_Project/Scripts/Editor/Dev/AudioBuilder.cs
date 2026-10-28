@@ -35,6 +35,7 @@ namespace Purge.Editor.Dev
 
         /// <summary>Files right in it are fixed monster cues (call, armor, champion); folders under it — sounds of abilities.</summary>
         internal const string MonsterFolder = SoundsFolder + "/Monster";
+        internal const string VehicleFolder = SoundsFolder + "/Vehicle";
 
         /// <summary>Folders under it are biome ambient loops, named by theme id (stage 7г).</summary>
         internal const string AmbientFolder = SoundsFolder + "/Ambient";
@@ -181,6 +182,7 @@ namespace Purge.Editor.Dev
             FillParts(catalog, sounds, used);
             FillFolders(catalog.MutableMonsterSounds, MonsterFolder, sounds, used,
                 _ => new SoundCue(0.75f, 16f, 3, new Vector2(0.95f, 1.05f), 0.08f));
+            FillFolders(catalog.MutableVehicleSounds, VehicleFolder, sounds, used, DefaultVehicleCue);
             FillFolders(catalog.MutableAmbiences, AmbientFolder, sounds, used, _ => new SoundCue(0.35f, 0f, 1, Vector2.one));
             FillWeaponSounds(catalog, sounds, used);
 
@@ -230,6 +232,17 @@ namespace Purge.Editor.Dev
 
         /// <summary>Names of the monster sound folders (Sounds/Monster/&lt;sound&gt;), sorted.</summary>
         internal static List<string> MonsterSounds() => SubFolders(MonsterFolder);
+
+        /// <summary>Names of the vehicle sound folders (Sounds/Vehicle/&lt;sound&gt;), sorted.</summary>
+        internal static List<string> VehicleSounds() => SubFolders(VehicleFolder);
+
+        /// <summary>Tuning of a new vehicle sound: loops (engines, scrape) single and steady, hits a little varied.</summary>
+        private static SoundCue DefaultVehicleCue(string name) =>
+            name.EndsWith("_loop", StringComparison.OrdinalIgnoreCase)
+                ? new SoundCue(0.5f, 0f, 1, Vector2.one)
+                : name.StartsWith("hit", StringComparison.OrdinalIgnoreCase) || name.EndsWith("_hit", StringComparison.OrdinalIgnoreCase)
+                    ? new SoundCue(0.7f, 0f, 3, new Vector2(0.94f, 1.06f), 0.06f)
+                    : new SoundCue(0.7f, 0f, 1, new Vector2(0.97f, 1.03f));
 
         private static List<string> SubFolders(string folder) =>
             AssetDatabase.IsValidFolder(folder)

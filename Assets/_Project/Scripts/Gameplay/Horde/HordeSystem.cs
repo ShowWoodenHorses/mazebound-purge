@@ -1738,6 +1738,41 @@ namespace Purge.Gameplay.Horde
             return position;
         }
 
+        /// <summary>
+        /// Cells around <paramref name="center"/> (within <paramref name="reach"/> cells) were just blocked (stage 9a: a
+        /// vehicle parked over them): monsters standing in a cell they may not stand in any more are put out — away from
+        /// the centre, to the nearest free spot — else they would stand locked in the blocked cells.
+        /// </summary>
+        public void PushOutOfBlocked(Vector2 center, float reach, int floor)
+        {
+            if (_positions == null || floor != _player.Floor) return;
+            for (var i = 0; i < _highWater; i++)
+            {
+                if (!IsAlive(_states[i])) continue;
+                var position = _positions[i];
+                if ((position - center).sqrMagnitude > reach * reach || CanStand(CellIndex(position))) continue;
+                var radius = RadiusOf(i);
+                var away = position - center;
+                var start = away.sqrMagnitude > 1e-6f ? Mathf.Atan2(away.y, away.x) : 0f;
+                for (var step = 0; step < 16; step++)
+                {
+                    var angle = start + (step % 2 == 0 ? 1f : -1f) * (step + 1) / 2 * (Mathf.PI / 8f);
+                    var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                    var found = false;
+                    for (var extra = 0.5f; extra <= reach + 1.5f; extra += 0.5f)
+                    {
+                        var candidate = position + direction * extra;
+                        if (!CanStand(CellIndex(candidate)) || !FootprintFree(candidate, radius)) continue;
+                        _positions[i] = candidate;
+                        found = true;
+                        break;
+                    }
+
+                    if (found) break;
+                }
+            }
+        }
+
         /// <summary>A monster may stand in the cell: walkable and not under the safe dome.</summary>
         private bool CanStand(int cell) => cell >= 0 && _walkable[cell] && !InRefugeCell(cell);
 

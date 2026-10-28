@@ -72,6 +72,7 @@ Unity 6000.3.8f1 (6.3 LTS) · Built-in RP · VContainer 1.19 · UniTask 2.5 · A
 | [Elite.md](Docs/Code/Elite.md) | Элита (броня спереди, подъём павших, удар по площади, ярость, враждебные эффекты), чемпионы (аффиксы, `ChampionSystem`, свечение), бенчмарк песочницы, эффекты монстров (Э3) |
 | [Bosses.md](Docs/Code/Bosses.md) | Боссы: тело N×N и своё поле пути, `BossSystem`, босс-волна, закрытие арены и решётки, `LevelClock` (замедление), полоса HP, стрелки, звук, Build Monsters для боссов |
 | [Horde.md](Docs/Code/Horde.md) | Орда уровня `HordeDefinition`, волны (`WaveScenario`, `WaveGenerator`, `WaveSystem`, `Level_Run`), `HordeSystem` (массивы, тик, появление), рендер орды, боевая песочница, стресс-тест |
+| [Vehicles.md](Docs/Code/Vehicles.md) | Машины: `VehicleDefinition` и модули, `VehicleData`, Build Vehicles, `VehicleSystem` (езда, стены, вход/выход, стоящая — стена и укрытие), игрок в машине, вид, камера, звук, тач-педали |
 | [Objects.md](Docs/Code/Objects.md) | Бочки (`BarrelSystem`), сундуки и ключ (`ChestSystem`), колпак (`RefugeSystem`, барьер выстрелов), `CellBlockers`, их вид, HUD, звук, сейв |
 | [Cards.md](Docs/Code/Cards.md) | Опыт забега, `CardDefinition`/`CardDeck`, `CardSystem`, `RunStats`/`RunDamage` (урон, крит, взрывы), магнит подбора, `GameFlowState.Cards`, экран карточек |
 | [MetaUI.md](Docs/Code/MetaUI.md) | Карта, таймер, завершение уровня, сейв-сервисы; UI: `UiShape`, `UiStyle`, иконки, кнопки, экраны, HUD; локализация; обучение |

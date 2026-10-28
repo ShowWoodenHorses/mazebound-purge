@@ -128,6 +128,7 @@ namespace Purge.Presentation.UI
 
             var touch = _ui.TouchControls;
             if (touch == null) return;
+            touch.SetDriving(_player.InVehicle);
             touch.SetWeapons(melee, ranged);
             touch.SetThrowable(throwable);
             touch.SetUse(_interaction.CurrentTarget() switch
@@ -136,6 +137,7 @@ namespace Purge.Presentation.UI
                 InteractionTarget.Throwable => UseTarget.PickUp,
                 InteractionTarget.Chest => UseTarget.PickUp,
                 InteractionTarget.Door => UseTarget.Door,
+                InteractionTarget.Vehicle => UseTarget.Vehicle,
                 _ => UseTarget.None,
             });
         }
@@ -245,6 +247,9 @@ namespace Purge.Presentation.UI
                     break;
                 case InteractionResult.DoorFrozen:
                     _ui.Hud.ShowMessage(_texts.Get(TextKeys.HudDoorFrozen));
+                    break;
+                case InteractionResult.VehicleExitBlocked:
+                    _ui.Hud.ShowMessage(_texts.Get(TextKeys.HudVehicleBlocked));
                     break;
                 case InteractionResult.WeaponTaken:
                     if (_weapons.Active != null)

@@ -119,6 +119,17 @@ namespace Purge.Application.Services
             voice.Source.volume = VoiceVolume(voice);
         }
 
+        /// <summary>
+        /// New volume, pan and pitch of a playing voice (stage 9a: an engine's loop follows the speed). The pitch replaces
+        /// the one it started with (its cue's random range included).
+        /// </summary>
+        public void SetVoice(int id, float volume, float pan, float pitch)
+        {
+            SetVoice(id, volume, pan);
+            var voice = _root != null ? Find(id) : null;
+            if (voice != null) voice.Source.pitch = Mathf.Max(0.05f, pitch);
+        }
+
         public bool IsPlaying(int id) => Find(id) != null;
 
         /// <summary>Voices of the channel playing or paused now (checks, tests).</summary>

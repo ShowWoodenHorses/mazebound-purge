@@ -18,6 +18,12 @@ namespace Purge.Gameplay.Player
 
         /// <summary>The throwable: press — aim (hold and release — throw; a quick press — aim until a tap or click).</summary>
         Throw = 6,
+
+        /// <summary>A vehicle's throttle, held (stage 9a; W, RT, the HUD's Gas button). The wheel is the stick's x.</summary>
+        Gas = 7,
+
+        /// <summary>A vehicle's brake, at a stop — reverse, held (stage 9a; S, LT, the HUD's Brake button).</summary>
+        Brake = 8,
     }
 
     /// <summary>

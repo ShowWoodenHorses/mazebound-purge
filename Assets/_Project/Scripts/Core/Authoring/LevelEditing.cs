@@ -4,6 +4,7 @@ using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Core.Lighting;
+using Purge.Core.Vehicles;
 using Purge.Core.Visual;
 
 namespace Purge.Core.Authoring
@@ -185,6 +186,11 @@ namespace Purge.Core.Authoring
         public static ChestData AddChest(LevelData level, GridPosition position, ChestKind kind) =>
             Add(level, level.MutableChests, new ChestData(level.CreateUniqueId(ChestData.IdPrefix), position, kind));
 
+        /// <summary>A vehicle (stage 9a) with its centre in <paramref name="position"/>, front at <paramref name="heading"/>°.</summary>
+        public static VehicleData AddVehicle(LevelData level, GridPosition position, VehicleDefinition definition, float heading) =>
+            Add(level, level.MutableVehicles,
+                new VehicleData(level.CreateUniqueId(VehicleData.IdPrefix), position, definition, UnityEngine.Mathf.Repeat(heading, 360f)));
+
         /// <summary>
         /// Adds a key; if <paramref name="door"/> is given, links it (one key = one door) and colours both.
         /// The key wins its cell: auto decor there is removed (decor placed by hand stays).
@@ -235,6 +241,7 @@ namespace Purge.Core.Authoring
                 case WeaponPickupData weapon: level.MutableWeapons.Remove(weapon); break;
                 case BarrelData barrel: level.MutableBarrels.Remove(barrel); break;
                 case ChestData chest: level.MutableChests.Remove(chest); break;
+                case VehicleData vehicle: level.MutableVehicles.Remove(vehicle); break;
             }
 
             level.VisualData.RemoveObject(entity.Id);

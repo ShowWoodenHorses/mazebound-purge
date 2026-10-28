@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -370,6 +371,7 @@ MonoBehaviour:
   - "Kilitli: anahtar elitten d\xFC\u015Fer"
   - "Sand\u0131k anahtar\u0131!"
   - "Meydan okuma: \u015Fampiyonlar\u0131 yen"
+  - "\u0130nmek i\xE7in yer yok"
   - Meydan okuma tamam!
   - 9 mm
   - 5,45

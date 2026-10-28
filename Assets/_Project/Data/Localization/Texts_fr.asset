@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - "Verrouill\xE9 : la cl\xE9 tombe d\u2019une \xE9lite"
   - "Cl\xE9 du coffre !"
   - "\xC9preuve : battez les champions"
+  - Pas de place pour sortir
   - "\xC9preuve r\xE9ussie !"
   - 9 mm
   - 5,45

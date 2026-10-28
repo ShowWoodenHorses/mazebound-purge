@@ -103,6 +103,14 @@ namespace Purge.Editor.Dev
             // A filled arrowhead pointing right: arrows towards off-screen monsters.
             set.Pointer = Draw("ui_pointer", new Icon().Polyline(true, 6f, 5f, 19.5f, 12f, 6f, 19f)
                 .Fill(new[] { 6f, 5f, 19.5f, 12f, 6f, 19f }));
+            // A car from the side: body with the cabin, two wheels (Use at a vehicle, stage 9a).
+            set.Vehicle = Draw("ui_vehicle", new Icon().Polyline(true, 2.5f, 16, 2.5f, 11.5f, 6.5f, 11, 9, 6.5f, 15.5f, 6.5f, 18.5f, 11,
+                    21.5f, 11.8f, 21.5f, 16).Circle(7, 16.5f, 2.3f).Circle(17, 16.5f, 2.3f));
+            // Pedals: an arrow up (gas) and an arrow down (brake / reverse) over a pedal bar.
+            set.Gas = Draw("ui_gas", new Icon().Polyline(true, 12, 3.5f, 18.5f, 11, 14.5f, 11, 14.5f, 16, 9.5f, 16, 9.5f, 11, 5.5f, 11)
+                .Fill(new[] { 12f, 3.5f, 18.5f, 11f, 14.5f, 11f, 14.5f, 16f, 9.5f, 16f, 9.5f, 11f, 5.5f, 11f }).Segment(5, 20.5f, 19, 20.5f));
+            set.Brake = Draw("ui_brake", new Icon().Polyline(true, 12, 16, 18.5f, 8.5f, 14.5f, 8.5f, 14.5f, 3.5f, 9.5f, 3.5f, 9.5f, 8.5f, 5.5f, 8.5f)
+                .Segment(5, 20.5f, 19, 20.5f));
             set.Backdrop = DrawBackdrop();
             BuildCardIcons();
 

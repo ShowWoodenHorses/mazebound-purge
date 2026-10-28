@@ -1051,27 +1051,41 @@ namespace Purge.Editor.Dev
                 new Vector2(size, size));
             var content = Rect(root, "Content", Center, Vector2.zero, Vector2.zero);
             Stretch(content);
+            // On foot: the attack, the slots, the throwable; driving (stage 9a): Gas and Brake in their place.
+            var combat = Rect(content, "Combat", Center, Vector2.zero, Vector2.zero);
+            Stretch(combat);
 
-            var attack = SectorShape(content, "AttackButton", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
+            var attack = SectorShape(combat, "AttackButton", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
             AddTouchButton(attack.gameObject, "<Gamepad>/buttonSouth");
-            var aimStick = BuildAimStick(content, radius, icons.Attack);
-            var arc = SectorShape(content, "AttackHairline", BottomRight, Vector2.zero, radius - 11.5f, radius - 10f, 90f, 90f);
+            var aimStick = BuildAimStick(combat, radius, icons.Attack);
+            var arc = SectorShape(combat, "AttackHairline", BottomRight, Vector2.zero, radius - 11.5f, radius - 10f, 90f, 90f);
             arc.StrokeWidth = 0f;
             arc.Fill = Fade(_style.Line, 0.25f);
-            var attackIcon = Icon(content, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
+            var attackIcon = Icon(combat, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
 
             var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
-            ClusterSlot(cluster, "_ranged", content, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
+            ClusterSlot(cluster, "_ranged", combat, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
                 icons.Ranged);
-            ClusterSlot(cluster, "_melee", content, "MeleeButton", "<Gamepad>/leftShoulder", firstStart, sweep, inner, outer,
+            ClusterSlot(cluster, "_melee", combat, "MeleeButton", "<Gamepad>/leftShoulder", firstStart, sweep, inner, outer,
                 icons.Melee);
 
             // The throwable: press — aim (a touch on the game throws there), hold and release — throw at the aim.
-            var throwShape = SectorShape(content, "ThrowButton", BottomRight, Vector2.zero, inner, outer, throwStart, sweep, true);
+            var throwShape = SectorShape(combat, "ThrowButton", BottomRight, Vector2.zero, inner, outer, throwStart, sweep, true);
             AddTouchButton(throwShape.gameObject, "<Gamepad>/leftTrigger");
-            var throwIcon = Icon(content, "ThrowIcon", icons.Grenade, BottomRight, Polar(throwStart + sweep * 0.5f, 240f), 58f);
-            var throwCount = Text(content, "ThrowCount", "", 22f, true, BottomRight, Center,
+            var throwIcon = Icon(combat, "ThrowIcon", icons.Grenade, BottomRight, Polar(throwStart + sweep * 0.5f, 240f), 58f);
+            var throwCount = Text(combat, "ThrowCount", "", 22f, true, BottomRight, Center,
                 Polar(throwStart + sweep * 0.5f, 204f), new Vector2(60f, 26f), TextAlignmentOptions.Center);
+
+            var drive = Rect(content, "Drive", Center, Vector2.zero, Vector2.zero);
+            Stretch(drive);
+            // Gas: the whole quarter (the big button under the thumb); Brake / reverse: a sector on its arc.
+            var gas = SectorShape(drive, "GasButton", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
+            AddTouchButton(gas.gameObject, "<Gamepad>/rightTrigger");
+            Icon(drive, "GasIcon", icons.Gas, BottomRight, new Vector2(-74f, 74f), 66f);
+            var brake = SectorShape(drive, "BrakeButton", BottomRight, Vector2.zero, inner, outer, 100f, 50f, true);
+            AddTouchButton(brake.gameObject, "<Gamepad>/leftTrigger");
+            Icon(drive, "BrakeIcon", icons.Brake, BottomRight, Polar(125f, 230f), 58f);
+            drive.gameObject.SetActive(false);
 
             // Use: a circle on the left of the cluster, its own layout element, clear of the throwable sector.
             var useShape = Shape(area, "UseButton", BottomRight, new Vector2(-430f, 140f), new Vector2(110f, 110f), true);
@@ -1092,6 +1106,11 @@ namespace Purge.Editor.Dev
             SetReference(cluster, "_throwIconFallback", icons.Grenade);
             SetReference(cluster, "_doorIcon", icons.Door);
             SetReference(cluster, "_pickUpIcon", icons.PickUp);
+            SetReference(cluster, "_vehicleIcon", icons.Vehicle);
+            SetReference(cluster, "_gas", gas);
+            SetReference(cluster, "_brake", brake);
+            SetReferences(cluster, "_combatOnly", new List<Object> { combat.gameObject });
+            SetReferences(cluster, "_driveOnly", new List<Object> { drive.gameObject });
             var serialized = new SerializedObject(cluster);
             serialized.FindProperty("_center").vector2Value = Vector2.zero;
             serialized.FindProperty("_tickRadius").floatValue = tickRadius;

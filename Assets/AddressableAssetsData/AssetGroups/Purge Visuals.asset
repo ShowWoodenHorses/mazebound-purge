@@ -490,6 +490,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66de60c454e53094f82ee14f7fae4f5e
+    m_Address: Assets/_Project/Art/Vehicles/Vehicle_Light.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 675c2e12fe98fb84aa16bcfac5fd7909
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Stream_Acid.prefab
     m_ReadOnly: 0
@@ -502,6 +507,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6e2c72ff95094e2448471676c582b910
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/RifleMuzzleStandard.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f354e8359085e54ba63d7ab45b7eb74
+    m_Address: Assets/_Project/Art/Vehicles/Vehicle_Heavy.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

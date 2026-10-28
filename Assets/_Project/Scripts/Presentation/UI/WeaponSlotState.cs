@@ -44,5 +44,7 @@ namespace Purge.Presentation.UI
         None = 0,
         PickUp = 1,
         Door = 2,
+        /// <summary>Get into a vehicle, or out of it (stage 9a).</summary>
+        Vehicle = 3,
     }
 }

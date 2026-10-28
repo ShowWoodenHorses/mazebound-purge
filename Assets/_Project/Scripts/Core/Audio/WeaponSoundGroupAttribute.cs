@@ -25,4 +25,12 @@ namespace Purge.Core.Audio
     public sealed class MonsterSoundAttribute : PropertyAttribute
     {
     }
+
+    /// <summary>
+    /// A string field naming a vehicle sound (<see cref="AudioCatalog.VehicleSound"/>): a dropdown of the folders
+    /// Sounds/Vehicle/&lt;sound&gt; (stage 9a: engines).
+    /// </summary>
+    public sealed class VehicleSoundAttribute : PropertyAttribute
+    {
+    }
 }

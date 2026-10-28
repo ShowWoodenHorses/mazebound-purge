@@ -159,6 +159,11 @@ namespace Purge.Gameplay.Combat
             _firingLeft = Mathf.Max(0f, _firingLeft - deltaTime);
             _stanceLeft = Mathf.Max(0f, _stanceLeft - deltaTime);
             if (_player.Down) return; // dead: neither aims nor attacks until revived
+            if (_player.InVehicle)
+            {
+                _player.WeaponSpeed = 1f;
+                return; // no shooting from a vehicle (ТЗ 9)
+            }
             // A computer: the body always faces the mouse, the legs walk where the keys say (decision 2026-10-17).
             var pointerAim = TryPointerAim(out var toPointer);
             var weapon = _weapons.Active;

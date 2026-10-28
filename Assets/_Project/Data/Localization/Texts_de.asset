@@ -148,6 +148,7 @@ MonoBehaviour:
   - hud.chest.locked
   - hud.chest.key
   - hud.chest.challenge
+  - hud.vehicle.blocked
   - hud.chest.challenge_done
   - ammo.ammo_9mm
   - ammo.ammo_5_45
@@ -369,6 +370,7 @@ MonoBehaviour:
   - "Verschlossen: Der Schl\xFCssel f\xE4llt von einer Elite"
   - "Truhenschl\xFCssel!"
   - "Pr\xFCfung: Besiege die Champions"
+  - Kein Platz zum Aussteigen
   - "Pr\xFCfung bestanden!"
   - 9 mm
   - 5,45

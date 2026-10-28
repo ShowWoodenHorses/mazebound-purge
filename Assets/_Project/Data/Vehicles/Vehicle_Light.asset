@@ -26,22 +26,22 @@ MonoBehaviour:
     - rid: 1763807473633067112
       type: {class: EngineModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
-        _maxSpeed: 11
-        _acceleration: 7
+        _maxSpeed: 7.7
+        _acceleration: 4.9
         _braking: 14
         _rolling: 3
-        _reverseSpeed: 4
+        _reverseSpeed: 2.8
         _power: 1
     - rid: 1763807473633067113
       type: {class: SteeringModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
-        _turnRadius: 3.5
+        _turnRadius: 2.8
     - rid: 1763807473633067114
       type: {class: HullModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
         _health: 300
-        _length: 3.5
-        _width: 1.4
+        _length: 2.5
+        _width: 1
         _wallSafeSpeed: 3
         _wallDamage: 4
     - rid: 1763807473633067115

@@ -369,7 +369,7 @@ namespace Purge.Presentation.Map
                         Kind = MapIconKind.Vehicle,
                         Center = MapIconLayout.CenterOf(vehicle.Position),
                         Rotation = -vehicle.Heading * Mathf.Rad2Deg,
-                        Size = set.VehicleSize,
+                        Size = set.VehicleScale * vehicle.HalfLength * 2f,
                         Color = set.VehicleColor,
                         Visible = shown && vehicle.State == VehicleState.Parked && !vehicle.Broken,
                     });

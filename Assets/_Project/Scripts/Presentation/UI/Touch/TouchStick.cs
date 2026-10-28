@@ -16,6 +16,9 @@ namespace Purge.Presentation.UI.Touch
     /// scale it (<see cref="SetPlacement"/>); a scaled stick has a proportionally longer travel.
     /// The aim stick of the two-stick scheme lives in the attack cluster: its ring may leave the zone (a touch is never
     /// shifted, so it starts undeflected), and in the mirrored (left-handed) cluster its value is mirrored back.
+    /// Steering (<see cref="SetSteering"/>, in a vehicle): the ring shows a wheel at its rest point instead of the
+    /// knob; a thumb anywhere in the zone turns it around its centre, the turn up to <see cref="WheelLock"/> is the
+    /// stick's x. Released — the car steers straight at once, the wheel springs back.
     /// </summary>
     public sealed class TouchStick : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
@@ -24,11 +27,26 @@ namespace Purge.Presentation.UI.Touch
         /// <summary>A fixed stick also takes touches slightly outside the ring.</summary>
         private const float FixedGrabScale = 1.3f;
 
+        /// <summary>Wheel turn, degrees, of a full steer.</summary>
+        private const float WheelLock = 180f;
+
+        /// <summary>Closer to the wheel's centre (share of the ring radius) the thumb's angle is not followed.</summary>
+        private const float WheelHub = 0.3f;
+
+        /// <summary>Released wheel springs back, degrees per second.</summary>
+        private const float WheelReturn = 720f;
+
         [InputControl(layout = "Vector2")]
         [SerializeField] private string _controlPath = "<Gamepad>/leftStick";
 
         [SerializeField] private RectTransform _ring;
         [SerializeField] private RectTransform _knob;
+
+        [Tooltip("The wheel drawn on the ring while steering (off otherwise).")]
+        [SerializeField] private RectTransform _wheel;
+
+        [Tooltip("What the stick draws on its ring and the wheel hides (knob, hairline, marks).")]
+        [SerializeField] private GameObject _stickParts;
 
         [Tooltip("Aim-mode marks around the ring; the one the stick points at lights up.")]
         [SerializeField] private TouchStickMarks _marks;
@@ -57,6 +75,9 @@ namespace Purge.Presentation.UI.Touch
         private bool _moved;
         private Vector2 _restInSafeArea;
         private float _scale = 1f;
+        private bool _steering;
+        private float _wheelAngle;
+        private float _thumbAngle = float.NaN;
 
         protected override string controlPathInternal
         {
@@ -97,6 +118,23 @@ namespace Purge.Presentation.UI.Touch
             if (!IsHeld) ResetToRest();
         }
 
+        /// <summary>A steering wheel instead of the stick (the player drives a vehicle).</summary>
+        public void SetSteering(bool steering)
+        {
+            if (_steering == steering) return;
+            if (IsHeld)
+            {
+                Release();
+                SendValueToControl(Vector2.zero);
+            }
+
+            _steering = steering;
+            _wheelAngle = 0f;
+            if (_wheel != null) _wheel.gameObject.SetActive(steering);
+            if (_stickParts != null) _stickParts.SetActive(!steering);
+            TurnWheel();
+        }
+
         /// <summary>The ring (drawn stick base).</summary>
         public RectTransform Ring => _ring;
 
@@ -106,6 +144,13 @@ namespace Purge.Presentation.UI.Touch
         public void OnPointerDown(PointerEventData eventData)
         {
             if (IsHeld || !ToLocal(eventData, out var point)) return;
+
+            if (_steering)
+            {
+                _pointerId = eventData.pointerId;
+                _thumbAngle = ThumbAngle(eventData);
+                return;
+            }
 
             if (_floating)
             {
@@ -123,7 +168,14 @@ namespace Purge.Presentation.UI.Touch
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (eventData.pointerId != _pointerId || !ToLocal(eventData, out var point)) return;
+            if (eventData.pointerId != _pointerId) return;
+            if (_steering)
+            {
+                Steer(eventData);
+                return;
+            }
+
+            if (!ToLocal(eventData, out var point)) return;
             Deflect(point);
         }
 
@@ -143,7 +195,44 @@ namespace Purge.Presentation.UI.Touch
         private void LateUpdate()
         {
             // The rest point depends on the zone size (safe area, screen size), so it is followed while idle.
-            if (!IsHeld) ResetToRest();
+            if (IsHeld) return;
+            ResetToRest();
+            if (_steering && _wheelAngle != 0f)
+            {
+                _wheelAngle = Mathf.MoveTowards(_wheelAngle, 0f, WheelReturn * Time.unscaledDeltaTime);
+                TurnWheel();
+            }
+        }
+
+        private void Steer(PointerEventData eventData)
+        {
+            var angle = ThumbAngle(eventData);
+            if (float.IsNaN(angle)) return;
+            // Screen angles grow counter-clockwise; the wheel's turn is clockwise (to the right).
+            if (!float.IsNaN(_thumbAngle))
+                _wheelAngle = Mathf.Clamp(_wheelAngle - Mathf.DeltaAngle(_thumbAngle, angle), -WheelLock, WheelLock);
+            _thumbAngle = angle;
+            TurnWheel();
+            SendValueToControl(new Vector2(_wheelAngle / WheelLock, 0f));
+        }
+
+        /// <summary>The thumb's angle around the wheel, screen degrees; NaN on the hub.</summary>
+        private float ThumbAngle(PointerEventData eventData)
+        {
+            var center = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, _ring.position);
+            var offset = eventData.position - center;
+            // Screen pixels: the ring's world scale (an overlay canvas) already holds the canvas and ring scales.
+            var hub = _ring.rect.width * 0.5f * Mathf.Abs(_ring.lossyScale.y) * WheelHub;
+            if (offset.sqrMagnitude < hub * hub) return float.NaN;
+            return Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+        }
+
+        private void TurnWheel()
+        {
+            if (_wheel == null) return;
+            // A mirrored parent flips the rotation as shown.
+            var shown = transform.lossyScale.x < 0f ? _wheelAngle : -_wheelAngle;
+            _wheel.localRotation = Quaternion.Euler(0f, 0f, shown);
         }
 
         private void Deflect(Vector2 point)
@@ -169,6 +258,7 @@ namespace Purge.Presentation.UI.Touch
         private void Release()
         {
             _pointerId = NoPointer;
+            _thumbAngle = float.NaN;
             LightFireRing(false);
             ResetToRest();
             if (_marks != null) _marks.Point(Vector2.zero);

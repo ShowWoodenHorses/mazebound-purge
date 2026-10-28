@@ -52,7 +52,7 @@ MonoBehaviour:
   Size: 1.8
   PlayerSize: 1.6
   ItemSize: 1.4
-  VehicleSize: 3
+  VehicleScale: 0.9
   MinScreenSize: 26
   MaxTilt: 12
   MaxShift: 0.15

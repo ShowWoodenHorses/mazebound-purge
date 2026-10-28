@@ -14,7 +14,7 @@ namespace Purge.Editor.Dev
     /// <summary>
     /// Purge → Dev → Build Vehicles (stage 9a): a <see cref="VehicleDefinition"/> in <c>Data/Vehicles</c> for every model
     /// in <c>Art/Vehicles</c> (the same name). A new one gets draft modules from the model's size (its root scale counts:
-    /// the models are at 0.75) — the body rectangle from its bounds; a long one (over 4.2 m) is heavy: slower, stronger,
+    /// a light car is about 1 cell wide, a truck 1.5) — the body rectangle from its bounds; a long one (over 3.2 m) is heavy: slower, stronger,
     /// wider turns, a bigger blast — and the engine sounds whose folders start with its name's last word
     /// (<c>Vehicle_Light</c> → <c>Sounds/Vehicle/light_idle_loop</c>…). An existing one keeps its numbers: only its model
     /// is set, and what stage 9b added when missing — the wreck module, the ram's stun, the smoke. Models are Addressable
@@ -31,7 +31,7 @@ namespace Purge.Editor.Dev
         private const string SmokePath = "Assets/_Project/Art/Effects/PolygonParticleFX/FX_Vehicle_Smoke.prefab";
 
         /// <summary>Longer than this, cells, the drafts are of a heavy vehicle.</summary>
-        private const float HeavyLength = 4.2f;
+        private const float HeavyLength = 3.2f;
 
         [MenuItem("Purge/Dev/Build Vehicles")]
         public static void Build()
@@ -101,14 +101,14 @@ namespace Purge.Editor.Dev
             var heavy = length > HeavyLength;
             var engine = new EngineModule
             {
-                MaxSpeed = heavy ? 8.5f : 11f,
-                Acceleration = heavy ? 4.5f : 7f,
+                MaxSpeed = heavy ? 5.95f : 7.7f,
+                Acceleration = heavy ? 3.15f : 4.9f,
                 Braking = heavy ? 10f : 14f,
                 Rolling = heavy ? 2.5f : 3f,
-                ReverseSpeed = heavy ? 3f : 4f,
+                ReverseSpeed = heavy ? 2.1f : 2.8f,
                 Power = heavy ? 2f : 1f,
             };
-            var steering = new SteeringModule { TurnRadius = heavy ? 5f : 3.5f };
+            var steering = new SteeringModule { TurnRadius = heavy ? 4f : 2.8f };
             var hull = new HullModule
             {
                 Health = heavy ? 500f : 300f,

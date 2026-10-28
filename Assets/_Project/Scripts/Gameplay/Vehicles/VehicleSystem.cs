@@ -131,7 +131,7 @@ namespace Purge.Gameplay.Vehicles
         private const float MaxSubstep = 0.2f;
 
         /// <summary>The turn widens with speed: cells of radius added per cell per second.</summary>
-        private const float TurnWidening = 0.25f;
+        private const float TurnWidening = 0.2f;
 
         /// <summary>Seconds a rammed monster is not rammed again (it is pushed aside meanwhile).</summary>
         public const float RamCooldown = 0.5f;

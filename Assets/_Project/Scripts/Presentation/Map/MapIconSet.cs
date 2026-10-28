@@ -91,8 +91,8 @@ namespace Purge.Presentation.Map
         [Min(0.5f)] public float PlayerSize = 1.6f;
         [Tooltip("Zombies, weapons, medkits and keys: smaller than landmarks (often several close together).")]
         [Min(0.5f)] public float ItemSize = 1.4f;
-        [Tooltip("A vehicle's icon, cells (its body is several cells long).")]
-        [Min(0.5f)] public float VehicleSize = 3f;
+        [Tooltip("A vehicle's icon size per metre of its body length (the icon follows the body).")]
+        [Min(0.1f)] public float VehicleScale = 0.9f;
         [Tooltip("Smallest icon on screen, canvas units (big levels have tiny cells).")]
         [Min(0f)] public float MinScreenSize = 26f;
         [Tooltip("Largest random turn of an icon, degrees (stable per object id): a careless hand-drawn map.")]

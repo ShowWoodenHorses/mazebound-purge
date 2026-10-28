@@ -645,6 +645,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42bc1ec0aed349149a87604723b5d6ea
+    m_Address: Assets/_Project/Data/Vehicles/Vehicle_Heavy.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4329f07b42756c24caededb8268c1897
     m_Address: Assets/_Project/Data/Themes/CastleBlockMedkitSet.asset
     m_ReadOnly: 0
@@ -2040,6 +2045,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce6a258e463fd9e44b1c152d46f12928
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Materials/PolygonMilitary_Glass_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ceec1fe9f5ec65848973ff21c3ec4673
     m_Address: Assets/_Project/Data/Weapons/Shock_cannon.asset
     m_ReadOnly: 0
@@ -2418,6 +2428,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee57852e624141a47884aaee6822c53c
     m_Address: Assets/_Project/Data/Weapons/Railgun.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef0a59940228c2c49924e3e184342d63
+    m_Address: Assets/_Project/Data/Vehicles/Vehicle_Light.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

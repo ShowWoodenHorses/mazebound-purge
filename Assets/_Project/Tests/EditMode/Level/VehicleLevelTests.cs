@@ -24,9 +24,9 @@ namespace Purge.Tests.EditMode.Level
         public void SetUp()
         {
             _light = Make<VehicleDefinition>();
-            _light.Configure("light", new HullModule { Health = 300f, Length = 3.5f, Width = 1.4f });
+            _light.Configure("light", new HullModule { Health = 300f, Length = 2.5f, Width = 1f });
             _heavy = Make<VehicleDefinition>();
-            _heavy.Configure("heavy", new HullModule { Health = 500f, Length = 5.2f, Width = 2f });
+            _heavy.Configure("heavy", new HullModule { Health = 500f, Length = 3.9f, Width = 1.5f });
             var tree = Make<ObstacleDefinition>();
             tree.Configure("tree", true, true, false, false);
             var stone = Make<ObstacleDefinition>();

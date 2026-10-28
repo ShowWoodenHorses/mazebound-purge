@@ -989,10 +989,13 @@ namespace Purge.Editor.Dev
             ringShape.Kind = UiShapeKind.Capsule;
             ringShape.Fill = Fade(_style.Fill, 0.35f / _style.Fill.a);
             var ring = ringShape.rectTransform; // Its touches go up to the zone (the stick) or a layout handle.
-            var hairline = SectorShape(ring, "Hairline", Center, Vector2.zero, 106.5f, 108f, 0f, 360f);
+            // What the steering wheel hides (stage 9: in a vehicle the stick is a wheel).
+            var stickParts = Rect(ring, "StickParts", Center, Vector2.zero, Vector2.zero);
+            Stretch(stickParts);
+            var hairline = SectorShape(stickParts, "Hairline", Center, Vector2.zero, 106.5f, 108f, 0f, 360f);
             hairline.StrokeWidth = 0f;
             hairline.Fill = Fade(_style.Line, 0.25f);
-            var knobShape = Shape(ring, "Knob", Center, Vector2.zero, new Vector2(92f, 92f));
+            var knobShape = Shape(stickParts, "Knob", Center, Vector2.zero, new Vector2(92f, 92f));
             knobShape.Kind = UiShapeKind.Capsule;
             knobShape.Fill = _style.PressedFill;
             var knob = knobShape.rectTransform;
@@ -1001,7 +1004,7 @@ namespace Purge.Editor.Dev
             for (var i = 0; i < 8; i++)
             {
                 var angle = i * 45f * Mathf.Deg2Rad;
-                var mark = Shape(ring, "Mark" + i, Center, new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 136f,
+                var mark = Shape(stickParts, "Mark" + i, Center, new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 136f,
                     new Vector2(12f, 12f));
                 mark.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
                 mark.Fill = Color.clear;
@@ -1010,11 +1013,14 @@ namespace Purge.Editor.Dev
 
             SetReference(marks, "_style", _style);
             SetReferences(marks, "_marks", markShapes);
+            var wheel = BuildSteeringWheel(ring);
 
             var stick = zone.gameObject.AddComponent<TouchStick>();
             SetReference(stick, "_ring", ring);
             SetReference(stick, "_knob", knob);
             SetReference(stick, "_marks", marks);
+            SetReference(stick, "_wheel", wheel);
+            SetReference(stick, "_stickParts", stickParts.gameObject);
             var serializedStick = new SerializedObject(stick);
             serializedStick.FindProperty("_restFromCorner").vector2Value = new Vector2(230f, 230f);
             serializedStick.FindProperty("_radius").floatValue = 100f;
@@ -1233,6 +1239,39 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>A shape in the standard look (dark fill, light outline); clicks only when <paramref name="raycast"/>.</summary>
+        /// <summary>
+        /// The steering wheel on the stick ring (stage 9, in a vehicle; off otherwise): rim, three spokes, the hub and
+        /// an accent mark at the top that shows the turn.
+        /// </summary>
+        private static RectTransform BuildSteeringWheel(RectTransform ring)
+        {
+            var wheel = Rect(ring, "Wheel", Center, Vector2.zero, new Vector2(240f, 240f));
+            var rim = SectorShape(wheel, "Rim", Center, Vector2.zero, 84f, 104f, 0f, 360f);
+            rim.StrokeWidth = 0f;
+            rim.Fill = _style.Line;
+            foreach (var (name, position, size) in new[]
+                     {
+                         ("SpokeLeft", new Vector2(-53f, 0f), new Vector2(62f, 12f)),
+                         ("SpokeRight", new Vector2(53f, 0f), new Vector2(62f, 12f)),
+                         ("SpokeDown", new Vector2(0f, -53f), new Vector2(12f, 62f)),
+                     })
+            {
+                var spoke = Shape(wheel, name, Center, position, size);
+                spoke.StrokeWidth = 0f;
+                spoke.Fill = _style.Line;
+            }
+
+            var hub = Shape(wheel, "Hub", Center, Vector2.zero, new Vector2(44f, 44f));
+            hub.Kind = UiShapeKind.Capsule;
+            hub.Fill = _style.PressedFill;
+            var mark = Shape(wheel, "Mark", Center, new Vector2(0f, 94f), new Vector2(14f, 28f));
+            mark.Kind = UiShapeKind.Capsule;
+            mark.StrokeWidth = 0f;
+            mark.Fill = _style.Accent;
+            wheel.gameObject.SetActive(false);
+            return wheel;
+        }
+
         private static UiShape Shape(Transform parent, string name, Vector2 anchor, Vector2 position, Vector2 size,
             bool raycast = false)
         {

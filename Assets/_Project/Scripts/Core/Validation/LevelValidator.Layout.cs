@@ -4,6 +4,7 @@ using System.Linq;
 using Purge.Core.Generation;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 
 namespace Purge.Core.Validation
 {
@@ -50,6 +51,15 @@ namespace Purge.Core.Validation
                 if (geometry.IsInside(barrel.Position)) blocked.Add(geometry.ToIndex(barrel.Position));
             foreach (var chest in level.Chests)
                 if (geometry.IsInside(chest.Position)) blocked.Add(geometry.ToIndex(chest.Position));
+            // Parked vehicles (stage 9в): their bodies too.
+            var cells = new List<GridPosition>();
+            foreach (var vehicle in level.Vehicles)
+            {
+                VehicleFootprint.Cells(vehicle, cells);
+                foreach (var cell in cells)
+                    if (geometry.IsInside(cell)) blocked.Add(geometry.ToIndex(cell));
+            }
+
             foreach (var start in starts)
                 if (ArenaLayout.IsWalkable(geometry, start.Position))
                     Flood(geometry, geometry.ToIndex(start.Position), reached, queue, blocked);

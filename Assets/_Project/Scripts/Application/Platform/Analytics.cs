@@ -45,6 +45,11 @@ namespace Purge.Application.Platform
         // Bosses (stage 8a).
         public const string BossStart = "boss_start";
         public const string BossKill = "boss_kill";
+
+        // Vehicles (stage 9в): got in; a ride's rammed and killed (on getting out or thrown out); broke down.
+        public const string VehicleEnter = "vehicle_enter";
+        public const string VehicleRam = "vehicle_ram";
+        public const string VehicleBroken = "vehicle_broken";
     }
 
     /// <summary>

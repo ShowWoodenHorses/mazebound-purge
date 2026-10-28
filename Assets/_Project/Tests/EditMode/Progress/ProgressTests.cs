@@ -428,6 +428,8 @@ namespace Purge.Tests.EditMode.Progress
             run.OpenedChests.Add("chest_1");
             run.ChestKeyDropped = true;
             run.Explored = "AQID";
+            run.DestroyedVehicles.Add("vehicle_1");
+            run.VehicleHealth["vehicle_2"] = 140.5f;
             _progress.SaveRun("first", 0, run);
 
             _save.Load();
@@ -460,6 +462,8 @@ namespace Purge.Tests.EditMode.Progress
             CollectionAssert.AreEqual(new[] { "chest_1" }, loaded.OpenedChests);
             Assert.IsTrue(loaded.ChestKeyDropped);
             Assert.AreEqual("AQID", loaded.Explored, "explored map (stage 7г)");
+            CollectionAssert.AreEqual(new[] { "vehicle_1" }, loaded.DestroyedVehicles, "vehicles (stage 9в)");
+            Assert.AreEqual(140.5f, loaded.VehicleHealth["vehicle_2"]);
 
             var money = _progress.Money;
             _progress.AbandonRun(loaded.Money);

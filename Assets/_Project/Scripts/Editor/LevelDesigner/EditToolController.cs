@@ -4,6 +4,7 @@ using Purge.Core.Authoring;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace Purge.Editor.LevelDesigner
         Arena,
         Barrel,
         Chest,
+        Vehicle,
         Decor,
         Snowdrift,
         Grass,
@@ -74,6 +76,10 @@ namespace Purge.Editor.LevelDesigner
         public ObstacleDefinition ObstacleDefinition { get; set; }
         public BarrelKind BarrelKind { get; set; }
         public ChestKind ChestKind { get; set; }
+        public VehicleDefinition VehicleDefinition { get; set; }
+
+        /// <summary>Where a placed vehicle's front points, degrees clockwise from North.</summary>
+        public float VehicleHeading { get; set; }
 
         /// <summary>Ring width of an arena drawn with the Arena brush.</summary>
         public int ArenaRing { get; set; } = 2;
@@ -365,6 +371,9 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Chest:
                     Apply("Add Chest", () => created = LevelEditing.AddChest(Level, cell, ChestKind));
                     break;
+                case EditTool.Vehicle:
+                    Apply("Add Vehicle", () => created = LevelEditing.AddVehicle(Level, cell, VehicleDefinition, VehicleHeading));
+                    break;
             }
 
             _state.Select(created);
@@ -434,6 +443,9 @@ namespace Purge.Editor.LevelDesigner
                 return false;
             }
 
+            if (Tool == EditTool.Vehicle)
+                return CanPlaceVehicle(cell, out reason);
+
             var others = Level.AllEntities().Where(e => e.Position == cell).ToList();
             if (Tool == EditTool.Zombie)
             {
@@ -450,6 +462,36 @@ namespace Purge.Editor.LevelDesigner
             }
 
             return reason == null;
+        }
+
+        /// <summary>The whole body (the cells it blocks parked) on free floor, clear of other objects and vehicles.</summary>
+        private bool CanPlaceVehicle(GridPosition cell, out string reason)
+        {
+            reason = null;
+            if (VehicleDefinition == null)
+            {
+                reason = "Choose a Vehicle Definition in the tool options.";
+                return false;
+            }
+
+            var taken = new System.Collections.Generic.HashSet<GridPosition>(
+                Level.AllEntities().Where(e => !(e is VehicleData) && !(e is ZombieSpawnData)).Select(e => e.Position));
+            var cells = new System.Collections.Generic.List<GridPosition>();
+            foreach (var other in Level.Vehicles)
+            {
+                VehicleFootprint.Cells(other, cells);
+                taken.UnionWith(cells);
+            }
+
+            VehicleFootprint.Cells(new VehicleData(null, cell, VehicleDefinition, VehicleHeading), cells);
+            foreach (var body in cells)
+                if (!Level.Geometry.IsInside(body) || !ArenaLayout.IsWalkable(Level.Geometry, body) || taken.Contains(body))
+                {
+                    reason = $"The body of '{VehicleDefinition.name}' does not fit at {cell}: {body} is blocked or taken.";
+                    return false;
+                }
+
+            return true;
         }
 
         /// <summary>Clears the cell to empty floor (see <see cref="LevelEditing.ClearCell"/>); empty cells are skipped.</summary>

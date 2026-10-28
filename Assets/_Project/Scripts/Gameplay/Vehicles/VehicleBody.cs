@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Purge.Core.Grid;
+using Purge.Core.Vehicles;
 using Purge.Gameplay.Player;
 using UnityEngine;
 
@@ -16,21 +17,37 @@ namespace Purge.Gameplay.Vehicles
         public const float Skin = 0.01f;
 
         /// <summary>Unit direction of the front at <paramref name="heading"/> radians.</summary>
-        public static Vector2 Forward(float heading) => new Vector2(Mathf.Sin(heading), Mathf.Cos(heading));
+        public static Vector2 Forward(float heading) => VehicleFootprint.Forward(heading);
 
         /// <summary>Unit direction of the right side for the front <paramref name="forward"/>.</summary>
-        public static Vector2 Right(Vector2 forward) => new Vector2(forward.y, -forward.x);
+        public static Vector2 Right(Vector2 forward) => VehicleFootprint.Right(forward);
 
         /// <summary>The rectangle overlaps the cell's square (separating axes: the grid's two and the body's two).</summary>
-        public static bool OverlapsCell(Vector2 center, Vector2 forward, float halfLength, float halfWidth, int x, int y)
+        public static bool OverlapsCell(Vector2 center, Vector2 forward, float halfLength, float halfWidth, int x, int y) =>
+            OverlapsSquare(center, forward, halfLength, halfWidth, new Vector2(x, y), 0.5f);
+
+        /// <summary>The rectangle overlaps the axis-aligned square of half size <paramref name="half"/> at <paramref name="square"/>.</summary>
+        public static bool OverlapsSquare(Vector2 center, Vector2 forward, float halfLength, float halfWidth, Vector2 square,
+            float half) =>
+            VehicleFootprint.OverlapsSquare(center, forward, halfLength, halfWidth, square, half);
+
+        /// <summary>Two rectangles overlap (separating axes: the two of each).</summary>
+        public static bool OverlapsBody(Vector2 centerA, Vector2 forwardA, float halfLengthA, float halfWidthA,
+            Vector2 centerB, Vector2 forwardB, float halfLengthB, float halfWidthB)
         {
-            var right = Right(forward);
-            var d = new Vector2(x - center.x, y - center.y);
-            if (Mathf.Abs(d.x) >= 0.5f + halfLength * Mathf.Abs(forward.x) + halfWidth * Mathf.Abs(right.x)) return false;
-            if (Mathf.Abs(d.y) >= 0.5f + halfLength * Mathf.Abs(forward.y) + halfWidth * Mathf.Abs(right.y)) return false;
-            if (Mathf.Abs(Vector2.Dot(d, forward)) >= halfLength + 0.5f * (Mathf.Abs(forward.x) + Mathf.Abs(forward.y))) return false;
-            return Mathf.Abs(Vector2.Dot(d, right)) < halfWidth + 0.5f * (Mathf.Abs(right.x) + Mathf.Abs(right.y));
+            var d = centerB - centerA;
+            var rightA = Right(forwardA);
+            var rightB = Right(forwardB);
+            return !Separates(forwardA, d, halfLengthA, forwardB, rightB, halfLengthB, halfWidthB) &&
+                   !Separates(rightA, d, halfWidthA, forwardB, rightB, halfLengthB, halfWidthB) &&
+                   !Separates(forwardB, d, halfLengthB, forwardA, rightA, halfLengthA, halfWidthA) &&
+                   !Separates(rightB, d, halfWidthB, forwardA, rightA, halfLengthA, halfWidthA);
         }
+
+        private static bool Separates(Vector2 axis, Vector2 d, float own, Vector2 forward, Vector2 right, float halfLength,
+            float halfWidth) =>
+            Mathf.Abs(Vector2.Dot(d, axis)) >=
+            own + halfLength * Mathf.Abs(Vector2.Dot(forward, axis)) + halfWidth * Mathf.Abs(Vector2.Dot(right, axis));
 
         /// <summary>The rectangle overlaps a cell the walker may not be in (walls, bushes, closed doors, parked vehicles).</summary>
         public static bool Overlaps(Vector2 center, float heading, float halfLength, float halfWidth, IPlayerBlockers blockers)
@@ -47,23 +64,10 @@ namespace Purge.Gameplay.Vehicles
             return false;
         }
 
-        /// <summary>
-        /// Cells the body stands on (a parked vehicle blocks them): those it overlaps by more than
-        /// <paramref name="margin"/> cells, so a corner just touching a cell leaves it free.
-        /// </summary>
+        /// <summary>Cells the body stands on (<see cref="VehicleFootprint.Cells(Vector2, float, float, float, int, float, List{GridPosition})"/>).</summary>
         public static void Cells(Vector2 center, float heading, float halfLength, float halfWidth, int floor, float margin,
-            List<GridPosition> result)
-        {
-            result.Clear();
-            var forward = Forward(heading);
-            halfLength = Mathf.Max(0.05f, halfLength - margin);
-            halfWidth = Mathf.Max(0.05f, halfWidth - margin);
-            Bounds(center, forward, halfLength, halfWidth, out var minX, out var maxX, out var minY, out var maxY);
-            for (var y = minY; y <= maxY; y++)
-            for (var x = minX; x <= maxX; x++)
-                if (OverlapsCell(center, forward, halfLength, halfWidth, x, y))
-                    result.Add(new GridPosition(x, y, floor));
-        }
+            List<GridPosition> result) =>
+            VehicleFootprint.Cells(center, heading, halfLength, halfWidth, floor, margin, result);
 
         /// <summary>Distance from <paramref name="point"/> to the rectangle (0 inside).</summary>
         public static float Distance(Vector2 point, Vector2 center, float heading, float halfLength, float halfWidth)
@@ -138,15 +142,7 @@ namespace Purge.Gameplay.Vehicles
         }
 
         private static void Bounds(Vector2 center, Vector2 forward, float halfLength, float halfWidth,
-            out int minX, out int maxX, out int minY, out int maxY)
-        {
-            var right = Right(forward);
-            var extentX = halfLength * Mathf.Abs(forward.x) + halfWidth * Mathf.Abs(right.x);
-            var extentY = halfLength * Mathf.Abs(forward.y) + halfWidth * Mathf.Abs(right.y);
-            minX = Mathf.FloorToInt(center.x - extentX + 0.5f);
-            maxX = Mathf.FloorToInt(center.x + extentX + 0.5f);
-            minY = Mathf.FloorToInt(center.y - extentY + 0.5f);
-            maxY = Mathf.FloorToInt(center.y + extentY + 0.5f);
-        }
+            out int minX, out int maxX, out int minY, out int maxY) =>
+            VehicleFootprint.Bounds(center, forward, halfLength, halfWidth, out minX, out maxX, out minY, out maxY);
     }
 }

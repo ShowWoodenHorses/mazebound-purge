@@ -400,6 +400,13 @@ namespace Purge.Core.Authoring
 
         public static void SetChestKind(ChestData chest, ChestKind kind) => chest.Kind = kind;
 
+        /// <summary>What the vehicle is and where its front points (degrees clockwise from North).</summary>
+        public static void SetVehicle(VehicleData vehicle, VehicleDefinition definition, float heading)
+        {
+            vehicle.Definition = definition;
+            vehicle.Heading = heading;
+        }
+
         public static void SetZombie(LevelData level, ZombieSpawnData zombie, ZombieDefinition definition, Direction facing)
         {
             var definitionChanged = zombie.Definition != definition;

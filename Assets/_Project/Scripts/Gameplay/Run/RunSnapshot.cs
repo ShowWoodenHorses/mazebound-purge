@@ -54,6 +54,12 @@ namespace Purge.Gameplay.Run
         /// <summary>The chest key has dropped: a continued run gives it to the player while the locked chest is shut.</summary>
         public bool ChestKeyDropped;
 
+        /// <summary>Vehicles blown up or breaking down (level object ids, stage 9в): a continued run has them gone.</summary>
+        public List<string> DestroyedVehicles = new List<string>();
+
+        /// <summary>HP of the damaged vehicles still standing (id → HP); a continued run has them at their places.</summary>
+        public Dictionary<string, float> VehicleHealth = new Dictionary<string, float>();
+
         /// <summary>Explored map cells (stage 7г): <see cref="Visibility.MapExploration.Export"/>; null = none.</summary>
         public string Explored;
 

@@ -101,8 +101,9 @@ namespace Purge.Gameplay.Vehicles
 
     /// <summary>
     /// The level's vehicles (ТЗ 9а «Езда»): each <see cref="VehicleData"/> is a <see cref="Vehicle"/> standing where the
-    /// level puts it. A parked one blocks the cells under its body (<see cref="CellBlockers"/>, monsters there are put
-    /// out) and stops shots (<see cref="SpatialQueryService.AddShotBlocker"/>). Use next to its body gets the player in
+    /// level puts it. A parked one blocks the cells under its body for the monsters (<see cref="CellBlockers"/>, monsters
+    /// there are put out), the player and a driven vehicle meet its exact rectangle (<see cref="IPlayerBodies"/>), and it
+    /// stops shots (<see cref="SpatialQueryService.AddShotBlocker"/>). Use next to its body gets the player in
     /// (<see cref="Enter"/>; no shooting, throwing or weapon switching inside), Use again gets them out beside it.
     /// <para>Driving: throttle and brake/reverse (<see cref="PlayerAction.Gas"/>, <see cref="PlayerAction.Brake"/>), the
     /// wheel — the stick's x. The body is a rectangle moved along its heading without physics: a wall stops it, or, met
@@ -115,13 +116,13 @@ namespace Purge.Gameplay.Vehicles
     /// (monsters around pushed off, a second unhurt), blows up as the player's own effects and is gone.</para>
     /// Must be registered right after <see cref="PlayerSystem"/>: it carries the player (<see cref="PlayerSystem.Ride"/>).
     /// </summary>
-    public sealed class VehicleSystem : ILevelLoadStep, ILevelTickable, IPlayerBlockers, IPlayerShield, IPlayerShell, IDisposable
+    public sealed class VehicleSystem : ILevelLoadStep, ILevelTickable, IPlayerBlockers, IPlayerBodies, IPlayerShield, IPlayerShell, IDisposable
     {
         /// <summary>Cells from the player to the body within which Use gets in.</summary>
         public const float EnterReach = 1f;
 
-        /// <summary>A parked body blocks the cells it overlaps deeper than this (a corner touching a cell leaves it free).</summary>
-        public const float BlockMargin = 0.2f;
+        /// <summary>A parked body blocks for the monsters the cells it overlaps deeper than this (a corner touching a cell leaves it free).</summary>
+        public const float BlockMargin = VehicleFootprint.BlockMargin;
 
         /// <summary>A wall met at under this angle is slid along; head-on it stops the vehicle.</summary>
         public const float SlideAngle = 45f;
@@ -149,7 +150,9 @@ namespace Purge.Gameplay.Vehicles
         private readonly StatusSystem _statuses;
         private readonly EffectSystem _effects;
         private readonly PlayerHealth _health;
+        private readonly LevelLaunchOptions _options;
         private readonly List<Vehicle> _vehicles = new List<Vehicle>();
+        private readonly List<string> _gone = new List<string>();
         private int _floor;
         private float _time;
         private float _shieldLeft;
@@ -160,8 +163,10 @@ namespace Purge.Gameplay.Vehicles
 
         public VehicleSystem(LevelData level, PlayerSystem player, IPlayerInput input, LevelPassability passability,
             CellBlockers blockers, SpatialQueryService spatial, WeaponSystem weapons = null, HordeSystem horde = null,
-            CombatTargets targets = null, StatusSystem statuses = null, EffectSystem effects = null, PlayerHealth health = null)
+            CombatTargets targets = null, StatusSystem statuses = null, EffectSystem effects = null, PlayerHealth health = null,
+            LevelLaunchOptions options = null)
         {
+            _options = options;
             _level = level;
             _player = player;
             _input = input;
@@ -179,6 +184,9 @@ namespace Purge.Gameplay.Vehicles
         public LevelLoadStage Stage => LevelLoadStage.InitializeSystems;
 
         public IReadOnlyList<Vehicle> Vehicles => _vehicles;
+
+        /// <summary>Ids of the vehicles a continued run left out (blown up before).</summary>
+        public IReadOnlyList<string> GoneIds => _gone;
 
         /// <summary>The vehicle the player drives; null on foot.</summary>
         public Vehicle Current { get; private set; }
@@ -214,6 +222,7 @@ namespace Purge.Gameplay.Vehicles
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
+            var resume = _options?.Resume;
             foreach (var data in _level.Vehicles)
             {
                 if (data.Definition == null)
@@ -222,7 +231,16 @@ namespace Purge.Gameplay.Vehicles
                     continue;
                 }
 
+                // A continued run (stage 9в): blown up — gone; damaged — at its place with the HP it had.
+                if (resume != null && resume.DestroyedVehicles.Contains(data.Id))
+                {
+                    _gone.Add(data.Id);
+                    continue;
+                }
+
                 var vehicle = new Vehicle(data, data.Definition);
+                if (resume != null && resume.VehicleHealth.TryGetValue(data.Id, out var health))
+                    vehicle.Health = Mathf.Clamp(health, 1f, data.Definition.Hull.Health);
                 _vehicles.Add(vehicle);
                 Park(vehicle);
             }
@@ -231,6 +249,7 @@ namespace Purge.Gameplay.Vehicles
             {
                 GameLog.Info(LogChannel.Gameplay, $"Vehicles: {_vehicles.Count}.");
                 if (_health != null) _health.Shield = this;
+                _player.Bodies = this;
             }
 
             return UniTask.CompletedTask;
@@ -241,8 +260,10 @@ namespace Purge.Gameplay.Vehicles
             foreach (var vehicle in _vehicles)
                 _spatial.RemoveShotBlocker(vehicle);
             _vehicles.Clear();
+            _gone.Clear();
             if (_health != null && _health.Shield == this) _health.Shield = null;
             if (_horde != null && _horde.Shell == this) _horde.Shell = null;
+            if (_player.Bodies == this) _player.Bodies = null;
             Current = null;
         }
 
@@ -328,11 +349,21 @@ namespace Purge.Gameplay.Vehicles
             return true;
         }
 
-        bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell);
+        bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell, bodies: false);
 
         bool IPlayerBlockers.CanEnter(GridPosition cell) => true;
 
         int IPlayerBlockers.Floor => _floor;
+
+        bool IPlayerBodies.Overlaps(Vector2 center, float halfSize, int floor)
+        {
+            foreach (var vehicle in _vehicles)
+                if (vehicle.State == VehicleState.Parked && vehicle.Floor == floor &&
+                    VehicleBody.OverlapsSquare(vehicle.Position, vehicle.Forward, vehicle.HalfLength, vehicle.HalfWidth, center,
+                        halfSize))
+                    return true;
+            return false;
+        }
 
         // ------------------------------------------------------------------ Damage
 
@@ -684,18 +715,29 @@ namespace Purge.Gameplay.Vehicles
         private bool Overlaps(Vector2 center, float heading)
         {
             var vehicle = Current;
-            return VehicleBody.Overlaps(center, heading, vehicle.HalfLength, vehicle.HalfWidth, this);
+            if (VehicleBody.Overlaps(center, heading, vehicle.HalfLength, vehicle.HalfWidth, this)) return true;
+            // Parked ones — by their rectangles (their cells are left out of the walls above).
+            var forward = VehicleBody.Forward(heading);
+            foreach (var other in _vehicles)
+                if (other.State == VehicleState.Parked && other.Floor == vehicle.Floor &&
+                    VehicleBody.OverlapsBody(center, forward, vehicle.HalfLength - VehicleBody.Skin,
+                        vehicle.HalfWidth - VehicleBody.Skin, other.Position, other.Forward, other.HalfLength, other.HalfWidth))
+                    return true;
+            return false;
         }
 
         // ------------------------------------------------------------------ Parking
 
-        /// <summary>The parked body: a wall for the player and the monsters (monsters in its cells are put out), a shot stop.</summary>
+        /// <summary>
+        /// The parked body: its cells a wall for the monsters (those in them are put out), its rectangle — for the player
+        /// and a driven vehicle (<see cref="IPlayerBodies"/>); a shot stop.
+        /// </summary>
         private void Park(Vehicle vehicle)
         {
             VehicleBody.Cells(vehicle.Position, vehicle.Heading, vehicle.HalfLength, vehicle.HalfWidth, vehicle.Floor,
                 BlockMargin, vehicle.BlockedCells);
             foreach (var cell in vehicle.BlockedCells)
-                _blockers.Add(cell);
+                _blockers.Add(cell, body: true);
             _spatial.AddShotBlocker(vehicle);
             _horde?.PushOutOfBlocked(vehicle.Position, vehicle.HalfLength + 1f, vehicle.Floor);
         }
@@ -703,7 +745,7 @@ namespace Purge.Gameplay.Vehicles
         private void Unpark(Vehicle vehicle)
         {
             foreach (var cell in vehicle.BlockedCells)
-                _blockers.Remove(cell);
+                _blockers.Remove(cell, body: true);
             vehicle.BlockedCells.Clear();
             _spatial.RemoveShotBlocker(vehicle);
         }
@@ -727,7 +769,7 @@ namespace Purge.Gameplay.Vehicles
             };
 
             foreach (var (outward, offset, edge) in places)
-                // The parked body blocks whole cells: step further out until the footprint clears them.
+                // Step further out until the footprint clears walls and other bodies.
                 for (var extra = 0.15f; extra < 1.5f; extra += 0.45f)
                 {
                     var candidate = vehicle.Position + offset + outward * (edge + half + extra);

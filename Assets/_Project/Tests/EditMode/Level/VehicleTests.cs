@@ -10,6 +10,7 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Weapons;
@@ -81,9 +82,9 @@ namespace Purge.Tests.EditMode.Level
         private void Place(int x, int y, float heading) =>
             _level.MutableVehicles.Add(new VehicleData("vehicle_" + (_level.Vehicles.Count + 1), new GridPosition(x, y), _car, heading));
 
-        private void Load()
+        private void Load(RunSnapshot resume = null)
         {
-            var options = new LevelLaunchOptions(startIndex: 0, seed: 5);
+            var options = new LevelLaunchOptions(startIndex: 0, seed: 5, resume: resume);
             var grid = new LevelGrid(_level.Geometry);
             var doors = new DoorSystem(_level);
             var blockers = new CellBlockers(grid);
@@ -92,7 +93,7 @@ namespace Purge.Tests.EditMode.Level
             _input = new FakePlayerInput();
             _player = new PlayerSystem(_level, _playerDefinition, _input, _passability, new OccupancyMap(grid), options, new Aim());
             _weapons = new WeaponSystem(_input, _playerDefinition);
-            _vehicles = new VehicleSystem(_level, _player, _input, _passability, blockers, _spatial, _weapons);
+            _vehicles = new VehicleSystem(_level, _player, _input, _passability, blockers, _spatial, _weapons, options: options);
             _player.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _vehicles.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
@@ -143,6 +144,40 @@ namespace Purge.Tests.EditMode.Level
             var hit = _spatial.QuerySegment(new Vector2(3f, 10f), new Vector2(11f, 10f));
             Assert.AreEqual(SegmentHitKind.Blocker, hit.Kind);
             Assert.AreEqual(6f, hit.Point.x, 0.01f, "At its side (x = 7 - 1).");
+        }
+
+        [TestCase(7, 1f, 6.25f - 0.3f)]
+        [TestCase(3, -1f, 3.75f + 0.3f)]
+        public void Parked_PlayerWalksUpToItsSideFromEitherSide(int x, float direction, float expected)
+        {
+            // 1.5 wide: its cells are blocked a cell further than the body on each side, the player meets the body itself.
+            _car.Configure("car", new EngineModule { MaxSpeed = 10f }, new SteeringModule { TurnRadius = 3.5f },
+                new HullModule { Health = 300f, Length = 3.5f, Width = 1.5f });
+            Place(x, 10, 0f);
+            Load();
+            Assert.IsFalse(_passability.IsWalkable(new GridPosition(x + (int)direction * -1, 10)), "Its side cell: a wall for monsters.");
+            _input.Move = new Vector2(direction, 0f);
+            Tick(1.5f);
+            Assert.AreEqual(expected, _player.Position.x, 0.02f, "Right at the body's side.");
+            Assert.AreEqual(10f, _player.Position.y, 0.01f);
+        }
+
+        [Test]
+        public void Resume_BlownUpIsGone_DamagedStandsWithItsHp()
+        {
+            Place(7, 10, 0f);
+            Place(20, 10, 90f);
+            var resume = new RunSnapshot();
+            resume.DestroyedVehicles.Add("vehicle_1");
+            resume.VehicleHealth["vehicle_2"] = 120f;
+            Load(resume);
+            Assert.AreEqual(1, _vehicles.Vehicles.Count);
+            var vehicle = _vehicles.Vehicles[0];
+            Assert.AreEqual("vehicle_2", vehicle.Id);
+            Assert.AreEqual(120f, vehicle.Health);
+            Assert.AreEqual(new Vector2(20f, 10f), vehicle.Position, "At its place.");
+            CollectionAssert.AreEqual(new[] { "vehicle_1" }, _vehicles.GoneIds, "Still gone in the next save.");
+            Assert.IsTrue(_passability.IsWalkable(new GridPosition(7, 10)), "The blown-up one blocks nothing.");
         }
 
         // ------------------------------------------------------------------ In and out

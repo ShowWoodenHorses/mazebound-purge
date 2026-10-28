@@ -130,6 +130,12 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public bool InVehicle { get; private set; }
 
+        /// <summary>
+        /// Bodies collided with by their exact shape (parked vehicles, set by the vehicles' system); their cells then do
+        /// not block the player. Null — every blocked cell does.
+        /// </summary>
+        public IPlayerBodies Bodies { get; set; }
+
         /// <summary>Actual speed this tick relative to <see cref="PlayerDefinition.MoveSpeed"/>, 0..1 (for animation).</summary>
         public float SpeedFactor { get; private set; }
 
@@ -305,11 +311,14 @@ namespace Purge.Gameplay.Player
             }
         }
 
-        bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell);
+        bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell, Bodies == null);
 
         bool IPlayerBlockers.CanEnter(GridPosition cell) => _occupancy.CanPlayerEnter(cell);
 
         int IPlayerBlockers.Floor => Floor;
+
+        bool IPlayerBlockers.OverlapsBody(Vector2 center, float halfSize) =>
+            Bodies != null && Bodies.Overlaps(center, halfSize, Floor);
 
         private void Spawn(int startIndex)
         {

@@ -25,6 +25,7 @@ MonoBehaviour:
   - rid: 1763807423339692108
   - rid: 1763807423339692122
   - rid: 1763807423339692109
+  - rid: 1763807473633067127
   references:
     version: 2
     RefIds:
@@ -111,3 +112,12 @@ MonoBehaviour:
         _trails: 1
         _clearings: 1
         _start: 1
+    - rid: 1763807473633067127
+      type: {class: VehiclesStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _vehicles:
+        - {fileID: 11400000, guid: ef0a59940228c2c49924e3e184342d63, type: 2}
+        - {fileID: 11400000, guid: 42bc1ec0aed349149a87604723b5d6ea, type: 2}
+        _runway: 8
+        _startDistance: 6
+        _spacing: 12

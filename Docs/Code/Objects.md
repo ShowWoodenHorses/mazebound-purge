@@ -7,7 +7,7 @@
 - Все — `ContentDefinition`, находятся через `ContentCatalog.GetAll<T>` по виду (нет ассета вида — предупреждение, объект без эффекта/награды).
 
 ## Геймплей (Gameplay/Objects, шаг `InitializeSystems`, колпак — `SpawnZombies`)
-- **`CellBlockers`** (Gameplay/Grid): счётчик на клетку; `LevelPassability.IsWalkable` его учитывает (игрок и орда); орда на `Changed` пересобирает проходимость и поле пути. Им же пользуется стоящая машина (9а, [Vehicles.md](Vehicles.md)); её укрытие от пуль — `IShotBlocker` в `SpatialQueryService` (не путать с `Barrier` колпака).
+- **`CellBlockers`** (Gameplay/Grid): счётчик на клетку; `LevelPassability.IsWalkable` его учитывает (игрок и орда); орда на `Changed` пересобирает проходимость и поле пути. Им же пользуется стоящая машина (9а, [Vehicles.md](Vehicles.md)) — как «тело» (`body: true`, второй счётчик): для игрока её клетки не стена, он сталкивается с прямоугольником; её укрытие от пуль — `IShotBlocker` в `SpatialQueryService` (не путать с `Barrier` колпака).
 - **`BarrelSystem`**: `Barrel : IDamageable` в `SpatialQueryService` (пули, ближний, струя, цепь, взрывы игрока); `IsAimTarget = false` (автонаведение мимо), `HurtByMonsters = false` (`CombatTargets.Blast(..., hostile: true)` их пропускает). Зона игрока в клетке бочки — урон раз в 0,25 с.
   - 0 HP → через `ChainDelay` 0,12 с `EffectSystem.Apply(эффекты, hostile: false)` (игрока не ранит), бочка снята, клетка свободна, `Exploded`, `BrokenIds`. Цепь — взрыв ломает соседние, у каждой своя задержка (без рекурсии в `Blast`).
 - **`ChestSystem`**: `Chest` (`State` Closed/Opening/Challenge/Open, `Progress`), `FindUsable` (Чебышёв ≤ 1, по `Facing`), `TryUse` → `Opening` / `NeedsKey`; тик — отошёл дальше 1 клетки → `OpeningStopped`.

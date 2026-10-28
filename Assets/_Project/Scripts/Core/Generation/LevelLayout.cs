@@ -76,6 +76,10 @@ namespace Purge.Core.Generation
         public List<LayoutObject<ChestKind>> Chests { get; } = new List<LayoutObject<ChestKind>>();
         public int KeptChestCount { get; internal set; }
 
+        /// <summary>Vehicles (stage 9в): kept ones first (<see cref="KeptVehicleCount"/>), then the generated ones.</summary>
+        public List<LayoutVehicle> Vehicles { get; } = new List<LayoutVehicle>();
+        public int KeptVehicleCount { get; internal set; }
+
         public List<string> Problems { get; } = new List<string>();
         public DecorSettings Decor { get; internal set; }
 
@@ -302,6 +306,23 @@ namespace Purge.Core.Generation
 
         public GridPosition Center { get; }
         public float Radius { get; }
+    }
+
+    /// <summary>A vehicle placed by a step: the cell of its body's centre, what it is, where its front points.</summary>
+    public readonly struct LayoutVehicle
+    {
+        public LayoutVehicle(GridPosition cell, Vehicles.VehicleDefinition definition, float heading)
+        {
+            Cell = cell;
+            Definition = definition;
+            Heading = heading;
+        }
+
+        public GridPosition Cell { get; }
+        public Vehicles.VehicleDefinition Definition { get; }
+
+        /// <summary>Degrees clockwise from North.</summary>
+        public float Heading { get; }
     }
 
     /// <summary>A level object placed by a step (a barrel, a chest) and its kind.</summary>

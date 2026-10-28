@@ -14,6 +14,7 @@ using Purge.Gameplay.Level;
 using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Zombies;
 using Purge.Presentation.UI;
@@ -54,6 +55,7 @@ namespace Purge.Presentation.Map
         private readonly BarrelSystem _barrels;
         private readonly ChestSystem _chests;
         private readonly RefugeSystem _refuge;
+        private readonly VehicleSystem _vehicles;
         private readonly List<MapIcon> _icons = new List<MapIcon>();
         private readonly List<Pickup> _lying = new List<Pickup>();
         private readonly Dictionary<string, Color> _pairColors = new Dictionary<string, Color>(StringComparer.Ordinal);
@@ -66,8 +68,9 @@ namespace Purge.Presentation.Map
         public MapPresenter(UIRoot ui, LevelData level, LevelGrid grid, PlayerSystem player, DoorSystem doors,
             SettingsService settings, PickupSystem pickups, ZombieSystem zombies, PlatformService platform = null,
             MapExploration exploration = null, VisibilitySystem visibility = null, HordeSystem horde = null,
-            BarrelSystem barrels = null, ChestSystem chests = null, RefugeSystem refuge = null)
+            BarrelSystem barrels = null, ChestSystem chests = null, RefugeSystem refuge = null, VehicleSystem vehicles = null)
         {
+            _vehicles = vehicles;
             _platform = platform;
             _pickups = pickups;
             _zombies = zombies;
@@ -335,7 +338,8 @@ namespace Purge.Presentation.Map
 
         /// <summary>
         /// Barrels standing, chests (the locked one with a lock; opened ones dim), the safe dome while it stands — in
-        /// explored cells; a slot each, as many as the level has (also the mini-map's).
+        /// explored cells; vehicles not used up (parked, whole) — everywhere, turned to their heading; a slot each, as
+        /// many as the level has (also the mini-map's).
         /// </summary>
         public void AddObjectIcons(MapIconSet set, List<MapIcon> icons, bool shown)
         {
@@ -357,6 +361,18 @@ namespace Purge.Presentation.Map
                     icon.Visible = shown && IsExplored(chest.Cell);
                     icons.Add(icon);
                 }
+
+            if (_vehicles != null)
+                foreach (var vehicle in _vehicles.Vehicles)
+                    icons.Add(new MapIcon
+                    {
+                        Kind = MapIconKind.Vehicle,
+                        Center = MapIconLayout.CenterOf(vehicle.Position),
+                        Rotation = -vehicle.Heading * Mathf.Rad2Deg,
+                        Size = set.VehicleSize,
+                        Color = set.VehicleColor,
+                        Visible = shown && vehicle.State == VehicleState.Parked && !vehicle.Broken,
+                    });
 
             if (_refuge != null)
                 icons.Add(new MapIcon

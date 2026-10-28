@@ -14,13 +14,26 @@ namespace Purge.Gameplay.Player
 
         /// <summary>Floor the walker is on: the cells asked about are on it.</summary>
         int Floor => 0;
+
+        /// <summary>The footprint at <paramref name="center"/> overlaps a body with its own shape (a parked vehicle).</summary>
+        bool OverlapsBody(Vector2 center, float halfSize) => false;
+    }
+
+    /// <summary>
+    /// Bodies the player collides with by their exact shape, not by whole cells (stage 9: parked vehicles; their cells
+    /// stay blocked for the monsters — <see cref="Grid.CellBlockers"/>).
+    /// </summary>
+    public interface IPlayerBodies
+    {
+        bool Overlaps(Vector2 center, float halfSize, int floor);
     }
 
     /// <summary>
     /// Smooth player movement on the grid without physics (ТЗ §65, §78). Positions are in grid units
     /// (x = East, y = North; cell centres at integers). The footprint is a square of half size h that collides with
     /// non-walkable cells; movement is resolved per axis, so the player slides along walls. When the player pushes
-    /// straight into a wall next to a side passage, a corner assist nudges them toward the passage's lane.
+    /// straight into a wall next to a side passage, a corner assist nudges them toward the passage's lane. Bodies with
+    /// their own shape (<see cref="IPlayerBlockers.OverlapsBody"/>) stop the footprint right at their edge.
     /// Long moves are split into small steps, so nothing is tunnelled through.
     /// </summary>
     public static class PlayerMovement
@@ -45,8 +58,11 @@ namespace Purge.Gameplay.Player
         public static GridPosition CellOf(Vector2 position, int floor = 0) =>
             new GridPosition(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f), floor);
 
-        /// <summary>True when the footprint at <paramref name="center"/> overlaps a non-walkable cell.</summary>
-        public static bool Overlaps(Vector2 center, float halfSize, IPlayerBlockers blockers)
+        /// <summary>True when the footprint at <paramref name="center"/> overlaps a non-walkable cell or a body.</summary>
+        public static bool Overlaps(Vector2 center, float halfSize, IPlayerBlockers blockers) =>
+            OverlapsCells(center, halfSize, blockers) || blockers.OverlapsBody(center, halfSize);
+
+        private static bool OverlapsCells(Vector2 center, float halfSize, IPlayerBlockers blockers)
         {
             var minX = Mathf.FloorToInt(center.x - halfSize + Skin + 0.5f);
             var maxX = Mathf.FloorToInt(center.x + halfSize - Skin + 0.5f);
@@ -86,11 +102,32 @@ namespace Purge.Gameplay.Player
 
             var candidate = position;
             candidate[axis] += delta;
-            var overlaps = Overlaps(candidate, halfSize, blockers);
-            if (!overlaps && blockers.CanEnter(CellOf(candidate, blockers.Floor)))
+            var overlaps = OverlapsCells(candidate, halfSize, blockers);
+            // Already inside a body (put there from outside): free to walk out.
+            var body = !overlaps && blockers.OverlapsBody(candidate, halfSize) && !blockers.OverlapsBody(position, halfSize);
+            if (!overlaps && !body && blockers.CanEnter(CellOf(candidate, blockers.Floor)))
             {
                 position = candidate;
                 return true;
+            }
+
+            if (body)
+            {
+                // Up to the body's edge (halving the step).
+                float free = 0f, blocked = 1f;
+                for (var i = 0; i < 8; i++)
+                {
+                    var middle = (free + blocked) * 0.5f;
+                    var probe = position;
+                    probe[axis] += delta * middle;
+                    if (blockers.OverlapsBody(probe, halfSize)) blocked = middle;
+                    else free = middle;
+                }
+
+                var closest = position;
+                closest[axis] += delta * free;
+                if (blockers.CanEnter(CellOf(closest, blockers.Floor))) position = closest;
+                return false;
             }
 
             float limit;

@@ -25,10 +25,12 @@ namespace Purge.Gameplay.Grid
         /// <summary>Level objects in cells (null in tests without them).</summary>
         public CellBlockers Blockers => _blockers;
 
-        public bool IsWalkable(GridPosition cell)
+        /// <param name="bodies">False: bodies with their own shape (parked vehicles) do not block — the walker collides
+        /// with the shape itself (<see cref="CellBlockers"/>).</param>
+        public bool IsWalkable(GridPosition cell, bool bodies = true)
         {
             if (_grid.Has(cell, CellFlags.BlocksMovement)) return false; // outside the grid too
-            if (_blockers != null && _blockers.BlocksMovement(cell)) return false;
+            if (_blockers != null && _blockers.BlocksMovement(cell, bodies)) return false;
             return _grid.GetCell(cell) != CellType.Door || _doors.IsOpenAt(cell);
         }
 

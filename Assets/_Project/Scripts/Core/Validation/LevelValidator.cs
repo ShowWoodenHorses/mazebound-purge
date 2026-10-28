@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using Purge.Core.Navigation;
 using Purge.Core.Visual;
 
@@ -186,6 +187,40 @@ namespace Purge.Core.Validation
                     report.Add(Error, Structural, ValidationCodes.ObjectInBlockedCell,
                         $"'{entity.Id}' at {entity.Position} stands in obstacle '{obstacle.name}' that blocks movement.",
                         entity.Position, entity.Id);
+            }
+
+            ValidateVehicles(level, report);
+        }
+
+        /// <summary>
+        /// A vehicle's body (the cells it blocks parked, stage 9в) stands on walkable floor, clear of barrels, chests and
+        /// other vehicles.
+        /// </summary>
+        private static void ValidateVehicles(LevelData level, ValidationReport report)
+        {
+            var geometry = level.Geometry;
+            var objects = new HashSet<GridPosition>();
+            foreach (var barrel in level.Barrels) objects.Add(barrel.Position);
+            foreach (var chest in level.Chests) objects.Add(chest.Position);
+            var cells = new List<GridPosition>();
+            foreach (var vehicle in level.Vehicles)
+            {
+                if (vehicle.Definition == null)
+                {
+                    report.Add(Error, Structural, ValidationCodes.MissingDefinition,
+                        $"Vehicle '{vehicle.Id}' at {vehicle.Position} has no definition.", vehicle.Position, vehicle.Id);
+                    continue;
+                }
+
+                VehicleFootprint.Cells(vehicle, cells);
+                foreach (var cell in cells)
+                {
+                    if (geometry.IsInside(cell) && ArenaLayout.IsWalkable(geometry, cell) && objects.Add(cell)) continue;
+                    report.Add(Error, Structural, ValidationCodes.VehicleBlocked,
+                        $"Vehicle '{vehicle.Id}' at {vehicle.Position}: its body at {cell} is on a blocked cell or another object.",
+                        vehicle.Position, vehicle.Id);
+                    break;
+                }
             }
         }
 

@@ -5,6 +5,7 @@ using Purge.Core.Authoring;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
@@ -191,6 +192,13 @@ namespace Purge.Editor.LevelDesigner
                     var chestKind = (ChestKind)EditorGUILayout.EnumPopup("Kind", chest.Kind);
                     if (chestKind != chest.Kind)
                         Apply("Set Chest Kind", () => LevelEditing.SetChestKind(chest, chestKind));
+                    break;
+                case VehicleData vehicle:
+                    var vehicleDefinition = (VehicleDefinition)EditorGUILayout.ObjectField("Definition", vehicle.Definition,
+                        typeof(VehicleDefinition), false);
+                    var heading = EditPanel.HeadingPopup(vehicle.Heading);
+                    if (vehicleDefinition != vehicle.Definition || !Mathf.Approximately(heading, vehicle.Heading))
+                        Apply("Set Vehicle", () => LevelEditing.SetVehicle(vehicle, vehicleDefinition, heading));
                     break;
             }
 

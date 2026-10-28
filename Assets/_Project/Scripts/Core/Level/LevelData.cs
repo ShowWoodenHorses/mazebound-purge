@@ -163,13 +163,16 @@ namespace Purge.Core.Level
             AddGeneratedObjects(result);
         }
 
-        /// <summary>The generated barrels and chests (stage 7в) with new ids.</summary>
+        /// <summary>The generated barrels and chests (stage 7в) and vehicles (stage 9в) with new ids.</summary>
         internal void AddGeneratedObjects(GenerationResult result)
         {
             foreach (var barrel in result.Barrels)
                 _barrels.Add(new BarrelData(CreateUniqueId(BarrelData.IdPrefix), barrel.Cell, barrel.Kind));
             foreach (var chest in result.Chests)
                 _chests.Add(new ChestData(CreateUniqueId(ChestData.IdPrefix), chest.Cell, chest.Kind));
+            foreach (var vehicle in result.Vehicles)
+                MutableVehicles.Add(new VehicleData(CreateUniqueId(VehicleData.IdPrefix), vehicle.Cell, vehicle.Definition,
+                    vehicle.Heading));
         }
 
         /// <summary>Removes every placed object. Geometry is left untouched.</summary>

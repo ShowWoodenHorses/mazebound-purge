@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using Purge.Core.Validation;
 using Purge.Core.Visual;
 using UnityEditor;
@@ -42,6 +43,8 @@ namespace Purge.Editor.LevelDesigner
         private static readonly Color WarningColor = new Color(1f, 0.65f, 0.1f);
         private static readonly Color LockedColor = new Color(0.3f, 0.6f, 1f);
         private static readonly Color LockedFill = new Color(0.3f, 0.6f, 1f, 0.22f);
+        private static readonly Color VehicleFill = new Color(1f, 0.85f, 0.2f, 0.3f);
+        private readonly List<GridPosition> _vehicleCells = new List<GridPosition>();
         private static readonly Color ArenaColor = new Color(1f, 0.35f, 0.9f);
         private static readonly Color EntryFill = new Color(0.3f, 1f, 0.4f, 0.45f);
         private static readonly Color NarrowEntryFill = new Color(1f, 0.65f, 0.1f, 0.45f);
@@ -353,6 +356,15 @@ namespace Purge.Editor.LevelDesigner
                 DrawOutline(AreaRect(arena.Rect, height), ArenaColor, 2f);
             }
 
+            // Vehicles: the cells their parked bodies block.
+            foreach (var vehicle in level.Vehicles)
+            {
+                if (vehicle.Position.Floor != 0) continue;
+                VehicleFootprint.Cells(vehicle, _vehicleCells);
+                foreach (var cell in _vehicleCells)
+                    EditorGUI.DrawRect(CellRect(cell, height), VehicleFill);
+            }
+
             if (state.RectDrag.HasValue)
                 DrawOutline(AreaRect(state.RectDrag.Value, height), Color.white, 2f);
         }
@@ -453,6 +465,7 @@ namespace Purge.Editor.LevelDesigner
                 case MedkitData _: return ("+", new Color(1f, 0.4f, 0.8f));
                 case BarrelData barrel: return ("B", BarrelColor(barrel.Kind));
                 case ChestData chest: return ("C", ChestColor(chest.Kind));
+                case VehicleData _: return ("V", new Color(1f, 0.85f, 0.2f));
                 default: return ("?", Color.gray);
             }
         }

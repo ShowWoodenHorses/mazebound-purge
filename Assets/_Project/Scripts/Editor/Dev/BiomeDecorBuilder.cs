@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purge.Core.Definitions;
 using Purge.Core.Generation;
+using Purge.Core.Vehicles;
 using Purge.Core.Visual;
 using Purge.Editor.LevelDesigner;
 using Purge.Presentation.Visual;
@@ -452,6 +453,7 @@ namespace Purge.Editor.Dev
                     EditorUtility.SetDirty(recipe);
                 }
 
+                AddVehiclesStep(recipe);
                 return recipe;
             }
 
@@ -468,7 +470,28 @@ namespace Purge.Editor.Dev
                 new TrailsStep(), obstacles, new GrassStep(), new ObjectsStep(), new DecorStep(),
             });
             AssetDatabase.CreateAsset(recipe, path);
+            AddVehiclesStep(recipe);
             return recipe;
+        }
+
+        /// <summary>
+        /// Stage 9в: the light and the heavy vehicle (Build Vehicles), once — last, so the earlier steps keep their seeds
+        /// (a step's random is seeded by its number).
+        /// </summary>
+        private static void AddVehiclesStep(BiomeRecipe recipe)
+        {
+            if (recipe.MutableSteps.Exists(step => step is VehiclesStep)) return;
+            var step = new VehiclesStep();
+            foreach (var name in new[] { "Vehicle_Light", "Vehicle_Heavy" })
+            {
+                var vehicle = AssetDatabase.LoadAssetAtPath<VehicleDefinition>($"Assets/_Project/Data/Vehicles/{name}.asset");
+                if (vehicle != null) step.MutableVehicles.Add(vehicle);
+                else Debug.LogWarning($"[Purge] {name} not found: run Build Vehicles, then this again.");
+            }
+
+            if (step.MutableVehicles.Count == 0) return;
+            recipe.MutableSteps.Add(step);
+            EditorUtility.SetDirty(recipe);
         }
 
         private static void EnsureFolder(string parent, string name)

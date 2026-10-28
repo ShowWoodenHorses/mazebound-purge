@@ -12,6 +12,7 @@ using Purge.Gameplay.Objects;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Waves;
 using Purge.Gameplay.Tutorial;
+using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Zombies;
 using UnityEngine;
@@ -60,13 +61,18 @@ namespace Purge.Application.Platform
         private readonly ChestSystem _chests;
         private readonly WaveSystem _waves;
         private readonly BossSystem _bosses;
+        private readonly VehicleSystem _vehicles;
         private float _bossSince;
+        private int _rideHits;
+        private int _rideKills;
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
-            TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null)
+            TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null,
+            VehicleSystem vehicles = null)
         {
+            _vehicles = vehicles;
             _bosses = bosses;
             _chests = chests;
             _waves = waves;
@@ -99,6 +105,14 @@ namespace Purge.Application.Platform
             {
                 _bosses.Appeared += OnBossAppeared;
                 _bosses.Defeated += OnBossDefeated;
+            }
+
+            if (_vehicles != null)
+            {
+                _vehicles.Entered += OnVehicleEntered;
+                _vehicles.Exited += OnVehicleLeft;
+                _vehicles.Ejected += OnVehicleLeft;
+                _vehicles.BrokeDown += OnVehicleBroken;
             }
 
             _subscribed = true;
@@ -137,6 +151,14 @@ namespace Purge.Application.Platform
             {
                 _bosses.Appeared -= OnBossAppeared;
                 _bosses.Defeated -= OnBossDefeated;
+            }
+
+            if (_vehicles != null)
+            {
+                _vehicles.Entered -= OnVehicleEntered;
+                _vehicles.Exited -= OnVehicleLeft;
+                _vehicles.Ejected -= OnVehicleLeft;
+                _vehicles.BrokeDown -= OnVehicleBroken;
             }
 
             _subscribed = false;
@@ -190,6 +212,40 @@ namespace Purge.Application.Platform
             parameters["wave"] = Wave;
             parameters["time"] = Mathf.RoundToInt(_progress.Elapsed - _bossSince);
             _analytics.Send(AnalyticsEvents.BossKill);
+        }
+
+        private static string VehicleId(Vehicle vehicle) => vehicle.Definition != null ? vehicle.Definition.Id : "unknown";
+
+        // Vehicles (stage 9в): got in; on getting out — what the ride rammed; broke down.
+        private void OnVehicleEntered(Vehicle vehicle)
+        {
+            _rideHits = _vehicles.RamHits;
+            _rideKills = _vehicles.RamKills;
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["vehicle"] = VehicleId(vehicle);
+            parameters["wave"] = Wave;
+            _analytics.Send(AnalyticsEvents.VehicleEnter);
+        }
+
+        private void OnVehicleLeft(Vehicle vehicle)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["vehicle"] = VehicleId(vehicle);
+            parameters["hits"] = _vehicles.RamHits - _rideHits;
+            parameters["kills"] = _vehicles.RamKills - _rideKills;
+            _analytics.Send(AnalyticsEvents.VehicleRam);
+        }
+
+        private void OnVehicleBroken(Vehicle vehicle)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["vehicle"] = VehicleId(vehicle);
+            parameters["wave"] = Wave;
+            parameters["driven"] = vehicle.State == VehicleState.Driven ? 1 : 0;
+            _analytics.Send(AnalyticsEvents.VehicleBroken);
         }
 
         private void OnPickupRemoved(Pickup pickup)

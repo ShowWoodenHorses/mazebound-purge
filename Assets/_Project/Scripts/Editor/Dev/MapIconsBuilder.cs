@@ -57,6 +57,7 @@ namespace Purge.Editor.Dev
             set.Chest = Draw("map_chest", 13, Chest, ChestDetails);
             set.LockedChest = Draw("map_locked_chest", 14, Chest, ChestLock);
             set.Refuge = Draw("map_refuge", 15, Dome, null);
+            set.Vehicle = Draw("map_vehicle", 16, Car, CarDetails);
             EditorUtility.SetDirty(set);
             AssetDatabase.SaveAssets();
             Debug.Log($"[Purge] Map icons built: {SetPath}.");
@@ -160,6 +161,20 @@ namespace Purge.Editor.Dev
 
         /// <summary>The safe dome: a ring (its area stays see-through).</summary>
         private static float Dome(Vector2 p) => Mathf.Abs(Circle(p, Vector2.zero, 0.8f)) - 0.1f;
+
+        /// <summary>A car from above, front up.</summary>
+        private static float Car(Vector2 p) => Mathf.Min(
+            RoundBox(p, new Vector2(0f, 0f), new Vector2(0.42f, 0.84f), 0.2f),
+            Mathf.Min(
+                Mathf.Min(RoundBox(p, new Vector2(-0.46f, 0.5f), new Vector2(0.08f, 0.16f), 0.04f),
+                    RoundBox(p, new Vector2(0.46f, 0.5f), new Vector2(0.08f, 0.16f), 0.04f)),
+                Mathf.Min(RoundBox(p, new Vector2(-0.46f, -0.52f), new Vector2(0.08f, 0.16f), 0.04f),
+                    RoundBox(p, new Vector2(0.46f, -0.52f), new Vector2(0.08f, 0.16f), 0.04f))));
+
+        /// <summary>Windscreen (wide, ahead) and rear window.</summary>
+        private static float CarDetails(Vector2 p) => Mathf.Min(
+            Mathf.Abs(RoundBox(p, new Vector2(0f, 0.3f), new Vector2(0.3f, 0.12f), 0.06f)) - 0.035f,
+            Mathf.Abs(RoundBox(p, new Vector2(0f, -0.48f), new Vector2(0.26f, 0.08f), 0.05f)) - 0.035f);
 
         // ---- drawing ----
 

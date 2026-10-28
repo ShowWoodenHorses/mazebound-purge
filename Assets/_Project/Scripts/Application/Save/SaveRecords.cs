@@ -151,6 +151,11 @@ namespace Purge.Application.Save
         public List<string> OpenedChests = new List<string>();
         public bool ChestKeyDropped;
 
+        /// <summary>Vehicles (stage 9в): blown up (level ids), HP of the damaged ones still standing.</summary>
+        public List<string> DestroyedVehicles = new List<string>();
+
+        public List<RunVehicle> Vehicles = new List<RunVehicle>();
+
         /// <summary>Explored map cells (stage 7г): a bit per cell, Base64; empty = none.</summary>
         public string Explored;
 
@@ -188,6 +193,10 @@ namespace Purge.Application.Save
             BrokenBarrels.Clear();
             OpenedChests.Clear();
             ChestKeyDropped = false;
+            DestroyedVehicles ??= new List<string>();
+            Vehicles ??= new List<RunVehicle>();
+            DestroyedVehicles.Clear();
+            Vehicles.Clear();
             Explored = null;
         }
 
@@ -200,6 +209,11 @@ namespace Purge.Application.Save
             OpenedChests ??= new List<string>();
             BrokenBarrels.RemoveAll(string.IsNullOrEmpty);
             OpenedChests.RemoveAll(string.IsNullOrEmpty);
+            DestroyedVehicles ??= new List<string>();
+            Vehicles ??= new List<RunVehicle>();
+            DestroyedVehicles.RemoveAll(string.IsNullOrEmpty);
+            Vehicles.RemoveAll(vehicle => vehicle == null || string.IsNullOrEmpty(vehicle.Id) || !(vehicle.Health > 0f) ||
+                                          float.IsInfinity(vehicle.Health));
             Cards.RemoveAll(string.IsNullOrEmpty);
             Boosters.RemoveAll(string.IsNullOrEmpty);
             Weapons.RemoveAll(weapon => weapon == null);
@@ -217,6 +231,15 @@ namespace Purge.Application.Save
             foreach (var weapon in Weapons)
                 if (weapon.Ammo < 0) weapon.Ammo = 0;
         }
+    }
+
+    [Serializable]
+    public sealed class RunVehicle
+    {
+        /// <summary>The vehicle's id in the level.</summary>
+        public string Id;
+
+        public float Health;
     }
 
     [Serializable]

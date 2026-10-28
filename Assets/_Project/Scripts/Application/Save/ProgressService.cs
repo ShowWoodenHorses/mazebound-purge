@@ -149,6 +149,10 @@ namespace Purge.Application.Save
             if (save.BrokenBarrels != null) run.BrokenBarrels.AddRange(save.BrokenBarrels);
             if (save.OpenedChests != null) run.OpenedChests.AddRange(save.OpenedChests);
             run.ChestKeyDropped = save.ChestKeyDropped;
+            if (save.DestroyedVehicles != null) run.DestroyedVehicles.AddRange(save.DestroyedVehicles);
+            if (save.Vehicles != null)
+                foreach (var vehicle in save.Vehicles)
+                    run.VehicleHealth[vehicle.Id] = vehicle.Health;
             run.Explored = save.Explored;
             for (var i = 0; i < save.Weapons.Count && i < run.Weapons.Length; i++)
             {
@@ -188,6 +192,9 @@ namespace Purge.Application.Save
             save.BrokenBarrels.AddRange(run.BrokenBarrels);
             save.OpenedChests.AddRange(run.OpenedChests);
             save.ChestKeyDropped = run.ChestKeyDropped;
+            save.DestroyedVehicles.AddRange(run.DestroyedVehicles);
+            foreach (var pair in run.VehicleHealth)
+                save.Vehicles.Add(new RunVehicle { Id = pair.Key, Health = pair.Value });
             save.Explored = run.Explored;
             for (var i = 0; i < run.Weapons.Length; i++)
                 save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0 });

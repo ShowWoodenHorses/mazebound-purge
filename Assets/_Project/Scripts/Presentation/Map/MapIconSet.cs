@@ -18,6 +18,7 @@ namespace Purge.Presentation.Map
         Chest,
         LockedChest,
         Refuge,
+        Vehicle,
     }
 
     /// <summary>
@@ -48,6 +49,8 @@ namespace Purge.Presentation.Map
         public Sprite LockedChest;
         [Tooltip("The safe dome: a ring around its area.")]
         public Sprite Refuge;
+        [Tooltip("A vehicle not used up yet (stage 9в): a car from above, front up; turned to its heading.")]
+        public Sprite Vehicle;
 
         [Header("Colours (tint)")]
         public Color StartColor = new Color(0.35f, 0.6f, 1f);
@@ -80,6 +83,7 @@ namespace Purge.Presentation.Map
         [Tooltip("An opened chest: dim.")]
         public Color OpenedChestColor = new Color(0.55f, 0.5f, 0.45f, 0.6f);
         public Color RefugeColor = new Color(0.45f, 0.75f, 1f, 0.9f);
+        public Color VehicleColor = new Color(0.95f, 0.85f, 0.3f);
 
         [Header("Placement")]
         [Tooltip("Icon size in cells (icons are bigger than a cell).")]
@@ -87,6 +91,8 @@ namespace Purge.Presentation.Map
         [Min(0.5f)] public float PlayerSize = 1.6f;
         [Tooltip("Zombies, weapons, medkits and keys: smaller than landmarks (often several close together).")]
         [Min(0.5f)] public float ItemSize = 1.4f;
+        [Tooltip("A vehicle's icon, cells (its body is several cells long).")]
+        [Min(0.5f)] public float VehicleSize = 3f;
         [Tooltip("Smallest icon on screen, canvas units (big levels have tiny cells).")]
         [Min(0f)] public float MinScreenSize = 26f;
         [Tooltip("Largest random turn of an icon, degrees (stable per object id): a careless hand-drawn map.")]
@@ -108,6 +114,7 @@ namespace Purge.Presentation.Map
             MapIconKind.Chest => Chest,
             MapIconKind.LockedChest => LockedChest,
             MapIconKind.Refuge => Refuge,
+            MapIconKind.Vehicle => Vehicle,
             _ => Player,
         };
 
@@ -125,6 +132,7 @@ namespace Purge.Presentation.Map
             MapIconKind.Chest => ChestColor,
             MapIconKind.LockedChest => ChestColor,
             MapIconKind.Refuge => RefugeColor,
+            MapIconKind.Vehicle => VehicleColor,
             _ => PlayerColor,
         };
     }

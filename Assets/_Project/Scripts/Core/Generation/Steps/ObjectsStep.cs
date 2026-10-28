@@ -55,6 +55,7 @@ namespace Purge.Core.Generation
             var taken = new HashSet<int>();
             foreach (var barrel in layout.Barrels) taken.Add(layout.Index(barrel.Cell));
             foreach (var chest in layout.Chests) taken.Add(layout.Index(chest.Cell));
+            VehiclesStep.TakeKept(layout, taken);
             var baseline = CountReachable(layout, taken);
 
             PlaceChests(layout, random, taken, ref baseline);
@@ -259,7 +260,7 @@ namespace Purge.Core.Generation
         }
 
         /// <summary>Walkable cells reachable from the start (4 directions) when the taken cells block.</summary>
-        private static int CountReachable(LevelLayout layout, HashSet<int> taken)
+        internal static int CountReachable(LevelLayout layout, HashSet<int> taken)
         {
             var start = layout.Index(layout.Start);
             if (!layout.IsWalkable(start) || taken.Contains(start)) return 0;

@@ -4,6 +4,7 @@ using Purge.Core.Authoring;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Vehicles;
 using Purge.Core.Visual;
 using UnityEditor;
 using UnityEngine;
@@ -50,6 +51,11 @@ namespace Purge.Editor.LevelDesigner
                     break;
                 case EditTool.Chest:
                     tools.ChestKind = (ChestKind)EditorGUILayout.EnumPopup("Kind", tools.ChestKind);
+                    break;
+                case EditTool.Vehicle:
+                    tools.VehicleDefinition = (VehicleDefinition)EditorGUILayout.ObjectField("Definition", tools.VehicleDefinition,
+                        typeof(VehicleDefinition), false);
+                    tools.VehicleHeading = HeadingPopup(tools.VehicleHeading);
                     break;
                 case EditTool.Spawn:
                     EditorGUILayout.LabelField("Spawn points", state.Level.MonsterSpawns.Count.ToString());
@@ -150,10 +156,20 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Arena: return "Drag a rectangle: the open cells of the boss arena (A). The ring of the given width around it is drawn by hand with Wall; its entries are the gaps in the ring (at least 3, each 3 cells wide). The arena and ring are marked as edited, so Generate keeps them.";
                 case EditTool.Barrel: return "Click a floor cell to place an explosive barrel of the chosen kind (B). Gameplay comes in stage 7в.";
                 case EditTool.Chest: return "Click a floor cell to place a chest of the chosen kind (C). Gameplay comes in stage 7в.";
+                case EditTool.Vehicle: return "Click a floor cell to place the chosen vehicle's centre (V); its body (tinted) must fit on free floor. Leave it room ahead to speed up (8+ cells).";
                 case EditTool.LockArea: return "Drag a rectangle: Generate leaves its cells as they are (blue tint). Right-click inside an area removes it.";
                 case EditTool.Erase: return "Click or drag to clear cells: objects, lights, snowdrifts, grass, obstacles and decor are removed, walls, void and doors become floor.";
                 default: return "Click a floor cell to place.";
             }
+        }
+
+        private static readonly string[] HeadingNames = { "N 0°", "NE 45°", "E 90°", "SE 135°", "S 180°", "SW 225°", "W 270°", "NW 315°" };
+
+        /// <summary>A vehicle's heading: one of the 8 directions, degrees clockwise from North.</summary>
+        internal static float HeadingPopup(float heading)
+        {
+            var index = Mathf.RoundToInt(Mathf.Repeat(heading, 360f) / 45f) % 8;
+            return EditorGUILayout.Popup("Heading", index, HeadingNames) * 45f;
         }
     }
 }

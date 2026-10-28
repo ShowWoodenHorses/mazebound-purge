@@ -9,6 +9,7 @@ using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Objects;
+using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
@@ -113,6 +114,7 @@ namespace Purge.Gameplay.Run
         private readonly LevelLaunchOptions _options;
         private readonly BarrelSystem _barrels;
         private readonly ChestSystem _chests;
+        private readonly VehicleSystem _vehicles;
         private int _skipBonus;
         private bool _subscribed;
 
@@ -121,8 +123,9 @@ namespace Purge.Gameplay.Run
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
-            ChestSystem chests = null, MapExploration exploration = null)
+            ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null)
         {
+            _vehicles = vehicles;
             _exploration = exploration;
             _barrels = barrels;
             _chests = chests;
@@ -214,6 +217,15 @@ namespace Purge.Gameplay.Run
             {
                 run.OpenedChests.AddRange(_chests.OpenedIds);
                 run.ChestKeyDropped = _chests.KeyDropped;
+            }
+
+            // Vehicles (stage 9в): one breaking down is as good as gone; the rest stand at their places, HP kept.
+            if (_vehicles != null)
+            {
+                run.DestroyedVehicles.AddRange(_vehicles.GoneIds);
+                foreach (var vehicle in _vehicles.Vehicles)
+                    if (vehicle.Broken || vehicle.State == VehicleState.Destroyed) run.DestroyedVehicles.Add(vehicle.Id);
+                    else if (vehicle.Health < vehicle.Definition.Hull.Health) run.VehicleHealth[vehicle.Id] = vehicle.Health;
             }
 
             if (_exploration != null) run.Explored = _exploration.Export();

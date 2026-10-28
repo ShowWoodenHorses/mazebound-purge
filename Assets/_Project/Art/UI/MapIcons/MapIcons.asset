@@ -25,6 +25,7 @@ MonoBehaviour:
   Chest: {fileID: 21300000, guid: a594fcbd382d3e04188756ef4899a34d, type: 3}
   LockedChest: {fileID: 21300000, guid: a7e438b117cb28045a0e87b0be5c5d9c, type: 3}
   Refuge: {fileID: 21300000, guid: 673d9d84d1207584f8c00545095fd4c6, type: 3}
+  Vehicle: {fileID: 21300000, guid: 651aa4a8953f6d942b2bd5255e2a712d, type: 3}
   StartColor: {r: 0.35, g: 0.6, b: 1, a: 1}
   DoorColor: {r: 0.78, g: 0.52, b: 0.28, a: 1}
   LockedDoorColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
@@ -47,9 +48,11 @@ MonoBehaviour:
   ChestColor: {r: 0.9, g: 0.7, b: 0.35, a: 1}
   OpenedChestColor: {r: 0.55, g: 0.5, b: 0.45, a: 0.6}
   RefugeColor: {r: 0.45, g: 0.75, b: 1, a: 0.9}
+  VehicleColor: {r: 0.95, g: 0.85, b: 0.3, a: 1}
   Size: 1.8
   PlayerSize: 1.6
   ItemSize: 1.4
+  VehicleSize: 3
   MinScreenSize: 26
   MaxTilt: 12
   MaxShift: 0.15

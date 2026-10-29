@@ -29,10 +29,16 @@ MonoBehaviour:
     - rid: 1763807262009983158
       type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
-        _damage: 80
+        _damage: 160
         _radius: 2.5
         _edgeDamage: 0.35
         _soundRadius: 12
+        _look:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
     - rid: 1763807262009983159
       type: {class: AreaStatusEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

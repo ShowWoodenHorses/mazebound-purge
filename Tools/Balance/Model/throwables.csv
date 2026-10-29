@@ -1,6 +1,6 @@
 throwable,rarity,price,level2,level3,level4,level5
-Grenade,Common,,30,40,50,70
-Molotov,Uncommon,600,90,120,150,200
-Grenade_Smoke,Common,200,30,40,50,70
-Flashbang,Uncommon,600,90,120,150,200
-Mine,Rare,1600,240,310,410,530
+Grenade,Common,,50,70,90,120
+Molotov,Uncommon,850,160,210,270,350
+Grenade_Smoke,Common,280,50,70,90,120
+Flashbang,Uncommon,850,160,210,270,350
+Mine,Rare,2200,410,540,700,910

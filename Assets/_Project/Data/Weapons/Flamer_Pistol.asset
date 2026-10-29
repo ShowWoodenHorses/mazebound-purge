@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Flamer_Pistol
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: flamer_pistol
-  _rarity: 0
+  _rarity: 1
   _noUpgrades: 0
   _hold: 3
   _sound: 
@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         _interval: 0.1
         _automatic: 1
-        _damagePerSecond: 45
+        _damagePerSecond: 117
         _range: 3.5
         _angle: 30
     - rid: 1763807262009983092

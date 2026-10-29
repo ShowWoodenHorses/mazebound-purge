@@ -70,7 +70,7 @@ namespace Purge.Composition
                            else if (options?.Bot != null)
                            {
                                builder.Register<BotInput>(Lifetime.Singleton).AsSelf().As<IPlayerInput>();
-                               builder.Register<BalanceBot>(Lifetime.Singleton).As<ILevelTickable>();
+                               builder.Register<BalanceBot>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
                                builder.Register<BotRecorder>(Lifetime.Singleton).As<ILevelTickable>();
                            }
                        }))

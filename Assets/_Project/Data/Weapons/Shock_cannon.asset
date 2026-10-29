@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shock_cannon
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: shock_cannon
-  _rarity: 0
+  _rarity: 3
   _noUpgrades: 0
   _hold: 3
   _sound: 
@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         _interval: 0.45
         _automatic: 1
-        _damage: 25
+        _damage: 110
         _range: 6
         _aimAngle: 25
         _jumps: 3

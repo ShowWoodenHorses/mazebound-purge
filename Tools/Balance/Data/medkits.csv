@@ -1,5 +1,5 @@
 asset,_heal
-Medkits/MedicalBox_middle.asset,50
-Medkits/MedicalBox_small.asset,25
+Medkits/MedicalBox_middle.asset,250
+Medkits/MedicalBox_small.asset,100
 Medkits/Medical_Crate.asset,0
-Medkits/Medical_big.asset,0
+Medkits/Medical_big.asset,375

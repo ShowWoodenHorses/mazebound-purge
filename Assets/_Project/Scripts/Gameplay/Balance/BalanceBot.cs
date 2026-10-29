@@ -53,7 +53,9 @@ namespace Purge.Gameplay.Balance
         private const float ErrandCheck = 0.5f;
         private const float MeleeSwarm = 2.5f;
         private const int MeleeSwarmCount = 4;
-        private const int DryScore = -10;
+        private const float DryScore = -10f;
+        private const float MeleeShare = 0.5f;
+        private const float ArenaCircle = 0.6f;
         private const float HazardDanger = 50f;
         private const int EscapeRadius = 6;
         private const float SeniorMargin = 2.5f;
@@ -78,6 +80,7 @@ namespace Purge.Gameplay.Balance
         private readonly RunExperience _experience;
         private readonly LevelPassability _passability;
         private readonly ZoneSystem _zones;
+        private readonly BossSystem _bosses;
         private readonly LevelGrid _grid;
         private readonly GridPathfinder _pathfinder;
         private readonly int _width;
@@ -99,6 +102,10 @@ namespace Purge.Gameplay.Balance
         private int _targetAgent = -1;
         private Barrel _targetBarrel;
         private float _targetSeenAt;
+        private bool _wasBlind;
+        private bool _holding;
+        private Vector2 _fleeFrom;
+        private float _fleeCheckAt;
 
         private Pickup _errandPickup;
         private Chest _errandChest;
@@ -113,9 +120,10 @@ namespace Purge.Gameplay.Balance
         public BalanceBot(LevelLaunchOptions options, BotInput input, LevelGrid grid, PlayerSystem player, PlayerHealth health,
             PlayerInventory inventory, PlayerRevival revival, HordeSystem horde, CombatTargets targets, PlayerCombat combat,
             WeaponSystem weapons, PickupSystem pickups, PlayerThrowing throwing, ChestSystem chests, BarrelSystem barrels,
-            CardSystem cards, RunExperience experience, LevelPassability passability, ZoneSystem zones)
+            CardSystem cards, RunExperience experience, LevelPassability passability, ZoneSystem zones, BossSystem bosses)
         {
             _zones = zones;
+            _bosses = bosses;
             _grid = grid;
             _plan = options.Bot.Plan;
             _input = input;
@@ -216,13 +224,18 @@ namespace Purge.Gameplay.Balance
                 _input.Press(other == WeaponSlot.First ? PlayerAction.Slot1 : PlayerAction.Slot2);
         }
 
-        /// <summary>The rarer the better; the base pistol below every rarity, a gun out of rounds below it.</summary>
-        private int WeaponScore(WeaponSlot slot)
+        /// <summary>
+        /// Damage per second of steady fire (10v; was the rarity — a green sword over a gray shotgun, and no shot while
+        /// backing off): melee counts at <see cref="MeleeShare"/> — in hands only when much stronger; a gun out of rounds
+        /// below everything.
+        /// </summary>
+        private float WeaponScore(WeaponSlot slot)
         {
             var weapon = _weapons.Get(slot);
-            if (weapon == null) return -100;
+            if (weapon == null) return -100f;
             if (_combat.IsOutOfAmmo(weapon)) return DryScore;
-            return weapon.IsBase ? -1 : (int)weapon.Definition.Rarity;
+            var dps = WeaponStats.DamagePerSecond(weapon.Definition);
+            return weapon.Definition.IsMelee ? dps * MeleeShare : dps;
         }
 
         private int WorstRarity()
@@ -341,33 +354,77 @@ namespace Purge.Gameplay.Balance
 
         private void Move(Vector2 origin, int floor)
         {
-            var nearest = _horde.FindNearest(origin, float.MaxValue);
+            var nearest = NearestFree(origin);
             var distance = nearest >= 0 ? Vector2.Distance(_horde.Positions[nearest], origin) : float.MaxValue;
+            var hasTarget = _targetAgent >= 0 || _targetBarrel != null;
+            var low = _health.Current * 4 < _health.Max;
 
             var threat = ThreatDistance(origin);
             // Nothing to shoot for a while (a boss standing behind a tree at the edge of the keep distance waits, and so
             // would the bot — the wave never ends): to the nearest by A* until a clear line, the distance not kept.
-            var blind = nearest >= 0 && _time - _targetSeenAt > BlindTime && _health.Current * 4 >= _health.Max;
+            var blind = _horde.AliveCount > 0 && _time - _targetSeenAt > BlindTime && !low;
+            // The line found blind is held: off it only when a monster comes (not a waiting boss) or the health is low.
+            if (_wasBlind && !blind && hasTarget) _holding = true;
+            if (!hasTarget || low || threat < KeepDistance()) _holding = false;
+            _wasBlind = blind;
+
             Vector2 move;
             if (!blind && (MeleeInHands ? Swarmed(origin) : threat < KeepDistance()))
             {
+                // Pressed into something for a while: the steadiness turned aside, or it keeps the same way for good.
+                if (Activity == BotActivity.Flee && _time >= _fleeCheckAt)
+                {
+                    if ((origin - _fleeFrom).sqrMagnitude < StuckDistance * StuckDistance) _lastMove = new Vector2(-_lastMove.y, _lastMove.x);
+                    _fleeFrom = origin;
+                    _fleeCheckAt = _time + StuckTime;
+                }
+                else if (Activity != BotActivity.Flee)
+                {
+                    _fleeFrom = origin;
+                    _fleeCheckAt = _time + StuckTime;
+                }
+
                 move = Flee(origin, floor);
+                Activity = BotActivity.Flee;
+            }
+            // The boss waits in its arena until the player is in with the whole body, and the wave waits for the boss:
+            // nothing else around — in, to the arena's centre, as a player would (not shooting it from outside).
+            else if (BossWaits && (nearest < 0 || distance > _plan.ThreatRadius) &&
+                     Follow(origin, PlayerMovement.CellOf(_bosses.ArenaCenter, floor), _bosses.ArenaCenter, chase: false, out move))
+            {
+                Activity = BotActivity.Arena;
+            }
+            else if (_holding)
+            {
+                move = Vector2.zero;
+                Activity = BotActivity.Stand;
+            }
+            else if (blind && nearest < 0)
+            {
+                // Only waiting monsters left and no way into the arena: to the nearest of them.
+                var any = _horde.FindNearest(origin, float.MaxValue);
+                if (any < 0 || !Follow(origin, PlayerMovement.CellOf(_horde.Positions[any], floor), _horde.Positions[any], chase: true, out move))
+                    move = Vector2.zero;
+                Activity = BotActivity.Approach;
             }
             else if (distance >= _plan.SafeDistance && Errand(origin, floor, out move))
             {
+                Activity = BotActivity.Errand;
             }
             // Too far — or near, but behind a tree or a wall: around it to a clear line. Never right back into the
             // distance it has just backed off from (no back and forth at its edge).
-            else if (blind || nearest >= 0 && (MeleeInHands || threat >= KeepDistance() + Hysteresis) &&
-                     (distance > PreferredDistance() || _targetAgent < 0 && _targetBarrel == null))
+            else if (nearest >= 0 && (blind || (MeleeInHands || threat >= KeepDistance() + Hysteresis) &&
+                     (distance > PreferredDistance() || !hasTarget)))
             {
                 var goal = PlayerMovement.CellOf(_horde.Positions[nearest], floor);
                 if (!Follow(origin, goal, _horde.Positions[nearest], chase: true, out move))
                     move = (_horde.Positions[nearest] - origin).normalized;
+                Activity = BotActivity.Approach;
             }
             else
             {
                 move = Vector2.zero;
+                Activity = BotActivity.Stand;
             }
 
             move = AvoidHazards(origin, floor, move);
@@ -382,9 +439,37 @@ namespace Purge.Gameplay.Balance
         private float PreferredDistance() =>
             MeleeInHands ? 1f : Mathf.Min(AimRange() * 0.85f, Mathf.Max(_plan.KeepDistance + 1f, Mathf.Min(AimRange() * 0.85f, _plan.ThreatRadius)));
 
+        /// <summary>A boss waits in its closed arena for the player (<see cref="HordeSystem.IsHeld"/>).</summary>
+        /// <summary>What the last move was about (the recorder splits a wave's time by it).</summary>
+        public BotActivity Activity { get; private set; }
+
+        /// <summary>There is a target to shoot (a monster with a clear line or a barrel by a crowd).</summary>
+        public bool Shooting => _targetAgent >= 0 || _targetBarrel != null;
+
+        private bool BossWaits => _bosses.IsBossAlive && _bosses.HasArena && _horde.IsHeld(_bosses.Boss);
+
+        /// <summary>Nearest living monster that is not waiting (a held boss is no threat and no one to walk up to).</summary>
+        private int NearestFree(Vector2 origin)
+        {
+            var best = -1;
+            var bestDistance = float.MaxValue;
+            var positions = _horde.Positions;
+            var states = _horde.States;
+            for (var i = 0; i < _horde.HighWater; i++)
+            {
+                if (!HordeSystem.IsAlive(states[i]) || _horde.IsHeld(i)) continue;
+                var distance = (positions[i] - origin).sqrMagnitude;
+                if (distance >= bestDistance) continue;
+                bestDistance = distance;
+                best = i;
+            }
+
+            return best;
+        }
+
         /// <summary>
         /// Distance to the nearest threat around: to its body, and a senior (officer, elite, boss) or a champion counts
-        /// <see cref="SeniorMargin"/> nearer — they dash, slam and hit hard.
+        /// <see cref="SeniorMargin"/> nearer — they dash, slam and hit hard. A waiting boss is no threat.
         /// </summary>
         private float ThreatDistance(Vector2 origin)
         {
@@ -393,6 +478,7 @@ namespace Purge.Gameplay.Balance
             for (var i = 0; i < _nearCount; i++)
             {
                 var agent = _near[i];
+                if (_horde.IsHeld(agent)) continue;
                 var distance = Vector2.Distance(positions[agent], origin) - _horde.RadiusOf(agent);
                 if (IsSenior(agent)) distance -= SeniorMargin;
                 if (distance < best) best = distance;
@@ -407,8 +493,10 @@ namespace Purge.Gameplay.Balance
         /// <summary>Closer than this the bot backs off: the plan's, but within a short gun's reach.</summary>
         private float KeepDistance() => Mathf.Min(_plan.KeepDistance, AimRange() * 0.6f);
 
+        /// <summary>Melee backs off surrounded, or low on health with a threat near (nobody around — nothing to flee).</summary>
         private bool Swarmed(Vector2 origin) =>
-            _horde.QueryCone(origin, Vector2.up, MeleeSwarm, -1f, _crowd) >= MeleeSwarmCount || _health.Current * 4 < _health.Max;
+            _horde.QueryCone(origin, Vector2.up, MeleeSwarm, -1f, _crowd) >= MeleeSwarmCount ||
+            _health.Current * 4 < _health.Max && ThreatDistance(origin) < _plan.KeepDistance;
 
         /// <summary>The way out: of 16 directions with two free steps — the least crowded ahead, the most open, the steadiest.</summary>
         private Vector2 Flee(Vector2 origin, int floor)
@@ -416,18 +504,30 @@ namespace Purge.Gameplay.Balance
             var positions = _horde.Positions;
             var best = Vector2.zero;
             var bestScore = float.MinValue;
+            // In the closed arena with the boss: round it (sideways to it), not into a wall of the arena and stuck there.
+            var tangent = Vector2.zero;
+            if (_bosses.IsBossAlive && _bosses.PlayerInArena && !_horde.IsHeld(_bosses.Boss))
+            {
+                var away = origin - positions[_bosses.Boss];
+                if (away.sqrMagnitude > 1e-4f) tangent = new Vector2(-away.y, away.x).normalized;
+            }
+
             for (var i = 0; i < Directions; i++)
             {
                 var angle = i * (Mathf.PI * 2f / Directions);
                 var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-                if (!Walkable(origin + direction * 0.9f, floor) || !Walkable(origin + direction * 1.8f, floor)) continue;
+                // The first half-step too: a corner right by the body would hold it in place for good.
+                if (!Walkable(origin + direction * 0.45f, floor) || !Walkable(origin + direction * 0.9f, floor) ||
+                    !Walkable(origin + direction * 1.8f, floor)) continue;
 
                 var sample = origin + direction * 2f;
                 var danger = 0f;
                 for (var n = 0; n < _nearCount; n++)
-                    danger += (IsSenior(_near[n]) ? SeniorDanger : 1f) / ((positions[_near[n]] - sample).sqrMagnitude + 1f);
+                    if (!_horde.IsHeld(_near[n]))
+                        danger += (IsSenior(_near[n]) ? SeniorDanger : 1f) / ((positions[_near[n]] - sample).sqrMagnitude + 1f);
                 if (Hazard(origin + direction * 0.9f, floor) || Hazard(origin + direction * 1.8f, floor)) danger += HazardDanger;
-                var score = -danger * 4f + Openness(origin + direction * 1.8f, floor) * 0.25f + Vector2.Dot(direction, _lastMove) * 0.3f;
+                var score = -danger * 4f + Openness(origin + direction * 1.8f, floor) * 0.25f + Vector2.Dot(direction, _lastMove) * 0.3f +
+                            Mathf.Abs(Vector2.Dot(direction, tangent)) * ArenaCircle;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = direction;

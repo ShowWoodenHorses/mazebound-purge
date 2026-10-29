@@ -24,6 +24,7 @@ namespace Purge.Gameplay.Balance
     public sealed class BotReport
     {
         public const int Ranks = (int)MonsterRank.Boss + 1;
+        public const int Activities = (int)BotActivity.Arena + 1;
 
         /// <summary>Seconds of play (pauses — cards — not counted).</summary>
         public float Duration { get; internal set; }
@@ -89,5 +90,20 @@ namespace Purge.Gameplay.Balance
         public int XpLevel { get; internal set; }
 
         public int Health { get; internal set; }
+
+        /// <summary>Seconds by what the bot was doing (<see cref="BotActivity"/>), and of them with a target to shoot.</summary>
+        public float[] Seconds { get; } = new float[BotReport.Activities];
+
+        public float ShootSeconds { get; internal set; }
+    }
+
+    /// <summary>What the bot's move was about (10v: where a wave's time goes).</summary>
+    public enum BotActivity
+    {
+        Stand = 0,
+        Flee = 1,
+        Errand = 2,
+        Approach = 3,
+        Arena = 4,
     }
 }

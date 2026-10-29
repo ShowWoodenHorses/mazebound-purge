@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: MedicalBox_middle
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.MedkitDefinition
   _id: medical_box_middle
-  _heal: 50
+  _heal: 250

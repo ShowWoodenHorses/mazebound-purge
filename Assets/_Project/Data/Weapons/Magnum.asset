@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Magnum
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: magnum
-  _rarity: 0
+  _rarity: 2
   _noUpgrades: 0
   _hold: 0
   _sound: 
@@ -31,7 +31,7 @@ MonoBehaviour:
       data:
         _interval: 0.28
         _automatic: 0
-        _damage: 12
+        _damage: 41
         _speed: 28
         _range: 12
         _pellets: 1

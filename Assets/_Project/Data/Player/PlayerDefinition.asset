@@ -16,7 +16,7 @@ MonoBehaviour:
   _snowdriftSpeed: 0.6
   _bodyHalfSize: 0.3
   _cornerAssist: 0.35
-  _maxHealth: 100
+  _maxHealth: 500
   _mass: 1
   _baseWeapon: {fileID: 11400000, guid: 55599f2eb6845e14084afedcc2a9a368, type: 2}
   _deathDelay: 1.3

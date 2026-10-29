@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e251bb8c6a4e9b47965089dbc0e3c44, type: 2}
   - {fileID: 11400000, guid: bf58ac44390913f4abbb3100d0afc1ea, type: 2}
   - {fileID: 11400000, guid: 96b7261610b96434ba2266b9b3ce4b02, type: 2}
-  _firstLevel: 10
-  _growth: 1.25
+  _firstLevel: 11
+  _growth: 1.135
   _choices: 3
   _rarityWeights:
   - 10

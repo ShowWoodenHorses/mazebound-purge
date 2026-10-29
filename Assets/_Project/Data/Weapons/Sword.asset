@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: sword
-  _rarity: 0
+  _rarity: 1
   _noUpgrades: 0
   _hold: 5
   _sound: melee_medium
@@ -30,7 +30,7 @@ MonoBehaviour:
       data:
         _interval: 0.8
         _automatic: 1
-        _damage: 15
+        _damage: 39
         _range: 1.3
         _arc: 100
         _soundRadius: 4

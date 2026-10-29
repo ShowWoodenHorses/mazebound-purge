@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RPG
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: rpg
-  _rarity: 0
+  _rarity: 3
   _noUpgrades: 0
   _hold: 4
   _sound: 
@@ -34,10 +34,16 @@ MonoBehaviour:
         _automatic: 0
         _speed: 14
         _range: 10
-        _directDamage: 20
-        _explosionDamage: 60
+        _directDamage: 88
+        _explosionDamage: 264
         _radius: 2
         _edgeDamage: 0.3
+        _explosionLook:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
     - rid: 1763807262009983045
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

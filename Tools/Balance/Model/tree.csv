@@ -1,26 +1,26 @@
 branch,node,cost,note
-Trunk,Allow Uncommon,1200,0 branch nodes
-Trunk,Allow Rare,3100,3 branch nodes
-Trunk,Allow Epic,7800,7 branch nodes
-Trunk,Allow Legendary,19000,12 branch nodes
-Shooter,Quick hands,120,1th node bought
-Demolisher,Sapper,140,2th node bought
-Survivor,Second wind,170,3th node bought
-Shooter,Sharp eye,200,4th node bought
-Demolisher,Preparation,240,5th node bought
-Survivor,Last stand,290,6th node bought
-Shooter,Wide choice,350,7th node bought
-Demolisher,Luck,420,8th node bought
-Survivor,Barrier,500,9th node bought
-Shooter,Reroll,600,10th node bought
-Demolisher,Booster: Minefield,720,11th node bought
-Survivor,Instinct,870,12th node bought
-Shooter,Tactician,1000,13th node bought
-Survivor,Quiet steps,1200,14th node bought
-Shooter,Booster: Second barrel,1500,15th node bought
-Survivor,Buyer,1800,16th node bought
-Shooter,Booster: Headhunter,2200,17th node bought
-Survivor,Chest hunter,2600,18th node bought
-Survivor,Booster: Quiet start,3100,19th node bought
-Survivor,Booster: Drop load,3700,20th node bought
-Survivor,Booster: Second dome,4500,21th node bought
+Trunk,Allow Uncommon,1700,0 branch nodes
+Trunk,Allow Rare,4500,3 branch nodes
+Trunk,Allow Epic,11000,7 branch nodes
+Trunk,Allow Legendary,28000,12 branch nodes
+Shooter,Quick hands,210,1th node bought
+Demolisher,Sapper,250,2th node bought
+Survivor,Second wind,300,3th node bought
+Shooter,Sharp eye,370,4th node bought
+Demolisher,Preparation,440,5th node bought
+Survivor,Last stand,530,6th node bought
+Shooter,Wide choice,630,7th node bought
+Demolisher,Luck,760,8th node bought
+Survivor,Barrier,910,9th node bought
+Shooter,Reroll,1100,10th node bought
+Demolisher,Booster: Minefield,1300,11th node bought
+Survivor,Instinct,1600,12th node bought
+Shooter,Tactician,1900,13th node bought
+Survivor,Quiet steps,2300,14th node bought
+Shooter,Booster: Second barrel,2700,15th node bought
+Survivor,Buyer,3300,16th node bought
+Shooter,Booster: Headhunter,3900,17th node bought
+Survivor,Chest hunter,4700,18th node bought
+Survivor,Booster: Quiet start,5600,19th node bought
+Survivor,Booster: Drop load,6800,20th node bought
+Survivor,Booster: Second dome,8100,21th node bought

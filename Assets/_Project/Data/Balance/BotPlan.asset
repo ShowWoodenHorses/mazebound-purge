@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: BotPlan
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Balance.BotPlan
   _levels:
-  - {fileID: 11400000, guid: 95f06e9effdffa14d9f8c54476dbd3e3, type: 2}
   - {fileID: 11400000, guid: 6764ef4de8683754489c7254167769d2, type: 2}
   _difficulties:
   - {fileID: 11400000, guid: 6f5fdb7c7c1c9774ab6cd73d3b3d7256, type: 2}

@@ -291,6 +291,7 @@ class Model:
         pairs = [(li, di) for li in range(len(self.levels)) for di in range(len(self.difficulties))]
         incomes = {pair: self.income(*pair) for pair in pairs}
         farm_better = 0
+        farm_cases = []
 
         def power():
             ok = allowed()
@@ -392,9 +393,11 @@ class Model:
             gain = run + (bonus if won and pair not in cleared else 0.0)
             if not won:
                 gain = run * p["loss_income_share"]
+            # Forward is better (card 10v): the new clear with its bonus per minute — not less than the best farm.
             if target is not None and pair == target and farm is not None:
-                if run / self.minutes(*target) < incomes[farm][0] / self.minutes(*farm):
+                if (run + bonus) / self.minutes(*target) < incomes[farm][0] / self.minutes(*farm):
                     farm_better += 1
+                    farm_cases.append(f"{self.levels[li]} {self.difficulties[di]} < {self.levels[farm[0]]} {self.difficulties[farm[1]]}")
             if won and pair not in cleared:
                 cleared.add(pair)
                 if pair in unique_at:
@@ -411,7 +414,7 @@ class Model:
                             round(gain), round(money), round(power(), 2), "; ".join(bought)])
         return {
             "hours": hours, "runs": runs, "done": everything_open(), "first_purchase_run": first_purchase_run,
-            "farm_better": farm_better, "power": power(),
+            "farm_better": farm_better, "farm_cases": farm_cases, "power": power(),
         }
 
     def calibrate(self):
@@ -585,6 +588,8 @@ def write_report(out, model, bot, result, economy, first, growth, targets, xp):
                  f"(gray: {full}); a tree node {model.node_cost(0)}–{model.node_cost(sum(len(v) for v in p['tree']['branches'].values()) - 1)}.")
     lines.append(f"- Simulated player wins the last clear at power **{result['power']:.2f}** (gray, no upgrades = 1).")
     lines.append(f"- New clear paid less per minute than the best farm in **{result['farm_better']}** cases (target — 0: forward is better).")
+    if result.get("farm_cases"):
+        lines.append("  - " + "; ".join(sorted(set(result["farm_cases"]))) + ".")
     lines.append(f"- Experience curve: `CardDeck._firstLevel` **{first}**, `_growth` **{growth}** "
                  f"({len(targets)} cards in {p['level_minutes'][model.difficulties.index(p['cards']['difficulty'])]} min on "
                  f"{p['cards']['difficulty']}, every {p['cards']['interval_start']}–{p['cards']['interval_end']} s).")

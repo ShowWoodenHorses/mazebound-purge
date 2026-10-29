@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Star_sword
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: star_sword
-  _rarity: 0
+  _rarity: 3
   _noUpgrades: 0
   _hold: 5
   _sound: 
@@ -30,7 +30,7 @@ MonoBehaviour:
       data:
         _interval: 0.8
         _automatic: 1
-        _damage: 15
+        _damage: 66
         _range: 1.3
         _arc: 100
         _soundRadius: 4

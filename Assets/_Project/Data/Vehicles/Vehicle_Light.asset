@@ -39,22 +39,22 @@ MonoBehaviour:
     - rid: 1763807473633067114
       type: {class: HullModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
-        _health: 300
+        _health: 900
         _length: 2.5
         _width: 1
         _wallSafeSpeed: 3
-        _wallDamage: 4
+        _wallDamage: 12
     - rid: 1763807473633067115
       type: {class: RamModule, ns: Purge.Core.Vehicles, asm: Purge.Core}
       data:
         _mass: 8
         _minSpeed: 2
         _killShare: 0.5
-        _wear: 4
-        _officerWear: 12
-        _heavyShare: 0.15
+        _wear: 12
+        _officerWear: 36
+        _heavyShare: 0.3
         _bounce: 0.35
-        _bounceDamage: 25
+        _bounceDamage: 75
         _stun: {fileID: 11400000, guid: 0aa7530f0d5b5ce4daf704fd3c40b6f4, type: 2}
         _stunTime: 1
     - rid: 1763807473633067116
@@ -89,7 +89,7 @@ MonoBehaviour:
     - rid: 1763807473633067122
       type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
-        _damage: 150
+        _damage: 300
         _radius: 3
         _edgeDamage: 0.4
         _soundRadius: 16

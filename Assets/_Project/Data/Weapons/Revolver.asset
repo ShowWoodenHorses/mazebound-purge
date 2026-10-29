@@ -31,7 +31,7 @@ MonoBehaviour:
       data:
         _interval: 0.28
         _automatic: 0
-        _damage: 12
+        _damage: 24
         _speed: 28
         _range: 12
         _pellets: 1

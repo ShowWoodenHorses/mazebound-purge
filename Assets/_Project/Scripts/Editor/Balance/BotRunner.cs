@@ -57,7 +57,7 @@ namespace Purge.Editor.Balance
 
         private static readonly string WavesHeader =
             "level,difficulty,run,wave,start_s,duration_s,cleared,kills_mass,kills_officer,kills_elite,kills_boss," +
-            "money,experience,damage_taken,xp_level,hp";
+            "money,experience,damage_taken,xp_level,hp,stand_s,flee_s,errand_s,approach_s,arena_s,shoot_s";
 
         private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
@@ -390,8 +390,9 @@ namespace Purge.Editor.Balance
                     .Append(',').Append(F(wave.Experience))
                     .Append(',').Append(wave.DamageTaken)
                     .Append(',').Append(wave.XpLevel)
-                    .Append(',').Append(wave.Health)
-                    .Append('\n');
+                    .Append(',').Append(wave.Health);
+                foreach (var seconds in wave.Seconds) waves.Append(',').Append(F(seconds));
+                waves.Append(',').Append(F(wave.ShootSeconds)).Append('\n');
             }
 
             File.AppendAllText(Path.Combine(_batch, WavesFile), waves.ToString());

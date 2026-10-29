@@ -17,11 +17,11 @@ MonoBehaviour:
   _biome: 2
   _perception: 0
   _stats:
-    MaxHp: 30
+    MaxHp: 60
     Speed: 2.2
     Radius: 0.3
     AttackReach: 0.8
-    Damage: 5
+    Damage: 15
     AttackInterval: 1.2
     TurnSpeed: 540
     Separation: 0.5

@@ -25,4 +25,4 @@ MonoBehaviour:
       type: {class: StatCard, ns: Purge.Core.Cards, asm: Purge.Core}
       data:
         _stat: 5
-        _perLevel: 15
+        _perLevel: 75

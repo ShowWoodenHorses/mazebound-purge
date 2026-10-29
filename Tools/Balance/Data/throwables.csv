@@ -1,6 +1,6 @@
 asset,_rarity,_maxStack,_range,_speed,_arcHeight,_cooldown,_soundRadius,ExplosionEffect._damage,ExplosionEffect._radius,ExplosionEffect._edgeDamage,ExplosionEffect._soundRadius,~AreaStatusEffect._status,AreaStatusEffect._radius,AreaStatusEffect._duration,LookEffect._radius,~PlaceZoneEffect._zone,PlaceZoneEffect._radius,PlaceZoneEffect._duration,PlaceZoneEffect._strength
-Throwables/Flashbang.asset,Common,3,8,12,0.3,0.6,3,,,,,,,,,,,,
-Throwables/Grenade.asset,Common,3,8,12,0.3,0.6,3,80,2.5,0.35,12,Status_Stun,3,1.2,,,,,
+Throwables/Flashbang.asset,Uncommon,3,8,12,0.3,0.6,3,,,,,,,,,,,,
+Throwables/Grenade.asset,Common,3,8,12,0.3,0.6,3,160,2.5,0.35,12,Status_Stun,3,1.2,,,,,
 Throwables/Grenade_Smoke.asset,Common,3,8,12,0.3,0.6,3,,,,,,,,2,,,,
-Throwables/Mine.asset,Common,3,8,12,0.3,0.6,3,,,,,,,,,,,,
+Throwables/Mine.asset,Rare,3,8,12,0.3,0.6,3,,,,,,,,,,,,
 Throwables/Molotov.asset,Uncommon,3,7,12,0.35,0.6,3,,,,,,,,,Zone_Fire,1.5,5,1

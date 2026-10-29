@@ -17,11 +17,11 @@ MonoBehaviour:
   _biome: 0
   _perception: 2
   _stats:
-    MaxHp: 4000
+    MaxHp: 8000
     Speed: 1.4
     Radius: 1.5
     AttackReach: 2.5
-    Damage: 32
+    Damage: 96
     AttackInterval: 2.2
     TurnSpeed: 200
     Separation: 0.5
@@ -69,7 +69,7 @@ MonoBehaviour:
         _fromPhase: 0
         _untilPhase: 4
         _radius: 2.5
-        _damage: 15
+        _damage: 45
         _knockback: 3
         _status: {fileID: 0}
         _statusDuration: 1
@@ -89,7 +89,7 @@ MonoBehaviour:
         _fromPhase: 0
         _untilPhase: 4
         _radius: 4
-        _damage: 25
+        _damage: 75
         _status: {fileID: 11400000, guid: a9195dea1d40850439ddbfe023afd719, type: 2}
         _statusDuration: 2
         _impact:
@@ -122,7 +122,7 @@ MonoBehaviour:
         _count: 3
         _fanAngle: 30
         _speed: 10
-        _damage: 25
+        _damage: 75
         _range: 14
         _arcRadius: 1.5
         _arcHeight: 0.4

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AWM
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: awm
-  _rarity: 0
+  _rarity: 3
   _noUpgrades: 0
   _hold: 1
   _sound: 
@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         _interval: 1
         _automatic: 0
-        _damage: 45
+        _damage: 198
         _speed: 40
         _range: 22
         _pellets: 1

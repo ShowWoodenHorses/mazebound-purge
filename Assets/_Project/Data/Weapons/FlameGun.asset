@@ -34,7 +34,7 @@ MonoBehaviour:
       data:
         _interval: 0.1
         _automatic: 1
-        _damagePerSecond: 45
+        _damagePerSecond: 261
         _range: 3.5
         _angle: 30
     - rid: 1763807262009983059

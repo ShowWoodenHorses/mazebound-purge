@@ -32,7 +32,7 @@ MonoBehaviour:
     - rid: 1763807262009983155
       type: {class: ZoneDamage, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
-        _damagePerSecond: 18
+        _damagePerSecond: 36
     - rid: 1763807262009983156
       type: {class: ZoneStatus, ns: Purge.Core.Effects, asm: Purge.Core}
       data:

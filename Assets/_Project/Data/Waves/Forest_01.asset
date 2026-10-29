@@ -127,6 +127,42 @@ MonoBehaviour:
     _boss:
       _monster: {fileID: 0}
       _escort: []
+  - _budget: 185
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.35
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.175
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.175
+    _groups:
+    - _monster: {fileID: 11400000, guid: e2729b2e2788eac41bc2b8079be6f1fe, type: 2}
+      _count: 1
+      _time: 15
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 1
+      _time: 35
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 5d93e767a67414e49a76e99be9b5c9a7, type: 2}
+      _count: 1
+      _time: 50
+      _point: -1
+    _spawnTime: 50
+    _packSize: 9
+    _maxAlive: 225
+    _skipRate: 0
+    _moneyBonus: 0
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
   - _budget: 220
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}

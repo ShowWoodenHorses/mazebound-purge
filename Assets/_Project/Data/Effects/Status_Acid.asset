@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Effects.StatusDefinition
   _id: status_acid
   _color: {r: 0.55, g: 1, b: 0.2, a: 1}
+  _particles:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _particlesAtHead: 0
   _modules:
   - rid: 1763807262009983217
   references:
@@ -22,4 +29,4 @@ MonoBehaviour:
     - rid: 1763807262009983217
       type: {class: DamageOverTimeStatus, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
-        _damagePerSecond: 12
+        _damagePerSecond: 24

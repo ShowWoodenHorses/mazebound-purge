@@ -1,13 +1,13 @@
 level,difficulty,+3 grenades,Starting card,Medkit,+1 reroll,Scouting,Special (tree)
-Forest,Easy,25,35,15,15,20,30
-Forest,Normal,60,85,45,35,50,70
-Forest,Hard,160,240,120,100,140,200
-Forest,Unreal,390,580,290,240,340,480
-Castle,Easy,30,45,20,20,25,35
-Castle,Normal,75,110,55,45,65,95
-Castle,Hard,210,310,160,130,180,260
-Castle,Unreal,510,760,380,320,440,630
-Snow,Easy,40,55,30,25,35,50
-Snow,Normal,95,150,75,60,85,120
-Snow,Hard,270,410,200,170,240,340
-Snow,Unreal,660,1000,500,420,580,830
+Forest,Easy,35,50,25,20,30,40
+Forest,Normal,90,130,65,55,75,110
+Forest,Hard,270,410,210,170,240,340
+Forest,Unreal,700,1100,530,440,620,880
+Castle,Easy,45,65,30,25,40,55
+Castle,Normal,110,170,85,70,100,140
+Castle,Hard,360,540,270,220,310,450
+Castle,Unreal,930,1400,690,580,810,1200
+Snow,Easy,55,85,40,35,50,70
+Snow,Normal,150,220,110,95,130,190
+Snow,Hard,470,710,350,300,410,590
+Snow,Unreal,1200,1800,910,760,1100,1500

@@ -31,14 +31,16 @@ namespace Purge.Gameplay.Balance
         private readonly PlayerThrowing _throwing;
         private readonly ChestSystem _chests;
         private readonly WeaponSystem _weapons;
+        private readonly BalanceBot _bot;
         private int _lastHealth;
         private bool _disposed;
 
         public BotRecorder(LevelLaunchOptions options, HordeSystem horde, WaveSystem waves, RunWallet wallet,
             RunExperience experience, CardSystem cards, PlayerHealth health, PlayerRevival revival, PlayerThrowing throwing,
-            ChestSystem chests, WeaponSystem weapons)
+            ChestSystem chests, WeaponSystem weapons, BalanceBot bot)
         {
             _report = options.Bot.Report;
+            _bot = bot;
             _horde = horde;
             _waves = waves;
             _wallet = wallet;
@@ -67,6 +69,10 @@ namespace Purge.Gameplay.Balance
         {
             _report.Duration += deltaTime;
             _report.WaveCount = _waves.WaveCount;
+            var wave = _report.CurrentWave;
+            if (wave == null || wave.Duration >= 0f) return;
+            wave.Seconds[(int)_bot.Activity] += deltaTime;
+            if (_bot.Shooting) wave.ShootSeconds += deltaTime;
         }
 
         public void Dispose()

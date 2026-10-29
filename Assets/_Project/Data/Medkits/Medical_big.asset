@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Medical_big
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.MedkitDefinition
   _id: medical_big
-  _heal: 0
+  _heal: 375

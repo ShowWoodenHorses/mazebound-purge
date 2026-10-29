@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Mortar
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: mortar
-  _rarity: 0
-  _noUpgrades: 0
+  _rarity: 4
+  _noUpgrades: 1
   _hold: 4
   _sound: 
   _soundPitch: 1
@@ -34,10 +34,16 @@ MonoBehaviour:
         _automatic: 0
         _speed: 14
         _range: 10
-        _directDamage: 20
-        _explosionDamage: 60
+        _directDamage: 174
+        _explosionDamage: 522
         _radius: 2
         _edgeDamage: 0.3
+        _explosionLook:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
     - rid: 1763807262009983131
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

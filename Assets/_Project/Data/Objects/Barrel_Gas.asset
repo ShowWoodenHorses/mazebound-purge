@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Objects.BarrelDefinition
   _id: barrel_gas
   _kind: 0
-  _health: 30
+  _health: 60
   _effects:
   - rid: 1763807423339692120
   - rid: 1763807423339692121
@@ -30,7 +30,7 @@ MonoBehaviour:
     - rid: 1763807423339692120
       type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
-        _damage: 60
+        _damage: 120
         _radius: 2
         _edgeDamage: 0.35
         _soundRadius: 12

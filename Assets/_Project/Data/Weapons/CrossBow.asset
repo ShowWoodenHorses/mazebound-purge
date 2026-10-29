@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CrossBow
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: cross_bow
-  _rarity: 0
+  _rarity: 2
   _noUpgrades: 0
   _hold: 4
   _sound: 
@@ -34,10 +34,16 @@ MonoBehaviour:
         _automatic: 0
         _speed: 14
         _range: 10
-        _directDamage: 20
-        _explosionDamage: 60
+        _directDamage: 68
+        _explosionDamage: 204
         _radius: 2
         _edgeDamage: 0.3
+        _explosionLook:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
     - rid: 1763807262009983083
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

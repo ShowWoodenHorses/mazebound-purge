@@ -1,2 +1,2 @@
 asset,_moveSpeed,_snowdriftSpeed,_bodyHalfSize,_cornerAssist,_maxHealth,_mass,~_baseWeapon,_deathDelay,_reviveInvulnerability,_reviveSkill,_reviveEffects.PushEffect._radius,_reviveEffects.PushEffect._speed,_reviveEffects.PushEffect._edgeSpeed,~_reviveEffects.AreaStatusEffect._status,_reviveEffects.AreaStatusEffect._radius,_reviveEffects.AreaStatusEffect._duration,_reviveEffects.LookEffect._radius,_stepDistance,_stepSoundRadius,_interactionSoundRadius
-Player/PlayerDefinition.asset,3.5,0.6,0.3,0.35,100,1,Glock_base,1.3,2,1,5,12,0.4,Status_Stun,5,2,5,0.8,2,3
+Player/PlayerDefinition.asset,3.5,0.6,0.3,0.35,500,1,Glock_base,1.3,2,1,5,12,0.4,Status_Stun,5,2,5,0.8,2,3

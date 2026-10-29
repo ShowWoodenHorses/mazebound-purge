@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AcidCannon
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: acid_cannon
-  _rarity: 0
+  _rarity: 3
   _noUpgrades: 0
   _hold: 3
   _sound: 
@@ -33,7 +33,7 @@ MonoBehaviour:
       data:
         _interval: 0.1
         _automatic: 1
-        _damagePerSecond: 45
+        _damagePerSecond: 198
         _range: 3.5
         _angle: 30
     - rid: 1763807262009983101

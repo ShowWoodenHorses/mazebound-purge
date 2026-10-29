@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pomp_Shotgun
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: pomp_shotgun
-  _rarity: 1
+  _rarity: 0
   _noUpgrades: 0
   _hold: 2
   _sound: 
@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         _interval: 0.8
         _automatic: 0
-        _damage: 8
+        _damage: 16
         _speed: 24
         _range: 7
         _pellets: 8

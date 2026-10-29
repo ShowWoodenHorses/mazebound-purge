@@ -1,76 +1,84 @@
 run,hours,level,difficulty,outcome,income,money,power,bought
-1,0.13,Forest,Easy,won,388,18,1.36,upgrade Machete 2; upgrade Machete 3; upgrade Machete 4; upgrade Machete 5
-2,0.29,Castle,Easy,won,496,4,1.65,upgrade Machete 6; upgrade Machete 7; node 1
-3,0.44,Castle,Easy,won,248,252,1.65,
-4,0.6,Castle,Easy,won,248,80,1.85,upgrade Machete 8; node 2
-5,0.79,Forest,Normal,won,961,1041,1.85,
-6,0.97,Snow,Easy,won,635,66,1.85,trunk Uncommon; upgrade AK-74 2; upgrade AK-74 3
-7,1.16,Forest,Normal,won,481,76,1.92,upgrade AK-74 4; node 3
-8,1.35,Forest,Normal,won,481,157,1.98,upgrade AK-74 5
-9,1.54,Forest,Normal,won,481,438,2.05,node 4
-10,1.73,Forest,Normal,won,481,158,2.29,upgrade AK-74 6; node 5
-11,1.95,Castle,Normal,won,1246,94,2.64,upgrade AK-74 7; node 6; node 7
-12,2.24,Forest,Hard,won,2654,1878,2.85,upgrade AK-74 8
-13,2.53,Forest,Hard,won,1327,105,2.85,trunk Rare
-14,2.82,Forest,Hard,won,1327,353,2.85,upgrade Grenade_Launcher 2; upgrade Grenade_Launcher 3
-15,3.1,Forest,Hard,won,1327,890,2.85,upgrade Grenade_Launcher 4
-16,3.39,Forest,Hard,won,1327,297,3.13,upgrade Grenade_Launcher 5; node 8; node 9
-17,3.64,Snow,Normal,won,1618,14,3.48,upgrade Grenade_Launcher 6; node 10
-18,3.93,Forest,Hard,won,1327,1342,3.48,
-19,4.22,Forest,Hard,won,1327,249,3.86,upgrade Grenade_Launcher 7; node 11
-20,4.55,Castle,Hard,won,3472,3720,3.86,
-21,4.88,Castle,Hard,won,1736,5456,3.86,
-22,5.21,Castle,Hard,won,1736,7192,3.86,
-23,5.54,Castle,Hard,won,1736,1128,3.86,trunk Epic
-24,5.87,Castle,Hard,won,1736,164,3.86,upgrade Star_sword 2; upgrade Star_sword 3
-25,6.2,Castle,Hard,won,1736,1899,3.86,
-26,6.53,Castle,Hard,won,1736,765,4.1,upgrade Star_sword 4; node 12
-27,6.92,Forest,Unreal,won,6417,282,4.91,upgrade Star_sword 5; node 13; upgrade Star_sword 6
-28,7.3,Snow,Hard,won,4547,3629,5.04,node 14
-29,7.68,Forest,Unreal,won,3208,937,5.58,upgrade Star_sword 7; node 15
-30,8.12,Castle,Unreal,won,8429,9366,5.58,
-31,8.56,Castle,Unreal,won,4215,13581,5.58,
-32,9,Castle,Unreal,won,4215,17796,5.58,
-33,9.44,Castle,Unreal,won,4215,111,5.58,trunk Legendary; upgrade Mortar 2
-34,9.88,Castle,Unreal,won,4215,625,5.58,upgrade Mortar 3
-35,10.33,Castle,Unreal,won,4215,40,5.76,upgrade Mortar 4
-36,10.77,Castle,Unreal,won,4215,2455,5.9,node 16
-37,11.21,Castle,Unreal,won,4215,369,6.37,upgrade Mortar 5
-38,11.65,Castle,Unreal,won,4215,2384,6.53,node 17
-39,12.09,Castle,Unreal,won,4215,6599,6.53,
-40,12.53,Castle,Unreal,won,4215,13,7.22,upgrade Mortar 6; node 18
-41,12.97,Castle,Unreal,won,4215,548,7.39,node 19; upgrade Grenade 2; upgrade Grenade 3; upgrade Grenade 4; upgrade Grenade 5; buy Grenade_Smoke; upgrade Grenade_Smoke 2; upgrade Grenade_Smoke 3; upgrade Grenade_Smoke 4; upgrade Grenade_Smoke 5
-42,13.48,Snow,Unreal,won,11082,631,7.98,upgrade Mortar 7
-43,13.98,Snow,Unreal,won,5541,2472,8.16,node 20
-44,14.49,Snow,Unreal,won,5541,8013,8.16,
-45,15,Snow,Unreal,won,5541,13554,8.16,
-46,15.51,Snow,Unreal,won,5541,596,9.01,upgrade Mortar 8; node 21
-47,16.01,Snow,Unreal,won,5541,6137,9.01,
-48,16.52,Snow,Unreal,won,5541,11678,9.01,
-49,17.03,Snow,Unreal,won,5541,17219,9.01,
-50,17.53,Snow,Unreal,won,5541,4760,9.73,upgrade Mortar 9
-51,18.04,Snow,Unreal,won,5541,10302,9.73,
-52,18.55,Snow,Unreal,won,5541,15843,9.73,
-53,19.05,Snow,Unreal,won,5541,21384,9.73,
-54,19.56,Snow,Unreal,won,5541,405,10.51,upgrade Mortar 10; buy Molotov; upgrade Molotov 2; upgrade Molotov 3; upgrade Molotov 4; upgrade Molotov 5; buy Flashbang; upgrade Flashbang 2; upgrade Flashbang 3; upgrade Flashbang 4; upgrade Flashbang 5; buy Desert
-55,20.07,Snow,Unreal,won,5541,1147,10.51,buy M416; buy P90; buy Sword; buy Sniper_silencer
-56,20.57,Snow,Unreal,won,5541,1198,10.51,buy Vector_silencer; buy Flamer_Pistol; buy Mine; upgrade Mine 2; upgrade Mine 3; upgrade Mine 4; upgrade Mine 5
-57,21.08,Snow,Unreal,won,5541,539,10.51,buy Magnum; buy SCAR-L
-58,21.59,Snow,Unreal,won,5541,2980,10.51,buy Groza
-59,22.1,Snow,Unreal,won,5541,2321,10.51,buy Dragunov; buy Hard_Auto_Shotgun
-60,22.6,Snow,Unreal,won,5541,1663,10.51,buy CrossBow; buy MachineGun
-61,23.11,Snow,Unreal,won,5541,1004,10.51,buy GasGun; buy Pistol_laser
-62,23.62,Snow,Unreal,won,5541,6545,10.51,
-63,24.12,Snow,Unreal,won,5541,4286,10.51,buy AWM
-64,24.63,Snow,Unreal,won,5541,2028,10.51,buy Lynx
-65,25.14,Snow,Unreal,won,5541,7569,10.51,
-66,25.64,Snow,Unreal,won,5541,5310,10.51,buy AcidCannon
-67,26.15,Snow,Unreal,won,5541,3051,10.51,buy Tesla
-68,26.66,Snow,Unreal,won,5541,792,10.51,buy RPG
-69,27.17,Snow,Unreal,won,5541,6334,10.51,
-70,27.67,Snow,Unreal,won,5541,11875,10.51,
-71,28.18,Snow,Unreal,won,5541,17416,10.51,
-72,28.69,Snow,Unreal,won,5541,3957,10.51,buy FlameGun
-73,29.19,Snow,Unreal,won,5541,9499,10.51,
-74,29.7,Snow,Unreal,won,5541,15040,10.51,
-75,30.21,Snow,Unreal,won,5541,1581,10.51,buy Minigun
+1,0.13,Forest,Easy,won,564,134,1.26,upgrade Revolver 2; upgrade Revolver 3; upgrade Revolver 4
+2,0.27,Forest,Easy,won,282,187,1.36,upgrade Revolver 5
+3,0.42,Castle,Easy,won,721,8,1.65,upgrade Revolver 6; upgrade Revolver 7; node 1
+4,0.58,Castle,Easy,won,361,368,1.65,
+5,0.73,Castle,Easy,won,361,729,1.65,
+6,0.89,Castle,Easy,won,361,1090,1.65,
+7,1.04,Castle,Easy,won,361,1450,1.65,
+8,1.19,Castle,Easy,won,361,111,1.65,trunk Uncommon
+9,1.35,Castle,Easy,won,361,151,1.65,upgrade Auto_Shotgun 2
+10,1.5,Castle,Easy,won,361,102,1.65,upgrade Auto_Shotgun 3
+11,1.66,Castle,Easy,won,361,212,1.71,node 2
+12,1.85,Forest,Normal,won,1471,143,1.98,upgrade Auto_Shotgun 4; node 3; upgrade Auto_Shotgun 5
+13,2.03,Snow,Easy,won,925,698,2.05,node 4
+14,2.22,Forest,Normal,won,735,83,2.29,upgrade Auto_Shotgun 6; node 5
+15,2.44,Castle,Normal,won,1909,262,2.56,upgrade Auto_Shotgun 7; node 6
+16,2.66,Castle,Normal,won,954,1217,2.56,
+17,2.88,Castle,Normal,won,954,2171,2.56,
+18,3.1,Castle,Normal,won,954,3125,2.56,
+19,3.32,Castle,Normal,won,954,4080,2.56,
+20,3.54,Castle,Normal,won,954,534,2.56,trunk Rare
+21,3.76,Castle,Normal,won,954,649,2.56,upgrade Grenade_Launcher 2
+22,3.98,Castle,Normal,won,954,503,2.56,upgrade Grenade_Launcher 3
+23,4.2,Castle,Normal,won,954,58,2.64,upgrade Grenade_Launcher 4
+24,4.42,Castle,Normal,won,954,382,2.73,node 7
+25,4.64,Castle,Normal,won,954,1337,2.73,
+26,4.86,Castle,Normal,won,954,391,2.94,upgrade Grenade_Launcher 5
+27,5.15,Forest,Hard,won,4576,897,3.38,node 8; node 9; upgrade Grenade_Launcher 6
+28,5.4,Snow,Normal,won,2483,2280,3.48,node 10
+29,5.69,Forest,Hard,won,2288,168,3.86,upgrade Grenade_Launcher 7; node 11
+30,6.02,Castle,Hard,won,5997,6165,3.86,
+31,6.35,Castle,Hard,won,2999,9163,3.86,
+32,6.68,Castle,Hard,won,2999,1162,3.86,trunk Epic
+33,7.01,Castle,Hard,won,2999,2061,3.86,upgrade Star_sword 2
+34,7.34,Castle,Hard,won,2999,2359,3.86,upgrade Star_sword 3
+35,7.67,Castle,Hard,won,2999,258,4.1,upgrade Star_sword 4; node 12
+36,8.01,Castle,Hard,won,2999,3256,4.1,
+37,8.34,Castle,Hard,won,2999,1755,4.42,upgrade Star_sword 5
+38,8.72,Forest,Unreal,won,11732,3387,5.04,node 13; upgrade Star_sword 6; node 14
+39,9.1,Forest,Unreal,won,5866,1553,5.44,upgrade Star_sword 7
+40,9.48,Snow,Hard,won,7869,6722,5.58,node 15
+41,9.87,Forest,Unreal,won,5866,12588,5.58,
+42,10.25,Forest,Unreal,won,5866,18454,5.58,
+43,10.63,Forest,Unreal,won,5866,24320,5.58,
+44,11.02,Forest,Unreal,won,5866,2187,5.58,trunk Legendary
+45,11.4,Forest,Unreal,won,5866,2753,5.58,upgrade Mortar 2
+46,11.78,Forest,Unreal,won,5866,1819,5.58,upgrade Mortar 3
+47,12.17,Forest,Unreal,won,5866,7685,5.58,
+48,12.55,Forest,Unreal,won,5866,1351,5.9,upgrade Mortar 4; node 16
+49,12.93,Forest,Unreal,won,5866,7217,5.9,
+50,13.32,Forest,Unreal,won,5866,1084,6.37,upgrade Mortar 5
+51,13.76,Castle,Unreal,won,15436,12620,6.53,node 17
+52,14.2,Castle,Unreal,won,7718,638,7.22,upgrade Mortar 6; node 18
+53,14.64,Castle,Unreal,won,7718,2756,7.39,node 19
+54,15.08,Castle,Unreal,won,7718,10474,7.39,
+55,15.52,Castle,Unreal,won,7718,18192,7.39,
+56,15.96,Castle,Unreal,won,7718,61,8.16,upgrade Mortar 7; node 20; upgrade Grenade 2
+57,16.47,Snow,Unreal,won,20323,20384,8.16,
+58,16.98,Snow,Unreal,won,10161,5545,8.81,upgrade Mortar 8
+59,17.48,Snow,Unreal,won,10161,7606,9.01,node 21
+60,17.99,Snow,Unreal,won,10161,17768,9.01,
+61,18.5,Snow,Unreal,won,10161,27929,9.01,
+62,19,Snow,Unreal,won,10161,5091,9.73,upgrade Mortar 9
+63,19.51,Snow,Unreal,won,10161,15252,9.73,
+64,20.02,Snow,Unreal,won,10161,25413,9.73,
+65,20.52,Snow,Unreal,won,10161,35575,9.73,
+66,21.03,Snow,Unreal,won,10161,6,10.51,upgrade Mortar 10; upgrade Grenade 3; upgrade Grenade 4; upgrade Grenade 5; buy Grenade_Smoke; upgrade Grenade_Smoke 2; upgrade Grenade_Smoke 3; upgrade Grenade_Smoke 4; upgrade Grenade_Smoke 5; buy Molotov; upgrade Molotov 2; upgrade Molotov 3; upgrade Molotov 4; upgrade Molotov 5
+67,21.54,Snow,Unreal,won,10161,1528,10.51,buy Flashbang; upgrade Flashbang 2; upgrade Flashbang 3; upgrade Flashbang 4; upgrade Flashbang 5; buy Desert; buy M416; buy P90; buy Sword
+68,22.04,Snow,Unreal,won,10161,1829,10.51,buy Sniper_silencer; buy Vector_silencer; buy Flamer_Pistol; buy Mine; upgrade Mine 2; upgrade Mine 3; upgrade Mine 4; upgrade Mine 5
+69,22.55,Snow,Unreal,won,10161,2991,10.51,buy Magnum; buy SCAR-L
+70,23.06,Snow,Unreal,won,10161,4152,10.51,buy Groza; buy Dragunov
+71,23.57,Snow,Unreal,won,10161,813,10.51,buy Hard_Auto_Shotgun; buy CrossBow; buy MachineGun
+72,24.07,Snow,Unreal,won,10161,1975,10.51,buy GasGun; buy Pistol_laser
+73,24.58,Snow,Unreal,won,10161,1136,10.51,buy AWM
+74,25.09,Snow,Unreal,won,10161,298,10.51,buy Lynx
+75,25.59,Snow,Unreal,won,10161,10459,10.51,
+76,26.1,Snow,Unreal,won,10161,9621,10.51,buy AcidCannon
+77,26.61,Snow,Unreal,won,10161,8782,10.51,buy Tesla
+78,27.11,Snow,Unreal,won,10161,7943,10.51,buy RPG
+79,27.62,Snow,Unreal,won,10161,18105,10.51,
+80,28.13,Snow,Unreal,won,10161,266,10.51,buy FlameGun
+81,28.64,Snow,Unreal,won,10161,10428,10.51,
+82,29.14,Snow,Unreal,won,10161,20589,10.51,
+83,29.65,Snow,Unreal,won,10161,2751,10.51,buy Minigun

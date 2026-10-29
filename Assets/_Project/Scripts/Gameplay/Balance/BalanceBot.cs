@@ -59,6 +59,7 @@ namespace Purge.Gameplay.Balance
         private const float SeniorMargin = 2.5f;
         private const float SeniorDanger = 3f;
         private const float Hysteresis = 1f;
+        private const float BlindTime = 3f;
 
         private readonly BotPlan _plan;
         private readonly BotInput _input;
@@ -97,6 +98,7 @@ namespace Purge.Gameplay.Balance
         private Vector2 _lastMove;
         private int _targetAgent = -1;
         private Barrel _targetBarrel;
+        private float _targetSeenAt;
 
         private Pickup _errandPickup;
         private Chest _errandChest;
@@ -194,6 +196,7 @@ namespace Purge.Gameplay.Balance
 
             ChooseWeapon();
             ChooseTarget(origin, floor);
+            if (_targetAgent >= 0 || _targetBarrel != null || _horde.AliveCount == 0) _targetSeenAt = _time;
             TryThrow(origin, floor);
             Move(origin, floor);
         }
@@ -342,8 +345,11 @@ namespace Purge.Gameplay.Balance
             var distance = nearest >= 0 ? Vector2.Distance(_horde.Positions[nearest], origin) : float.MaxValue;
 
             var threat = ThreatDistance(origin);
+            // Nothing to shoot for a while (a boss standing behind a tree at the edge of the keep distance waits, and so
+            // would the bot — the wave never ends): to the nearest by A* until a clear line, the distance not kept.
+            var blind = nearest >= 0 && _time - _targetSeenAt > BlindTime && _health.Current * 4 >= _health.Max;
             Vector2 move;
-            if (MeleeInHands ? Swarmed(origin) : threat < KeepDistance())
+            if (!blind && (MeleeInHands ? Swarmed(origin) : threat < KeepDistance()))
             {
                 move = Flee(origin, floor);
             }
@@ -352,7 +358,7 @@ namespace Purge.Gameplay.Balance
             }
             // Too far — or near, but behind a tree or a wall: around it to a clear line. Never right back into the
             // distance it has just backed off from (no back and forth at its edge).
-            else if (nearest >= 0 && (MeleeInHands || threat >= KeepDistance() + Hysteresis) &&
+            else if (blind || nearest >= 0 && (MeleeInHands || threat >= KeepDistance() + Hysteresis) &&
                      (distance > PreferredDistance() || _targetAgent < 0 && _targetBarrel == null))
             {
                 var goal = PlayerMovement.CellOf(_horde.Positions[nearest], floor);

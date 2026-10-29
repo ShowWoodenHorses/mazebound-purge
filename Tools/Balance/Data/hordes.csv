@@ -1,0 +1,5 @@
+asset,_maxAlive,_reserveSlots,~_difficulty,_wanderGroups,_wanderRetarget,_champions._chance,_champions._healthFactor,_champions._scale,~_monsters[0]._monster,_monsters[0]._weight,~_monsters[1]._monster,_monsters[1]._weight,~_monsters[2]._monster,_monsters[2]._weight,~_monsters[3]._monster,_monsters[3]._weight,~_monsters[4]._monster,_monsters[4]._weight
+Horde/Forest01Horde.asset,300,64,Normal,3,25,0.04,2,1.15,,,,,,,,,,
+Horde/RunHorde.asset,300,64,Normal,3,25,0.04,2,1.15,,,,,,,,,,
+Horde/SandboxHorde.asset,300,64,Normal,3,25,0.04,2,1.15,Zombie_Common,3,Zombie_2_Common,2,Skeleton_Castle,1,Zombie_Forest,1,Ghoul_Snow,1
+Horde/StressHorde.asset,500,64,,3,25,0.04,2,1.15,,,,,,,,,,

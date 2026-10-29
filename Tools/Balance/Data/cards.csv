@@ -1,0 +1,13 @@
+asset,_rarity,_maxLevel,~StatusDamageCard._status,StatusDamageCard._perLevel,StatCard._stat,StatCard._perLevel,StatCard#2._stat,StatCard#2._perLevel,ThrowablesCard._count
+Cards/Card_Burning.asset,Rare,3,Status_Burning,0.25,,,,,
+Cards/Card_Crit.asset,Rare,5,,,CritChance,0.05,,,
+Cards/Card_Damage.asset,Common,5,,,WeaponDamage,0.1,,,
+Cards/Card_Explosives.asset,Uncommon,3,,,ExplosionDamage,0.15,ExplosionRadius,0.1,
+Cards/Card_FireRate.asset,Common,5,,,FireRate,0.08,,,
+Cards/Card_HealOnKill.asset,Uncommon,3,,,HealOnKill,1,,,
+Cards/Card_Health.asset,Common,5,,,MaxHealth,15,,,
+Cards/Card_Magazine.asset,Common,5,,,Magazine,0.2,,,
+Cards/Card_Magnet.asset,Common,3,,,PickupRadius,1,,,
+Cards/Card_Reload.asset,Common,5,,,ReloadTime,0.12,,,
+Cards/Card_Speed.asset,Common,5,,,MoveSpeed,0.06,,,
+Cards/Card_Throwables.asset,Uncommon,5,,,,,,,2

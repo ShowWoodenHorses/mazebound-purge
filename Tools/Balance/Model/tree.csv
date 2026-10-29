@@ -1,0 +1,26 @@
+branch,node,cost,note
+Trunk,Allow Uncommon,1200,0 branch nodes
+Trunk,Allow Rare,3100,3 branch nodes
+Trunk,Allow Epic,7800,7 branch nodes
+Trunk,Allow Legendary,19000,12 branch nodes
+Shooter,Quick hands,120,1th node bought
+Demolisher,Sapper,140,2th node bought
+Survivor,Second wind,170,3th node bought
+Shooter,Sharp eye,200,4th node bought
+Demolisher,Preparation,240,5th node bought
+Survivor,Last stand,290,6th node bought
+Shooter,Wide choice,350,7th node bought
+Demolisher,Luck,420,8th node bought
+Survivor,Barrier,500,9th node bought
+Shooter,Reroll,600,10th node bought
+Demolisher,Booster: Minefield,720,11th node bought
+Survivor,Instinct,870,12th node bought
+Shooter,Tactician,1000,13th node bought
+Survivor,Quiet steps,1200,14th node bought
+Shooter,Booster: Second barrel,1500,15th node bought
+Survivor,Buyer,1800,16th node bought
+Shooter,Booster: Headhunter,2200,17th node bought
+Survivor,Chest hunter,2600,18th node bought
+Survivor,Booster: Quiet start,3100,19th node bought
+Survivor,Booster: Drop load,3700,20th node bought
+Survivor,Booster: Second dome,4500,21th node bought

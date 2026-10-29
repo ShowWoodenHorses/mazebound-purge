@@ -1,0 +1,70 @@
+{
+  "_about": "Economy model inputs (stage 10b). Targets — TZ A.5 and card 10. Edit here, run: python Tools/Balance/model.py",
+
+  "bot_batch": "latest",
+  "difficulties": ["Easy", "Normal", "Hard", "Unreal"],
+  "levels": [
+    { "name": "Forest", "bot_level": "Level_Forest_01" },
+    { "name": "Castle" },
+    { "name": "Snow" }
+  ],
+  "level_minutes": [7, 10, 15, 20],
+  "level_growth": { "minutes": 1.15, "money": 1.15, "health": 1.35 },
+
+  "rank_money": { "Mass": 1, "Officer": 5, "Elite": 20, "Boss": 100 },
+  "first_clear_bonus": 1.0,
+  "play_overhead": 1.15,
+
+  "target_hours": 30,
+  "price_ratio": [1, 3, 8, 20, 50],
+  "price_round": 10,
+  "rarity_power": 1.3,
+  "upgrade_levels": 10,
+  "upgrade_power": 2.0,
+  "upgrade_growth": 1.3,
+  "fork_levels": [4, 8],
+  "fork_change_share": 0.1,
+  "loss_income_share": 0.5,
+
+  "rarities": {
+    "Common": ["Revolver", "Pistol_silencer", "Knife", "Machete", "Pomp_Shotgun", "MP5_silencer", "Hunter_sniper", "Hammer"],
+    "Uncommon": ["Desert", "AK-74", "M416", "P90", "Sword", "Auto_Shotgun", "Sniper_silencer", "Vector_silencer", "Flamer_Pistol"],
+    "Rare": ["Magnum", "SCAR-L", "Groza", "Dragunov", "Hard_Auto_Shotgun", "CrossBow", "MachineGun", "Grenade_Launcher", "GasGun", "Pistol_laser"],
+    "Epic": ["AWM", "Lynx", "AcidCannon", "FreezeGun", "Tesla", "RPG", "Shock_cannon", "Star_sword"],
+    "Legendary": ["FlameGun", "Minigun", "Mortar", "Plasmometer", "Railgun"]
+  },
+  "start_pool_extra": ["AK-74", "Auto_Shotgun", "Grenade_Launcher"],
+  "unique": {
+    "Mortar": ["Forest", "Hard"], "Railgun": ["Forest", "Unreal"],
+    "Star_sword": ["Castle", "Hard"], "Plasmometer": ["Castle", "Unreal"],
+    "FreezeGun": ["Snow", "Hard"], "Shock_cannon": ["Snow", "Unreal"]
+  },
+  "unique_note": "Difficulty of the unique reward per level is a model assumption (card: Forest — Mortar hard, Railgun unreal).",
+
+  "throwables": {
+    "price_share": 0.5,
+    "levels": 5,
+    "rarity": { "Grenade": "Common", "Molotov": "Uncommon", "Grenade_Smoke": "Common", "Flashbang": "Uncommon", "Mine": "Rare" },
+    "start": ["Grenade"]
+  },
+
+  "tree": {
+    "trunk": [ ["Uncommon", 0], ["Rare", 3], ["Epic", 7], ["Legendary", 12] ],
+    "trunk_price_share": 1.0,
+    "node_base": 2.0,
+    "node_growth": 1.2,
+    "node_power": 0.04,
+    "branches": {
+      "Shooter": ["Quick hands", "Sharp eye", "Wide choice", "Reroll", "Tactician", "Booster: Second barrel", "Booster: Headhunter"],
+      "Demolisher": ["Sapper", "Preparation", "Luck", "Booster: Minefield"],
+      "Survivor": ["Second wind", "Last stand", "Barrier", "Instinct", "Quiet steps", "Buyer", "Chest hunter", "Booster: Quiet start", "Booster: Drop load", "Booster: Second dome"]
+    }
+  },
+
+  "boosters": {
+    "income_share": 0.15,
+    "weights": { "+3 grenades": 0.8, "Starting card": 1.2, "Medkit": 0.6, "+1 reroll": 0.5, "Scouting": 0.7, "Special (tree)": 1.0 }
+  },
+
+  "cards": { "interval_start": 30, "interval_end": 60, "difficulty": "Normal", "max_levels": 40 }
+}

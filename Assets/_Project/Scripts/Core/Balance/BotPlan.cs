@@ -20,7 +20,7 @@ namespace Purge.Core.Balance
         [Tooltip("Difficulties every level is played on, in order.")]
         [SerializeField] private List<DifficultyDefinition> _difficulties = new List<DifficultyDefinition>();
         [Tooltip("Runs of each level on each difficulty.")]
-        [SerializeField, Min(1)] private int _runs = 10;
+        [SerializeField, Min(1)] private int _runs = 3;
         [Tooltip("Seed of the first run; each run adds its number (the same batch replays the same waves).")]
         [SerializeField] private int _seed = 1000;
         [Tooltip("A run longer than this (minutes) is stopped and recorded as a timeout.")]

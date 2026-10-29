@@ -426,7 +426,7 @@ namespace Purge.Editor.Balance
                 .Select(guid => AssetDatabase.LoadAssetAtPath<DifficultyDefinition>(AssetDatabase.GUIDToAssetPath(guid)))
                 .OrderBy(difficulty => difficulty.Level);
             var cards = DefaultCards.Select(FindAsset<CardDefinition>).Where(card => card != null);
-            plan.Configure(levels, difficulties, 10, cards);
+            plan.Configure(levels, difficulties, 3, cards);
             Directory.CreateDirectory(Path.GetDirectoryName(PlanPath));
             AssetDatabase.CreateAsset(plan, PlanPath);
             AssetDatabase.SaveAssets();

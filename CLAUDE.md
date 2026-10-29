@@ -75,7 +75,7 @@ Unity 6000.3.8f1 (6.3 LTS) · Built-in RP · VContainer 1.19 · UniTask 2.5 · A
 | [Vehicles.md](Docs/Code/Vehicles.md) | Машины: `VehicleDefinition` и модули, `VehicleData`, Build Vehicles, `VehicleSystem` (езда, стены, вход/выход, стоящая — стена и укрытие), игрок в машине, вид, камера, звук, тач-педали |
 | [Objects.md](Docs/Code/Objects.md) | Бочки (`BarrelSystem`), сундуки и ключ (`ChestSystem`), колпак (`RefugeSystem`, барьер выстрелов), `CellBlockers`, их вид, HUD, звук, сейв |
 | [Cards.md](Docs/Code/Cards.md) | Опыт забега, `CardDefinition`/`CardDeck`, `CardSystem`, `RunStats`/`RunDamage` (урон, крит, взрывы), магнит подбора, `GameFlowState.Cards`, экран карточек |
-| [Balance.md](Docs/Code/Balance.md) | Бот-автопилот (`BotPlan`, `BalanceBot`, `BotInput`, `BotRecorder`), пачки прогонов `BotRunner`, CSV статистики |
+| [Balance.md](Docs/Code/Balance.md) | Бот-автопилот (`BotPlan`, `BalanceBot`, `BotInput`, `BotRecorder`), пачки прогонов `BotRunner`, CSV статистики; таблицы `BalanceTables` (Export/Apply), модель экономики `Tools/Balance/model.py` |
 | [MetaUI.md](Docs/Code/MetaUI.md) | Карта, таймер, завершение уровня, сейв-сервисы; UI: `UiShape`, `UiStyle`, иконки, кнопки, экраны, HUD; локализация; обучение |
 | [Audio.md](Docs/Code/Audio.md) | `AudioBuilder` и `AudioCatalog`, `AudioService`, музыка, `LevelAudioPresenter`, `WeaponAudioPresenter`, звуковые группы оружия |
 | [Platforms.md](Docs/Code/Platforms.md) | Веб (фокус, шаблон, release-настройки), аналитика, реклама, `IGamePlatform`, облачный сейв, сборка под площадку, Яндекс, CrazyGames, ВК, GameDistribution, RuStore (Android) |

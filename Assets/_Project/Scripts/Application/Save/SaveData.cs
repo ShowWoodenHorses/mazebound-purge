@@ -32,6 +32,12 @@ namespace Purge.Application.Save
         /// <summary>Bought nodes of the character tree (stable ids).</summary>
         public List<string> CharacterNodes = new List<string>();
 
+        /// <summary>Opened boosters (stable ids): the basic ones after level 1, the special ones by tree nodes.</summary>
+        public List<string> Boosters = new List<string>();
+
+        /// <summary>The last preparation (stage 11): the menu podium shows its weapon, the next preparation starts from it.</summary>
+        public LoadoutSave Loadout = new LoadoutSave();
+
         public SaveStats Stats = new SaveStats();
 
         /// <summary>The unfinished run (Continue); <see cref="RunSave.Active"/> false = none.</summary>
@@ -51,6 +57,8 @@ namespace Purge.Application.Save
             Survival ??= new List<SurvivalRecord>();
             Arsenal ??= new List<OwnedItem>();
             CharacterNodes ??= new List<string>();
+            Boosters ??= new List<string>();
+            Loadout ??= new LoadoutSave();
             Stats ??= new SaveStats();
             Run ??= new RunSave();
             Settings ??= new SettingsData();
@@ -86,6 +94,9 @@ namespace Purge.Application.Save
 
             CharacterNodes.RemoveAll(string.IsNullOrEmpty);
             Distinct(CharacterNodes, node => node);
+            Boosters.RemoveAll(string.IsNullOrEmpty);
+            Distinct(Boosters, booster => booster);
+            Loadout.Normalize();
             Stats.Normalize();
             Run.Normalize();
         }
@@ -96,9 +107,9 @@ namespace Purge.Application.Save
 
         /// <summary>
         /// Adds the progress of another save (the same player on another device, before signing in): opened levels and
-        /// completed difficulties, records, purchases (the higher upgrade with its forks), tree nodes, statistics and money
-        /// — the larger value (money is not summed: the same coins would count twice). Settings and the unfinished run
-        /// stay these (the other device's run is taken only when this one has none). Both saves must be normalized.
+        /// completed difficulties, records, purchases (the higher upgrade with its forks), tree nodes, opened boosters,
+        /// statistics and money — the larger value (money is not summed: the same coins would count twice). Settings, the
+        /// last preparation and the unfinished run stay these (the other device's run is taken only when this one has none). Both saves must be normalized.
         /// </summary>
         public void MergeFrom(SaveData other)
         {
@@ -146,6 +157,10 @@ namespace Purge.Application.Save
             foreach (var node in other.CharacterNodes)
                 if (!CharacterNodes.Contains(node))
                     CharacterNodes.Add(node);
+
+            foreach (var booster in other.Boosters)
+                if (!Boosters.Contains(booster))
+                    Boosters.Add(booster);
 
             Stats.MergeFrom(other.Stats);
             if (!HasRun && other.HasRun) Run = other.Run;

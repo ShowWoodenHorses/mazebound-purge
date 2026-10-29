@@ -526,6 +526,9 @@ namespace Purge.Tests.EditMode.Flow
             public int Money { get; private set; }
             public bool IsUnlocked(string levelId) => true;
             public bool IsCompleted(string levelId) => false;
+            public bool IsDifficultyOpen(string levelId, int difficulty) => true;
+            public LoadoutSave Loadout { get; } = new LoadoutSave();
+            public void SaveLoadout(string weaponId, string throwableId, IReadOnlyList<string> boosters) => Loadout.WeaponId = weaponId;
 
             public void RecordRun(string levelId, LevelResult result, int difficulty = 0)
             {

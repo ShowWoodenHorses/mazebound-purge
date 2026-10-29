@@ -11,7 +11,7 @@ namespace Purge.Presentation.UI
     public sealed class UIRoot : MonoBehaviour
     {
         [SerializeField] private MainMenuScreen _mainMenu;
-        [SerializeField] private LevelSelectScreen _levelSelect;
+        [SerializeField] private DevLevelsScreen _devLevels;
         [SerializeField] private LoadingScreen _loading;
         [SerializeField] private ErrorScreen _error;
         [SerializeField] private HudScreen _hud;
@@ -48,7 +48,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private LocalizedText[] _localizedTexts = Array.Empty<LocalizedText>();
 
         public MainMenuScreen MainMenu => _mainMenu;
-        public LevelSelectScreen LevelSelect => _levelSelect;
+        public DevLevelsScreen DevLevels => _devLevels;
         public LoadingScreen Loading => _loading;
         public ErrorScreen Error => _error;
         public HudScreen Hud => _hud;
@@ -89,7 +89,7 @@ namespace Purge.Presentation.UI
             foreach (var text in _localizedTexts)
                 if (text != null) text.Apply(texts);
 
-            UIScreen[] screens = { _mainMenu, _levelSelect, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial, _cards };
+            UIScreen[] screens = { _mainMenu, _devLevels, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial, _cards };
             foreach (var screen in screens)
                 if (screen != null) screen.ApplyLanguage(texts);
             if (_touchControls != null && _touchControls.LayoutEditor != null)

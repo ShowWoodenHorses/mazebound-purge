@@ -13,17 +13,18 @@ namespace Purge.Presentation.Localization
         public const string No = "common.no";
         public const string Percent = "format.percent";
 
-        // Main menu, level select, loading.
+        // Main menu (stage 11a), loading.
         public const string MenuContinue = "menu.continue";
         public const string MenuPlay = "menu.play";
         public const string ConfirmNewRun = "confirm.new_run";
         public const string MenuResetProgress = "menu.reset_progress";
         public const string MenuTutorial = "menu.tutorial";
-        public const string MenuLevels = "menu.levels";
+        public const string MenuArsenal = "menu.arsenal";
+        public const string MenuCharacter = "menu.character";
+        public const string MenuTasks = "menu.tasks";
+        public const string MenuShop = "menu.shop";
         public const string MenuSignIn = "menu.sign_in";
         public const string MenuSignInHint = "menu.sign_in.hint";
-        public const string LevelSelectTitle = "level_select.title";
-        public const string LevelSelectEmpty = "level_select.empty";
         public const string Loading = "loading";
 
         // HUD.

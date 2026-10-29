@@ -6,6 +6,7 @@ using Purge.Composition;
 using Purge.Core.Localization;
 using Purge.Presentation.Localization;
 using Purge.Presentation.Map;
+using Purge.Presentation.Menu;
 using Purge.Presentation.UI;
 using Purge.Presentation.UI.Shapes;
 using Purge.Presentation.UI.Style;
@@ -157,11 +158,121 @@ namespace Purge.Editor.Dev
             SetReference(ui.Hud, "_touchControls", touch);
             LinkTutorialHighlights(ui, touch);
 
+            // The podium's light needs an ambient like the levels' (the Bootstrap scene is active again after a level).
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.24f, 0.26f, 0.32f);
+            var podium = BuildMenuPodium();
+
             var scopeObject = new GameObject("ProjectLifetimeScope");
             var scope = scopeObject.AddComponent<ProjectLifetimeScope>();
             SetReference(scope, "_ui", ui);
+            SetReference(scope, "_podium", podium);
 
             SaveAndClose(scene, BootstrapPath);
+        }
+
+        private const string MenuArtFolder = "Assets/_Project/Art/Menu";
+
+        /// <summary>
+        /// The main menu's 3D stage (stage 11a; simple and procedural by the user's choice): far below every level, a low
+        /// dark podium with a glowing accent rim and a halo ring, its own warm key light and a camera over the UI camera.
+        /// Built hidden; <see cref="MenuPodiumView"/> shows it in the main menu. No colliders (no physics in the game).
+        /// </summary>
+        private static MenuPodiumView BuildMenuPodium()
+        {
+            var root = new GameObject("MenuPodium");
+            root.transform.position = new Vector3(0f, -500f, 0f);
+            var view = root.AddComponent<MenuPodiumView>();
+
+            var stage = new GameObject("Stage");
+            stage.transform.SetParent(root.transform, false);
+
+            var accent = _style.Accent;
+            var body = MenuMaterial("Podium_Body", "Purge/Lit", new Color(0.16f, 0.15f, 0.14f), Color.black);
+            var rim = MenuMaterial("Podium_Rim", "Purge/Lit", Color.black, accent * 1.6f);
+            var halo = MenuMaterial("Podium_Halo", "Purge/Ring", new Color(accent.r, accent.g, accent.b, 0.3f), null);
+            halo.SetFloat("_Thickness", 0.03f);
+            halo.SetFloat("_Fill", 0.1f);
+
+            MenuPrimitive(stage.transform, "Podium", PrimitiveType.Cylinder, body, new Vector3(0f, -0.09f, 0f), new Vector3(2.2f, 0.09f, 2.2f));
+            MenuPrimitive(stage.transform, "Rim", PrimitiveType.Cylinder, rim, new Vector3(0f, -0.035f, 0f), new Vector3(2.27f, 0.008f, 2.27f));
+            var ring = MenuPrimitive(stage.transform, "Halo", PrimitiveType.Quad, halo, new Vector3(0f, -0.17f, 0f), new Vector3(3.4f, 3.4f, 1f));
+            ring.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+            var anchor = new GameObject("Character").transform;
+            anchor.SetParent(stage.transform, false);
+            anchor.localRotation = Quaternion.identity;
+
+            var lightObject = new GameObject("Key Light");
+            lightObject.transform.SetParent(stage.transform, false);
+            lightObject.transform.localRotation = Quaternion.Euler(32f, 155f, 0f);
+            var light = lightObject.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.shadows = LightShadows.None;
+            light.color = new Color(1f, 0.93f, 0.82f);
+            light.intensity = 1.15f;
+
+            // Facing the character (it looks along +Z): slightly from above, the figure in the middle between the bars.
+            var cameraObject = new GameObject("Podium Camera");
+            cameraObject.transform.SetParent(root.transform, false);
+            cameraObject.transform.localPosition = new Vector3(0f, 1.45f, 7.4f);
+            cameraObject.transform.localRotation = Quaternion.LookRotation(new Vector3(0f, 0.55f, 0f) - cameraObject.transform.localPosition);
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Background;
+            camera.fieldOfView = 26f;
+            camera.nearClipPlane = 0.3f;
+            camera.farClipPlane = 30f;
+            camera.depth = -5;
+            camera.enabled = false;
+
+            stage.SetActive(false);
+            SetReference(view, "_camera", camera);
+            SetReference(view, "_stage", stage);
+            SetReference(view, "_anchor", anchor);
+            return view;
+        }
+
+        private static GameObject MenuPrimitive(Transform parent, string name, PrimitiveType type, Material material,
+            Vector3 position, Vector3 scale)
+        {
+            var go = GameObject.CreatePrimitive(type);
+            Object.DestroyImmediate(go.GetComponent<Collider>());
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+            var renderer = go.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            return go;
+        }
+
+        /// <summary>A material of the menu stage in <see cref="MenuArtFolder"/>, created or updated in place.</summary>
+        private static Material MenuMaterial(string name, string shaderName, Color color, Color? emission)
+        {
+            if (!AssetDatabase.IsValidFolder(MenuArtFolder))
+                AssetDatabase.CreateFolder("Assets/_Project/Art", "Menu");
+            var path = MenuArtFolder + "/" + name + ".mat";
+            var shader = Shader.Find(shaderName);
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            material.shader = shader;
+            material.SetColor("_Color", color);
+            if (emission.HasValue)
+            {
+                material.SetColor("_EmissionColor", emission.Value);
+                material.SetFloat("_Glossiness", 0.2f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static Scene NewScene()
@@ -191,7 +302,7 @@ namespace Purge.Editor.Dev
             var parent = canvasObject.transform;
 
             SetReference(root, "_mainMenu", BuildMainMenu(parent));
-            SetReference(root, "_levelSelect", BuildLevelSelect(parent));
+            SetReference(root, "_devLevels", BuildDevLevels(parent));
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
@@ -234,53 +345,30 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>
-        /// Main menu (mock-up, minimal): the title with an ornament line on the left, PLAY (accent; the next level at
-        /// once), LEVELS, TUTORIAL and SETTINGS under it; sign-in at the top right; total stars and kills at the bottom left; debug reset and the version at the bottom right.
+        /// Main menu (stage 11a, ТЗ А.10): transparent in the middle — the podium camera draws the character there. Money
+        /// at the top left; the sign-in and Settings at the top right; the bottom bar — Arsenal, Character, ▶ PLAY (accent,
+        /// larger), Tasks, Shop at fixed places (hidden tabs leave their place empty: PLAY stays in the middle) with
+        /// «Продолжить» above PLAY; DEV and the debug reset under the money, the version at the bottom right.
         /// </summary>
         private static MainMenuScreen BuildMainMenu(Transform parent)
         {
-            var screen = Screen<MainMenuScreen>(parent, "MainMenuScreen", Background);
-            Backdrop(screen.transform);
+            var screen = Screen<MainMenuScreen>(parent, "MainMenuScreen", Color.clear);
+            screen.GetComponent<Image>().raycastTarget = false;
             var icons = UiIcons();
             var area = SafeArea(screen.transform);
 
-            // The game's name is one English word in every language: not localized.
-            AutoSize(Text(area, "Title", "MAZEBOUND", 132f, true, TopLeft, TopLeft, new Vector2(160f, -110f),
-                new Vector2(1200f, 150f), TextAlignmentOptions.TopLeft, spacing: 22f));
-            OrnamentLine(area, TopLeft, new Vector2(172f, -285f), 560f);
+            var top = Row(area, "MoneyRow", TopLeft, new Vector2(64f, -64f), 12f);
+            Counter(top, "Money", icons.Coin, out var moneyText);
+            var coin = top.Find("Money/Icon");
+            coin.GetComponent<Image>().color = _style.Accent;
+            coin.GetComponent<LayoutElement>().preferredWidth = coin.GetComponent<LayoutElement>().preferredHeight = 44f;
+            moneyText.fontSize = 44f;
+            moneyText.font = _style.BoldFont;
 
-            var buttons = new GameObject("Buttons", typeof(RectTransform)).GetComponent<RectTransform>();
-            buttons.SetParent(area, false);
-            buttons.anchorMin = buttons.anchorMax = buttons.pivot = TopLeft;
-            // High and compact: a site banner (VK) shortens the screen from below.
-            buttons.anchoredPosition = new Vector2(168f, -340f);
-            buttons.sizeDelta = new Vector2(500f, 0f);
-            var layout = buttons.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 18f;
-            layout.childControlWidth = layout.childControlHeight = true;
-            layout.childForceExpandHeight = false;
-            buttons.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            var resume = TextButton(buttons, "ContinueButton", Loc(TextKeys.MenuContinue), true, icons.Resume, 84f);
-            resume.gameObject.SetActive(false); // shown by the router while a run is saved
-            var play = TextButton(buttons, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 84f);
-            var levels = TextButton(buttons, "LevelsButton", Loc(TextKeys.MenuLevels), false, icons.Menu, 84f);
-            var tutorial = TextButton(buttons, "TutorialButton", Loc(TextKeys.MenuTutorial), false, icons.Help, 84f);
-            var settings = TextButton(buttons, "SettingsButton", Loc(TextKeys.Settings), false, icons.Settings, 84f);
+            var settings = RoundButton(area, "SettingsButton", icons.Settings, new Vector2(1f, 1f), new Vector2(-106f, -106f), 84f, 36f);
 
-            // Bottom right, over the version: bottom left the totals ran into the last button on a short screen
-            // (VK's frame on a desktop).
-            var summary = Row(area, "Summary", new Vector2(1f, 0f), new Vector2(-64f, 96f), 44f, new Vector2(1f, 0f));
-            var money = Counter(summary, "Money", icons.Coin, out var moneyText);
-            money.transform.Find("Icon").GetComponent<Image>().color = _style.Accent;
-            Counter(summary, "Kills", icons.Skull, out var killsText);
-
-            var reset = LinkButton(area, "DebugResetProgressButton", Loc(TextKeys.MenuResetProgress), new Vector2(1f, 0f),
-                new Vector2(-64f, 176f), 380f);
-            var version = Text(area, "Version", "v0.1", 24f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
-                new Vector2(-64f, 52f), new Vector2(140f, 36f), TextAlignmentOptions.BottomRight, _style.MutedText, 6f);
-
-            // Signing in to the site's account (Yandex Games), top right; shown by the router only when possible.
-            var account = Rect(area, "Account", new Vector2(1f, 1f), new Vector2(-64f, -64f), new Vector2(420f, 140f));
+            // Signing in to the site's account, left of Settings; shown by the router only when possible.
+            var account = Rect(area, "Account", new Vector2(1f, 1f), new Vector2(-176f, -64f), new Vector2(420f, 140f));
             account.pivot = new Vector2(1f, 1f);
             var signIn = TextButton(account, "SignInButton", Loc(TextKeys.MenuSignIn), false, icons.Player, 72f, 26f);
             var signInRect = signIn.GetComponent<RectTransform>();
@@ -294,101 +382,94 @@ namespace Purge.Editor.Dev
             AutoSize(hint);
             account.gameObject.SetActive(false);
 
+            // The bottom bar: high and compact enough for a site banner (VK) under it.
+            var bottom = new Vector2(0.5f, 0f);
+            var arsenal = MenuTab(area, "ArsenalButton", Loc(TextKeys.MenuArsenal), icons.Ranged, new Vector2(-600f, 110f));
+            var character = MenuTab(area, "CharacterButton", Loc(TextKeys.MenuCharacter), icons.Player, new Vector2(-340f, 110f));
+            var play = TextButton(area, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 128f, 46f);
+            Place(play, bottom, new Vector2(0f, 110f), new Vector2(400f, 128f));
+            var tasks = MenuTab(area, "TasksButton", Loc(TextKeys.MenuTasks), icons.Star, new Vector2(340f, 110f));
+            var shop = MenuTab(area, "ShopButton", Loc(TextKeys.MenuShop), icons.Coin, new Vector2(600f, 110f));
+            var resume = TextButton(area, "ContinueButton", Loc(TextKeys.MenuContinue), true, icons.Resume, 84f);
+            Place(resume, bottom, new Vector2(0f, 110f + 64f + 24f + 42f), new Vector2(400f, 84f));
+            resume.gameObject.SetActive(false); // shown by the router while a run is saved
+
+            // Development builds: the level list and the progress reset under the money; the version bottom right.
+            var dev = TextButton(area, "DevButton", "DEV", false, null, 64f, 26f);
+            Place(dev, TopLeft, new Vector2(64f + 80f, -170f), new Vector2(160f, 64f));
+            var reset = LinkButton(area, "DebugResetProgressButton", Loc(TextKeys.MenuResetProgress), TopLeft,
+                new Vector2(64f, -260f), 380f);
+            reset.GetComponent<TMP_Text>().alignment = TextAlignmentOptions.BottomLeft;
+            reset.GetComponent<RectTransform>().pivot = new Vector2(0f, 0f);
+            var version = Text(area, "Version", "v0.1", 24f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
+                new Vector2(-64f, 52f), new Vector2(140f, 36f), TextAlignmentOptions.BottomRight, _style.MutedText, 6f);
+
             SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);
-            SetReference(screen, "_levelsButton", levels);
-            SetReference(screen, "_tutorialButton", tutorial);
+            SetReference(screen, "_arsenalButton", arsenal);
+            SetReference(screen, "_characterButton", character);
+            SetReference(screen, "_tasksButton", tasks);
+            SetReference(screen, "_shopButton", shop);
             SetReference(screen, "_settingsButton", settings);
-            SetReference(screen, "_summary", summary.gameObject);
             SetReference(screen, "_money", moneyText);
-            SetReference(screen, "_kills", killsText);
             SetReference(screen, "_version", version);
+            SetReference(screen, "_devButton", dev);
             SetReference(screen, "_debugResetProgressButton", reset);
             SetReference(screen, "_account", account.gameObject);
             SetReference(screen, "_signInButton", signIn);
             return screen;
         }
 
-        /// <summary>
-        /// Level select (user's spec): back and title at the top; ten tiles in two rows of five (number, padlock when
-        /// locked); arrows, page diamonds and the range at the bottom. The screen itself takes horizontal swipes.
-        /// </summary>
-        private static LevelSelectScreen BuildLevelSelect(Transform parent)
+        /// <summary>A tab of the menu's bottom bar: the icon above its caption.</summary>
+        private static UiButton MenuTab(Transform parent, string name, string text, Sprite icon, Vector2 position)
         {
-            var screen = Screen<LevelSelectScreen>(parent, "LevelSelectScreen", Background);
+            var body = Shape(parent, name, new Vector2(0.5f, 0f), position, new Vector2(220f, 112f), true);
+            body.CornerRadius = 2f;
+            var image = Icon(body.transform, "Icon", icon, new Vector2(0.5f, 1f), new Vector2(0f, -38f), 40f);
+            var label = Text(body.transform, "Label", text, 24f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
+                new Vector2(0f, 14f), new Vector2(200f, 34f), TextAlignmentOptions.Center, spacing: 8f);
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(label);
+            return MakeButton(body, false, image, label);
+        }
+
+        /// <summary>Puts a layout-made element at a fixed place (anchor = pivot).</summary>
+        private static void Place(Component element, Vector2 anchor, Vector2 position, Vector2 size)
+        {
+            var rect = element.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = anchor;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+        }
+
+        /// <summary>
+        /// Development levels (stage 11a, editor and development builds): back and title at the top, a grid of buttons —
+        /// one template here, cloned by <see cref="DevLevelsScreen"/> for every level. Not localized (development only).
+        /// </summary>
+        private static DevLevelsScreen BuildDevLevels(Transform parent)
+        {
+            var screen = Screen<DevLevelsScreen>(parent, "DevLevelsScreen", Background);
             Backdrop(screen.transform);
             var icons = UiIcons();
             var area = SafeArea(screen.transform);
 
             var back = RoundButton(area, "BackButton", icons.ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
-            Text(area, "Title", Loc(TextKeys.LevelSelectTitle), 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
+            Text(area, "Title", "DEV LEVELS", 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
                 new Vector2(700f, 60f), TextAlignmentOptions.MidlineLeft, spacing: 16f);
-            var gridRect = Rect(area, "Grid", Center, new Vector2(0f, 30f), new Vector2(1058f, 414f));
-            var gridGroup = gridRect.gameObject.AddComponent<CanvasGroup>();
-            var grid = gridRect.gameObject.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(170f, 190f);
-            grid.spacing = new Vector2(52f, 34f);
+            var list = Rect(area, "List", Center, new Vector2(0f, -40f), new Vector2(1520f, 800f));
+            var grid = list.gameObject.AddComponent<GridLayoutGroup>();
+            grid.cellSize = new Vector2(350f, 84f);
+            grid.spacing = new Vector2(24f, 22f);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grid.constraintCount = 5;
+            grid.constraintCount = 4;
             grid.childAlignment = TextAnchor.UpperCenter;
-            var tiles = new List<Object>();
-            for (var i = 0; i < LevelPages.PerPage; i++)
-                tiles.Add(LevelTileView(gridRect, i, icons));
+            var template = TextButton(list, "Template", "LEVEL", false, null, 84f, 28f);
 
-            var empty = Text(area, "EmptyLabel", Loc(TextKeys.LevelSelectEmpty), 30f, false,
-                Center, Center, new Vector2(0f, 30f), new Vector2(1200f, 60f), TextAlignmentOptions.Center, _style.MutedText);
-            empty.gameObject.SetActive(false);
-
-            var previous = RoundButton(area, "PreviousButton", icons.ChevronLeft, new Vector2(0.5f, 0f), new Vector2(-250f, 96f), 76f, 32f);
-            var next = RoundButton(area, "NextButton", icons.ChevronRight, new Vector2(0.5f, 0f), new Vector2(250f, 96f), 76f, 32f);
-            var dots = Row(area, "Dots", new Vector2(0.5f, 0f), new Vector2(-70f, 96f), 18f, new Vector2(0.5f, 0.5f));
-            dots.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
-            var dotTemplate = Shape(dots, "DotTemplate", Center, Vector2.zero, new Vector2(13f, 13f));
-            dotTemplate.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-            dotTemplate.Fill = Color.clear;
-            var dotLayout = dotTemplate.gameObject.AddComponent<LayoutElement>();
-            dotLayout.preferredWidth = dotLayout.preferredHeight = 13f;
-            var range = Text(area, "Range", "1 - 10", 30f, true, new Vector2(0.5f, 0f), new Vector2(0f, 0.5f),
-                new Vector2(40f, 96f), new Vector2(170f, 44f), TextAlignmentOptions.MidlineLeft, spacing: 8f);
-
-            SetReference(screen, "_style", _style);
             SetReference(screen, "_backButton", back);
-            SetReferences(screen, "_tiles", tiles);
-            SetReference(screen, "_grid", gridGroup);
-            SetReference(screen, "_previousButton", previous);
-            SetReference(screen, "_nextButton", next);
-            SetReference(screen, "_range", range);
-            SetReference(screen, "_dots", dots);
-            SetReference(screen, "_dotTemplate", dotTemplate);
-            SetReference(screen, "_emptyLabel", empty);
+            SetReference(screen, "_list", list);
+            SetReference(screen, "_template", template);
             return screen;
-        }
-
-        /// <summary>One tile (a grid cell): the button with the number and padlock.</summary>
-        private static LevelTile LevelTileView(RectTransform grid, int index, UiIconSet icons)
-        {
-            var holder = new GameObject("Tile" + index, typeof(RectTransform), typeof(CanvasGroup));
-            holder.transform.SetParent(grid, false);
-
-            var body = Shape(holder.transform, "Button", Center, Vector2.zero, Vector2.zero, true);
-            body.CornerRadius = 3f;
-            var bodyRect = body.rectTransform;
-            bodyRect.anchorMin = new Vector2(0f, 0.22f);
-            bodyRect.anchorMax = Vector2.one;
-            bodyRect.offsetMin = bodyRect.offsetMax = Vector2.zero;
-            var number = Text(bodyRect, "Number", (index + 1).ToString(), 72f, true, Center, Center, new Vector2(0f, 10f),
-                new Vector2(160f, 90f), TextAlignmentOptions.Center);
-            number.textWrappingMode = TextWrappingModes.NoWrap;
-            AutoSize(number, 0.35f); // Development levels show a word instead of the number.
-            var padlock = Icon(bodyRect, "Lock", icons.Lock, new Vector2(0.5f, 0f), new Vector2(0f, 26f), 30f);
-            var button = MakeButton(body, false, number, padlock);
-
-            var tile = body.gameObject.AddComponent<LevelTile>();
-            SetReference(tile, "_button", button);
-            SetReference(tile, "_number", number);
-            SetReference(tile, "_lock", padlock.gameObject);
-            SetReference(tile, "_group", holder.GetComponent<CanvasGroup>());
-            return tile;
         }
 
         private static LoadingScreen BuildLoading(Transform parent)

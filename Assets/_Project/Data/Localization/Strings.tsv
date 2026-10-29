@@ -11,10 +11,11 @@ common.no	NO	НЕТ	HAYIR	NO	NEIN	NÃO	NON	NO	NIE	TIDAK	ЖОҚ	YOʻQ	НЕ
 format.percent	{0}%	{0}%	%{0}	{0} %	{0} %	{0}%	{0} %	{0}%	{0}%	{0}%	{0}%	{0}%	{0}%
 # Main menu, level select, loading
 menu.play	PLAY	ИГРАТЬ	OYNA	JUGAR	SPIELEN	JOGAR	JOUER	GIOCA	GRAJ	MAIN	ОЙНАУ	OʻYNASH	ГУЛЯЦЬ
-menu.levels	LEVELS	УРОВНИ	BÖLÜMLER	NIVELES	LEVEL	NÍVEIS	NIVEAUX	LIVELLI	POZIOMY	LEVEL	ДЕҢГЕЙЛЕР	BOSQICHLAR	УЗРОЎНІ
+menu.arsenal	ARSENAL	АРСЕНАЛ	CEPHANELİK	ARSENAL	ARSENAL	ARSENAL	ARSENAL	ARSENALE	ARSENAŁ	GUDANG SENJATA	АРСЕНАЛ	ARSENAL	АРСЕНАЛ
+menu.character	CHARACTER	ПЕРСОНАЖ	KARAKTER	PERSONAJE	CHARAKTER	PERSONAGEM	PERSONNAGE	PERSONAGGIO	POSTAĆ	KARAKTER	КЕЙІПКЕР	QAHRAMON	ПЕРСАНАЖ
+menu.tasks	TASKS	ЗАДАНИЯ	GÖREVLER	MISIONES	AUFGABEN	MISSÕES	MISSIONS	MISSIONI	ZADANIA	MISI	ТАПСЫРМАЛАР	TOPSHIRIQLAR	ЗАДАННІ
+menu.shop	SHOP	МАГАЗИН	MAĞAZA	TIENDA	SHOP	LOJA	BOUTIQUE	NEGOZIO	SKLEP	TOKO	ДҮКЕН	DOʻKON	КРАМА
 menu.reset_progress	DEBUG: RESET PROGRESS	DEBUG: СБРОС ПРОГРЕССА	DEBUG: İLERLEMEYİ SIFIRLA	DEBUG: REINICIAR PROGRESO	DEBUG: FORTSCHRITT ZURÜCKSETZEN	DEBUG: REDEFINIR PROGRESSO	DEBUG : RÉINITIALISER LA PROGRESSION	DEBUG: AZZERA I PROGRESSI	DEBUG: RESETUJ POSTĘP	DEBUG: ATUR ULANG PROGRES	DEBUG: ПРОГРЕСТІ ТАЗАЛАУ	DEBUG: PROGRESSNI TIKLASH	DEBUG: СКІНУЦЬ ПРАГРЭС
-level_select.title	SELECT LEVEL	ВЫБОР УРОВНЯ	BÖLÜM SEÇ	ELIGE NIVEL	LEVEL WÄHLEN	ESCOLHA O NÍVEL	CHOISIR UN NIVEAU	SCEGLI IL LIVELLO	WYBIERZ POZIOM	PILIH LEVEL	ДЕҢГЕЙДІ ТАҢДАУ	DARAJANI TANLANG	ВЫБАР УЗРОЎНЮ
-level_select.empty	No levels yet: run Build / Sync in the Level Designer.	Уровней пока нет: выполните Build / Sync в Level Designer.	Henüz bölüm yok: Level Designer'da Build / Sync çalıştırın.	Aún no hay niveles: ejecuta Build / Sync en el Level Designer.	Noch keine Level: Build / Sync im Level Designer ausführen.	Ainda não há níveis: execute Build / Sync no Level Designer.	Aucun niveau pour l’instant : lancez Build / Sync dans le Level Designer.	Ancora nessun livello: esegui Build / Sync nel Level Designer.	Brak poziomów: uruchom Build / Sync w Level Designer.	Belum ada level: jalankan Build / Sync di Level Designer.	Деңгейлер әлі жоқ: Level Designer ішінде Build / Sync іске қосыңыз.	Hozircha darajalar yoʻq: Level Designer ichida Build / Sync ni ishga tushiring.	Узроўняў пакуль няма: запусціце Build / Sync у Level Designer.
 loading	LOADING	ЗАГРУЗКА	YÜKLENİYOR	CARGANDO	LADEN	CARREGANDO	CHARGEMENT	CARICAMENTO	WCZYTYWANIE	MEMUAT	ЖҮКТЕЛУДЕ	YUKLANMOQDA	ЗАГРУЗКА
 # HUD
 hud.level	LEVEL {0}	УРОВЕНЬ {0}	BÖLÜM {0}	NIVEL {0}	LEVEL {0}	NÍVEL {0}	NIVEAU {0}	LIVELLO {0}	POZIOM {0}	LEVEL {0}	{0}-ДЕҢГЕЙ	{0}-DARAJA	УЗРОВЕНЬ {0}

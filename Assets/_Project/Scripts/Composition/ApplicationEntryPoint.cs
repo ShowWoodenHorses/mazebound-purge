@@ -7,6 +7,7 @@ using Purge.Application.Platform;
 using Purge.Core.Common;
 using Purge.Presentation.Audio;
 using Purge.Presentation.Localization;
+using Purge.Presentation.Menu;
 using Purge.Presentation.UI;
 using VContainer.Unity;
 
@@ -27,11 +28,14 @@ namespace Purge.Composition
         private readonly PlatformService _platform;
         private readonly ILevelCatalog _catalog;
         private readonly IProgressService _progress;
+        private readonly MenuPodiumPresenter _podium;
 
         public ApplicationEntryPoint(GameFlow flow, ScreenRouter screens, PauseController pause, SettingsPresenter settings,
             AppAudioPresenter audio, LocalizationPresenter localization, GameAnalytics analytics, AppFocusController focus,
-            PlatformEvents platformEvents, PlatformService platform, ILevelCatalog catalog, IProgressService progress)
+            PlatformEvents platformEvents, PlatformService platform, ILevelCatalog catalog, IProgressService progress,
+            MenuPodiumPresenter podium)
         {
+            _podium = podium;
             _progress = progress;
             _catalog = catalog;
             _platform = platform;
@@ -55,6 +59,7 @@ namespace Purge.Composition
 #endif
             _localization.Initialize();
             _screens.Initialize();
+            _podium.Initialize();
             _settings.Initialize();
             _audio.Initialize();
             _pause.Initialize();

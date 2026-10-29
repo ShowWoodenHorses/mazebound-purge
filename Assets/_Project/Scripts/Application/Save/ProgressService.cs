@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Purge.Application.Levels;
 using Purge.Core.Common;
 using Purge.Gameplay.Level;
@@ -23,6 +24,18 @@ namespace Purge.Application.Save
 
         /// <summary>Completed on any difficulty.</summary>
         bool IsCompleted(string levelId);
+
+        /// <summary>
+        /// The difficulty can be chosen: the level is unlocked and the difficulty is easy or the previous one is completed
+        /// (ТЗ А.2).
+        /// </summary>
+        bool IsDifficultyOpen(string levelId, int difficulty);
+
+        /// <summary>The last preparation (stage 11): the menu podium shows its weapon.</summary>
+        LoadoutSave Loadout { get; }
+
+        /// <summary>Stores the preparation a run starts with and saves.</summary>
+        void SaveLoadout(string weaponId, string throwableId, IReadOnlyList<string> boosters);
 
         /// <summary>
         /// Stores an ended run (persistent event; ТЗ: при смерти собранное остаётся): its money and kills; a won one also
@@ -86,6 +99,25 @@ namespace Purge.Application.Save
         }
 
         public bool IsCompleted(string levelId) => Data.FindLevel(levelId)?.IsCompleted ?? false;
+
+        public bool IsDifficultyOpen(string levelId, int difficulty)
+        {
+            if (difficulty < 0 || difficulty > 30 || !IsUnlocked(levelId)) return false;
+            return difficulty == 0 || (Data.FindLevel(levelId)?.IsDifficultyOpen(difficulty) ?? false);
+        }
+
+        public LoadoutSave Loadout => Data.Loadout;
+
+        public void SaveLoadout(string weaponId, string throwableId, IReadOnlyList<string> boosters)
+        {
+            var loadout = Data.Loadout ??= new LoadoutSave();
+            loadout.WeaponId = weaponId ?? string.Empty;
+            loadout.ThrowableId = throwableId ?? string.Empty;
+            loadout.Boosters.Clear();
+            if (boosters != null) loadout.Boosters.AddRange(boosters);
+            loadout.Normalize();
+            _save.Save();
+        }
 
         public int Money => Data.Money;
 
@@ -229,6 +261,8 @@ namespace Purge.Application.Save
             Data.Survival.Clear();
             Data.Arsenal.Clear();
             Data.CharacterNodes.Clear();
+            Data.Boosters.Clear();
+            Data.Loadout = new LoadoutSave();
             Data.Stats = new SaveStats();
             Data.Run.Clear();
             Data.Settings = settings;

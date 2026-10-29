@@ -8,6 +8,7 @@ using Purge.Gameplay.Combat;
 using Purge.Gameplay.Player;
 using Purge.Presentation.Audio;
 using Purge.Presentation.Localization;
+using Purge.Presentation.Menu;
 using Purge.Presentation.UI;
 using UnityEngine;
 using VContainer;
@@ -22,6 +23,8 @@ namespace Purge.Composition
     public sealed class ProjectLifetimeScope : LifetimeScope
     {
         [SerializeField] private UIRoot _ui;
+        [Tooltip("The main menu's 3D character stage (stage 11a); optional.")]
+        [SerializeField] private MenuPodiumView _podium;
         [Tooltip("Scene with the LevelLifetimeScope, loaded additively for every level. Must be in Build Settings.")]
         [SerializeField] private string _levelSceneName = "Game";
 
@@ -95,6 +98,10 @@ namespace Purge.Composition
             builder.Register<SettingsPresenter>(Lifetime.Singleton);
             builder.Register<LocalizationPresenter>(Lifetime.Singleton);
             builder.Register<AppAudioPresenter>(Lifetime.Singleton);
+            // The podium is optional (test scenes have none).
+            builder.Register(resolver => new MenuPodiumPresenter(resolver.Resolve<GameFlow>(),
+                resolver.Resolve<SharedDefinitionsService>(), resolver.Resolve<IProgressService>(),
+                resolver.Resolve<IAddressablesService>(), _podium), Lifetime.Singleton);
 
             builder.RegisterEntryPoint<ApplicationEntryPoint>();
             builder.RegisterEntryPoint<AudioTickDriver>();

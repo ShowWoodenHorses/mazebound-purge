@@ -524,6 +524,75 @@ namespace Purge.Tests.EditMode.Progress
             Assert.IsFalse(_progress.IsCompleted("second"));
         }
 
+        // ------------------------------------------------------------ Meta save (stage 11a)
+
+        [Test]
+        public void Difficulty_EasyOpenOnUnlockedLevel_NextOpensByCompletingThePrevious()
+        {
+            Assert.IsTrue(_progress.IsDifficultyOpen("first", 0));
+            Assert.IsFalse(_progress.IsDifficultyOpen("first", 1));
+            Assert.IsFalse(_progress.IsDifficultyOpen("second", 0), "A locked level has no open difficulty.");
+
+            _progress.RecordRun("first", Completed(), difficulty: 0);
+            _progress.RecordRun("first", new LevelResult(false, 0), difficulty: 1);
+
+            Assert.IsTrue(_progress.IsDifficultyOpen("first", 1));
+            Assert.IsFalse(_progress.IsDifficultyOpen("first", 2), "A failed run opens nothing.");
+            Assert.IsTrue(_progress.IsDifficultyOpen("second", 0));
+            Assert.IsFalse(_progress.IsDifficultyOpen("second", 1));
+        }
+
+        [Test]
+        public void Loadout_AndOpenedBoosters_SurviveRestart_ResetForgetsThem()
+        {
+            _save.Data.Boosters.Add("booster_grenades");
+            _progress.SaveLoadout("ak_74", "molotov", new[] { "booster_grenades", "" });
+
+            var save = new SaveService(_storage);
+            save.Load();
+            var progress = new ProgressService(save, new Catalog(_catalogAsset));
+
+            Assert.AreEqual("ak_74", progress.Loadout.WeaponId);
+            Assert.AreEqual("molotov", progress.Loadout.ThrowableId);
+            CollectionAssert.AreEqual(new[] { "booster_grenades" }, progress.Loadout.Boosters);
+            CollectionAssert.AreEqual(new[] { "booster_grenades" }, save.Data.Boosters);
+
+            progress.ResetProgress();
+            Assert.IsEmpty(save.Data.Boosters);
+            Assert.AreEqual(string.Empty, progress.Loadout.WeaponId);
+        }
+
+        [Test]
+        public void Merge_UnitesBoosters_KeepsOwnLoadout()
+        {
+            var mine = new SaveData();
+            mine.Boosters.Add("a");
+            mine.Loadout.WeaponId = "mine";
+            var theirs = new SaveData();
+            theirs.Boosters.Add("a");
+            theirs.Boosters.Add("b");
+            theirs.Loadout.WeaponId = "theirs";
+
+            mine.MergeFrom(theirs);
+
+            CollectionAssert.AreEqual(new[] { "a", "b" }, mine.Boosters);
+            Assert.AreEqual("mine", mine.Loadout.WeaponId);
+        }
+
+        [Test]
+        public void OldSaveWithoutMetaFields_GetsEmptyOnes()
+        {
+            var data = JsonUtility.FromJson<SaveData>("{\"SaveVersion\":1,\"Money\":3}");
+            data.Boosters = null;
+            data.Loadout = null;
+
+            data.Normalize();
+
+            Assert.IsNotNull(data.Boosters);
+            Assert.AreEqual(string.Empty, data.Loadout.WeaponId);
+            Assert.IsNotNull(data.Loadout.Boosters);
+        }
+
         [Test]
         public void ResetProgress_KeepsSettings()
         {

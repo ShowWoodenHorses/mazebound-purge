@@ -20,10 +20,11 @@ MonoBehaviour:
   - common.no
   - format.percent
   - menu.play
-  - menu.levels
+  - menu.arsenal
+  - menu.character
+  - menu.tasks
+  - menu.shop
   - menu.reset_progress
-  - level_select.title
-  - level_select.empty
   - loading
   - hud.level
   - hud.reload
@@ -242,10 +243,11 @@ MonoBehaviour:
   - NON
   - '{0} %'
   - JOUER
-  - NIVEAUX
+  - ARSENAL
+  - PERSONNAGE
+  - MISSIONS
+  - BOUTIQUE
   - "DEBUG : R\xC9INITIALISER LA PROGRESSION"
-  - CHOISIR UN NIVEAU
-  - "Aucun niveau pour l\u2019instant : lancez Build / Sync dans le Level Designer."
   - CHARGEMENT
   - NIVEAU {0}
   - RECHARGEMENT

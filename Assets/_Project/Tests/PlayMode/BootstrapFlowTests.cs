@@ -19,6 +19,7 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Visibility;
 using Purge.Presentation.Map;
+using Purge.Presentation.Menu;
 using Purge.Presentation.UI;
 using Purge.Presentation.Visual;
 using NUnit.Framework;
@@ -64,6 +65,8 @@ namespace Purge.Tests.PlayMode
             _audio = _container.Resolve<AudioService>();
             await WaitFor(() => _flow.State == GameFlowState.MainMenu || _flow.State == GameFlowState.Error);
             Assert.AreEqual(GameFlowState.MainMenu, _flow.State, _flow.ErrorMessage);
+            var podium = _container.Resolve<MenuPodiumPresenter>();
+            await WaitFor(() => !podium.IsLoading); // its assets stay for the application's lifetime
         });
 
         [UnityTearDown]
@@ -88,10 +91,10 @@ namespace Purge.Tests.PlayMode
             var catalog = _container.Resolve<ILevelCatalog>();
             Assert.Greater(catalog.Levels.Count, 0, "Run Build / Sync for at least one level.");
             var devCatalog = catalog.DevLevels.Count > 0 ? 1 : 0; // Editor and development builds.
-            Assert.AreEqual(11 + devCatalog, AppHandles,
+            Assert.AreEqual(13 + devCatalog, AppHandles,
                 "Only application-wide assets are resident in the menu: level catalog (+ development levels catalog), " +
                 "player definition, player visual, combat visual, weapon visuals, item visuals, card deck, content catalog, audio catalog, language catalog, " +
-                "texts of one language (music is counted apart).");
+                "texts of one language, the menu podium's character and its weapon (music is counted apart).");
             Assert.IsNotNull(_audio.Catalog, "Audio catalog loaded.");
             Assert.AreSame(_audio.Catalog.MenuMusic, _audio.CurrentMusic, "Menu music in the menu.");
         }
@@ -745,7 +748,7 @@ namespace Purge.Tests.PlayMode
         });
 
         /// <summary>
-        /// The tutorial from its menu button: the first step's window pauses the level, Continue resumes; the reminder,
+        /// The tutorial from the development level list (stage 11a; its menu button returns in stage 12): the first step's window pauses the level, Continue resumes; the reminder,
         /// the arrow shows the step; the map opened counts for the map step.
         /// </summary>
         [UnityTest]
@@ -754,8 +757,8 @@ namespace Purge.Tests.PlayMode
             var catalog = _container.Resolve<ILevelCatalog>();
             if (catalog.Tutorial == null) Assert.Ignore("No tutorial level: Build / Sync the level with a tutorial script.");
             var ui = _container.Resolve<UIRoot>();
-            Assert.IsTrue(ui.MainMenu.transform.GetComponentsInChildren<Button>(true)
-                .Any(b => b.name == "TutorialButton" && b.gameObject.activeSelf), "The menu shows the Tutorial button.");
+            Assert.IsTrue(ui.DevLevels.transform.GetComponentsInChildren<Button>(true)
+                .Any(b => b.name == "Level0"), "The development list offers the tutorial first.");
 
             await _flow.StartLevel(catalog.Tutorial.LevelId);
             Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);

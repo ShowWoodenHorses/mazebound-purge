@@ -20,6 +20,9 @@ namespace Purge.Application.Save
         public bool IsCompletedOn(int difficulty) =>
             difficulty >= 0 && difficulty < 31 && (CompletedMask & (1 << difficulty)) != 0;
 
+        /// <summary>The easy difficulty is always open, each next one — once the previous is completed (ТЗ А.2).</summary>
+        public bool IsDifficultyOpen(int difficulty) => difficulty == 0 || IsCompletedOn(difficulty - 1);
+
         public LevelRecord Clone() => new LevelRecord
         {
             LevelId = LevelId, CompletedMask = CompletedMask, ClosedArenaMask = ClosedArenaMask,
@@ -56,6 +59,26 @@ namespace Purge.Application.Save
         public int Forks;
 
         public PoolMark Mark;
+    }
+
+    /// <summary>What the player took into the last run (stage 11): weapon, throwable, chosen boosters; empty = none.</summary>
+    [Serializable]
+    public sealed class LoadoutSave
+    {
+        /// <summary>Weapon of slot 1; empty = the base pistol.</summary>
+        public string WeaponId = string.Empty;
+
+        public string ThrowableId = string.Empty;
+
+        public List<string> Boosters = new List<string>();
+
+        public void Normalize()
+        {
+            WeaponId ??= string.Empty;
+            ThrowableId ??= string.Empty;
+            Boosters ??= new List<string>();
+            Boosters.RemoveAll(string.IsNullOrEmpty);
+        }
     }
 
     [Serializable]

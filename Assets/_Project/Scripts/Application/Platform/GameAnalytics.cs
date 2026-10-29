@@ -373,6 +373,18 @@ namespace Purge.Application.Platform
                 GameFlowState.Paused => "retry_from_pause",
                 _ => "other",
             };
+            // The run's choice and preparation (stage 11б).
+            var launch = _flow.CurrentLaunch;
+            parameters["difficulty"] = _flow.CurrentDifficulty;
+            parameters["closed_arena"] = _flow.CurrentArenaClosed;
+            parameters["resumed"] = launch.Resume != null;
+            parameters["weapon"] = launch.StartWeapon != null ? launch.StartWeapon.Id : "base";
+            parameters["throwable"] = launch.StartThrowable != null ? launch.StartThrowable.Id : "none";
+            var boosters = string.Empty;
+            foreach (var booster in launch.Boosters)
+                if (booster != null) boosters += (boosters.Length > 0 ? "," : string.Empty) + booster.Id;
+            parameters["boosters"] = boosters;
+            parameters["boosters_cost"] = _flow.CurrentBoosterCost;
             _analytics.Send(AnalyticsEvents.LevelStart);
         }
 

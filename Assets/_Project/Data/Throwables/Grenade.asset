@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
   _id: grenade
   _rarity: 0
+  _startPool: 1
   _maxStack: 3
   _range: 8
   _speed: 12

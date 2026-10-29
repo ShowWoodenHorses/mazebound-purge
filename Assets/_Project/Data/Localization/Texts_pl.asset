@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - Polski
   - USTAWIENIA
@@ -488,4 +518,35 @@ MonoBehaviour:
   - "+{0}% szansy na podw\xF3jne obra\u017Cenia (pociski, walka wr\u0119cz)"
   - KONTYNUUJ
   - "Rozpocz\u0105\u0107 nowy bieg? Obecny przepadnie, jego pieni\u0105dze zostan\u0105."
+  - POZIOM
+  - "TRUDNO\u015A\u0106"
+  - "Zamkni\u0119ta arena"
+  - "Kraty zamkn\u0105 si\u0119 za tob\u0105 na arenie bossa \u2014 nie ma wyj\u015Bcia,
+    dop\xF3ki \u017Cyje."
+  - "BRO\u0143"
+  - MIOTANE
+  - WZMOCNIENIA
+  - "Odblokuje si\u0119 po poziomie 1"
+  - RAZEM
+  - DO WALKI
+  - "WKR\xD3TCE"
+  - LAS
+  - ZAMEK
+  - "\u015ANIEG"
+  - PUSTYNIA
+  - WULKAN
+  - "\u0141ATWY"
+  - NORMALNY
+  - TRUDNY
+  - NIEREALNY
+  - +3 miotane
+  - "Trzy wi\u0119cej twojej broni miotanej na start (bez wyboru \u2014 granaty)."
+  - Karta startowa
+  - "Wybierz kart\u0119 od razu na starcie."
+  - Apteczka
+  - "Pe\u0142na apteczka le\u017Cy przy starcie przez ca\u0142y bieg."
+  - +1 losowanie
+  - Jedno losowanie kart bez reklamy.
+  - Zwiad
+  - "Ca\u0142a mapa jest odkryta od pocz\u0105tku."
   _missing: []

@@ -20,7 +20,8 @@ namespace Purge.Presentation.Menu
     /// preparation (<see cref="IProgressService.Loadout"/>; none or unknown — the base pistol), its hold set on the
     /// Animator. Loaded on the first main menu by its own asset owner and kept for the application's lifetime (the
     /// player's look is shared with the levels anyway); a weapon not shown yet is loaded when the loadout names it. The
-    /// stage is shown only in <see cref="GameFlowState.MainMenu"/>.
+    /// stage is shown only in <see cref="GameFlowState.MainMenu"/>. The preparation (stage 11б) shows the weapon being
+    /// chosen (<see cref="Preview"/>) until the menu is left.
     /// </summary>
     public sealed class MenuPodiumPresenter : IDisposable
     {
@@ -37,6 +38,9 @@ namespace Purge.Presentation.Menu
         private Animator _animator;
         private CharacterWeaponRig _rig;
         private WeaponDefinition _shown;
+        private WeaponDefinition _preview;
+        private bool _previewing;
+        private bool _dirty;
         private bool _loading;
         private bool _initialized;
 
@@ -72,22 +76,56 @@ namespace Purge.Presentation.Menu
             _weapons.Clear();
         }
 
+        /// <summary>
+        /// Shows <paramref name="weapon"/> (null — the base pistol) instead of the last preparation's while the menu is
+        /// open (the preparation's choice, stage 11б); <see cref="EndPreview"/> goes back to it.
+        /// </summary>
+        public void Preview(WeaponDefinition weapon)
+        {
+            _preview = weapon;
+            _previewing = true;
+            if (_flow.State == GameFlowState.MainMenu) RefreshAsync(_lifetime.Token).Forget();
+        }
+
+        public void EndPreview()
+        {
+            if (!_previewing) return;
+            _previewing = false;
+            _preview = null;
+            if (_flow.State == GameFlowState.MainMenu) RefreshAsync(_lifetime.Token).Forget();
+        }
+
         private void OnStateChanged(GameFlowState state)
         {
             var menu = state == GameFlowState.MainMenu;
+            if (!menu)
+            {
+                _previewing = false;
+                _preview = null;
+            }
             if (_view != null) _view.SetVisible(menu);
             if (menu) RefreshAsync(_lifetime.Token).Forget();
         }
 
         private async UniTaskVoid RefreshAsync(CancellationToken cancellation)
         {
-            if (_loading) return;
+            if (_loading)
+            {
+                _dirty = true; // the choice changed while loading: shown once that is done
+                return;
+            }
+
             _loading = true;
             try
             {
                 if (_character == null) await LoadCharacterAsync(cancellation);
                 if (_character == null) return;
-                await ShowWeaponAsync(LoadoutWeapon(), cancellation);
+                do
+                {
+                    _dirty = false;
+                    await ShowWeaponAsync(_previewing ? _preview ?? _definitions.Player?.BaseWeapon : LoadoutWeapon(),
+                        cancellation);
+                } while (_dirty);
             }
             catch (OperationCanceledException)
             {

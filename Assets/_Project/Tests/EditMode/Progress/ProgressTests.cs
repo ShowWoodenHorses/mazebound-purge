@@ -67,6 +67,72 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(writes + 1, _storage.Writes, "Saved at once; nothing to add — no write.");
         }
 
+        // ------------------------------------------------------------ The run's choice (stage 11б)
+
+        [Test]
+        public void SpendMoney_TakesOnlyWhatThereIs()
+        {
+            _progress.AddMoney(50);
+            Assert.IsFalse(_progress.SpendMoney(60));
+            Assert.AreEqual(50, _progress.Money, "Not enough: nothing taken.");
+            Assert.IsTrue(_progress.SpendMoney(35));
+            Assert.AreEqual(15, _progress.Money);
+            Assert.IsTrue(_progress.SpendMoney(0));
+        }
+
+        [Test]
+        public void WinWithClosedArena_MarksItsDifficulty()
+        {
+            _progress.RecordRun("first", Completed(), 1, arenaClosed: true);
+            _progress.RecordRun("first", Completed(), 0);
+
+            var record = _save.Data.FindLevel("first");
+            Assert.AreEqual(1 << 1, record.ClosedArenaMask);
+            Assert.IsTrue(_progress.IsCompletedOn("first", 0));
+            Assert.IsTrue(_progress.IsCompletedOn("first", 1));
+            Assert.IsFalse(_progress.IsCompletedOn("first", 2));
+            Assert.IsTrue(_progress.IsDifficultyOpen("first", 2));
+        }
+
+        [Test]
+        public void RunSave_KeepsChoiceAndBoosters()
+        {
+            var run = new Purge.Gameplay.Run.RunSnapshot
+            {
+                Seed = 3, Wave = 1, Difficulty = 2, ArenaClosed = true, FreeRerolls = 1, StartMedkitTaken = true,
+            };
+            run.Boosters.Add("booster_medkit");
+            _progress.SaveRun("first", run.Difficulty, run);
+
+            Assert.AreEqual(2, _progress.RunDifficulty);
+            Assert.IsTrue(_progress.RunArenaClosed);
+            var loaded = _progress.LoadRun();
+            Assert.AreEqual(2, loaded.Difficulty);
+            Assert.IsTrue(loaded.ArenaClosed);
+            Assert.AreEqual(1, loaded.FreeRerolls);
+            Assert.IsTrue(loaded.StartMedkitTaken);
+            CollectionAssert.AreEqual(new[] { "booster_medkit" }, loaded.Boosters);
+        }
+
+        [Test]
+        public void BoosterPrice_ByLocationAndDifficulty()
+        {
+            var booster = ScriptableObject.CreateInstance<Purge.Core.Boosters.BoosterDefinition>();
+            booster.Configure("b", Purge.Core.Boosters.BoosterUnlock.FirstLevel,
+                new[] { new Purge.Core.Boosters.BoosterPrice(LevelLocation.Forest, 35, 90, 270, 700) },
+                new Purge.Core.Boosters.ScoutingBoost());
+            try
+            {
+                Assert.AreEqual(90, booster.PriceOn(LevelLocation.Forest, 1));
+                Assert.AreEqual(700, booster.PriceOn(LevelLocation.Forest, 3));
+                Assert.AreEqual(0, booster.PriceOn(LevelLocation.Castle, 0), "No price there: not offered.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(booster);
+            }
+        }
+
         // ------------------------------------------------------------ Progress
 
         [Test]
@@ -801,6 +867,7 @@ namespace Purge.Tests.EditMode.Progress
             public IReadOnlyList<LevelCatalogEntry> DevLevels => System.Array.Empty<LevelCatalogEntry>();
             public LevelCatalogEntry Tutorial => _asset.Tutorial;
             public LevelCatalogEntry Find(string levelId) => _asset.Find(levelId);
+            public IReadOnlyList<Purge.Core.Monsters.DifficultyDefinition> Difficulties => _asset.Difficulties;
         }
     }
 }

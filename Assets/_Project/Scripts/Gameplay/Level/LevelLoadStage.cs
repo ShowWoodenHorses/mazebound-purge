@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Boosters;
+using Purge.Core.Definitions;
 
 namespace Purge.Gameplay.Level
 {
@@ -51,14 +55,21 @@ namespace Purge.Gameplay.Level
     {
         public static readonly LevelLaunchOptions Default = new LevelLaunchOptions();
 
+        private static readonly IReadOnlyList<BoosterDefinition> NoBoosters = Array.Empty<BoosterDefinition>();
+
         public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null,
-            Run.RunSnapshot resume = null, Balance.BotRun bot = null)
+            Run.RunSnapshot resume = null, Balance.BotRun bot = null, WeaponDefinition startWeapon = null,
+            ThrowableDefinition startThrowable = null, IReadOnlyList<BoosterDefinition> boosters = null, bool closeArena = true)
         {
             StartIndex = startIndex;
             Seed = resume != null ? resume.Seed : seed;
             Difficulty = difficulty;
             Resume = resume;
             Bot = bot;
+            StartWeapon = startWeapon;
+            StartThrowable = startThrowable;
+            Boosters = boosters ?? NoBoosters;
+            CloseArena = closeArena;
         }
 
         /// <summary>The balance bot plays this run (stage 10a) and writes its statistics there; null — the player.</summary>
@@ -75,6 +86,38 @@ namespace Purge.Gameplay.Level
 
         /// <summary>Difficulty of the run (stage 6); null = the level horde's own.</summary>
         public Core.Monsters.DifficultyDefinition Difficulty { get; }
+
+        /// <summary>The weapon of slot 1 a new run starts with (stage 11б, the preparation); null = the basic pistol only.</summary>
+        public WeaponDefinition StartWeapon { get; }
+
+        /// <summary>The throwable a new run starts with (one; stage 11б); null = none.</summary>
+        public ThrowableDefinition StartThrowable { get; }
+
+        /// <summary>
+        /// Boosters of the run (stage 11б): a new run applies them at its start, a continued one keeps what lasts (the
+        /// medkit at the start, free rerolls left come from its save).
+        /// </summary>
+        public IReadOnlyList<BoosterDefinition> Boosters { get; }
+
+        /// <summary>
+        /// A boss wave closes the arena with gates once the player is inside (stage 8a; the choice «Закрытая арена» of
+        /// stage 11б, from the normal difficulty). On by default: development launches keep the arena closed.
+        /// </summary>
+        public bool CloseArena { get; }
+
+        /// <summary>The same launch with another seed.</summary>
+        public LevelLaunchOptions WithSeed(int seed) =>
+            new LevelLaunchOptions(StartIndex, seed, Difficulty, Resume, Bot, StartWeapon, StartThrowable, Boosters, CloseArena);
+
+        /// <summary>The first booster of the run with a module of this kind.</summary>
+        public bool TryGetBoost<T>(out T module) where T : BoosterModule
+        {
+            foreach (var booster in Boosters)
+                if (booster != null && booster.TryGet(out module))
+                    return true;
+            module = null;
+            return false;
+        }
     }
 
     public enum LevelOutcome

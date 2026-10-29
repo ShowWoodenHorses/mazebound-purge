@@ -25,6 +25,9 @@ namespace Purge.Application.Save
         /// <summary>Completed on any difficulty.</summary>
         bool IsCompleted(string levelId);
 
+        /// <summary>Completed on this difficulty (0 = easy).</summary>
+        bool IsCompletedOn(string levelId, int difficulty);
+
         /// <summary>
         /// The difficulty can be chosen: the level is unlocked and the difficulty is easy or the previous one is completed
         /// (ТЗ А.2).
@@ -39,12 +42,30 @@ namespace Purge.Application.Save
 
         /// <summary>
         /// Stores an ended run (persistent event; ТЗ: при смерти собранное остаётся): its money and kills; a won one also
-        /// the completed difficulty, the win, and unlocks the next level. Saves.
+        /// the completed difficulty (with the closed arena — <see cref="LevelRecord.ClosedArenaMask"/>, stage 11б), the win,
+        /// and unlocks the next level. Saves.
         /// </summary>
-        void RecordRun(string levelId, LevelResult result, int difficulty = 0);
+        void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false);
 
         /// <summary>Adds money (the result's rewarded ×2) and saves.</summary>
         void AddMoney(int amount);
+
+        /// <summary>Takes money (boosters at a run's start, stage 11б) and saves; false — not enough, nothing taken.</summary>
+        bool SpendMoney(int amount);
+
+        /// <summary>
+        /// A booster opened by the tree (stage 11д: <see cref="SaveData.Boosters"/>); the basic ones open with the first
+        /// level (<see cref="IsCompleted"/> of the catalog's first).
+        /// </summary>
+        bool IsBoosterOpened(string boosterId);
+
+        /// <summary>The item (weapon, throwable) is bought in the arsenal (stage 11в).</summary>
+        bool Owns(string itemId);
+
+        /// <summary>The saved run's difficulty (0 = easy) and arena closing; 0 / false without one.</summary>
+        int RunDifficulty { get; }
+
+        bool RunArenaClosed { get; }
 
         /// <summary>An unfinished run is saved (stage 6e): the menu offers «Продолжить».</summary>
         bool HasRun { get; }
@@ -100,6 +121,8 @@ namespace Purge.Application.Save
 
         public bool IsCompleted(string levelId) => Data.FindLevel(levelId)?.IsCompleted ?? false;
 
+        public bool IsCompletedOn(string levelId, int difficulty) => Data.FindLevel(levelId)?.IsCompletedOn(difficulty) ?? false;
+
         public bool IsDifficultyOpen(string levelId, int difficulty)
         {
             if (difficulty < 0 || difficulty > 30 || !IsUnlocked(levelId)) return false;
@@ -121,7 +144,7 @@ namespace Purge.Application.Save
 
         public int Money => Data.Money;
 
-        public void RecordRun(string levelId, LevelResult result, int difficulty = 0)
+        public void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
         {
             if (string.IsNullOrEmpty(levelId)) throw new ArgumentException("Level id is empty.", nameof(levelId));
             if (difficulty < 0 || difficulty > 30) throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null);
@@ -131,14 +154,16 @@ namespace Purge.Application.Save
             string next = null;
             if (result.Completed)
             {
-                Open(levelId).CompletedMask |= 1 << difficulty;
+                var record = Open(levelId);
+                record.CompletedMask |= 1 << difficulty;
+                if (arenaClosed) record.ClosedArenaMask |= 1 << difficulty;
                 Data.Stats.RunsWon++;
                 next = NextLevelId(levelId);
                 if (next != null) Open(next);
             }
 
             _save.Save();
-            GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' (difficulty {difficulty}) {result}" +
+            GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' (difficulty {difficulty}{(arenaClosed ? ", closed arena" : "")}) {result}" +
                                           (next != null ? $", unlocked '{next}'." : "."));
         }
 
@@ -149,6 +174,24 @@ namespace Purge.Application.Save
             _save.Save();
             GameLog.Info(LogChannel.Save, $"Money +{amount} → {Data.Money}.");
         }
+
+        public bool SpendMoney(int amount)
+        {
+            if (amount <= 0) return true;
+            if (Data.Money < amount) return false;
+            Data.Money -= amount;
+            _save.Save();
+            GameLog.Info(LogChannel.Save, $"Money -{amount} → {Data.Money}.");
+            return true;
+        }
+
+        public bool Owns(string itemId) => !string.IsNullOrEmpty(itemId) && Data.FindItem(itemId) != null;
+
+        public bool IsBoosterOpened(string boosterId) => !string.IsNullOrEmpty(boosterId) && Data.Boosters.Contains(boosterId);
+
+        public int RunDifficulty => Data.HasRun ? Data.Run.Difficulty : 0;
+
+        public bool RunArenaClosed => Data.HasRun && Data.Run.ArenaClosed;
 
         public bool HasRun => Data.HasRun;
 
@@ -186,6 +229,11 @@ namespace Purge.Application.Save
                 foreach (var vehicle in save.Vehicles)
                     run.VehicleHealth[vehicle.Id] = vehicle.Health;
             run.Explored = save.Explored;
+            run.Difficulty = save.Difficulty;
+            run.ArenaClosed = save.ArenaClosed;
+            run.Boosters.AddRange(save.Boosters);
+            run.FreeRerolls = save.FreeRerolls;
+            run.StartMedkitTaken = save.StartMedkitTaken;
             for (var i = 0; i < save.Weapons.Count && i < run.Weapons.Length; i++)
             {
                 run.Weapons[i] = save.Weapons[i].Id;
@@ -228,6 +276,10 @@ namespace Purge.Application.Save
             foreach (var pair in run.VehicleHealth)
                 save.Vehicles.Add(new RunVehicle { Id = pair.Key, Health = pair.Value });
             save.Explored = run.Explored;
+            save.ArenaClosed = run.ArenaClosed;
+            save.Boosters.AddRange(run.Boosters);
+            save.FreeRerolls = run.FreeRerolls;
+            save.StartMedkitTaken = run.StartMedkitTaken;
             for (var i = 0; i < run.Weapons.Length; i++)
                 save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0 });
             _save.Save();

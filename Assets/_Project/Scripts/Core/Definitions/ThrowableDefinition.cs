@@ -17,6 +17,9 @@ namespace Purge.Core.Definitions
     {
         [SerializeField] private Rarity _rarity;
 
+        [Tooltip("Open from the start without buying (stage 11б: the grenade): for the run's start and the drop.")]
+        [SerializeField] private bool _startPool;
+
         [Tooltip("Most of this kind the slot holds.")]
         [SerializeField, Min(1)] private int _maxStack = 3;
 
@@ -39,6 +42,10 @@ namespace Purge.Core.Definitions
         [SerializeReference, ModuleList] private List<EffectModule> _effects = new List<EffectModule>();
 
         public Rarity Rarity => _rarity;
+
+        /// <summary>Open from the start without buying (stage 11б).</summary>
+        public bool StartPool { get => _startPool; internal set => _startPool = value; }
+
         public int MaxStack => _maxStack;
         public float Range => _range;
         public float Speed => _speed;

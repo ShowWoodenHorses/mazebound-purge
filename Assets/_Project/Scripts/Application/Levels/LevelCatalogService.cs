@@ -21,6 +21,12 @@ namespace Purge.Application.Levels
 
         /// <summary>A game, tutorial or development level; null when it is in neither catalog.</summary>
         LevelCatalogEntry Find(string levelId);
+
+        /// <summary>
+        /// The run's difficulties by number (0 = easy … 3 = unreal; stage 11б); empty without them — a run then plays the
+        /// horde's own difficulty.
+        /// </summary>
+        IReadOnlyList<Core.Monsters.DifficultyDefinition> Difficulties { get; }
     }
 
     /// <summary>
@@ -54,6 +60,11 @@ namespace Purge.Application.Levels
             _devCatalog != null ? _devCatalog.Levels : (IReadOnlyList<LevelCatalogEntry>)Array.Empty<LevelCatalogEntry>();
 
         public LevelCatalogEntry Tutorial => _catalog != null ? _catalog.Tutorial : null;
+
+        public IReadOnlyList<Core.Monsters.DifficultyDefinition> Difficulties =>
+            _catalog != null
+                ? _catalog.Difficulties
+                : (IReadOnlyList<Core.Monsters.DifficultyDefinition>)Array.Empty<Core.Monsters.DifficultyDefinition>();
 
         public LevelCatalogEntry Find(string levelId) =>
             (_catalog != null ? _catalog.Find(levelId) : null) ?? (_devCatalog != null ? _devCatalog.Find(levelId) : null);

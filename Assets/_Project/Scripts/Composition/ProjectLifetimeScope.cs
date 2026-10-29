@@ -60,6 +60,7 @@ namespace Purge.Composition
             builder.Register<SharedDefinitionsService>(Lifetime.Singleton).AsSelf().As<IApplicationService>();
             builder.Register<LevelCatalogService>(Lifetime.Singleton).As<ILevelCatalog, IApplicationService>();
             builder.Register<ProgressService>(Lifetime.Singleton).As<IProgressService>();
+            builder.Register<Purge.Application.Meta.RunPreparation>(Lifetime.Singleton);
 
             // Platform: analytics sinks and the ad provider of the build's platform (SDK integrations go here).
             builder.Register<LogAnalyticsSink>(Lifetime.Singleton).As<IAnalyticsSink>();
@@ -94,6 +95,7 @@ namespace Purge.Composition
             builder.Register<PlatformEvents>(Lifetime.Singleton);
 
             builder.RegisterInstance(_ui);
+            builder.Register<RunSetupPresenter>(Lifetime.Singleton); // the run's choice and preparation (stage 11б)
             builder.Register<ScreenRouter>(Lifetime.Singleton);
             builder.Register<SettingsPresenter>(Lifetime.Singleton);
             builder.Register<LocalizationPresenter>(Lifetime.Singleton);

@@ -303,6 +303,7 @@ namespace Purge.Editor.Dev
 
             SetReference(root, "_mainMenu", BuildMainMenu(parent));
             SetReference(root, "_devLevels", BuildDevLevels(parent));
+            SetReference(root, "_runSetup", BuildRunSetup(parent));
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
@@ -470,6 +471,221 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_list", list);
             SetReference(screen, "_template", template);
             return screen;
+        }
+
+        /// <summary>
+        /// The run's choice and preparation on one screen (stage 11б; decision of the user 2026-10-30), over the
+        /// transparent middle where the podium shows the chosen weapon: Back and the money at the top; on the left the
+        /// five location tiles (number, name, the lock, «СКОРО»), the four difficulties (the lock, the star of a completed
+        /// one) and «Закрытая арена» with its hint; on the right a scrolling column — the weapon and throwable tiles
+        /// (one template, a rarity stripe at the bottom) and the booster rows (one template); the total and «В БОЙ» under
+        /// it. Every list is filled by <see cref="RunSetupPresenter"/>.
+        /// </summary>
+        private static RunSetupScreen BuildRunSetup(Transform parent)
+        {
+            var screen = Screen<RunSetupScreen>(parent, "RunSetupScreen", Color.clear);
+            screen.GetComponent<Image>().raycastTarget = false;
+            var icons = UiIcons();
+            var area = SafeArea(screen.transform);
+            var topRight = new Vector2(1f, 1f);
+
+            var back = RoundButton(area, "BackButton", icons.ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
+            var coin = Icon(area, "Coin", icons.Coin, topRight, new Vector2(-250f, -90f), 44f);
+            coin.color = _style.Accent;
+            var money = Text(area, "Money", "0", 44f, true, topRight, new Vector2(0f, 0.5f), new Vector2(-216f, -90f),
+                new Vector2(170f, 56f), TextAlignmentOptions.MidlineLeft);
+
+            // The level: tiles, difficulties, the arena.
+            var left = PanelArea(area, "Level", new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(48f, 40f),
+                new Vector2(748f, -160f));
+            SectionTitle(left, "LevelTitle", Loc(TextKeys.SetupLevel), new Vector2(0f, -20f));
+            var locations = new List<Object>();
+            for (var i = 0; i < 5; i++)
+            {
+                var tile = Shape(left, "Location" + i, TopLeft, new Vector2(80f + i * 135f, -140f), new Vector2(124f, 150f), true);
+                tile.CornerRadius = 2f;
+                var number = Text(tile.transform, "Number", (i + 1).ToString(), 54f, true, Center, Center,
+                    new Vector2(0f, 10f), new Vector2(110f, 70f), TextAlignmentOptions.Center);
+                var name = Text(tile.transform, "Name", "LOCATION", 20f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
+                    new Vector2(0f, 12f), new Vector2(116f, 28f), TextAlignmentOptions.Center, spacing: 4f);
+                name.textWrappingMode = TextWrappingModes.NoWrap;
+                AutoSize(name, 0.6f);
+                var soon = Text(tile.transform, "Soon", string.Empty, 16f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                    new Vector2(0f, -8f), new Vector2(116f, 24f), TextAlignmentOptions.Center, _style.MutedText, 4f);
+                AutoSize(soon, 0.6f);
+                var lockIcon = Icon(tile.transform, "Lock", icons.Lock, topRight, new Vector2(-20f, -20f), 24f);
+                lockIcon.color = _style.MutedText;
+                locations.Add(MakeButton(tile, false, number, name));
+            }
+
+            SectionTitle(left, "DifficultyTitle", Loc(TextKeys.SetupDifficulty), new Vector2(0f, -250f));
+            var difficulties = new List<Object>();
+            for (var i = 0; i < 4; i++)
+            {
+                var button = TextButton(left, "Difficulty" + i, "DIFFICULTY", false, null, 72f, 26f);
+                Place(button, TopLeft, new Vector2(187f + i % 2 * 340f, -320f - i / 2 * 84f), new Vector2(326f, 72f));
+                var label = button.transform.Find("Label").GetComponent<RectTransform>();
+                label.offsetMax = new Vector2(-50f, 0f);
+                label.offsetMin = new Vector2(20f, 0f);
+                var lockIcon = Icon(button.transform, "Lock", icons.Lock, new Vector2(1f, 0.5f), new Vector2(-30f, 0f), 24f);
+                lockIcon.color = _style.MutedText;
+                var done = Icon(button.transform, "Done", icons.StarFilled, new Vector2(1f, 0.5f), new Vector2(-30f, 0f), 26f);
+                done.color = _style.Accent;
+                difficulties.Add(button);
+            }
+
+            var arenaRow = Rect(left, "ArenaRow", TopLeft, new Vector2(374f, -520f), new Vector2(652f, 100f));
+            var arena = LabeledSwitch(arenaRow, "Arena", Loc(TextKeys.SetupArena), new Vector2(0f, 1f), new Vector2(0f, -30f));
+            arena.GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 60f);
+            arena.transform.Find("Label").GetComponent<RectTransform>().sizeDelta = new Vector2(480f, 40f);
+            var hint = Text(arenaRow, "Hint", Loc(TextKeys.SetupArenaHint), 20f, false, TopLeft, new Vector2(0f, 1f),
+                new Vector2(0f, -66f), new Vector2(652f, 34f), TextAlignmentOptions.TopLeft, _style.MutedText);
+            AutoSize(hint);
+
+            // The preparation: a scrolling column, the total and «В БОЙ» under it.
+            var right = PanelArea(area, "Preparation", new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-748f, 170f),
+                new Vector2(-48f, -160f));
+            var content = ScrollColumn(right);
+            SectionTitle(content, "WeaponTitle", Loc(TextKeys.SetupWeapon), null);
+            var weaponList = TileGrid(content, "Weapons");
+            var template = Shape(weaponList, "Template", Center, Vector2.zero, new Vector2(100f, 84f), true);
+            template.CornerRadius = 2f;
+            var itemIcon = Icon(template.transform, "Icon", icons.Ranged, Center, new Vector2(0f, 4f), 64f);
+            var stripe = Shape(template.transform, "Rarity", new Vector2(0.5f, 0f), new Vector2(0f, 8f), new Vector2(64f, 4f));
+            stripe.StrokeWidth = 0f;
+            stripe.Kind = UiShapeKind.Capsule;
+            var weaponTemplate = MakeButton(template, false, itemIcon);
+            SectionTitle(content, "ThrowableTitle", Loc(TextKeys.SetupThrowable), null);
+            var throwableList = TileGrid(content, "Throwables");
+            SectionTitle(content, "BoostersTitle", Loc(TextKeys.SetupBoosters), null);
+            var boosterList = Rect(content, "Boosters", Center, Vector2.zero, new Vector2(676f, 10f));
+            var boosterLayout = boosterList.gameObject.AddComponent<VerticalLayoutGroup>();
+            boosterLayout.spacing = 10f;
+            boosterLayout.childControlWidth = boosterLayout.childControlHeight = true;
+            boosterLayout.childForceExpandHeight = false;
+            var boosterTemplate = BoosterRow(boosterList, icons);
+
+            var totalLabel = Text(area, "TotalLabel", Loc(TextKeys.SetupTotal), 26f, true, new Vector2(1f, 0f),
+                new Vector2(1f, 0.5f), new Vector2(-560f, 100f), new Vector2(180f, 40f), TextAlignmentOptions.MidlineRight,
+                _style.MutedText, 6f);
+            AutoSize(totalLabel);
+            var totalCoin = Icon(area, "TotalCoin", icons.Coin, new Vector2(1f, 0f), new Vector2(-530f, 100f), 32f);
+            totalCoin.color = _style.Accent;
+            var total = Text(area, "Total", "0", 34f, true, new Vector2(1f, 0f), new Vector2(0f, 0.5f),
+                new Vector2(-506f, 100f), new Vector2(110f, 44f), TextAlignmentOptions.MidlineLeft);
+            var fight = TextButton(area, "FightButton", Loc(TextKeys.SetupFight), true, icons.ChevronRight, 110f, 42f);
+            Place(fight, new Vector2(1f, 0f), new Vector2(-238f, 100f), new Vector2(380f, 110f));
+
+            SetReference(screen, "_style", _style);
+            SetReference(screen, "_backButton", back);
+            SetReference(screen, "_fightButton", fight);
+            SetReference(screen, "_money", money);
+            SetReference(screen, "_total", total);
+            SetReferences(screen, "_locations", locations);
+            SetReferences(screen, "_difficulties", difficulties);
+            SetReference(screen, "_arenaRow", arenaRow.gameObject);
+            SetReference(screen, "_arena", arena);
+            SetReference(screen, "_weaponList", weaponList);
+            SetReference(screen, "_weaponTemplate", weaponTemplate);
+            SetReference(screen, "_throwableList", throwableList);
+            SetReference(screen, "_noneIcon", icons.Close);
+            SetReference(screen, "_boosterList", boosterList);
+            SetReference(screen, "_boosterTemplate", boosterTemplate);
+            return screen;
+        }
+
+        /// <summary>A column of the preparation screen: a dark panel between the given offsets of its side.</summary>
+        private static RectTransform PanelArea(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 offsetMin, Vector2 offsetMax)
+        {
+            var shape = Shape(parent, name, Center, Vector2.zero, Vector2.zero, true); // clicks do not fall through
+            shape.Fill = new Color(0.055f, 0.051f, 0.047f, 0.88f);
+            shape.Stroke = Fade(_style.Line, 0.6f);
+            shape.CornerRadius = 2f;
+            var rect = shape.rectTransform;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+            return rect;
+        }
+
+        /// <summary>A section caption: at a place from the panel's top left, or (no place) as a layout child.</summary>
+        private static void SectionTitle(Transform parent, string name, string text, Vector2? position)
+        {
+            var title = Text(parent, name, text, 26f, true, TopLeft, new Vector2(0f, 1f), (position ?? Vector2.zero) +
+                new Vector2(24f, 0f), new Vector2(640f, 38f), TextAlignmentOptions.BottomLeft, _style.MutedText, 8f);
+            title.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(title);
+            if (position == null) title.gameObject.AddComponent<LayoutElement>().preferredHeight = 38f;
+        }
+
+        /// <summary>A vertical scrolling list filling <paramref name="panel"/> (inside a margin); returns its content.</summary>
+        private static Transform ScrollColumn(RectTransform panel)
+        {
+            var viewport = Rect(panel, "Viewport", Center, Vector2.zero, Vector2.zero);
+            Stretch(viewport);
+            viewport.offsetMin = new Vector2(12f, 12f);
+            viewport.offsetMax = new Vector2(-12f, -12f);
+            var catcher = viewport.gameObject.AddComponent<Image>(); // drags anywhere in the column scroll it
+            catcher.color = Color.clear;
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var content = Rect(viewport, "Content", new Vector2(0.5f, 1f), Vector2.zero, Vector2.zero);
+            content.anchorMin = new Vector2(0f, 1f);
+            content.anchorMax = new Vector2(1f, 1f);
+            content.pivot = new Vector2(0.5f, 1f);
+            content.sizeDelta = Vector2.zero;
+            var layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(12, 12, 8, 16);
+            layout.spacing = 10f;
+            layout.childControlWidth = layout.childControlHeight = true;
+            layout.childForceExpandHeight = false;
+            content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var scroll = panel.gameObject.AddComponent<ScrollRect>();
+            scroll.horizontal = false;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.scrollSensitivity = 40f;
+            scroll.viewport = viewport;
+            scroll.content = content;
+            return content;
+        }
+
+        /// <summary>A grid of item tiles (6 in a row), as tall as its tiles.</summary>
+        private static RectTransform TileGrid(Transform parent, string name)
+        {
+            var list = Rect(parent, name, Center, Vector2.zero, new Vector2(676f, 84f));
+            var grid = list.gameObject.AddComponent<GridLayoutGroup>();
+            grid.cellSize = new Vector2(100f, 84f);
+            grid.spacing = new Vector2(8f, 10f);
+            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            grid.constraintCount = 6;
+            grid.childAlignment = TextAnchor.UpperLeft;
+            return list;
+        }
+
+        /// <summary>The booster row template: icon, name and what it gives, the price (or the lock) on the right.</summary>
+        private static UiButton BoosterRow(Transform parent, UiIconSet icons)
+        {
+            var row = Shape(parent, "Template", Center, Vector2.zero, new Vector2(676f, 72f), true);
+            row.CornerRadius = 2f;
+            row.gameObject.AddComponent<LayoutElement>().preferredHeight = 72f;
+            var icon = Icon(row.transform, "Icon", icons.Star, new Vector2(0f, 0.5f), new Vector2(40f, 0f), 40f);
+            var name = Text(row.transform, "Name", "BOOSTER", 24f, true, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
+                new Vector2(80f, 13f), new Vector2(440f, 30f), TextAlignmentOptions.MidlineLeft, spacing: 4f);
+            name.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(name);
+            var text = Text(row.transform, "Text", "", 18f, false, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
+                new Vector2(80f, -16f), new Vector2(440f, 26f), TextAlignmentOptions.MidlineLeft, _style.MutedText);
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(text, 0.75f);
+            var price = Text(row.transform, "Price", "0", 28f, true, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
+                new Vector2(-62f, 0f), new Vector2(110f, 36f), TextAlignmentOptions.MidlineRight);
+            var coin = Icon(row.transform, "Coin", icons.Coin, new Vector2(1f, 0.5f), new Vector2(-34f, 0f), 30f);
+            coin.color = _style.Accent;
+            var lockIcon = Icon(row.transform, "Lock", icons.Lock, new Vector2(1f, 0.5f), new Vector2(-34f, 0f), 28f);
+            lockIcon.color = _style.MutedText;
+            return MakeButton(row, false, icon, name, price);
         }
 
         private static LoadingScreen BuildLoading(Transform parent)

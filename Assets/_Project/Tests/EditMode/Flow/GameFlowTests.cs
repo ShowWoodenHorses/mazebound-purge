@@ -484,6 +484,39 @@ namespace Purge.Tests.EditMode.Flow
             Assert.IsTrue(_sessions.LastOptions.Seed.HasValue, "A new seed for a run without a forced one.");
         });
 
+        [UnityTest]
+        public IEnumerator Preparation_BoostersPaidAtStart_DifficultyAndArenaRecorded() => UniTask.ToCoroutine(async () =>
+        {
+            await BootToMenu();
+            _progress.AddMoney(100);
+            var hard = ScriptableObject.CreateInstance<Purge.Core.Monsters.DifficultyDefinition>();
+            hard.Configure(Purge.Core.Monsters.DifficultyLevel.Hard, 1f, 1f, 1f);
+            var booster = ScriptableObject.CreateInstance<Purge.Core.Boosters.BoosterDefinition>();
+            try
+            {
+                var options = new LevelLaunchOptions(difficulty: hard, boosters: new[] { booster }, closeArena: true);
+                await _flow.StartLevel(ValidId, options, 60);
+                Assert.AreEqual(40, _progress.Money, "ТЗ: списание на старте.");
+                Assert.AreEqual(1, _sessions.LastOptions.Boosters.Count);
+                Assert.AreEqual(2, _flow.CurrentDifficulty);
+                Assert.IsTrue(_flow.CurrentArenaClosed);
+
+                _sessions.Created[0].RaiseFinished(LevelOutcome.Completed);
+                Assert.AreEqual(2, _progress.RecordedDifficulty);
+                Assert.IsTrue(_progress.RecordedArena);
+
+                await _flow.RetryLevel();
+                Assert.AreEqual(0, _sessions.LastOptions.Boosters.Count, "Not enough money for the retry: without boosters.");
+                Assert.AreEqual(40, _progress.Money);
+                Assert.AreSame(hard, _sessions.LastOptions.Difficulty, "The retry keeps the difficulty.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(hard);
+                Object.DestroyImmediate(booster);
+            }
+        });
+
         // ------------------------------------------------------------ Fakes
 
         private sealed class RecordingService : IApplicationService
@@ -516,6 +549,7 @@ namespace Purge.Tests.EditMode.Flow
             public IReadOnlyList<LevelCatalogEntry> DevLevels => System.Array.Empty<LevelCatalogEntry>();
             public LevelCatalogEntry Tutorial => _catalog.Tutorial;
             public LevelCatalogEntry Find(string levelId) => _catalog.Find(levelId);
+            public IReadOnlyList<Purge.Core.Monsters.DifficultyDefinition> Difficulties => _catalog.Difficulties;
         }
 
         private sealed class FakeProgress : IProgressService
@@ -526,17 +560,35 @@ namespace Purge.Tests.EditMode.Flow
             public int Money { get; private set; }
             public bool IsUnlocked(string levelId) => true;
             public bool IsCompleted(string levelId) => false;
+            public bool IsCompletedOn(string levelId, int difficulty) => false;
             public bool IsDifficultyOpen(string levelId, int difficulty) => true;
             public LoadoutSave Loadout { get; } = new LoadoutSave();
             public void SaveLoadout(string weaponId, string throwableId, IReadOnlyList<string> boosters) => Loadout.WeaponId = weaponId;
 
-            public void RecordRun(string levelId, LevelResult result, int difficulty = 0)
+            public int RecordedDifficulty;
+            public bool RecordedArena;
+
+            public void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
             {
                 Recorded.Add(new KeyValuePair<string, LevelResult>(levelId, result));
+                RecordedDifficulty = difficulty;
+                RecordedArena = arenaClosed;
                 Money += result.Money;
             }
 
             public void AddMoney(int amount) => Money += amount;
+
+            public bool SpendMoney(int amount)
+            {
+                if (amount > Money) return false;
+                Money -= amount;
+                return true;
+            }
+
+            public bool IsBoosterOpened(string boosterId) => false;
+            public bool Owns(string itemId) => false;
+            public int RunDifficulty => Run?.Difficulty ?? 0;
+            public bool RunArenaClosed => Run?.ArenaClosed ?? false;
             public void ResetProgress() => Recorded.Clear();
 
             public RunSnapshot Run;

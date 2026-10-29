@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
+using Purge.Core.Boosters;
 using Purge.Core.Cards;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
@@ -27,7 +28,7 @@ using Object = UnityEngine.Object;
 
 namespace Purge.Tests.EditMode.Monsters
 {
-    /// <summary>Stage 6e: the run's checkpoints, the start weapon and a continued run.</summary>
+    /// <summary>Stage 6e: the run's checkpoints, the start weapon and a continued run; stage 11б: the preparation and boosters.</summary>
     public class RunSaveTests
     {
         private readonly List<Object> _created = new List<Object>();
@@ -53,6 +54,8 @@ namespace Purge.Tests.EditMode.Monsters
         private RunCheckpoints _checkpoints;
         private PickupSystem _pickups;
         private HordeSystem _horde;
+        private RunBoosters _boosters;
+        private MedkitDefinition _medkit;
 
         private sealed class Aim : IAimSettings
         {
@@ -83,7 +86,9 @@ namespace Purge.Tests.EditMode.Monsters
             _deck.Configure(10f, 1.25f, 3);
             _deck.SetCards(new[] { _vitality });
             _content = Create<ContentCatalog>();
-            _content.MutableItems.AddRange(new ContentDefinition[] { _rifle, _grenade, _vitality });
+            _medkit = Create<MedkitDefinition>();
+            _medkit.Configure("medkit_full", 0);
+            _content.MutableItems.AddRange(new ContentDefinition[] { _rifle, _grenade, _vitality, _medkit });
 
             var mass = Create<MonsterDefinition>();
             mass.Configure("mass", MonsterRank.Mass, MonsterBiome.Common, new MonsterStats { MaxHp = 30f, Speed = 2f });
@@ -100,6 +105,8 @@ namespace Purge.Tests.EditMode.Monsters
         public void TearDown()
         {
             _checkpoints?.Dispose();
+            _boosters?.Dispose();
+            _boosters = null;
             _cards?.Dispose();
             _experience?.Dispose();
             _score?.Dispose();
@@ -141,11 +148,15 @@ namespace Purge.Tests.EditMode.Monsters
             var revival = new PlayerRevival(_health, player);
             _progress = new LevelProgress(null, _score, _wallet, _waves, revival);
             var loadout = new RunLoadout(_level, _weapons, _pickups, _health, _slot, _cards, options, revival, _content);
+            _boosters = new RunBoosters(options, _experience, _cards, _pickups, player, passability);
             _checkpoints = new RunCheckpoints(_waves, _wallet, _score, _experience, _cards, _health, _weapons, _slot, _progress,
-                options, revival);
+                options, revival, boosters: _boosters, horde: _horde);
             _checkpoints.Reached += _reached.Add;
             var runtime = new LevelRuntime(_level,
-                new ILevelLoadStep[] { player, _pickups, loadout, _horde, _wallet, _score, _experience, _cards, _waves, _checkpoints },
+                new ILevelLoadStep[]
+                {
+                    player, _pickups, loadout, _horde, _wallet, _score, _experience, _cards, _waves, _checkpoints, _boosters,
+                },
                 new ILevelTickable[] { _pickups, _horde, _waves, _progress });
             runtime.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
             runtime.StartGameplay();
@@ -154,11 +165,10 @@ namespace Purge.Tests.EditMode.Monsters
         [Test]
         public void NewRun_StartWeapon_CheckpointsAtWaveStartAndClear()
         {
-            _level.StartWeapon = _rifle;
-            Load(new LevelLaunchOptions(seed: 11));
+            Load(new LevelLaunchOptions(seed: 11, startWeapon: _rifle));
 
             Assert.That(_checkpoints.IsActive);
-            Assert.That(_weapons.Active.Definition, Is.SameAs(_rifle), "the level's start weapon in hands");
+            Assert.That(_weapons.Active.Definition, Is.SameAs(_rifle), "the preparation's weapon in hands");
             Assert.That(_weapons.IsEmpty(WeaponSlot.Second), "the pistol in the other slot");
 
             _waves.StartNextWave();
@@ -185,6 +195,78 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(_wallet.Money, Is.EqualTo(10 + bonus));
             Assert.That(_reached[_reached.Count - 1].Money, Is.EqualTo(10), "the continued pause can be skipped again");
             Assert.That(_reached[_reached.Count - 1].Wave, Is.EqualTo(1));
+        }
+
+        private BoosterDefinition Booster(string id, BoosterModule module)
+        {
+            var booster = Create<BoosterDefinition>();
+            booster.Configure(id, BoosterUnlock.FirstLevel, new[] { new BoosterPrice(LevelLocation.Forest, 35, 90, 270, 700) },
+                module);
+            return booster;
+        }
+
+        [Test]
+        public void NewRun_Preparation_ThrowableAndBoosters()
+        {
+            var throwables = Booster("throwables", new ThrowablesBoost(3, _grenade));
+            var card = Booster("start_card", new StartCardBoost());
+            var reroll = Booster("reroll", new RerollBoost());
+            var difficulty = Create<DifficultyDefinition>();
+            difficulty.Configure(DifficultyLevel.Hard, 1f, 1f, 1f);
+            Load(new LevelLaunchOptions(seed: 4, difficulty: difficulty, startThrowable: _grenade,
+                boosters: new[] { throwables, card, reroll }, closeArena: true));
+
+            Assert.That(_slot.Definition, Is.SameAs(_grenade));
+            Assert.That(_slot.Count, Is.EqualTo(4), "one of the preparation + the booster's three");
+            Assert.That(_experience.Pending, Is.EqualTo(1), "the start card waits to be chosen");
+            Assert.That(_cards.FreeRerolls, Is.EqualTo(1));
+
+            _waves.StartNextWave();
+            var start = _reached[0];
+            Assert.That(start.Difficulty, Is.EqualTo((int)DifficultyLevel.Hard));
+            Assert.That(start.ArenaClosed);
+            Assert.That(start.Boosters, Is.EqualTo(new[] { "throwables", "start_card", "reroll" }));
+            Assert.That(start.FreeRerolls, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ThrowablesBooster_WithoutAThrowable_GivesTheFallback()
+        {
+            Load(new LevelLaunchOptions(seed: 4, boosters: new[] { Booster("throwables", new ThrowablesBoost(3, _grenade)) }));
+
+            Assert.That(_slot.Definition, Is.SameAs(_grenade));
+            Assert.That(_slot.Count, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void MedkitBooster_LiesNextToTheStart_UntilTaken()
+        {
+            var medkit = Booster("medkit", new MedkitBoost(_medkit));
+            Load(new LevelLaunchOptions(seed: 4, boosters: new[] { medkit }));
+
+            var lying = new List<Pickup>();
+            _pickups.GetAll(lying);
+            var found = lying.Find(pickup => pickup.Item == _medkit);
+            Assert.That(found, Is.Not.Null, "the booster's medkit lies");
+            Assert.That(Mathf.Abs(found.Cell.X - 15) + Mathf.Abs(found.Cell.Y - 15), Is.EqualTo(1), "next to the start");
+            Assert.That(_boosters.MedkitTaken, Is.False);
+
+            _waves.StartNextWave();
+            Assert.That(_reached[0].StartMedkitTaken, Is.False);
+        }
+
+        [Test]
+        public void ContinuedRun_MedkitTaken_NotPutBack_FreeRerollsKept()
+        {
+            var medkit = Booster("medkit", new MedkitBoost(_medkit));
+            var run = new RunSnapshot { Seed = 2, Wave = 0, FreeRerolls = 1, StartMedkitTaken = true };
+            Load(new LevelLaunchOptions(resume: run, boosters: new[] { medkit }));
+
+            var lying = new List<Pickup>();
+            _pickups.GetAll(lying);
+            Assert.That(lying.Find(pickup => pickup.Item == _medkit), Is.Null);
+            Assert.That(_cards.FreeRerolls, Is.EqualTo(1));
+            Assert.That(_experience.Pending, Is.Zero, "a continued run gets no start card again");
         }
 
         [Test]

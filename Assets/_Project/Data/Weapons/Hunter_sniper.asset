@@ -15,6 +15,7 @@ MonoBehaviour:
   _id: hunter_sniper
   _rarity: 0
   _noUpgrades: 0
+  _startPool: 1
   _hold: 1
   _sound: 
   _soundPitch: 1

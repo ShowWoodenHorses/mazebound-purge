@@ -63,6 +63,20 @@ namespace Purge.Gameplay.Run
         /// <summary>Explored map cells (stage 7г): <see cref="Visibility.MapExploration.Export"/>; null = none.</summary>
         public string Explored;
 
+        /// <summary>The run's difficulty (0 = easy … 3 = unreal) and the arena closing (stage 11б).</summary>
+        public int Difficulty;
+
+        public bool ArenaClosed;
+
+        /// <summary>Boosters bought for the run (stable ids, stage 11б): applied at its start, a continued run keeps what lasts.</summary>
+        public List<string> Boosters = new List<string>();
+
+        /// <summary>Free card rerolls left (the booster's).</summary>
+        public int FreeRerolls;
+
+        /// <summary>The booster's medkit at the start is taken (a continued run does not put it back).</summary>
+        public bool StartMedkitTaken;
+
         /// <summary>The wave a continued run starts with (after its pause).</summary>
         public int NextWave => WaveInProgress ? System.Math.Max(0, Wave) : Wave + 1;
     }

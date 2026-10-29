@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -486,4 +516,37 @@ MonoBehaviour:
   - DEVAM ET
   - "Yeni bir ko\u015Fu ba\u015Flat\u0131ls\u0131n m\u0131? Mevcut ko\u015Fu kaybolacak,
     paras\u0131 kalacak."
+  - "SEV\u0130YE"
+  - ZORLUK
+  - "Kapal\u0131 arena"
+  - "Boss arenas\u0131nda kap\u0131lar arkandan kapan\u0131r \u2014 boss \xF6lene
+    kadar \xE7\u0131k\u0131\u015F yok."
+  - "S\u0130LAH"
+  - "ATILAB\u0130L\u0130R"
+  - "G\xDC\xC7LEND\u0130R\u0130C\u0130LER"
+  - "1. seviyeden sonra a\xE7\u0131l\u0131r"
+  - TOPLAM
+  - "SAVA\u015E"
+  - YAKINDA
+  - ORMAN
+  - KALE
+  - KAR
+  - "\xC7\xD6L"
+  - "YANARDA\u011E"
+  - KOLAY
+  - NORMAL
+  - ZOR
+  - "GER\xC7EK DI\u015EI"
+  - "+3 at\u0131labilir"
+  - "Ba\u015Flang\u0131\xE7ta se\xE7ti\u011Fin at\u0131labilirden \xFC\xE7 tane daha
+    (se\xE7ilmezse el bombas\u0131)."
+  - "Ba\u015Flang\u0131\xE7 kart\u0131"
+  - "Ba\u015Flang\u0131\xE7ta hemen bir kart se\xE7."
+  - "\u0130lk yard\u0131m \xE7antas\u0131"
+  - "Tam bir ilk yard\u0131m \xE7antas\u0131 ko\u015Fu boyunca ba\u015Flang\u0131c\u0131n
+    yan\u0131nda durur."
+  - +1 yenileme
+  - "Kartlar\u0131 reklams\u0131z bir kez yenile."
+  - "Ke\u015Fif"
+  - "T\xFCm harita ba\u015Ftan a\xE7\u0131k."
   _missing: []

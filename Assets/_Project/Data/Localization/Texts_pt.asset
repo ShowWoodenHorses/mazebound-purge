@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -481,4 +511,35 @@ MonoBehaviour:
   - +{0}% de chance de dano dobrado (balas, corpo a corpo)
   - CONTINUAR
   - "Come\xE7ar uma nova partida? A atual ser\xE1 perdida, o dinheiro dela fica."
+  - "N\xCDVEL"
+  - DIFICULDADE
+  - Arena fechada
+  - "As grades se fecham atr\xE1s de voc\xEA na arena do chefe \u2014 sem sa\xEDda
+    at\xE9 ele morrer."
+  - ARMA
+  - "ARREMESS\xC1VEL"
+  - "REFOR\xC7OS"
+  - "Libera ap\xF3s o n\xEDvel 1"
+  - TOTAL
+  - LUTAR
+  - EM BREVE
+  - FLORESTA
+  - CASTELO
+  - NEVE
+  - DESERTO
+  - "VULC\xC3O"
+  - "F\xC1CIL"
+  - NORMAL
+  - "DIF\xCDCIL"
+  - IRREAL
+  - "+3 arremess\xE1veis"
+  - "Mais tr\xEAs do seu arremess\xE1vel no in\xEDcio (granadas se nenhum for escolhido)."
+  - Carta inicial
+  - "Escolha uma carta logo no in\xEDcio."
+  - "Kit m\xE9dico"
+  - "Um kit m\xE9dico completo fica ao lado do in\xEDcio durante toda a partida."
+  - +1 troca
+  - "Troque as cartas uma vez sem an\xFAncio."
+  - Reconhecimento
+  - "O mapa inteiro fica aberto desde o in\xEDcio."
   _missing: []

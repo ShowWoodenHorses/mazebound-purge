@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - English
   - SETTINGS
@@ -499,4 +529,35 @@ MonoBehaviour:
   - +{0}% chance of double damage (bullets, melee)
   - CONTINUE
   - Start a new run? The current run will be lost, its money is kept.
+  - LEVEL
+  - DIFFICULTY
+  - Closed arena
+  - "Gates close behind you in the boss arena \u2014 no way out until the boss is
+    dead."
+  - WEAPON
+  - THROWABLE
+  - BOOSTERS
+  - Opens after level 1
+  - TOTAL
+  - FIGHT
+  - SOON
+  - FOREST
+  - CASTLE
+  - SNOW
+  - DESERT
+  - VOLCANO
+  - EASY
+  - NORMAL
+  - HARD
+  - UNREAL
+  - +3 throwables
+  - Three more of your throwable at the start (grenades if none chosen).
+  - Starting card
+  - Choose a card right at the start.
+  - Medkit
+  - A full medkit lies next to the start for the whole run.
+  - +1 reroll
+  - Reroll the cards once without an ad.
+  - Scouting
+  - The whole map is open from the start.
   _missing: []

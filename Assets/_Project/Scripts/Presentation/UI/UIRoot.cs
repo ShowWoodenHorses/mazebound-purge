@@ -12,6 +12,7 @@ namespace Purge.Presentation.UI
     {
         [SerializeField] private MainMenuScreen _mainMenu;
         [SerializeField] private DevLevelsScreen _devLevels;
+        [SerializeField] private RunSetupScreen _runSetup;
         [SerializeField] private LoadingScreen _loading;
         [SerializeField] private ErrorScreen _error;
         [SerializeField] private HudScreen _hud;
@@ -49,6 +50,9 @@ namespace Purge.Presentation.UI
 
         public MainMenuScreen MainMenu => _mainMenu;
         public DevLevelsScreen DevLevels => _devLevels;
+
+        /// <summary>The run's choice and preparation (stage 11б); null in scenes without it (tests).</summary>
+        public RunSetupScreen RunSetup => _runSetup;
         public LoadingScreen Loading => _loading;
         public ErrorScreen Error => _error;
         public HudScreen Hud => _hud;
@@ -89,7 +93,7 @@ namespace Purge.Presentation.UI
             foreach (var text in _localizedTexts)
                 if (text != null) text.Apply(texts);
 
-            UIScreen[] screens = { _mainMenu, _devLevels, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial, _cards };
+            UIScreen[] screens = { _mainMenu, _devLevels, _runSetup, _loading, _error, _hud, _pause, _result, _map, _settings, _tutorial, _cards };
             foreach (var screen in screens)
                 if (screen != null) screen.ApplyLanguage(texts);
             if (_touchControls != null && _touchControls.LayoutEditor != null)

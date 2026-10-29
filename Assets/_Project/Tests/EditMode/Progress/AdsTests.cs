@@ -184,6 +184,7 @@ namespace Purge.Tests.EditMode.Progress
             public IReadOnlyList<LevelCatalogEntry> DevLevels => System.Array.Empty<LevelCatalogEntry>();
             public LevelCatalogEntry Tutorial => _asset.Tutorial;
             public LevelCatalogEntry Find(string levelId) => _asset.Find(levelId);
+            public IReadOnlyList<Purge.Core.Monsters.DifficultyDefinition> Difficulties => _asset.Difficulties;
         }
     }
 }

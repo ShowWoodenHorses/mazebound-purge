@@ -182,6 +182,12 @@ namespace Purge.Application.Save
         /// <summary>Explored map cells (stage 7г): a bit per cell, Base64; empty = none.</summary>
         public string Explored;
 
+        /// <summary>Free card rerolls left (the booster, stage 11б).</summary>
+        public int FreeRerolls;
+
+        /// <summary>The booster's medkit at the start is taken (stage 11б).</summary>
+        public bool StartMedkitTaken;
+
         /// <summary>No run any more (death, finish, abandon).</summary>
         public void Clear()
         {
@@ -221,6 +227,8 @@ namespace Purge.Application.Save
             DestroyedVehicles.Clear();
             Vehicles.Clear();
             Explored = null;
+            FreeRerolls = 0;
+            StartMedkitTaken = false;
         }
 
         public void Normalize()
@@ -243,6 +251,8 @@ namespace Purge.Application.Save
             if (Active && string.IsNullOrEmpty(LevelId)) Clear(); // a run of nothing cannot be continued
             if (!Enum.IsDefined(typeof(RunMode), Mode)) Mode = RunMode.Level;
             if (Wave < 0) Wave = 0;
+            if (FreeRerolls < 0) FreeRerolls = 0;
+            if (Difficulty < 0 || Difficulty > 30) Difficulty = 0;
             if (Money < 0) Money = 0;
             if (Score < 0) Score = 0;
             if (Kills < 0) Kills = 0;

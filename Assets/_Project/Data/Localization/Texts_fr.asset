@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -484,4 +514,35 @@ MonoBehaviour:
   - CONTINUER
   - "Commencer une nouvelle partie ? La partie en cours sera perdue, son argent est
     conserv\xE9."
+  - NIVEAU
+  - "DIFFICULT\xC9"
+  - "Ar\xE8ne ferm\xE9e"
+  - "Les grilles se ferment derri\xE8re vous dans l'ar\xE8ne du boss : aucune sortie
+    tant qu'il vit."
+  - ARME
+  - LANCER
+  - BOOSTS
+  - "D\xE9bloqu\xE9 apr\xE8s le niveau 1"
+  - TOTAL
+  - COMBATTRE
+  - "BIENT\xD4T"
+  - "FOR\xCAT"
+  - "CH\xC2TEAU"
+  - NEIGE
+  - "D\xC9SERT"
+  - VOLCAN
+  - FACILE
+  - NORMAL
+  - DIFFICILE
+  - "IRR\xC9EL"
+  - "+3 objets \xE0 lancer"
+  - "Trois de plus de votre objet \xE0 lancer au d\xE9part (grenades si aucun)."
+  - "Carte de d\xE9part"
+  - "Choisissez une carte d\xE8s le d\xE9part."
+  - Trousse de soins
+  - "Une trousse compl\xE8te reste pr\xE8s du d\xE9part toute la partie."
+  - +1 relance
+  - "Relancez les cartes une fois sans publicit\xE9."
+  - Reconnaissance
+  - "Toute la carte est r\xE9v\xE9l\xE9e d\xE8s le d\xE9part."
   _missing: []

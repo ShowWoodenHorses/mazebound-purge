@@ -98,6 +98,17 @@ namespace Purge.Gameplay.Run
             Changed?.Invoke();
         }
 
+        /// <summary>
+        /// Cards to choose without a level-up (stage 11б: the booster's start card): offered like a level-up's, the level
+        /// stays.
+        /// </summary>
+        public void AddPending(int count)
+        {
+            if (count <= 0) return;
+            Pending += count;
+            Changed?.Invoke();
+        }
+
         /// <summary>One level-up's cards were chosen (or there was nothing to choose).</summary>
         public void ConsumePending()
         {

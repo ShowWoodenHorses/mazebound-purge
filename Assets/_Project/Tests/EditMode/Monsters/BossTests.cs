@@ -59,6 +59,7 @@ namespace Purge.Tests.EditMode.Monsters
         private PlayerSystem _player;
         private LevelGrid _grid;
         private DoorSystem _doors;
+        private bool _closeArena;
 
         private sealed class Aim : IAimSettings
         {
@@ -69,6 +70,7 @@ namespace Purge.Tests.EditMode.Monsters
         [SetUp]
         public void SetUp()
         {
+            _closeArena = true;
             _playerDefinition = Create<PlayerDefinition>();
             _playerDefinition.Configure(moveSpeed: 3f, bodyHalfSize: 0.3f, cornerAssist: 0.35f);
             _boss = Monster("boss", MonsterRank.Boss, new MonsterStats { MaxHp = 100f, Speed = 2f, Radius = 1f, AttackReach = 2f, Damage = 0, EmergeTime = 0.5f });
@@ -152,7 +154,7 @@ namespace Purge.Tests.EditMode.Monsters
                 new SoundEventBus());
             _wallet = new RunWallet(_horde);
             _clock = new LevelClock();
-            _bosses = new BossSystem(_level, _horde, player, _blockers, _clock);
+            _bosses = new BossSystem(_level, _horde, player, _blockers, _clock, options: new LevelLaunchOptions(closeArena: _closeArena));
             var waves = new WaveSystem(_level, _horde, player, new LevelLaunchOptions(seed: 5), _pickups, _wallet, _bosses);
             var runtime = new LevelRuntime(_level, new ILevelLoadStep[] { player, _pickups, _horde, _wallet, _bosses, waves },
                 new ILevelTickable[] { _pickups, _horde, waves, _bosses }, null, _clock);
@@ -314,7 +316,7 @@ namespace Purge.Tests.EditMode.Monsters
         public void Arena_ClosingOff_TheBossChasesAtOnce()
         {
             ArenaLevel(Outside);
-            _level.CloseArena = false;
+            _closeArena = false;
             var (runtime, _) = Run(BossScenario());
             Tick(runtime, 1.1f);
             var at = _bosses.Position;

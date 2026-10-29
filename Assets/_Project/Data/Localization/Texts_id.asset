@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -498,4 +528,35 @@ MonoBehaviour:
   - +{0}% peluang kerusakan ganda (peluru, jarak dekat)
   - LANJUTKAN
   - Mulai permainan baru? Permainan saat ini akan hilang, uangnya tetap disimpan.
+  - LEVEL
+  - KESULITAN
+  - Arena tertutup
+  - "Jeruji menutup di belakangmu di arena bos \u2014 tak ada jalan keluar sampai
+    bos mati."
+  - SENJATA
+  - LEMPARAN
+  - PENGUAT
+  - Terbuka setelah level 1
+  - TOTAL
+  - BERTARUNG
+  - SEGERA
+  - HUTAN
+  - KASTIL
+  - SALJU
+  - GURUN
+  - GUNUNG API
+  - MUDAH
+  - NORMAL
+  - SULIT
+  - MUSTAHIL
+  - +3 lemparan
+  - Tiga lagi lemparanmu saat mulai (granat jika tidak memilih).
+  - Kartu awal
+  - Pilih kartu tepat saat mulai.
+  - Kotak P3K
+  - Kotak P3K penuh ada di dekat titik awal sepanjang permainan.
+  - +1 acak ulang
+  - Acak ulang kartu sekali tanpa iklan.
+  - Pengintaian
+  - Seluruh peta terbuka sejak awal.
   _missing: []

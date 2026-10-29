@@ -79,10 +79,16 @@ namespace Purge.Presentation.UI
             slot.Level.text = level;
         }
 
-        /// <summary>The reroll button: shown while this offer's reroll is not spent.</summary>
-        public void SetReroll(bool shown)
+        /// <summary>
+        /// The reroll button: shown while this offer's reroll is not spent; a free one (the booster, stage 11б) has no ad
+        /// mark.
+        /// </summary>
+        public void SetReroll(bool shown, bool free = false)
         {
-            if (_rerollButton != null) _rerollButton.gameObject.SetActive(shown);
+            if (_rerollButton == null) return;
+            _rerollButton.gameObject.SetActive(shown);
+            var adMark = _rerollButton.transform.Find("Icon");
+            if (adMark != null) adMark.gameObject.SetActive(!free);
         }
 
         /// <summary>New cards: clicks wait a moment again, the first card takes the gamepad's selection.</summary>

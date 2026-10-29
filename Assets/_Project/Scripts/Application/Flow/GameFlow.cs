@@ -55,18 +55,21 @@ namespace Purge.Application.Flow
         private readonly ILevelSessionFactory _sessionFactory;
         private readonly IProgressService _progress;
         private readonly AdsService _ads;
+        private readonly SharedDefinitionsService _shared;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private CancellationTokenSource _transition;
         private UniTask _transitionDone = UniTask.CompletedTask;
         private ILevelSession _session;
         private LevelLaunchOptions _launchOptions = LevelLaunchOptions.Default;
+        private int _launchCost;
         private bool _disposed;
 
         public GameFlow(IReadOnlyList<IApplicationService> services, ILevelCatalog catalog,
             IAddressablesService addressables, ILevelSessionFactory sessionFactory, IProgressService progress,
-            AdsService ads = null)
+            AdsService ads = null, SharedDefinitionsService shared = null)
         {
+            _shared = shared;
             _ads = ads;
             _progress = progress;
             _services = services;
@@ -114,6 +117,21 @@ namespace Purge.Application.Flow
 
         public event Action<GameFlowState> StateChanged;
 
+        /// <summary>
+        /// The launch of the current run (stage 11б: difficulty, arena, start weapon and throwable, boosters); kept after
+        /// the level ends for the retry.
+        /// </summary>
+        public LevelLaunchOptions CurrentLaunch { get; private set; } = LevelLaunchOptions.Default;
+
+        /// <summary>The current run's difficulty: 0 = easy … 3 = unreal (stage 11б).</summary>
+        public int CurrentDifficulty => DifficultyIndex(CurrentLaunch);
+
+        /// <summary>The current run plays with the arena closed (the choice «Закрытая арена», normal difficulty and up).</summary>
+        public bool CurrentArenaClosed => CurrentLaunch.CloseArena && CurrentDifficulty >= 1;
+
+        /// <summary>The money the current run's boosters cost (taken at its start).</summary>
+        public int CurrentBoosterCost { get; private set; }
+
         public UniTask InitializeApplication() => RunTransition("InitializeApplication", async cancellation =>
         {
             if (State != GameFlowState.None)
@@ -146,16 +164,27 @@ namespace Purge.Application.Flow
         });
 
         /// <param name="options">Start point and seed; default = random start (ТЗ §61).</param>
-        public UniTask StartLevel(string levelId, LevelLaunchOptions options = null) =>
+        /// <param name="boosterCost">
+        /// The money for <see cref="LevelLaunchOptions.Boosters"/> (stage 11б): taken once the level has loaded; when the
+        /// player has less, the run starts without boosters.
+        /// </param>
+        public UniTask StartLevel(string levelId, LevelLaunchOptions options = null, int boosterCost = 0) =>
             RunTransition($"StartLevel({levelId})",
-                cancellation => StartLevelAsync(levelId, options ?? LevelLaunchOptions.Default, cancellation));
+                cancellation => StartLevelAsync(levelId, options ?? LevelLaunchOptions.Default, boosterCost, cancellation));
+
+        /// <summary>The run's difficulty by number (stage 11б) from the catalog; null when the catalog has none.</summary>
+        public Core.Monsters.DifficultyDefinition DifficultyAt(int index)
+        {
+            var difficulties = _catalog.Difficulties;
+            return index >= 0 && index < difficulties.Count ? difficulties[index] : null;
+        }
 
         /// <summary>
         /// Restarts the current level with the same launch options (a forced start stays forced) as a new run: a run left
         /// from the pause is given up, its money goes to the save.
         /// </summary>
         public UniTask RetryLevel() =>
-            CurrentLevelId != null ? StartLevel(CurrentLevelId, _launchOptions) : UniTask.CompletedTask;
+            CurrentLevelId != null ? StartLevel(CurrentLevelId, _launchOptions, _launchCost) : UniTask.CompletedTask;
 
         /// <summary>«Продолжить» (stage 6e): the saved run, in the pause before its wave.</summary>
         public UniTask ContinueRun()
@@ -170,7 +199,12 @@ namespace Purge.Application.Flow
                 return UniTask.CompletedTask;
             }
 
-            return StartLevel(levelId, new LevelLaunchOptions(resume: run));
+            // Its difficulty and arena from the save; its boosters keep what lasts (the medkit, free rerolls).
+            var boosters = new List<Core.Boosters.BoosterDefinition>();
+            foreach (var id in run.Boosters)
+                if (_shared?.Content?.Find<Core.Boosters.BoosterDefinition>(id) is { } booster) boosters.Add(booster);
+            return StartLevel(levelId, new LevelLaunchOptions(difficulty: DifficultyAt(run.Difficulty), resume: run,
+                boosters: boosters, closeArena: run.ArenaClosed));
         }
 
         public UniTask ExitToMenu() => OpenMainMenu();
@@ -314,17 +348,31 @@ namespace Purge.Application.Flow
             StateChanged = null;
         }
 
-        private async UniTask StartLevelAsync(string levelId, LevelLaunchOptions options, CancellationToken cancellation)
+        private async UniTask StartLevelAsync(string levelId, LevelLaunchOptions options, int boosterCost,
+            CancellationToken cancellation)
         {
             var fromMenu = State == GameFlowState.MainMenu;
             // Retry from the pause: the run is given up for a new one, its money goes to the save (stage 6e).
             if (IsRunActive) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
             SetState(GameFlowState.Loading);
             CurrentLevelId = levelId;
-            // A retry is a new run: not the continued one again; a new seed unless the caller forced one.
-            _launchOptions = options.Resume != null ? LevelLaunchOptions.Default : options;
-            if (!options.Seed.HasValue)
-                options = new LevelLaunchOptions(options.StartIndex, NewSeed(), options.Difficulty);
+            // A retry is a new run: not the continued one again (its difficulty and arena stay); a new seed unless the
+            // caller forced one. Boosters the player cannot pay for any more are left out (a retry buys them again).
+            if (boosterCost > 0 && _progress.Money < boosterCost)
+            {
+                GameLog.Info(LogChannel.GameFlow, $"Boosters cost {boosterCost}, money {_progress.Money}: the run starts without them.");
+                options = new LevelLaunchOptions(options.StartIndex, options.Seed, options.Difficulty, options.Resume, options.Bot,
+                    options.StartWeapon, options.StartThrowable, null, options.CloseArena);
+                boosterCost = 0;
+            }
+
+            _launchOptions = options.Resume != null
+                ? new LevelLaunchOptions(difficulty: options.Difficulty, closeArena: options.CloseArena)
+                : options;
+            _launchCost = options.Resume != null ? 0 : boosterCost;
+            if (!options.Seed.HasValue) options = options.WithSeed(NewSeed());
+            CurrentLaunch = options;
+            CurrentBoosterCost = _launchCost;
             LastResult = null;
             LastWasCompletedBefore = false;
             LastRewardDoubled = false;
@@ -362,6 +410,9 @@ namespace Purge.Application.Flow
                 // A new run instead of the saved one: the saved one is given up, its money goes to the save (stage 6e).
                 if (options.Resume == null && _session.IsRun && _progress.HasRun)
                     AbandonRun(_progress.LoadRun()?.Money ?? 0);
+                // ТЗ: списание на старте — the boosters are paid once the run is there.
+                if (boosterCost > 0 && !_progress.SpendMoney(boosterCost))
+                    GameLog.Warning(LogChannel.GameFlow, $"Boosters ({boosterCost}) could not be paid: money {_progress.Money}.");
             }
             catch
             {
@@ -442,7 +493,7 @@ namespace Purge.Application.Flow
 
             try
             {
-                _progress.RecordRun(CurrentLevelId, levelResult);
+                _progress.RecordRun(CurrentLevelId, levelResult, CurrentDifficulty, CurrentArenaClosed);
                 if (_session.IsRun) _progress.ClearRun(); // ТЗ: смерть удаляет сейв забега; a won run has none either
             }
             catch (Exception e)
@@ -474,13 +525,16 @@ namespace Purge.Application.Flow
             if (CurrentLevelId == null) return;
             try
             {
-                _progress.SaveRun(CurrentLevelId, 0, run);
+                _progress.SaveRun(CurrentLevelId, run.Difficulty, run);
             }
             catch (Exception e)
             {
                 GameLog.Exception(LogChannel.Save, e, $"Saving the run of '{CurrentLevelId}' failed");
             }
         }
+
+        private static int DifficultyIndex(LevelLaunchOptions options) =>
+            options.Difficulty != null ? (int)options.Difficulty.Level : options.Resume?.Difficulty ?? 0;
 
         private static int _seeds;
 

@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -482,4 +512,35 @@ MonoBehaviour:
   - DAVOM ETISH
   - "Yangi o\u02BByin boshlansinmi? Joriy o\u02BByin yo\u02BBqoladi, uning pullari
     saqlanadi."
+  - DARAJA
+  - QIYINLIK
+  - Yopiq arena
+  - "Boss arenasida panjaralar ortingizdan yopiladi \u2014 u tirikligida chiqish
+    yo\u02BBq."
+  - QUROL
+  - ULOQTIRILADIGAN
+  - KUCHAYTIRGICHLAR
+  - 1-darajadan keyin ochiladi
+  - JAMI
+  - JANGGA
+  - TEZ ORADA
+  - "O\u02BBRMON"
+  - "QAL\u02BCA"
+  - QOR
+  - "CHO\u02BBL"
+  - VULQON
+  - OSON
+  - "O\u02BBRTACHA"
+  - QIYIN
+  - AQLBOVAR EMAS
+  - +3 uloqtiriladigan
+  - "Boshida uloqtiriladiganingizdan yana uchta (tanlanmasa \u2014 granatalar)."
+  - "Boshlang\u02BBich karta"
+  - Boshidayoq karta tanlang.
+  - Dori qutisi
+  - "To\u02BBliq dori qutisi butun o\u02BByin davomida start yonida yotadi."
+  - +1 qayta tanlash
+  - Kartalarni reklamasiz bir marta qayta tanlang.
+  - Razvedka
+  - Butun xarita boshidanoq ochiq.
   _missing: []

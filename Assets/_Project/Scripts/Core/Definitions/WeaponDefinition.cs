@@ -56,6 +56,10 @@ namespace Purge.Core.Definitions
                  "level 6–7).")]
         [SerializeField] private bool _noUpgrades;
 
+        [Tooltip("Open from the start without buying (stage 11б, the model's start_pool): in the drop and, within the " +
+                 "rarity allowance, for the run's start.")]
+        [SerializeField] private bool _startPool;
+
         [Tooltip("How the character holds it: the animation set and hand pose.")]
         [SerializeField] private WeaponHold _hold = WeaponHold.Rifle;
 
@@ -84,6 +88,10 @@ namespace Purge.Core.Definitions
 
         public Rarity Rarity => _rarity;
         public bool Upgradable => !_noUpgrades;
+
+        /// <summary>Open from the start without buying (stage 11б).</summary>
+        public bool StartPool { get => _startPool; internal set => _startPool = value; }
+
         public WeaponHold Hold => _hold;
         public IReadOnlyList<WeaponModule> Modules => _modules;
 

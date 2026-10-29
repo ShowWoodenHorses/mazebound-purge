@@ -18,7 +18,7 @@ namespace Purge.Gameplay.Horde
     /// sandbox hands it the boss's slot (<see cref="Begin"/>); then:
     /// <list type="bullet">
     /// <item>While the player is outside the arena (<see cref="LevelData.Arena"/>, the closing on —
-    /// <see cref="LevelData.CloseArena"/>) the boss waits in it (<see cref="HordeSystem.SetHeld"/>; its escort chases as
+    /// <see cref="LevelLaunchOptions.CloseArena"/>, the run's «Закрытая арена») the boss waits in it (<see cref="HordeSystem.SetHeld"/>; its escort chases as
     /// usual) and <see cref="ShowArenaArrow"/>. Once the player is inside, the gates come down on every entry
     /// (<see cref="CellBlockers"/>: movement stops, bullets and sight go through) until the boss dies.</item>
     /// <item>Its death: the simulation × <see cref="DeathSlowFactor"/> for <see cref="DeathSlowTime"/> s
@@ -39,6 +39,7 @@ namespace Purge.Gameplay.Horde
         private readonly CellBlockers _blockers;
         private readonly LevelClock _clock;
         private readonly MonsterAbilities _abilities;
+        private readonly bool _closeArena;
         private readonly List<GridPosition> _gateCells = new List<GridPosition>();
         private readonly List<ArenaEntry> _entries = new List<ArenaEntry>();
         private readonly List<float> _thresholds = new List<float>();
@@ -46,9 +47,10 @@ namespace Purge.Gameplay.Horde
         private bool _subscribed;
 
         public BossSystem(LevelData level, HordeSystem horde, PlayerSystem player, CellBlockers blockers = null,
-            LevelClock clock = null, MonsterAbilities abilities = null)
+            LevelClock clock = null, MonsterAbilities abilities = null, LevelLaunchOptions options = null)
         {
             _level = level;
+            _closeArena = (options ?? LevelLaunchOptions.Default).CloseArena;
             _horde = horde;
             _player = player;
             _blockers = blockers;
@@ -189,7 +191,7 @@ namespace Purge.Gameplay.Horde
             SetGates(true);
         }
 
-        private bool WaitsInArena => HasArena && _level.CloseArena;
+        private bool WaitsInArena => HasArena && _closeArena;
 
         /// <summary>
         /// The player's whole footprint is on the arena's cells: a gate coming down on a cell the body still overlaps

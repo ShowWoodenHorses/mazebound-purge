@@ -40,6 +40,7 @@ namespace Purge.Presentation.Visual
         private readonly PickupSystem _pickups;
         private readonly BulletSystem _bullets;
         private readonly ThrowableSlot _slot;
+        private readonly LevelLaunchOptions _options;
         private readonly VisibilitySystem _visibility;
         private readonly ItemVisualCatalog _catalog;
         private readonly IAssetOwner _assets;
@@ -61,8 +62,9 @@ namespace Purge.Presentation.Visual
         public DropViewPresenter(DropPool pool, PickupSystem pickups, BulletSystem bullets, ThrowableSlot slot,
             VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null,
             CombatVisualDefinition visual = null, PackEmitters emitters = null, LevelData level = null,
-            PackEffectsPlayer effects = null)
+            PackEffectsPlayer effects = null, LevelLaunchOptions options = null)
         {
+            _options = options;
             _level = level;
             _effects = effects;
             _visual = visual;
@@ -87,8 +89,12 @@ namespace Purge.Presentation.Visual
 
             _pool.GetItems(_items);
             if (_slot.Definition != null) _items.Add(_slot.Definition);
-            // The run's start weapon can be dropped by the player (stage 6e).
-            if (_level != null && _level.StartWeapon != null) _items.Add(_level.StartWeapon);
+            // The run's start weapon can be dropped by the player (stage 6e); the booster's medkit lies at the start (11б).
+            if (_options != null)
+            {
+                if (_options.StartWeapon != null) _items.Add(_options.StartWeapon);
+                if (_options.TryGetBoost<Core.Boosters.MedkitBoost>(out var medkit) && medkit.Medkit != null) _items.Add(medkit.Medkit);
+            }
             foreach (var item in _pool.Throwables) _items.Add(item);
             if (_items.Count == 0) return;
 

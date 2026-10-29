@@ -50,6 +50,17 @@ namespace Purge.Gameplay.Throwing
             return old;
         }
 
+        /// <summary>
+        /// The run's start stack (stage 11б: the preparation and the booster; a continued run's): may be more than
+        /// <see cref="ThrowableDefinition.MaxStack"/> — nothing more is picked up until it is below.
+        /// </summary>
+        public void Start(ThrowableDefinition definition, int count)
+        {
+            Definition = definition != null && count > 0 ? definition : null;
+            Count = Definition != null ? count : 0;
+            Changed?.Invoke();
+        }
+
         /// <summary>Takes one for a throw; false when empty.</summary>
         public bool TakeOne()
         {

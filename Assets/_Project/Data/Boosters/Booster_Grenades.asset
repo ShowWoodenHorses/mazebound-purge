@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518452016ac38cb4793701ef97e29e14, type: 3}
+  m_Name: Booster_Grenades
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Boosters.BoosterDefinition
+  _id: booster_grenades
+  _unlock: 0
+  _icon: {fileID: 21300000, guid: d1191361335654c49b4e0ae4c2f671ce, type: 3}
+  _prices:
+  - _location: 0
+    _byDifficulty: 230000005a0000000e010000bc020000
+  - _location: 1
+    _byDifficulty: 2d0000006e00000068010000a2030000
+  - _location: 2
+    _byDifficulty: 3700000096000000d6010000b0040000
+  _modules:
+  - rid: 1763807533277118537
+  references:
+    version: 2
+    RefIds:
+    - rid: 1763807533277118537
+      type: {class: ThrowablesBoost, ns: Purge.Core.Boosters, asm: Purge.Core}
+      data:
+        _count: 3
+        _fallback: {fileID: 11400000, guid: 825d87ccc3a2b514ea82f2032258dca3, type: 2}

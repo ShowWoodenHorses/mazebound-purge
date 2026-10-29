@@ -11,17 +11,22 @@ namespace Purge.Core.Level
         [SerializeField] private string _levelId;
         [SerializeField] private string _address;
         [SerializeField] private string _displayName;
+        [SerializeField] private LevelLocation _location;
 
-        internal LevelCatalogEntry(string levelId, string address, string displayName)
+        internal LevelCatalogEntry(string levelId, string address, string displayName, LevelLocation location = default)
         {
             _levelId = levelId;
             _address = address;
             _displayName = displayName;
+            _location = location;
         }
 
         public string LevelId => _levelId;
         public string Address { get => _address; internal set => _address = value; }
         public string DisplayName { get => _displayName; internal set => _displayName = value; }
+
+        /// <summary>The level's location (<see cref="LevelSettings.Location"/>): its tile in the level choice (stage 11б).</summary>
+        public LevelLocation Location { get => _location; internal set => _location = value; }
     }
 
     /// <summary>
@@ -43,7 +48,14 @@ namespace Purge.Core.Level
         [SerializeField] private List<LevelCatalogEntry> _levels = new List<LevelCatalogEntry>();
         [SerializeField] private LevelCatalogEntry _tutorial;
 
+        [Tooltip("The run's difficulties in order — easy, normal, hard, unreal (stage 11б: the level choice); the save " +
+                 "keeps the number.")]
+        [SerializeField] private List<Monsters.DifficultyDefinition> _difficulties = new List<Monsters.DifficultyDefinition>();
+
         public IReadOnlyList<LevelCatalogEntry> Levels => _levels;
+
+        /// <summary>The run's difficulties by number (0 = easy); empty in catalogs without them (dev, tests).</summary>
+        public IReadOnlyList<Monsters.DifficultyDefinition> Difficulties => _difficulties;
 
         /// <summary>The tutorial level; null when there is none.</summary>
         public LevelCatalogEntry Tutorial => _tutorial != null && !string.IsNullOrEmpty(_tutorial.LevelId) ? _tutorial : null;
@@ -70,21 +82,28 @@ namespace Purge.Core.Level
         }
 
         /// <summary>Adds the level to the end or updates its address and name. Returns true when something changed.</summary>
-        internal bool AddOrUpdate(string levelId, string address, string displayName)
+        internal bool AddOrUpdate(string levelId, string address, string displayName, LevelLocation location = default)
         {
             var entry = _levels.Find(e => string.Equals(e.LevelId, levelId, StringComparison.Ordinal));
             if (entry == null)
             {
-                _levels.Add(new LevelCatalogEntry(levelId, address, displayName));
+                _levels.Add(new LevelCatalogEntry(levelId, address, displayName, location));
                 return true;
             }
 
-            if (entry.Address == address && entry.DisplayName == displayName)
+            if (entry.Address == address && entry.DisplayName == displayName && entry.Location == location)
                 return false;
 
             entry.Address = address;
             entry.DisplayName = displayName;
+            entry.Location = location;
             return true;
+        }
+
+        /// <summary>For tests and tools.</summary>
+        internal void SetDifficulties(IEnumerable<Monsters.DifficultyDefinition> difficulties)
+        {
+            _difficulties = new List<Monsters.DifficultyDefinition>(difficulties);
         }
 
         /// <summary>Takes the level out of the numbered list and, if it is the tutorial, out of that place too.</summary>

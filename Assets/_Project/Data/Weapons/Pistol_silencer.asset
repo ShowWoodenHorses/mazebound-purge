@@ -15,6 +15,7 @@ MonoBehaviour:
   _id: pistol_silencer
   _rarity: 0
   _noUpgrades: 0
+  _startPool: 1
   _hold: 0
   _sound: 
   _soundPitch: 1

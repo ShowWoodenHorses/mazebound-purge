@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -480,4 +510,35 @@ MonoBehaviour:
   - CONTINUAR
   - "\xBFEmpezar una nueva partida? La actual se perder\xE1, pero conservar\xE1s
     su dinero."
+  - NIVEL
+  - DIFICULTAD
+  - Arena cerrada
+  - 'Las rejas se cierran tras de ti en la arena del jefe: no hay salida hasta que
+    muera.'
+  - ARMA
+  - ARROJADIZA
+  - POTENCIADORES
+  - Se abre tras el nivel 1
+  - TOTAL
+  - "\xA1A LUCHAR!"
+  - PRONTO
+  - BOSQUE
+  - CASTILLO
+  - NIEVE
+  - DESIERTO
+  - "VOLC\xC1N"
+  - "F\xC1CIL"
+  - NORMAL
+  - "DIF\xCDCIL"
+  - IRREAL
+  - +3 arrojadizas
+  - "Tres m\xE1s de tu arrojadiza al inicio (granadas si no eliges ninguna)."
+  - Carta inicial
+  - "Elige una carta nada m\xE1s empezar."
+  - "Botiqu\xEDn"
+  - "Un botiqu\xEDn completo espera junto al inicio toda la partida."
+  - +1 cambio
+  - Cambia las cartas una vez sin anuncio.
+  - "Exploraci\xF3n"
+  - "Todo el mapa est\xE1 abierto desde el inicio."
   _missing: []

@@ -35,6 +35,7 @@ namespace Purge.Presentation.Visual
         private readonly List<WeaponDefinition> _wanted = new List<WeaponDefinition>();
         private readonly DropPool _drops;
         private readonly PlayerDefinition _player;
+        private readonly LevelLaunchOptions _options;
 
         private CharacterWeaponRig _rig;
         private GameObject _shown;
@@ -44,8 +45,10 @@ namespace Purge.Presentation.Visual
         private bool _subscribed;
 
         public PlayerWeaponPresenter(LevelData level, PlayerViewPresenter playerView, WeaponSystem weapons,
-            WeaponVisualCatalog catalog, IAssetOwner assets, DropPool drops = null, PlayerDefinition player = null)
+            WeaponVisualCatalog catalog, IAssetOwner assets, DropPool drops = null, PlayerDefinition player = null,
+            LevelLaunchOptions options = null)
         {
+            _options = options;
             _drops = drops;
             _player = player;
             _level = level;
@@ -74,7 +77,8 @@ namespace Purge.Presentation.Visual
 
             _wanted.Clear();
             foreach (var pickup in _level.Weapons) _wanted.Add(pickup.Definition);
-            _wanted.Add(_level.StartWeapon); // the run's start weapon (stage 6e)
+            _wanted.Add(_options?.StartWeapon); // the run's start weapon (stage 11б)
+            for (var i = 0; i < 2; i++) _wanted.Add(_weapons.Get((WeaponSlot)i)?.Definition); // a continued run's
             if (_drops != null) _wanted.AddRange(_drops.Weapons);
             if (_player != null) _wanted.Add(_player.BaseWeapon);
             foreach (var definition in _wanted)

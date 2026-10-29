@@ -53,6 +53,7 @@ namespace Purge.Presentation.Visual
         private readonly DropPool _drops;
         private readonly PlayerDefinition _player;
         private readonly ThrowableSlot _slot;
+        private readonly LevelLaunchOptions _options;
         private readonly List<Instance> _all = new List<Instance>();
 
         private readonly Dictionary<string, Kind> _kinds = new Dictionary<string, Kind>();
@@ -63,8 +64,9 @@ namespace Purge.Presentation.Visual
 
         public PackEffectsPlayer(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root,
             VisibilitySystem visibility, LevelData level, DropPool drops = null, PlayerDefinition player = null,
-            ThrowableSlot slot = null)
+            ThrowableSlot slot = null, LevelLaunchOptions options = null)
         {
+            _options = options;
             _visual = visual;
             _assets = assets;
             _root = root;
@@ -305,7 +307,6 @@ namespace Purge.Presentation.Visual
             if (_level != null)
             {
                 foreach (var pickup in _level.Weapons) AddWeapon(wanted, pickup.Definition);
-                AddWeapon(wanted, _level.StartWeapon); // the run's start weapon (stage 6e)
                 foreach (var vehicle in _level.Vehicles)
                 {
                     // A wreck's smoke and blast (stage 9b).
@@ -329,6 +330,7 @@ namespace Purge.Presentation.Visual
                 AddEffects(wanted, _player.ReviveEffects); // the revive's wave (stage 6d)
             }
             if (_slot != null) AddThrowable(wanted, _slot.Definition);
+            AddWeapon(wanted, _options?.StartWeapon); // the run's start weapon (stage 11б)
         }
 
         /// <summary>Looks of the monsters the level can have (the waves' and the called-up kinds) and of champions.</summary>

@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -484,4 +514,35 @@ MonoBehaviour:
   - +{0} % Chance auf doppelten Schaden (Kugeln, Nahkampf)
   - FORTSETZEN
   - Neuen Lauf starten? Der aktuelle Lauf geht verloren, sein Geld bleibt.
+  - LEVEL
+  - SCHWIERIGKEIT
+  - Geschlossene Arena
+  - "Im Boss-Arena schlie\xDFen sich die Gitter hinter dir \u2013 kein Ausweg, bis
+    der Boss tot ist."
+  - WAFFE
+  - WURFWAFFE
+  - BOOSTER
+  - "Nach Level 1 verf\xFCgbar"
+  - GESAMT
+  - KAMPF
+  - BALD
+  - WALD
+  - BURG
+  - SCHNEE
+  - "W\xDCSTE"
+  - VULKAN
+  - LEICHT
+  - NORMAL
+  - SCHWER
+  - IRREAL
+  - +3 Wurfwaffen
+  - Drei weitere deiner Wurfwaffe zum Start (ohne Auswahl Granaten).
+  - Startkarte
+  - "W\xE4hle gleich zu Beginn eine Karte."
+  - Medkit
+  - "Ein volles Medkit liegt den ganzen Lauf \xFCber am Start."
+  - +1 Neuziehen
+  - Ziehe die Karten einmal ohne Werbung neu.
+  - "Aufkl\xE4rung"
+  - Die ganze Karte ist von Anfang an offen.
   _missing: []

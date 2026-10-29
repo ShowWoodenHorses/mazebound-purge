@@ -68,6 +68,20 @@ namespace Purge.Gameplay.Run
         /// <summary>The reroll of this offer is spent.</summary>
         public bool RerollUsed { get; private set; }
 
+        /// <summary>Rerolls of the run without the rewarded ad (stage 11б: the booster); each still once per offer.</summary>
+        public int FreeRerolls { get; private set; }
+
+        /// <summary>Sets the free rerolls (the booster at the start, a continued run's left).</summary>
+        public void SetFreeRerolls(int count) => FreeRerolls = Math.Max(0, count);
+
+        /// <summary>A reroll paid with a free one (no ad); false when none is left or the reroll is not possible.</summary>
+        public bool RerollFree()
+        {
+            if (FreeRerolls <= 0 || !Reroll()) return false;
+            FreeRerolls--;
+            return true;
+        }
+
         /// <summary>Cards picked in the run (each with its level).</summary>
         public IReadOnlyDictionary<CardDefinition, int> Levels => _levels;
 

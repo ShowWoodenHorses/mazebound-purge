@@ -27,6 +27,24 @@ namespace Purge.Presentation.Localization
         public const string MenuSignInHint = "menu.sign_in.hint";
         public const string Loading = "loading";
 
+        // The run's choice and preparation (stage 11б): families location.<location>, difficulty.<difficulty>,
+        // booster.<id> (name) and booster.<id>.text.
+        public const string SetupLevel = "setup.level";
+        public const string SetupDifficulty = "setup.difficulty";
+        public const string SetupArena = "setup.arena";
+        public const string SetupArenaHint = "setup.arena.hint";
+        public const string SetupWeapon = "setup.weapon";
+        public const string SetupThrowable = "setup.throwable";
+        public const string SetupBoosters = "setup.boosters";
+        public const string SetupBoostersLocked = "setup.boosters.locked";
+        public const string SetupTotal = "setup.total";
+        public const string SetupFight = "setup.fight";
+        public const string SetupSoon = "setup.soon";
+        public const string LocationPrefix = "location.";
+        public const string DifficultyPrefix = "difficulty.";
+        public const string BoosterPrefix = "booster.";
+        public static readonly string BoosterTextSuffix = ".text"; // Not a key: not a constant.
+
         // HUD.
         public const string HudLevel = "hud.level";
         public const string HudTutorial = "hud.tutorial";

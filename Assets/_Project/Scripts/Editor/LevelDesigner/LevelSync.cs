@@ -94,7 +94,7 @@ namespace Purge.Editor.LevelDesigner
 
             if (!dev && catalog.Tutorial?.LevelId == level.name && catalog.Remove(level.name))
                 EditorUtility.SetDirty(catalog); // No longer the tutorial: back to the numbered levels.
-            if (target.AddOrUpdate(level.name, levelEntry.address, level.Settings.DisplayName))
+            if (target.AddOrUpdate(level.name, levelEntry.address, level.Settings.DisplayName, level.Settings.Location))
                 EditorUtility.SetDirty(target);
             return levelEntry.address;
         }

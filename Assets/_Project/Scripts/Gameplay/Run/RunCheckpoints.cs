@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Boosters;
 using Purge.Core.Cards;
 using Purge.Core.Common;
 using Purge.Core.Content;
@@ -21,9 +22,10 @@ namespace Purge.Gameplay.Run
 {
     /// <summary>
     /// The player's side of a run's start (stage 6e), step <see cref="LevelLoadStage.InitializeSystems"/> — before the
-    /// views gather what to load (a restored weapon's look and effects): a new run gets the level's
-    /// <see cref="LevelData.StartWeapon"/>, a continued one (<see cref="LevelLaunchOptions.Resume"/>) its cards, max HP,
-    /// HP, revives, weapon slots and throwables.
+    /// views gather what to load (a restored weapon's look and effects): a new run gets the preparation's
+    /// <see cref="LevelLaunchOptions.StartWeapon"/> and one <see cref="LevelLaunchOptions.StartThrowable"/> (stage 11б;
+    /// the booster <see cref="ThrowablesBoost"/> adds to it), a continued one (<see cref="LevelLaunchOptions.Resume"/>) its
+    /// cards, max HP, HP, revives, weapon slots and throwables.
     /// </summary>
     public sealed class RunLoadout : ILevelLoadStep
     {
@@ -58,8 +60,22 @@ namespace Purge.Gameplay.Run
         {
             var resume = _options?.Resume;
             if (resume != null) Restore(resume);
-            else if (_level.StartWeapon != null) _weapons.Equip(_pickups.CreateWeapon(_level.StartWeapon));
+            else Start(_options ?? LevelLaunchOptions.Default);
             return UniTask.CompletedTask;
+        }
+
+        private void Start(LevelLaunchOptions options)
+        {
+            if (options.StartWeapon != null) _weapons.Equip(_pickups.CreateWeapon(options.StartWeapon));
+            var throwable = options.StartThrowable;
+            var count = throwable != null ? 1 : 0;
+            if (options.TryGetBoost<ThrowablesBoost>(out var boost))
+            {
+                if (throwable == null) throwable = boost.Fallback;
+                count += boost.Count;
+            }
+
+            if (throwable != null) _throwables.Start(throwable, count);
         }
 
         private void Restore(RunSnapshot run)
@@ -80,7 +96,7 @@ namespace Purge.Gameplay.Run
             }
 
             _weapons.RestoreActive(run.ActiveSlot == 1 ? WeaponSlot.Second : WeaponSlot.First);
-            _throwables.Replace(Find<ThrowableDefinition>(run.ThrowableId), run.ThrowableCount);
+            _throwables.Start(Find<ThrowableDefinition>(run.ThrowableId), run.ThrowableCount);
             GameLog.Info(LogChannel.Gameplay, $"Run continued: {cards.Count} card level(s), HP {_health.Current}/{_health.Max}.");
         }
 
@@ -119,12 +135,17 @@ namespace Purge.Gameplay.Run
         private bool _subscribed;
 
         private readonly MapExploration _exploration;
+        private readonly RunBoosters _boosters;
+        private readonly Horde.HordeSystem _horde;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
-            ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null)
+            ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null,
+            RunBoosters boosters = null, Horde.HordeSystem horde = null)
         {
+            _horde = horde;
+            _boosters = boosters;
             _vehicles = vehicles;
             _exploration = exploration;
             _barrels = barrels;
@@ -229,6 +250,16 @@ namespace Purge.Gameplay.Run
             }
 
             if (_exploration != null) run.Explored = _exploration.Export();
+
+            // The run's choice (stage 11б): difficulty, arena, boosters and what of them lasts.
+            var options = _options ?? LevelLaunchOptions.Default;
+            var difficulty = _horde != null ? _horde.Difficulty : options.Difficulty;
+            run.Difficulty = difficulty != null ? (int)difficulty.Level : 0;
+            run.ArenaClosed = options.CloseArena;
+            foreach (var booster in options.Boosters)
+                if (booster != null && !string.IsNullOrEmpty(booster.Id)) run.Boosters.Add(booster.Id);
+            run.FreeRerolls = _cards.FreeRerolls;
+            run.StartMedkitTaken = _boosters != null && _boosters.MedkitTaken;
 
             return run;
         }

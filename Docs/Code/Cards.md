@@ -22,7 +22,8 @@
 
 ## Поток и вид
 - **`GameFlowState.Cards`** — пауза (`OpenCards`/`CloseCards`; закрыть нельзя, пока идёт реклама); Esc не закрывает; HUD виден; звуки паузы; повышение — звук `AudioCatalog.LevelUp` и вспышка (`RunFeedbackPresenter`, 6д). Продолжение забега — `CardSystem.Restore`, `RunExperience.Restore` ([MetaUI.md](MetaUI.md), «Сейв забега»).
-- **`CardsPresenter`** (Presentation, шаг `InitializeUI`, `LateTick`): полоса опыта в HUD (`HudScreen.SetExperience`, «УР. N» под HP); в `Playing` при `Pending` — `OpenNext` → `CardsScreen` + `OpenCards`; выбор → следующее предложение или `CloseCards`; переброс — `AdsService.ShowRewardedAsync("cards_reroll")`.
+- Бустеры (11б): `RunExperience.AddPending(n)` — карточки без повышения уровня (стартовая карточка); `CardSystem.FreeRerolls` / `SetFreeRerolls` / `RerollFree()` — бесплатный переброс (раз на предложение, как обычный), в сейве забега `FreeRerolls`.
+- **`CardsPresenter`** (Presentation, шаг `InitializeUI`, `LateTick`): полоса опыта в HUD (`HudScreen.SetExperience`, «УР. N» под HP); в `Playing` при `Pending` — `OpenNext` → `CardsScreen` + `OpenCards`; выбор → следующее предложение или `CloseCards`; переброс — сначала бесплатный (`RerollFree`, кнопка без значка рекламы), иначе `AdsService.ShowRewardedAsync("cards_reroll")`.
 - **`CardsScreen`** (вёрстка — `RuntimeScenesBuilder.BuildCards`): заголовок, «УРОВЕНЬ N · ВЫБЕРИТЕ КАРТОЧКУ», 3 карточки (рамка и подпись цветом редкости `UiStyle.Rarities`, иконка в кольце, имя, текст, «НОВАЯ» / «УРОВЕНЬ n/max»), «ПЕРЕБРОСИТЬ» с значком рекламы. Клики игнорируются 0,4 с после показа; первая карточка выбрана для геймпада.
 - **Крит** — `CombatFeedbackView` (по `CriticalHit`): число крупнее (`CombatFeedback.CriticalScale`) цветом `CriticalColor`; обычный урон по орде цифр не показывает. Мелкие лечения подряд у игрока складываются в одно число.
 - Тесты — `CardTests` (EditMode).

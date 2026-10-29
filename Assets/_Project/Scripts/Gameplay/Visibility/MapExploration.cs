@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Boosters;
 using Purge.Core.Grid;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
@@ -49,6 +50,8 @@ namespace Purge.Gameplay.Visibility
             if (!_subscribed)
             {
                 Import(_options?.Resume?.Explored);
+                // The booster «Разведка» (stage 11б): a new run starts with every cell explored.
+                if (_options != null && _options.Resume == null && _options.TryGetBoost<ScoutingBoost>(out _)) ExploreAll();
                 _visibility.Changed += OnVisibilityChanged;
                 _subscribed = true;
             }
@@ -84,6 +87,13 @@ namespace Purge.Gameplay.Visibility
 
         /// <summary>The explored cells packed for the run's save: a bit per cell of every floor, Base64.</summary>
         public string Export() => Pack(_explored);
+
+        /// <summary>Every cell of every floor explored (before the map is drawn: no event).</summary>
+        private void ExploreAll()
+        {
+            for (var i = 0; i < _explored.Length; i++) _explored[i] = true;
+            Count = _explored.Length;
+        }
 
         /// <summary>Restores <see cref="Export"/>; a wrong or empty value leaves the map unexplored.</summary>
         private void Import(string packed)

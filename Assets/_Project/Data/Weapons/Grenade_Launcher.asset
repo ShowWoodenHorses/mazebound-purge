@@ -15,6 +15,7 @@ MonoBehaviour:
   _id: grenade_launcher
   _rarity: 2
   _noUpgrades: 0
+  _startPool: 1
   _hold: 4
   _sound: 
   _soundPitch: 1

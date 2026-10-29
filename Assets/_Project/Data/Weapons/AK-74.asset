@@ -15,6 +15,7 @@ MonoBehaviour:
   _id: ak_74
   _rarity: 1
   _noUpgrades: 0
+  _startPool: 1
   _hold: 1
   _sound: rifle_762
   _soundPitch: 1

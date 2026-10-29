@@ -126,6 +126,16 @@ namespace Purge.Editor.Dev
                     issues.Add(new LocalizationCheck.Issue(false, $"Card '{card.Id}' has no text ('{name}{TextKeys.CardTextSuffix}')."));
             }
 
+            foreach (var guid in AssetDatabase.FindAssets("t:" + nameof(Purge.Core.Boosters.BoosterDefinition)))
+            {
+                var booster = AssetDatabase.LoadAssetAtPath<Purge.Core.Boosters.BoosterDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                if (booster == null || string.IsNullOrEmpty(booster.Id)) continue;
+                var name = TextKeys.BoosterPrefix + booster.Id;
+                if (!tableKeys.Contains(name)) issues.Add(new LocalizationCheck.Issue(false, $"Booster '{booster.Id}' has no name ('{name}')."));
+                if (!tableKeys.Contains(name + TextKeys.BoosterTextSuffix))
+                    issues.Add(new LocalizationCheck.Issue(false, $"Booster '{booster.Id}' has no text ('{name}{TextKeys.BoosterTextSuffix}')."));
+            }
+
             var colors = new HashSet<string>();
             foreach (var guid in AssetDatabase.FindAssets("t:" + nameof(VisualSet)))
             {

@@ -18,7 +18,8 @@ namespace Purge.Presentation.UI
     /// from that list until stage 12) has its own caption, its window pauses the level
     /// (<see cref="GameFlowState.Tip"/>; Continue, Enter / Space / gamepad South close it) and its completion shows only
     /// "Tutorial complete" with Next leading to the first level. A saved run (stage 6e): «Продолжить» in the menu, a new run
-    /// (Play, a level, Retry, Next) asks first in <see cref="ConfirmScreen"/>.
+    /// (Play, a level, Retry, Next) asks first in <see cref="ConfirmScreen"/>. Play opens the run's choice and preparation
+    /// (stage 11б, <see cref="RunSetupPresenter"/>) over the menu; Next opens it on the next level.
     /// </summary>
     public sealed class ScreenRouter : IDisposable
     {
@@ -29,13 +30,16 @@ namespace Purge.Presentation.UI
         private readonly LocalizationService _texts;
         private readonly IInputService _input;
         private readonly AccountService _account;
+        private readonly RunSetupPresenter _setup;
         private readonly List<KeyValuePair<string, string>> _devLevels = new List<KeyValuePair<string, string>>();
         private bool _devLevelsOpen;
         private bool _initialized;
 
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
-            LocalizationService texts, IInputService input = null, AccountService account = null)
+            LocalizationService texts, IInputService input = null, AccountService account = null,
+            RunSetupPresenter setup = null)
         {
+            _setup = setup;
             _account = account;
             _input = input;
             _texts = texts;
@@ -66,6 +70,12 @@ namespace Purge.Presentation.UI
             {
                 _ui.DevLevels.LevelSelected += OnLevelSelected;
                 _ui.DevLevels.BackClicked += OnDevLevelsBack;
+            }
+            if (_setup != null)
+            {
+                _setup.Initialize();
+                _setup.FightRequested += OnFightRequested;
+                _setup.BackRequested += OnSetupBack;
             }
             _ui.Error.BackClicked += OnMenuRequested;
             _ui.Hud.PauseClicked += _flow.PauseGameplay;
@@ -108,6 +118,11 @@ namespace Purge.Presentation.UI
                 _ui.DevLevels.LevelSelected -= OnLevelSelected;
                 _ui.DevLevels.BackClicked -= OnDevLevelsBack;
             }
+            if (_setup != null)
+            {
+                _setup.FightRequested -= OnFightRequested;
+                _setup.BackRequested -= OnSetupBack;
+            }
             _ui.Error.BackClicked -= OnMenuRequested;
             _ui.Hud.PauseClicked -= _flow.PauseGameplay;
             _ui.Hud.MapClicked -= _flow.OpenMap;
@@ -139,7 +154,11 @@ namespace Purge.Presentation.UI
             var result = state == GameFlowState.Completed || state == GameFlowState.Failed;
             var error = state == GameFlowState.Error;
 
-            if (!menu) _devLevelsOpen = false;
+            if (!menu)
+            {
+                _devLevelsOpen = false;
+                _setup?.Close();
+            }
             if (menu) RefreshMenus();
             if (inLevel) _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));
             if (result)
@@ -153,8 +172,10 @@ namespace Purge.Presentation.UI
             }
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
-            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen);
+            var setupOpen = _setup != null && _setup.IsOpen;
+            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen);
             if (_ui.DevLevels != null) _ui.DevLevels.SetVisible(menu && _devLevelsOpen);
+            if (_ui.RunSetup != null) _ui.RunSetup.SetVisible(menu && setupOpen);
             _ui.Loading.SetVisible(loading);
             _ui.Hud.SetVisible(inLevel);
             _ui.Pause.SetVisible(state == GameFlowState.Paused);
@@ -263,14 +284,36 @@ namespace Purge.Presentation.UI
         }
 
         /// <summary>
-        /// Play starts the first open level not completed yet at once (one click to gameplay — site rules); when every
-        /// level is completed — the last one (stage 11a; the level and difficulty choice comes in 11b).
+        /// Play opens the run's choice and preparation on the first open level not completed yet (when every level is
+        /// completed — the last one); without that screen (test scenes) it starts that level at once.
         /// </summary>
         private void OnPlayClicked()
         {
             if (_flow.State != GameFlowState.MainMenu) return;
             var next = LevelToPlay();
-            if (next != null) StartNewRun(() => _flow.StartLevel(next).Forget());
+            if (next == null) return;
+            if (_setup != null && _setup.IsAvailable) OpenSetup(next);
+            else StartNewRun(() => _flow.StartLevel(next).Forget());
+        }
+
+        private void OpenSetup(string levelId)
+        {
+            _devLevelsOpen = false;
+            _setup.Open(levelId);
+            Show(_flow.State);
+        }
+
+        private void OnSetupBack()
+        {
+            _setup.Close();
+            Show(_flow.State);
+        }
+
+        /// <summary>«В БОЙ» of the preparation: a new run with the choice (asked first over a saved one).</summary>
+        private void OnFightRequested(string levelId, Gameplay.Level.LevelLaunchOptions options, int cost)
+        {
+            if (_flow.State != GameFlowState.MainMenu) return;
+            StartNewRun(() => _flow.StartLevel(levelId, options, cost).Forget());
         }
 
         /// <summary>«Продолжить»: the saved run (stage 6e).</summary>
@@ -332,10 +375,20 @@ namespace Purge.Presentation.UI
 
         private void OnRetryRequested() => StartNewRun(() => _flow.RetryLevel().Forget());
 
+        /// <summary>Next: the menu with the preparation on the next level (stage 11б); without it — that level at once.</summary>
         private void OnNextRequested()
         {
             var next = NextLevelId();
-            if (next != null) StartNewRun(() => _flow.StartLevel(next).Forget());
+            if (next == null) return;
+            // A level still closed (development builds offer it) is started at once: the preparation shows only open ones.
+            if (_setup != null && _setup.IsAvailable && _progress.IsUnlocked(next)) OpenSetupFromResult(next).Forget();
+            else StartNewRun(() => _flow.StartLevel(next).Forget());
+        }
+
+        private async UniTaskVoid OpenSetupFromResult(string levelId)
+        {
+            await _flow.ExitToMenu();
+            if (_flow.State == GameFlowState.MainMenu) OpenSetup(levelId);
         }
 
         /// <summary>The result's ×2: a rewarded ad, then the run's money once more (stage 6d).</summary>

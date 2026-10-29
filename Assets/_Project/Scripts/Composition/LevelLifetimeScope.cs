@@ -130,7 +130,8 @@ namespace Purge.Composition
             builder.Register<RunExperience>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<CardSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<RunDamage>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
-            // The run's start weapon or a continued run's player (stage 6e): before the views gather what to load.
+            // The run's start weapon and throwable (stage 11б) or a continued run's player (stage 6e): before the views
+            // gather what to load.
             builder.Register<RunLoadout>(Lifetime.Singleton).As<ILevelLoadStep>();
             // The run's waves (stage 6): spawn the horde at the level's spawn points after its tick.
             builder.Register<WaveSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
@@ -140,6 +141,8 @@ namespace Purge.Composition
             builder.Register<RefugeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Checkpoints of the run for its save (stage 6e): after the waves and the run's counters.
             builder.Register<RunCheckpoints>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            // The run's boosters after the player is placed (stage 11б): start card, free rerolls, the medkit at the start.
+            builder.Register<RunBoosters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();

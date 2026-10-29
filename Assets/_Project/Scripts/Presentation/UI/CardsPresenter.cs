@@ -125,6 +125,15 @@ namespace Purge.Presentation.UI
         private void OnRerollClicked()
         {
             if (_flow.State != GameFlowState.Cards || _adShowing || _cards.RerollUsed) return;
+            // A free reroll of the booster (stage 11б) goes first: no ad.
+            if (_cards.RerollFree())
+            {
+                _ui.RequestSound(UiSoundKind.CardReroll);
+                Fill();
+                Screen.Refresh();
+                return;
+            }
+
             RerollAsync(_lifetime.Token).Forget();
         }
 
@@ -175,7 +184,7 @@ namespace Purge.Presentation.UI
                     level <= 0 ? _texts.Get(TextKeys.CardsNew) : _texts.Format(TextKeys.CardsLevel, level + 1, card.MaxLevel));
             }
 
-            screen.SetReroll(!_cards.RerollUsed);
+            screen.SetReroll(!_cards.RerollUsed, _cards.FreeRerolls > 0);
         }
 
         private string NameOf(CardDefinition card)

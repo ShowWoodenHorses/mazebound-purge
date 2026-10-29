@@ -236,6 +236,36 @@ MonoBehaviour:
   - card.card_crit.text
   - menu.continue
   - confirm.new_run
+  - setup.level
+  - setup.difficulty
+  - setup.arena
+  - setup.arena.hint
+  - setup.weapon
+  - setup.throwable
+  - setup.boosters
+  - setup.boosters.locked
+  - setup.total
+  - setup.fight
+  - setup.soon
+  - location.forest
+  - location.castle
+  - location.snow
+  - location.desert
+  - location.volcano
+  - difficulty.easy
+  - difficulty.normal
+  - difficulty.hard
+  - difficulty.unreal
+  - booster.booster_grenades
+  - booster.booster_grenades.text
+  - booster.booster_start_card
+  - booster.booster_start_card.text
+  - booster.booster_medkit
+  - booster.booster_medkit.text
+  - booster.booster_reroll
+  - booster.booster_reroll.text
+  - booster.booster_scouting
+  - booster.booster_scouting.text
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -482,4 +512,35 @@ MonoBehaviour:
   - "+{0}% probabilit\xE0 di danno doppio (proiettili, mischia)"
   - CONTINUA
   - "Iniziare una nuova partita? Quella attuale andr\xE0 persa, il suo denaro resta."
+  - LIVELLO
+  - "DIFFICOLT\xC0"
+  - Arena chiusa
+  - "Le grate si chiudono alle tue spalle nell'arena del boss: nessuna uscita finch\xE9
+    \xE8 vivo."
+  - ARMA
+  - DA LANCIO
+  - POTENZIAMENTI
+  - Si sblocca dopo il livello 1
+  - TOTALE
+  - COMBATTI
+  - PRESTO
+  - FORESTA
+  - CASTELLO
+  - NEVE
+  - DESERTO
+  - VULCANO
+  - FACILE
+  - NORMALE
+  - DIFFICILE
+  - IRREALE
+  - +3 da lancio
+  - "Tre in pi\xF9 della tua arma da lancio all'inizio (granate se non scelta)."
+  - Carta iniziale
+  - Scegli una carta subito all'inizio.
+  - Kit medico
+  - Un kit medico completo resta accanto alla partenza per tutta la partita.
+  - +1 ripescata
+  - "Ripesca le carte una volta senza pubblicit\xE0."
+  - Ricognizione
+  - "Tutta la mappa \xE8 aperta dall'inizio."
   _missing: []

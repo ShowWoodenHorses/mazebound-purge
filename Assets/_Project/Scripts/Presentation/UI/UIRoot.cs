@@ -12,6 +12,7 @@ namespace Purge.Presentation.UI
     {
         [SerializeField] private MainMenuScreen _mainMenu;
         [SerializeField] private DevLevelsScreen _devLevels;
+        [SerializeField] private DevLevelsScreen _cheats;
         [SerializeField] private ArsenalScreen _arsenal;
         public ArsenalScreen Arsenal => _arsenal;
         [SerializeField] private RunSetupScreen _runSetup;
@@ -52,6 +53,7 @@ namespace Purge.Presentation.UI
 
         public MainMenuScreen MainMenu => _mainMenu;
         public DevLevelsScreen DevLevels => _devLevels;
+        public DevLevelsScreen Cheats => _cheats;
 
         /// <summary>The run's choice and preparation (stage 11б); null in scenes without it (tests).</summary>
         public RunSetupScreen RunSetup => _runSetup;

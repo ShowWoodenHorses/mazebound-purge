@@ -14,6 +14,7 @@ namespace Purge.Presentation.UI
     public sealed class DevLevelsScreen : UIScreen
     {
         [SerializeField] private Button _backButton;
+        [SerializeField] private Button _actionButton;
         [SerializeField] private RectTransform _list;
         [SerializeField] private Button _template;
 
@@ -22,10 +23,12 @@ namespace Purge.Presentation.UI
 
         public event Action<string> LevelSelected;
         public event Action BackClicked;
+        public event Action ActionClicked;
 
         private void Awake()
         {
             Bind(_backButton, () => BackClicked?.Invoke());
+            Bind(_actionButton, () => ActionClicked?.Invoke());
             if (_template != null) _template.gameObject.SetActive(false);
         }
 

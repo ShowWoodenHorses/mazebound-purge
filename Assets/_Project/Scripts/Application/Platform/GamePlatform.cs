@@ -317,10 +317,11 @@ namespace Purge.Application.Platform
                 else _platform.GameplayStopped();
             }
 
-            if (state == GameFlowState.Completed) ReportProgress();
+            if (state != GameFlowState.Completed || _flow.IsTestRun) return;
+            ReportProgress();
 
             // Rarely (site rules): only the first time a level is won.
-            if (state == GameFlowState.Completed && _flow.LastResult != null && !_flow.LastWasCompletedBefore &&
+            if (_flow.LastResult != null && !_flow.LastWasCompletedBefore &&
                 !_flow.IsTutorialLevel)
                 _platform.HappyMoment();
         }

@@ -53,6 +53,7 @@ namespace Purge.Application.Platform
         private readonly LevelRunStats _stats;
         private readonly AnalyticsService _analytics;
         private readonly LevelProgress _progress;
+        private readonly GameFlow _flow;
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
         private readonly ZombieSystem _zombies;
@@ -70,9 +71,10 @@ namespace Purge.Application.Platform
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
             TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null,
-            VehicleSystem vehicles = null)
+            VehicleSystem vehicles = null, GameFlow flow = null)
         {
             _vehicles = vehicles;
+            _flow = flow;
             _bosses = bosses;
             _chests = chests;
             _waves = waves;
@@ -172,7 +174,7 @@ namespace Purge.Application.Platform
             parameters["level"] = _levelId;
             parameters["kind"] = chest.Kind.ToString().ToLowerInvariant();
             parameters["wave"] = Wave;
-            _analytics.Send(AnalyticsEvents.ChestOpen);
+            Send(AnalyticsEvents.ChestOpen);
         }
 
         private void OnChallengeDone(Chest chest)
@@ -180,7 +182,7 @@ namespace Purge.Application.Platform
             var parameters = _analytics.Begin();
             parameters["level"] = _levelId;
             parameters["wave"] = Wave;
-            _analytics.Send(AnalyticsEvents.ChallengeDone);
+            Send(AnalyticsEvents.ChallengeDone);
         }
 
         private void OnChestKey(Vector2 at)
@@ -188,7 +190,7 @@ namespace Purge.Application.Platform
             var parameters = _analytics.Begin();
             parameters["level"] = _levelId;
             parameters["wave"] = Wave;
-            _analytics.Send(AnalyticsEvents.ChestKey);
+            Send(AnalyticsEvents.ChestKey);
         }
 
         private string BossId => _bosses.Definition != null ? _bosses.Definition.Id : "unknown";
@@ -201,7 +203,7 @@ namespace Purge.Application.Platform
             parameters["level"] = _levelId;
             parameters["boss"] = BossId;
             parameters["wave"] = Wave;
-            _analytics.Send(AnalyticsEvents.BossStart);
+            Send(AnalyticsEvents.BossStart);
         }
 
         private void OnBossDefeated(int slot, Vector2 at)
@@ -211,7 +213,7 @@ namespace Purge.Application.Platform
             parameters["boss"] = BossId;
             parameters["wave"] = Wave;
             parameters["time"] = Mathf.RoundToInt(_progress.Elapsed - _bossSince);
-            _analytics.Send(AnalyticsEvents.BossKill);
+            Send(AnalyticsEvents.BossKill);
         }
 
         private static string VehicleId(Vehicle vehicle) => vehicle.Definition != null ? vehicle.Definition.Id : "unknown";
@@ -225,7 +227,7 @@ namespace Purge.Application.Platform
             parameters["level"] = _levelId;
             parameters["vehicle"] = VehicleId(vehicle);
             parameters["wave"] = Wave;
-            _analytics.Send(AnalyticsEvents.VehicleEnter);
+            Send(AnalyticsEvents.VehicleEnter);
         }
 
         private void OnVehicleLeft(Vehicle vehicle)
@@ -235,7 +237,7 @@ namespace Purge.Application.Platform
             parameters["vehicle"] = VehicleId(vehicle);
             parameters["hits"] = _vehicles.RamHits - _rideHits;
             parameters["kills"] = _vehicles.RamKills - _rideKills;
-            _analytics.Send(AnalyticsEvents.VehicleRam);
+            Send(AnalyticsEvents.VehicleRam);
         }
 
         private void OnVehicleBroken(Vehicle vehicle)
@@ -245,7 +247,7 @@ namespace Purge.Application.Platform
             parameters["vehicle"] = VehicleId(vehicle);
             parameters["wave"] = Wave;
             parameters["driven"] = vehicle.State == VehicleState.Driven ? 1 : 0;
-            _analytics.Send(AnalyticsEvents.VehicleBroken);
+            Send(AnalyticsEvents.VehicleBroken);
         }
 
         private void OnPickupRemoved(Pickup pickup)
@@ -255,7 +257,7 @@ namespace Purge.Application.Platform
             var parameters = _analytics.Begin();
             parameters["level"] = _levelId;
             parameters["weapon"] = pickup.Weapon.Definition != null ? pickup.Weapon.Definition.Id : "unknown";
-            _analytics.Send(AnalyticsEvents.WeaponPickup);
+            Send(AnalyticsEvents.WeaponPickup);
         }
 
         private void OnTutorialStep(int index)
@@ -265,7 +267,12 @@ namespace Purge.Application.Platform
             parameters["step"] = index + 1;
             parameters["steps"] = _tutorial.StepCount;
             parameters["time"] = Mathf.RoundToInt(_progress.Elapsed);
-            _analytics.Send(AnalyticsEvents.TutorialStep);
+            Send(AnalyticsEvents.TutorialStep);
+        }
+
+        private void Send(string eventName)
+        {
+            if (_flow?.IsTestRun != true) _analytics.Send(eventName);
         }
 
         private void OnAttacked(ZombieRuntime zombie) =>
@@ -315,6 +322,7 @@ namespace Purge.Application.Platform
         private void OnStateChanged(GameFlowState state)
         {
             var level = _flow.CurrentLevelId;
+            if (_flow.IsTestRun) _inRun = false;
             switch (state)
             {
                 case GameFlowState.Loading when level != null:
@@ -325,7 +333,7 @@ namespace Purge.Application.Platform
                     if (_inRun) SendQuit(_previousLevel);
                     if (!_sessionSent) SendSession();
                     break;
-                case GameFlowState.Playing when _previous == GameFlowState.Loading:
+                case GameFlowState.Playing when _previous == GameFlowState.Loading && !_flow.IsTestRun:
                     SendStart(level);
                     break;
                 case GameFlowState.Completed:

@@ -119,6 +119,9 @@ namespace Purge.Presentation.Localization
         public const string PauseExit = "pause.exit";
         public const string PauseDebugComplete = "pause.debug_complete";
         public const string PauseDebugFail = "pause.debug_fail";
+        public const string DevCheats = "dev.cheats";
+        public const string DevMoney = "dev.money";
+        public const string DevAmmo = "dev.ammo";
         public const string ResultComplete = "result.complete";
         public const string ResultFailed = "result.failed";
         public const string ResultWaves = "result.waves";

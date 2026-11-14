@@ -61,6 +61,9 @@ MonoBehaviour:
   - pause.restart
   - pause.exit
   - pause.debug_complete
+  - dev.cheats
+  - dev.money
+  - dev.ammo
   - pause.debug_fail
   - result.complete
   - result.failed
@@ -432,6 +435,9 @@ MonoBehaviour:
   - "\u049A\u0410\u0419\u0422\u0410 \u0411\u0410\u0421\u0422\u0410\u0423"
   - "\u041C\u04D8\u0417\u0406\u0420\u0413\u0415 \u0428\u042B\u0492\u0423"
   - "DEBUG: \u04E8\u0422\u0423"
+  - "\u0427\u0418\u0422\u0422\u0415\u0420"
+  - "+10 000 \u0421\u042B\u041D\u0410\u049A \u0422\u0418\u042B\u041D\u042B"
+  - "\u04D8\u0420 \u0422\u04AE\u0420\u0414\u0415\u041D +100 \u041E\u049A"
   - "DEBUG: \u0416\u0415\u04A2\u0406\u041B\u0406\u0421"
   - "\u0416\u0415\u04A2\u0406\u0421"
   - "\u0416\u0415\u04A2\u0406\u041B\u0406\u0421"

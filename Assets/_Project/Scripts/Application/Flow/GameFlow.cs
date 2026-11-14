@@ -56,6 +56,7 @@ namespace Purge.Application.Flow
         private readonly IProgressService _progress;
         private readonly AdsService _ads;
         private readonly SharedDefinitionsService _shared;
+        private readonly SaveService _save;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private CancellationTokenSource _transition;
@@ -64,12 +65,14 @@ namespace Purge.Application.Flow
         private LevelLaunchOptions _launchOptions = LevelLaunchOptions.Default;
         private int _launchCost;
         private bool _disposed;
+        private bool _usedCheats;
 
         public GameFlow(IReadOnlyList<IApplicationService> services, ILevelCatalog catalog,
             IAddressablesService addressables, ILevelSessionFactory sessionFactory, IProgressService progress,
-            AdsService ads = null, SharedDefinitionsService shared = null)
+            AdsService ads = null, SharedDefinitionsService shared = null, SaveService save = null)
         {
             _shared = shared;
+            _save = save;
             _ads = ads;
             _progress = progress;
             _services = services;
@@ -108,7 +111,7 @@ namespace Purge.Application.Flow
         public bool LastRewardDoubled { get; private set; }
 
         /// <summary>The result window may offer ×2: a run ended with money, not doubled yet.</summary>
-        public bool CanDoubleReward =>
+        public bool CanDoubleReward => !IsTestRun &&
             (State == GameFlowState.Completed || State == GameFlowState.Failed) && !LastRewardDoubled &&
             LastResult is { } result && result.Money > 0;
 
@@ -184,7 +187,8 @@ namespace Purge.Application.Flow
         /// from the pause is given up, its money goes to the save.
         /// </summary>
         public UniTask RetryLevel() =>
-            CurrentLevelId != null ? StartLevel(CurrentLevelId, _launchOptions, _launchCost) : UniTask.CompletedTask;
+            CurrentLevelId == null ? UniTask.CompletedTask : RunTransition($"RetryLevel({CurrentLevelId})",
+                cancellation => StartLevelAsync(CurrentLevelId, _launchOptions, _launchCost, cancellation, _usedCheats));
 
         /// <summary>«Продолжить» (stage 6e): the saved run, in the pause before its wave.</summary>
         public UniTask ContinueRun()
@@ -208,6 +212,31 @@ namespace Purge.Application.Flow
         }
 
         public UniTask ExitToMenu() => OpenMainMenu();
+
+        public bool IsTestRun => _usedCheats || _save?.IsDevProgress == true;
+
+        public bool CanUseCheats => UnityEngine.Debug.isDebugBuild && State == GameFlowState.Paused &&
+                                   _session is ILevelCheats && _shared?.Content != null;
+
+        public void UseCheat(string weaponId)
+        {
+            if (!CanUseCheats || _session is not ILevelCheats cheats) return;
+            var content = _shared.Content;
+            if (weaponId == null)
+            {
+                foreach (var item in content.Items)
+                {
+                    if (item is not Core.Definitions.AmmoDefinition ammo) continue;
+                    _usedCheats = true;
+                    cheats.AddAmmo(ammo, 100);
+                }
+            }
+            else if (content.Find<Core.Definitions.WeaponDefinition>(weaponId) is { } weapon)
+            {
+                _usedCheats = true;
+                cheats.SpawnWeapon(weapon);
+            }
+        }
 
         /// <summary>Starts a loaded level. Called by <see cref="StartLevel"/> once all load steps are done.</summary>
         public void StartGameplay()
@@ -349,11 +378,11 @@ namespace Purge.Application.Flow
         }
 
         private async UniTask StartLevelAsync(string levelId, LevelLaunchOptions options, int boosterCost,
-            CancellationToken cancellation)
+            CancellationToken cancellation, bool testRun = false)
         {
             var fromMenu = State == GameFlowState.MainMenu;
             // Retry from the pause: the run is given up for a new one, its money goes to the save (stage 6e).
-            if (IsRunActive) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
+            if (IsRunActive && !_usedCheats) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
             SetState(GameFlowState.Loading);
             CurrentLevelId = levelId;
             // A retry is a new run: not the continued one again (its difficulty and arena stay); a new seed unless the
@@ -380,6 +409,7 @@ namespace Purge.Application.Flow
 
             // Stop current gameplay, dispose the old LevelScope, release its Addressables.
             await UnloadLevelAsync();
+            _usedCheats = testRun;
 
             // An interstitial before the level (retry, next, from the menu) when the ad policy allows; over the loading screen.
             if (_ads != null) await _ads.ShowBeforeLevelAsync(levelId, fromMenu, cancellation);
@@ -408,10 +438,10 @@ namespace Purge.Application.Flow
                 await _session.LoadAsync(cancellation);
                 cancellation.ThrowIfCancellationRequested();
                 // A new run instead of the saved one: the saved one is given up, its money goes to the save (stage 6e).
-                if (options.Resume == null && _session.IsRun && _progress.HasRun)
+                if (!testRun && options.Resume == null && _session.IsRun && _progress.HasRun)
                     AbandonRun(_progress.LoadRun()?.Money ?? 0);
                 // ТЗ: списание на старте — the boosters are paid once the run is there.
-                if (boosterCost > 0 && !_progress.SpendMoney(boosterCost))
+                if (!testRun && boosterCost > 0 && !_progress.SpendMoney(boosterCost))
                     GameLog.Warning(LogChannel.GameFlow, $"Boosters ({boosterCost}) could not be paid: money {_progress.Money}.");
             }
             catch
@@ -486,10 +516,19 @@ namespace Purge.Application.Flow
             _session.StopGameplay();
             var outcome = result == GameFlowState.Completed ? LevelOutcome.Completed : LevelOutcome.Failed;
             var levelResult = _session.GetResult(outcome);
-            LastResult = levelResult;
+            LastResult = _usedCheats
+                ? new LevelResult(levelResult.Completed, levelResult.Kills, levelResult.Time, levelResult.Waves,
+                    levelResult.WaveCount, revives: levelResult.Revives)
+                : levelResult;
             LastRewardDoubled = false;
             LastWasCompletedBefore = _progress.IsCompleted(CurrentLevelId);
             GameLog.Info(LogChannel.GameFlow, $"Level '{CurrentLevelId}' ended: {levelResult}.");
+
+            if (_usedCheats)
+            {
+                SetState(result);
+                return;
+            }
 
             try
             {
@@ -522,7 +561,7 @@ namespace Purge.Application.Flow
         /// <summary>A checkpoint of the run (a wave started or cleared) goes to the save at once (ТЗ «Продолжение забега»).</summary>
         private void OnRunCheckpoint(Gameplay.Run.RunSnapshot run)
         {
-            if (CurrentLevelId == null) return;
+            if (_usedCheats || CurrentLevelId == null) return;
             try
             {
                 _progress.SaveRun(CurrentLevelId, run.Difficulty, run);

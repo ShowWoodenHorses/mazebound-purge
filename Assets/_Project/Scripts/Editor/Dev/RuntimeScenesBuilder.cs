@@ -311,6 +311,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_cards", BuildCards(parent));
             SetReference(root, "_death", BuildDeath(parent));
             SetReference(root, "_pause", BuildPause(parent));
+            SetReference(root, "_cheats", BuildCheats(parent));
             SetReference(root, "_map", BuildMap(parent));
             SetReference(root, "_result", BuildResult(parent));
             SetReference(root, "_settings", BuildSettings(parent));
@@ -459,6 +460,7 @@ namespace Purge.Editor.Dev
             var back = RoundButton(area, "BackButton", icons.ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
             Text(area, "Title", "DEV LEVELS", 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
                 new Vector2(700f, 60f), TextAlignmentOptions.MidlineLeft, spacing: 16f);
+            SetReference(screen, "_actionButton", DevAction(area, "AddMoneyButton", TextKeys.DevMoney, 480f));
             var list = Rect(area, "List", Center, new Vector2(0f, -40f), new Vector2(1520f, 800f));
             var grid = list.gameObject.AddComponent<GridLayoutGroup>();
             grid.cellSize = new Vector2(350f, 84f);
@@ -1692,6 +1694,38 @@ namespace Purge.Editor.Dev
         }
 
 
+        private static DevLevelsScreen BuildCheats(Transform parent)
+        {
+            var screen = Screen<DevLevelsScreen>(parent, "CheatsScreen", Background);
+            Backdrop(screen.transform);
+            var area = SafeArea(screen.transform);
+            var back = RoundButton(area, "BackButton", UiIcons().ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
+            Text(area, "Title", Loc(TextKeys.DevCheats), 46f, true, TopLeft, new Vector2(0f, 0.5f),
+                new Vector2(172f, -90f), new Vector2(700f, 60f), TextAlignmentOptions.MidlineLeft);
+
+            var panel = Rect(area, "Weapons", Center, new Vector2(0f, -50f), new Vector2(960f, 800f));
+            var list = ScrollColumn(panel);
+            var template = TextButton(list, "Template", "", false, null, 74f, 30f);
+            template.gameObject.SetActive(false);
+
+            SetReference(screen, "_backButton", back);
+            SetReference(screen, "_actionButton", DevAction(area, "AddAmmoButton", TextKeys.DevAmmo, 480f));
+            SetReference(screen, "_list", list);
+            SetReference(screen, "_template", template);
+            return screen;
+        }
+
+        private static Button DevAction(Transform parent, string name, string textKey, float width)
+        {
+            var button = TextButton(parent, name, Loc(textKey), false, null, 70f, 26f);
+            var rect = (RectTransform)button.transform;
+            rect.anchorMin = rect.anchorMax = Vector2.one;
+            rect.pivot = new Vector2(1f, 0.5f);
+            rect.anchoredPosition = new Vector2(-60f, -90f);
+            rect.sizeDelta = new Vector2(width, 70f);
+            return button;
+        }
+
         private static PauseScreen BuildPause(Transform parent)
         {
             var screen = Screen<PauseScreen>(parent, "PauseScreen", Dim);
@@ -1715,6 +1749,9 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_debugGroup", debugGroup.gameObject);
             SetReference(screen, "_debugCompleteButton", complete);
             SetReference(screen, "_debugFailButton", fail);
+            var cheats = DevAction(SafeArea(screen.transform), "CheatsButton", TextKeys.DevCheats, 220f);
+            cheats.gameObject.SetActive(false);
+            SetReference(screen, "_cheatsButton", cheats);
             return screen;
         }
 

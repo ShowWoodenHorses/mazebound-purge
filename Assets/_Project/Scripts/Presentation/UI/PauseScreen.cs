@@ -15,6 +15,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private GameObject _debugGroup;
         [SerializeField] private Button _debugCompleteButton;
         [SerializeField] private Button _debugFailButton;
+        [SerializeField] private Button _cheatsButton;
 
         public event Action ResumeClicked;
         public event Action RetryClicked;
@@ -22,6 +23,13 @@ namespace Purge.Presentation.UI
         public event Action ExitClicked;
         public event Action DebugCompleteClicked;
         public event Action DebugFailClicked;
+
+        public event Action CheatsClicked;
+
+        public void SetCheatsAvailable(bool available)
+        {
+            if (_cheatsButton != null) _cheatsButton.gameObject.SetActive(available);
+        }
 
         private void Awake()
         {
@@ -31,6 +39,7 @@ namespace Purge.Presentation.UI
             Bind(_exitButton, () => ExitClicked?.Invoke());
             Bind(_debugCompleteButton, () => DebugCompleteClicked?.Invoke());
             Bind(_debugFailButton, () => DebugFailClicked?.Invoke());
+            Bind(_cheatsButton, () => CheatsClicked?.Invoke());
             if (_debugGroup != null)
                 _debugGroup.SetActive(Debug.isDebugBuild);
         }

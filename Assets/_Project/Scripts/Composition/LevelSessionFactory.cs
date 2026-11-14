@@ -5,6 +5,10 @@ using Purge.Application.Assets;
 using Purge.Application.Flow;
 using Purge.Core.Common;
 using Purge.Core.Level;
+using Purge.Core.Grid;
+using Purge.Core.Definitions;
+using Purge.Gameplay.Pickups;
+using Purge.Gameplay.Weapons;
 using Purge.Application.Services;
 using Purge.Gameplay.Balance;
 using Purge.Gameplay.Horde;
@@ -106,7 +110,7 @@ namespace Purge.Composition
             return null;
         }
 
-        private sealed class LevelSession : ILevelSession
+        private sealed class LevelSession : ILevelSession, ILevelCheats
         {
             private readonly Scene _scene;
             private readonly IAssetOwner _assets;
@@ -142,6 +146,31 @@ namespace Purge.Composition
             public void SetPaused(bool paused) => _runtime.SetPaused(paused);
 
             public void StopGameplay() => _runtime.Stop();
+
+            public void AddAmmo(AmmoDefinition ammo, int amount) =>
+                _scope.Container.Resolve<AmmoStock>().Add(ammo, amount);
+
+            public void SpawnWeapon(WeaponDefinition weapon)
+            {
+                var player = _scope.Container.Resolve<PlayerSystem>();
+                var pickups = _scope.Container.Resolve<PickupSystem>();
+                var blockers = (IPlayerBlockers)player;
+                var origin = player.Cell;
+                var drop = origin;
+                for (var i = 0; i < 4; i++)
+                {
+                    var dx = i == 0 ? 1 : i == 1 ? -1 : 0;
+                    var dy = i == 2 ? 1 : i == 3 ? -1 : 0;
+                    var cell = new GridPosition(origin.X + dx, origin.Y + dy, origin.Floor);
+                    var center = new Vector2(cell.X, cell.Y);
+                    if (!blockers.IsWalkable(cell) || !blockers.CanEnter(cell) ||
+                        blockers.OverlapsBody(center, 0.25f) || pickups.At(cell).Count != 0) continue;
+                    drop = cell;
+                    break;
+                }
+
+                pickups.DropWeaponItem(new Vector2(drop.X, drop.Y), drop.Floor, weapon, float.PositiveInfinity);
+            }
 
             public LevelResult GetResult(LevelOutcome outcome) => _progress.GetResult(outcome);
 

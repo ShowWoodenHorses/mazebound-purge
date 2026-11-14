@@ -61,6 +61,9 @@ MonoBehaviour:
   - pause.restart
   - pause.exit
   - pause.debug_complete
+  - dev.cheats
+  - dev.money
+  - dev.ammo
   - pause.debug_fail
   - result.complete
   - result.failed
@@ -418,6 +421,9 @@ MonoBehaviour:
   - ULANGI LEVEL
   - KELUAR KE MENU
   - 'DEBUG: SELESAI'
+  - CHEAT
+  - +10 000 KOIN UJI
+  - +100 SETIAP JENIS AMUNISI
   - 'DEBUG: GAGAL'
   - MENANG
   - KALAH

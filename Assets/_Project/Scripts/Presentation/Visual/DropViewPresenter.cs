@@ -57,14 +57,17 @@ namespace Purge.Presentation.Visual
         private Transform _parent;
         private bool _subscribed;
         private readonly LevelData _level;
+        private readonly Application.Services.SharedDefinitionsService _shared;
         private readonly PackEffectsPlayer _effects;
 
         public DropViewPresenter(DropPool pool, PickupSystem pickups, BulletSystem bullets, ThrowableSlot slot,
             VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null,
             CombatVisualDefinition visual = null, PackEmitters emitters = null, LevelData level = null,
-            PackEffectsPlayer effects = null, LevelLaunchOptions options = null)
+            PackEffectsPlayer effects = null, LevelLaunchOptions options = null,
+            Application.Services.SharedDefinitionsService shared = null)
         {
             _options = options;
+            _shared = shared;
             _level = level;
             _effects = effects;
             _visual = visual;
@@ -96,6 +99,9 @@ namespace Purge.Presentation.Visual
                 if (_options.TryGetBoost<Core.Boosters.MedkitBoost>(out var medkit) && medkit.Medkit != null) _items.Add(medkit.Medkit);
             }
             foreach (var item in _pool.Throwables) _items.Add(item);
+            if (Debug.isDebugBuild && _shared?.Content != null)
+                foreach (var item in _shared.Content.Items)
+                    if (item is WeaponDefinition) _items.Add(item);
             if (_items.Count == 0) return;
 
             _parent = new GameObject("Drops").transform;

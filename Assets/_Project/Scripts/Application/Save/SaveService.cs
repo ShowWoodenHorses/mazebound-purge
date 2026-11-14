@@ -61,8 +61,20 @@ namespace Purge.Application.Save
 
         public string Name => "Save";
 
+        private SaveData _data = new SaveData();
+        private SaveData _devData;
+
         /// <summary>Current data; never null after initialization.</summary>
-        public SaveData Data { get; private set; } = new SaveData();
+        public SaveData Data => _devData ?? _data;
+        public bool IsDevProgress => _devData != null;
+
+        /// <summary>Switches to a temporary copy of progress for testing purchases and upgrades.</summary>
+        public bool BeginDevProgress()
+        {
+            if (!Debug.isDebugBuild) return false;
+            _devData ??= Parse(JsonUtility.ToJson(_data));
+            return _devData != null;
+        }
 
         /// <summary>Saves go to the platform's cloud (it answered at start-up).</summary>
         public bool UsesCloud => _cloud != null;
@@ -100,7 +112,7 @@ namespace Purge.Application.Save
             var data = string.IsNullOrEmpty(remote) ? null : Parse(remote);
             if (data != null)
             {
-                Data = data;
+                _data = data;
                 Data.Normalize();
                 WriteLocal(JsonUtility.ToJson(Data)); // the browser's copy follows the cloud
                 GameLog.Info(LogChannel.Save, "Cloud save used.");
@@ -111,7 +123,7 @@ namespace Purge.Application.Save
             if (!string.IsNullOrEmpty(local))
             {
                 GameLog.Info(LogChannel.Save, "Cloud save is empty: the local save is moved there.");
-                await WriteCloudAsync(JsonUtility.ToJson(Data));
+                await WriteCloudAsync(JsonUtility.ToJson(_data));
             }
         }
 
@@ -119,7 +131,7 @@ namespace Purge.Application.Save
 
         private void Load(string json)
         {
-            Data = Parse(json) ?? new SaveData();
+            _data = Parse(json) ?? new SaveData();
             Data.Normalize();
         }
 
@@ -129,6 +141,7 @@ namespace Purge.Application.Save
         /// </summary>
         public bool Save()
         {
+            if (_devData != null) return true;
             var started = System.Diagnostics.Stopwatch.GetTimestamp();
             string json;
             try
@@ -164,6 +177,7 @@ namespace Purge.Application.Save
         /// </summary>
         public async UniTask<bool> MergeCloudAsync(CancellationToken cancellation)
         {
+            if (_devData != null) return false;
             var cloud = _platform?.CloudSave;
             if (cloud == null) return false;
 
@@ -182,6 +196,7 @@ namespace Purge.Application.Save
                 return false;
             }
 
+            if (_devData != null) return false;
             _cloud = cloud;
             var data = string.IsNullOrEmpty(remote) ? null : Parse(remote);
             if (data != null)
@@ -205,7 +220,7 @@ namespace Purge.Application.Save
         {
             if (_cloud == null || !_cloudDirty) return UniTask.CompletedTask;
             _cloudDirty = false;
-            return WriteCloudAsync(JsonUtility.ToJson(Data));
+            return WriteCloudAsync(JsonUtility.ToJson(_data));
         }
 
         public void Dispose()
@@ -225,7 +240,7 @@ namespace Purge.Application.Save
                         _lifetime.Token);
                     if (!_cloudDirty) break; // flushed meanwhile
                     _cloudDirty = false;
-                    await WriteCloudAsync(JsonUtility.ToJson(Data));
+                    await WriteCloudAsync(JsonUtility.ToJson(_data));
                 }
             }
             catch (OperationCanceledException)
@@ -272,7 +287,8 @@ namespace Purge.Application.Save
         /// <summary>Forgets all progress and settings.</summary>
         public void ResetAll()
         {
-            Data = new SaveData();
+            if (_devData != null) _devData = new SaveData();
+            else _data = new SaveData();
             Save();
             GameLog.Info(LogChannel.Save, "Save data reset.");
         }

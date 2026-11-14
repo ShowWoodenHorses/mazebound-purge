@@ -7,6 +7,12 @@ using Purge.Gameplay.Level;
 
 namespace Purge.Application.Flow
 {
+    public interface ILevelCheats
+    {
+        void AddAmmo(Core.Definitions.AmmoDefinition ammo, int amount);
+        void SpawnWeapon(Core.Definitions.WeaponDefinition weapon);
+    }
+
     /// <summary>
     /// The active level: its LevelScope, scene and level-specific assets. Created by
     /// <see cref="ILevelSessionFactory"/>; the composition root knows how scopes are built, GameFlow does not.

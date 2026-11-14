@@ -36,6 +36,7 @@ namespace Purge.Presentation.Visual
         private readonly DropPool _drops;
         private readonly PlayerDefinition _player;
         private readonly LevelLaunchOptions _options;
+        private readonly Application.Services.SharedDefinitionsService _shared;
 
         private CharacterWeaponRig _rig;
         private GameObject _shown;
@@ -46,9 +47,10 @@ namespace Purge.Presentation.Visual
 
         public PlayerWeaponPresenter(LevelData level, PlayerViewPresenter playerView, WeaponSystem weapons,
             WeaponVisualCatalog catalog, IAssetOwner assets, DropPool drops = null, PlayerDefinition player = null,
-            LevelLaunchOptions options = null)
+            LevelLaunchOptions options = null, Application.Services.SharedDefinitionsService shared = null)
         {
             _options = options;
+            _shared = shared;
             _drops = drops;
             _player = player;
             _level = level;
@@ -81,6 +83,9 @@ namespace Purge.Presentation.Visual
             for (var i = 0; i < 2; i++) _wanted.Add(_weapons.Get((WeaponSlot)i)?.Definition); // a continued run's
             if (_drops != null) _wanted.AddRange(_drops.Weapons);
             if (_player != null) _wanted.Add(_player.BaseWeapon);
+            if (Debug.isDebugBuild && _shared?.Content != null)
+                foreach (var item in _shared.Content.Items)
+                    if (item is WeaponDefinition weapon) _wanted.Add(weapon);
             foreach (var definition in _wanted)
             {
                 if (definition == null || _prefabs.ContainsKey(definition)) continue;

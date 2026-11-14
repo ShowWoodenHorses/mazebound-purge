@@ -33,14 +33,21 @@ namespace Purge.Presentation.UI
         private readonly RunSetupPresenter _setup;
         private readonly ArsenalPresenter _arsenal;
         private readonly List<KeyValuePair<string, string>> _devLevels = new List<KeyValuePair<string, string>>();
+        private readonly SaveService _save;
+        private readonly SharedDefinitionsService _shared;
+        private readonly List<KeyValuePair<string, string>> _cheatWeapons = new List<KeyValuePair<string, string>>();
+        private bool _cheatsOpen;
         private bool _devLevelsOpen;
         private bool _initialized;
 
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
             LocalizationService texts, IInputService input = null, AccountService account = null,
-            RunSetupPresenter setup = null, ArsenalPresenter arsenal = null)
+            RunSetupPresenter setup = null, ArsenalPresenter arsenal = null, SaveService save = null,
+            SharedDefinitionsService shared = null)
         {
             _arsenal = arsenal;
+            _save = save;
+            _shared = shared;
             _setup = setup;
             _account = account;
             _input = input;
@@ -74,6 +81,7 @@ namespace Purge.Presentation.UI
             {
                 _ui.DevLevels.LevelSelected += OnLevelSelected;
                 _ui.DevLevels.BackClicked += OnDevLevelsBack;
+                _ui.DevLevels.ActionClicked += AddDevMoney;
             }
             if (_setup != null)
             {
@@ -90,6 +98,13 @@ namespace Purge.Presentation.UI
             _ui.Pause.ExitClicked += OnMenuRequested;
             _ui.Pause.DebugCompleteClicked += _flow.CompleteLevel;
             _ui.Pause.DebugFailClicked += _flow.FailLevel;
+            _ui.Pause.CheatsClicked += OpenCheats;
+            if (_ui.Cheats != null)
+            {
+                _ui.Cheats.LevelSelected += _flow.UseCheat;
+                _ui.Cheats.ActionClicked += AddCheatAmmo;
+                _ui.Cheats.BackClicked += CloseCheats;
+            }
             _ui.Result.RetryClicked += OnRetryRequested;
             _ui.Result.MenuClicked += OnMenuRequested;
             _ui.Result.NextClicked += OnNextRequested;
@@ -123,6 +138,7 @@ namespace Purge.Presentation.UI
             {
                 _ui.DevLevels.LevelSelected -= OnLevelSelected;
                 _ui.DevLevels.BackClicked -= OnDevLevelsBack;
+                _ui.DevLevels.ActionClicked -= AddDevMoney;
             }
             if (_setup != null)
             {
@@ -138,6 +154,13 @@ namespace Purge.Presentation.UI
             _ui.Pause.ExitClicked -= OnMenuRequested;
             _ui.Pause.DebugCompleteClicked -= _flow.CompleteLevel;
             _ui.Pause.DebugFailClicked -= _flow.FailLevel;
+            _ui.Pause.CheatsClicked -= OpenCheats;
+            if (_ui.Cheats != null)
+            {
+                _ui.Cheats.LevelSelected -= _flow.UseCheat;
+                _ui.Cheats.ActionClicked -= AddCheatAmmo;
+                _ui.Cheats.BackClicked -= CloseCheats;
+            }
             _ui.Result.RetryClicked -= OnRetryRequested;
             _ui.Result.MenuClicked -= OnMenuRequested;
             _ui.Result.NextClicked -= OnNextRequested;
@@ -185,7 +208,11 @@ namespace Purge.Presentation.UI
             if (_ui.RunSetup != null) _ui.RunSetup.SetVisible(menu && setupOpen);
             _ui.Loading.SetVisible(loading);
             _ui.Hud.SetVisible(inLevel);
-            _ui.Pause.SetVisible(state == GameFlowState.Paused);
+            var paused = state == GameFlowState.Paused;
+            if (!paused) _cheatsOpen = false;
+            _ui.Pause.SetCheatsAvailable(_ui.Cheats != null && _flow.CanUseCheats);
+            _ui.Pause.SetVisible(paused && !_cheatsOpen);
+            if (_ui.Cheats != null) _ui.Cheats.SetVisible(paused && _cheatsOpen);
             _ui.Result.SetVisible(result);
             _ui.Error.SetVisible(error);
             _ui.Map.SetVisible(state == GameFlowState.Map);
@@ -362,6 +389,38 @@ namespace Purge.Presentation.UI
                 if (_progress.IsUnlocked(level.LevelId) && !_progress.IsCompleted(level.LevelId))
                     return level.LevelId;
             return levels.Count > 0 ? levels[levels.Count - 1].LevelId : null;
+        }
+
+        private void AddDevMoney()
+        {
+            if (_flow.State != GameFlowState.MainMenu || !_devLevelsOpen || _save?.BeginDevProgress() != true) return;
+            _progress.AddMoney(10_000);
+            _ui.MainMenu.SetMoney(_progress.Money);
+        }
+
+        private void OpenCheats()
+        {
+            if (!_flow.CanUseCheats || _ui.Cheats == null || _shared?.Content == null) return;
+            _cheatWeapons.Clear();
+            foreach (var item in _shared.Content.Items)
+            {
+                if (item is not Core.Definitions.WeaponDefinition weapon) continue;
+                var key = TextKeys.WeaponPrefix + weapon.Id;
+                var caption = _texts.Has(key) ? _texts.Get(key) : weapon.Id.Replace('_', ' ');
+                _cheatWeapons.Add(new KeyValuePair<string, string>(weapon.Id, caption));
+            }
+
+            _ui.Cheats.SetLevels(_cheatWeapons);
+            _cheatsOpen = true;
+            Show(_flow.State);
+        }
+
+        private void AddCheatAmmo() => _flow.UseCheat(null);
+
+        private void CloseCheats()
+        {
+            _cheatsOpen = false;
+            Show(_flow.State);
         }
 
         private void OnDevLevelsBack()

@@ -86,6 +86,73 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
+        public IEnumerator DevCheats_ButtonsChangeTestStateWithoutSavingIt() => Async(async () =>
+        {
+            if (!Debug.isDebugBuild) Assert.Ignore("Development UI only.");
+            const string levelId = "Level_Run";
+            if (_container.Resolve<ILevelCatalog>().Find(levelId) == null) Assert.Ignore("Dev run level missing.");
+            var savedJson = PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key, null);
+            var save = _container.Resolve<SaveService>();
+            var progress = _container.Resolve<IProgressService>();
+            var ui = _container.Resolve<UIRoot>();
+            Button ButtonNamed(Component screen, string name) =>
+                screen.GetComponentsInChildren<Button>(true).Single(button => button.name == name);
+
+            try
+            {
+                await _flow.StartLevel(levelId, new LevelLaunchOptions(startIndex: 0));
+                Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+                _flow.PauseGameplay();
+                ButtonNamed(ui.Pause, "CheatsButton").onClick.Invoke();
+                Assert.IsTrue(ui.Cheats.IsVisible);
+                Assert.IsFalse(ui.Pause.IsVisible);
+
+                var content = _container.Resolve<SharedDefinitionsService>().Content;
+                var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+                var stock = level.Resolve<Purge.Gameplay.Weapons.AmmoStock>();
+                var ammo = content.Items.OfType<AmmoDefinition>().ToArray();
+                Assert.IsNotEmpty(ammo);
+                var before = ammo.Select(stock.Get).ToArray();
+                ButtonNamed(ui.Cheats, "AddAmmoButton").onClick.Invoke();
+                CollectionAssert.AreEqual(before.Select(count => count + 100), ammo.Select(stock.Get));
+
+                var weapons = content.Items.OfType<WeaponDefinition>().ToArray();
+                Assert.AreEqual(weapons.Length, ui.Cheats.GetComponentsInChildren<Button>()
+                    .Count(button => button.name.StartsWith("Level")));
+                var pickups = level.Resolve<PickupSystem>();
+                ButtonNamed(ui.Cheats, "Level0").onClick.Invoke();
+                var drops = new System.Collections.Generic.List<Pickup>();
+                pickups.GetAll(drops);
+                var spawned = drops.Single(pickup => pickup.IsDropped && pickup.Weapon?.Definition.Id == weapons[0].Id);
+                var origin = level.Resolve<PlayerSystem>().Cell;
+                Assert.AreEqual(origin.Floor, spawned.Cell.Floor);
+                Assert.LessOrEqual(Math.Abs(origin.X - spawned.Cell.X) + Math.Abs(origin.Y - spawned.Cell.Y), 1);
+
+                ButtonNamed(ui.Cheats, "BackButton").onClick.Invoke();
+                Assert.IsTrue(ui.Pause.IsVisible);
+                var cleanProgress = JsonUtility.ToJson(save.Data);
+                _flow.CompleteLevel();
+                Assert.AreEqual(cleanProgress, JsonUtility.ToJson(save.Data));
+                Assert.IsFalse(_flow.CanDoubleReward);
+
+                await _flow.ExitToMenu();
+                ButtonNamed(ui.MainMenu, "DevButton").onClick.Invoke();
+                Assert.IsTrue(ui.DevLevels.IsVisible);
+                var persisted = PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key, null);
+                var balance = progress.Money;
+                ButtonNamed(ui.DevLevels, "AddMoneyButton").onClick.Invoke();
+                Assert.AreEqual(Math.Min((long)balance + 10_000, int.MaxValue), progress.Money);
+                Assert.AreEqual(persisted, PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key, null));
+            }
+            finally
+            {
+                if (savedJson == null) PlayerPrefs.DeleteKey(PlayerPrefsSaveStorage.Key);
+                else PlayerPrefs.SetString(PlayerPrefsSaveStorage.Key, savedJson);
+                PlayerPrefs.Save();
+            }
+        });
+
+        [UnityTest]
         public IEnumerator Arsenal_AllClasses_PreviewReleasesHandles() => Async(async () =>
         {
             var arsenal = _container.Resolve<Purge.Presentation.UI.ArsenalPresenter>();
@@ -301,8 +368,12 @@ namespace Purge.Tests.PlayMode
                 "The base pistol of the empty slot is in hands.");
             var hands = container.Resolve<PlayerViewPresenter>().View.GetComponentsInChildren<Transform>(true)
                 .Where(t => t.name.StartsWith("Weapon ")).ToList();
-            Assert.AreEqual(level.Weapons.Select(w => w.Definition.Id).Append(baseWeapon.Id).Distinct().Count(), hands.Count,
-                "Every weapon of the level and the base pistol are created in hands while loading.");
+            var expectedHeld = level.Weapons.Select(w => w.Definition.Id).Append(baseWeapon.Id);
+            if (Debug.isDebugBuild)
+                expectedHeld = expectedHeld.Concat(_container.Resolve<SharedDefinitionsService>().Content.Items
+                    .OfType<WeaponDefinition>().Select(w => w.Id));
+            CollectionAssert.AreEquivalent(expectedHeld.Distinct().Select(id => "Weapon " + id), hands.Select(t => t.name),
+                "Level weapons, the base pistol and dev catalog weapons are warmed before play.");
             Assert.IsTrue(hands.All(t => !t.gameObject.activeSelf || t.name == "Weapon " + baseWeapon.Id),
                 "Not held yet: hidden (only the base pistol is in hands).");
 

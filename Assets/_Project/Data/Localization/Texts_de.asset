@@ -61,6 +61,9 @@ MonoBehaviour:
   - pause.restart
   - pause.exit
   - pause.debug_complete
+  - dev.cheats
+  - dev.money
+  - dev.ammo
   - pause.debug_fail
   - result.complete
   - result.failed
@@ -418,6 +421,9 @@ MonoBehaviour:
   - NEU STARTEN
   - "ZUM MEN\xDC"
   - 'DEBUG: ABSCHLIESSEN'
+  - CHEATS
+  - "+10 000 TESTM\xDCNZEN"
+  - +100 JE MUNITIONSTYP
   - 'DEBUG: SCHEITERN'
   - SIEG
   - NIEDERLAGE

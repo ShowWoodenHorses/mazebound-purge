@@ -14,6 +14,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: pistol_silencer
   _purchasePrice: 560
+  _upgradeBurn: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
+  _upgradeFreeze: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+  _upgradeExplosion:
+    _interval: 0.9
+    _automatic: 0
+    _speed: 14
+    _range: 10
+    _directDamage: 20
+    _explosionDamage: 60
+    _radius: 2
+    _edgeDamage: 0.3
+    _explosionLook:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  _upgradeParameters:
+  - Name: burn_damage_share_per_second
+    Value: 0.1
+  - Name: burn_seconds
+    Value: 3
+  - Name: cluster_count
+    Value: 3
+  - Name: cluster_damage_share
+    Value: 0.2
+  - Name: cluster_radius_share
+    Value: 0.5
+  - Name: double_shot_chance
+    Value: 0.2
+  - Name: explosive_damage_share
+    Value: 0.35
+  - Name: explosive_every
+    Value: 5
+  - Name: explosive_radius
+    Value: 1.5
+  - Name: lifesteal_max_hp_per_second_share
+    Value: 0.02
+  - Name: lifesteal_share
+    Value: 0.03
+  - Name: ramp_max_rate_factor
+    Value: 1.5
+  - Name: ramp_reset_seconds
+    Value: 0.6
+  - Name: ramp_seconds
+    Value: 3
+  - Name: range_factor
+    Value: 1.3
+  - Name: ricochet_damage_share
+    Value: 0.5
+  - Name: ricochet_range
+    Value: 4
+  - Name: shatter_damage_factor
+    Value: 1.5
+  - Name: wide_angle_factor
+    Value: 1.5
+  _upgradeDamage:
+  - 1.08
+  - 1.167
+  - 1.26
+  - 1.361
+  - 1.47
+  - 1.587
+  - 1.714
+  - 1.852
+  - 2
+  _fork4:
+    First: 1
+    Second: 2
+  _fork8:
+    First: 3
+    Second: 4
+  _upgradeCosts: 6e0000008c000000b4000000e60000002c01000086010000fe010000940200005c030000
   _uniqueReward: 0
   _arsenalClass: 0
   _rarity: 0

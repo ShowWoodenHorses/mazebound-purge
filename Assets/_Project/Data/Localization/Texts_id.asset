@@ -347,6 +347,29 @@ MonoBehaviour:
   - weapon.tesla
   - weapon.vector_silencer
   - arsenal.symbols
+  - upgrade.buy
+  - upgrade.choose
+  - upgrade.unavailable
+  - upgrade.None
+  - upgrade.Pierce
+  - upgrade.DoubleShot
+  - upgrade.FullMagazineCritical
+  - upgrade.Ricochet
+  - upgrade.Magazine
+  - upgrade.Ramp
+  - upgrade.ExplosiveRounds
+  - upgrade.Burn
+  - upgrade.Knockback
+  - upgrade.Wide
+  - upgrade.Silent
+  - upgrade.Duration
+  - upgrade.Range
+  - upgrade.Chain
+  - upgrade.Electrify
+  - upgrade.Radius
+  - upgrade.Cluster
+  - upgrade.Lifesteal
+  - upgrade.Shatter
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -721,4 +744,27 @@ MonoBehaviour:
   - Tesla
   - Vector (silenced)
   - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
+  - Tingkatkan
+  - Pilih pengubah
+  - Peningkatan tidak tersedia
+  - Tidak ada
+  - Penetrasi
+  - Tembakan ganda
+  - Kritis saat magasin penuh
+  - Pantulan
+  - Magasin +50%
+  - Laju tembak meningkat
+  - Peluru peledak
+  - Pembakaran
+  - Dorongan x2
+  - Sektor lebar
+  - Senyap
+  - Durasi zona +50%
+  - Jangkauan +30%
+  - Rantai +2
+  - Nanti
+  - Radius +30%
+  - Ledakan kluster
+  - Curi nyawa
+  - Pecah
   _missing: []

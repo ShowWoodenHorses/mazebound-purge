@@ -14,11 +14,17 @@ namespace Purge.Presentation.UI
         [SerializeField] private Button _template;
         [SerializeField] private ArsenalPreview _preview;
         private readonly List<Button> _tiles = new List<Button>();
+        [SerializeField] private Button _upgrade, _fork4a, _fork4b, _fork8a, _fork8b;
+        public event Action UpgradeClicked;
+        public event Action<int,int> ForkClicked;
         public ArsenalPreview Preview => _preview;
         public event Action BackClicked, PreviousClicked, NextClicked, BuyClicked, FavoriteClicked, ExcludeClicked;
         public event Action<int> Selected;
         private void Awake()
         {
+            Bind(_upgrade,()=>UpgradeClicked?.Invoke());
+            Bind(_fork4a,()=>ForkClicked?.Invoke(4,0));Bind(_fork4b,()=>ForkClicked?.Invoke(4,1));
+            Bind(_fork8a,()=>ForkClicked?.Invoke(8,0));Bind(_fork8b,()=>ForkClicked?.Invoke(8,1));
             Bind(_back, () => BackClicked?.Invoke()); Bind(_previous, () => PreviousClicked?.Invoke());
             Bind(_next, () => NextClicked?.Invoke()); Bind(_buy, () => BuyClicked?.Invoke());
             Bind(_favorite, () => FavoriteClicked?.Invoke()); Bind(_exclude, () => ExcludeClicked?.Invoke());
@@ -39,6 +45,13 @@ namespace Purge.Presentation.UI
                 var icon = tile.transform.Find("Icon").GetComponent<Image>(); icon.sprite = icons[i]; icon.enabled = icons[i] != null;
                 tile.GetComponent<Purge.Presentation.UI.Style.UiButton>().Accent = i == selected;
             }
+        }
+        public void Upgrades(string label, bool enabled, string[] labels, bool[] available)
+        {
+            if(_upgrade==null)return;
+            _upgrade.GetComponentInChildren<TMP_Text>(true).text=label;_upgrade.interactable=enabled;
+            var buttons=new[]{_fork4a,_fork4b,_fork8a,_fork8b};
+            for(int i=0;i<4;i++){buttons[i].gameObject.SetActive(labels[i]!=null);buttons[i].GetComponentInChildren<TMP_Text>(true).text=labels[i]??"";buttons[i].interactable=available[i];}
         }
         public void Card(string title, string details, string status, string buy, string favorite, string exclude, bool canBuy, bool open)
         {

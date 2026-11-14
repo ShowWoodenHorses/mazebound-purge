@@ -93,6 +93,8 @@ namespace Purge.Gameplay.Run
                 var definition = string.IsNullOrEmpty(id) ? null : Find<WeaponDefinition>(id);
                 var ammo = i < run.Ammo.Length ? run.Ammo[i] : 0;
                 _weapons.Restore((WeaponSlot)i, definition != null ? _pickups.CreateWeapon(definition) : null, ammo);
+                var restored=_weapons.Get((WeaponSlot)i);
+                if(restored!=null)restored.Shots=run.WeaponShots!=null && i<run.WeaponShots.Length?System.Math.Max(0,run.WeaponShots[i]):0;
             }
 
             _weapons.RestoreActive(run.ActiveSlot == 1 ? WeaponSlot.Second : WeaponSlot.First);
@@ -230,6 +232,7 @@ namespace Purge.Gameplay.Run
                 var weapon = _weapons.Get((WeaponSlot)i);
                 run.Weapons[i] = weapon == null || weapon.IsBase ? null : weapon.Definition.Id;
                 run.Ammo[i] = weapon?.Ammo ?? 0;
+                run.WeaponShots[i] = weapon?.Shots ?? 0;
             }
 
             // Level objects (stage 7в): what is gone or opened stays so; a challenge still on is not opened yet.

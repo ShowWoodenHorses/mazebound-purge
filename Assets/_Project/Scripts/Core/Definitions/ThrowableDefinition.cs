@@ -17,6 +17,18 @@ namespace Purge.Core.Definitions
     {
         [SerializeField, Min(0)] private int _purchasePrice;
         public int PurchasePrice => _purchasePrice;
+        [SerializeField] private bool _noUpgrades;
+        [SerializeField] private float[] _upgradeDamage = System.Array.Empty<float>(), _upgradeRadius = System.Array.Empty<float>();
+        [SerializeField] private int[] _upgradeStack = System.Array.Empty<int>();
+        public bool Upgradable => !_noUpgrades;
+        public float UpgradeDamage(int level) => Upgradable && level >= 1 && level <= _upgradeDamage.Length ? UnityEngine.Mathf.Max(1f,_upgradeDamage[level-1]) : 1f;
+        public float UpgradeRadius(int level) => Upgradable && level >= 1 && level <= _upgradeRadius.Length ? UnityEngine.Mathf.Max(1f,_upgradeRadius[level-1]) : 1f;
+        public int UpgradeStack(int level) => Upgradable && level >= 1 && level <= _upgradeStack.Length ? System.Math.Max(0,_upgradeStack[level-1]) : 0;
+
+        [SerializeField] private int[] _upgradeCosts = System.Array.Empty<int>();
+        public int UpgradeCost(int targetLevel) => targetLevel >= 2 && targetLevel - 2 < _upgradeCosts.Length
+            ? System.Math.Max(0, _upgradeCosts[targetLevel - 2]) : 0;
+
 
         [SerializeField] private Rarity _rarity;
 

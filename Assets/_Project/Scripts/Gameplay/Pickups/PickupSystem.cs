@@ -151,13 +151,14 @@ namespace Purge.Gameplay.Pickups
         private readonly List<Pickup> _attracted = new List<Pickup>();
         private bool _subscribed;
         private int _nextDrop;
+        private readonly IItemUpgrades _upgrades;
         private float _expiryTimer;
         private float _magnetTimer;
 
         public PickupSystem(LevelData level, PlayerSystem player, PlayerHealth health, PlayerInventory inventory, WeaponSystem weapons,
-            SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null)
+            SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null, IItemUpgrades upgrades = null)
         {
-            _sounds = sounds;
+            _sounds = sounds; _upgrades=upgrades;
             _level = level;
             _player = player;
             _health = health;
@@ -230,7 +231,7 @@ namespace Purge.Gameplay.Pickups
             foreach (var medkit in _level.Medkits)
                 Place(new Pickup(PickupKind.Medkit, medkit.Position, medkit: medkit));
             foreach (var weapon in _level.Weapons)
-                Place(new Pickup(PickupKind.Weapon, weapon.Position, weapon: new WeaponRuntime(weapon)));
+                Place(new Pickup(PickupKind.Weapon, weapon.Position, weapon: new WeaponRuntime(weapon,upgrades:_upgrades)));
 
             if (!_subscribed)
             {
@@ -364,6 +365,18 @@ namespace Purge.Gameplay.Pickups
                 if (pickup.Kind != PickupKind.Weapon || only != null && pickup != only) continue;
 
                 Take(pickup, taken: true);
+                var definition=pickup.Weapon.Definition;
+                bool duplicate=false;
+                for(int slot=0;slot<2;slot++)
+                {
+                    var held=_weapons.Get((WeaponSlot)slot);
+                    if(held!=null && held.Definition.Id==definition.Id) duplicate=true;
+                }
+                if(duplicate && definition.UsesAmmo)
+                {
+                    _ammo.Add(definition.Ammo.Ammo,Math.Max(1,definition.MagazineSize));
+                    return true;
+                }
                 var dropped = _weapons.Equip(pickup.Weapon);
                 GameLog.Info(LogChannel.Gameplay, $"Picked up weapon '{pickup.Id}'.");
                 if (dropped != null) AddWeapon(cell, dropped);
@@ -450,7 +463,7 @@ namespace Purge.Gameplay.Pickups
         /// a fresh drop id, full magazine.
         /// </summary>
         public WeaponRuntime CreateWeapon(WeaponDefinition weapon, GridPosition cell = default) =>
-            new WeaponRuntime(new WeaponPickupData(NextId(), cell, weapon), dropped: true);
+            new WeaponRuntime(new WeaponPickupData(NextId(), cell, weapon), dropped: true, upgrades:_upgrades);
 
         /// <summary>
         /// Every monsters' drop still lying disappears (not taken; the views show it vanish) — the next wave starts

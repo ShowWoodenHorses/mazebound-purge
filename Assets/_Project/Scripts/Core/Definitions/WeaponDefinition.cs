@@ -52,6 +52,28 @@ namespace Purge.Core.Definitions
 
         [SerializeField, Min(0)] private int _purchasePrice;
         public int PurchasePrice => _purchasePrice;
+        [SerializeField] private Purge.Core.Effects.StatusDefinition _upgradeBurn, _upgradeFreeze;
+        [SerializeField] private ExplosiveAttack _upgradeExplosion = new ExplosiveAttack();
+        public Purge.Core.Effects.StatusDefinition UpgradeBurn => _upgradeBurn;
+        public Purge.Core.Effects.StatusDefinition UpgradeFreeze => _upgradeFreeze;
+        public ExplosiveAttack UpgradeExplosion => _upgradeExplosion;
+
+        [SerializeField] private UpgradeParameter[] _upgradeParameters = System.Array.Empty<UpgradeParameter>();
+        public float UpgradeParameter(string name)
+        {
+            for(int i=0;i<_upgradeParameters.Length;i++)if(_upgradeParameters[i].Name==name)return _upgradeParameters[i].Value;
+            return 0f;
+        }
+
+        [SerializeField] private float[] _upgradeDamage = System.Array.Empty<float>();
+        [SerializeField] private UpgradeFork _fork4 = new UpgradeFork(), _fork8 = new UpgradeFork();
+        public UpgradeFork Fork(int level) => level == 4 ? _fork4 : level == 8 ? _fork8 : null;
+        public float UpgradeDamage(int level) => level >= 2 && level - 2 < _upgradeDamage.Length ? UnityEngine.Mathf.Max(1f, _upgradeDamage[level - 2]) : 1f;
+
+        [SerializeField] private int[] _upgradeCosts = System.Array.Empty<int>();
+        public int UpgradeCost(int targetLevel) => targetLevel >= 2 && targetLevel - 2 < _upgradeCosts.Length
+            ? System.Math.Max(0, _upgradeCosts[targetLevel - 2]) : 0;
+
         [SerializeField] private bool _uniqueReward;
         [SerializeField] private ArsenalClass _arsenalClass;
         public bool UniqueReward => _uniqueReward;

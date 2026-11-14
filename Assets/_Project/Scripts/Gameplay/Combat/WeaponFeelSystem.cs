@@ -24,11 +24,12 @@ namespace Purge.Gameplay.Combat
         private readonly HordeSystem _horde;
         private readonly FeelChannels _channels;
         private bool _subscribed;
+        private readonly IItemUpgrades _upgrades;
 
         public WeaponFeelSystem(CombatTargets targets, PlayerCombat combat, PlayerSystem player, HordeSystem horde = null,
-            FeelChannels channels = null)
+            FeelChannels channels = null, IItemUpgrades upgrades = null)
         {
-            _targets = targets;
+            _targets = targets; _upgrades = upgrades;
             _combat = combat;
             _player = player;
             _horde = horde;
@@ -76,7 +77,7 @@ namespace Purge.Gameplay.Combat
                 return;
             }
 
-            _horde.Push(target.Agent, push * (feel.Knockback * _channels[FeelChannel.Knockback]));
+            _horde.Push(target.Agent, push * (feel.Knockback * _channels[FeelChannel.Knockback] * (_upgrades!=null && _upgrades.Has(weapon,WeaponUpgrade.Knockback)?2f:1f)));
             _horde.Stagger(target.Agent, feel.Stagger * _channels[FeelChannel.Stagger]);
         }
     }

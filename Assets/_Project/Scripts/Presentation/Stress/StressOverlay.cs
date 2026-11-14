@@ -123,6 +123,7 @@ namespace Purge.Presentation.Stress
 
             if (sandbox)
             {
+                Text(Row(bodyRect,"11g"),"Arsenal upgrades / forks apply to held weapons",18f);
                 var perception = Row(bodyRect, "Percept");
                 Toggle(perception, "AllHunt", () => controller.AllHunters, v => controller.AllHunters = v);
                 Button(perception, "+Wander", controller.SpawnWanderers, null);

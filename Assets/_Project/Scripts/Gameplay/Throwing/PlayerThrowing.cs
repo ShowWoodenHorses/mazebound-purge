@@ -256,7 +256,7 @@ namespace Purge.Gameplay.Throwing
         {
             var definition = bullet.Throwable;
             if (definition == null || end == BulletEnd.Cleared) return;
-            _effects.Apply(definition.Effects, point, bullet.Floor);
+            _effects.Apply(definition.Effects, point, bullet.Floor, damageFactor: _slot.DamageFactor(definition), radiusFactor: _slot.RadiusFactor(definition));
             Landed?.Invoke(definition, point);
         }
 

@@ -282,6 +282,7 @@ namespace Purge.Tests.EditMode.Monsters
             run.Cards.Add("vitality");
             run.Weapons[1] = "rifle";
             run.Ammo[1] = 7;
+            run.WeaponShots[1] = 19;
             Load(new LevelLaunchOptions(resume: run));
 
             Assert.That(_wallet.Money, Is.EqualTo(42));
@@ -296,6 +297,7 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(_weapons.ActiveSlot, Is.EqualTo(WeaponSlot.Second));
             Assert.That(_weapons.Active.Definition, Is.SameAs(_rifle));
             Assert.That(_weapons.Active.Ammo, Is.EqualTo(7));
+            Assert.That(_weapons.Active.Shots, Is.EqualTo(19));
             Assert.That(_weapons.IsEmpty(WeaponSlot.First));
             Assert.That(_slot.Definition, Is.SameAs(_grenade));
             Assert.That(_slot.Count, Is.EqualTo(2));

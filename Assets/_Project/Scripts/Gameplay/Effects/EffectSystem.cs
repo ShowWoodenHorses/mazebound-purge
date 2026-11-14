@@ -57,8 +57,9 @@ namespace Purge.Gameplay.Effects
         public event Action<Vector2, float, IExplosionLook> LookShown;
 
         /// <param name="hostile">The monsters' effect: it reaches the player too (the player's own never do).</param>
-        public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false)
+        public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false, float damageFactor = 1f, float radiusFactor = 1f)
         {
+            if (hostile) { damageFactor = 1f; radiusFactor = 1f; }
             if (effects == null) return;
             for (var i = 0; i < effects.Count; i++)
             {
@@ -66,22 +67,22 @@ namespace Purge.Gameplay.Effects
                 {
                     case ExplosionEffect explosion:
                         // The player's own explosions are changed by the run's cards (damage, radius), the monsters' never.
-                        var radius = _targets.Blast(at, explosion.Damage, explosion.Radius, explosion.EdgeDamage, floor,
+                        var radius = _targets.Blast(at, explosion.Damage * damageFactor, explosion.Radius * radiusFactor, explosion.EdgeDamage, floor,
                             kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion, hostile: hostile);
                         if (hostile) BlastPlayer(at, explosion, floor);
                         _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
                         Exploded?.Invoke(at, radius, explosion);
                         break;
                     case PlaceZoneEffect zone when zone.Zone != null:
-                        _zones.PlaceArea(at, floor, zone.Radius, zone.Zone, zone.Duration, zone.Strength, hostile);
-                        ZonePlaced?.Invoke(at, zone.Zone, zone.Radius);
+                        _zones.PlaceArea(at, floor, zone.Radius * radiusFactor, zone.Zone, zone.Duration, zone.Strength * damageFactor, hostile);
+                        ZonePlaced?.Invoke(at, zone.Zone, zone.Radius * radiusFactor);
                         break;
                     case LookEffect look:
-                        LookShown?.Invoke(at, look.Radius, look);
+                        LookShown?.Invoke(at, look.Radius * radiusFactor, look);
                         break;
                     case AreaStatusEffect status when status.Status != null:
                         if (hostile) StatusOnPlayer(at, status, floor);
-                        else _statuses.ApplyInRadius(at, status.Radius, floor, status.Status, status.Duration);
+                        else _statuses.ApplyInRadius(at, status.Radius * radiusFactor, floor, status.Status, status.Duration);
                         break;
                     case PushEffect push when !hostile:
                         PushAway(at, push, floor);

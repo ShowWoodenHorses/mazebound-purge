@@ -283,5 +283,6 @@ namespace Purge.Application.Save
 
         /// <summary>Rounds in the magazine.</summary>
         public int Ammo;
+        public int Shots;
     }
 }

@@ -40,6 +40,7 @@ namespace Purge.Gameplay.Run
 
         /// <summary>Rounds in each slot's magazine.</summary>
         public int[] Ammo = new int[2];
+        public int[] WeaponShots = new int[2];
 
         public int ActiveSlot;
         public string ThrowableId;

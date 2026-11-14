@@ -32,6 +32,7 @@ namespace Purge.Gameplay.Effects
         private readonly List<StatusDefinition> _kinds = new List<StatusDefinition>();
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly DeterministicRandom _random = new DeterministicRandom(0x57a7);
+        private float[] _strength;
         private float[] _left; // kind · capacity + agent
         private int[] _generation;
         private bool[] _has;
@@ -59,6 +60,7 @@ namespace Purge.Gameplay.Effects
 
             _capacity = _horde.Capacity;
             _left = new float[_capacity * MaxKinds];
+            _strength = new float[_capacity * MaxKinds];
             _generation = new int[_capacity];
             _has = new bool[_capacity];
             if (!_subscribed)
@@ -90,7 +92,7 @@ namespace Purge.Gameplay.Effects
         /// Puts the state on a target for <paramref name="duration"/> × the monster's resistance (or keeps its longer
         /// one). Horde monsters only.
         /// </summary>
-        public void Apply(in CombatTarget target, StatusDefinition status, float duration)
+        public void Apply(in CombatTarget target, StatusDefinition status, float duration, float strength = 1f)
         {
             if (!IsActive || status == null || duration <= 0f || target.Agent < 0 || !_targets.IsAlive(target)) return;
             // The monster's resistance (0 = immune).
@@ -104,7 +106,9 @@ namespace Purge.Gameplay.Effects
             if (kind < 0) return;
             var agent = target.Agent;
             Own(agent);
-            ref var left = ref _left[kind * _capacity + agent];
+            int index = kind * _capacity + agent;
+            if(_left[index]<=0f) _strength[index]=strength; else _strength[index]=Mathf.Max(_strength[index],strength);
+            ref var left = ref _left[index];
             if (left < duration) left = duration;
             if (status.Stuns || status.SpeedFactor < 1f) Refresh(agent);
         }
@@ -147,7 +151,7 @@ namespace Purge.Gameplay.Effects
                 {
                     ref var left = ref _left[kind * _capacity + agent];
                     if (left <= 0f) continue;
-                    dps += _kinds[kind].DamagePerSecond;
+                    dps += _kinds[kind].DamagePerSecond * _strength[kind * _capacity + agent];
                     left -= deltaTime;
                     if (left > 0f) any = true;
                     else left = 0f;

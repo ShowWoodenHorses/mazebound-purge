@@ -10,6 +10,11 @@ namespace Purge.Gameplay.Throwing
     /// </summary>
     public sealed class ThrowableSlot
     {
+        private readonly IItemUpgrades _upgrades;
+        public ThrowableSlot(IItemUpgrades upgrades = null) { _upgrades=upgrades; }
+        public float DamageFactor(ThrowableDefinition item) => _upgrades?.DamageFactor(item) ?? 1f;
+        public float RadiusFactor(ThrowableDefinition item) => _upgrades?.RadiusFactor(item) ?? 1f;
+        public int Capacity(ThrowableDefinition definition) => definition == null ? 0 : definition.MaxStack + (_upgrades?.StackBonus(definition) ?? 0);
         public ThrowableDefinition Definition { get; private set; }
         public int Count { get; private set; }
         public bool IsEmpty => Definition == null || Count <= 0;
@@ -25,8 +30,8 @@ namespace Purge.Gameplay.Throwing
         public int Room(ThrowableDefinition definition)
         {
             if (definition == null) return 0;
-            if (IsEmpty) return definition.MaxStack;
-            return IsSameKind(definition) ? Math.Max(0, Definition.MaxStack - Count) : 0;
+            if (IsEmpty) return Capacity(definition);
+            return IsSameKind(definition) ? Math.Max(0, Capacity(Definition) - Count) : 0;
         }
 
         /// <summary>Adds up to the room left (empty slot: becomes this kind); returns how many were taken.</summary>
@@ -45,7 +50,7 @@ namespace Purge.Gameplay.Throwing
         {
             var old = IsEmpty ? (null, 0) : (Definition, Count);
             Definition = definition;
-            Count = definition != null ? Math.Min(Math.Max(0, count), definition.MaxStack) : 0;
+            Count = definition != null ? Math.Min(Math.Max(0, count), Capacity(definition)) : 0;
             Changed?.Invoke();
             return old;
         }

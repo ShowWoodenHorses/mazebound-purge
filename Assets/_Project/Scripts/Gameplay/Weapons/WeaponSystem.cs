@@ -14,13 +14,13 @@ namespace Purge.Gameplay.Weapons
     public sealed class WeaponRuntime
     {
         /// <param name="dropped">Dropped by a monster: not an object of the level (no saved visual).</param>
-        public WeaponRuntime(WeaponPickupData source, bool dropped = false)
+        public WeaponRuntime(WeaponPickupData source, bool dropped = false, IItemUpgrades upgrades = null)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             IsDropped = dropped;
             Definition = source.Definition ?? throw new ArgumentException($"Weapon pickup '{source.Id}' has no definition.", nameof(source));
             Id = source.Id;
-            Ammo = Definition.MagazineSize;
+            Ammo = (int)Math.Ceiling(Definition.MagazineSize * (upgrades!=null && upgrades.Has(Definition,WeaponUpgrade.Magazine)?1.5f:1f));
         }
 
         /// <summary>The base weapon of an empty slot.</summary>
@@ -46,6 +46,9 @@ namespace Purge.Gameplay.Weapons
 
         /// <summary>Rounds in the magazine.</summary>
         public int Ammo { get; internal set; }
+        public int Shots { get; internal set; }
+        public float BurstTime { get; internal set; }
+        public float IdleTime { get; internal set; }
 
         /// <summary>Seconds until the next attack is allowed.</summary>
         public float Cooldown { get; internal set; }
@@ -66,6 +69,7 @@ namespace Purge.Gameplay.Weapons
         /// <summary>Interrupts the reload and the cooldown (the weapon leaves the hands); the magazine stays as it is.</summary>
         public void Stop()
         {
+            BurstTime = 0f; IdleTime = 0f;
             Cooldown = 0f;
             ReloadRemaining = 0f;
         }
@@ -84,14 +88,16 @@ namespace Purge.Gameplay.Weapons
         /// <summary>Seconds a slot key is held to drop the weapon.</summary>
         public const float DropHoldTime = 0.6f;
 
+        private readonly IItemUpgrades _upgrades;
+        private int Magazine(WeaponDefinition w) => (int)Math.Ceiling(w.MagazineSize * (_upgrades!=null && _upgrades.Has(w,WeaponUpgrade.Magazine)?1.5f:1f));
         private readonly IPlayerInput _input;
         private readonly WeaponDefinition _baseWeapon;
         private readonly WeaponRuntime[] _slots = new WeaponRuntime[2];
         private readonly float[] _held = { -1f, -1f };
 
-        public WeaponSystem(IPlayerInput input, PlayerDefinition player)
+        public WeaponSystem(IPlayerInput input, PlayerDefinition player, IItemUpgrades upgrades = null)
         {
-            _input = input;
+            _input = input; _upgrades=upgrades;
             _baseWeapon = player != null ? player.BaseWeapon : null;
             for (var i = 0; i < _slots.Length; i++)
                 _slots[i] = BaseFor();
@@ -145,7 +151,7 @@ namespace Purge.Gameplay.Weapons
         public void Restore(WeaponSlot slot, WeaponRuntime weapon, int ammo)
         {
             weapon ??= BaseFor();
-            if (weapon != null) weapon.Ammo = Math.Max(0, Math.Min(weapon.Definition.MagazineSize, ammo));
+            if (weapon != null) weapon.Ammo = Math.Max(0, Math.Min(Magazine(weapon.Definition), ammo));
             _slots[(int)slot] = weapon;
             Changed?.Invoke();
         }

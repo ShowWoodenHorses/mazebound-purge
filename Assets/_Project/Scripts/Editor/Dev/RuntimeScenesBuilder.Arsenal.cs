@@ -29,7 +29,7 @@ namespace Purge.Editor.Dev
             tile.gameObject.SetActive(false);SetReference(screen,"_grid",grid);SetReference(screen,"_template",tile);
             var card=PanelArea(area,"Card",new Vector2(1,0),new Vector2(1,1),new Vector2(-850,40),new Vector2(-48,-165));
             var name=Text(card,"Name","",38,true,new Vector2(0.5f,1),new Vector2(0.5f,1),new Vector2(0,-15),new Vector2(750,60),TextAlignmentOptions.Center);AutoSize(name);SetReference(screen,"_title",name);
-            var imageRect=Rect(card,"Preview",new Vector2(0.5f,1),new Vector2(0,-260),new Vector2(640,350));
+            var imageRect=Rect(card,"Preview",new Vector2(0.5f,1),new Vector2(0,-175),new Vector2(480,190));
             var image=imageRect.gameObject.AddComponent<RawImage>();image.color=Color.white;
             var preview=imageRect.gameObject.AddComponent<ArsenalPreview>();
             var stage=new GameObject("ArsenalPreviewStage");stage.transform.position=new Vector3(0,-1500,0);
@@ -39,11 +39,14 @@ namespace Purge.Editor.Dev
             var lightObject=new GameObject("Light");lightObject.transform.SetParent(stage.transform,false);lightObject.transform.localPosition=new Vector3(-2,3,-3);
             var light=lightObject.AddComponent<Light>();light.type=LightType.Point;light.range=15;light.intensity=3;light.shadows=LightShadows.None;
             cameraObject.SetActive(false);SetReference(preview,"_camera",camera);SetReference(preview,"_pivot",pivot);SetReference(preview,"_image",image);SetReference(screen,"_preview",preview);
-            var details=Text(card,"Details","",26,false,new Vector2(0.5f,1),new Vector2(0.5f,1),new Vector2(0,-450),new Vector2(740,180),TextAlignmentOptions.TopLeft);SetReference(screen,"_details",details);
+            var details=Text(card,"Details","",26,false,new Vector2(0.5f,1),new Vector2(0.5f,1),new Vector2(0,-280),new Vector2(740,150),TextAlignmentOptions.TopLeft);SetReference(screen,"_details",details);
             var status=Text(card,"Status","",23,false,new Vector2(0.5f,0),new Vector2(0.5f,0),new Vector2(0,185),new Vector2(740,50),TextAlignmentOptions.Center);SetReference(screen,"_status",status);
             var buy=TextButton(card,"Buy","",true,null,68,26);Place(buy,new Vector2(0.5f,0),new Vector2(0,138),new Vector2(680,68));SetReference(screen,"_buy",buy);
             var favorite=TextButton(card,"Favorite","",false,null,68,22);Place(favorite,new Vector2(0.5f,0),new Vector2(-176,50),new Vector2(328,68));SetReference(screen,"_favorite",favorite);
             var exclude=TextButton(card,"Exclude","",false,null,68,22);Place(exclude,new Vector2(0.5f,0),new Vector2(176,50),new Vector2(328,68));SetReference(screen,"_exclude",exclude);
+            var upgrade=TextButton(card,"Upgrade","",true,null,56,23);Place(upgrade,new Vector2(0.5f,0),new Vector2(0,360),new Vector2(680,56));SetReference(screen,"_upgrade",upgrade);
+            var fields=new[]{"_fork4a","_fork4b","_fork8a","_fork8b"};
+            for(int i=0;i<4;i++){var button=TextButton(card,"Fork"+i,"",false,null,48,19);Place(button,new Vector2(0.5f,0),new Vector2(i%2==0?-176:176,i<2?300:245),new Vector2(328,48));SetReference(screen,fields[i],button);}
             return screen;
         }
     }

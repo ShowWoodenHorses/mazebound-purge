@@ -90,6 +90,8 @@ namespace Purge.Gameplay.Combat
         private readonly PlayerThrowing _throwing;
         private readonly ZoneSystem _zones;
         private readonly RunStats _stats;
+        private readonly IItemUpgrades _upgrades;
+        private bool Has(WeaponDefinition w, WeaponUpgrade u) => _upgrades != null && _upgrades.Has(w,u);
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly List<CombatTarget> _meleeTargets = new List<CombatTarget>();
         private readonly List<IDamageable> _meleeHits = new List<IDamageable>();
@@ -102,10 +104,10 @@ namespace Purge.Gameplay.Combat
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
-            IAimPointer pointer = null, PlayerThrowing throwing = null, ZoneSystem zones = null, RunStats stats = null)
+            IAimPointer pointer = null, PlayerThrowing throwing = null, ZoneSystem zones = null, RunStats stats = null, IItemUpgrades upgrades = null)
         {
             _zones = zones;
-            _stats = stats;
+            _stats = stats; _upgrades = upgrades;
             _input = input;
             _player = player;
             _weapons = weapons;
@@ -237,7 +239,7 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>Rounds of the weapon's full magazine, with the run's cards.</summary>
         public int MagazineOf(WeaponDefinition definition) =>
-            _stats != null ? _stats.MagazineOf(definition) : definition != null ? definition.MagazineSize : 0;
+            Mathf.CeilToInt((_stats != null ? _stats.MagazineOf(definition) : definition != null ? definition.MagazineSize : 0) * (Has(definition,WeaponUpgrade.Magazine)?1.5f:1f));
 
         /// <summary>Rounds in the reserve for this weapon (int.MaxValue — infinite).</summary>
         public int ReserveOf(WeaponDefinition definition)
@@ -358,6 +360,7 @@ namespace Purge.Gameplay.Combat
 
         private void UpdateTimers(WeaponRuntime weapon, float deltaTime)
         {
+            weapon.IdleTime += deltaTime;
             // May go a frame below zero: the next attack keeps the remainder, so the fire rate does not depend on the
             // frame rate (0.1 s at 60 FPS would otherwise be 7 frames).
             var carry = Mathf.Min(deltaTime, MaxCooldownCarry);
@@ -379,7 +382,14 @@ namespace Purge.Gameplay.Combat
         private void Attack(WeaponRuntime weapon, Vector2 direction)
         {
             var definition = weapon.Definition;
-            weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + CooldownOf(definition);
+            weapon.Shots++;
+            if(Has(definition,WeaponUpgrade.Ramp))
+            {
+                float reset=definition.UpgradeParameter("ramp_reset_seconds");
+                weapon.BurstTime=weapon.IdleTime>reset?0f:weapon.BurstTime+weapon.IdleTime;
+            }
+            weapon.IdleTime=0f;
+            weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + CooldownOf(definition) / (Has(definition,WeaponUpgrade.Ramp)?Mathf.Lerp(1f,definition.UpgradeParameter("ramp_max_rate_factor"),Mathf.Clamp01(weapon.BurstTime/Mathf.Max(0.01f,definition.UpgradeParameter("ramp_seconds")))):1f);
             _firingLeft = FiringLinger;
             _stanceLeft = StanceTime;
             AimDirection = direction;
@@ -391,6 +401,7 @@ namespace Purge.Gameplay.Combat
             {
                 case BulletAttack bullets:
                     FireBullets(definition, bullets, origin, direction, floor);
+                    if(Has(definition,WeaponUpgrade.DoubleShot) && _random.NextDouble()<definition.UpgradeParameter("double_shot_chance")) FireBullets(definition,bullets,origin,direction,floor);
                     break;
                 case ExplosiveAttack explosive:
                     _bullets.Spawn(origin, direction, explosive.Speed, explosive.DirectDamage, floor, explosive.Range,
@@ -407,7 +418,7 @@ namespace Purge.Gameplay.Combat
                     break;
             }
 
-            _sounds.Emit(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius, floor);
+            _sounds.Emit(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius * (Has(definition,WeaponUpgrade.Silent)?0.5f:1f), floor);
             if (definition.UsesAmmo)
             {
                 weapon.Ammo = Mathf.Max(0, weapon.Ammo - definition.Ammo.PerAttack);
@@ -420,7 +431,7 @@ namespace Purge.Gameplay.Combat
         private void FireBullets(WeaponDefinition definition, BulletAttack attack, Vector2 origin, Vector2 direction, int floor)
         {
             var pellets = Mathf.Max(1, attack.Pellets);
-            var spread = attack.Spread;
+            var spread = attack.Spread * (Has(definition,WeaponUpgrade.Wide)?1.5f:1f);
             for (var i = 0; i < pellets; i++)
             {
                 float degrees;
@@ -435,14 +446,14 @@ namespace Purge.Gameplay.Combat
                     degrees = -spread * 0.5f + share * (i + 0.5f) + ((float)_random.NextDouble() - 0.5f) * share * 0.6f;
                 }
 
-                _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage, floor,
-                    attack.Range, attack.Pierce, weapon: definition);
+                _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage * (Has(definition,WeaponUpgrade.FullMagazineCritical) && _weapons.Active.Ammo>=MagazineOf(definition)?2f:1f), floor,
+                    attack.Range * (Has(definition,WeaponUpgrade.Range)?definition.UpgradeParameter("range_factor"):1f), attack.Pierce + (Has(definition,WeaponUpgrade.Pierce)?definition.ArsenalClass==ArsenalClass.Snipers?2:1:0), weapon: definition, explosiveRound: Has(definition,WeaponUpgrade.ExplosiveRounds) && _weapons.Active.Shots % Mathf.Max(1,Mathf.RoundToInt(definition.UpgradeParameter("explosive_every"))) == 0);
             }
         }
 
         private void Stream(WeaponDefinition weapon, StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
         {
-            _targets.Collect(origin, stream.Range, floor, _found, direction, Mathf.Cos(stream.Angle * 0.5f * Mathf.Deg2Rad));
+            _targets.Collect(origin, stream.Range * (Has(weapon,WeaponUpgrade.Range)?1.3f:1f), floor, _found, direction, Mathf.Cos(stream.Angle * (Has(weapon,WeaponUpgrade.Wide)?1.5f:1f) * 0.5f * Mathf.Deg2Rad));
             foreach (var target in _found)
                 if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
                     _targets.Damage(target, stream.DamagePerTick, direction, weapon);
@@ -472,7 +483,7 @@ namespace Purge.Gameplay.Combat
                 // The player's own cell burns when they stand in a bush; the rest must be in the cone.
                 if (distance > range || distance > 0.5f && Vector2.Dot(offset / distance, direction) < cos) continue;
                 if (distance > 0.5f && !_targets.IsClear(origin, new Vector2(x, y), floor)) continue;
-                _zones.Place(cell, ignite.Zone, ignite.Duration, ignite.Strength);
+                _zones.Place(cell, ignite.Zone, ignite.Duration * (1f+0.5f*(_upgrades?.Count(_weapons.Active.Definition,WeaponUpgrade.Duration)??0)), ignite.Strength);
             }
         }
 
@@ -499,7 +510,7 @@ namespace Purge.Gameplay.Combat
                 _chainTargets[hits++] = target;
                 _chainPoints[ChainCount++] = at;
                 _targets.Damage(target, damage, (at - from).normalized, weapon);
-                if (hits > chain.Jumps || ChainCount >= MaxChainPoints) break;
+                if (hits > chain.Jumps + (Has(weapon,WeaponUpgrade.Chain)?2:0) || ChainCount >= MaxChainPoints) break;
                 damage *= chain.JumpFalloff;
                 from = at;
                 target = Nearest(from, chain.JumpRange, floor, Vector2.zero, -1f, hits);
@@ -532,7 +543,7 @@ namespace Purge.Gameplay.Combat
         {
             _meleeTargets.Clear();
             _meleeHits.Clear();
-            _targets.Collect(origin, melee.Range, floor, _found, direction, Mathf.Cos(melee.Arc * 0.5f * Mathf.Deg2Rad));
+            _targets.Collect(origin, melee.Range, floor, _found, direction, Mathf.Cos(melee.Arc * (Has(weapon,WeaponUpgrade.Wide)?1.5f:1f) * 0.5f * Mathf.Deg2Rad));
             foreach (var target in _found)
                 if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
                     _meleeTargets.Add(target);

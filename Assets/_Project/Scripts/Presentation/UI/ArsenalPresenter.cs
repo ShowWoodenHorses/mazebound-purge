@@ -30,6 +30,7 @@ namespace Purge.Presentation.UI
         public void Initialize()
         {
             if (_initialized || View == null) return; _initialized=true;
+            View.UpgradeClicked += Upgrade; View.ForkClicked += Fork;
             View.BackClicked += Back; View.PreviousClicked += Previous; View.NextClicked += Next;
             View.Selected += Select; View.BuyClicked += Buy; View.FavoriteClicked += Favorite; View.ExcludeClicked += Exclude;
             _texts.LanguageChanged += LanguageChanged;
@@ -74,19 +75,20 @@ namespace Purge.Presentation.UI
                     case ExplosiveAttack a:damage=a.DirectDamage+a.ExplosionDamage;range=a.Range;break;
                     case MeleeAttack a:damage=a.Damage;range=a.Range;break;
                 }
-                details += "\n"+unit+": "+damage.ToString("0.#")+"   "+T("arsenal.range")+": "+range.ToString("0.#")+
+                details += "\n"+unit+": "+(damage*_arsenal.DamageFactor(w)).ToString("0.#")+"   "+T("arsenal.range")+": "+range.ToString("0.#")+
                     "\n"+T("arsenal.interval")+": "+w.Cooldown.ToString("0.##")+" s";
-                if(w.UsesAmmo) details+="\n"+T("arsenal.magazine")+": "+w.MagazineSize+"   "+T("arsenal.reload")+": "+w.ReloadTime.ToString("0.#")+" s";
+                if(w.UsesAmmo) details+="\n"+T("arsenal.magazine")+": "+UnityEngine.Mathf.CeilToInt(w.MagazineSize*(_arsenal.Has(w,WeaponUpgrade.Magazine)?1.5f:1f))+"   "+T("arsenal.reload")+": "+w.ReloadTime.ToString("0.#")+" s";
                 if(w.TryGet<SilencerModule>(out _)) details+="\n◈ "+T("arsenal.silencer");
                 if(w.Attack is BulletAttack bullet && bullet.Pierce>0) details+="   ◆ "+T("arsenal.pierce")+" +"+bullet.Pierce;
                 if(w.Attack is ChainAttack chain) details+="   ↯ "+T("arsenal.chain")+" +"+chain.Jumps;
                 if(!w.Upgradable) details+="\n"+T("arsenal.no_upgrades");
             }
-            else if(item is ThrowableDefinition th) details+="\n"+T("arsenal.range")+": "+th.Range+"   "+T("arsenal.radius")+": "+th.EffectRadius+"\n"+T("arsenal.stack")+": "+th.MaxStack;
+            else if(item is ThrowableDefinition th) details+="\n"+T("arsenal.range")+": "+th.Range+"   "+T("arsenal.radius")+": "+(th.EffectRadius*_arsenal.RadiusFactor(th)).ToString("0.#")+"\n"+T("arsenal.stack")+": "+(th.MaxStack+_arsenal.StackBonus(th));
             var unique=item is WeaponDefinition uw && uw.UniqueReward;
             View.Card(Name(item),details,open?T("arsenal.open"):unique?T("arsenal.reward"):T("arsenal.locked"),
                 open?T("arsenal.open"):unique?T("arsenal.reward"):T("arsenal.buy")+" · "+ArsenalService.Price(item),
                 "★ "+T(mark==PoolMark.Favorite?"arsenal.normal":"arsenal.favorite"),"⊘ "+T(mark==PoolMark.Excluded?"arsenal.normal":"arsenal.exclude"),_arsenal.CanBuy(item),open);
+            ShowUpgrades(item);
             ClearPreview(); _selection=new CancellationTokenSource(); LoadPreview(item,_selection.Token).Forget();
         }
         private async UniTask LoadPreview(ContentDefinition item,CancellationToken token)
@@ -101,6 +103,30 @@ namespace Purge.Presentation.UI
             finally { if(!token.IsCancellationRequested) IsLoading=false; }
         }
         private void ClearPreview() { IsLoading=false; _selection?.Cancel(); _selection?.Dispose(); _selection=null; if(View!=null)View.Preview.Release(); _owner?.Dispose(); _owner=null; }
+        private void ShowUpgrades(ContentDefinition item)
+        {
+            int level=_arsenal.Level(item), price=_arsenal.UpgradePrice(item);
+            bool forkNext=item is WeaponDefinition && (level+1==4 || level+1==8);
+            var labels=new string[4];var available=new bool[4];
+            if(item is WeaponDefinition w && w.Upgradable)
+                for(int i=0;i<4;i++)
+                {
+                    int gate=i<2?4:8,choice=i%2;var fork=w.Fork(gate);var kind=choice==0?fork.First:fork.Second;
+                    bool selected=_arsenal.ForkChoice(w,gate)==choice;
+                    int cost=level<gate?w.UpgradeCost(gate):Math.Max(1,(int)Math.Ceiling(w.UpgradeCost(level)*0.1));
+                    labels[i]=(selected?"★ ":"")+gate+": "+T("upgrade."+kind)+" · "+cost;
+                    available[i]=_arsenal.IsOpen(item) && (level>=gate || level+1==gate) && !selected && fork.Available(choice) && cost>0 && _arsenal.Money>=cost;
+                }
+            View.Upgrades(price>0?T(forkNext?"upgrade.choose":"upgrade.buy")+" · "+price:T("upgrade.unavailable"),price>0 && !forkNext && _arsenal.Money>=price,labels,available);
+        }
+        private void Upgrade(){if(_arsenal.Upgrade(Item))UpgradeDone();}
+        private void Fork(int level,int choice)
+        {
+            if(!(Item is WeaponDefinition w))return;
+            bool ok=_arsenal.Level(w)+1==level?_arsenal.Upgrade(w,choice):_arsenal.ChangeFork(w,level,choice);
+            if(ok)UpgradeDone();
+        }
+        private void UpgradeDone(){if(_audio.Catalog!=null)_audio.Play(_audio.Catalog.Purchase,SoundChannel.Interface);Fill();}
         private void Buy() { if(_arsenal.Buy(Item)) { if(_audio.Catalog!=null)_audio.Play(_audio.Catalog.Purchase,SoundChannel.Interface); Fill(); } }
         private void Favorite() => Mark(PoolMark.Favorite);
         private void Exclude() => Mark(PoolMark.Excluded);
@@ -109,6 +135,7 @@ namespace Purge.Presentation.UI
         {
             Close(); if(!_initialized)return;_initialized=false;_texts.LanguageChanged-=LanguageChanged;
             if(View==null)return; View.BackClicked-=Back;View.PreviousClicked-=Previous;View.NextClicked-=Next;View.Selected-=Select;
+            View.UpgradeClicked-=Upgrade;View.ForkClicked-=Fork;
             View.BuyClicked-=Buy;View.FavoriteClicked-=Favorite;View.ExcludeClicked-=Exclude;
         }
     }

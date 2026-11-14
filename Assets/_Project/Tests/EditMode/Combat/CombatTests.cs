@@ -43,6 +43,51 @@ namespace Purge.Tests.EditMode.Combat
         private readonly List<SoundEvent> _heard = new List<SoundEvent>();
         private readonly List<(Vector2 Point, BulletEnd Reason)> _ended = new List<(Vector2, BulletEnd)>();
 
+        private sealed class Upgrades : IItemUpgrades
+        {
+            public WeaponUpgrade Kind; public float Factor=2f;
+            public int Level(Purge.Core.Content.ContentDefinition item)=>10;
+            public bool Has(WeaponDefinition item,WeaponUpgrade upgrade)=>upgrade==Kind;
+            public int Count(WeaponDefinition item,WeaponUpgrade upgrade)=>Has(item,upgrade)?1:0;
+            public float DamageFactor(Purge.Core.Content.ContentDefinition item)=>Factor;
+            public float RadiusFactor(ThrowableDefinition item)=>1.2f;
+            public int StackBonus(ThrowableDefinition item)=>4;
+        }
+        [Test]public void UpgradeMagazineStartsFullAndRestoresWithoutTruncation()
+        {
+            var upgrades=new Upgrades{Kind=WeaponUpgrade.Magazine};
+            var weapon=new WeaponRuntime(new WeaponPickupData("upgraded",default,_pistol),upgrades:upgrades);
+            Assert.That(weapon.Ammo,Is.EqualTo(3));
+            var slots=new WeaponSystem(_input,_definition,upgrades);slots.Restore(WeaponSlot.First,weapon,3);
+            Assert.That(slots.Get(WeaponSlot.First).Ammo,Is.EqualTo(3));
+        }
+        [Test]public void UpgradeDamageAppliesToActualTarget()
+        {
+            var targets=new CombatTargets(_spatial,upgrades:new Upgrades());var target=new Target("upgrade",new Vector2(3,2));
+            targets.Damage(CombatTarget.Of(target),10f,Vector2.right,_pistol);
+            Assert.That(target.Health,Is.EqualTo(80f));
+        }
+        [Test]public void UpgradeDoubleShotUsesOneRoundAndTwoProjectiles()
+        {
+            typeof(WeaponDefinition).GetField("_upgradeParameters",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)
+                .SetValue(_pistol,new[]{new UpgradeParameter{Name="double_shot_chance",Value=1f}});
+            var combat=new PlayerCombat(_input,_player,_weapons,_targets,_bullets,_sounds,_aim,_doors,_stock,upgrades:new Upgrades{Kind=WeaponUpgrade.DoubleShot});
+            var runtime=Equip(_pistol);int ammo=runtime.Ammo;
+            Assert.That(combat.TryAttack(Vector2.right));Assert.That(runtime.Ammo,Is.EqualTo(ammo-1));Assert.That(_bullets.Active.Count,Is.EqualTo(2));
+        }
+        [Test]public void UpgradeFullMagazineCriticalAppliesOnlyToFirstShot()
+        {
+            var combat=new PlayerCombat(_input,_player,_weapons,_targets,_bullets,_sounds,_aim,_doors,_stock,upgrades:new Upgrades{Kind=WeaponUpgrade.FullMagazineCritical});
+            var runtime=Equip(_pistol);Assert.That(combat.TryAttack(Vector2.right));float first=_bullets.Active[0].Damage;
+            runtime.Stop();Assert.That(combat.TryAttack(Vector2.right));Assert.That(first,Is.EqualTo(_bullets.Active[1].Damage*2f));
+        }
+        [Test]public void UpgradeStackCapacityPreservesStartOverfill()
+        {
+            var item=ScriptableObject.CreateInstance<ThrowableDefinition>();_created.Add(item);
+            var slot=new Purge.Gameplay.Throwing.ThrowableSlot(new Upgrades());
+            Assert.That(slot.Add(item,100),Is.EqualTo(item.MaxStack+4));Assert.That(slot.Room(item),Is.Zero);
+            slot.Start(item,100);Assert.That(slot.Count,Is.EqualTo(100));Assert.That(slot.Room(item),Is.Zero);
+        }
         private sealed class TestAim : IAimSettings
         {
             public AimMode AimMode { get; set; }

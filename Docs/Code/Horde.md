@@ -35,3 +35,5 @@
   - Уровни `Level_Stress64/100` — **Build Stress Test Levels**; сборки **… Stress Test** (release + dev-уровни, symbol `PURGE_DEV_LEVELS`). Методика и результаты — [Docs/StressTest.md](Docs/StressTest.md).
 - `VisibilitySystem.SetRadius` (радиус обзора, по умолчанию 10), `LastComputeMs`; `TopDownCamera.FollowHalfExtent` — меняются в рантайме. `WebPage.SetResolutionScale` — масштаб разрешения (веб: `Module.devicePixelRatio`, Android: `Screen.SetResolution`).
 - **Ловушка MCP:** не обновлять ассеты (`refresh_unity`) во время Play после правки скриптов — домен перезагрузится посреди игры, скоупы VContainer сломаются. Сначала Stop.
+
+- **11г:** в DEV-панели Level_Sandbox строка 11g напоминает, что действуют купленные уровни/развилки Арсенала. Проверка боевых эффектов — на выданном/подобранном оружии; обычный Level_Run использует ту же интеграцию.

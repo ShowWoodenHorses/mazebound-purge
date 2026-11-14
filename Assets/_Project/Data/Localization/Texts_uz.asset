@@ -347,6 +347,29 @@ MonoBehaviour:
   - weapon.tesla
   - weapon.vector_silencer
   - arsenal.symbols
+  - upgrade.buy
+  - upgrade.choose
+  - upgrade.unavailable
+  - upgrade.None
+  - upgrade.Pierce
+  - upgrade.DoubleShot
+  - upgrade.FullMagazineCritical
+  - upgrade.Ricochet
+  - upgrade.Magazine
+  - upgrade.Ramp
+  - upgrade.ExplosiveRounds
+  - upgrade.Burn
+  - upgrade.Knockback
+  - upgrade.Wide
+  - upgrade.Silent
+  - upgrade.Duration
+  - upgrade.Range
+  - upgrade.Chain
+  - upgrade.Electrify
+  - upgrade.Radius
+  - upgrade.Cluster
+  - upgrade.Lifesteal
+  - upgrade.Shatter
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -705,4 +728,27 @@ MonoBehaviour:
   - Tesla
   - Vector (silenced)
   - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
+  - Yaxshilash
+  - Modifikatorni tanlang
+  - Yaxshilash mavjud emas
+  - "Yo\u2018q"
+  - "Teshib o\u2018tish"
+  - "Qo\u2018shaloq o\u2018q"
+  - "To\u2018liq magazinda kritik"
+  - Rikoshet
+  - Magazin +50%
+  - Otish tezligi oshishi
+  - "Portlovchi o\u2018qlar"
+  - Yondirish
+  - Itarish x2
+  - Keng sektor
+  - Ovozsiz
+  - Zona davomiyligi +50%
+  - Masofa +30%
+  - Zanjir +2
+  - Keyinroq
+  - Radius +30%
+  - Kassetali portlash
+  - "Jon so\u2018rish"
+  - Parchalash
   _missing: []

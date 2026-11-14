@@ -95,7 +95,7 @@ namespace Purge.Composition
             builder.Register<PlatformEvents>(Lifetime.Singleton);
 
             builder.RegisterInstance(_ui);
-            builder.Register<Purge.Application.Meta.ArsenalService>(Lifetime.Singleton).AsSelf().As<Purge.Gameplay.Drops.IItemDropPolicy>();
+            builder.Register<Purge.Application.Meta.ArsenalService>(Lifetime.Singleton).AsSelf().As<Purge.Gameplay.Drops.IItemDropPolicy>().As<Purge.Core.Definitions.IItemUpgrades>();
             builder.Register<ArsenalPresenter>(Lifetime.Singleton);
             builder.Register<RunSetupPresenter>(Lifetime.Singleton); // the run's choice and preparation (stage 11б)
             builder.Register<ScreenRouter>(Lifetime.Singleton);

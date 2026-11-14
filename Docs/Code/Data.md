@@ -30,3 +30,5 @@
 - `WeaponDefinition`: `PurchasePrice`, `UniqueReward`, `ArsenalClass`; `ThrowableDefinition`: `PurchasePrice`. Поля редактируются в инспекторе. **Build Arsenal** переносит цены/уникальность из `Tools/Balance/Model/prices.csv` и `throwables.csv`; runtime CSV не читает. Класс новых предметов назначается в данных, новые id руками не вводятся.
 - Стартовые предметы считаются открытыми, даже если записи в `SaveData.Arsenal` ещё нет. `OwnedItem` появляется при покупке или установке отметки. Купленный предмет определяется по стабильному id, а не ссылке на SO.
 
+- **11г:** Weapon/ThrowableDefinition содержат `_upgradeCosts` (цены перехода на уровни 2–10/2–5), `UpgradeCost(targetLevel)` возвращает 0 для отсутствующего уровня. Импорт — Build Arsenal; OwnedItem.Level/Forks сохраняют покупку и выбор.
+- RunWeapon.Shots сохраняет счётчик выстрелов; старые сейвы получают 0. WeaponDefinition хранит кривую урона, развилки и параметры эффектов; ThrowableDefinition — кривые урона/радиуса/стопки и флаг запрета прокачки.

@@ -345,3 +345,26 @@ weapon.sword	Sword	Меч	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword	
 weapon.tesla	Tesla	Тесла	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla
 weapon.vector_silencer	Vector (silenced)	Vector с глушителем	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)
 arsenal.symbols	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯
+upgrade.buy	Upgrade	Улучшить	Geliştir	Mejorar	Verbessern	Melhorar	Améliorer	Potenzia	Ulepsz	Tingkatkan	Жақсарту	Yaxshilash	Палепшыць
+upgrade.choose	Choose modifier	Выберите модификатор	Değiştirici seç	Elige modificador	Modifikator wählen	Escolha modificador	Choisir un modificateur	Scegli modificatore	Wybierz modyfikator	Pilih pengubah	Модификаторды таңдаңыз	Modifikatorni tanlang	Выберыце мадыфікатар
+upgrade.unavailable	No upgrade available	Прокачка недоступна	Geliştirme yok	Sin mejora disponible	Keine Verbesserung	Sem melhoria disponível	Aucune amélioration	Nessun potenziamento	Brak ulepszenia	Peningkatan tidak tersedia	Жақсарту қолжетімсіз	Yaxshilash mavjud emas	Паляпшэнне недаступнае
+upgrade.None	None	Нет	Yok	Ninguno	Keiner	Nenhum	Aucun	Nessuno	Brak	Tidak ada	Жоқ	Yo‘q	Няма
+upgrade.Pierce	Piercing	Пробитие	Delme	Penetración	Durchschlag	Perfuração	Perforation	Perforazione	Przebicie	Penetrasi	Тесіп өту	Teshib o‘tish	Прабіццё
+upgrade.DoubleShot	Double shot	Двойной выстрел	Çift atış	Disparo doble	Doppelschuss	Disparo duplo	Tir double	Doppio colpo	Podwójny strzał	Tembakan ganda	Қос атыс	Qo‘shaloq o‘q	Падвойны стрэл
+upgrade.FullMagazineCritical	Full magazine critical	Крит полного магазина	Dolu şarjör kritiği	Crítico con cargador lleno	Kritisch bei vollem Magazin	Crítico com carregador cheio	Critique à chargeur plein	Critico a caricatore pieno	Krytyk z pełnego magazynka	Kritis saat magasin penuh	Толық оқжатардағы крит	To‘liq magazinda kritik	Крыт поўнага магазіна
+upgrade.Ricochet	Ricochet	Рикошет	Sekme	Rebote	Abpraller	Ricochete	Ricochet	Rimbalzo	Rykoszet	Pantulan	Рикошет	Rikoshet	Рыкашэт
+upgrade.Magazine	Magazine +50%	Магазин +50%	Şarjör +%50	Cargador +50%	Magazin +50%	Carregador +50%	Chargeur +50%	Caricatore +50%	Magazynek +50%	Magasin +50%	Оқжатар +50%	Magazin +50%	Магазін +50%
+upgrade.Ramp	Fire rate ramp	Разгон	Ateş hızı artışı	Cadencia creciente	Feuerrate steigern	Cadência crescente	Cadence croissante	Cadenza crescente	Wzrost szybkostrzelności	Laju tembak meningkat	Атыс қарқыны	Otish tezligi oshishi	Разгон
+upgrade.ExplosiveRounds	Explosive rounds	Разрывные пули	Patlayıcı mermi	Balas explosivas	Explosivmunition	Balas explosivas	Balles explosives	Proiettili esplosivi	Wybuchowe pociski	Peluru peledak	Жарылғыш оқтар	Portlovchi o‘qlar	Разрыўныя кулі
+upgrade.Burn	Ignition	Поджог	Tutuşturma	Ignición	Entzünden	Ignição	Embrasement	Incendio	Podpalenie	Pembakaran	Өртеу	Yondirish	Падпал
+upgrade.Knockback	Knockback x2	Отбрасывание x2	Geri itme x2	Empuje x2	Rückstoß am Ziel x2	Empurrão x2	Repoussement x2	Respinta x2	Odrzut celu x2	Dorongan x2	Итеру x2	Itarish x2	Адкідванне x2
+upgrade.Wide	Wider sector	Широкий сектор	Geniş açı	Sector amplio	Breiter Sektor	Setor amplo	Secteur large	Settore ampio	Szeroki sektor	Sektor lebar	Кең сектор	Keng sektor	Шырокі сектар
+upgrade.Silent	Silent	Бесшумность	Sessizlik	Silencio	Geräuschlos	Silêncio	Silence	Silenzio	Cisza	Senyap	Дыбыссыз	Ovozsiz	Бясшумнасць
+upgrade.Duration	Zone duration +50%	Зона +50%	Alan süresi +%50	Duración de zona +50%	Zonendauer +50%	Duração da zona +50%	Durée de zone +50%	Durata zona +50%	Czas strefy +50%	Durasi zona +50%	Аймақ ұзақтығы +50%	Zona davomiyligi +50%	Працягласць зоны +50%
+upgrade.Range	Range +30%	Дальность +30%	Menzil +%30	Alcance +30%	Reichweite +30%	Alcance +30%	Portée +30%	Portata +30%	Zasięg +30%	Jangkauan +30%	Қашықтық +30%	Masofa +30%	Далёкасць +30%
+upgrade.Chain	Chain +2	Цепь +2	Zincir +2	Cadena +2	Kette +2	Corrente +2	Chaîne +2	Catena +2	Łańcuch +2	Rantai +2	Тізбек +2	Zanjir +2	Ланцуг +2
+upgrade.Electrify	Coming later	Позже	Daha sonra	Más adelante	Später	Mais tarde	Plus tard	In seguito	Później	Nanti	Кейін	Keyinroq	Пазней
+upgrade.Radius	Blast radius +30%	Радиус +30%	Patlama yarıçapı +%30	Radio +30%	Radius +30%	Raio +30%	Rayon +30%	Raggio +30%	Promień +30%	Radius +30%	Радиус +30%	Radius +30%	Радыус +30%
+upgrade.Cluster	Cluster explosion	Кассетный взрыв	Misket patlaması	Explosión de racimo	Streuexplosion	Explosão em grupo	Explosion à sous-munitions	Esplosione a grappolo	Wybuch kasetowy	Ledakan kluster	Кассеталық жарылыс	Kassetali portlash	Касетны выбух
+upgrade.Lifesteal	Lifesteal	Вампиризм	Can çalma	Robo de vida	Lebensraub	Roubo de vida	Vol de vie	Furto di vita	Kradzież życia	Curi nyawa	Өмір сору	Jon so‘rish	Вампірызм
+upgrade.Shatter	Shatter	Раскол	Parçalama	Fragmentación	Zersplittern	Estilhaçar	Fracassement	Frantumazione	Roztrzaskanie	Pecah	Шағу	Parchalash	Раскол

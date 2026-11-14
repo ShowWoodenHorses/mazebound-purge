@@ -125,7 +125,7 @@ namespace Purge.Presentation.Visual
             Graphics.RenderMesh(Params(_visual.ThrowArc, null), _dots, 0, Matrix4x4.identity);
 
             if (_visual.ThrowTarget == null) return;
-            var radius = Mathf.Max(0.5f, definition.EffectRadius);
+            var radius = Mathf.Max(0.5f, definition.EffectRadius * _throwing.Slot.RadiusFactor(definition));
             _block.SetFloat(ThicknessId, Mathf.Clamp(RingWidth / radius, 0.005f, 1f));
             var matrix = Matrix4x4.TRS(new Vector3(to.x, floorHeight + 0.03f, to.y), Quaternion.identity,
                 new Vector3(radius * 2f, 1f, radius * 2f));

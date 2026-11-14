@@ -347,6 +347,29 @@ MonoBehaviour:
   - weapon.tesla
   - weapon.vector_silencer
   - arsenal.symbols
+  - upgrade.buy
+  - upgrade.choose
+  - upgrade.unavailable
+  - upgrade.None
+  - upgrade.Pierce
+  - upgrade.DoubleShot
+  - upgrade.FullMagazineCritical
+  - upgrade.Ricochet
+  - upgrade.Magazine
+  - upgrade.Ramp
+  - upgrade.ExplosiveRounds
+  - upgrade.Burn
+  - upgrade.Knockback
+  - upgrade.Wide
+  - upgrade.Silent
+  - upgrade.Duration
+  - upgrade.Range
+  - upgrade.Chain
+  - upgrade.Electrify
+  - upgrade.Radius
+  - upgrade.Cluster
+  - upgrade.Lifesteal
+  - upgrade.Shatter
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -703,4 +726,27 @@ MonoBehaviour:
   - Tesla
   - Vector (silenced)
   - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
+  - Mejorar
+  - Elige modificador
+  - Sin mejora disponible
+  - Ninguno
+  - "Penetraci\xF3n"
+  - Disparo doble
+  - "Cr\xEDtico con cargador lleno"
+  - Rebote
+  - Cargador +50%
+  - Cadencia creciente
+  - Balas explosivas
+  - "Ignici\xF3n"
+  - Empuje x2
+  - Sector amplio
+  - Silencio
+  - "Duraci\xF3n de zona +50%"
+  - Alcance +30%
+  - Cadena +2
+  - "M\xE1s adelante"
+  - Radio +30%
+  - "Explosi\xF3n de racimo"
+  - Robo de vida
+  - "Fragmentaci\xF3n"
   _missing: []

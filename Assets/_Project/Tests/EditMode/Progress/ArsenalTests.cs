@@ -55,6 +55,48 @@ namespace Purge.Tests.EditMode.Progress
             }
             finally{UnityEngine.Object.DestroyImmediate(other);UnityEngine.Object.DestroyImmediate(locked);UnityEngine.Object.DestroyImmediate(table);}
         }
+        [Test]public void UpgradeRejectsInvalidPurchaseAndPersistsFork()
+        {
+            Field(_weapon,"_upgradeCosts",new[]{100,200,300,400,500,600,700,800,900});
+            _save.Data.Money=10000;
+            Assert.That(_arsenal.Upgrade(_weapon),Is.False);
+            _weapon.StartPool=true;
+            Assert.That(_arsenal.Upgrade(_weapon)); Assert.That(_arsenal.Upgrade(_weapon));
+            int money=_arsenal.Money, writes=_storage.Writes;
+            Assert.That(_arsenal.Upgrade(_weapon),Is.False);
+            Assert.That(_arsenal.Money,Is.EqualTo(money));Assert.That(_storage.Writes,Is.EqualTo(writes));
+            Assert.That(_arsenal.Upgrade(_weapon,1));
+            var loaded=new SaveService(_storage);loaded.Load();
+            Assert.That(loaded.Data.FindItem(_weapon.Id).Level,Is.EqualTo(4));
+            Assert.That(loaded.Data.FindItem(_weapon.Id).Forks,Is.EqualTo(1));loaded.Dispose();
+            Assert.That(_arsenal.Upgrade(_weapon));
+            money=_arsenal.Money;
+            Assert.That(_arsenal.ChangeFork(_weapon,4,0));
+            Assert.That(_arsenal.Money,Is.EqualTo(money-40));
+            Assert.That(_arsenal.ChangeFork(_weapon,4,0),Is.False);
+            Assert.That(_arsenal.ChangeFork(_weapon,8,1),Is.False);
+            Field(_weapon,"_noUpgrades",true);
+            Assert.That(_arsenal.Upgrade(_weapon),Is.False);
+        }
+        [Test]public void UpgradeCannotOverspendOrExceedCap()
+        {
+            _weapon.StartPool=true;Field(_weapon,"_upgradeCosts",new[]{100,200,300,400,500,600,700,800,900});
+            _save.Data.Money=99;Assert.That(_arsenal.Upgrade(_weapon),Is.False);
+            Assert.That(_save.Data.Arsenal,Is.Empty);
+            _save.Data.Money=100000;
+            for(int level=2;level<=10;level++)Assert.That(_arsenal.Upgrade(_weapon,level==4||level==8?0:-1));
+            Assert.That(_arsenal.Upgrade(_weapon),Is.False);Assert.That(_arsenal.Level(_weapon),Is.EqualTo(10));
+        }
+        [Test]public void RepeatedModifierRetainsIndependentForkChoices()
+        {
+            _weapon.StartPool=true;
+            Field(_weapon,"_fork4",new UpgradeFork{First=WeaponUpgrade.Wide,Second=WeaponUpgrade.Duration});
+            Field(_weapon,"_fork8",new UpgradeFork{First=WeaponUpgrade.Range,Second=WeaponUpgrade.Duration});
+            _save.Data.Arsenal.Add(new OwnedItem{Id=_weapon.Id,Level=8,Forks=1});
+            Assert.That(_arsenal.ForkChoice(_weapon,4),Is.EqualTo(1));Assert.That(_arsenal.ForkChoice(_weapon,8),Is.EqualTo(0));
+            Assert.That(_arsenal.Count(_weapon,WeaponUpgrade.Duration),Is.EqualTo(1));
+            _save.Data.FindItem(_weapon.Id).Forks=3;Assert.That(_arsenal.Count(_weapon,WeaponUpgrade.Duration),Is.EqualTo(2));
+        }
         [Test]public void LockedItemCannotBeUnlockedByMark()
         { Assert.That(_arsenal.SetMark(_weapon,PoolMark.Favorite),Is.False);Assert.That(_save.Data.Arsenal,Is.Empty); }
         [Test]public void DropPolicyUsesStableIdAndUpgradeWeight()

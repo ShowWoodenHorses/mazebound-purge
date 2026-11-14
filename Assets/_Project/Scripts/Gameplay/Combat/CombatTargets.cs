@@ -107,8 +107,10 @@ namespace Purge.Gameplay.Combat
         private readonly int[] _agents = new int[MaxAgents];
         private readonly List<CombatTarget> _blast = new List<CombatTarget>();
 
-        public CombatTargets(ISpatialQueryService spatial, HordeSystem horde = null)
+        private readonly IItemUpgrades _upgrades;
+        public CombatTargets(ISpatialQueryService spatial, HordeSystem horde = null, IItemUpgrades upgrades = null)
         {
+            _upgrades = upgrades;
             _spatial = spatial;
             _horde = horde;
         }
@@ -116,6 +118,7 @@ namespace Purge.Gameplay.Combat
         public ISpatialQueryService Spatial => _spatial;
 
         /// <summary>Changes the player's damage (the run's cards); null = as dealt.</summary>
+        public UpgradeCombat Upgrades { get; set; }
         public IDamageModifier Modifier { get; set; }
 
         /// <summary>(target, where, damage) after a critical hit (its number shows).</summary>
@@ -259,9 +262,14 @@ namespace Purge.Gameplay.Combat
         {
             if (amount <= 0f || !IsAlive(target)) return false;
             var at = PositionOf(target);
+            if (weapon != null && _upgrades != null) amount *= _upgrades.DamageFactor(weapon);
             var critical = false;
             if (Modifier != null && kind != PlayerDamage.None) amount = Modifier.Modify(target, amount, kind, out critical);
+            if(weapon!=null && Upgrades!=null)amount=Upgrades.Modify(target,weapon,amount);
+            float before=target.Agent>=0?_horde.Health[target.Agent]:0f;
             var killed = Damage(target, amount, direction);
+            float dealt=target.Agent>=0?Mathf.Max(0f,before-Mathf.Max(0f,_horde.Health[target.Agent])):0f;
+            if(weapon!=null && Upgrades!=null)Upgrades.Hit(target,at,direction,weapon,dealt,killed);
             if (critical) CriticalHit?.Invoke(target, at, amount);
             if (!killed && weapon != null) WeaponHit?.Invoke(target, weapon);
             if (weapon != null) WeaponDamaged?.Invoke(target, at, direction, weapon, killed);

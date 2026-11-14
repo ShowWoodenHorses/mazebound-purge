@@ -238,6 +238,7 @@ namespace Purge.Application.Save
             {
                 run.Weapons[i] = save.Weapons[i].Id;
                 run.Ammo[i] = save.Weapons[i].Ammo;
+                run.WeaponShots[i] = Math.Max(0,save.Weapons[i].Shots);
             }
 
             return run;
@@ -281,7 +282,7 @@ namespace Purge.Application.Save
             save.FreeRerolls = run.FreeRerolls;
             save.StartMedkitTaken = run.StartMedkitTaken;
             for (var i = 0; i < run.Weapons.Length; i++)
-                save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0 });
+                save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0, Shots = run.WeaponShots != null && i < run.WeaponShots.Length ? Math.Max(0,run.WeaponShots[i]) : 0 });
             _save.Save();
             GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' wave {save.Wave}{(save.WaveInProgress ? " (in progress)" : " cleared")}, " +
                                           $"money {save.Money}.");

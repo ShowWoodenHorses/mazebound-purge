@@ -14,6 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
   _id: grenade
   _purchasePrice: 0
+  _noUpgrades: 0
+  _upgradeDamage:
+  - 1
+  - 1.15
+  - 1.3
+  - 1.45
+  - 1.6
+  _upgradeRadius:
+  - 1
+  - 1.05
+  - 1.1
+  - 1.15
+  - 1.2
+  _upgradeStack: 0000000001000000020000000300000004000000
+  _upgradeCosts: 32000000460000005a00000078000000
   _rarity: 0
   _startPool: 1
   _maxStack: 3

@@ -758,3 +758,4 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 ### Build Arsenal (11в)
 - **Purge → Dev → Build Arsenal** — цены покупки оружия/метательного и признак уникального оружия из CSV модели в Definitions. Классы настраиваются в инспекторе; перестройка не затирает их. После изменений экрана — Build Runtime Scenes; строк — Build Localization; звука покупки `Sounds/UI/purchase*` — Build Audio.
 
+- **Build Arsenal (11г):** также импортирует цены уровней оружия из `upgrades.csv`, метательного — из `throwables.csv` в Definitions.

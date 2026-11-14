@@ -347,6 +347,29 @@ MonoBehaviour:
   - weapon.tesla
   - weapon.vector_silencer
   - arsenal.symbols
+  - upgrade.buy
+  - upgrade.choose
+  - upgrade.unavailable
+  - upgrade.None
+  - upgrade.Pierce
+  - upgrade.DoubleShot
+  - upgrade.FullMagazineCritical
+  - upgrade.Ricochet
+  - upgrade.Magazine
+  - upgrade.Ramp
+  - upgrade.ExplosiveRounds
+  - upgrade.Burn
+  - upgrade.Knockback
+  - upgrade.Wide
+  - upgrade.Silent
+  - upgrade.Duration
+  - upgrade.Range
+  - upgrade.Chain
+  - upgrade.Electrify
+  - upgrade.Radius
+  - upgrade.Cluster
+  - upgrade.Lifesteal
+  - upgrade.Shatter
   _texts:
   - Polski
   - USTAWIENIA
@@ -711,4 +734,27 @@ MonoBehaviour:
   - Tesla
   - Vector (silenced)
   - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
+  - Ulepsz
+  - Wybierz modyfikator
+  - Brak ulepszenia
+  - Brak
+  - Przebicie
+  - "Podw\xF3jny strza\u0142"
+  - "Krytyk z pe\u0142nego magazynka"
+  - Rykoszet
+  - Magazynek +50%
+  - "Wzrost szybkostrzelno\u015Bci"
+  - Wybuchowe pociski
+  - Podpalenie
+  - Odrzut celu x2
+  - Szeroki sektor
+  - Cisza
+  - Czas strefy +50%
+  - "Zasi\u0119g +30%"
+  - "\u0141a\u0144cuch +2"
+  - "P\xF3\u017Aniej"
+  - "Promie\u0144 +30%"
+  - Wybuch kasetowy
+  - "Kradzie\u017C \u017Cycia"
+  - Roztrzaskanie
   _missing: []

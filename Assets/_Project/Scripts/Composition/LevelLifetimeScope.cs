@@ -113,6 +113,7 @@ namespace Purge.Composition
             builder.Register<MonsterAbilities>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // After the horde: sized by it, tick on its fresh buckets (states act on the monsters from the next tick).
             builder.Register<StatusSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<Purge.Gameplay.Combat.UpgradeCombat>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<ZoneSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<DropSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // Level objects (stage 7в): barrels blow up as the player's own effects (after the zones they burn in),

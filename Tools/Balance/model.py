@@ -526,6 +526,14 @@ def main():
     write_csv(os.path.join(out, "upgrades.csv"),
               ["rarity", "level", "cost", "total", "dps_factor", "fork", "fork_change"], upgrades)
 
+    write_csv(os.path.join(out, "weapon_modifiers.csv"), ["parameter", "value"],
+              sorted(params["weapon_modifiers"].items()))
+    throwing = params["throwables"]
+    write_csv(os.path.join(out, "throwable_upgrades.csv"),
+              ["level", "damage_factor", "radius_factor", "stack_bonus"],
+              [[i + 1, throwing["damage_factors"][i], throwing["radius_factors"][i],
+                throwing["stack_bonuses"][i]] for i in range(throwing["levels"])])
+
     throw_rows = []
     for name, rarity in params["throwables"]["rarity"].items():
         price = model.throwable_price(rarity)

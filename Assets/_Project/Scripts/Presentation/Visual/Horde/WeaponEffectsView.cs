@@ -48,6 +48,7 @@ namespace Purge.Presentation.Visual.Horde
 
         private readonly LevelData _level;
         private readonly PlayerCombat _combat;
+        private readonly UpgradeCombat _upgrades;
         private readonly PlayerSystem _player;
         private readonly BulletSystem _bullets;
         private readonly CombatTargets _targets;
@@ -80,9 +81,9 @@ namespace Purge.Presentation.Visual.Horde
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
             StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
-            PackEffectsPlayer packEffects = null, PackEmitters emitters = null)
+            PackEffectsPlayer packEffects = null, PackEmitters emitters = null, UpgradeCombat upgrades = null)
         {
-            _emitters = emitters;
+            _emitters = emitters; _upgrades=upgrades;
             _visual = visual;
             _packEffects = packEffects;
             _effects = effects;
@@ -158,6 +159,7 @@ namespace Purge.Presentation.Visual.Horde
             _hitSparks = _emitters?.Get(_visual?.HitSparks);
             _combat.Attacked += OnAttacked;
             _bullets.Exploded += OnExploded;
+            if(_upgrades!=null)_upgrades.Ricochet+=OnRicochet;
             if (_effects != null)
             {
                 _effects.Exploded += OnExploded;
@@ -302,6 +304,7 @@ namespace Purge.Presentation.Visual.Horde
             {
                 _combat.Attacked -= OnAttacked;
                 _bullets.Exploded -= OnExploded;
+                if(_upgrades!=null)_upgrades.Ricochet-=OnRicochet;
                 if (_effects != null)
                 {
                     _effects.Exploded -= OnExploded;
@@ -336,6 +339,11 @@ namespace Purge.Presentation.Visual.Horde
             }
         }
 
+        private void OnRicochet(Vector2 from,Vector2 to,WeaponDefinition weapon)
+        {
+            _boltCount=2;_bolt[0]=from;_bolt[1]=to;_boltLeft=BoltTime;
+            PlayChainHits(weapon,new ReadOnlySpan<Vector2>(_bolt,0,2));
+        }
         private void EmitFlame(StreamAttack stream, Vector2 aim)
         {
             var player = _player.Position;

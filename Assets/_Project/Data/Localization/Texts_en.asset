@@ -347,6 +347,29 @@ MonoBehaviour:
   - weapon.tesla
   - weapon.vector_silencer
   - arsenal.symbols
+  - upgrade.buy
+  - upgrade.choose
+  - upgrade.unavailable
+  - upgrade.None
+  - upgrade.Pierce
+  - upgrade.DoubleShot
+  - upgrade.FullMagazineCritical
+  - upgrade.Ricochet
+  - upgrade.Magazine
+  - upgrade.Ramp
+  - upgrade.ExplosiveRounds
+  - upgrade.Burn
+  - upgrade.Knockback
+  - upgrade.Wide
+  - upgrade.Silent
+  - upgrade.Duration
+  - upgrade.Range
+  - upgrade.Chain
+  - upgrade.Electrify
+  - upgrade.Radius
+  - upgrade.Cluster
+  - upgrade.Lifesteal
+  - upgrade.Shatter
   _texts:
   - English
   - SETTINGS
@@ -722,4 +745,27 @@ MonoBehaviour:
   - Tesla
   - Vector (silenced)
   - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
+  - Upgrade
+  - Choose modifier
+  - No upgrade available
+  - None
+  - Piercing
+  - Double shot
+  - Full magazine critical
+  - Ricochet
+  - Magazine +50%
+  - Fire rate ramp
+  - Explosive rounds
+  - Ignition
+  - Knockback x2
+  - Wider sector
+  - Silent
+  - Zone duration +50%
+  - Range +30%
+  - Chain +2
+  - Coming later
+  - Blast radius +30%
+  - Cluster explosion
+  - Lifesteal
+  - Shatter
   _missing: []

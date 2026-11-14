@@ -87,7 +87,7 @@
   - В `HordeSystem.GodMode` (стресс-тест, песочница) ни урона зон, ни состояний. Вид — `PlayerStatusView`: кольцо под игроком цветом самого долгого состояния и бледное пульсирующее — пока иммунитет (`CombatVisualDefinition.StatusRing`, `Purge/Ring`).
   - Источники — способности монстров (`MonsterAbilities`, Abilities.md) и их зоны.
 - **Дроп** — `DropTable` (`Data/Drops/HordeDrop`): веса вида (пусто/патроны/аптечка/метательное/оружие), умные патроны (`HeldShare` — к оружию в слотах, больше к активному и к тому, у кого запас < 2 магазинов; количество — доля магазина), аптечки с весами (при полном HP × `MedkitAtFullHealth`), веса редкости + `MaxRarity`, жизнь и лимит на земле.
-  - `DropPool` (шаг `InitializeSystems`: что может выпасть на уровне — сейчас списки песочницы `HordeDefinition.Drop/PoolWeapons/PoolThrowables`; базовый пистолет исключён), `DropRoller` (чистая функция), `DropSystem` (`HordeSystem.Killed` — смерть от чего угодно).
+  - `DropPool` (шаг `InitializeSystems`: что может выпасть на уровне — открытые предметы `ContentCatalog` по `IItemDropPolicy` из Application; без политики, в изолированных тестах — списки `HordeDefinition`; базовый пистолет исключён), `DropRoller` (чистая функция), `DropSystem` (`HordeSystem.Killed` — смерть от чего угодно).
   - Сложность (6а): `DropContext.RarityFactor` = `Difficulty.DropRarity` (`DropSystem.Context`) — × вес оружия и метательного выше серого в `DropRoller`.
   - Оружие в слотах повторно не выпадает.
 - **Вид дропа** — `ItemVisualCatalog` ("Items/Visual", грузит `SharedDefinitionsService`, необязателен): пикап-префаб и летящий на определение (метательное, аптечки, патроны, оружие — пикапы Weapon Set).
@@ -96,3 +96,5 @@
   - Невзятый (истёк, следующая волна — 6б) в видимой клетке: пых `CombatVisualDefinition.DropVanishOf()` (пусто = `CorpsePuff`, через `PackEmitters`) и сжатие за `DropVanishTime`. Собирает **Purge → Dev → Build Items**. `PickupViewPresenter` дроп не трогает.
 - HUD: слот метательного на ПК (`HudScreen._throwSlot`, клавиша G) и сектор кластера (`TouchAttackCluster._throw`, `<Gamepad>/leftTrigger`) — `WeaponSlotState` (Magazine = стопка, Ammo = количество, Active = прицел), иконка — силуэт пикап-модели (`ItemVisualDefinition.Icon`, Build Items / Build UI Icons).
   - Слоты ПК — «патроны/запас», R у обоих. Звуки — `AudioCatalog.Throw/Pin/Land/ExplosionOf(радиус)/Ignite/PickupAmmo/PickupThrowable`, петля огня `FireLoop` (ближайшая горящая клетка).
+
+- **Арсенал (11в)**: политика `ArsenalService` допускает купленное + стартовый пул + уже выданные уникальные. `DropRoller` умножает вес редкости на ★ ×3 / обычное ×1 / ⊘ 0 и +10 % за уровень сверх первого; при пустой категории её вес равен нулю, запрещённые предметы не возвращаются обходным выбором.

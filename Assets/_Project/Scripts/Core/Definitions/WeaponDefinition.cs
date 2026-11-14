@@ -50,6 +50,13 @@ namespace Purge.Core.Definitions
     {
         private const float DefaultSoundRadius = 4f;
 
+        [SerializeField, Min(0)] private int _purchasePrice;
+        public int PurchasePrice => _purchasePrice;
+        [SerializeField] private bool _uniqueReward;
+        [SerializeField] private ArsenalClass _arsenalClass;
+        public bool UniqueReward => _uniqueReward;
+        public ArsenalClass ArsenalClass => _arsenalClass;
+
         [SerializeField] private Rarity _rarity;
 
         [Tooltip("Cannot be upgraded in the arsenal: strong at once (about an upgraded weapon of the same rarity at " +

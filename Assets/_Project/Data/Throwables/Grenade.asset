@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Grenade
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
   _id: grenade
+  _purchasePrice: 0
   _rarity: 0
   _startPool: 1
   _maxStack: 3

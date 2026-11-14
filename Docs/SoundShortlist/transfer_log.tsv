@@ -243,3 +243,5 @@ Vehicle/monster_hit/monster_hit3.wav	18_Машины\Удары\Удар_о_мо
 Vehicle/bounce/bounce.wav	18_Машины\Удары\Отскок_от_элиты_и_босса\Crash_BigMetalSafeImpact.wav
 Vehicle/stall/stall.wav	18_Машины\Поломка\1_Мотор_глохнет\FerrariDino_StartStall.wav
 Vehicle/smoke_loop/smoke_loop.wav	18_Машины\Поломка\2_Дым_пар_петля\Steam_Loop02.wav
+
+Assets/_Project/Sounds/UI/purchase.wav	16_Интерфейс_и_мета/Покупка_прокачка/Pickup_Coins04.wav

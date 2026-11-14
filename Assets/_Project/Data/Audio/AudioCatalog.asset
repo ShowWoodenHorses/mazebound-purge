@@ -3303,3 +3303,11 @@ MonoBehaviour:
   _resultDelay: 0.5
   _starInterval: 0.4
   _starPitchStep: 0.12
+  _purchase:
+    _clips:
+    - {fileID: 8300000, guid: 5a87f79d919f2cb47b7e461a42a51419, type: 3}
+    _volume: 0.7
+    _pitch: {x: 1, y: 1}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0.1

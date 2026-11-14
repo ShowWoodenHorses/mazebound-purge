@@ -264,3 +264,84 @@ booster.booster_reroll	+1 reroll	+1 переброс	+1 yenileme	+1 cambio	+1 Ne
 booster.booster_reroll.text	Reroll the cards once without an ad.	Один переброс карточек без рекламы.	Kartları reklamsız bir kez yenile.	Cambia las cartas una vez sin anuncio.	Ziehe die Karten einmal ohne Werbung neu.	Troque as cartas uma vez sem anúncio.	Relancez les cartes une fois sans publicité.	Ripesca le carte una volta senza pubblicità.	Jedno losowanie kart bez reklamy.	Acak ulang kartu sekali tanpa iklan.	Карталарды жарнамасыз бір рет қайта таратыңыз.	Kartalarni reklamasiz bir marta qayta tanlang.	Адзін перакід картак без рэкламы.
 booster.booster_scouting	Scouting	Разведка	Keşif	Exploración	Aufklärung	Reconhecimento	Reconnaissance	Ricognizione	Zwiad	Pengintaian	Барлау	Razvedka	Разведка
 booster.booster_scouting.text	The whole map is open from the start.	Вся карта открыта с начала.	Tüm harita baştan açık.	Todo el mapa está abierto desde el inicio.	Die ganze Karte ist von Anfang an offen.	O mapa inteiro fica aberto desde o início.	Toute la carte est révélée dès le départ.	Tutta la mappa è aperta dall'inizio.	Cała mapa jest odkryta od początku.	Seluruh peta terbuka sejak awal.	Бүкіл карта басынан ашық.	Butun xarita boshidanoq ochiq.	Уся карта адкрыта з пачатку.
+arsenal.locked	Locked	Закрыто	Kilitli	Bloqueado	Gesperrt	Bloqueado	Verrouillé	Bloccato	Zablokowane	Terkunci	Құлыптаулы	Qulflangan	Закрыта
+arsenal.level	Level	Уровень	Seviye	Nivel	Stufe	Nível	Niveau	Livello	Poziom	Level	Деңгей	Daraja	Узровень
+arsenal.damage	Damage / shot	Урон / атака	Hasar / saldırı	Daño / ataque	Schaden / Angriff	Dano / ataque	Dégâts / attaque	Danno / attacco	Obrażenia / atak	Kerusakan / serangan	Зақым / шабуыл	Zarar / hujum	Урон / атака
+arsenal.dps	Damage / second	Урон / секунда	Hasar / saniye	Daño / segundo	Schaden / Sekunde	Dano / segundo	Dégâts / seconde	Danno / secondo	Obrażenia / sekundę	Kerusakan / detik	Зақым / секунд	Zarar / soniya	Урон / секунда
+arsenal.range	Range	Дальность	Menzil	Alcance	Reichweite	Alcance	Portée	Portata	Zasięg	Jangkauan	Қашықтық	Masofa	Далёкасць
+arsenal.interval	Attack interval	Интервал атак	Saldırı aralığı	Intervalo de ataque	Angriffsintervall	Intervalo de ataque	Intervalle des attaques	Intervallo attacchi	Odstęp ataków	Jeda serangan	Шабуыл аралығы	Hujum oraligʻi	Інтэрвал атак
+arsenal.magazine	Magazine	Магазин	Şarjör	Cargador	Magazin	Carregador	Chargeur	Caricatore	Magazynek	Magasin	Оқжатар	Oʻqdon	Магазін
+arsenal.reload	Reload	Перезарядка	Doldurma	Recarga	Nachladen	Recarga	Rechargement	Ricarica	Przeładowanie	Isi ulang	Қайта оқтау	Qayta oʻqlash	Перазарадка
+arsenal.no_upgrades	Cannot be upgraded	Не прокачивается	Geliştirilemez	No se puede mejorar	Nicht verbesserbar	Não pode ser melhorado	Amélioration impossible	Non potenziabile	Bez ulepszeń	Tidak dapat ditingkatkan	Жақсартылмайды	Yaxshilab boʻlmaydi	Не паляпшаецца
+arsenal.radius	Radius	Радиус	Yarıçap	Radio	Radius	Raio	Rayon	Raggio	Promień	Radius	Радиус	Radius	Радыус
+arsenal.stack	Stack	Стопка	Yığın	Cantidad	Stapel	Quantidade	Quantité	Quantità	Stos	Tumpukan	Саны	Soni	Стос
+arsenal.open	Unlocked	Открыто	Açık	Desbloqueado	Freigeschaltet	Desbloqueado	Déverrouillé	Sbloccato	Odblokowane	Terbuka	Ашық	Ochilgan	Адкрыта
+arsenal.reward	Reward for completing a location	Награда за прохождение локации	Bölgeyi tamamlama ödülü	Recompensa por completar una zona	Belohnung für Gebietsabschluss	Recompensa por concluir uma área	Récompense de fin de zone	Ricompensa per area completata	Nagroda za ukończenie lokacji	Hadiah menyelesaikan lokasi	Аймақты аяқтау сыйлығы	Hududni tugatish mukofoti	Узнагарода за праходжанне лакацыі
+arsenal.buy	Buy	Купить	Satın al	Comprar	Kaufen	Comprar	Acheter	Acquista	Kup	Beli	Сатып алу	Sotib olish	Купіць
+arsenal.normal	Normal drop ×1	Обычный дроп ×1	Normal ganimet ×1	Botín normal ×1	Normale Beute ×1	Saque normal ×1	Butin normal ×1	Bottino normale ×1	Zwykły łup ×1	Jarahan normal ×1	Қалыпты олжа ×1	Oddiy oʻlja ×1	Звычайная здабыча ×1
+arsenal.favorite	Favorite · drop ×3	Избранное · дроп ×3	Favori · ganimet ×3	Favorito · botín ×3	Favorit · Beute ×3	Favorito · saque ×3	Favori · butin ×3	Preferito · bottino ×3	Ulubione · łup ×3	Favorit · jarahan ×3	Таңдаулы · олжа ×3	Sevimli · oʻlja ×3	Абранае · здабыча ×3
+arsenal.exclude	Exclude from drops	Исключить из дропа	Ganimetten çıkar	Excluir del botín	Aus Beute ausschließen	Excluir do saque	Exclure du butin	Escludi dal bottino	Wyklucz z łupów	Keluarkan dari jarahan	Олжадан алып тастау	Oʻljadan chiqarish	Выключыць са здабычы
+arsenal.silencer	Silencer	Глушитель	Susturucu	Silenciador	Schalldämpfer	Silenciador	Silencieux	Silenziatore	Tłumik	Peredam	Дыбыс бәсеңдеткіш	Ovoz soʻndirgich	Глушыцель
+arsenal.pierce	Piercing	Пробитие	Delme	Penetración	Durchschlag	Perfuração	Perforation	Perforazione	Przebicie	Penembusan	Тесіп өту	Teshib oʻtish	Прабіццё
+arsenal.chain	Chain	Цепь	Zincir	Cadena	Kette	Corrente	Chaîne	Catena	Łańcuch	Rantai	Тізбек	Zanjir	Ланцуг
+arsenal.class.0	Pistols	Пистолеты	Tabancalar	Pistolas	Pistolen	Pistolas	Pistolets	Pistole	Pistolety	Pistol	Тапаншалар	Toʻpponchalar	Пісталеты
+arsenal.class.1	Rifles	Автоматы	Tüfekler	Fusiles	Gewehre	Fuzis	Fusils	Fucili	Karabiny	Senapan	Автоматтар	Avtomatlar	Аўтаматы
+arsenal.class.2	Shotguns	Дробовики	Pompalılar	Escopetas	Schrotflinten	Escopetas	Fusils à pompe	Fucili a pompa	Strzelby	Shotgun	Бытыра мылтықтар	Sochma miltiqlar	Драбавікі
+arsenal.class.3	Snipers	Снайперки	Keskin nişancı	Francotiradores	Scharfschützen	Precisão	Précision	Precisione	Snajperki	Penembak jitu	Мерген мылтықтары	Mergan miltiqlari	Снайперкі
+arsenal.class.4	Canisters	Баллоны	Tüpler	Depósitos	Tanks	Tanques	Réservoirs	Serbatoi	Zbiorniki	Tabung	Баллондар	Ballonlar	Балоны
+arsenal.class.5	Energy	Энергия	Enerji	Energía	Energie	Energia	Énergie	Energia	Energia	Energi	Энергия	Energiya	Энергія
+arsenal.class.6	Charges	Заряды	Mermiler	Proyectiles	Geschosse	Projéteis	Projectiles	Proiettili	Pociski	Proyektil	Снарядтар	Snaryadlar	Зарады
+arsenal.class.7	Melee	Ближнее	Yakın dövüş	Cuerpo a cuerpo	Nahkampf	Corpo a corpo	Mêlée	Mischia	Wręcz	Jarak dekat	Жақын ұрыс	Yaqin jang	Блізкі бой
+arsenal.class.8	Throwables	Метательное	Fırlatılabilir	Arrojadizas	Wurfwaffen	Arremessáveis	Armes de jet	Armi da lancio	Rzucane	Lempar	Лақтырылатын	Uloqtiriladigan	Кідальнае
+arsenal.rarity.0	Common	Обычное	Yaygın	Común	Gewöhnlich	Comum	Commun	Comune	Zwykłe	Umum	Қалыпты	Oddiy	Звычайнае
+arsenal.rarity.1	Uncommon	Необычное	Sıradışı	Poco común	Ungewöhnlich	Incomum	Peu commun	Non comune	Niezwykłe	Tidak umum	Ерекше	Noodatiy	Незвычайнае
+arsenal.rarity.2	Rare	Редкое	Nadir	Raro	Selten	Raro	Rare	Raro	Rzadkie	Langka	Сирек	Noyob	Рэдкае
+arsenal.rarity.3	Epic	Эпическое	Destansı	Épico	Episch	Épico	Épique	Epico	Epickie	Epik	Эпикалық	Epik	Эпічнае
+arsenal.rarity.4	Legendary	Легендарное	Efsanevi	Legendario	Legendär	Lendário	Légendaire	Leggendario	Legendarne	Legendaris	Аңызға айналған	Afsonaviy	Легендарнае
+throwable.flashbang	Flashbang	Светошумовая граната	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang	Flashbang
+throwable.grenade	Grenade	Граната	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade	Grenade
+throwable.grenade_smoke	Grenade Smoke	Дымовая граната	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke	Grenade Smoke
+throwable.mine	Mine	Мина	Mine	Mine	Mine	Mine	Mine	Mine	Mine	Mine	Mine	Mine	Mine
+throwable.molotov	Molotov	Коктейль Молотова	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov	Molotov
+weapon.acid_cannon	AcidCannon	Кислотная пушка	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon	AcidCannon
+weapon.ak_74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74	AK-74
+weapon.auto_shotgun	Auto Shotgun	Автоматический дробовик	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun	Auto Shotgun
+weapon.awm	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM	AWM
+weapon.cross_bow	CrossBow	Арбалет	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow	CrossBow
+weapon.desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert	Desert
+weapon.dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov	Dragunov
+weapon.flame_gun	FlameGun	Огнемёт	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun	FlameGun
+weapon.flamer_pistol	Flamer Pistol	Огненный пистолет	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol	Flamer Pistol
+weapon.freeze_gun	FreezeGun	Криомёт	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun	FreezeGun
+weapon.gas_gun	GasGun	Газомёт	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun	GasGun
+weapon.glock_base	Glock base	Базовый пистолет	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base	Glock base
+weapon.grenade_launcher	Grenade Launcher	Гранатомёт	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher	Grenade Launcher
+weapon.groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza	Groza
+weapon.hammer	Hammer	Кувалда	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer	Hammer
+weapon.hard_auto_shotgun	Hard Auto Shotgun	Тяжёлый дробовик	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun	Hard Auto Shotgun
+weapon.hunter_sniper	Hunter sniper	Охотничья винтовка	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper	Hunter sniper
+weapon.knife	Knife	Нож	Knife	Knife	Knife	Knife	Knife	Knife	Knife	Knife	Knife	Knife	Knife
+weapon.lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx	Lynx
+weapon.m416	M416	M416	M416	M416	M416	M416	M416	M416	M416	M416	M416	M416	M416
+weapon.machete	Machete	Мачете	Machete	Machete	Machete	Machete	Machete	Machete	Machete	Machete	Machete	Machete	Machete
+weapon.machine_gun	MachineGun	Пулемёт	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun	MachineGun
+weapon.magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum	Magnum
+weapon.minigun	Minigun	Миниган	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun	Minigun
+weapon.mortar	Mortar	Миномёт	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar	Mortar
+weapon.mp5_silencer	MP5 (silenced)	MP5 с глушителем	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)	MP5 (silenced)
+weapon.p90	P90	P90	P90	P90	P90	P90	P90	P90	P90	P90	P90	P90	P90
+weapon.pistol_laser	Pistol laser	Лазерный пистолет	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser	Pistol laser
+weapon.pistol_silencer	Pistol (silenced)	Пистолет с глушителем	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)	Pistol (silenced)
+weapon.plasmometer	Plasmometer	Плазмомёт	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer	Plasmometer
+weapon.pomp_shotgun	Pomp Shotgun	Помповый дробовик	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun	Pomp Shotgun
+weapon.railgun	Railgun	Рельсотрон	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun	Railgun
+weapon.revolver	Revolver	Револьвер	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver	Revolver
+weapon.rpg	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG	RPG
+weapon.scar_l	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L	SCAR-L
+weapon.shock_cannon	Shock cannon	Шоковая пушка	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon	Shock cannon
+weapon.sniper_silencer	Sniper (silenced)	Винтовка с глушителем	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)	Sniper (silenced)
+weapon.star_sword	Star sword	Звёздный меч	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword	Star sword
+weapon.sword	Sword	Меч	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword	Sword
+weapon.tesla	Tesla	Тесла	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla	Tesla
+weapon.vector_silencer	Vector (silenced)	Vector с глушителем	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)	Vector (silenced)
+arsenal.symbols	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯	‹ › ★ ⊘ ◈ ◆ ↯

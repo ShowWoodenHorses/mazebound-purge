@@ -31,14 +31,16 @@ namespace Purge.Presentation.UI
         private readonly IInputService _input;
         private readonly AccountService _account;
         private readonly RunSetupPresenter _setup;
+        private readonly ArsenalPresenter _arsenal;
         private readonly List<KeyValuePair<string, string>> _devLevels = new List<KeyValuePair<string, string>>();
         private bool _devLevelsOpen;
         private bool _initialized;
 
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
             LocalizationService texts, IInputService input = null, AccountService account = null,
-            RunSetupPresenter setup = null)
+            RunSetupPresenter setup = null, ArsenalPresenter arsenal = null)
         {
+            _arsenal = arsenal;
             _setup = setup;
             _account = account;
             _input = input;
@@ -59,6 +61,8 @@ namespace Purge.Presentation.UI
             _texts.LanguageChanged += OnLanguageChanged;
             _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
+            _ui.MainMenu.ArsenalClicked += OnArsenal;
+            if (_arsenal != null) { _arsenal.Initialize(); _arsenal.BackRequested += OnArsenalBack; }
             _ui.MainMenu.DevClicked += OnDevClicked;
             _ui.MainMenu.DebugResetProgressClicked += OnResetProgressRequested;
             _ui.MainMenu.SignInClicked += OnSignInClicked;
@@ -109,6 +113,8 @@ namespace Purge.Presentation.UI
 
             _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
+            _ui.MainMenu.ArsenalClicked -= OnArsenal;
+            if (_arsenal != null) _arsenal.BackRequested -= OnArsenalBack;
             _ui.MainMenu.DevClicked -= OnDevClicked;
             if (_ui.Tutorial != null) _ui.Tutorial.ContinueClicked -= _flow.CloseTip;
             _ui.MainMenu.DebugResetProgressClicked -= OnResetProgressRequested;
@@ -158,6 +164,7 @@ namespace Purge.Presentation.UI
             {
                 _devLevelsOpen = false;
                 _setup?.Close();
+                _arsenal?.Close();
             }
             if (menu) RefreshMenus();
             if (inLevel) _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));
@@ -173,7 +180,7 @@ namespace Purge.Presentation.UI
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
             var setupOpen = _setup != null && _setup.IsOpen;
-            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen);
+            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !(_arsenal?.IsOpen ?? false));
             if (_ui.DevLevels != null) _ui.DevLevels.SetVisible(menu && _devLevelsOpen);
             if (_ui.RunSetup != null) _ui.RunSetup.SetVisible(menu && setupOpen);
             _ui.Loading.SetVisible(loading);
@@ -196,9 +203,13 @@ namespace Purge.Presentation.UI
         /// The main menu's money and buttons; in development builds (and the editor) the level list: the tutorial, every
         /// catalog level (locked ones too, so any level can be tested) and the development levels.
         /// </summary>
+        private void OnArsenal() { if (_flow.State != GameFlowState.MainMenu) return; _arsenal?.Open(); Show(_flow.State); }
+        private void OnArsenalBack() => Show(_flow.State);
+
         private void RefreshMenus()
         {
             var levels = _catalog.Levels;
+            _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: false, tasks: false, shop: false);
             _ui.MainMenu.SetMoney(_progress.Money);
             _ui.MainMenu.SetPlayable(levels.Count > 0);
             _ui.MainMenu.SetContinueAvailable(_flow.HasSavedRun);

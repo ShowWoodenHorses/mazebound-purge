@@ -15,6 +15,9 @@ namespace Purge.Core.Definitions
     [CreateAssetMenu(fileName = "Throwable", menuName = "Purge/Definitions/Throwable")]
     public sealed class ThrowableDefinition : ContentDefinition
     {
+        [SerializeField, Min(0)] private int _purchasePrice;
+        public int PurchasePrice => _purchasePrice;
+
         [SerializeField] private Rarity _rarity;
 
         [Tooltip("Open from the start without buying (stage 11б: the grenade): for the run's start and the drop.")]

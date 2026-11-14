@@ -266,6 +266,87 @@ MonoBehaviour:
   - booster.booster_reroll.text
   - booster.booster_scouting
   - booster.booster_scouting.text
+  - arsenal.locked
+  - arsenal.level
+  - arsenal.damage
+  - arsenal.dps
+  - arsenal.range
+  - arsenal.interval
+  - arsenal.magazine
+  - arsenal.reload
+  - arsenal.no_upgrades
+  - arsenal.radius
+  - arsenal.stack
+  - arsenal.open
+  - arsenal.reward
+  - arsenal.buy
+  - arsenal.normal
+  - arsenal.favorite
+  - arsenal.exclude
+  - arsenal.silencer
+  - arsenal.pierce
+  - arsenal.chain
+  - arsenal.class.0
+  - arsenal.class.1
+  - arsenal.class.2
+  - arsenal.class.3
+  - arsenal.class.4
+  - arsenal.class.5
+  - arsenal.class.6
+  - arsenal.class.7
+  - arsenal.class.8
+  - arsenal.rarity.0
+  - arsenal.rarity.1
+  - arsenal.rarity.2
+  - arsenal.rarity.3
+  - arsenal.rarity.4
+  - throwable.flashbang
+  - throwable.grenade
+  - throwable.grenade_smoke
+  - throwable.mine
+  - throwable.molotov
+  - weapon.acid_cannon
+  - weapon.ak_74
+  - weapon.auto_shotgun
+  - weapon.awm
+  - weapon.cross_bow
+  - weapon.desert
+  - weapon.dragunov
+  - weapon.flame_gun
+  - weapon.flamer_pistol
+  - weapon.freeze_gun
+  - weapon.gas_gun
+  - weapon.glock_base
+  - weapon.grenade_launcher
+  - weapon.groza
+  - weapon.hammer
+  - weapon.hard_auto_shotgun
+  - weapon.hunter_sniper
+  - weapon.knife
+  - weapon.lynx
+  - weapon.m416
+  - weapon.machete
+  - weapon.machine_gun
+  - weapon.magnum
+  - weapon.minigun
+  - weapon.mortar
+  - weapon.mp5_silencer
+  - weapon.p90
+  - weapon.pistol_laser
+  - weapon.pistol_silencer
+  - weapon.plasmometer
+  - weapon.pomp_shotgun
+  - weapon.railgun
+  - weapon.revolver
+  - weapon.rpg
+  - weapon.scar_l
+  - weapon.shock_cannon
+  - weapon.sniper_silencer
+  - weapon.star_sword
+  - weapon.sword
+  - weapon.tesla
+  - weapon.vector_silencer
+  - arsenal.symbols
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -559,4 +640,85 @@ MonoBehaviour:
   - Acak ulang kartu sekali tanpa iklan.
   - Pengintaian
   - Seluruh peta terbuka sejak awal.
+  - Terkunci
+  - Level
+  - Kerusakan / serangan
+  - Kerusakan / detik
+  - Jangkauan
+  - Jeda serangan
+  - Magasin
+  - Isi ulang
+  - Tidak dapat ditingkatkan
+  - Radius
+  - Tumpukan
+  - Terbuka
+  - Hadiah menyelesaikan lokasi
+  - Beli
+  - "Jarahan normal \xD71"
+  - "Favorit \xB7 jarahan \xD73"
+  - Keluarkan dari jarahan
+  - Peredam
+  - Penembusan
+  - Rantai
+  - Pistol
+  - Senapan
+  - Shotgun
+  - Penembak jitu
+  - Tabung
+  - Energi
+  - Proyektil
+  - Jarak dekat
+  - Lempar
+  - Umum
+  - Tidak umum
+  - Langka
+  - Epik
+  - Legendaris
+  - Flashbang
+  - Grenade
+  - Grenade Smoke
+  - Mine
+  - Molotov
+  - AcidCannon
+  - AK-74
+  - Auto Shotgun
+  - AWM
+  - CrossBow
+  - Desert
+  - Dragunov
+  - FlameGun
+  - Flamer Pistol
+  - FreezeGun
+  - GasGun
+  - Glock base
+  - Grenade Launcher
+  - Groza
+  - Hammer
+  - Hard Auto Shotgun
+  - Hunter sniper
+  - Knife
+  - Lynx
+  - M416
+  - Machete
+  - MachineGun
+  - Magnum
+  - Minigun
+  - Mortar
+  - MP5 (silenced)
+  - P90
+  - Pistol laser
+  - Pistol (silenced)
+  - Plasmometer
+  - Pomp Shotgun
+  - Railgun
+  - Revolver
+  - RPG
+  - SCAR-L
+  - Shock cannon
+  - Sniper (silenced)
+  - Star sword
+  - Sword
+  - Tesla
+  - Vector (silenced)
+  - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
   _missing: []

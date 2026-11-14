@@ -266,6 +266,87 @@ MonoBehaviour:
   - booster.booster_reroll.text
   - booster.booster_scouting
   - booster.booster_scouting.text
+  - arsenal.locked
+  - arsenal.level
+  - arsenal.damage
+  - arsenal.dps
+  - arsenal.range
+  - arsenal.interval
+  - arsenal.magazine
+  - arsenal.reload
+  - arsenal.no_upgrades
+  - arsenal.radius
+  - arsenal.stack
+  - arsenal.open
+  - arsenal.reward
+  - arsenal.buy
+  - arsenal.normal
+  - arsenal.favorite
+  - arsenal.exclude
+  - arsenal.silencer
+  - arsenal.pierce
+  - arsenal.chain
+  - arsenal.class.0
+  - arsenal.class.1
+  - arsenal.class.2
+  - arsenal.class.3
+  - arsenal.class.4
+  - arsenal.class.5
+  - arsenal.class.6
+  - arsenal.class.7
+  - arsenal.class.8
+  - arsenal.rarity.0
+  - arsenal.rarity.1
+  - arsenal.rarity.2
+  - arsenal.rarity.3
+  - arsenal.rarity.4
+  - throwable.flashbang
+  - throwable.grenade
+  - throwable.grenade_smoke
+  - throwable.mine
+  - throwable.molotov
+  - weapon.acid_cannon
+  - weapon.ak_74
+  - weapon.auto_shotgun
+  - weapon.awm
+  - weapon.cross_bow
+  - weapon.desert
+  - weapon.dragunov
+  - weapon.flame_gun
+  - weapon.flamer_pistol
+  - weapon.freeze_gun
+  - weapon.gas_gun
+  - weapon.glock_base
+  - weapon.grenade_launcher
+  - weapon.groza
+  - weapon.hammer
+  - weapon.hard_auto_shotgun
+  - weapon.hunter_sniper
+  - weapon.knife
+  - weapon.lynx
+  - weapon.m416
+  - weapon.machete
+  - weapon.machine_gun
+  - weapon.magnum
+  - weapon.minigun
+  - weapon.mortar
+  - weapon.mp5_silencer
+  - weapon.p90
+  - weapon.pistol_laser
+  - weapon.pistol_silencer
+  - weapon.plasmometer
+  - weapon.pomp_shotgun
+  - weapon.railgun
+  - weapon.revolver
+  - weapon.rpg
+  - weapon.scar_l
+  - weapon.shock_cannon
+  - weapon.sniper_silencer
+  - weapon.star_sword
+  - weapon.sword
+  - weapon.tesla
+  - weapon.vector_silencer
+  - arsenal.symbols
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -549,4 +630,85 @@ MonoBehaviour:
   - "Kartlar\u0131 reklams\u0131z bir kez yenile."
   - "Ke\u015Fif"
   - "T\xFCm harita ba\u015Ftan a\xE7\u0131k."
+  - Kilitli
+  - Seviye
+  - "Hasar / sald\u0131r\u0131"
+  - Hasar / saniye
+  - Menzil
+  - "Sald\u0131r\u0131 aral\u0131\u011F\u0131"
+  - "\u015Earj\xF6r"
+  - Doldurma
+  - "Geli\u015Ftirilemez"
+  - "Yar\u0131\xE7ap"
+  - "Y\u0131\u011F\u0131n"
+  - "A\xE7\u0131k"
+  - "B\xF6lgeyi tamamlama \xF6d\xFCl\xFC"
+  - "Sat\u0131n al"
+  - "Normal ganimet \xD71"
+  - "Favori \xB7 ganimet \xD73"
+  - "Ganimetten \xE7\u0131kar"
+  - Susturucu
+  - Delme
+  - Zincir
+  - Tabancalar
+  - "T\xFCfekler"
+  - "Pompal\u0131lar"
+  - "Keskin ni\u015Fanc\u0131"
+  - "T\xFCpler"
+  - Enerji
+  - Mermiler
+  - "Yak\u0131n d\xF6v\xFC\u015F"
+  - "F\u0131rlat\u0131labilir"
+  - "Yayg\u0131n"
+  - "S\u0131rad\u0131\u015F\u0131"
+  - Nadir
+  - "Destans\u0131"
+  - Efsanevi
+  - Flashbang
+  - Grenade
+  - Grenade Smoke
+  - Mine
+  - Molotov
+  - AcidCannon
+  - AK-74
+  - Auto Shotgun
+  - AWM
+  - CrossBow
+  - Desert
+  - Dragunov
+  - FlameGun
+  - Flamer Pistol
+  - FreezeGun
+  - GasGun
+  - Glock base
+  - Grenade Launcher
+  - Groza
+  - Hammer
+  - Hard Auto Shotgun
+  - Hunter sniper
+  - Knife
+  - Lynx
+  - M416
+  - Machete
+  - MachineGun
+  - Magnum
+  - Minigun
+  - Mortar
+  - MP5 (silenced)
+  - P90
+  - Pistol laser
+  - Pistol (silenced)
+  - Plasmometer
+  - Pomp Shotgun
+  - Railgun
+  - Revolver
+  - RPG
+  - SCAR-L
+  - Shock cannon
+  - Sniper (silenced)
+  - Star sword
+  - Sword
+  - Tesla
+  - Vector (silenced)
+  - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
   _missing: []

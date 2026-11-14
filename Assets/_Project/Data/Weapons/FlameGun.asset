@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: FlameGun
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: flame_gun
+  _purchasePrice: 28000
+  _uniqueReward: 0
+  _arsenalClass: 4
   _rarity: 4
   _noUpgrades: 0
+  _startPool: 0
   _hold: 3
   _sound: 
   _soundPitch: 1

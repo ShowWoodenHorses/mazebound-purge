@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Hard_Auto_Shotgun
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: hard_auto_shotgun
+  _purchasePrice: 4500
+  _uniqueReward: 0
+  _arsenalClass: 2
   _rarity: 2
   _noUpgrades: 0
+  _startPool: 0
   _hold: 2
   _sound: 
   _soundPitch: 1

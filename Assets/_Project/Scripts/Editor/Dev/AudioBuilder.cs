@@ -121,6 +121,7 @@ namespace Purge.Editor.Dev
             ("Zombie", @"^Dirt Walk \d+$", c => c.ZombieStepWalk),
             ("Zombie", @"^Dirt Run \d+$", c => c.ZombieStepRun),
 
+            ("UI", @"^purchase\d*$", c => c.Purchase),
             ("UI", @"^click\d*$", c => c.Click),
             ("UI", @"^cancel$", c => c.Back),
             ("UI", @"^level_closed$", c => c.Denied),

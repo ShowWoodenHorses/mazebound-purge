@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Grenade_Launcher
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: grenade_launcher
+  _purchasePrice: 4500
+  _uniqueReward: 0
+  _arsenalClass: 6
   _rarity: 2
   _noUpgrades: 0
   _startPool: 1

@@ -12,6 +12,8 @@ namespace Purge.Presentation.UI
     {
         [SerializeField] private MainMenuScreen _mainMenu;
         [SerializeField] private DevLevelsScreen _devLevels;
+        [SerializeField] private ArsenalScreen _arsenal;
+        public ArsenalScreen Arsenal => _arsenal;
         [SerializeField] private RunSetupScreen _runSetup;
         [SerializeField] private LoadingScreen _loading;
         [SerializeField] private ErrorScreen _error;

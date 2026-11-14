@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: MP5_silencer
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: mp5_silencer
+  _purchasePrice: 560
+  _uniqueReward: 0
+  _arsenalClass: 1
   _rarity: 0
   _noUpgrades: 0
   _startPool: 1

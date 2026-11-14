@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Tesla
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: tesla
+  _purchasePrice: 11000
+  _uniqueReward: 0
+  _arsenalClass: 5
   _rarity: 3
   _noUpgrades: 0
+  _startPool: 0
   _hold: 3
   _sound: 
   _soundPitch: 1

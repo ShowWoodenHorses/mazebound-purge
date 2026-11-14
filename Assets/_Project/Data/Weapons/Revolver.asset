@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Revolver
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: revolver
+  _purchasePrice: 560
+  _uniqueReward: 0
+  _arsenalClass: 0
   _rarity: 0
   _noUpgrades: 0
   _startPool: 1

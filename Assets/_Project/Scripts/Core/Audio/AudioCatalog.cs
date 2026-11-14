@@ -441,6 +441,8 @@ namespace Purge.Core.Audio
         public SoundCue TorchLoop => _torchLoop;
         public int MaxTorchLoops => _maxTorchLoops;
 
+        [SerializeField] private SoundCue _purchase = new SoundCue(0.7f, 0f, 2, new Vector2(1f, 1f), 0.1f);
+        public SoundCue Purchase => _purchase;
         public SoundCue Click => _click;
         public SoundCue Back => _back;
         public SoundCue Denied => _denied;
@@ -604,6 +606,7 @@ namespace Purge.Core.Audio
             foreach (var part in _parts)
                 if (part != null)
                     yield return part.Cue;
+            yield return _purchase;
             yield return _emptyClick; yield return _lowAmmo; yield return _monsterHit; yield return _killPop;
             yield return _killSplat; yield return _weaponDrop; yield return _rareDrop; yield return _pin; yield return _land;
             yield return _fireLoop; yield return _bodyfall; yield return _heartbeat;

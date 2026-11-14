@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Groza
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: groza
+  _purchasePrice: 4500
+  _uniqueReward: 0
+  _arsenalClass: 1
   _rarity: 2
   _noUpgrades: 0
+  _startPool: 0
   _hold: 1
   _sound: rifle_762
   _soundPitch: 1

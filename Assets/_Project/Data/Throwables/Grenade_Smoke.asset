@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Grenade_Smoke
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
   _id: grenade_smoke
+  _purchasePrice: 280
   _rarity: 0
+  _startPool: 0
   _maxStack: 3
   _range: 8
   _speed: 12

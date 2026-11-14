@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Sniper_silencer
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: sniper_silencer
+  _purchasePrice: 1700
+  _uniqueReward: 0
+  _arsenalClass: 3
   _rarity: 1
   _noUpgrades: 0
+  _startPool: 0
   _hold: 1
   _sound: 
   _soundPitch: 1

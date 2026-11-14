@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Shock_cannon
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: shock_cannon
+  _purchasePrice: 0
+  _uniqueReward: 1
+  _arsenalClass: 5
   _rarity: 3
   _noUpgrades: 0
+  _startPool: 0
   _hold: 3
   _sound: 
   _soundPitch: 1

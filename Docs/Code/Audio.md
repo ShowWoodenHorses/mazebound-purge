@@ -20,3 +20,6 @@
   - Звуки оружия — по `WeaponDefinition.SoundGroup` (поле `Sound` — выпадающий список папок групп, `WeaponSoundGroupAttribute`; пусто = id; строковые ссылки на контент в инспекторе делать списками, не текстом): группа = папка `Sounds/Weapon/<группа>/` (`attack*`, `start/loop/end*`, `reload*`) → `AudioCatalog.WeaponSounds`
   - общие части — `Sounds/Weapon/_Parts/<часть>/` → `AudioCatalog.Parts` (`SoundPart`, ссылки из группы — списки `WeaponSoundPart`); нет звука в группе — общий. Новая группа получает черновые части по виду оружия (`AudioBuilder.DefaultParts`), дальше правится в каталоге.
 - Тесты: `AudioService.MusicHandleCount` вычитать при подсчёте утечек handle'ов (музыка грузится асинхронно по ходу flow), `PlayingCount(channel)`.
+
+- **11в**: `AudioCatalog.Purchase` ← `Sounds/UI/purchase*`, канал Interface; выбранный `Pickup_Coins04.wav` из шортлиста «Покупка_прокачка», перенос в `transfer_log.tsv`. Играет только после успешной покупки.
+

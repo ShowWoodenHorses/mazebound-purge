@@ -754,3 +754,7 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 - Новые модели объектов → **Convert Object Materials to Purge Lit** (Light Fixtures делает это сам).
 - Что-то из `Import` → в конце **Collect Used Third-Party Assets**.
 - Правка `Strings.tsv` → **Build Localization** (сама запускает Build UI Style). Новая подпись в `RuntimeScenesBuilder` → ещё **Build Runtime Scenes**.
+
+### Build Arsenal (11в)
+- **Purge → Dev → Build Arsenal** — цены покупки оружия/метательного и признак уникального оружия из CSV модели в Definitions. Классы настраиваются в инспекторе; перестройка не затирает их. После изменений экрана — Build Runtime Scenes; строк — Build Localization; звука покупки `Sounds/UI/purchase*` — Build Audio.
+

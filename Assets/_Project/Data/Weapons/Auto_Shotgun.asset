@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Auto_Shotgun
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: auto_shotgun
+  _purchasePrice: 1700
+  _uniqueReward: 0
+  _arsenalClass: 2
   _rarity: 1
   _noUpgrades: 0
   _startPool: 1

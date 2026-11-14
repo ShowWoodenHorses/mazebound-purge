@@ -85,6 +85,25 @@ namespace Purge.Tests.PlayMode
             }
         });
 
+        [UnityTest]
+        public IEnumerator Arsenal_AllClasses_PreviewReleasesHandles() => Async(async () =>
+        {
+            var arsenal = _container.Resolve<Purge.Presentation.UI.ArsenalPresenter>();
+            var ui = _container.Resolve<Purge.Presentation.UI.UIRoot>();
+            var baseline = AppHandles;
+            arsenal.Open();
+            for (int i=0;i<9;i++)
+            {
+                await WaitFor(() => !arsenal.IsLoading);
+                Assert.IsTrue(ui.Arsenal.IsVisible);
+                var next = System.Array.Find(ui.Arsenal.GetComponentsInChildren<UnityEngine.UI.Button>(true), b => b.name == "Next");
+                Assert.IsNotNull(next); next.onClick.Invoke();
+            }
+            arsenal.Close();
+            await WaitFor(() => AppHandles == baseline);
+            Assert.IsFalse(ui.Arsenal.IsVisible);
+        });
+
         [Test]
         public void Bootstrap_ReachesMainMenu_WithLevelsInCatalog()
         {

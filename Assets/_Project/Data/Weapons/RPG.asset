@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: RPG
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: rpg
+  _purchasePrice: 11000
+  _uniqueReward: 0
+  _arsenalClass: 6
   _rarity: 3
   _noUpgrades: 0
+  _startPool: 0
   _hold: 4
   _sound: 
   _soundPitch: 1

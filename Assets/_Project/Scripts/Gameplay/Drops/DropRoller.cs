@@ -161,7 +161,7 @@ namespace Purge.Gameplay.Drops
         private static float ThrowableTotal(DropTable table, DropPool pool, in DropContext context)
         {
             var total = 0f;
-            foreach (var throwable in pool.Throwables) total += Weight(table, throwable.Rarity, context);
+            foreach (var throwable in pool.Throwables) total += Weight(table, throwable.Rarity, context) * pool.WeightOf(throwable);
             return total;
         }
 
@@ -171,7 +171,7 @@ namespace Purge.Gameplay.Drops
             ThrowableDefinition last = null;
             foreach (var throwable in pool.Throwables)
             {
-                var weight = Weight(table, throwable.Rarity, context);
+                var weight = Weight(table, throwable.Rarity, context) * pool.WeightOf(throwable);
                 if (weight <= 0f) continue;
                 last = throwable;
                 if ((pick -= weight) < 0f) break;
@@ -190,7 +190,7 @@ namespace Purge.Gameplay.Drops
         {
             var total = 0f;
             foreach (var weapon in pool.Weapons)
-                if (!InSlots(weapon, context)) total += Weight(table, weapon.Rarity, context);
+                if (!InSlots(weapon, context)) total += Weight(table, weapon.Rarity, context) * pool.WeightOf(weapon);
             return total;
         }
 
@@ -214,7 +214,7 @@ namespace Purge.Gameplay.Drops
             foreach (var weapon in pool.Weapons)
             {
                 if (InSlots(weapon, context)) continue;
-                var weight = Weight(table, weapon.Rarity, context);
+                var weight = Weight(table, weapon.Rarity, context) * pool.WeightOf(weapon);
                 if (weight <= 0f) continue;
                 last = weapon;
                 if ((pick -= weight) < 0f) break;

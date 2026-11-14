@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: GasGun
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: gas_gun
+  _purchasePrice: 4500
+  _uniqueReward: 0
+  _arsenalClass: 4
   _rarity: 2
   _noUpgrades: 0
+  _startPool: 0
   _hold: 3
   _sound: 
   _soundPitch: 1

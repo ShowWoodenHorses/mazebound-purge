@@ -30,7 +30,7 @@ namespace Purge.Editor.Dev
     /// top-down camera, light).
     /// Re-running overwrites both scenes.
     /// </summary>
-    internal static class RuntimeScenesBuilder
+    internal static partial class RuntimeScenesBuilder
     {
         public const string ScenesFolder = "Assets/_Project/Scenes";
         public const string BootstrapPath = ScenesFolder + "/Bootstrap.unity";
@@ -304,6 +304,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_mainMenu", BuildMainMenu(parent));
             SetReference(root, "_devLevels", BuildDevLevels(parent));
             SetReference(root, "_runSetup", BuildRunSetup(parent));
+            SetReference(root, "_arsenal", BuildArsenal(parent));
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens

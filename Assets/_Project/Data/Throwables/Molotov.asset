@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Molotov
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.ThrowableDefinition
   _id: molotov
+  _purchasePrice: 850
   _rarity: 1
+  _startPool: 0
   _maxStack: 3
   _range: 7
   _speed: 12

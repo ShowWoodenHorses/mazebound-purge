@@ -7,6 +7,8 @@ namespace Purge.Presentation.Localization
     /// </summary>
     public static class TextKeys
     {
+        public const string ArsenalPrefix = "arsenal.";
+        public const string ThrowablePrefix = "throwable.";
         // Shared.
         public const string Settings = "common.settings";
         public const string Yes = "common.yes";

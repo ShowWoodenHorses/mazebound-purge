@@ -17,6 +17,8 @@ namespace Purge.Gameplay.Drops
     /// </summary>
     public sealed class DropPool : ILevelLoadStep
     {
+        private readonly IItemDropPolicy _policy;
+        public float WeightOf(ContentDefinition item) => _policy?.WeightOf(item) ?? 1f;
         private readonly LevelData _level;
         private readonly ContentCatalog _content;
         private readonly List<WeaponDefinition> _weapons = new List<WeaponDefinition>();
@@ -25,8 +27,9 @@ namespace Purge.Gameplay.Drops
         private readonly List<MedkitDefinition> _medkits = new List<MedkitDefinition>();
         private readonly List<AmmoDefinition> _allAmmo = new List<AmmoDefinition>();
 
-        public DropPool(LevelData level, ContentCatalog content = null)
+        public DropPool(LevelData level, ContentCatalog content = null, IItemDropPolicy policy = null)
         {
+            _policy = policy;
             _level = level;
             _content = content;
         }
@@ -47,7 +50,13 @@ namespace Purge.Gameplay.Drops
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             var horde = _level.Horde;
-            Configure(horde != null ? horde.Drop : null, horde != null ? horde.PoolWeapons : null,
+            if (_policy != null && _content != null && horde != null)
+            {
+                var weapons = new List<WeaponDefinition>(); var throwables = new List<ThrowableDefinition>();
+                _content.GetAll(weapons); _content.GetAll(throwables);
+                Configure(horde.Drop, weapons, throwables);
+            }
+            else Configure(horde != null ? horde.Drop : null, horde != null ? horde.PoolWeapons : null,
                 horde != null ? horde.PoolThrowables : null);
             return UniTask.CompletedTask;
         }
@@ -65,7 +74,7 @@ namespace Purge.Gameplay.Drops
             if (weapons != null)
                 foreach (var weapon in weapons)
                     // The base pistol (infinite reserve) never lies on the ground.
-                    if (weapon != null && !_weapons.Contains(weapon) && !(weapon.UsesAmmo && weapon.Ammo.InfiniteReserve))
+                    if (weapon != null && WeightOf(weapon) > 0f && !_weapons.Contains(weapon) && !(weapon.UsesAmmo && weapon.Ammo.InfiniteReserve))
                     {
                         _weapons.Add(weapon);
                         var ammo = weapon.UsesAmmo && !weapon.Ammo.InfiniteReserve ? weapon.Ammo.Ammo : null;
@@ -74,7 +83,7 @@ namespace Purge.Gameplay.Drops
 
             if (throwables != null)
                 foreach (var throwable in throwables)
-                    if (throwable != null && !_throwables.Contains(throwable))
+                    if (throwable != null && WeightOf(throwable) > 0f && !_throwables.Contains(throwable))
                         _throwables.Add(throwable);
 
             foreach (var medkit in table.Medkits)

@@ -266,6 +266,87 @@ MonoBehaviour:
   - booster.booster_reroll.text
   - booster.booster_scouting
   - booster.booster_scouting.text
+  - arsenal.locked
+  - arsenal.level
+  - arsenal.damage
+  - arsenal.dps
+  - arsenal.range
+  - arsenal.interval
+  - arsenal.magazine
+  - arsenal.reload
+  - arsenal.no_upgrades
+  - arsenal.radius
+  - arsenal.stack
+  - arsenal.open
+  - arsenal.reward
+  - arsenal.buy
+  - arsenal.normal
+  - arsenal.favorite
+  - arsenal.exclude
+  - arsenal.silencer
+  - arsenal.pierce
+  - arsenal.chain
+  - arsenal.class.0
+  - arsenal.class.1
+  - arsenal.class.2
+  - arsenal.class.3
+  - arsenal.class.4
+  - arsenal.class.5
+  - arsenal.class.6
+  - arsenal.class.7
+  - arsenal.class.8
+  - arsenal.rarity.0
+  - arsenal.rarity.1
+  - arsenal.rarity.2
+  - arsenal.rarity.3
+  - arsenal.rarity.4
+  - throwable.flashbang
+  - throwable.grenade
+  - throwable.grenade_smoke
+  - throwable.mine
+  - throwable.molotov
+  - weapon.acid_cannon
+  - weapon.ak_74
+  - weapon.auto_shotgun
+  - weapon.awm
+  - weapon.cross_bow
+  - weapon.desert
+  - weapon.dragunov
+  - weapon.flame_gun
+  - weapon.flamer_pistol
+  - weapon.freeze_gun
+  - weapon.gas_gun
+  - weapon.glock_base
+  - weapon.grenade_launcher
+  - weapon.groza
+  - weapon.hammer
+  - weapon.hard_auto_shotgun
+  - weapon.hunter_sniper
+  - weapon.knife
+  - weapon.lynx
+  - weapon.m416
+  - weapon.machete
+  - weapon.machine_gun
+  - weapon.magnum
+  - weapon.minigun
+  - weapon.mortar
+  - weapon.mp5_silencer
+  - weapon.p90
+  - weapon.pistol_laser
+  - weapon.pistol_silencer
+  - weapon.plasmometer
+  - weapon.pomp_shotgun
+  - weapon.railgun
+  - weapon.revolver
+  - weapon.rpg
+  - weapon.scar_l
+  - weapon.shock_cannon
+  - weapon.sniper_silencer
+  - weapon.star_sword
+  - weapon.sword
+  - weapon.tesla
+  - weapon.vector_silencer
+  - arsenal.symbols
   _texts:
   - "\u049A\u0430\u0437\u0430\u049B\u0448\u0430"
   - "\u0411\u0410\u041F\u0422\u0410\u0423\u041B\u0410\u0420"
@@ -682,4 +763,87 @@ MonoBehaviour:
   - "\u0411\u0430\u0440\u043B\u0430\u0443"
   - "\u0411\u04AF\u043A\u0456\u043B \u043A\u0430\u0440\u0442\u0430 \u0431\u0430\u0441\u044B\u043D\u0430\u043D
     \u0430\u0448\u044B\u049B."
+  - "\u049A\u04B1\u043B\u044B\u043F\u0442\u0430\u0443\u043B\u044B"
+  - "\u0414\u0435\u04A3\u0433\u0435\u0439"
+  - "\u0417\u0430\u049B\u044B\u043C / \u0448\u0430\u0431\u0443\u044B\u043B"
+  - "\u0417\u0430\u049B\u044B\u043C / \u0441\u0435\u043A\u0443\u043D\u0434"
+  - "\u049A\u0430\u0448\u044B\u049B\u0442\u044B\u049B"
+  - "\u0428\u0430\u0431\u0443\u044B\u043B \u0430\u0440\u0430\u043B\u044B\u0493\u044B"
+  - "\u041E\u049B\u0436\u0430\u0442\u0430\u0440"
+  - "\u049A\u0430\u0439\u0442\u0430 \u043E\u049B\u0442\u0430\u0443"
+  - "\u0416\u0430\u049B\u0441\u0430\u0440\u0442\u044B\u043B\u043C\u0430\u0439\u0434\u044B"
+  - "\u0420\u0430\u0434\u0438\u0443\u0441"
+  - "\u0421\u0430\u043D\u044B"
+  - "\u0410\u0448\u044B\u049B"
+  - "\u0410\u0439\u043C\u0430\u049B\u0442\u044B \u0430\u044F\u049B\u0442\u0430\u0443
+    \u0441\u044B\u0439\u043B\u044B\u0493\u044B"
+  - "\u0421\u0430\u0442\u044B\u043F \u0430\u043B\u0443"
+  - "\u049A\u0430\u043B\u044B\u043F\u0442\u044B \u043E\u043B\u0436\u0430 \xD71"
+  - "\u0422\u0430\u04A3\u0434\u0430\u0443\u043B\u044B \xB7 \u043E\u043B\u0436\u0430
+    \xD73"
+  - "\u041E\u043B\u0436\u0430\u0434\u0430\u043D \u0430\u043B\u044B\u043F \u0442\u0430\u0441\u0442\u0430\u0443"
+  - "\u0414\u044B\u0431\u044B\u0441 \u0431\u04D9\u0441\u0435\u04A3\u0434\u0435\u0442\u043A\u0456\u0448"
+  - "\u0422\u0435\u0441\u0456\u043F \u04E9\u0442\u0443"
+  - "\u0422\u0456\u0437\u0431\u0435\u043A"
+  - "\u0422\u0430\u043F\u0430\u043D\u0448\u0430\u043B\u0430\u0440"
+  - "\u0410\u0432\u0442\u043E\u043C\u0430\u0442\u0442\u0430\u0440"
+  - "\u0411\u044B\u0442\u044B\u0440\u0430 \u043C\u044B\u043B\u0442\u044B\u049B\u0442\u0430\u0440"
+  - "\u041C\u0435\u0440\u0433\u0435\u043D \u043C\u044B\u043B\u0442\u044B\u049B\u0442\u0430\u0440\u044B"
+  - "\u0411\u0430\u043B\u043B\u043E\u043D\u0434\u0430\u0440"
+  - "\u042D\u043D\u0435\u0440\u0433\u0438\u044F"
+  - "\u0421\u043D\u0430\u0440\u044F\u0434\u0442\u0430\u0440"
+  - "\u0416\u0430\u049B\u044B\u043D \u04B1\u0440\u044B\u0441"
+  - "\u041B\u0430\u049B\u0442\u044B\u0440\u044B\u043B\u0430\u0442\u044B\u043D"
+  - "\u049A\u0430\u043B\u044B\u043F\u0442\u044B"
+  - "\u0415\u0440\u0435\u043A\u0448\u0435"
+  - "\u0421\u0438\u0440\u0435\u043A"
+  - "\u042D\u043F\u0438\u043A\u0430\u043B\u044B\u049B"
+  - "\u0410\u04A3\u044B\u0437\u0493\u0430 \u0430\u0439\u043D\u0430\u043B\u0493\u0430\u043D"
+  - Flashbang
+  - Grenade
+  - Grenade Smoke
+  - Mine
+  - Molotov
+  - AcidCannon
+  - AK-74
+  - Auto Shotgun
+  - AWM
+  - CrossBow
+  - Desert
+  - Dragunov
+  - FlameGun
+  - Flamer Pistol
+  - FreezeGun
+  - GasGun
+  - Glock base
+  - Grenade Launcher
+  - Groza
+  - Hammer
+  - Hard Auto Shotgun
+  - Hunter sniper
+  - Knife
+  - Lynx
+  - M416
+  - Machete
+  - MachineGun
+  - Magnum
+  - Minigun
+  - Mortar
+  - MP5 (silenced)
+  - P90
+  - Pistol laser
+  - Pistol (silenced)
+  - Plasmometer
+  - Pomp Shotgun
+  - Railgun
+  - Revolver
+  - RPG
+  - SCAR-L
+  - Shock cannon
+  - Sniper (silenced)
+  - Star sword
+  - Sword
+  - Tesla
+  - Vector (silenced)
+  - "\u2039 \u203A \u2605 \u2298 \u25C8 \u25C6 \u21AF"
   _missing: []

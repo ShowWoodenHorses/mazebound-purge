@@ -160,11 +160,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e691004cc3d4284493028572ad407a7
-    m_Address: Assets/_Project/Data/Themes/ForestDecorSet.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0fa527d1823ae8f4389e65739c224df5
     m_Address: Assets/_Project/Art/Animations/Officer_Attack_1.fbx
     m_ReadOnly: 0
@@ -1560,11 +1555,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a03fbad0f5cd1db4f90e6bd286099a55
-    m_Address: Assets/_Project/Data/Themes/ForestWallSet.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0e6e61468834da4ea64e5e8c2b405ce
     m_Address: Assets/_Project/Art/ThirdParty/PolygonWar/Textures/PolygonWar_Texture_01_A.png
     m_ReadOnly: 0
@@ -1677,11 +1667,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acd75803b4be04249818df536c89ce1c
     m_Address: Assets/_Project/Data/Weapons/Minigun.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad23ba20b94ed7a45b12d5a6627c3e0f
-    m_Address: Assets/_Project/Data/Themes/ForestTheme.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

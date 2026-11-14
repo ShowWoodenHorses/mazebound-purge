@@ -18,18 +18,22 @@ namespace Purge.Application.Meta
     public sealed class RunPreparation
     {
         private readonly IProgressService _progress;
+        private readonly CharacterTree _tree;
         private readonly ILevelCatalog _catalog;
         private readonly SharedDefinitionsService _shared;
 
-        public RunPreparation(IProgressService progress, ILevelCatalog catalog, SharedDefinitionsService shared)
+        public RunPreparation(IProgressService progress, ILevelCatalog catalog, SharedDefinitionsService shared, CharacterTree tree = null)
         {
             _progress = progress;
+            _tree = tree;
             _catalog = catalog;
             _shared = shared;
         }
 
         /// <summary>The rarest the start may take: grey until the trunk of the character tree (stage 11д).</summary>
-        public Rarity StartRarity => Rarity.Common;
+        public Rarity StartRarity => _tree?.StartRarity ?? Rarity.Common;
+        public CharacterSkills Skills => _tree?.Skills ?? CharacterSkills.None;
+        public ThrowableDefinition FallbackGrenade => Find<ThrowableDefinition>("grenade");
 
         private ContentCatalog Content => _shared != null ? _shared.Content : null;
 
@@ -78,7 +82,10 @@ namespace Purge.Application.Meta
         public bool IsOpen(BoosterDefinition booster)
         {
             if (booster == null) return false;
-            if (booster.Unlock == BoosterUnlock.Tree) return _progress.IsBoosterOpened(booster.Id);
+            if (booster.Unlock == BoosterUnlock.Tree)
+                return booster.TryGet<SpecialBoost>(out var special)
+                    ? _tree?.Has(special.Kind.ToString()) == true
+                    : _progress.IsBoosterOpened(booster.Id);
             var levels = _catalog.Levels;
             return levels.Count > 0 && _progress.IsCompleted(levels[0].LevelId);
         }

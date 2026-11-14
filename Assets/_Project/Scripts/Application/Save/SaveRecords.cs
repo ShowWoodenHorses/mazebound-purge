@@ -184,6 +184,14 @@ namespace Purge.Application.Save
 
         /// <summary>Free card rerolls left (the booster, stage 11б).</summary>
         public int FreeRerolls;
+        public bool SecondDomeUsed;
+        public string BanishedCard;
+        public int BountiesPaid;
+        public bool SupplyPlaced;
+        public int Barrier;
+        public List<Purge.Gameplay.Run.SupplyAmmo> AmmoReserve = new List<Purge.Gameplay.Run.SupplyAmmo>();
+        public List<Purge.Gameplay.Run.SupplyAmmo> Supply = new List<Purge.Gameplay.Run.SupplyAmmo>();
+        public Purge.Core.Definitions.CharacterSkills Skills;
 
         /// <summary>The booster's medkit at the start is taken (stage 11б).</summary>
         public bool StartMedkitTaken;
@@ -228,6 +236,14 @@ namespace Purge.Application.Save
             Vehicles.Clear();
             Explored = null;
             FreeRerolls = 0;
+            SecondDomeUsed = false;
+            BanishedCard = null;
+            BountiesPaid = 0;
+            SupplyPlaced = false;
+            Supply.Clear();
+            AmmoReserve.Clear();
+            Barrier = 0;
+            Skills = Purge.Core.Definitions.CharacterSkills.None;
             StartMedkitTaken = false;
         }
 
@@ -251,6 +267,9 @@ namespace Purge.Application.Save
             if (Active && string.IsNullOrEmpty(LevelId)) Clear(); // a run of nothing cannot be continued
             if (!Enum.IsDefined(typeof(RunMode), Mode)) Mode = RunMode.Level;
             if (Wave < 0) Wave = 0;
+            AmmoReserve ??= new List<Purge.Gameplay.Run.SupplyAmmo>();
+            Supply ??= new List<Purge.Gameplay.Run.SupplyAmmo>();
+            Supply.RemoveAll(item => item == null || string.IsNullOrEmpty(item.AmmoId) || item.Rounds <= 0);
             if (FreeRerolls < 0) FreeRerolls = 0;
             if (Difficulty < 0 || Difficulty > 30) Difficulty = 0;
             if (Money < 0) Money = 0;

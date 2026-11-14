@@ -418,7 +418,7 @@ namespace Purge.Gameplay.Combat
                     break;
             }
 
-            _sounds.Emit(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius * (Has(definition,WeaponUpgrade.Silent)?0.5f:1f), floor);
+            _sounds.EmitPlayer(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius * (Has(definition,WeaponUpgrade.Silent)?0.5f:1f), floor);
             if (definition.UsesAmmo)
             {
                 weapon.Ammo = Mathf.Max(0, weapon.Ammo - definition.Ammo.PerAttack);
@@ -561,7 +561,7 @@ namespace Purge.Gameplay.Combat
             {
                 LastIceHit = door;
                 _doors.HitIce(door.Id);
-                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), melee.SoundRadius, door.Position.Floor);
+                _sounds.EmitPlayer(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), melee.SoundRadius, door.Position.Floor);
             }
         }
 

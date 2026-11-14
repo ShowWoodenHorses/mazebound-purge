@@ -54,6 +54,7 @@ namespace Purge.Presentation.Visual
         private readonly PlayerDefinition _player;
         private readonly ThrowableSlot _slot;
         private readonly LevelLaunchOptions _options;
+        private readonly Purge.Core.Content.ContentCatalog _content;
         private readonly List<Instance> _all = new List<Instance>();
 
         private readonly Dictionary<string, Kind> _kinds = new Dictionary<string, Kind>();
@@ -64,9 +65,10 @@ namespace Purge.Presentation.Visual
 
         public PackEffectsPlayer(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root,
             VisibilitySystem visibility, LevelData level, DropPool drops = null, PlayerDefinition player = null,
-            ThrowableSlot slot = null, LevelLaunchOptions options = null)
+            ThrowableSlot slot = null, LevelLaunchOptions options = null, Purge.Core.Content.ContentCatalog content = null)
         {
             _options = options;
+            _content = content;
             _visual = visual;
             _assets = assets;
             _root = root;
@@ -330,6 +332,9 @@ namespace Purge.Presentation.Visual
                 AddEffects(wanted, _player.ReviveEffects); // the revive's wave (stage 6d)
             }
             if (_slot != null) AddThrowable(wanted, _slot.Definition);
+            if (_options?.HasBoost(Purge.Core.Boosters.SpecialBoosterKind.Minefield) == true)
+                AddThrowable(wanted, _content?.Find<ThrowableDefinition>("mine"));
+            AddWeapon(wanted, _options?.SecondWeapon);
             AddWeapon(wanted, _options?.StartWeapon); // the run's start weapon (stage 11б)
         }
 

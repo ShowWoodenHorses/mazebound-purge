@@ -152,13 +152,19 @@ namespace Purge.Gameplay.Pickups
         private bool _subscribed;
         private int _nextDrop;
         private readonly IItemUpgrades _upgrades;
+        private readonly Run.RunWallet _wallet;
+        private readonly bool _buyer;
+        private static readonly int[] DuplicatePrices = { 5, 10, 20, 35, 60 };
         private float _expiryTimer;
         private float _magnetTimer;
 
         public PickupSystem(LevelData level, PlayerSystem player, PlayerHealth health, PlayerInventory inventory, WeaponSystem weapons,
-            SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null, IItemUpgrades upgrades = null)
+            SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null, IItemUpgrades upgrades = null,
+            Run.RunWallet wallet = null, LevelLaunchOptions options = null)
         {
             _sounds = sounds; _upgrades=upgrades;
+            _wallet = wallet;
+            _buyer = options?.HasSkill(CharacterSkills.Buyer) == true;
             _level = level;
             _player = player;
             _health = health;
@@ -374,7 +380,8 @@ namespace Purge.Gameplay.Pickups
                 }
                 if(duplicate && definition.UsesAmmo)
                 {
-                    _ammo.Add(definition.Ammo.Ammo,Math.Max(1,definition.MagazineSize));
+                    if (_buyer && _wallet != null) _wallet.Add(DuplicatePrices[(int)definition.Rarity]);
+                    else _ammo.Add(definition.Ammo.Ammo, Math.Max(1, definition.MagazineSize));
                     return true;
                 }
                 var dropped = _weapons.Equip(pickup.Weapon);
@@ -617,7 +624,7 @@ namespace Purge.Gameplay.Pickups
 
             pickup.WasTaken = taken;
             if (taken)
-                _sounds.Emit(SoundType.Pickup, pickup.Position, _player.Definition.InteractionSoundRadius, pickup.Cell.Floor);
+                _sounds.EmitPlayer(SoundType.Pickup, pickup.Position, _player.Definition.InteractionSoundRadius, pickup.Cell.Floor);
             Removed?.Invoke(pickup);
         }
 

@@ -32,6 +32,9 @@ namespace Purge.Presentation.UI
         private readonly AccountService _account;
         private readonly RunSetupPresenter _setup;
         private readonly ArsenalPresenter _arsenal;
+        private readonly Purge.Application.Meta.CharacterTree _tree;
+        private readonly CharacterPresenter _character;
+        private bool _characterOpen;
         private readonly List<KeyValuePair<string, string>> _devLevels = new List<KeyValuePair<string, string>>();
         private readonly SaveService _save;
         private readonly SharedDefinitionsService _shared;
@@ -43,9 +46,11 @@ namespace Purge.Presentation.UI
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
             LocalizationService texts, IInputService input = null, AccountService account = null,
             RunSetupPresenter setup = null, ArsenalPresenter arsenal = null, SaveService save = null,
-            SharedDefinitionsService shared = null)
+            SharedDefinitionsService shared = null, Purge.Application.Meta.CharacterTree tree = null)
         {
             _arsenal = arsenal;
+            _tree = tree;
+            if (tree != null) _character = new CharacterPresenter(tree, texts);
             _save = save;
             _shared = shared;
             _setup = setup;
@@ -69,6 +74,13 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
             _ui.MainMenu.ArsenalClicked += OnArsenal;
+            _ui.MainMenu.CharacterClicked += OnCharacter;
+            if (_ui.Character != null && _character != null)
+            {
+                _character.Attach(_ui.Character);
+                _ui.Character.BackClicked += OnCharacterBack;
+                _ui.Character.ResetClicked += ConfirmCharacterReset;
+            }
             if (_arsenal != null) { _arsenal.Initialize(); _arsenal.BackRequested += OnArsenalBack; }
             _ui.MainMenu.DevClicked += OnDevClicked;
             _ui.MainMenu.DebugResetProgressClicked += OnResetProgressRequested;
@@ -129,6 +141,13 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
             _ui.MainMenu.ArsenalClicked -= OnArsenal;
+            _ui.MainMenu.CharacterClicked -= OnCharacter;
+            if (_ui.Character != null)
+            {
+                _ui.Character.BackClicked -= OnCharacterBack;
+                _ui.Character.ResetClicked -= ConfirmCharacterReset;
+            }
+            _character?.Dispose();
             if (_arsenal != null) _arsenal.BackRequested -= OnArsenalBack;
             _ui.MainMenu.DevClicked -= OnDevClicked;
             if (_ui.Tutorial != null) _ui.Tutorial.ContinueClicked -= _flow.CloseTip;
@@ -188,6 +207,7 @@ namespace Purge.Presentation.UI
                 _devLevelsOpen = false;
                 _setup?.Close();
                 _arsenal?.Close();
+                _characterOpen = false;
             }
             if (menu) RefreshMenus();
             if (inLevel) _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));
@@ -203,7 +223,8 @@ namespace Purge.Presentation.UI
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
             var setupOpen = _setup != null && _setup.IsOpen;
-            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !(_arsenal?.IsOpen ?? false));
+            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !_characterOpen && !(_arsenal?.IsOpen ?? false));
+            _ui.Character?.SetVisible(menu && _characterOpen);
             if (_ui.DevLevels != null) _ui.DevLevels.SetVisible(menu && _devLevelsOpen);
             if (_ui.RunSetup != null) _ui.RunSetup.SetVisible(menu && setupOpen);
             _ui.Loading.SetVisible(loading);
@@ -233,10 +254,34 @@ namespace Purge.Presentation.UI
         private void OnArsenal() { if (_flow.State != GameFlowState.MainMenu) return; _arsenal?.Open(); Show(_flow.State); }
         private void OnArsenalBack() => Show(_flow.State);
 
+        private void OnCharacter()
+        {
+            if (_flow.State != GameFlowState.MainMenu || _tree == null || _ui.Character == null) return;
+            _characterOpen = true;
+            Show(_flow.State);
+            _character.Open();
+        }
+
+        private void OnCharacterBack()
+        {
+            _characterOpen = false;
+            Show(_flow.State);
+        }
+
+        private void ConfirmCharacterReset()
+        {
+            if (_tree == null || _ui.Confirm == null || !_characterOpen) return;
+            _ui.Confirm.Open(string.Format(_texts.Get(TextKeys.CharacterResetConfirm), _tree.ResetRefund), () =>
+            {
+                _tree.ResetBranches();
+                _character.Refresh();
+            });
+        }
+
         private void RefreshMenus()
         {
             var levels = _catalog.Levels;
-            _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: false, tasks: false, shop: false);
+            _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: _ui.Character != null && _tree != null, tasks: false, shop: false);
             _ui.MainMenu.SetMoney(_progress.Money);
             _ui.MainMenu.SetPlayable(levels.Count > 0);
             _ui.MainMenu.SetContinueAvailable(_flow.HasSavedRun);
@@ -316,6 +361,7 @@ namespace Purge.Presentation.UI
         /// <summary>The language can change only over the menu or the pause screen (settings): the HUD caption.</summary>
         private void OnLanguageChanged()
         {
+            if (_characterOpen) _character.Refresh();
             var state = _flow.State;
             if (state == GameFlowState.Paused || state == GameFlowState.Playing || state == GameFlowState.Tip)
                 _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));

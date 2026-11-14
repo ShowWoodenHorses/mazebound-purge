@@ -17,6 +17,7 @@ MonoBehaviour:
     _address: Levels/Level_Forest_01
     _displayName: Forest 1
     _location: 0
+    _hasRefuge: 1
   _tutorial:
     _levelId: Level_Tutorial
     _address: Levels/Level_Tutorial

@@ -79,6 +79,7 @@ namespace Purge.Presentation.Visual
 
             _wanted.Clear();
             foreach (var pickup in _level.Weapons) _wanted.Add(pickup.Definition);
+            _wanted.Add(_options?.SecondWeapon);
             _wanted.Add(_options?.StartWeapon); // the run's start weapon (stage 11б)
             for (var i = 0; i < 2; i++) _wanted.Add(_weapons.Get((WeaponSlot)i)?.Definition); // a continued run's
             if (_drops != null) _wanted.AddRange(_drops.Weapons);

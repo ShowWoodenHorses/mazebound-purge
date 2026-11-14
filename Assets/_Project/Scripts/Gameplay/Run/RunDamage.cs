@@ -47,7 +47,8 @@ namespace Purge.Gameplay.Run
         public float Modify(in CombatTarget target, float amount, PlayerDamage kind, out bool critical)
         {
             critical = false;
-            var factor = kind == PlayerDamage.Explosion ? _stats.ExplosionDamageFactor : _stats.WeaponDamageFactor;
+            var explosion = kind == PlayerDamage.Explosion || kind == PlayerDamage.WeaponExplosion;
+            var factor = explosion ? _stats.ExplosionDamageFactor : _stats.WeaponDamageFactor;
             if (target.Agent >= 0 && _statuses != null && _statuses.IsActive)
             {
                 var bonuses = _stats.StatusDamage;
@@ -56,6 +57,7 @@ namespace Purge.Gameplay.Run
                         factor += bonuses[i].Bonus;
             }
 
+            if (_stats.TacticianActive && kind != PlayerDamage.Explosion) factor *= 1.15f;
             amount *= factor;
             var chance = _stats.CritChance;
             if (kind == PlayerDamage.Precise && chance > 0f && _random.NextDouble() < chance)

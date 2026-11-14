@@ -45,9 +45,11 @@ namespace Purge.Gameplay.Objects
         private RefugeDefinition _definition;
         private float _healCarry;
         private float _pushLeft;
+        private readonly bool _extraTime;
+        public bool ExtraTimeUsed { get; private set; }
 
         public RefugeSystem(LevelData level, SpatialQueryService spatial, HordeSystem horde, ZoneSystem zones,
-            PlayerSystem player, PlayerHealth health, WaveSystem waves = null, ContentCatalog content = null)
+            PlayerSystem player, PlayerHealth health, WaveSystem waves = null, ContentCatalog content = null, LevelLaunchOptions options = null)
         {
             _level = level;
             _spatial = spatial;
@@ -57,6 +59,8 @@ namespace Purge.Gameplay.Objects
             _health = health;
             _waves = waves;
             _content = content;
+            _extraTime = options?.HasBoost(Purge.Core.Boosters.SpecialBoosterKind.SecondDome) == true;
+            ExtraTimeUsed = options?.Resume?.SecondDomeUsed ?? false;
         }
 
         // After the player is placed: the dome stands over the cell they start in.
@@ -131,7 +135,15 @@ namespace Purge.Gameplay.Objects
             else if (IsUp && _pushLeft <= 0f && PlayerInside)
             {
                 TimeLeft = Mathf.Max(0f, TimeLeft - deltaTime);
-                if (TimeLeft <= 0f) StartPush();
+                if (TimeLeft <= 0f)
+                {
+                    if (_extraTime && !ExtraTimeUsed)
+                    {
+                        TimeLeft = 10f;
+                        ExtraTimeUsed = true;
+                    }
+                    else StartPush();
+                }
             }
 
             if (_pushLeft > 0f)

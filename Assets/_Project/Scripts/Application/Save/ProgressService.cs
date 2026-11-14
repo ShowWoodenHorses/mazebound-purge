@@ -233,6 +233,14 @@ namespace Purge.Application.Save
             run.ArenaClosed = save.ArenaClosed;
             run.Boosters.AddRange(save.Boosters);
             run.FreeRerolls = save.FreeRerolls;
+            run.SecondDomeUsed = save.SecondDomeUsed;
+            run.BanishedCard = save.BanishedCard;
+            run.BountiesPaid = save.BountiesPaid;
+            run.SupplyPlaced = save.SupplyPlaced;
+            run.Supply.AddRange(save.Supply);
+            run.AmmoReserve.AddRange(save.AmmoReserve);
+            run.Barrier = save.Barrier;
+            run.Skills = save.Skills;
             run.StartMedkitTaken = save.StartMedkitTaken;
             for (var i = 0; i < save.Weapons.Count && i < run.Weapons.Length; i++)
             {
@@ -280,6 +288,16 @@ namespace Purge.Application.Save
             save.ArenaClosed = run.ArenaClosed;
             save.Boosters.AddRange(run.Boosters);
             save.FreeRerolls = run.FreeRerolls;
+            save.SecondDomeUsed = run.SecondDomeUsed;
+            save.BanishedCard = run.BanishedCard;
+            save.BountiesPaid = run.BountiesPaid;
+            save.SupplyPlaced = run.SupplyPlaced;
+            save.Supply.Clear();
+            save.Supply.AddRange(run.Supply);
+            save.AmmoReserve.Clear();
+            save.AmmoReserve.AddRange(run.AmmoReserve);
+            save.Barrier = run.Barrier;
+            save.Skills = run.Skills;
             save.StartMedkitTaken = run.StartMedkitTaken;
             for (var i = 0; i < run.Weapons.Length; i++)
                 save.Weapons.Add(new RunWeapon { Id = run.Weapons[i] ?? "", Ammo = i < run.Ammo.Length ? run.Ammo[i] : 0, Shots = run.WeaponShots != null && i < run.WeaponShots.Length ? Math.Max(0,run.WeaponShots[i]) : 0 });

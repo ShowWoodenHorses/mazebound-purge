@@ -59,7 +59,8 @@ namespace Purge.Gameplay.Level
 
         public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null,
             Run.RunSnapshot resume = null, Balance.BotRun bot = null, WeaponDefinition startWeapon = null,
-            ThrowableDefinition startThrowable = null, IReadOnlyList<BoosterDefinition> boosters = null, bool closeArena = true)
+            ThrowableDefinition startThrowable = null, IReadOnlyList<BoosterDefinition> boosters = null, bool closeArena = true,
+            CharacterSkills skills = CharacterSkills.None, WeaponDefinition secondWeapon = null, ThrowableDefinition fallbackGrenade = null)
         {
             StartIndex = startIndex;
             Seed = resume != null ? resume.Seed : seed;
@@ -70,10 +71,26 @@ namespace Purge.Gameplay.Level
             StartThrowable = startThrowable;
             Boosters = boosters ?? NoBoosters;
             CloseArena = closeArena;
+            Skills = resume?.Skills ?? skills;
+            SecondWeapon = secondWeapon;
+            FallbackGrenade = fallbackGrenade;
         }
 
         /// <summary>The balance bot plays this run (stage 10a) and writes its statistics there; null — the player.</summary>
         public Balance.BotRun Bot { get; }
+
+        public CharacterSkills Skills { get; }
+        public WeaponDefinition SecondWeapon { get; }
+        public ThrowableDefinition FallbackGrenade { get; }
+
+        public bool HasSkill(CharacterSkills skill) => (Skills & skill) == skill;
+
+        public bool HasBoost(SpecialBoosterKind kind)
+        {
+            foreach (var booster in Boosters)
+                if (booster != null && booster.TryGet<SpecialBoost>(out var special) && special.Kind == kind) return true;
+            return false;
+        }
 
         /// <summary>A saved run to continue (stage 6e): its seed, state and the wave to start with; null = a new run.</summary>
         public Run.RunSnapshot Resume { get; }
@@ -107,7 +124,7 @@ namespace Purge.Gameplay.Level
 
         /// <summary>The same launch with another seed.</summary>
         public LevelLaunchOptions WithSeed(int seed) =>
-            new LevelLaunchOptions(StartIndex, seed, Difficulty, Resume, Bot, StartWeapon, StartThrowable, Boosters, CloseArena);
+            new LevelLaunchOptions(StartIndex, seed, Difficulty, Resume, Bot, StartWeapon, StartThrowable, Boosters, CloseArena, Skills, SecondWeapon, FallbackGrenade);
 
         /// <summary>The first booster of the run with a module of this kind.</summary>
         public bool TryGetBoost<T>(out T module) where T : BoosterModule

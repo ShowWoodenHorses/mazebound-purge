@@ -65,7 +65,7 @@ namespace Purge.Gameplay.Drops
     {
         /// <param name="never">Without the "nothing" kind (a common chest, stage 7в): always an item while one can be given.</param>
         public static DropRoll Roll(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random,
-            bool never = false)
+            bool never = false, float weaponChanceFactor = 1f)
         {
             if (table == null || pool == null) return DropRoll.Nothing;
 
@@ -77,7 +77,11 @@ namespace Purge.Gameplay.Drops
             var total = nothingWeight + ammoWeight + medkitWeight + throwableWeight + weaponWeight;
             if (total <= 0f) return DropRoll.Nothing;
 
-            var pick = (float)random.NextDouble() * total;
+            var chance = weaponWeight / total;
+            var boostedChance = Mathf.Clamp01(chance * weaponChanceFactor);
+            var pick = (float)random.NextDouble();
+            if (pick >= 1f - boostedChance) return RollWeapon(table, pool, context, random);
+            pick *= (total - weaponWeight) / (1f - boostedChance);
             if ((pick -= nothingWeight) < 0f) return DropRoll.Nothing;
             if ((pick -= ammoWeight) < 0f) return RollAmmo(table, pool, context, random);
             if ((pick -= medkitWeight) < 0f) return RollMedkit(table, random);

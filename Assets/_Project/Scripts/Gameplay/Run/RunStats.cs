@@ -17,6 +17,12 @@ namespace Purge.Gameplay.Run
     {
         /// <summary>× damage of a critical hit.</summary>
         public const float CriticalFactor = 2f;
+        private readonly Level.LevelLaunchOptions _options;
+
+        public RunStats(Level.LevelLaunchOptions options = null) => _options = options;
+
+        public bool TacticianActive { get; set; }
+        private bool Has(CharacterSkills skill) => _options?.HasSkill(skill) == true;
 
         /// <summary>The shortest reload, × the weapon's (−12 % × 5 levels is −60 %).</summary>
         public const float MinReloadFactor = 0.25f;
@@ -59,14 +65,14 @@ namespace Purge.Gameplay.Run
 
         public float WeaponDamageFactor => 1f + Get(RunStat.WeaponDamage);
         public float ExplosionDamageFactor => 1f + Get(RunStat.ExplosionDamage);
-        public float ExplosionRadiusFactor => 1f + Get(RunStat.ExplosionRadius);
-        public float CritChance => Mathf.Clamp01(Get(RunStat.CritChance));
+        public float ExplosionRadiusFactor => (1f + Get(RunStat.ExplosionRadius)) * (Has(CharacterSkills.Sapper) ? 1.15f : 1f);
+        public float CritChance => Mathf.Clamp01(Get(RunStat.CritChance) + (Has(CharacterSkills.SharpEye) ? 0.05f : 0f));
         public float MoveSpeedFactor => 1f + Get(RunStat.MoveSpeed);
 
         /// <summary>× the time between attacks.</summary>
         public float CooldownFactor => 1f / Mathf.Max(0.1f, 1f + Get(RunStat.FireRate));
 
-        public float ReloadFactor => Mathf.Max(MinReloadFactor, 1f - Get(RunStat.ReloadTime));
+        public float ReloadFactor => Mathf.Max(MinReloadFactor, (1f - Get(RunStat.ReloadTime)) * (Has(CharacterSkills.QuickHands) ? 0.85f : 1f));
 
         public int MaxHealthBonus => Mathf.RoundToInt(Get(RunStat.MaxHealth));
         public float PickupRadius => Mathf.Max(0f, Get(RunStat.PickupRadius));

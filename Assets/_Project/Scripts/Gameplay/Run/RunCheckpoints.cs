@@ -38,10 +38,11 @@ namespace Purge.Gameplay.Run
         private readonly CardSystem _cards;
         private readonly PlayerRevival _revival;
         private readonly ContentCatalog _content;
+        private readonly AmmoStock _ammoStock;
 
         public RunLoadout(LevelData level, WeaponSystem weapons, PickupSystem pickups, PlayerHealth health,
             ThrowableSlot throwables, CardSystem cards, LevelLaunchOptions options = null, PlayerRevival revival = null,
-            ContentCatalog content = null)
+            ContentCatalog content = null, AmmoStock ammoStock = null)
         {
             _level = level;
             _options = options;
@@ -52,6 +53,7 @@ namespace Purge.Gameplay.Run
             _cards = cards;
             _revival = revival;
             _content = content;
+            _ammoStock = ammoStock;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeSystems;
@@ -67,6 +69,11 @@ namespace Purge.Gameplay.Run
         private void Start(LevelLaunchOptions options)
         {
             if (options.StartWeapon != null) _weapons.Equip(_pickups.CreateWeapon(options.StartWeapon));
+            if (options.HasBoost(SpecialBoosterKind.SecondBarrel) && options.SecondWeapon != null)
+            {
+                var second = _pickups.CreateWeapon(options.SecondWeapon);
+                _weapons.Restore(WeaponSlot.Second, second, second.Ammo);
+            }
             var throwable = options.StartThrowable;
             var count = throwable != null ? 1 : 0;
             if (options.TryGetBoost<ThrowablesBoost>(out var boost))
@@ -75,6 +82,11 @@ namespace Purge.Gameplay.Run
                 count += boost.Count;
             }
 
+            if (options.HasSkill(CharacterSkills.Preparation))
+            {
+                throwable ??= options.FallbackGrenade;
+                count++;
+            }
             if (throwable != null) _throwables.Start(throwable, count);
         }
 
@@ -85,6 +97,8 @@ namespace Purge.Gameplay.Run
                 if (Find<CardDefinition>(id) is { } card) cards.Add(card);
             _cards.Restore(cards);
             _health.Restore(run.Health);
+            _ammoStock?.Restore(run.AmmoReserve);
+            _health.RestoreBarrier(run.Barrier);
             _revival?.Restore(run.AdReviveUsed, run.SkillReviveUsed);
 
             for (var i = 0; i < 2; i++)
@@ -139,14 +153,21 @@ namespace Purge.Gameplay.Run
         private readonly MapExploration _exploration;
         private readonly RunBoosters _boosters;
         private readonly Horde.HordeSystem _horde;
+        private readonly RefugeSystem _refuge;
+        private readonly SpecialRunBoosters _special;
+        private readonly AmmoStock _ammoStock;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
             ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null,
-            RunBoosters boosters = null, Horde.HordeSystem horde = null)
+            RunBoosters boosters = null, Horde.HordeSystem horde = null, RefugeSystem refuge = null,
+            SpecialRunBoosters special = null, AmmoStock ammoStock = null)
         {
             _horde = horde;
+            _refuge = refuge;
+            _special = special;
+            _ammoStock = ammoStock;
             _boosters = boosters;
             _vehicles = vehicles;
             _exploration = exploration;
@@ -262,6 +283,12 @@ namespace Purge.Gameplay.Run
             foreach (var booster in options.Boosters)
                 if (booster != null && !string.IsNullOrEmpty(booster.Id)) run.Boosters.Add(booster.Id);
             run.FreeRerolls = _cards.FreeRerolls;
+            run.BanishedCard = _cards.BanishedCard;
+            run.SecondDomeUsed = _refuge?.ExtraTimeUsed == true;
+            _special?.Capture(run);
+            _ammoStock?.Capture(run.AmmoReserve);
+            run.Barrier = _health.Barrier;
+            run.Skills = _options?.Skills ?? CharacterSkills.None;
             run.StartMedkitTaken = _boosters != null && _boosters.MedkitTaken;
 
             return run;

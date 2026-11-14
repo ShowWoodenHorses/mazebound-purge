@@ -1,4 +1,5 @@
 using System;
+using Purge.Application.Meta;
 using System.Collections.Generic;
 using Purge.Gameplay.Combat;
 
@@ -31,6 +32,7 @@ namespace Purge.Application.Save
 
         /// <summary>Bought nodes of the character tree (stable ids).</summary>
         public List<string> CharacterNodes = new List<string>();
+        public int CharacterResetGeneration;
 
         /// <summary>Opened boosters (stable ids): the basic ones after level 1, the special ones by tree nodes.</summary>
         public List<string> Boosters = new List<string>();
@@ -92,6 +94,7 @@ namespace Purge.Application.Save
                 if (!Enum.IsDefined(typeof(PoolMark), item.Mark)) item.Mark = PoolMark.Normal;
             }
 
+            CharacterResetGeneration = Math.Max(0, CharacterResetGeneration);
             CharacterNodes.RemoveAll(string.IsNullOrEmpty);
             Distinct(CharacterNodes, node => node);
             Boosters.RemoveAll(string.IsNullOrEmpty);
@@ -154,9 +157,13 @@ namespace Purge.Application.Save
                 }
             }
 
+            if (other.CharacterResetGeneration > CharacterResetGeneration)
+                CharacterNodes.RemoveAll(node => !CharacterTree.IsTrunkId(node));
             foreach (var node in other.CharacterNodes)
-                if (!CharacterNodes.Contains(node))
+                if ((other.CharacterResetGeneration >= CharacterResetGeneration || CharacterTree.IsTrunkId(node)) &&
+                    !CharacterNodes.Contains(node))
                     CharacterNodes.Add(node);
+            CharacterResetGeneration = Math.Max(CharacterResetGeneration, other.CharacterResetGeneration);
 
             foreach (var booster in other.Boosters)
                 if (!Boosters.Contains(booster))

@@ -77,8 +77,11 @@ namespace Purge.Gameplay.Combat
         /// <summary>A weapon's bullet or melee blow: may be critical.</summary>
         Precise = 2,
 
-        /// <summary>An explosion of the player's (grenades, launchers).</summary>
+        /// <summary>An explosion from the player's throwables.</summary>
         Explosion = 3,
+
+        /// <summary>An explosion caused by a weapon, such as a launcher or an explosive bullet.</summary>
+        WeaponExplosion = 4,
     }
 
     /// <summary>Changes the player's damage before it is dealt (the run's cards, stage 6c).</summary>
@@ -286,7 +289,7 @@ namespace Purge.Gameplay.Combat
         public float Blast(Vector2 at, float damage, float radius, float edgeShare, int floor, WeaponDefinition weapon = null,
             PlayerDamage kind = PlayerDamage.None, bool hostile = false)
         {
-            if (Modifier != null && kind == PlayerDamage.Explosion) radius *= Modifier.ExplosionRadiusFactor;
+            if (Modifier != null && (kind == PlayerDamage.Explosion || kind == PlayerDamage.WeaponExplosion)) radius *= Modifier.ExplosionRadiusFactor;
             Collect(at, radius, floor, _blast);
             foreach (var target in _blast)
             {

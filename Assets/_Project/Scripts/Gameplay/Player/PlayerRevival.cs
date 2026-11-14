@@ -31,11 +31,13 @@ namespace Purge.Gameplay.Player
         private float _downTime;
         private float _invulnerableLeft;
         private bool _dead;
+        private readonly Level.LevelLaunchOptions _options;
 
         public PlayerRevival(PlayerHealth health, PlayerSystem player = null, EffectSystem effects = null,
-            PlayerStatusSystem statuses = null)
+            PlayerStatusSystem statuses = null, Level.LevelLaunchOptions options = null)
         {
             _health = health;
+            _options = options;
             _player = player;
             _effects = effects;
             _statuses = statuses;
@@ -55,7 +57,7 @@ namespace Purge.Gameplay.Player
         public int RevivesUsed => (AdReviveUsed ? 1 : 0) + (SkillReviveUsed ? 1 : 0);
 
         /// <summary>The character's revive skill is open.</summary>
-        public bool HasSkill => Definition != null && Definition.ReviveSkill;
+        public bool HasSkill => _options?.HasSkill(CharacterSkills.SecondWind) ?? (Definition?.ReviveSkill == true);
 
         /// <summary>Off — no revives at all: the fallen player dies for good without the window (the balance bot, 10a).</summary>
         public bool Allowed { get; set; } = true;

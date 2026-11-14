@@ -300,6 +300,7 @@ namespace Purge.Gameplay.Objects
             }
 
             var time = chest.Definition != null ? chest.Definition.OpenTime : 1f;
+            if (_options?.HasSkill(Purge.Core.Definitions.CharacterSkills.ChestHunter) == true) time *= 0.65f;
             chest.Progress = Mathf.Min(1f, chest.Progress + deltaTime / Mathf.Max(0.05f, time));
             if (chest.Progress >= 1f) Complete(chest);
         }

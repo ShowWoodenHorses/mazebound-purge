@@ -20,6 +20,7 @@ namespace Purge.Presentation.UI
     /// </summary>
     public sealed class CardsPresenter : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
+        private bool _banishArmed;
         public const string RerollPlacement = "cards_reroll";
 
         private readonly UIRoot _ui;
@@ -60,6 +61,7 @@ namespace Purge.Presentation.UI
                 {
                     Screen.CardClicked += OnCardClicked;
                     Screen.RerollClicked += OnRerollClicked;
+                    Screen.BanishClicked += OnBanishClicked;
                 }
 
                 _bound = true;
@@ -80,6 +82,7 @@ namespace Purge.Presentation.UI
             {
                 Screen.CardClicked -= OnCardClicked;
                 Screen.RerollClicked -= OnRerollClicked;
+                Screen.BanishClicked -= OnBanishClicked;
             }
 
             _bound = false;
@@ -109,6 +112,19 @@ namespace Purge.Presentation.UI
         private void OnCardClicked(int index)
         {
             if (_flow.State != GameFlowState.Cards || _adShowing || index >= _cards.Offer.Count) return;
+            if (_banishArmed)
+            {
+                _banishArmed = false;
+                if (_cards.Banish(index)) _ui.RequestSound(UiSoundKind.CardReroll);
+                if (!_cards.HasOffer && !_cards.OpenNext())
+                {
+                    _flow.CloseCards();
+                    return;
+                }
+                Fill();
+                Screen.Refresh();
+                return;
+            }
             _cards.Choose(index);
             _ui.RequestSound(UiSoundKind.CardChosen);
             if (_cards.OpenNext())
@@ -122,10 +138,18 @@ namespace Purge.Presentation.UI
             _flow.CloseCards();
         }
 
+        private void OnBanishClicked()
+        {
+            if (_flow.State != GameFlowState.Cards || _adShowing || !_cards.CanBanish) return;
+            _banishArmed = !_banishArmed;
+            Fill();
+        }
+
         private void OnRerollClicked()
         {
             if (_flow.State != GameFlowState.Cards || _adShowing || _cards.RerollUsed) return;
             // A free reroll of the booster (stage 11б) goes first: no ad.
+            _banishArmed = false;
             if (_cards.RerollFree())
             {
                 _ui.RequestSound(UiSoundKind.CardReroll);
@@ -184,7 +208,9 @@ namespace Purge.Presentation.UI
                     level <= 0 ? _texts.Get(TextKeys.CardsNew) : _texts.Format(TextKeys.CardsLevel, level + 1, card.MaxLevel));
             }
 
+            screen.CenterOffer(_cards.Offer.Count);
             screen.SetReroll(!_cards.RerollUsed, _cards.FreeRerolls > 0);
+            screen.SetBanish(_cards.CanBanish, _banishArmed, _texts.Get(_banishArmed ? TextKeys.CharacterBanishSelect : TextKeys.CharacterBanish));
         }
 
         private string NameOf(CardDefinition card)

@@ -100,7 +100,9 @@ namespace Purge.Tests.EditMode.Monsters
             Card(id, Rarity.Common, maxLevel, new StatCard { Stat = stat, PerLevel = perLevel });
 
         /// <summary>A run level (waves) with the deck's cards.</summary>
-        private void Run(params CardDefinition[] cards)
+        private void Run(params CardDefinition[] cards) => Run(CharacterSkills.None, cards);
+
+        private void Run(CharacterSkills skills, params CardDefinition[] cards)
         {
             _deck.SetCards(cards);
             var mass = Create<MonsterDefinition>();
@@ -125,7 +127,7 @@ namespace Purge.Tests.EditMode.Monsters
                 new WeaponSystem(new FakePlayerInput(), _playerDefinition), new SoundEventBus(), _ammo, _slot);
             _stats = new RunStats();
             _experience = new RunExperience(system, _deck);
-            _cards = new CardSystem(_experience, _stats, _health, _player, _slot, _pickups, system, new LevelLaunchOptions(seed: 3), _deck);
+            _cards = new CardSystem(_experience, _stats, _health, _player, _slot, _pickups, system, new LevelLaunchOptions(seed: 3, skills: skills), _deck);
             _runtime = new LevelRuntime(_level, new ILevelLoadStep[] { _player, _pickups, system, _experience, _cards },
                 new ILevelTickable[] { _pickups, system });
             _runtime.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
@@ -201,6 +203,39 @@ namespace Purge.Tests.EditMode.Monsters
             _experience.Add(_experience.Next);
             Assert.That(_cards.OpenNext(), Is.False, "every card at its last level");
             Assert.That(_experience.Pending, Is.EqualTo(0), "the level-up is spent");
+        }
+
+        [Test]
+        public void Banish_ReplacesCardInWideOffer_AndExcludesItFromLaterOffers()
+        {
+            Run(CharacterSkills.WideChoice | CharacterSkills.CardControl,
+                StatCard("a", RunStat.WeaponDamage, 0.1f), StatCard("b", RunStat.FireRate, 0.1f),
+                StatCard("c", RunStat.Magazine, 0.2f), StatCard("d", RunStat.CritChance, 0.05f),
+                StatCard("e", RunStat.MoveSpeed, 0.05f));
+            _experience.Add(10f);
+            Assert.That(_cards.OpenNext(), Is.True);
+            Assert.That(_cards.Offer.Count, Is.EqualTo(4));
+            var card = _cards.Offer[0];
+            Assert.That(_cards.Banish(0), Is.True);
+            Assert.That(_cards.Offer.Count, Is.EqualTo(4));
+            CollectionAssert.DoesNotContain(_cards.Offer, card);
+            Assert.That(_cards.CanBanish, Is.False);
+            _cards.Choose(0);
+            _experience.Add(_experience.Next);
+            Assert.That(_cards.OpenNext(), Is.True);
+            CollectionAssert.DoesNotContain(_cards.Offer, card);
+        }
+
+        [Test]
+        public void Banish_LastCard_ConsumesTheEmptyOffer()
+        {
+            Run(CharacterSkills.CardControl, StatCard("only", RunStat.WeaponDamage, 0.1f));
+            _experience.Add(10f);
+            Assert.That(_cards.OpenNext(), Is.True);
+            Assert.That(_cards.Banish(0), Is.True);
+            Assert.That(_cards.HasOffer, Is.False);
+            Assert.That(_cards.OpenNext(), Is.False);
+            Assert.That(_experience.Pending, Is.Zero);
         }
 
         [Test]

@@ -55,6 +55,12 @@ namespace Purge.Editor.Dev
                     Module = () => new RerollBoost() },
                 new Draft { File = "Booster_Scouting", Column = "Scouting", Icon = set => set.Map,
                     Module = () => new ScoutingBoost() },
+                Special("Second_Barrel", SpecialBoosterKind.SecondBarrel, set => set.Ranged),
+                Special("Headhunter", SpecialBoosterKind.Headhunter, set => set.Star),
+                Special("Minefield", SpecialBoosterKind.Minefield, set => set.Grenade),
+                Special("Quiet_Start", SpecialBoosterKind.QuietStart, set => set.Player),
+                Special("Drop_Load", SpecialBoosterKind.DropLoad, set => set.Medkit),
+                Special("Second_Dome", SpecialBoosterKind.SecondDome, set => set.Retry),
             };
 
             var created = 0;
@@ -67,7 +73,8 @@ namespace Purge.Editor.Dev
                 {
                     booster = ScriptableObject.CreateInstance<BoosterDefinition>();
                     prices.TryGetValue(draft.Column, out var table);
-                    booster.Configure(null, BoosterUnlock.FirstLevel, table, draft.Module());
+                    booster.Configure(null, draft.Column == "Special (tree)" ? BoosterUnlock.Tree : BoosterUnlock.FirstLevel,
+                        table, draft.Module());
                     AssetDatabase.CreateAsset(booster, path); // the id is given by ContentIdAssigner
                     created++;
                 }
@@ -85,6 +92,9 @@ namespace Purge.Editor.Dev
             foreach (var problem in problems) Debug.LogWarning("[Purge] " + problem);
             return $"Boosters built: {drafts.Length}, {created} new, {problems.Count} problem(s).";
         }
+
+        private static Draft Special(string name, SpecialBoosterKind kind, Func<UiIconSet, Sprite> icon) =>
+            new Draft { File = "Booster_" + name, Column = "Special (tree)", Icon = icon, Module = () => new SpecialBoost(kind) };
 
         /// <summary>The model's table: column → prices by location (rows «Forest,Easy,…»), 4 difficulties each.</summary>
         private static Dictionary<string, List<BoosterPrice>> ReadPrices()

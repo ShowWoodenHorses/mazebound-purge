@@ -35,6 +35,7 @@ namespace Purge.Presentation.UI
         public event Action ContinueClicked;
         public event Action PlayClicked;
         public event Action ArsenalClicked;
+        public event Action CharacterClicked;
         public event Action SettingsClicked;
         public event Action DevClicked;
         public event Action DebugResetProgressClicked;
@@ -45,6 +46,7 @@ namespace Purge.Presentation.UI
             Bind(_continueButton, () => ContinueClicked?.Invoke());
             Bind(_playButton, () => PlayClicked?.Invoke());
             Bind(_arsenalButton, () => ArsenalClicked?.Invoke());
+            Bind(_characterButton, () => CharacterClicked?.Invoke());
             Bind(_settingsButton, () => SettingsClicked?.Invoke());
             Bind(_devButton, () => DevClicked?.Invoke());
             Bind(_debugResetProgressButton, () => DebugResetProgressClicked?.Invoke());

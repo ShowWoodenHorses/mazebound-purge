@@ -12,6 +12,8 @@ namespace Purge.Core.Level
         [SerializeField] private string _address;
         [SerializeField] private string _displayName;
         [SerializeField] private LevelLocation _location;
+        [SerializeField] private bool _hasRefuge;
+        public bool HasRefuge { get => _hasRefuge; internal set => _hasRefuge = value; }
 
         internal LevelCatalogEntry(string levelId, string address, string displayName, LevelLocation location = default)
         {
@@ -82,21 +84,22 @@ namespace Purge.Core.Level
         }
 
         /// <summary>Adds the level to the end or updates its address and name. Returns true when something changed.</summary>
-        internal bool AddOrUpdate(string levelId, string address, string displayName, LevelLocation location = default)
+        internal bool AddOrUpdate(string levelId, string address, string displayName, LevelLocation location = default, bool hasRefuge = false)
         {
             var entry = _levels.Find(e => string.Equals(e.LevelId, levelId, StringComparison.Ordinal));
             if (entry == null)
             {
-                _levels.Add(new LevelCatalogEntry(levelId, address, displayName, location));
+                _levels.Add(new LevelCatalogEntry(levelId, address, displayName, location) { HasRefuge = hasRefuge });
                 return true;
             }
 
-            if (entry.Address == address && entry.DisplayName == displayName && entry.Location == location)
+            if (entry.Address == address && entry.DisplayName == displayName && entry.Location == location && entry.HasRefuge == hasRefuge)
                 return false;
 
             entry.Address = address;
             entry.DisplayName = displayName;
             entry.Location = location;
+            entry.HasRefuge = hasRefuge;
             return true;
         }
 

@@ -42,6 +42,9 @@ namespace Purge.Presentation.UI
         [SerializeField] private RectTransform _boosterList;
         [SerializeField] private UiButton _boosterTemplate;
 
+        [SerializeField] private RectTransform _secondList;
+        [SerializeField] private GameObject _secondTitle;
+        private readonly List<UiButton> _seconds = new List<UiButton>();
         private readonly List<UiButton> _weapons = new List<UiButton>();
         private readonly List<UiButton> _throwables = new List<UiButton>();
         private readonly List<UiButton> _boosters = new List<UiButton>();
@@ -53,6 +56,7 @@ namespace Purge.Presentation.UI
         public event Action<int> DifficultyClicked;
         public event Action<bool> ArenaChanged;
         public event Action<int> WeaponClicked;
+        public event Action<int> SecondWeaponClicked;
         public event Action<int> ThrowableClicked;
         public event Action<int> BoosterClicked;
 
@@ -64,6 +68,7 @@ namespace Purge.Presentation.UI
 
             /// <summary>No rarity stripe (the base pistol, «none»).</summary>
             public bool Plain;
+            public bool Disabled;
         }
 
         /// <summary>One booster row.</summary>
@@ -153,6 +158,14 @@ namespace Purge.Presentation.UI
 
         public void SetWeapons(IReadOnlyList<Item> items, int chosen) => Fill(_weapons, _weaponList, items, chosen);
 
+        public void SetSecondWeapons(IReadOnlyList<Item> items, int chosen, bool shown)
+        {
+            if (_secondList == null) return;
+            _secondList.gameObject.SetActive(shown);
+            _secondTitle.SetActive(shown);
+            if (shown) Fill(_seconds, _secondList, items, chosen);
+        }
+
         public void SetThrowables(IReadOnlyList<Item> items, int chosen) =>
             Fill(_throwables, _throwableList, items, chosen);
 
@@ -202,6 +215,7 @@ namespace Purge.Presentation.UI
                 }
 
                 tile.Accent = i == chosen;
+                tile.interactable = !item.Disabled;
                 tile.gameObject.SetActive(true);
             }
 
@@ -221,6 +235,7 @@ namespace Purge.Presentation.UI
                 tile.onClick.AddListener(() =>
                 {
                     if (isWeapon) WeaponClicked?.Invoke(slot);
+                    else if (ReferenceEquals(buttons, _seconds)) SecondWeaponClicked?.Invoke(slot);
                     else ThrowableClicked?.Invoke(slot);
                 });
                 buttons.Add(tile);

@@ -166,6 +166,7 @@ namespace Purge.Presentation.UI
         private Texture2D _vignette;
         private Texture2D _arcTexture;
         private float[] _arcElapsed = new float[0];
+        private bool[] _arcWarning = new bool[0];
         private int _nextArc;
         private const int ArcTextureSize = 256;
         private int _health = -1;
@@ -218,6 +219,7 @@ namespace Purge.Presentation.UI
             }
 
             _arcElapsed = new float[_damageArcs.Length];
+            _arcWarning = new bool[_damageArcs.Length];
             if (_damageArcs.Length > 0) _arcTexture = CreateArc();
             for (var a = 0; a < _damageArcs.Length; a++)
             {
@@ -265,6 +267,20 @@ namespace Purge.Presentation.UI
 
         // ---- health ----
 
+        private int _barrier;
+
+        public void SetBarrier(int amount)
+        {
+            _barrier = amount;
+            RefreshHealthText();
+        }
+
+        private void RefreshHealthText()
+        {
+            if (_healthText != null)
+                _healthText.text = _health + " / " + _maxHealth + (_barrier > 0 ? $" <color=#66d7ff>+{_barrier}</color>" : "");
+        }
+
         public void SetHealth(int current, int max)
         {
             if (current == _health && max == _maxHealth) return;
@@ -273,7 +289,7 @@ namespace Purge.Presentation.UI
             _health = current;
             _maxHealth = max;
             _healthShare = max > 0 ? Mathf.Clamp01(current / (float)max) : 0f;
-            if (_healthText != null) _healthText.text = current + " / " + max;
+            RefreshHealthText();
 
             if (hurt) _trailWait = TrailDelay;
             else _trailShare = _healthShare; // Healed or first shown: no trail.
@@ -579,12 +595,13 @@ namespace Purge.Presentation.UI
         /// An arc near the screen edge on the side a blow came from: <paramref name="direction"/> on the ground (x = East,
         /// y = North = up on screen, the camera never turns). Several blows — several arcs (the oldest is reused).
         /// </summary>
-        public void ShowDamageArc(Vector2 direction)
+        public void ShowDamageArc(Vector2 direction, bool warning = false)
         {
             if (_damageArcs.Length == 0 || direction.sqrMagnitude < 1e-6f) return;
             var arc = _damageArcs[_nextArc];
             if (arc == null) return;
             _arcElapsed[_nextArc] = 0f;
+            _arcWarning[_nextArc] = warning;
             _nextArc = (_nextArc + 1) % _damageArcs.Length;
             var rect = arc.rectTransform;
             var parent = rect.parent as RectTransform;
@@ -606,14 +623,14 @@ namespace Purge.Presentation.UI
             {
                 var arc = _damageArcs[a];
                 if (arc == null || !arc.enabled) continue;
-                var t = _arcElapsed[a] / _damageArcTime;
+                var t = _arcElapsed[a] / (_arcWarning[a] ? 1.5f : _damageArcTime);
                 if (t >= 1f)
                 {
                     arc.enabled = false;
                     continue;
                 }
 
-                var color = _damageArcColor;
+                var color = _arcWarning[a] ? new Color(1f, 0.75f, 0.12f, _damageArcColor.a) : _damageArcColor;
                 color.a *= 1f - t * t;
                 arc.color = color;
                 _arcElapsed[a] += Time.unscaledDeltaTime;

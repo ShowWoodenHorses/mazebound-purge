@@ -1,4 +1,5 @@
 using System;
+using Purge.Core.Definitions;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -38,12 +39,19 @@ namespace Purge.Gameplay.Run
         private readonly List<CardDefinition> _candidates = new List<CardDefinition>();
         private readonly List<CardDefinition> _previous = new List<CardDefinition>();
         private bool _subscribed;
+        private readonly bool _wideChoice;
+        private readonly bool _canBanish;
+        public string BanishedCard { get; private set; }
+        public bool CanBanish => _canBanish && string.IsNullOrEmpty(BanishedCard) && _offer.Count > 0;
 
         public CardSystem(RunExperience experience, RunStats stats, PlayerHealth health, PlayerSystem player,
             ThrowableSlot throwables, PickupSystem pickups, HordeSystem horde, LevelLaunchOptions options = null,
             CardDeck deck = null)
         {
             _experience = experience;
+            _wideChoice = options?.HasSkill(CharacterSkills.WideChoice) == true;
+            _canBanish = options?.HasSkill(CharacterSkills.CardControl) == true;
+            BanishedCard = options?.Resume?.BanishedCard;
             _stats = stats;
             _deck = deck;
             _health = health;
@@ -145,6 +153,18 @@ namespace Purge.Gameplay.Run
         }
 
         /// <summary>Other cards instead of the offer (once per offer); false when spent or nothing is offered.</summary>
+        public bool Banish(int index)
+        {
+            if (!CanBanish || (uint)index >= (uint)_offer.Count) return false;
+            var choices = _offer.Count;
+            BanishedCard = _offer[index].Id;
+            _offer.RemoveAt(index);
+            Pick(choices, fresh: true);
+            Pick(choices, fresh: false);
+            OfferChanged?.Invoke();
+            return true;
+        }
+
         public bool Reroll()
         {
             if (!HasOffer || RerollUsed) return false;
@@ -220,7 +240,7 @@ namespace Purge.Gameplay.Run
                 if (card != null && LevelOf(card) < card.MaxLevel && _deck.WeightOf(card) > 0f && !_candidates.Contains(card))
                     _candidates.Add(card);
 
-            var choices = _deck.Choices;
+            var choices = _wideChoice ? 4 : _deck.Choices;
             Pick(choices, fresh: true);
             if (_offer.Count < choices) Pick(choices, fresh: false);
         }
@@ -249,7 +269,7 @@ namespace Purge.Gameplay.Run
         }
 
         private bool Allowed(CardDefinition card, bool fresh) =>
-            !_offer.Contains(card) && (!fresh || !_previous.Contains(card));
+            card.Id != BanishedCard && !_offer.Contains(card) && (!fresh || !_previous.Contains(card));
 
         private void OnKilled(int agent, Vector2 position)
         {

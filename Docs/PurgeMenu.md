@@ -516,7 +516,7 @@ Dev-уровень забега `Level_Run` (этап 6а, **основной к
 Stress Test Levels (нужна `SandboxHorde`) и Build Monsters.
 
 #### Build Boosters
-- `BoostersBuilder` (11б): создаёт недостающие базовые бустеры в `Data/Boosters` (модули, иконка из `UiIconSet`, цены по локации × сложности из `Tools/Balance/Model/boosters.csv`); существующие не трогает, кроме пустой иконки. Потом — Build Content Catalog и строки `booster.<id>` / `.text` в Strings.tsv.
+- `BoostersBuilder` (11б): создаёт недостающие базовые и особые бустеры дерева в `Data/Boosters` (модули, иконка из `UiIconSet`, цены по локации × сложности из `Tools/Balance/Model/boosters.csv`); существующие не трогает, кроме пустой иконки. Потом — Build Content Catalog и строки `booster.<id>` / `.text` в Strings.tsv.
 
 #### Build Cards
 Карточки забега (этап 6в): создаёт в `Data/Cards` недостающие карточки первого набора (12; уже лежащие не трогает — правки

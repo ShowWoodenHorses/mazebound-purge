@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Purge.Core.Definitions;
+using Purge.Gameplay.Run;
 
 namespace Purge.Gameplay.Weapons
 {
@@ -25,6 +26,20 @@ namespace Purge.Gameplay.Weapons
             if (ammo == null || amount <= 0) return;
             _counts[ammo.Id] = Get(ammo.Id) + amount;
             Changed?.Invoke(ammo.Id);
+        }
+
+        public void Capture(List<SupplyAmmo> items)
+        {
+            foreach (var pair in _counts)
+                if (pair.Value > 0) items.Add(new SupplyAmmo { AmmoId = pair.Key, Rounds = pair.Value });
+        }
+
+        public void Restore(IEnumerable<SupplyAmmo> items)
+        {
+            _counts.Clear();
+            foreach (var item in items)
+                if (item != null && !string.IsNullOrEmpty(item.AmmoId) && item.Rounds > 0)
+                    _counts[item.AmmoId] = item.Rounds;
         }
 
         /// <summary>Takes up to <paramref name="amount"/>; returns how many were taken.</summary>

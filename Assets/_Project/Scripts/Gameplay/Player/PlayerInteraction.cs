@@ -147,7 +147,7 @@ namespace Purge.Gameplay.Player
                 if (use != ChestUse.None)
                 {
                     if (use == ChestUse.Opening)
-                        _sounds.Emit(SoundType.Door, chest.Position, _player.Definition.InteractionSoundRadius, chest.Cell.Floor);
+                        _sounds.EmitPlayer(SoundType.Door, chest.Position, _player.Definition.InteractionSoundRadius, chest.Cell.Floor);
                     Interacted?.Invoke(use == ChestUse.Opening ? InteractionResult.ChestOpening : InteractionResult.ChestLocked, null);
                     return true;
                 }
@@ -166,7 +166,7 @@ namespace Purge.Gameplay.Player
 
             var result = UseDoor(door);
             if (result == InteractionResult.DoorOpened || result == InteractionResult.DoorClosed || result == InteractionResult.DoorUnlocked)
-                _sounds.Emit(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), _player.Definition.InteractionSoundRadius,
+                _sounds.EmitPlayer(SoundType.Door, new Vector2(door.Position.X, door.Position.Y), _player.Definition.InteractionSoundRadius,
                     door.Position.Floor);
             Interacted?.Invoke(result, door);
             return true;

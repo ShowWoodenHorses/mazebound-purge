@@ -32,9 +32,10 @@ namespace Purge.Gameplay.Drops
         private readonly PlayerSystem _player;
         private DeterministicRandom _random;
         private bool _subscribed;
+        private readonly bool _lucky;
 
         public DropSystem(LevelData level, HordeSystem horde, DropPool pool, PickupSystem pickups, WeaponSystem weapons,
-            PlayerCombat combat, PlayerHealth health, PlayerSystem player)
+            PlayerCombat combat, PlayerHealth health, PlayerSystem player, LevelLaunchOptions options = null)
         {
             _level = level;
             _horde = horde;
@@ -44,6 +45,7 @@ namespace Purge.Gameplay.Drops
             _combat = combat;
             _health = health;
             _player = player;
+            _lucky = options?.HasSkill(CharacterSkills.Luck) == true;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -99,7 +101,7 @@ namespace Purge.Gameplay.Drops
             var definition = _horde.DefinitionOf(agent);
             var table = _horde.IsChampion(agent) ? _horde.Champions.DropOf(definition != null ? definition.Rank : MonsterRank.Mass) : null;
             if (table == null) table = definition != null && definition.Drop != null ? definition.Drop : _pool.Table;
-            var roll = DropRoller.Roll(table, _pool, Context(), _random);
+            var roll = DropRoller.Roll(table, _pool, Context(), _random, weaponChanceFactor: _lucky ? 1.15f : 1f);
             if (roll.Kind == DropKind.Nothing) return;
 
             var floor = _player.Floor; // the horde lives on the player's floor

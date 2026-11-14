@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Purge.Application.Levels;
 using Purge.Application.Meta;
 using Purge.Application.Save;
@@ -42,6 +43,7 @@ namespace Purge.Presentation.UI
         private readonly List<WeaponDefinition> _weapons = new List<WeaponDefinition>();
         private readonly List<ThrowableDefinition> _throwables = new List<ThrowableDefinition>();
         private readonly List<BoosterDefinition> _boosters = new List<BoosterDefinition>();
+        private int _secondWeapon;
         private readonly HashSet<BoosterDefinition> _chosenBoosters = new HashSet<BoosterDefinition>();
         private readonly List<RunSetupScreen.Item> _items = new List<RunSetupScreen.Item>();
         private readonly List<RunSetupScreen.Booster> _rows = new List<RunSetupScreen.Booster>();
@@ -93,6 +95,7 @@ namespace Purge.Presentation.UI
             screen.DifficultyClicked += OnDifficulty;
             screen.ArenaChanged += OnArena;
             screen.WeaponClicked += OnWeapon;
+            screen.SecondWeaponClicked += OnSecondWeapon;
             screen.ThrowableClicked += OnThrowable;
             screen.BoosterClicked += OnBooster;
             _texts.LanguageChanged += OnLanguageChanged;
@@ -111,6 +114,7 @@ namespace Purge.Presentation.UI
             screen.DifficultyClicked -= OnDifficulty;
             screen.ArenaChanged -= OnArena;
             screen.WeaponClicked -= OnWeapon;
+            screen.SecondWeaponClicked -= OnSecondWeapon;
             screen.ThrowableClicked -= OnThrowable;
             screen.BoosterClicked -= OnBooster;
         }
@@ -129,6 +133,7 @@ namespace Purge.Presentation.UI
             _preparation.GetBoosters(_boosters);
             var loadout = _progress.Loadout;
             _weapon = 1 + _weapons.IndexOf(_preparation.Find<WeaponDefinition>(loadout?.WeaponId));
+            _secondWeapon = _weapon == 0 ? 1 : 0;
             _throwable = 1 + _throwables.IndexOf(_preparation.Find<ThrowableDefinition>(loadout?.ThrowableId));
             // Never chosen (or «none», not kept): the first open one — the grenade.
             if (_throwable == 0 && string.IsNullOrEmpty(loadout?.ThrowableId) && _throwables.Count > 0) _throwable = 1;
@@ -184,6 +189,11 @@ namespace Purge.Presentation.UI
             foreach (var weapon in _weapons)
                 _items.Add(new RunSetupScreen.Item { Icon = WeaponIcon(weapon), Rarity = weapon.Rarity });
             screen.SetWeapons(_items, _weapon);
+            var secondBarrel = _chosenBoosters.Any(booster => IsSpecial(booster, SpecialBoosterKind.SecondBarrel));
+            var first = _items[_weapon];
+            first.Disabled = true;
+            _items[_weapon] = first;
+            screen.SetSecondWeapons(_items, _secondWeapon, secondBarrel);
 
             _items.Clear();
             _items.Add(new RunSetupScreen.Item { Icon = null, Plain = true });
@@ -247,8 +257,17 @@ namespace Purge.Presentation.UI
         {
             if (index < 0 || index > _weapons.Count) return;
             _weapon = index;
+            if (_secondWeapon == _weapon) _secondWeapon = _weapon == 0 ? 1 : 0;
+            DropUnavailableBoosters();
             Refresh();
             ShowWeapon();
+        }
+
+        private void OnSecondWeapon(int index)
+        {
+            if (index < 0 || index > _weapons.Count || index == _weapon) return;
+            _secondWeapon = index;
+            Refresh();
         }
 
         private void OnThrowable(int index)
@@ -290,7 +309,10 @@ namespace Purge.Presentation.UI
             _progress.SaveLoadout(weapon != null ? weapon.Id : string.Empty, throwable != null ? throwable.Id : string.Empty, _ids);
             var options = new LevelLaunchOptions(difficulty: _flow.DifficultyAt(_difficulty), startWeapon: weapon,
                 startThrowable: throwable, boosters: new List<BoosterDefinition>(_launchBoosters),
-                closeArena: _arena && _difficulty >= 1);
+                closeArena: _arena && _difficulty >= 1, skills: _preparation.Skills,
+                secondWeapon: _launchBoosters.Any(booster => IsSpecial(booster, SpecialBoosterKind.SecondBarrel))
+                    ? (_secondWeapon == 0 ? _preparation.BaseWeapon : _weapons[_secondWeapon - 1]) : null,
+                fallbackGrenade: _preparation.FallbackGrenade);
             FightRequested?.Invoke(level.LevelId, options, cost);
         }
 
@@ -326,7 +348,12 @@ namespace Purge.Presentation.UI
             _preparation.PriceOf(booster, Locations[Mathf.Clamp(_location, 0, Locations.Length - 1)], _difficulty);
 
         /// <summary>Open and offered here (has a price on this location and difficulty).</summary>
-        private bool IsOffered(BoosterDefinition booster) => _preparation.IsOpen(booster) && PriceOf(booster) > 0;
+        private bool IsOffered(BoosterDefinition booster) => _preparation.IsOpen(booster) && PriceOf(booster) > 0 &&
+            (!IsSpecial(booster, SpecialBoosterKind.SecondBarrel) || _weapons.Count > 0) &&
+            (!IsSpecial(booster, SpecialBoosterKind.SecondDome) || LevelAt(_location)?.HasRefuge == true);
+
+        private static bool IsSpecial(BoosterDefinition booster, SpecialBoosterKind kind) =>
+            booster.TryGet<SpecialBoost>(out var special) && special.Kind == kind;
 
         private void DropUnavailableBoosters() => _chosenBoosters.RemoveWhere(booster => !IsOffered(booster));
 

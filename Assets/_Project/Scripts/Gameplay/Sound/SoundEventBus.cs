@@ -56,6 +56,12 @@ namespace Purge.Gameplay.Sound
     {
         public event Action<SoundEvent> Emitted;
 
+        public float PlayerNoiseFactor { get; set; } = 1f;
+        public float FootstepNoiseFactor { get; set; } = 1f;
+
+        public void EmitPlayer(SoundType type, Vector2 position, float radius, int floor = 0) =>
+            Emit(type, position, radius * PlayerNoiseFactor * (type == SoundType.Step ? FootstepNoiseFactor : 1f), floor);
+
         public void Emit(SoundType type, Vector2 position, float radius, int floor = 0)
         {
             if (radius <= 0f) return;

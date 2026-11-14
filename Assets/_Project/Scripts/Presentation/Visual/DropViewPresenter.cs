@@ -96,6 +96,13 @@ namespace Purge.Presentation.Visual
             if (_options != null)
             {
                 if (_options.StartWeapon != null) _items.Add(_options.StartWeapon);
+                if (_options.SecondWeapon != null) _items.Add(_options.SecondWeapon);
+                if (_options.HasBoost(Core.Boosters.SpecialBoosterKind.Headhunter) || _options.HasBoost(Core.Boosters.SpecialBoosterKind.DropLoad))
+                {
+                    if (_shared?.Content != null)
+                        foreach (var item in _shared.Content.Items)
+                            if (item is AmmoDefinition) _items.Add(item);
+                }
                 if (_options.TryGetBoost<Core.Boosters.MedkitBoost>(out var medkit) && medkit.Medkit != null) _items.Add(medkit.Medkit);
             }
             foreach (var item in _pool.Throwables) _items.Add(item);

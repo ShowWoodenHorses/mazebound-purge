@@ -58,7 +58,9 @@ namespace Purge.Gameplay.Run
             if (resume == null)
             {
                 if (_options.TryGetBoost<StartCardBoost>(out var card) && _experience.IsActive) _experience.AddPending(card.Cards);
-                if (_options.TryGetBoost<RerollBoost>(out var reroll)) _cards.SetFreeRerolls(reroll.Rerolls);
+                var free = _options.HasSkill(Purge.Core.Definitions.CharacterSkills.CardControl) ? 1 : 0;
+                if (_options.TryGetBoost<RerollBoost>(out var reroll)) free += reroll.Rerolls;
+                _cards.SetFreeRerolls(free);
             }
             else
             {

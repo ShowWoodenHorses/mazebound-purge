@@ -141,6 +141,8 @@ namespace Purge.Composition
             // The safe dome at the start (stage 7в): its limit follows the waves' phase.
             builder.Register<RefugeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Checkpoints of the run for its save (stage 6e): after the waves and the run's counters.
+            builder.Register<SpecialRunBoosters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<CharacterRunEffects>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<RunCheckpoints>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // The run's boosters after the player is placed (stage 11б): start card, free rerolls, the medkit at the start.
             builder.Register<RunBoosters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -216,6 +218,7 @@ namespace Purge.Composition
             builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Officers, elite, bosses (Animator) and what their abilities show.
             builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<MinefieldView>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<AbilityWarningView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MonsterProjectileView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Chains of the hooks (stage 8b): after the views — from the hand where the pose put it.

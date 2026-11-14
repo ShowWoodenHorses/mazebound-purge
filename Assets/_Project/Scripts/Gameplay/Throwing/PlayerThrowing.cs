@@ -163,7 +163,7 @@ namespace Purge.Gameplay.Throwing
             _cooldown = definition.Cooldown;
             _bullets.Spawn(origin, direction, definition.Speed, 0f, _player.Floor, Mathf.Max(distance, 0.05f),
                 throwable: definition);
-            _sounds.Emit(SoundType.Throw, origin, definition.SoundRadius, _player.Floor);
+            _sounds.EmitPlayer(SoundType.Throw, origin, definition.SoundRadius, _player.Floor);
             _player.AimAt(direction);
             StopAiming();
             Thrown?.Invoke(definition, direction);

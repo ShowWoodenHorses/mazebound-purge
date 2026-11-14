@@ -393,6 +393,8 @@ namespace Purge.Application.Platform
                 if (booster != null) boosters += (boosters.Length > 0 ? "," : string.Empty) + booster.Id;
             parameters["boosters"] = boosters;
             parameters["boosters_cost"] = _flow.CurrentBoosterCost;
+            parameters["character_skills"] = (int)launch.Skills;
+            parameters["second_weapon"] = launch.SecondWeapon?.Id ?? "none";
             _analytics.Send(AnalyticsEvents.LevelStart);
         }
 

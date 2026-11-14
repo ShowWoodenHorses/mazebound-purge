@@ -15,6 +15,8 @@ namespace Purge.Presentation.UI
         [SerializeField] private DevLevelsScreen _cheats;
         [SerializeField] private ArsenalScreen _arsenal;
         public ArsenalScreen Arsenal => _arsenal;
+        [SerializeField] private CharacterScreen _character;
+        public CharacterScreen Character => _character;
         [SerializeField] private RunSetupScreen _runSetup;
         [SerializeField] private LoadingScreen _loading;
         [SerializeField] private ErrorScreen _error;

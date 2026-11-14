@@ -24,12 +24,15 @@ namespace Purge.Presentation.UI
         [SerializeField] private CardSlot[] _cards = Array.Empty<CardSlot>();
         [SerializeField] private UiButton _rerollButton;
 
+        [SerializeField] private UiButton _banishButton;
+        [SerializeField] private TMP_Text _banishLabel;
         private float _shownAt;
 
         /// <summary>(index) a card was clicked.</summary>
         public event Action<int> CardClicked;
 
         public event Action RerollClicked;
+        public event Action BanishClicked;
 
         public int SlotCount => _cards.Length;
 
@@ -46,6 +49,7 @@ namespace Purge.Presentation.UI
                 });
             }
 
+            Bind(_banishButton, () => { if (CanClick) BanishClicked?.Invoke(); });
             Bind(_rerollButton, () =>
             {
                 if (CanClick) RerollClicked?.Invoke();
@@ -53,6 +57,25 @@ namespace Purge.Presentation.UI
         }
 
         private void OnEnable() => _shownAt = Time.unscaledTime;
+
+        public void SetBanish(bool available, bool armed, string label)
+        {
+            if (_banishButton == null) return;
+            _banishButton.gameObject.SetActive(available);
+            _banishButton.Accent = armed;
+            _banishLabel.text = label;
+        }
+
+        public void CenterOffer(int count)
+        {
+            for (var i = 0; i < count && i < _cards.Length; i++)
+            {
+                var rect = (RectTransform)_cards[i].Button.transform;
+                var position = rect.anchoredPosition;
+                position.x = (i - (count - 1) * 0.5f) * (rect.sizeDelta.x + 48f);
+                rect.anchoredPosition = position;
+            }
+        }
 
         public void SetSubtitle(string text)
         {

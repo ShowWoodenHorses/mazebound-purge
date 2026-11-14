@@ -86,6 +86,74 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
+        public IEnumerator CharacterTree_MenuPurchaseAndRunCheckpoint() => Async(async () =>
+        {
+            Button ButtonNamed(UIScreen screen, string name) =>
+                screen.GetComponentsInChildren<Button>(true).Single(button => button.name == name);
+
+            var ui = _container.Resolve<UIRoot>();
+            var save = _container.Resolve<SaveService>();
+            var original = PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key, string.Empty);
+            var oldNodes = save.Data.CharacterNodes.ToArray();
+            var oldMoney = save.Data.Money;
+            var oldRun = save.Data.Run;
+            try
+            {
+                save.Data.CharacterNodes.Clear();
+                save.Data.Money = 2000;
+                save.Data.Run = new RunSave();
+                var character = ButtonNamed(ui.MainMenu, "CharacterButton");
+                Assert.IsTrue(character.interactable);
+                character.onClick.Invoke();
+                Assert.IsTrue(ui.Character.IsVisible);
+                ButtonNamed(ui.Character, "SecondWind").onClick.Invoke();
+                ButtonNamed(ui.Character, "Buy").onClick.Invoke();
+                Assert.That(save.Data.Money, Is.EqualTo(1700));
+                Assert.That(save.Data.CharacterNodes, Does.Contain("SecondWind"));
+                ButtonNamed(ui.Character, "Back").onClick.Invoke();
+                Assert.IsTrue(ui.MainMenu.IsVisible);
+
+                var skills = _container.Resolve<Purge.Application.Meta.RunPreparation>().Skills;
+                var shared = _container.Resolve<SharedDefinitionsService>();
+                var second = shared.Content.Items.OfType<WeaponDefinition>()
+                    .First(weapon => weapon.UsesAmmo && weapon.Id != shared.Player.BaseWeapon.Id);
+                var boosterIds = new[] { "booster_second_barrel", "booster_minefield", "booster_quiet_start" };
+                var boosters = boosterIds.Select(shared.Content.Find<Purge.Core.Boosters.BoosterDefinition>).ToArray();
+                Assert.That(boosters.All(booster => booster != null), Is.True);
+                await _flow.StartLevel(FirstLevelId(), new LevelLaunchOptions(startIndex: 0,
+                    skills: skills | CharacterSkills.Barrier, secondWeapon: second, boosters: boosters));
+                Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+                var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+                Assert.That(level.Resolve<PlayerRevival>().HasSkill, Is.True);
+                var weapons = level.Resolve<Purge.Gameplay.Weapons.WeaponSystem>();
+                var secondSlot = weapons.Get(WeaponSlot.Second);
+                Assert.That(secondSlot.Definition.Id, Is.EqualTo(second.Id));
+                Assert.That(secondSlot.Ammo, Is.GreaterThanOrEqualTo(second.MagazineSize));
+                var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+                Assert.That(waves.StartNextWave(), Is.True);
+                var health = level.Resolve<PlayerHealth>();
+                Assert.That(health.Barrier, Is.EqualTo(Mathf.RoundToInt(health.Max * 0.1f)));
+                var snapshot = _container.Resolve<IProgressService>().LoadRun();
+                Assert.IsNotNull(snapshot);
+                Assert.That(snapshot.Skills, Is.EqualTo(skills | CharacterSkills.Barrier));
+                Assert.That(snapshot.Barrier, Is.EqualTo(health.Barrier));
+                Assert.That(snapshot.Boosters, Is.EquivalentTo(boosterIds));
+                Assert.That(level.Resolve<Purge.Gameplay.Run.SpecialRunBoosters>().Mines.Count, Is.InRange(1, 4));
+                Assert.That(level.Resolve<Purge.Gameplay.Sound.SoundEventBus>().PlayerNoiseFactor, Is.EqualTo(0.4f));
+            }
+            finally
+            {
+                save.Data.Money = oldMoney;
+                save.Data.Run = oldRun;
+                save.Data.CharacterNodes.Clear();
+                save.Data.CharacterNodes.AddRange(oldNodes);
+                if (string.IsNullOrEmpty(original)) PlayerPrefs.DeleteKey(PlayerPrefsSaveStorage.Key);
+                else PlayerPrefs.SetString(PlayerPrefsSaveStorage.Key, original);
+                PlayerPrefs.Save();
+            }
+        });
+
+        [UnityTest]
         public IEnumerator DevCheats_ButtonsChangeTestStateWithoutSavingIt() => Async(async () =>
         {
             if (!Debug.isDebugBuild) Assert.Ignore("Development UI only.");

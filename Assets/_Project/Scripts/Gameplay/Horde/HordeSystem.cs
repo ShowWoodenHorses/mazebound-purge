@@ -528,6 +528,7 @@ namespace Purge.Gameplay.Horde
 
         /// <summary>(slot, damage) a monster's attack or ability hurt the player (vampire, a hit's state).</summary>
         public event Action<int, int> PlayerHurt;
+        public event Action<Vector2> PlayerAttackStarted;
 
         /// <summary>
         /// The monster in <paramref name="agent"/> hurt the player by <paramref name="amount"/> — reported only while that
@@ -1128,6 +1129,7 @@ namespace Purge.Gameplay.Horde
                 _stateStart[i] = Time;
                 _attackTimer[i] = AttackIntervalOf(i) * 0.5f;
                 _attackStart[i] = Time - AttackIntervalOf(i) * 0.5f;
+                PlayerAttackStarted?.Invoke(position);
             }
 
             if (_held[i] && _states[i] == HordeAgentState.Moving)

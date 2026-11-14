@@ -74,6 +74,14 @@ namespace Purge.Gameplay.Run
 
         /// <summary>Free card rerolls left (the booster's).</summary>
         public int FreeRerolls;
+        public bool SecondDomeUsed;
+        public string BanishedCard;
+        public int BountiesPaid;
+        public bool SupplyPlaced;
+        public int Barrier;
+        public List<SupplyAmmo> AmmoReserve = new List<SupplyAmmo>();
+        public List<Purge.Gameplay.Run.SupplyAmmo> Supply = new List<Purge.Gameplay.Run.SupplyAmmo>();
+        public Purge.Core.Definitions.CharacterSkills Skills;
 
         /// <summary>The booster's medkit at the start is taken (a continued run does not put it back).</summary>
         public bool StartMedkitTaken;

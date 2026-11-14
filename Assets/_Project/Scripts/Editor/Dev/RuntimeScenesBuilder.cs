@@ -305,6 +305,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_devLevels", BuildDevLevels(parent));
             SetReference(root, "_runSetup", BuildRunSetup(parent));
             SetReference(root, "_arsenal", BuildArsenal(parent));
+            SetReference(root, "_character", BuildCharacter(parent));
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
@@ -558,6 +559,10 @@ namespace Purge.Editor.Dev
             stripe.StrokeWidth = 0f;
             stripe.Kind = UiShapeKind.Capsule;
             var weaponTemplate = MakeButton(template, false, itemIcon);
+            var secondTitle = SectionTitle(content, "SecondTitle", Loc(TextKeys.CharacterNodePrefix + "SecondBarrel"), null);
+            var secondList = TileGrid(content, "SecondWeapons");
+            SetReference(screen, "_secondTitle", secondTitle.gameObject);
+            SetReference(screen, "_secondList", secondList);
             SectionTitle(content, "ThrowableTitle", Loc(TextKeys.SetupThrowable), null);
             var throwableList = TileGrid(content, "Throwables");
             SectionTitle(content, "BoostersTitle", Loc(TextKeys.SetupBoosters), null);
@@ -615,13 +620,14 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>A section caption: at a place from the panel's top left, or (no place) as a layout child.</summary>
-        private static void SectionTitle(Transform parent, string name, string text, Vector2? position)
+        private static TMP_Text SectionTitle(Transform parent, string name, string text, Vector2? position)
         {
             var title = Text(parent, name, text, 26f, true, TopLeft, new Vector2(0f, 1f), (position ?? Vector2.zero) +
                 new Vector2(24f, 0f), new Vector2(640f, 38f), TextAlignmentOptions.BottomLeft, _style.MutedText, 8f);
             title.textWrappingMode = TextWrappingModes.NoWrap;
             AutoSize(title);
             if (position == null) title.gameObject.AddComponent<LayoutElement>().preferredHeight = 38f;
+            return title;
         }
 
         /// <summary>A vertical scrolling list filling <paramref name="panel"/> (inside a margin); returns its content.</summary>
@@ -1980,7 +1986,7 @@ namespace Purge.Editor.Dev
         /// </summary>
         private static CardsScreen BuildCards(Transform parent)
         {
-            const int count = 3;
+            const int count = 4;
             const float width = 400f;
             const float height = 500f;
             const float spacing = 48f;
@@ -2049,6 +2055,10 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_style", _style);
             SetReference(screen, "_subtitle", subtitle);
             SetReference(screen, "_rerollButton", reroll);
+            var banish = TextButton(root, "BanishButton", Loc(TextKeys.CharacterBanish), false, null, 76f, 26f);
+            Place(banish, Center, new Vector2(500, -400), new Vector2(460, 76));
+            SetReference(screen, "_banishButton", banish);
+            SetReference(screen, "_banishLabel", banish.GetComponentInChildren<TMP_Text>(true));
             var serialized = new SerializedObject(screen);
             var array = serialized.FindProperty("_cards");
             array.arraySize = slots.Count;

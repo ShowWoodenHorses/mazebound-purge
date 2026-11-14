@@ -7,6 +7,16 @@ namespace Purge.Presentation.Localization
     /// </summary>
     public static class TextKeys
     {
+        public const string CharacterBranchPrefix = "character.branch.";
+        public const string CharacterNodePrefix = "character.node.";
+        public const string CharacterBuy = "character.buy";
+        public const string CharacterOwned = "character.owned";
+        public const string CharacterReset = "character.reset";
+        public const string CharacterResetConfirm = "character.reset.confirm";
+        public const string CharacterRequired = "character.required";
+        public const string CharacterBanish = "character.banish";
+        public const string CharacterBanishSelect = "character.banish.select";
+        public const string CharacterLocked = "character.locked";
         public const string UpgradePrefix = "upgrade.";
         public const string ArsenalPrefix = "arsenal.";
         public const string ThrowablePrefix = "throwable.";

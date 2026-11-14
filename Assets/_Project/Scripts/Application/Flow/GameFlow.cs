@@ -391,7 +391,8 @@ namespace Purge.Application.Flow
             {
                 GameLog.Info(LogChannel.GameFlow, $"Boosters cost {boosterCost}, money {_progress.Money}: the run starts without them.");
                 options = new LevelLaunchOptions(options.StartIndex, options.Seed, options.Difficulty, options.Resume, options.Bot,
-                    options.StartWeapon, options.StartThrowable, null, options.CloseArena);
+                    options.StartWeapon, options.StartThrowable, null, options.CloseArena,
+                    options.Skills, fallbackGrenade: options.FallbackGrenade);
                 boosterCost = 0;
             }
 

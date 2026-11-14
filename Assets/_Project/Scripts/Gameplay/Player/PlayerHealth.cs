@@ -17,8 +17,11 @@ namespace Purge.Gameplay.Player
     /// </summary>
     public sealed class PlayerHealth
     {
-        public PlayerHealth(PlayerDefinition definition)
+        private readonly Level.LevelLaunchOptions _options;
+
+        public PlayerHealth(PlayerDefinition definition, Level.LevelLaunchOptions options = null)
         {
+            _options = options;
             Max = definition.MaxHealth;
             Current = Max;
         }
@@ -27,6 +30,17 @@ namespace Purge.Gameplay.Player
         public int Current { get; private set; }
         public bool IsFull => Current >= Max;
         public bool IsDead => Current <= 0;
+        public int Barrier { get; private set; }
+        public event Action<int> BarrierChanged;
+        public void RefillBarrier() => RestoreBarrier(Mathf.RoundToInt(Max * 0.1f));
+
+        public void RestoreBarrier(int value)
+        {
+            value = Math.Max(0, value);
+            if (value == Barrier) return;
+            Barrier = value;
+            BarrierChanged?.Invoke(Barrier);
+        }
 
         /// <summary>No damage gets through (the revived player's seconds, <c>PlayerDeathRule</c>).</summary>
         public bool Invulnerable { get; set; }
@@ -71,7 +85,7 @@ namespace Purge.Gameplay.Player
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
             if (Invulnerable || amount > 0 && Shield != null && Shield.Absorb(amount)) return;
-            Set(Math.Max(0, Current - amount));
+            Set(Math.Max(0, Current - ThroughBarrier(amount)));
         }
 
         /// <summary>Damage of a blow from <paramref name="source"/> (grid units): <see cref="Hurt"/> shows where it came from.</summary>
@@ -79,8 +93,17 @@ namespace Purge.Gameplay.Player
         {
             if (amount <= 0 || IsDead || Invulnerable) return;
             if (Shield != null && Shield.Absorb(amount)) return;
-            Set(Math.Max(0, Current - amount));
+            Set(Math.Max(0, Current - ThroughBarrier(amount)));
             Hurt?.Invoke(amount, source);
+        }
+
+        private int ThroughBarrier(int amount)
+        {
+            if ((long)Current * 10 <= (long)Max * 3 && _options?.HasSkill(CharacterSkills.LastStand) == true)
+                amount = Mathf.RoundToInt(amount * 0.8f);
+            var absorbed = Math.Min(amount, Barrier);
+            RestoreBarrier(Barrier - absorbed);
+            return amount - absorbed;
         }
 
         private void Set(int value)

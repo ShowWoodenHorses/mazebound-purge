@@ -60,6 +60,7 @@ namespace Purge.Composition
             builder.Register<SharedDefinitionsService>(Lifetime.Singleton).AsSelf().As<IApplicationService>();
             builder.Register<LevelCatalogService>(Lifetime.Singleton).As<ILevelCatalog, IApplicationService>();
             builder.Register<ProgressService>(Lifetime.Singleton).As<IProgressService>();
+            builder.Register<Purge.Application.Meta.CharacterTree>(Lifetime.Singleton);
             builder.Register<Purge.Application.Meta.RunPreparation>(Lifetime.Singleton);
 
             // Platform: analytics sinks and the ad provider of the build's platform (SDK integrations go here).

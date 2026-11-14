@@ -50,6 +50,11 @@ namespace Purge.Gameplay.Effects
         /// <summary>(where, radius, what exploded — its look) of an explosion.</summary>
         public event Action<Vector2, float, IExplosionLook> Exploded;
 
+        public void ShowExplosion(Vector2 position, float radius, IExplosionLook look)
+        {
+            if (look != null) Exploded?.Invoke(position, radius, look);
+        }
+
         /// <summary>(where, zone, radius) a zone was placed.</summary>
         public event Action<Vector2, ZoneDefinition, float> ZonePlaced;
 
@@ -70,7 +75,8 @@ namespace Purge.Gameplay.Effects
                         var radius = _targets.Blast(at, explosion.Damage * damageFactor, explosion.Radius * radiusFactor, explosion.EdgeDamage, floor,
                             kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion, hostile: hostile);
                         if (hostile) BlastPlayer(at, explosion, floor);
-                        _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
+                        if (hostile) _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
+                        else _sounds.EmitPlayer(SoundType.Explosion, at, explosion.SoundRadius, floor);
                         Exploded?.Invoke(at, radius, explosion);
                         break;
                     case PlaceZoneEffect zone when zone.Zone != null:

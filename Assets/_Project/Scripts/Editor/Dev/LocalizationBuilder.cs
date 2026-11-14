@@ -105,6 +105,15 @@ namespace Purge.Editor.Dev
                 (field.Name.EndsWith("Prefix", StringComparison.Ordinal) ? prefixes : keys).Add((string)field.GetRawConstantValue());
             }
 
+            foreach (Purge.Application.Meta.CharacterBranch branch in Enum.GetValues(typeof(Purge.Application.Meta.CharacterBranch)))
+                keys.Add(TextKeys.CharacterBranchPrefix + branch);
+            foreach (var node in Purge.Application.Meta.CharacterTree.Nodes)
+            {
+                var key = TextKeys.CharacterNodePrefix + node.Id;
+                keys.Add(key);
+                keys.Add(key + ".text");
+            }
+
             var issues = LocalizationCheck.Run(source, keys, prefixes);
             var tableKeys = new HashSet<string>(source.Rows.Select(row => row.Key));
 

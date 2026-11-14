@@ -48,6 +48,7 @@ namespace Purge.Presentation.UI
         private readonly AmmoStock _ammo;
         private readonly PlayerCombat _combat;
         private readonly List<Color> _keyColors = new List<Color>();
+        private readonly Purge.Gameplay.Run.CharacterRunEffects _character;
         private int _lastHealth;
         private bool _bound;
 
@@ -55,9 +56,10 @@ namespace Purge.Presentation.UI
             WeaponSystem weapons, PlayerInteraction interaction, PlayerSystem player,
             PickupSystem pickups, ZombieSystem zombies, WeaponVisualCatalog visuals, LocalizationService texts,
             LevelProgress progress, PlatformService platform = null, PlayerThrowing throwing = null, ItemVisualCatalog items = null,
-            AmmoStock ammo = null, PlayerCombat combat = null)
+            AmmoStock ammo = null, PlayerCombat combat = null, Purge.Gameplay.Run.CharacterRunEffects character = null)
         {
             _ammo = ammo;
+            _character = character;
             _combat = combat;
             _throwing = throwing;
             _items = items;
@@ -84,6 +86,8 @@ namespace Purge.Presentation.UI
             {
                 _health.Changed += OnHealthChanged;
                 _health.Hurt += OnHurt;
+                _health.BarrierChanged += OnBarrierChanged;
+                if (_character != null) _character.ThreatDetected += OnThreat;
                 _inventory.KeysChanged += RefreshKeys;
                 _interaction.Interacted += OnInteracted;
                 _player.CellChanged += OnPlayerCellChanged;
@@ -96,6 +100,7 @@ namespace Purge.Presentation.UI
             _ui.Hud.ShiftTopRightButtons(_platform?.Traits.TopRightButtonsShift ?? 0f);
             _lastHealth = _health.Current;
             _ui.Hud.SetHealth(_health.Current, _health.Max);
+            _ui.Hud.SetBarrier(_health.Barrier);
             RefreshCounters();
             RefreshKeys();
             LateTick(0f); // No leftovers of the previous level on the slots.
@@ -107,6 +112,8 @@ namespace Purge.Presentation.UI
             if (!_bound) return;
             _health.Changed -= OnHealthChanged;
             _health.Hurt -= OnHurt;
+            _health.BarrierChanged -= OnBarrierChanged;
+            if (_character != null) _character.ThreatDetected -= OnThreat;
             _inventory.KeysChanged -= RefreshKeys;
             _interaction.Interacted -= OnInteracted;
             _player.CellChanged -= OnPlayerCellChanged;
@@ -194,6 +201,10 @@ namespace Purge.Presentation.UI
         {
             if (_player.IsSpawned) _ui.Hud.ShowDamageArc(source - _player.Position);
         }
+
+        private void OnBarrierChanged(int amount) => _ui.Hud.SetBarrier(amount);
+
+        private void OnThreat(Vector2 direction) => _ui.Hud.ShowDamageArc(direction, warning: true);
 
         private void OnZombie(ZombieRuntime zombie) => RefreshCounters();
 

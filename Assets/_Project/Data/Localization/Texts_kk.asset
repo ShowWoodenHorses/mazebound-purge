@@ -373,6 +373,80 @@ MonoBehaviour:
   - upgrade.Cluster
   - upgrade.Lifesteal
   - upgrade.Shatter
+  - character.branch.Trunk
+  - character.branch.Shooter
+  - character.branch.Demolisher
+  - character.branch.Survivor
+  - character.buy
+  - character.owned
+  - character.reset
+  - character.reset.confirm
+  - character.required
+  - character.banish
+  - character.banish.select
+  - character.locked
+  - character.node.Uncommon
+  - character.node.Uncommon.text
+  - character.node.Rare
+  - character.node.Rare.text
+  - character.node.Epic
+  - character.node.Epic.text
+  - character.node.Legendary
+  - character.node.Legendary.text
+  - character.node.QuickHands
+  - character.node.QuickHands.text
+  - character.node.SharpEye
+  - character.node.SharpEye.text
+  - character.node.WideChoice
+  - character.node.WideChoice.text
+  - character.node.CardControl
+  - character.node.CardControl.text
+  - character.node.Tactician
+  - character.node.Tactician.text
+  - character.node.SecondBarrel
+  - character.node.SecondBarrel.text
+  - booster.booster_second_barrel
+  - booster.booster_second_barrel.text
+  - character.node.Headhunter
+  - character.node.Headhunter.text
+  - booster.booster_headhunter
+  - booster.booster_headhunter.text
+  - character.node.Sapper
+  - character.node.Sapper.text
+  - character.node.Preparation
+  - character.node.Preparation.text
+  - character.node.Luck
+  - character.node.Luck.text
+  - character.node.Minefield
+  - character.node.Minefield.text
+  - booster.booster_minefield
+  - booster.booster_minefield.text
+  - character.node.SecondWind
+  - character.node.SecondWind.text
+  - character.node.LastStand
+  - character.node.LastStand.text
+  - character.node.Barrier
+  - character.node.Barrier.text
+  - character.node.Instinct
+  - character.node.Instinct.text
+  - character.node.QuietSteps
+  - character.node.QuietSteps.text
+  - character.node.Buyer
+  - character.node.Buyer.text
+  - character.node.ChestHunter
+  - character.node.ChestHunter.text
+  - character.node.QuietStart
+  - character.node.QuietStart.text
+  - booster.booster_quiet_start
+  - booster.booster_quiet_start.text
+  - character.node.DropLoad
+  - character.node.DropLoad.text
+  - booster.booster_drop_load
+  - booster.booster_drop_load.text
+  - character.node.SecondDome
+  - character.node.SecondDome.text
+  - booster.booster_second_dome
+  - booster.booster_second_dome.text
   _texts:
   - "\u049A\u0430\u0437\u0430\u049B\u0448\u0430"
   - "\u0411\u0410\u041F\u0422\u0410\u0423\u041B\u0410\u0420"
@@ -901,4 +975,85 @@ MonoBehaviour:
   - "\u041A\u0430\u0441\u0441\u0435\u0442\u0430\u043B\u044B\u049B \u0436\u0430\u0440\u044B\u043B\u044B\u0441"
   - "\u04E8\u043C\u0456\u0440 \u0441\u043E\u0440\u0443"
   - "\u0428\u0430\u0493\u0443"
+  - Rarity
+  - Shooter
+  - Demolisher
+  - Survivor
+  - Buy for {0}
+  - Purchased
+  - Reset branches
+  - 'Reset character branches for 200 coins? Refund: {0}. Rarity allowances stay.'
+  - 'Branch nodes: {0} / {1}'
+  - Banish (1)
+  - Select a card to banish
+  - Buy the previous node first.
+  - Green
+  - Allows green weapons and throwables at the start.
+  - Blue
+  - Allows blue weapons and throwables at the start.
+  - Purple
+  - Allows purple weapons and throwables at the start.
+  - Orange
+  - Allows orange weapons and throwables at the start.
+  - Quick hands
+  - "Reload time \u221215%."
+  - Sharp eye
+  - Critical chance +5 percentage points.
+  - Wide choice
+  - Choose from up to four cards.
+  - Reroll / banish
+  - One free reroll and one permanent card banish per run.
+  - Tactician
+  - Weapon damage +15% for the first 12 s of each wave.
+  - Second barrel
+  - Choose another starting weapon with a full magazine.
+  - Second barrel
+  - Choose another starting weapon with a full magazine.
+  - Headhunter
+  - The first three officers or elites killed drop one magazine each for an equipped
+    firearm.
+  - Headhunter
+  - The first three officers or elites killed drop one magazine each for an equipped
+    firearm.
+  - Sapper
+  - Your explosion radius +15%.
+  - Preparation
+  - Start with one extra throwable, or a grenade if none was selected.
+  - Luck
+  - Enemies are 15% more likely to drop weapons.
+  - Minefield
+  - Up to four mines near the start in wave one. Each deals 200 damage within two
+    cells.
+  - Minefield
+  - Up to four mines near the start in wave one. Each deals 200 damage within two
+    cells.
+  - Second wind
+  - Revive once per run at full health, invulnerable for two seconds.
+  - Last stand
+  - Take 20% less damage while at or below 30% HP.
+  - Barrier
+  - A shield for 10% of maximum health at the start of each wave.
+  - Instinct
+  - 'See the direction of an unseen attack within six cells for 1.5 s. Cooldown:
+    three seconds.'
+  - Quiet steps
+  - "Footstep noise radius \u221250%."
+  - Buyer
+  - Duplicate firearms give 5 / 10 / 20 / 35 / 60 coins by rarity in place of ammunition.
+  - Chest hunter
+  - Opening chests takes 35% less time.
+  - Quiet start
+  - "Noise radius \u221260% for the first 30 s of wave one."
+  - Quiet start
+  - "Noise radius \u221260% for the first 30 s of wave one."
+  - Supply drop
+  - At the start of wave two, two magazines for each equipped firearm appear near
+    the starting point.
+  - Supply drop
+  - At the start of wave two, two magazines for each equipped firearm appear near
+    the starting point.
+  - Second dome
+  - The first shelter timeout grants ten more seconds of protection and healing.
+  - Second dome
+  - The first shelter timeout grants ten more seconds of protection and healing.
   _missing: []

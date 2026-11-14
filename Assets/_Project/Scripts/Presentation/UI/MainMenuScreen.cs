@@ -9,7 +9,7 @@ namespace Purge.Presentation.UI
     /// Main menu (stage 11a, ТЗ А.10): the bottom bar of five tabs — Arsenal, Character, ▶ PLAY, Tasks, Shop — with
     /// «Продолжить» above PLAY while a run is saved; money, settings and the site's account at the top. The middle is
     /// transparent: the character on the podium (<see cref="Menu.MenuPodiumView"/>) shows through. Tabs that have no
-    /// screen yet are disabled (Arsenal, Character — 11в, 11д) or hidden (Tasks — 16б, Shop — 17б). DEV (the level list)
+    /// screen yet are disabled (Character — 11д) or hidden (Tasks — 16б, Shop — 17б). DEV (the level list)
     /// and "Debug: reset progress" — development builds only; the version at the bottom right.
     /// </summary>
     public sealed class MainMenuScreen : UIScreen
@@ -53,7 +53,7 @@ namespace Purge.Presentation.UI
             if (_debugResetProgressButton != null)
                 _debugResetProgressButton.gameObject.SetActive(Debug.isDebugBuild);
             if (_version != null) _version.text = "v" + UnityEngine.Application.version;
-            SetTabs(arsenal: false, character: false, tasks: false, shop: false);
+            // ScreenRouter sets tab availability before the first activation; do not reset it in Awake.
         }
 
         /// <summary>The money kept between runs.</summary>

@@ -171,9 +171,7 @@ namespace Purge.Core.Authoring
         public static MedkitData AddMedkit(LevelData level, GridPosition position) =>
             Add(level, level.MutableMedkits, new MedkitData(level.CreateUniqueId(MedkitData.IdPrefix), position));
 
-        public static ZombieSpawnData AddZombie(LevelData level, GridPosition position, ZombieDefinition definition, Direction facing) =>
-            Add(level, level.MutableZombieSpawns,
-                new ZombieSpawnData(level.CreateUniqueId(ZombieSpawnData.IdPrefix), position, definition, facing));
+
 
         public static WeaponPickupData AddWeapon(LevelData level, GridPosition position, WeaponDefinition definition) =>
             Add(level, level.MutableWeapons, new WeaponPickupData(level.CreateUniqueId(WeaponPickupData.IdPrefix), position, definition));
@@ -235,7 +233,6 @@ namespace Purge.Core.Authoring
                     }
                     break;
 
-                case ZombieSpawnData zombie: level.MutableZombieSpawns.Remove(zombie); break;
                 case PlayerStartData start: level.MutablePlayerStarts.Remove(start); break;
                 case MedkitData medkit: level.MutableMedkits.Remove(medkit); break;
                 case WeaponPickupData weapon: level.MutableWeapons.Remove(weapon); break;
@@ -405,15 +402,6 @@ namespace Purge.Core.Authoring
         {
             vehicle.Definition = definition;
             vehicle.Heading = heading;
-        }
-
-        public static void SetZombie(LevelData level, ZombieSpawnData zombie, ZombieDefinition definition, Direction facing)
-        {
-            var definitionChanged = zombie.Definition != definition;
-            zombie.Definition = definition;
-            zombie.Facing = facing;
-            if (definitionChanged)
-                VisualAssigner.AssignObject(level, zombie);
         }
 
         public static void SetWeaponDefinition(LevelData level, WeaponPickupData weapon, WeaponDefinition definition)

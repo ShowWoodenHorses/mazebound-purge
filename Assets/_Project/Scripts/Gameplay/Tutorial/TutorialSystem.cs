@@ -8,15 +8,20 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
-using Purge.Gameplay.Zombies;
+using Purge.Core.Cards;
+using Purge.Core.Definitions;
+using Purge.Gameplay.Combat;
+using Purge.Gameplay.Run;
+using Purge.Gameplay.Throwing;
+using Purge.Gameplay.Waves;
+using Purge.Gameplay.Weapons;
 using UnityEngine;
 
 namespace Purge.Gameplay.Tutorial
 {
     /// <summary>
     /// Steps of the tutorial level (<see cref="LevelData.Tutorial"/>; inactive in other levels). A step is finished by the
-    /// state of the game, checked on the events that can change it (cell change, pickup taken, door unlocked or moved,
-    /// zombie died, map opened) — never per frame. A step already done when its turn comes (the player ran ahead) is
+    /// state of the game, checked when movement, equipment, combat or wave events change it. A step already done when its turn comes (the player ran ahead) is
     /// skipped silently.
     /// </summary>
     public sealed class TutorialSystem : ILevelLoadStep, IDisposable
@@ -26,19 +31,31 @@ namespace Purge.Gameplay.Tutorial
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
         private readonly DoorSystem _doors;
-        private readonly ZombieSystem _zombies;
+        private readonly PlayerCombat _combat;
+        private readonly WeaponSystem _weapons;
+        private readonly PlayerThrowing _throwing;
+        private readonly CardSystem _cards;
+        private readonly RunExperience _experience;
+        private readonly WaveSystem _waves;
+        private bool _fired, _switched, _dropped, _thrown, _choseCard, _firstCleared, _officerWave, _officerCleared;
         private bool _mapOpened;
         private bool _subscribed;
 
         public TutorialSystem(LevelData level, PlayerSystem player, PickupSystem pickups, DoorSystem doors,
-            ZombieSystem zombies)
+            PlayerCombat combat = null, WeaponSystem weapons = null,
+            PlayerThrowing throwing = null, CardSystem cards = null, RunExperience experience = null, WaveSystem waves = null)
         {
             _level = level;
             _script = level.Tutorial;
             _player = player;
             _pickups = pickups;
             _doors = doors;
-            _zombies = zombies;
+            _combat = combat;
+            _weapons = weapons;
+            _throwing = throwing;
+            _cards = cards;
+            _experience = experience;
+            _waves = waves;
         }
 
         /// <summary>After the zombies: every target exists when the first step starts.</summary>
@@ -72,7 +89,20 @@ namespace Purge.Gameplay.Tutorial
                 _pickups.Removed += OnPickupRemoved;
                 _doors.DoorUnlocked += OnDoorUnlocked;
                 _doors.DoorChanged += OnDoorChanged;
-                _zombies.Died += OnZombieDied;
+                if (_combat != null) _combat.Attacked += OnAttacked;
+                if (_weapons != null)
+                {
+                    _weapons.Switched += OnSwitched;
+                    _weapons.Dropped += OnDropped;
+                }
+                if (_throwing != null) _throwing.Thrown += OnThrown;
+                if (_cards != null) _cards.Chosen += OnCardChosen;
+                if (_waves != null)
+                {
+                    _waves.WaveCleared += OnWaveCleared;
+                    _waves.WaveStarted += OnWaveStarted;
+                    _waves.TutorialHold = _waves.IsActive;
+                }
                 _subscribed = true;
             }
 
@@ -89,7 +119,20 @@ namespace Purge.Gameplay.Tutorial
             _pickups.Removed -= OnPickupRemoved;
             _doors.DoorUnlocked -= OnDoorUnlocked;
             _doors.DoorChanged -= OnDoorChanged;
-            _zombies.Died -= OnZombieDied;
+            if (_combat != null) _combat.Attacked -= OnAttacked;
+            if (_weapons != null)
+            {
+                _weapons.Switched -= OnSwitched;
+                _weapons.Dropped -= OnDropped;
+            }
+            if (_throwing != null) _throwing.Thrown -= OnThrown;
+            if (_cards != null) _cards.Chosen -= OnCardChosen;
+            if (_waves != null)
+            {
+                _waves.WaveCleared -= OnWaveCleared;
+                _waves.WaveStarted -= OnWaveStarted;
+                _waves.TutorialHold = false;
+            }
             _subscribed = false;
         }
 
@@ -116,13 +159,6 @@ namespace Purge.Gameplay.Tutorial
                 return true;
             }
 
-            var zombie = FindZombie(step.Target);
-            if (zombie != null)
-            {
-                position = zombie.Position;
-                return zombie.IsAlive;
-            }
-
             var entity = _level.FindEntity(step.Target);
             if (entity == null || IsPickup(entity) && !_pickups.IsLying(entity.Id)) return false;
             position = new Vector2(entity.Position.X, entity.Position.Y);
@@ -143,6 +179,8 @@ namespace Purge.Gameplay.Tutorial
 
                 if (IsDone(Current)) continue; // Done ahead of its turn.
 
+                if (_waves != null && Current.Goal == TutorialGoal.PickCard && _waves.Phase == WavePhase.Delay)
+                    _waves.TutorialHold = false;
                 StepStarted?.Invoke(StepIndex);
                 return;
             }
@@ -158,6 +196,13 @@ namespace Purge.Gameplay.Tutorial
         {
             switch (step.Goal)
             {
+                case TutorialGoal.Fire: return _fired;
+                case TutorialGoal.SwitchWeapon: return _switched;
+                case TutorialGoal.DropWeapon: return _dropped;
+                case TutorialGoal.ThrowGrenade: return _thrown;
+                case TutorialGoal.PickCard: return _firstCleared && _choseCard;
+                case TutorialGoal.Intermission: return _firstCleared && _officerWave;
+                case TutorialGoal.OfficerWave: return _officerCleared;
                 case TutorialGoal.Reach:
                     // A pickup target (a medkit used on entering its cell) is gone by the time this is checked: taken = reached.
                     if (step.HasTarget && _level.FindEntity(step.Target) is LevelEntityData entity && IsPickup(entity) &&
@@ -170,9 +215,6 @@ namespace Purge.Gameplay.Tutorial
                     return !_doors.IsLocked(step.Target);
                 case TutorialGoal.OpenDoor:
                     return _doors.IsOpen(step.Target);
-                case TutorialGoal.Kill:
-                    var zombie = FindZombie(step.Target);
-                    return zombie == null || !zombie.IsAlive;
                 case TutorialGoal.OpenMap:
                     return _mapOpened;
                 default:
@@ -185,29 +227,58 @@ namespace Purge.Gameplay.Tutorial
             cell = step.Cell;
             if (!step.HasTarget) return step.Goal == TutorialGoal.Reach;
 
-            var zombie = FindZombie(step.Target);
-            if (zombie != null)
-            {
-                cell = zombie.Cell;
-                return zombie.IsAlive;
-            }
-
             var entity = _level.FindEntity(step.Target);
             if (entity == null || IsPickup(entity) && !_pickups.IsLying(entity.Id)) return false;
             cell = entity.Position;
             return true;
         }
 
-        private ZombieRuntime FindZombie(string id)
-        {
-            var zombies = _zombies.Zombies;
-            for (var i = 0; i < zombies.Count; i++)
-                if (zombies[i].Id == id) return zombies[i];
-            return null;
-        }
-
         private static bool IsPickup(LevelEntityData entity) =>
             entity is KeyData || entity is MedkitData || entity is WeaponPickupData;
+
+        private void OnAttacked(WeaponRuntime weapon, Vector2 direction) { _fired = true; Check(); }
+        private void OnSwitched(WeaponSlot slot) { _switched = true; Check(); }
+        private void OnDropped(WeaponSlot slot) { _dropped = true; Check(); }
+
+        private void OnThrown(ThrowableDefinition item, Vector2 position)
+        {
+            _thrown = true;
+            Check();
+        }
+
+        private void OnCardChosen(CardDefinition card, int level)
+        {
+            _choseCard = true;
+            Check();
+            if (_waves != null && _firstCleared) _waves.TutorialHold = false;
+        }
+
+        private void OnWaveCleared(int wave)
+        {
+            if (wave == 1)
+            {
+                _officerCleared = true;
+                Check();
+                return;
+            }
+
+            if (wave != 0) return;
+            _firstCleared = true;
+            if (_choseCard)
+            {
+                Check();
+                return;
+            }
+            _waves.TutorialHold = true;
+            if (_experience is { Pending: 0 }) _experience.Add(_experience.Next - _experience.Experience);
+        }
+
+        private void OnWaveStarted(int wave)
+        {
+            if (wave != 1) return;
+            _officerWave = true;
+            Check();
+        }
 
         private void OnCellChanged(GridPosition from, GridPosition to) => Check();
 
@@ -217,6 +288,5 @@ namespace Purge.Gameplay.Tutorial
 
         private void OnDoorChanged(DoorData door, bool open) => Check();
 
-        private void OnZombieDied(ZombieRuntime zombie) => Check();
     }
 }

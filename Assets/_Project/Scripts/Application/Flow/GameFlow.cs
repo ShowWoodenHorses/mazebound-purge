@@ -111,7 +111,7 @@ namespace Purge.Application.Flow
         public bool LastRewardDoubled { get; private set; }
 
         /// <summary>The result window may offer ×2: a run ended with money, not doubled yet.</summary>
-        public bool CanDoubleReward => !IsTestRun &&
+        public bool CanDoubleReward => !IsTestRun && !IsTutorialLevel &&
             (State == GameFlowState.Completed || State == GameFlowState.Failed) && !LastRewardDoubled &&
             LastResult is { } result && result.Money > 0;
 
@@ -171,6 +171,10 @@ namespace Purge.Application.Flow
         /// The money for <see cref="LevelLaunchOptions.Boosters"/> (stage 11б): taken once the level has loaded; when the
         /// player has less, the run starts without boosters.
         /// </param>
+        public bool CanReplayTutorial => State == GameFlowState.MainMenu && _catalog.Tutorial != null;
+
+        public UniTask ReplayTutorial() => CanReplayTutorial ? StartLevel(_catalog.Tutorial.LevelId) : UniTask.CompletedTask;
+
         public UniTask StartLevel(string levelId, LevelLaunchOptions options = null, int boosterCost = 0) =>
             RunTransition($"StartLevel({levelId})",
                 cancellation => StartLevelAsync(levelId, options ?? LevelLaunchOptions.Default, boosterCost, cancellation));
@@ -382,9 +386,12 @@ namespace Purge.Application.Flow
         {
             var fromMenu = State == GameFlowState.MainMenu;
             // Retry from the pause: the run is given up for a new one, its money goes to the save (stage 6e).
-            if (IsRunActive && !_usedCheats) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
+            if (IsRunActive && !_usedCheats && !IsTutorialLevel) AbandonRun(_session.GetResult(LevelOutcome.Failed).Money);
             SetState(GameFlowState.Loading);
             CurrentLevelId = levelId;
+            if (IsTutorialLevel)
+                options = new LevelLaunchOptions(seed: options.Seed,
+                    startThrowable: _shared?.Content?.Find<Purge.Core.Definitions.ThrowableDefinition>("grenade"));
             // A retry is a new run: not the continued one again (its difficulty and arena stay); a new seed unless the
             // caller forced one. Boosters the player cannot pay for any more are left out (a retry buys them again).
             if (boosterCost > 0 && _progress.Money < boosterCost)
@@ -413,7 +420,7 @@ namespace Purge.Application.Flow
             _usedCheats = testRun;
 
             // An interstitial before the level (retry, next, from the menu) when the ad policy allows; over the loading screen.
-            if (_ads != null) await _ads.ShowBeforeLevelAsync(levelId, fromMenu, cancellation);
+            if (_ads != null && !IsTutorialLevel) await _ads.ShowBeforeLevelAsync(levelId, fromMenu, cancellation);
 
             var entry = _catalog.Find(levelId)
                         ?? throw new LevelLoadException($"Level '{levelId}' is not in the level catalog.");
@@ -439,7 +446,7 @@ namespace Purge.Application.Flow
                 await _session.LoadAsync(cancellation);
                 cancellation.ThrowIfCancellationRequested();
                 // A new run instead of the saved one: the saved one is given up, its money goes to the save (stage 6e).
-                if (!testRun && options.Resume == null && _session.IsRun && _progress.HasRun)
+                if (!testRun && !IsTutorialLevel && options.Resume == null && _session.IsRun && _progress.HasRun)
                     AbandonRun(_progress.LoadRun()?.Money ?? 0);
                 // ТЗ: списание на старте — the boosters are paid once the run is there.
                 if (!testRun && boosterCost > 0 && !_progress.SpendMoney(boosterCost))
@@ -533,8 +540,21 @@ namespace Purge.Application.Flow
 
             try
             {
-                LastResult = _progress.RecordRun(CurrentLevelId, levelResult, CurrentDifficulty, CurrentArenaClosed);
-                if (_session.IsRun) _progress.ClearRun(); // ТЗ: смерть удаляет сейв забега; a won run has none either
+                if (IsTutorialLevel)
+                {
+                    var reward = outcome == LevelOutcome.Completed && !LastWasCompletedBefore
+                        ? _shared?.Content?.Find<Purge.Core.Definitions.WeaponDefinition>("desert")?.PurchasePrice ?? 0
+                        : 0;
+                    LastResult = new LevelResult(levelResult.Completed, levelResult.Kills, levelResult.Time,
+                        levelResult.Waves, levelResult.WaveCount, money: reward, score: levelResult.Score);
+                    if (levelResult.Completed && !LastWasCompletedBefore)
+                        _progress.RecordRun(CurrentLevelId, LastResult.Value, CurrentDifficulty);
+                }
+                else
+                {
+                    LastResult = _progress.RecordRun(CurrentLevelId, levelResult, CurrentDifficulty, CurrentArenaClosed);
+                    if (_session.IsRun) _progress.ClearRun();
+                } // ТЗ: смерть удаляет сейв забега; a won run has none either
             }
             catch (Exception e)
             {
@@ -562,7 +582,7 @@ namespace Purge.Application.Flow
         /// <summary>A checkpoint of the run (a wave started or cleared) goes to the save at once (ТЗ «Продолжение забега»).</summary>
         private void OnRunCheckpoint(Gameplay.Run.RunSnapshot run)
         {
-            if (_usedCheats || CurrentLevelId == null) return;
+            if (_usedCheats || CurrentLevelId == null || IsTutorialLevel) return;
             try
             {
                 _progress.SaveRun(CurrentLevelId, run.Difficulty, run);

@@ -26,7 +26,6 @@ namespace Purge.Tests.EditMode.Visual
 
             Pistol = Create<WeaponDefinition>();
             Knife = Create<WeaponDefinition>();
-            Walker = Create<ZombieDefinition>();
 
             Theme = Create<VisualTheme>();
             Floor = AddSet(VisualKind.Floor, null,
@@ -56,7 +55,6 @@ namespace Purge.Tests.EditMode.Visual
                 Variant("key_red", 1, colorTag: "red"),
                 Variant("key_blue", 1, colorTag: "blue"));
             AddSet(VisualKind.Medkit, null, Variant("medkit_01", 1));
-            AddSet(VisualKind.Zombie, null, Variant("zombie_01", 1), Variant("zombie_02", 1));
 
             Level.VisualTheme = Theme;
         }
@@ -70,7 +68,6 @@ namespace Purge.Tests.EditMode.Visual
         public VisualSet Weapon { get; }
         public WeaponDefinition Pistol { get; }
         public WeaponDefinition Knife { get; }
-        public ZombieDefinition Walker { get; }
 
         /// <summary>Variant with a syntactically valid (fake) Addressables GUID, derived from its id.</summary>
         public static VisualVariant Variant(string id, int weight, VisualCategory category = VisualCategory.General,

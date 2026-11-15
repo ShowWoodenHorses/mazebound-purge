@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -914,4 +928,24 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Geh mit den Bewegungstasten oder dem linken Stick zur Markierung.
+  - "Schie\xDFe mit der linken Maustaste, der Leertaste oder der unteren Controller-Taste."
+  - "Geh zur markierten Waffe und dr\xFCcke E oder die linke Aktionstaste am Controller."
+  - Wechsle mit 1, 2 oder den Schultertasten den Platz.
+  - "Halte die Taste des Platzes mit der aufgehobenen Waffe gedr\xFCckt, um sie fallen
+    zu lassen."
+  - "Dr\xFCcke G oder den linken Trigger zum Zielen und w\xE4hle das Wurfziel. Der
+    Wurf startet die erste Welle."
+  - "Besiege die erste Welle und w\xE4hle eine Verbesserungskarte."
+  - "Warte zwischen den Wellen oder dr\xFCcke \xDCberspringen, um die n\xE4chste
+    zu starten."
+  - Achte auf den Fernkampfoffizier. Verlasse bei der Warnung die Schusslinie. Beende
+    die Welle, um das Ergebnis zu sehen.
+  - Geh zur Markierung
+  - "Ziele mit dem rechten Stick zum Schie\xDFen oder tippe im Einzelstick-Modus
+    auf Angriff."
+  - Geh zur markierten Waffe und tippe auf die Aktionstaste.
+  - Tippe auf den anderen Waffenplatz.
+  - Tippe auf die Granatentaste und dann auf das Ziel. Der Wurf startet die erste
+    Welle.
   _missing: []

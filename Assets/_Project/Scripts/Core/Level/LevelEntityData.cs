@@ -96,26 +96,6 @@ namespace Purge.Core.Level
         public MedkitData(string id, GridPosition position) : base(id, position) { }
     }
 
-    [Serializable]
-    public sealed class ZombieSpawnData : LevelEntityData
-    {
-        public const string IdPrefix = "zombie";
-
-        [SerializeField] private Direction _facing;
-        [SerializeField] private ZombieDefinition _definition;
-
-        public ZombieSpawnData(string id, GridPosition position, ZombieDefinition definition,
-            Direction facing = Direction.North)
-            : base(id, position)
-        {
-            _definition = definition;
-            _facing = facing;
-        }
-
-        public Direction Facing { get => _facing; internal set => _facing = value; }
-        public ZombieDefinition Definition { get => _definition; internal set => _definition = value; }
-    }
-
     /// <summary>What a barrel spills when it blows up (stage 7в).</summary>
     public enum BarrelKind
     {

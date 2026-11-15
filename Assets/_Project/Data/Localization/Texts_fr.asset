@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -914,4 +928,23 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - "Rejoins le rep\xE8re avec les touches de d\xE9placement ou le stick gauche."
+  - Tire avec le clic gauche, Espace ou le bouton du bas de la manette.
+  - "Approche-toi de l'arme indiqu\xE9e et appuie sur E ou sur le bouton de gauche
+    de la manette."
+  - "Change d'emplacement avec 1, 2 ou les boutons sup\xE9rieurs de la manette."
+  - "Maintiens le bouton de l'emplacement de l'arme ramass\xE9e pour la l\xE2cher."
+  - "Appuie sur G ou sur la g\xE2chette gauche, puis vise et lance. Le lancer d\xE9clenche
+    la premi\xE8re vague."
+  - "Repousse la premi\xE8re vague et choisis une carte d'am\xE9lioration."
+  - Entre les vagues, attends ou appuie sur Passer pour lancer la suivante.
+  - "Surveille l'officier \xE0 distance. D\xE8s que l'avertissement appara\xEEt,
+    sors de la ligne de tir. Termine la vague pour voir le r\xE9sultat."
+  - "Rejoins le rep\xE8re"
+  - "Vise avec le stick droit pour tirer ou touche le bouton d'attaque en mode \xE0
+    un stick."
+  - "Approche-toi de l'arme indiqu\xE9e et touche le bouton d'interaction."
+  - Touche l'autre emplacement d'arme.
+  - "Touche le bouton de grenade puis le point \xE0 viser. Le lancer d\xE9clenche
+    la premi\xE8re vague."
   _missing: []

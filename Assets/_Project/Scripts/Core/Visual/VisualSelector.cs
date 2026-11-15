@@ -86,10 +86,6 @@ namespace Purge.Core.Visual
                     kind = VisualKind.Weapon;
                     definition = weapon.Definition;
                     return true;
-                case ZombieSpawnData zombie:
-                    kind = VisualKind.Zombie;
-                    definition = zombie.Definition;
-                    return true;
                 default:
                     kind = default;
                     return false;

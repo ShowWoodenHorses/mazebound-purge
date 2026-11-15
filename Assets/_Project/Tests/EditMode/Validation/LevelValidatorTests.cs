@@ -127,21 +127,17 @@ namespace Purge.Tests.EditMode.Validation
         }
 
         [Test]
-        public void Intersections_AreErrors_ButZombiesMayShareCells()
+        public void Intersections_AreErrors()
         {
             BuildCorridor();
-            Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", new GridPosition(3, 1), _fixture.Walker));
-            Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_2", new GridPosition(3, 1), _fixture.Walker));
             Reassign();
             Assert.IsTrue(Validate().IsValid, Describe(Validate()));
 
             Level.MutableMedkits.Add(new MedkitData("medkit_1", new GridPosition(8, 1)));
             Level.MutableMedkits.Add(new MedkitData("medkit_2", new GridPosition(8, 1)));
-            Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_3", new GridPosition(1, 1), _fixture.Walker));
             Reassign();
             var report = Validate();
             AssertHasError(report, ValidationCodes.Intersection);
-            AssertHasError(report, ValidationCodes.ZombieOnPlayerStart);
         }
 
         [Test]
@@ -216,7 +212,6 @@ namespace Purge.Tests.EditMode.Validation
         public void MissingDefinitions_AreErrors()
         {
             BuildCorridor();
-            Level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", new GridPosition(3, 1), null));
             Level.MutableWeapons.Add(new WeaponPickupData("weapon_1", new GridPosition(4, 1), null));
             Reassign();
             AssertHasError(Validate(), ValidationCodes.MissingDefinition);

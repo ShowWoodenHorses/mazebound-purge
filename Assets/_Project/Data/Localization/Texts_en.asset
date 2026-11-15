@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - English
   - SETTINGS
@@ -929,4 +943,21 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Reach the marker with the movement keys or left stick.
+  - Shoot with the left mouse button, Space or the lower controller button.
+  - Approach the marked weapon and press E or the left face button on the controller.
+  - Switch slots with 1 or 2, or with the controller shoulder buttons.
+  - Hold the button for the slot with the weapon you picked up to drop it.
+  - Press G or the left trigger to aim, then choose where to throw. The throw starts
+    the first wave.
+  - Defeat the first wave and choose an upgrade card.
+  - Between waves, wait or press Skip to start the next wave.
+  - Watch the ranged officer. When you see its attack warning, move out of the line
+    of fire. Finish the wave to see your result.
+  - Reach the marker
+  - Aim with the right stick to fire, or tap the attack button in single-stick mode.
+  - Approach the marked weapon and tap the interaction button.
+  - Tap the other weapon slot.
+  - Tap the grenade button, then tap the spot to throw at. The throw starts the first
+    wave.
   _missing: []

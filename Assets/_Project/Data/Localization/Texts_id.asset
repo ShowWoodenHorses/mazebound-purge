@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -928,4 +942,20 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Capai penanda dengan tombol gerak atau stik kiri.
+  - Tembak dengan klik kiri, Spasi, atau tombol bawah pengontrol.
+  - Dekati senjata yang ditandai, lalu tekan E atau tombol aksi kiri pengontrol.
+  - Ganti slot dengan 1, 2, atau tombol bahu pengontrol.
+  - Tahan tombol slot senjata yang diambil untuk menjatuhkannya.
+  - Tekan G atau pelatuk kiri, lalu pilih titik lempar. Lemparan memulai gelombang
+    pertama.
+  - Kalahkan gelombang pertama dan pilih kartu peningkatan.
+  - Antar gelombang, tunggu atau tekan Lewati untuk memulai gelombang berikutnya.
+  - Awasi perwira penembak. Saat peringatan muncul, keluar dari jalur tembak. Selesaikan
+    gelombang untuk melihat hasilnya.
+  - Capai penanda
+  - Bidik dengan stik kanan atau ketuk tombol serang dalam mode satu stik.
+  - Dekati senjata yang ditandai dan ketuk tombol interaksi.
+  - Ketuk slot senjata lainnya.
+  - Ketuk tombol granat lalu titik sasaran. Lemparan memulai gelombang pertama.
   _missing: []

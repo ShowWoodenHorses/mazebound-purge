@@ -60,11 +60,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 041380d58bee7cb4b9b7eaadee9653f4
-    m_Address: Assets/_Project/Data/Zombies/ForestZombieListener.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0419114ba44aab040b4136a65396d4a2
     m_Address: Assets/_Project/Art/Monster/Common/Boss/ZombieBoss_Common.prefab
     m_ReadOnly: 0
@@ -197,11 +192,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1230f058d284a5e45b30dbc0faf6a013
     m_Address: Assets/_Project/Art/Decor/Materials/PolyVikings_Material_01_Decor.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 129d1e556b1ec62469645bd76a8eebaf
-    m_Address: Assets/_Project/Data/Zombies/ForestZombieHunter.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -705,11 +695,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48eb25521fc4bc1438b2733d9f5e339b
-    m_Address: Assets/_Project/Data/Themes/ForestZombieSet.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4a16c246594e3744e831582bb7bba278
     m_Address: Assets/_Project/Data/Weapons/Magnum.asset
     m_ReadOnly: 0
@@ -865,16 +850,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 569bd0a2dfbcec247963c70c9445e643
-    m_Address: Assets/_Project/Data/Zombies/ForestZombieWalker.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 57b71dca180984d488eb03f23f3bef0b
-    m_Address: Assets/_Project/Data/Themes/PlaceholderZombieSet.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 57fb4f9b141b4a0418f288a6e500075c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Textures/Weapons/PolygonMilitary_Weapons_09.png
     m_ReadOnly: 0
@@ -1007,11 +982,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 64b9eac41c25e444ba0287326c01fb16
     m_Address: Assets/_Project/Data/Monsters/Castle/Skeleton_Castle.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 64ec30b356044824083cab89bfdd3cdc
-    m_Address: Assets/_Project/Data/Zombies/ZombieHunter.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1650,11 +1620,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ac0c610bbc54b95459ad02ba82f4340b
-    m_Address: Assets/_Project/Data/Zombies/ZombieListener.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ac6b0ffd7b6a08f47826717c471cb6c1
     m_Address: Assets/_Project/Data/Effects/Status_Burning.asset
     m_ReadOnly: 0
@@ -1942,11 +1907,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c99c15fde0c393d4cae2e65f40ff8c0a
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Materials/WeaponTextures/PolygonMilitary_Weapon_Mat_Glass_01.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c9e4824799a23154dae897c7fde15723
-    m_Address: Assets/_Project/Data/Zombies/ZombieWalker.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

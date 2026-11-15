@@ -21,7 +21,6 @@ using Purge.Gameplay.Sound;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Waves;
 using Purge.Gameplay.Weapons;
-using Purge.Gameplay.Zombies;
 using Purge.Presentation.Visual;
 using UnityEngine;
 
@@ -60,19 +59,15 @@ namespace Purge.Presentation.Audio
         private readonly WeaponSystem _weapons;
         private readonly BulletSystem _bullets;
         private readonly PickupSystem _pickups;
-        private readonly ZombieSystem _zombies;
-        private readonly ZombieViewPresenter _zombieViews;
         private readonly FrozenDoorsView _frozenDoors;
         private readonly SoundEventBus _sounds;
         private readonly DeterministicRandom _random = new DeterministicRandom(Environment.TickCount);
-        private readonly List<ZombieSound> _zombieSounds = new List<ZombieSound>();
         private readonly List<Vector2> _torches = new List<Vector2>();
 
         private TorchSlot[] _torchSlots = Array.Empty<TorchSlot>();
         private float _torchPick;
         private bool _torchesStarted;
         private int _health0;
-        private float _quietTime = float.PositiveInfinity;
         private bool _subscribed;
         private readonly PlayerThrowing _throwing;
         private readonly EffectSystem _effects;
@@ -93,8 +88,8 @@ namespace Purge.Presentation.Audio
         private float _bodyfallIn = -1f;
 
         public LevelAudioPresenter(AudioService audio, LevelData level, PlayerSystem player, PlayerHealth health,
-            PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups, ZombieSystem zombies,
-            ZombieViewPresenter zombieViews, SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
+            PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups,
+            SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
             EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null, WaveSystem waves = null,
             RunExperience experience = null, PlayerRevival revival = null)
         {
@@ -114,8 +109,6 @@ namespace Purge.Presentation.Audio
             _weapons = weapons;
             _bullets = bullets;
             _pickups = pickups;
-            _zombies = zombies;
-            _zombieViews = zombieViews;
             _sounds = sounds;
         }
 
@@ -126,9 +119,6 @@ namespace Purge.Presentation.Audio
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             _health0 = _health.Current;
-            _zombieSounds.Clear();
-            foreach (var zombie in _zombies.Zombies)
-                AddZombie(zombie);
 
             _torches.Clear();
             foreach (var light in _level.Lights)
@@ -143,10 +133,6 @@ namespace Purge.Presentation.Audio
                 _interaction.Interacted += OnInteracted;
                 _pickups.Removed += OnPickupRemoved;
                 _health.Changed += OnHealthChanged;
-                _zombies.Spawned += AddZombie;
-                _zombies.Attacked += OnZombieAttacked;
-                _zombieViews.HitShown += OnZombieHitShown;
-                _zombieViews.DeathShown += OnZombieDeathShown;
                 _frozenDoors.IceHitShown += OnIceHitShown;
                 _frozenDoors.IceBrokenShown += OnIceBrokenShown;
                 if (_throwing != null)
@@ -173,7 +159,6 @@ namespace Purge.Presentation.Audio
             if (!_subscribed || !_player.IsSpawned)
                 return;
 
-            TickZombies(deltaTime);
             TickTorches(deltaTime);
             TickFire(deltaTime);
             TickHeartbeat(deltaTime);
@@ -192,10 +177,6 @@ namespace Purge.Presentation.Audio
                 _interaction.Interacted -= OnInteracted;
                 _pickups.Removed -= OnPickupRemoved;
                 _health.Changed -= OnHealthChanged;
-                _zombies.Spawned -= AddZombie;
-                _zombies.Attacked -= OnZombieAttacked;
-                _zombieViews.HitShown -= OnZombieHitShown;
-                _zombieViews.DeathShown -= OnZombieDeathShown;
                 _frozenDoors.IceHitShown -= OnIceHitShown;
                 _frozenDoors.IceBrokenShown -= OnIceBrokenShown;
                 if (_throwing != null)
@@ -338,96 +319,6 @@ namespace Purge.Presentation.Audio
         {
             if (end == BulletEnd.Blocked && bullet.Throwable == null)
                 PlayAt(Catalog.BulletImpact, point);
-        }
-
-        // ------------------------------------------------------------------ Zombies
-
-        private void AddZombie(ZombieRuntime zombie)
-        {
-            foreach (var known in _zombieSounds)
-                if (known.Zombie == zombie)
-                    return;
-
-            _zombieSounds.Add(new ZombieSound
-            {
-                Zombie = zombie,
-                Pitch = Catalog != null ? Catalog.ZombiePitch(zombie.Definition.Id) : 1f,
-                LastPosition = zombie.Position,
-                LastState = zombie.State,
-                // The first groans are spread out, not all at the start.
-                GroanIn = Catalog != null ? NextGroan() * (0.3f + 0.7f * (float)_random.NextDouble()) : 0f,
-            });
-        }
-
-        private void TickZombies(float deltaTime)
-        {
-            var catalog = Catalog;
-            var aware = false;
-            var newlyAlert = false;
-            for (var i = 0; i < _zombieSounds.Count; i++)
-            {
-                var sound = _zombieSounds[i];
-                var zombie = sound.Zombie;
-                if (!zombie.IsAlive) continue;
-
-                var state = zombie.State;
-                if (state == ZombieState.Alert || state == ZombieState.Chase || state == ZombieState.Attack) aware = true;
-                if (state == ZombieState.Alert && sound.LastState != ZombieState.Alert)
-                {
-                    PlayAt(catalog.ZombieRoar, zombie.Position, sound.Pitch);
-                    newlyAlert = true;
-                }
-
-                // Steps by the distance walked: shuffling on patrol, running in a chase.
-                var moved = (zombie.Position - sound.LastPosition).magnitude;
-                sound.LastPosition = zombie.Position;
-                if (moved > MaxStepJump) moved = 0f;
-                sound.Walked += moved;
-                var running = state == ZombieState.Chase;
-                var step = running ? catalog.ZombieRunStep : catalog.ZombieWalkStep;
-                if (moved <= 0f) sound.Walked = Mathf.Min(sound.Walked, step * 0.5f); // Stopping: next step comes soon.
-                else if (sound.Walked >= step)
-                {
-                    sound.Walked -= step;
-                    PlayAt(running ? catalog.ZombieStepRun : catalog.ZombieStepWalk, zombie.Position);
-                }
-
-                // Groans now and then while not after the player.
-                if (state == ZombieState.Idle || state == ZombieState.Return)
-                {
-                    sound.GroanIn -= deltaTime;
-                    if (sound.GroanIn <= 0f)
-                    {
-                        sound.GroanIn = NextGroan();
-                        PlayAt(catalog.ZombieGroan, zombie.Position, sound.Pitch);
-                    }
-                }
-
-                sound.LastState = state;
-                _zombieSounds[i] = sound;
-            }
-
-            // One stinger per chase, not per zombie: again only after a quiet while.
-            if (newlyAlert && _quietTime >= catalog.StingerRearm)
-                _audio.Play(catalog.ChaseStinger, SoundChannel.Level);
-            _quietTime = aware ? 0f : _quietTime + deltaTime;
-        }
-
-        private float NextGroan() =>
-            Mathf.Lerp(Catalog.GroanIntervalMin, Catalog.GroanIntervalMax, (float)_random.NextDouble());
-
-        private void OnZombieAttacked(ZombieRuntime zombie) => PlayAt(Catalog.ZombieAttack, zombie.Position, PitchOf(zombie));
-
-        private void OnZombieHitShown(ZombieRuntime zombie) => PlayAt(Catalog.ZombieHurt, zombie.Position, PitchOf(zombie));
-
-        private void OnZombieDeathShown(ZombieRuntime zombie) => PlayAt(Catalog.ZombieDeath, zombie.Position, PitchOf(zombie));
-
-        private float PitchOf(ZombieRuntime zombie)
-        {
-            foreach (var sound in _zombieSounds)
-                if (sound.Zombie == zombie)
-                    return sound.Pitch;
-            return 1f;
         }
 
         // ------------------------------------------------------------------ Torches
@@ -627,16 +518,6 @@ namespace Purge.Presentation.Audio
             }
 
             _audio.Play(cue, SoundChannel.Level, volume, pan, pitch);
-        }
-
-        private struct ZombieSound
-        {
-            public ZombieRuntime Zombie;
-            public float Pitch;
-            public Vector2 LastPosition;
-            public ZombieState LastState;
-            public float Walked;
-            public float GroanIn;
         }
 
         private struct TorchSlot

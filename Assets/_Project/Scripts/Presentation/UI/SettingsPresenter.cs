@@ -59,6 +59,7 @@ namespace Purge.Presentation.UI
             _ui.Settings.EditLayoutClicked += BeginLayoutEdit;
             _ui.Settings.LanguageListRequested += OnLanguageListRequested;
             _ui.Settings.PrivacyPolicyRequested += OnPrivacyPolicyRequested;
+            _ui.Settings.ReplayTutorialRequested += OnReplayTutorialRequested;
             if (_ui.Settings.LanguagePicker != null) _ui.Settings.LanguagePicker.Picked += OnLanguagePicked;
             _texts.LanguageChanged += ShowLanguage;
             if (LayoutEditor != null)
@@ -96,6 +97,7 @@ namespace Purge.Presentation.UI
             _ui.Settings.EditLayoutClicked -= BeginLayoutEdit;
             _ui.Settings.LanguageListRequested -= OnLanguageListRequested;
             _ui.Settings.PrivacyPolicyRequested -= OnPrivacyPolicyRequested;
+            _ui.Settings.ReplayTutorialRequested -= OnReplayTutorialRequested;
             if (_ui.Settings.LanguagePicker != null) _ui.Settings.LanguagePicker.Picked -= OnLanguagePicked;
             if (LayoutEditor != null)
             {
@@ -138,6 +140,8 @@ namespace Purge.Presentation.UI
 
         private void OnVolumesEdited(float music, float sfx) => _settings.PreviewVolumes(music, sfx);
 
+        private void OnReplayTutorialRequested() => _flow.ReplayTutorial().Forget();
+
         private void Open()
         {
             _ui.Settings.SetValues(_settings.Controls);
@@ -147,6 +151,7 @@ namespace Purge.Presentation.UI
             _ui.Settings.SetSupport(_platform?.Traits.SupportEmail); // the site's traits are known only after its start
             _ui.Settings.SetPrivacyPolicy(!string.IsNullOrEmpty(_platform?.Traits.PrivacyPolicyUrl));
             ShowLanguage();
+            _ui.Settings.SetReplayTutorialAvailable(_flow.CanReplayTutorial);
             _ui.Settings.SetVisible(true);
         }
 

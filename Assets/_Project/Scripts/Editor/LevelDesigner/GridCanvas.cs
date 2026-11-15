@@ -460,7 +460,6 @@ namespace Purge.Editor.LevelDesigner
                 case PlayerStartData _: return ("S", new Color(0.2f, 0.85f, 0.3f));
                 case DoorData door: return ("D", PairColor(level, door) ?? Color.white);
                 case KeyData key: return ("K", PairColor(level, key) ?? Color.yellow);
-                case ZombieSpawnData _: return ("Z", new Color(1f, 0.25f, 0.25f));
                 case WeaponPickupData _: return ("W", new Color(1f, 0.6f, 0.15f));
                 case MedkitData _: return ("+", new Color(1f, 0.4f, 0.8f));
                 case BarrelData barrel: return ("B", BarrelColor(barrel.Kind));

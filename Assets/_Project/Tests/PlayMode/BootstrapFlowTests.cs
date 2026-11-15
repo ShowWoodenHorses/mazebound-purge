@@ -63,7 +63,8 @@ namespace Purge.Tests.PlayMode
             _flow = _container.Resolve<GameFlow>();
             _addressables = _container.Resolve<IAddressablesService>();
             _audio = _container.Resolve<AudioService>();
-            await WaitFor(() => _flow.State == GameFlowState.MainMenu || _flow.State == GameFlowState.Error);
+            await WaitFor(() => _flow.State == GameFlowState.MainMenu || _flow.State == GameFlowState.Error || _flow.IsTutorialLevel && _flow.State == GameFlowState.Playing);
+            if (_flow.IsTutorialLevel && _flow.State == GameFlowState.Playing) await _flow.ExitToMenu();
             Assert.AreEqual(GameFlowState.MainMenu, _flow.State, _flow.ErrorMessage);
             var podium = _container.Resolve<MenuPodiumPresenter>();
             await WaitFor(() => !podium.IsLoading); // its assets stay for the application's lifetime
@@ -690,71 +691,7 @@ namespace Purge.Tests.PlayMode
         private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];
 
         [UnityTest]
-        public IEnumerator Zombies_HaveViews_FollowGameplay_AndDisappearWhenKilled() => Async(async () =>
-        {
-            const string itemsLevel = "Level_Items";
-            var catalog = _container.Resolve<ILevelCatalog>();
-            if (catalog.Find(itemsLevel) == null)
-                Assert.Ignore($"Dev level '{itemsLevel}' (with zombies) is not in the catalog.");
-
-            await _flow.StartLevel(itemsLevel, new LevelLaunchOptions(startIndex: 0));
-            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
-            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
-            var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
-            var views = container.Resolve<EntityViewRegistry>();
-            Assert.Greater(zombies.TotalCount, 0, "Level_Items has zombies.");
-
-            foreach (var zombie in zombies.Zombies)
-            {
-                Assert.IsTrue(views.TryGet(zombie.Id, out var view), $"View of '{zombie.Id}'.");
-                Assert.AreEqual(zombie.Cell, view.Cell);
-            }
-
-            // Let the AI run and check views follow.
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5));
-            foreach (var zombie in zombies.Zombies)
-            {
-                views.TryGet(zombie.Id, out var view);
-                var position = view.GameObject.transform.localPosition;
-                Assert.AreEqual(zombie.Position.x, position.x, 1e-3f);
-                Assert.AreEqual(zombie.Position.y, position.z, 1e-3f);
-                Assert.AreEqual(zombie.Cell, view.Cell, "Visibility uses the zombie's current cell.");
-            }
-
-            var footprints = container.Resolve<FootprintsView>().Field;
-            Assert.IsNotNull(footprints, "The theme has footprints (Purge → Dev → Build Footprints).");
-            Assert.AreEqual(2, container.Resolve<VisionZonesView>().ZoneCount, "Walker and Hunter have vision zones, Listener none.");
-
-            // Health bars and numbers (Purge → Dev → Build Damage Numbers).
-            var feedback = container.Resolve<CombatFeedbackView>();
-            var health = container.Resolve<Purge.Gameplay.Player.PlayerHealth>();
-            zombies.Zombies[1].ApplyDamage(5f, Vector2.right);
-            health.Damage(7);
-            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-            health.HealToFull();
-            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-            Assert.AreEqual(1, feedback.ActiveBars, "The damaged zombie shows its bar.");
-            CollectionAssert.AreEquivalent(new[] { "5", "7", "+7" }, feedback.NumberTexts());
-            Assert.Greater(feedback.DrawnQuads, 0, "The player's numbers are always drawn.");
-            await UniTask.Delay(TimeSpan.FromSeconds(container.Resolve<CombatVisualDefinition>().Feedback.NumberLifetime + 0.2f));
-            Assert.AreEqual(0, feedback.ActiveNumbers, "Numbers live briefly.");
-
-            var victim = zombies.Zombies[0];
-            victim.ApplyDamage(10000f, Vector2.right);
-            Assert.AreEqual(1, zombies.KilledCount);
-            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate); // hit reactions are shown in the late tick
-            CollectionAssert.AreEqual(new[] { "999" }, feedback.NumberTexts(), "The killing hit shows its number.");
-            if (views.TryGet(victim.Id, out var corpse) && corpse.GameObject.GetComponentInChildren<Animator>() is { } animator)
-                Assert.IsTrue(animator.GetBool(ZombieAnimatorParameters.Dead), "The corpse plays the death.");
-            await UniTask.Delay(TimeSpan.FromSeconds(ZombieViewPresenter.CorpseTime + 0.5f));
-            Assert.IsFalse(views.TryGet(victim.Id, out _), "Killed zombie's view is removed after the death animation.");
-            Assert.AreEqual(0, feedback.ActiveBars, "The bar goes some seconds after the last hit.");
-
-            await _flow.ExitToMenu();
-        });
-
-        [UnityTest]
-        public IEnumerator Map_Icons_AndCompletionByKillingAll_SavesStars() => Async(async () =>
+        public IEnumerator Map_Icons_AndFog_UpdateOnOpen() => Async(async () =>
         {
             const string itemsLevel = "Level_Items";
             var catalog = _container.Resolve<ILevelCatalog>();
@@ -806,14 +743,6 @@ namespace Purge.Tests.PlayMode
                     icons.Count(icon => (icon.Kind == MapIconKind.Door || icon.Kind == MapIconKind.LockedDoor) && icon.Visible),
                     "Doors in explored cells.");
 
-                var zombies = container.Resolve<Purge.Gameplay.Zombies.ZombieSystem>();
-                Assert.Greater(zombies.TotalCount, 0, "Level_Items has zombies.");
-                var zombieIcons = icons.Where(icon => icon.Kind == MapIconKind.Zombie).ToList();
-                Assert.AreEqual(zombies.TotalCount, zombieIcons.Count);
-                for (var z = 0; z < zombieIcons.Count; z++)
-                    Assert.AreEqual(zombies.Zombies[z].IsAlive && visibility.IsVisible(zombies.Zombies[z].Cell), zombieIcons[z].Visible,
-                        "Monsters are shown in view only.");
-                Assert.AreEqual(MapIconLayout.CenterOf(zombies.Zombies[0].Position), zombieIcons[0].Center);
                 Assert.AreEqual(level.Keys.Count(k => exploration.IsExplored(k.Position)),
                     icons.Count(icon => icon.Kind == MapIconKind.Key && icon.Visible), "Items in explored cells.");
                 Assert.AreEqual(level.Medkits.Count(m => exploration.IsExplored(m.Position)),
@@ -837,16 +766,6 @@ namespace Purge.Tests.PlayMode
 
                 _flow.CloseMap();
                 Assert.AreEqual(LevelRunState.Running, runtime.State);
-
-                // Temporary win rule (until waves): the last zombie killed completes the level.
-                foreach (var zombie in zombies.Zombies.ToList())
-                    if (zombie.IsAlive) zombie.ApplyDamage(100000f, Vector2.left);
-                Assert.AreEqual(GameFlowState.Completed, _flow.State);
-                var result = _flow.LastResult.Value;
-                Assert.IsTrue(result.Completed);
-                Assert.AreEqual(zombies.TotalCount, result.Kills);
-                Assert.IsTrue(_container.Resolve<IProgressService>().IsCompleted(itemsLevel));
-                Assert.IsTrue(ui.Result.IsVisible);
 
                 await _flow.ExitToMenu();
                 Assert.IsNull(presenter.Texture, "Map texture destroyed with the level.");
@@ -947,6 +866,95 @@ namespace Purge.Tests.PlayMode
             await _flow.ExitToMenu();
             Assert.IsFalse(ui.Tutorial.IsVisible);
         });
+
+        [UnityTest]
+        public IEnumerator Tutorial_ReplayFromSettings_CompletesTwoWaves_AndPaysOnlyOnce() => Async(async () =>
+        {
+            var catalog = _container.Resolve<ILevelCatalog>();
+            Assert.IsNotNull(catalog.Tutorial);
+            var save = _container.Resolve<SaveService>();
+            var ui = _container.Resolve<UIRoot>();
+            var savedJson = PlayerPrefs.HasKey(PlayerPrefsSaveStorage.Key)
+                ? PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key)
+                : null;
+
+            try
+            {
+                save.Data.Levels.RemoveAll(record => record.LevelId == catalog.Tutorial.LevelId);
+                var before = save.Data.Money;
+                var replay = ui.Settings.GetComponentsInChildren<Button>(true).Single(b => b.name == "ReplayTutorial");
+
+                for (var attempt = 0; attempt < 2; attempt++)
+                {
+                    ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "SettingsButton").onClick.Invoke();
+                    replay.onClick.Invoke();
+                    await WaitFor(() => _flow.IsTutorialLevel && _flow.State == GameFlowState.Tip);
+                    var scope = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+                    var tutorial = scope.Resolve<Purge.Gameplay.Tutorial.TutorialSystem>();
+                    var waves = scope.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+                    var horde = scope.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+                    var player = scope.Resolve<PlayerSystem>();
+                    var health = scope.Resolve<PlayerHealth>();
+                    health.Damage(int.MaxValue, Vector2.right);
+                    Assert.AreEqual(1, health.Current);
+                    Assert.IsFalse(waves.StartNextWave());
+
+                    _flow.CloseTip();
+                    player.EnterVehicle(new Vector2(15, 7), Vector2.up);
+                    player.ExitVehicle(new Vector2(15, 7));
+                    Assert.IsTrue(scope.Resolve<Purge.Gameplay.Combat.PlayerCombat>().TryAttack(Vector2.up));
+                    var pickup = scope.Resolve<LevelData>().Weapons[0];
+                    Assert.IsTrue(scope.Resolve<PickupSystem>().TryTakeWeapon(pickup.Position));
+                    var weapons = scope.Resolve<Purge.Gameplay.Weapons.WeaponSystem>();
+                    var pickupSlot = weapons.ActiveSlot;
+                    Assert.IsTrue(weapons.Activate(pickupSlot == WeaponSlot.First ? WeaponSlot.Second : WeaponSlot.First));
+                    Assert.IsNotNull(weapons.Drop(pickupSlot));
+                    Assert.IsTrue(scope.Resolve<Purge.Gameplay.Throwing.PlayerThrowing>().TryThrow(new Vector2(15, 13)));
+
+                    await WaitFor(() => _flow.State == GameFlowState.Tip);
+                    _flow.CloseTip();
+                    await WaitFor(() => waves.Phase == Purge.Gameplay.Waves.WavePhase.Running && waves.PendingCount == 0);
+                    DefeatAgents(horde);
+                    await WaitFor(() => _flow.State == GameFlowState.Cards || _flow.State == GameFlowState.Tip);
+                    if (_flow.State == GameFlowState.Tip) _flow.CloseTip();
+                    await WaitFor(() => _flow.State == GameFlowState.Cards);
+                    var cards = scope.Resolve<Purge.Gameplay.Run.CardSystem>();
+                    Assert.IsTrue(cards.HasOffer);
+                    cards.Choose(0);
+                    _flow.CloseCards();
+
+                    await WaitFor(() => _flow.State == GameFlowState.Tip || waves.PauseElapsed > 1f);
+                    if (_flow.State == GameFlowState.Tip) _flow.CloseTip();
+                    Assert.IsTrue(waves.Skip());
+                    await WaitFor(() => waves.RemainingCount > 0 && waves.PendingCount == 0);
+                    if (_flow.State == GameFlowState.Tip) _flow.CloseTip();
+                    DefeatAgents(horde);
+                    await WaitFor(() => _flow.State == GameFlowState.Completed || _flow.State == GameFlowState.Tip);
+                    if (_flow.State == GameFlowState.Tip) _flow.CloseTip();
+                    await WaitFor(() => _flow.State == GameFlowState.Completed);
+
+                    Assert.IsTrue(tutorial.IsFinished);
+                    var price = _container.Resolve<SharedDefinitionsService>().Content.Find<WeaponDefinition>("desert").PurchasePrice;
+                    Assert.AreEqual(attempt == 0 ? price : 0, _flow.LastResult.Value.Money);
+                    Assert.AreEqual(before + price, save.Data.Money);
+                    Assert.IsFalse(_flow.CanDoubleReward);
+                    await _flow.ExitToMenu();
+                }
+            }
+            finally
+            {
+                if (savedJson != null) PlayerPrefs.SetString(PlayerPrefsSaveStorage.Key, savedJson);
+                else PlayerPrefs.DeleteKey(PlayerPrefsSaveStorage.Key);
+                PlayerPrefs.Save();
+                save.Load();
+            }
+        });
+
+        private static void DefeatAgents(Purge.Gameplay.Horde.HordeSystem horde)
+        {
+            for (var agent = 0; agent < horde.HighWater; agent++)
+                if (Purge.Gameplay.Horde.HordeSystem.IsAlive(horde.States[agent])) horde.Damage(agent, 100000f);
+        }
 
         private string FirstLevelId()
         {

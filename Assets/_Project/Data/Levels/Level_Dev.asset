@@ -56,21 +56,6 @@ MonoBehaviour:
       _x: 1
       _y: 15
       _floor: 0
-  _zombieSpawns:
-  - _id: zombie_1
-    _position:
-      _x: 5
-      _y: 11
-      _floor: 0
-    _facing: 2
-    _definition: {fileID: 11400000, guid: 64ec30b356044824083cab89bfdd3cdc, type: 2}
-  - _id: zombie_2
-    _position:
-      _x: 9
-      _y: 5
-      _floor: 0
-    _facing: 2
-    _definition: {fileID: 11400000, guid: ac0c610bbc54b95459ad02ba82f4340b, type: 2}
   _weapons:
   - _id: weapon_1
     _position:

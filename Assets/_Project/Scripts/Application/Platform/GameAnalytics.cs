@@ -14,7 +14,6 @@ using Purge.Gameplay.Waves;
 using Purge.Gameplay.Tutorial;
 using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Player;
-using Purge.Gameplay.Zombies;
 using UnityEngine;
 
 namespace Purge.Application.Platform
@@ -56,7 +55,6 @@ namespace Purge.Application.Platform
         private readonly GameFlow _flow;
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
-        private readonly ZombieSystem _zombies;
         private readonly TutorialSystem _tutorial;
         private readonly string _levelId;
         private readonly ChestSystem _chests;
@@ -69,7 +67,7 @@ namespace Purge.Application.Platform
         private bool _subscribed;
 
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
-            PickupSystem pickups, ZombieSystem zombies, Purge.Core.Level.LevelData level,
+            PickupSystem pickups, Purge.Core.Level.LevelData level,
             TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null,
             VehicleSystem vehicles = null, GameFlow flow = null)
         {
@@ -84,7 +82,6 @@ namespace Purge.Application.Platform
             _progress = progress;
             _player = player;
             _pickups = pickups;
-            _zombies = zombies;
             _levelId = level.name;
         }
 
@@ -94,7 +91,6 @@ namespace Purge.Application.Platform
         {
             if (_subscribed) return UniTask.CompletedTask;
             _pickups.Removed += OnPickupRemoved;
-            _zombies.Attacked += OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted += OnTutorialStep;
             if (_chests != null)
             {
@@ -140,7 +136,6 @@ namespace Purge.Application.Platform
         {
             if (!_subscribed) return;
             _pickups.Removed -= OnPickupRemoved;
-            _zombies.Attacked -= OnAttacked;
             if (_tutorial != null) _tutorial.StepStarted -= OnTutorialStep;
             if (_chests != null)
             {
@@ -275,8 +270,6 @@ namespace Purge.Application.Platform
             if (_flow?.IsTestRun != true) _analytics.Send(eventName);
         }
 
-        private void OnAttacked(ZombieRuntime zombie) =>
-            _stats.LastAttacker = zombie.Definition != null ? zombie.Definition.name : "zombie";
     }
 
     /// <summary>

@@ -1,7 +1,6 @@
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Run;
 using Purge.Gameplay.Waves;
-using Purge.Gameplay.Zombies;
 
 namespace Purge.Gameplay.Level
 {
@@ -56,23 +55,21 @@ namespace Purge.Gameplay.Level
     /// </summary>
     public sealed class LevelProgress : ILevelTickable
     {
-        private readonly ZombieSystem _zombies;
         private readonly RunScore _score;
         private readonly RunWallet _wallet;
         private readonly WaveSystem _waves;
         private readonly PlayerRevival _revival;
 
-        public LevelProgress(ZombieSystem zombies = null, RunScore score = null, RunWallet wallet = null, WaveSystem waves = null,
+        public LevelProgress(RunScore score = null, RunWallet wallet = null, WaveSystem waves = null,
             PlayerRevival revival = null)
         {
-            _zombies = zombies;
             _score = score;
             _wallet = wallet;
             _waves = waves;
             _revival = revival;
         }
 
-        public int Kills => (_zombies?.KilledCount ?? 0) + (_score?.Kills ?? 0);
+        public int Kills => _score?.Kills ?? 0;
 
         /// <summary>Seconds played so far.</summary>
         public float Elapsed { get; private set; }

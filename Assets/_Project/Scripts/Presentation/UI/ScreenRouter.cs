@@ -215,7 +215,7 @@ namespace Purge.Presentation.UI
             {
                 var completed = state == GameFlowState.Completed;
                 if (completed && _flow.IsTutorialLevel)
-                    _ui.Result.SetTutorialComplete(NextLevelId() != null);
+                    _ui.Result.SetTutorialComplete(_flow.LastResult);
                 else
                     _ui.Result.SetResult(completed, _flow.LastResult, LevelCaption(_flow.CurrentLevelId),
                         completed && NextLevelId() != null, _flow.CanDoubleReward);

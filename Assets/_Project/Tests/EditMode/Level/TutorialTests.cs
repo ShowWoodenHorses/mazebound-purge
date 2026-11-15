@@ -15,7 +15,6 @@ using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Tutorial;
 using Purge.Gameplay.Weapons;
-using Purge.Gameplay.Zombies;
 using Purge.Tests.EditMode.Player;
 using NUnit.Framework;
 using UnityEngine;
@@ -31,13 +30,11 @@ namespace Purge.Tests.EditMode.Level
         private LevelData _level;
         private TutorialScript _script;
         private PlayerDefinition _definition;
-        private ZombieDefinition _zombieDefinition;
         private FakePlayerInput _input;
         private DoorSystem _doors;
         private PlayerSystem _player;
         private PlayerHealth _health;
         private PickupSystem _pickups;
-        private ZombieSystem _zombies;
         private TutorialSystem _tutorial;
         private readonly List<int> _started = new List<int>();
         private int _finished;
@@ -56,8 +53,6 @@ namespace Purge.Tests.EditMode.Level
             _level.MutableDoors.Add(new DoorData("door_1", new GridPosition(5, 1), keyId: "key_1"));
             _level.MutableKeys.Add(new KeyData("key_1", new GridPosition(3, 1)));
             _level.MutableMedkits.Add(new MedkitData("medkit_1", new GridPosition(2, 1)));
-            _zombieDefinition = ScriptableObject.CreateInstance<ZombieDefinition>();
-            _level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", new GridPosition(9, 1), _zombieDefinition, Direction.West));
 
             if (steps.Length > 0)
             {
@@ -80,9 +75,7 @@ namespace Purge.Tests.EditMode.Level
             _player = new PlayerSystem(_level, _definition, _input, passability, occupancy,
                 new LevelLaunchOptions(startIndex: 0), Aim.FreeNoAssist);
             _pickups = new PickupSystem(_level, _player, health, inventory, weapons, sounds);
-            _zombies = new ZombieSystem(_level, new NavigationSystem(grid, passability, _doors), _player, health, occupancy,
-                new SpatialQueryService(grid, _doors), sounds);
-            _tutorial = new TutorialSystem(_level, _player, _pickups, _doors, _zombies);
+            _tutorial = new TutorialSystem(_level, _player, _pickups, _doors);
             _tutorial.StepStarted += _started.Add;
             _tutorial.Finished += () => _finished++;
             _started.Clear();
@@ -90,7 +83,6 @@ namespace Purge.Tests.EditMode.Level
 
             _pickups.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _player.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
-            _zombies.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _tutorial.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
@@ -98,9 +90,8 @@ namespace Purge.Tests.EditMode.Level
         public void TearDown()
         {
             _tutorial?.Dispose();
-            _zombies?.Dispose();
             _pickups?.Dispose();
-            foreach (var o in new Object[] { _level, _script, _definition, _zombieDefinition })
+            foreach (var o in new Object[] { _level, _script, _definition })
                 if (o != null) Object.DestroyImmediate(o);
             _script = null;
         }
@@ -123,8 +114,7 @@ namespace Purge.Tests.EditMode.Level
             Build(new TutorialStep("tutorial.move", TutorialGoal.Reach, cell: new Vector2Int(2, 1)),
                 new TutorialStep("tutorial.key", TutorialGoal.Collect, "key_1"),
                 new TutorialStep("tutorial.unlock", TutorialGoal.UnlockDoor, "door_1"),
-                new TutorialStep("tutorial.map", TutorialGoal.OpenMap),
-                new TutorialStep("tutorial.zombie", TutorialGoal.Kill, "zombie_1"));
+                new TutorialStep("tutorial.map", TutorialGoal.OpenMap));
 
             Assert.IsTrue(_tutorial.IsActive);
             CollectionAssert.AreEqual(new[] { 0 }, _started);
@@ -144,10 +134,9 @@ namespace Purge.Tests.EditMode.Level
             _tutorial.ReportMapOpened();
             Assert.AreEqual(4, _tutorial.StepIndex);
 
-            _zombies.Zombies[0].ApplyDamage(10000f, Vector2.left);
             Assert.IsTrue(_tutorial.IsFinished);
             Assert.AreEqual(1, _finished);
-            CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, _started);
+            CollectionAssert.AreEqual(new[] { 0, 1, 2, 3 }, _started);
         }
 
         [Test]
@@ -191,7 +180,7 @@ namespace Purge.Tests.EditMode.Level
         public void Validator_ChecksTargetsAndTexts()
         {
             Build(new TutorialStep("tutorial.key", TutorialGoal.Collect, "key_1"),
-                new TutorialStep("", TutorialGoal.Kill, "door_1"),
+                new TutorialStep("", TutorialGoal.Collect, "door_1"),
                 new TutorialStep("tutorial.move", TutorialGoal.Reach, "nothing_1"),
                 new TutorialStep("tutorial.move", TutorialGoal.Reach, cell: new Vector2Int(0, 0)));
 

@@ -8,7 +8,6 @@ using Purge.Core.Visual;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Visibility;
-using Purge.Gameplay.Zombies;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -32,12 +31,10 @@ namespace Purge.Presentation.Visual
 
         private readonly LevelData _level;
         private readonly PlayerSystem _player;
-        private readonly ZombieSystem _zombies;
         private readonly VisibilitySystem _visibility;
         private readonly FogOfWarView _fog;
         private readonly LevelViewRoot _root;
 
-        private readonly List<int> _zombieWalkers = new List<int>();
         private readonly List<Vector2> _lastPositions = new List<Vector2>();
         private readonly List<Vector3> _vertices = new List<Vector3>();
         private readonly List<Vector2> _uvs = new List<Vector2>();
@@ -51,12 +48,11 @@ namespace Purge.Presentation.Visual
         private ParticleSystem _dust;
         private bool _meshEmpty = true;
 
-        public FootprintsView(LevelData level, PlayerSystem player, ZombieSystem zombies, VisibilitySystem visibility,
+        public FootprintsView(LevelData level, PlayerSystem player, VisibilitySystem visibility,
             FogOfWarView fog, LevelViewRoot root)
         {
             _level = level;
             _player = player;
-            _zombies = zombies;
             _visibility = visibility;
             _fog = fog;
             _root = root;
@@ -96,16 +92,6 @@ namespace Purge.Presentation.Visual
                 Walk(_playerWalker, _player.Position, deltaTime);
             }
 
-            var zombies = _zombies.Zombies;
-            for (var i = 0; i < zombies.Count; i++)
-            {
-                var zombie = zombies[i];
-                if (i == _zombieWalkers.Count)
-                    _zombieWalkers.Add(AddWalker(_settings.Zombie, zombie.Position));
-                if (zombie.IsAlive)
-                    Walk(_zombieWalkers[i], zombie.Position, deltaTime);
-            }
-
             _field.Update(deltaTime);
             if (_mesh != null)
                 RebuildMesh();
@@ -127,7 +113,6 @@ namespace Purge.Presentation.Visual
             _dust = null;
             _field?.Clear();
             _field = null;
-            _zombieWalkers.Clear();
             _lastPositions.Clear();
             _playerWalker = -1;
         }

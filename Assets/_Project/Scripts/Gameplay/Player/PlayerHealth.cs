@@ -18,10 +18,12 @@ namespace Purge.Gameplay.Player
     public sealed class PlayerHealth
     {
         private readonly Level.LevelLaunchOptions _options;
+        private readonly int _minimumHealth;
 
-        public PlayerHealth(PlayerDefinition definition, Level.LevelLaunchOptions options = null)
+        public PlayerHealth(PlayerDefinition definition, Level.LevelLaunchOptions options = null, Purge.Core.Level.LevelData level = null)
         {
             _options = options;
+            _minimumHealth = level != null && level.Tutorial != null ? 1 : 0;
             Max = definition.MaxHealth;
             Current = Max;
         }
@@ -85,7 +87,7 @@ namespace Purge.Gameplay.Player
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
             if (Invulnerable || amount > 0 && Shield != null && Shield.Absorb(amount)) return;
-            Set(Math.Max(0, Current - ThroughBarrier(amount)));
+            Set(Math.Max(_minimumHealth, Current - ThroughBarrier(amount)));
         }
 
         /// <summary>Damage of a blow from <paramref name="source"/> (grid units): <see cref="Hurt"/> shows where it came from.</summary>
@@ -93,7 +95,7 @@ namespace Purge.Gameplay.Player
         {
             if (amount <= 0 || IsDead || Invulnerable) return;
             if (Shield != null && Shield.Absorb(amount)) return;
-            Set(Math.Max(0, Current - ThroughBarrier(amount)));
+            Set(Math.Max(_minimumHealth, Current - ThroughBarrier(amount)));
             Hurt?.Invoke(amount, source);
         }
 

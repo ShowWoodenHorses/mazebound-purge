@@ -86,6 +86,7 @@ namespace Purge.Presentation.UI
         [Tooltip("Privacy policy row with an Open button (only where the platform has one, PlatformTraits.PrivacyPolicyUrl).")]
         [SerializeField] private GameObject _privacyRow;
         [SerializeField] private Button _privacyButton;
+        [SerializeField] private Button _replayTutorialButton;
         [SerializeField] private Button _resetButton;
         [SerializeField] private Button _backButton;
 
@@ -110,6 +111,12 @@ namespace Purge.Presentation.UI
 
         /// <summary>The privacy policy's Open button.</summary>
         public event Action PrivacyPolicyRequested;
+        public event Action ReplayTutorialRequested;
+
+        public void SetReplayTutorialAvailable(bool available)
+        {
+            if (_replayTutorialButton != null) _replayTutorialButton.gameObject.SetActive(available);
+        }
 
         public LanguagePicker LanguagePicker => _languagePicker;
         public event Action BackClicked;
@@ -165,6 +172,7 @@ namespace Purge.Presentation.UI
             Bind(_backButton, () => BackClicked?.Invoke());
             Bind(_languageButton, () => LanguageListRequested?.Invoke());
             Bind(_privacyButton, () => PrivacyPolicyRequested?.Invoke());
+            Bind(_replayTutorialButton, () => ReplayTutorialRequested?.Invoke());
             for (var i = 0; i < _tabButtons.Length; i++)
             {
                 var tab = (SettingsTab)i;

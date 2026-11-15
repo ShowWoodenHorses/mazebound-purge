@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -918,4 +932,25 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - "Hareket tu\u015Flar\u0131 veya sol \xE7ubukla i\u015Farete ula\u015F."
+  - "Sol fare tu\u015Fu, Bo\u015Fluk veya kumandan\u0131n alt tu\u015Fuyla ate\u015F
+    et."
+  - "\u0130\u015Faretli silaha yakla\u015F ve E'ye ya da kumandan\u0131n sol y\xFCz
+    tu\u015Funa bas."
+  - "1, 2 veya kumandan\u0131n omuz tu\u015Flar\u0131yla di\u011Fer yuvaya ge\xE7."
+  - "Ald\u0131\u011F\u0131n silah\u0131 b\u0131rakmak i\xE7in bulundu\u011Fu yuvan\u0131n
+    tu\u015Funu bas\u0131l\u0131 tut."
+  - "Ni\u015Fan almak i\xE7in G'ye veya sol teti\u011Fe bas, sonra hedef se\xE7.
+    At\u0131\u015Fla ilk dalga ba\u015Flar."
+  - "\u0130lk dalgay\u0131 yen ve bir geli\u015Ftirme kart\u0131 se\xE7."
+  - "Dalgalar aras\u0131nda bekle veya sonrakini ba\u015Flatmak i\xE7in Atla'ya bas."
+  - "Menzilli subay\u0131 izle. Sald\u0131r\u0131 uyar\u0131s\u0131n\u0131 g\xF6r\xFCnce
+    ate\u015F hatt\u0131ndan \xE7\u0131k. Sonucu g\xF6rmek i\xE7in dalgay\u0131 bitir."
+  - "\u0130\u015Farete ula\u015F"
+  - "Ate\u015F etmek i\xE7in sa\u011F \xE7ubu\u011Fu hareket ettir veya tek \xE7ubuk
+    modunda sald\u0131r\u0131 tu\u015Funa dokun."
+  - "\u0130\u015Faretli silaha yakla\u015F ve etkile\u015Fim tu\u015Funa dokun."
+  - "Di\u011Fer silah yuvas\u0131na dokun."
+  - "El bombas\u0131 tu\u015Funa, sonra hedefe dokun. At\u0131\u015Fla ilk dalga
+    ba\u015Flar."
   _missing: []

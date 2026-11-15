@@ -87,7 +87,6 @@ namespace Purge.Composition
                 var checkpoints = scope.Container.Resolve<RunCheckpoints>();
                 // Rules subscribe on creation and are disposed with the scope (the death rule — on the revival's death).
                 scope.Container.Resolve<PlayerDeathRule>();
-                scope.Container.Resolve<AllKilledRule>();
                 scope.Container.Resolve<WavesClearedRule>();
                 GameLog.Info(LogChannel.LevelLoading, $"LevelScope for '{level.name}' created.");
                 return new LevelSession(scope, scene, levelAssets, runtime, progress, checkpoints);

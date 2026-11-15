@@ -31,10 +31,6 @@ namespace Purge.Editor.LevelDesigner
             EditorGUILayout.Space();
             switch (tools.Tool)
             {
-                case EditTool.Zombie:
-                    tools.ZombieDefinition = (ZombieDefinition)EditorGUILayout.ObjectField("Definition", tools.ZombieDefinition, typeof(ZombieDefinition), false);
-                    tools.ZombieFacing = (Direction)EditorGUILayout.EnumPopup("Facing", tools.ZombieFacing);
-                    break;
                 case EditTool.Weapon:
                     tools.WeaponDefinition = (WeaponDefinition)EditorGUILayout.ObjectField("Definition", tools.WeaponDefinition, typeof(WeaponDefinition), false);
                     break;

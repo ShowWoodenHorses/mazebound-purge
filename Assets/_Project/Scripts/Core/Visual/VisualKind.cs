@@ -9,7 +9,6 @@ namespace Purge.Core.Visual
         Key = 4,
         Medkit = 5,
         Weapon = 6,
-        Zombie = 7,
 
         /// <summary>Purely visual props on floor cells (cell layer <see cref="CellLayer.Decor"/>).</summary>
         Decor = 9,

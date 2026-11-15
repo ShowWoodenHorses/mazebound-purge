@@ -71,13 +71,13 @@ namespace Purge.Tests.EditMode.Content
             var catalog = ScriptableObject.CreateInstance<ContentCatalog>();
             _created.Add(catalog);
             var weapon = Create<WeaponDefinition>("bat");
-            var zombie = Create<ZombieDefinition>("zombie_walker");
+            var zombie = Create<ThrowableDefinition>("zombie_walker");
             catalog.MutableItems.Add(weapon);
             catalog.MutableItems.Add(zombie);
 
             Assert.AreSame(weapon, catalog.Find("bat"));
             Assert.AreSame(weapon, catalog.Find<WeaponDefinition>("bat"));
-            Assert.IsNull(catalog.Find<ZombieDefinition>("bat"), "Wrong type.");
+            Assert.IsNull(catalog.Find<ThrowableDefinition>("bat"), "Wrong type.");
             Assert.IsNull(catalog.Find("removed_long_ago"), "An id a save keeps after the content is gone.");
             var weapons = new List<WeaponDefinition>();
             catalog.GetAll(weapons);

@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -912,4 +926,22 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Raggiungi l'indicatore con i tasti di movimento o lo stick sinistro.
+  - Spara con il tasto sinistro del mouse, Spazio o il tasto inferiore del controller.
+  - Avvicinati all'arma indicata e premi E o il tasto frontale sinistro del controller.
+  - Cambia slot con 1, 2 o i tasti dorsali del controller.
+  - Tieni premuto il tasto dello slot dell'arma raccolta per lasciarla cadere.
+  - Premi G o il grilletto sinistro, poi scegli dove lanciare. Il lancio avvia la
+    prima ondata.
+  - Sconfiggi la prima ondata e scegli una carta potenziamento.
+  - Tra le ondate, attendi o premi Salta per iniziare la successiva.
+  - Osserva l'ufficiale a distanza. Quando appare l'avviso, esci dalla linea di tiro.
+    Completa l'ondata per vedere il risultato.
+  - Raggiungi l'indicatore
+  - "Mira con lo stick destro o tocca il pulsante di attacco nella modalit\xE0 a
+    uno stick."
+  - Avvicinati all'arma indicata e tocca il pulsante di interazione.
+  - Tocca l'altro slot dell'arma.
+  - Tocca il pulsante della granata e poi il bersaglio. Il lancio avvia la prima
+    ondata.
   _missing: []

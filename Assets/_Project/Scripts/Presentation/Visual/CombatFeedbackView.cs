@@ -7,7 +7,6 @@ using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
-using Purge.Gameplay.Zombies;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -29,12 +28,10 @@ namespace Purge.Presentation.Visual
     /// </summary>
     public sealed class CombatFeedbackView : ILevelLoadStep, ILevelLateTickable, IViewWarmup, IDisposable
     {
-        public const int MaxBars = 16;
         public const int MaxNumbers = 24;
 
         private const int MaxChars = 4; // "+100"
-        private const int QuadsPerBar = 4; // border, background, lost part, fill
-        private const int MaxQuads = MaxBars * QuadsPerBar + MaxNumbers * MaxChars;
+        private const int MaxQuads = MaxNumbers * MaxChars;
         private const float Height = 2f; // about the head: follows it on screen with the perspective
         private const float SpreadWindow = 0.35f; // share of the lifetime: a newer number at the same target is spread
 
@@ -49,14 +46,11 @@ namespace Purge.Presentation.Visual
 
         private readonly LevelData _level;
         private readonly CombatVisualDefinition _combatVisual;
-        private readonly ZombieViewPresenter _zombieViews;
         private readonly PlayerSystem _player;
         private readonly PlayerHealth _health;
-        private readonly EntityViewRegistry _views;
         private readonly LevelViewRoot _root;
         private readonly CombatTargets _targets;
 
-        private readonly Bar[] _bars = new Bar[MaxBars];
         private readonly Number[] _numbers = new Number[MaxNumbers];
         private readonly NumberGlyph[] _glyphs = new NumberGlyph[128];
         private readonly bool[] _hasGlyph = new bool[128];
@@ -69,37 +63,23 @@ namespace Purge.Presentation.Visual
         private CombatFeedback _settings;
         private Mesh _mesh;
         private MeshRenderer _renderer;
-        private Color32 _barBorder, _barBackground, _barFill, _barTrail, _zombieDamage, _playerDamage, _heal, _critical;
+        private Color32 _playerDamage, _heal, _critical;
         private int _lastHealth;
         private int _quads;
         private bool _subscribed;
 
-        public CombatFeedbackView(LevelData level, CombatVisualDefinition combatVisual, ZombieViewPresenter zombieViews,
-            PlayerSystem player, PlayerHealth health, EntityViewRegistry views, LevelViewRoot root, CombatTargets targets = null)
+        public CombatFeedbackView(LevelData level, CombatVisualDefinition combatVisual,
+            PlayerSystem player, PlayerHealth health, LevelViewRoot root, CombatTargets targets = null)
         {
             _targets = targets;
             _level = level;
             _combatVisual = combatVisual;
-            _zombieViews = zombieViews;
             _player = player;
             _health = health;
-            _views = views;
             _root = root;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
-
-        /// <summary>Bars shown now (tests).</summary>
-        public int ActiveBars
-        {
-            get
-            {
-                var count = 0;
-                foreach (var bar in _bars)
-                    if (bar.Zombie != null) count++;
-                return count;
-            }
-        }
 
         /// <summary>Numbers alive now (tests).</summary>
         public int ActiveNumbers
@@ -139,11 +119,6 @@ namespace Purge.Presentation.Visual
                 _hasGlyph[glyph.Character] = true;
             }
 
-            _barBorder = ToVertex(_settings.BarBorderColor);
-            _barBackground = ToVertex(_settings.BarBackgroundColor);
-            _barFill = ToVertex(_settings.BarFillColor);
-            _barTrail = ToVertex(_settings.BarTrailColor);
-            _zombieDamage = ToVertex(_settings.ZombieDamageColor);
             _playerDamage = ToVertex(_settings.PlayerDamageColor);
             _heal = ToVertex(_settings.HealColor);
             _critical = ToVertex(_settings.CriticalColor);
@@ -165,7 +140,6 @@ namespace Purge.Presentation.Visual
 
             if (!_subscribed)
             {
-                _zombieViews.DamageShown += OnZombieDamageShown;
                 _health.Changed += OnHealthChanged;
                 if (_targets != null) _targets.CriticalHit += OnCriticalHit;
                 _subscribed = true;
@@ -179,7 +153,6 @@ namespace Purge.Presentation.Visual
             if (_renderer == null) return;
 
             _quads = 0;
-            UpdateBars(deltaTime);
             UpdateNumbers(deltaTime);
 
             if (_quads == 0)
@@ -209,7 +182,6 @@ namespace Purge.Presentation.Visual
         {
             if (_subscribed)
             {
-                _zombieViews.DamageShown -= OnZombieDamageShown;
                 _health.Changed -= OnHealthChanged;
                 if (_targets != null) _targets.CriticalHit -= OnCriticalHit;
                 _subscribed = false;
@@ -219,43 +191,11 @@ namespace Purge.Presentation.Visual
             UnityObjects.Destroy(_mesh);
             _renderer = null;
             _mesh = null;
-            Array.Clear(_bars, 0, _bars.Length);
             Array.Clear(_numbers, 0, _numbers.Length);
         }
 
         // ---- Events ----
 
-        private void OnZombieDamageShown(ZombieRuntime zombie, float damage, float healthAfter)
-        {
-            if (_renderer == null) return;
-
-            _views.TryGet(zombie.Id, out var view);
-            AddNumber(zombie.Position, Mathf.Max(1, Mathf.RoundToInt(damage)), heal: false, _zombieDamage, view);
-
-            var index = FindBar(zombie);
-            if (healthAfter <= 0f)
-            {
-                if (index >= 0) _bars[index] = default;
-                return;
-            }
-
-            var max = Mathf.Max(zombie.Definition.MaxHp, 1f);
-            var fraction = Mathf.Clamp01(healthAfter / max);
-            if (index < 0)
-            {
-                index = FreeBar();
-                _bars[index] = new Bar { Zombie = zombie, View = view, Shown = Mathf.Clamp01((healthAfter + damage) / max) };
-            }
-
-            ref var bar = ref _bars[index];
-            if (bar.Trail < bar.Shown) bar.Trail = bar.Shown; // the lost part starts where the bar was
-            bar.Shown = fraction;
-            bar.TrailWait = _settings.BarTrailDelay;
-            bar.Left = _settings.BarShowTime;
-            bar.View = view;
-        }
-
-        /// <summary>A critical hit of the player (the run's cards): a bigger number in its own colour.</summary>
         private void OnCriticalHit(CombatTarget target, Vector2 at, float damage)
         {
             if (_renderer == null) return;
@@ -270,72 +210,6 @@ namespace Purge.Presentation.Visual
 
             if (delta < 0) AddNumber(_player.Position, -delta, heal: false, _playerDamage, null);
             else AddNumber(_player.Position, delta, heal: true, _heal, null);
-        }
-
-        // ---- Bars ----
-
-        private int FindBar(ZombieRuntime zombie)
-        {
-            for (var i = 0; i < _bars.Length; i++)
-                if (ReferenceEquals(_bars[i].Zombie, zombie))
-                    return i;
-            return -1;
-        }
-
-        /// <summary>A free slot, or the one closest to disappearing.</summary>
-        private int FreeBar()
-        {
-            var best = 0;
-            for (var i = 0; i < _bars.Length; i++)
-            {
-                if (_bars[i].Zombie == null) return i;
-                if (_bars[i].Left < _bars[best].Left) best = i;
-            }
-            return best;
-        }
-
-        private void UpdateBars(float deltaTime)
-        {
-            var trailSpeed = 1f / Mathf.Max(_settings.BarTrailTime, 0.01f);
-            for (var i = 0; i < _bars.Length; i++)
-            {
-                ref var bar = ref _bars[i];
-                if (bar.Zombie == null) continue;
-
-                bar.Left -= deltaTime;
-                if (bar.Left <= 0f)
-                {
-                    bar = default;
-                    continue;
-                }
-
-                if (bar.TrailWait > 0f) bar.TrailWait -= deltaTime;
-                else bar.Trail = Mathf.MoveTowards(bar.Trail, bar.Shown, trailSpeed * deltaTime);
-
-                if (bar.View == null || !bar.View.IsVisible) continue;
-
-                var alpha = Mathf.Clamp01(bar.Left / Mathf.Max(_settings.BarFadeTime, 0.01f));
-                DrawBar(bar.Zombie.Position, bar.Shown, bar.Trail, alpha);
-            }
-        }
-
-        private void DrawBar(Vector2 position, float shown, float trail, float alpha)
-        {
-            var width = _settings.BarWidth;
-            var height = _settings.BarHeight;
-            var border = _settings.BarBorder;
-            var center = position + new Vector2(0f, _settings.BarOffset);
-            var min = center - new Vector2(width, height) * 0.5f;
-            var max = min + new Vector2(width, height);
-
-            if (border > 0f)
-                AddQuad(min - Vector2.one * border, max + Vector2.one * border, default, true, Fade(_barBorder, alpha));
-            AddQuad(min, max, default, true, Fade(_barBackground, alpha));
-            if (trail > shown)
-                AddQuad(new Vector2(min.x + width * shown, min.y), new Vector2(min.x + width * trail, max.y), default, true,
-                    Fade(_barTrail, alpha));
-            if (shown > 0f)
-                AddQuad(min, new Vector2(min.x + width * shown, max.y), default, true, Fade(_barFill, alpha));
         }
 
         // ---- Numbers ----
@@ -539,16 +413,6 @@ namespace Purge.Presentation.Visual
         }
 
         private static float EaseOut(float t) => 1f - (1f - t) * (1f - t);
-
-        private struct Bar
-        {
-            public ZombieRuntime Zombie; // null = free
-            public EntityView View;
-            public float Shown;
-            public float Trail;
-            public float TrailWait;
-            public float Left;
-        }
 
         private struct Number
         {

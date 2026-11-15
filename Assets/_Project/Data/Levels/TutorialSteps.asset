@@ -13,63 +13,57 @@ MonoBehaviour:
   m_Name: TutorialSteps
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Level.TutorialScript
   _steps:
-  - _text: tutorial.move
+  - _text: tutorial.run.move
     _dialog: 1
     _goal: 1
     _target: 
-    _cell: {x: 7, y: 3}
+    _cell: {x: 15, y: 7}
     _highlight: 1
-  - _text: tutorial.key
+  - _text: tutorial.run.fire
     _dialog: 1
-    _goal: 2
-    _target: key_1
+    _goal: 7
+    _target: 
     _cell: {x: 0, y: 0}
-    _highlight: 0
-  - _text: tutorial.unlock
-    _dialog: 1
-    _goal: 3
-    _target: door_1
-    _cell: {x: 0, y: 0}
-    _highlight: 3
-  - _text: tutorial.open
-    _dialog: 0
-    _goal: 4
-    _target: door_1
-    _cell: {x: 0, y: 0}
-    _highlight: 3
-  - _text: tutorial.melee
+    _highlight: 2
+  - _text: tutorial.run.pickup
     _dialog: 1
     _goal: 2
     _target: weapon_1
     _cell: {x: 0, y: 0}
     _highlight: 3
-  - _text: tutorial.zombie
+  - _text: tutorial.run.switch
     _dialog: 1
-    _goal: 5
-    _target: zombie_1
-    _cell: {x: 0, y: 0}
-    _highlight: 2
-  - _text: tutorial.ranged
-    _dialog: 1
-    _goal: 2
-    _target: weapon_2
-    _cell: {x: 0, y: 0}
-    _highlight: 5
-  - _text: tutorial.shoot
-    _dialog: 1
-    _goal: 5
-    _target: zombie_2
-    _cell: {x: 0, y: 0}
-    _highlight: 2
-  - _text: tutorial.medkit
-    _dialog: 1
-    _goal: 1
-    _target: medkit_1
-    _cell: {x: 0, y: 0}
-    _highlight: 0
-  - _text: tutorial.map
-    _dialog: 1
-    _goal: 6
+    _goal: 8
     _target: 
     _cell: {x: 0, y: 0}
-    _highlight: 6
+    _highlight: 0
+  - _text: tutorial.run.drop
+    _dialog: 1
+    _goal: 9
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.run.grenade
+    _dialog: 1
+    _goal: 10
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.run.card
+    _dialog: 1
+    _goal: 11
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.run.pause
+    _dialog: 1
+    _goal: 12
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 0
+  - _text: tutorial.run.officer
+    _dialog: 1
+    _goal: 13
+    _target: 
+    _cell: {x: 0, y: 0}
+    _highlight: 0

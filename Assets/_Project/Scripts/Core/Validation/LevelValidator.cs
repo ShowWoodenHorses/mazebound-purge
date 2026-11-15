@@ -141,7 +141,6 @@ namespace Purge.Core.Validation
                     TutorialGoal.UnlockDoor when !(target is DoorData door && door.RequiresKey) =>
                         "Unlock Door needs a locked door as the target",
                     TutorialGoal.OpenDoor when !(target is DoorData) => "Open Door needs a door as the target",
-                    TutorialGoal.Kill when !(target is ZombieSpawnData) => "Kill needs a zombie as the target",
                     _ => null,
                 };
                 if (problem != null)
@@ -315,14 +314,11 @@ namespace Purge.Core.Validation
 
             foreach (var pair in occupants)
             {
-                var nonZombies = pair.Value.Where(e => !(e is ZombieSpawnData)).ToList();
-                if (nonZombies.Count > 1)
+                if (pair.Value.Count > 1)
                     report.Add(Error, Structural, ValidationCodes.Intersection,
-                        $"Cell {pair.Key} holds several objects: {string.Join(", ", nonZombies.Select(e => e.Id))}.", pair.Key);
+                        $"Cell {pair.Key} holds several objects: {string.Join(", ", pair.Value.Select(e => e.Id))}.", pair.Key);
 
-                if (pair.Value.Any(e => e is ZombieSpawnData) && pair.Value.Any(e => e is PlayerStartData))
-                    report.Add(Error, Structural, ValidationCodes.ZombieOnPlayerStart,
-                        $"Zombie spawns on player start at {pair.Key}.", pair.Key);
+
             }
         }
 
@@ -351,13 +347,6 @@ namespace Purge.Core.Validation
             foreach (var key in level.Keys)
                 if (!usedKeyIds.Contains(key.Id))
                     report.Add(Warning, Structural, ValidationCodes.UnusedKey, $"Key '{key.Id}' does not open any door.", key.Position, key.Id);
-
-            foreach (var zombie in level.ZombieSpawns)
-            {
-                if (zombie.Definition == null)
-                    report.Add(Error, Structural, ValidationCodes.MissingDefinition,
-                        $"Zombie '{zombie.Id}' has no ZombieDefinition.", zombie.Position, zombie.Id);
-            }
 
             foreach (var weapon in level.Weapons)
                 if (weapon.Definition == null)
@@ -747,7 +736,7 @@ namespace Purge.Core.Validation
                 ReportUnreachable(key, starts, results, ValidationCodes.KeyUnreachable, report);
 
             foreach (var entity in level.Weapons.Cast<LevelEntityData>()
-                         .Concat(level.Medkits).Concat(level.ZombieSpawns).Concat(level.Chests))
+                         .Concat(level.Medkits).Concat(level.Chests))
                 ReportUnreachable(entity, starts, results, ValidationCodes.ObjectUnreachable, report);
 
             ValidateDoorPassages(level, report);

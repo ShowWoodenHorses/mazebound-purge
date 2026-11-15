@@ -23,11 +23,15 @@ namespace Purge.Core.Level
         /// <summary>The target door is open.</summary>
         OpenDoor = 4,
 
-        /// <summary>The target zombie is dead.</summary>
-        Kill = 5,
-
         /// <summary>The player opened the map.</summary>
         OpenMap = 6,
+        Fire = 7,
+        SwitchWeapon = 8,
+        DropWeapon = 9,
+        ThrowGrenade = 10,
+        PickCard = 11,
+        Intermission = 12,
+        OfficerWave = 13,
     }
 
     /// <summary>A control the step points at with a pulsing ring (the on-screen one on touch screens).</summary>

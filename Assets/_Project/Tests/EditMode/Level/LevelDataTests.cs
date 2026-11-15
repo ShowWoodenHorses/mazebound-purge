@@ -44,13 +44,12 @@ namespace Purge.Tests.EditMode.Level
             _level.MutableDoors.Add(new DoorData("door_1", p, "key_1"));
             _level.MutableKeys.Add(new KeyData("key_1", p));
             _level.MutablePlayerStarts.Add(new PlayerStartData("start_1", p));
-            _level.MutableZombieSpawns.Add(new ZombieSpawnData("zombie_1", p, null));
             _level.MutableWeapons.Add(new WeaponPickupData("weapon_1", p, null));
             _level.MutableMedkits.Add(new MedkitData("medkit_1", p));
             _level.MutableLights.Add(new LightSourceData("light_1", p, Vector2.zero, Color.white, 3f, 1f, 0f, false));
 
             CollectionAssert.AreEquivalent(
-                new[] { "door_1", "key_1", "start_1", "zombie_1", "weapon_1", "medkit_1", "light_1" },
+                new[] { "door_1", "key_1", "start_1", "weapon_1", "medkit_1", "light_1" },
                 _level.AllIds().ToArray());
 
             Assert.IsTrue(_level.Doors[0].RequiresKey);

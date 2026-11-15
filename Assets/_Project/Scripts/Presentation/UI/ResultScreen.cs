@@ -132,20 +132,12 @@ namespace Purge.Presentation.UI
             if (_doubleButton != null) _doubleButton.interactable = !busy;
         }
 
-        /// <summary>"Tutorial complete": the title, Menu and — when there is one — Next (the first level, the main action).</summary>
-        public void SetTutorialComplete(bool hasNext)
+        /// <summary>Shows the tutorial result and its reward, with a return to the main menu.</summary>
+        public void SetTutorialComplete(LevelResult? result)
         {
+            SetResult(true, result, string.Empty, hasNext: false, canDouble: false);
             _title.text = Text(TextKeys.ResultTutorialComplete);
-            ShowDetails(false);
-            _revealed = RowCount;
-            _canDouble = false;
-            if (_doubleButton != null) _doubleButton.gameObject.SetActive(false);
-            if (_nextButton != null) _nextButton.gameObject.SetActive(hasNext);
-            if (_retryButton != null)
-            {
-                _retryButton.gameObject.SetActive(false);
-                _retryButton.Accent = false;
-            }
+            if (_retryButton != null) _retryButton.gameObject.SetActive(false);
         }
 
         /// <summary>Rows still to be revealed (one sound each).</summary>

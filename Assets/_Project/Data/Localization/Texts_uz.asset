@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -912,4 +926,24 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Harakat tugmalari yoki chap stik bilan belgiga boring.
+  - Sichqonchaning chap tugmasi, probel yoki geympadning pastki tugmasi bilan oting.
+  - Belgilangan qurolga yaqinlashing va E yoki geympadning chap harakat tugmasini
+    bosing.
+  - 1, 2 yoki geympadning yuqori yon tugmasi bilan boshqa uyaga o'ting.
+  - Olingan qurolni tashlash uchun uning uyasi tugmasini bosib turing.
+  - G yoki chap tepkini bosing, so'ng uloqtirish joyini tanlang. Uloqtirgandan keyin
+    birinchi to'lqin boshlanadi.
+  - Birinchi to'lqinni yengib, takomillashtirish kartasini tanlang.
+  - To'lqinlar orasida kuting yoki keyingisini boshlash uchun o'tkazish tugmasini
+    bosing.
+  - Uzoqdan otuvchi ofitserni kuzating. Ogohlantirish chiqqanda o'q yo'lidan chetga
+    chiqing. Natijani ko'rish uchun to'lqinni tugating.
+  - Belgiga boring
+  - Otish uchun o'ng stikni yo'naltiring yoki bitta stik rejimida hujum tugmasini
+    bosing.
+  - Belgilangan qurolga yaqinlashing va harakat tugmasini bosing.
+  - Boshqa qurol uyasini bosing.
+  - Granata tugmasini, keyin uloqtirish joyini bosing. Uloqtirgandan keyin birinchi
+    to'lqin boshlanadi.
   _missing: []

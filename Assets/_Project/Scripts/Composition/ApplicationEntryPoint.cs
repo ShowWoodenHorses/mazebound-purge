@@ -27,16 +27,16 @@ namespace Purge.Composition
         private readonly PlatformEvents _platformEvents;
         private readonly PlatformService _platform;
         private readonly ILevelCatalog _catalog;
-        private readonly IProgressService _progress;
+        private readonly SaveService _save;
         private readonly MenuPodiumPresenter _podium;
 
         public ApplicationEntryPoint(GameFlow flow, ScreenRouter screens, PauseController pause, SettingsPresenter settings,
             AppAudioPresenter audio, LocalizationPresenter localization, GameAnalytics analytics, AppFocusController focus,
-            PlatformEvents platformEvents, PlatformService platform, ILevelCatalog catalog, IProgressService progress,
+            PlatformEvents platformEvents, PlatformService platform, ILevelCatalog catalog, SaveService save,
             MenuPodiumPresenter podium)
         {
             _podium = podium;
-            _progress = progress;
+            _save = save;
             _catalog = catalog;
             _platform = platform;
             _platformEvents = platformEvents;
@@ -76,18 +76,20 @@ namespace Purge.Composition
         }
 
         /// <summary>
-        /// A site where players land in gameplay at once (<see cref="PlatformTraits.StartsInGameplay"/>): a player who has
-        /// completed nothing starts with the tutorial (or the first level) instead of the menu.
+        /// The merged save identifies returning players. A new player starts in the tutorial.
+        /// Platforms that land in gameplay can fall back to the first numbered level if no tutorial is available.
         /// </summary>
         private string FirstLevelForNewPlayer()
         {
-            if (!_platform.Traits.StartsInGameplay) return null;
+            var data = _save.Data;
+            if (data.HasRun || data.Money > 0 || data.Stats.TotalKills > 0 || data.Arsenal.Count > 0 ||
+                data.CharacterNodes.Count > 0 || data.Boosters.Count > 0 || data.Survival.Count > 0)
+                return null;
+            foreach (var record in data.Levels)
+                if (record.CompletedMask != 0) return null;
             var tutorial = _catalog.Tutorial;
-            if (tutorial != null && _progress.IsCompleted(tutorial.LevelId)) return null;
-            foreach (var level in _catalog.Levels)
-                if (_progress.IsCompleted(level.LevelId))
-                    return null;
-            return tutorial?.LevelId ?? (_catalog.Levels.Count > 0 ? _catalog.Levels[0].LevelId : null);
+            return tutorial?.LevelId ?? (_platform.Traits.StartsInGameplay && _catalog.Levels.Count > 0
+                ? _catalog.Levels[0].LevelId : null);
         }
     }
 }

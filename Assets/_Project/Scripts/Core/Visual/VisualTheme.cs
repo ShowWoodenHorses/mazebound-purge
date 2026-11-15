@@ -14,7 +14,6 @@ namespace Purge.Core.Visual
         [SerializeField] private VisualSet _key;
         [SerializeField] private VisualSet _medkit;
         [SerializeField] private VisualSet _weapon;
-        [SerializeField] private VisualSet _zombie;
 
         [Tooltip("Props on floor cells (optional): auto placed by density, by hand with the Decor brush.")]
         [SerializeField] private VisualSet _decor;
@@ -79,7 +78,6 @@ namespace Purge.Core.Visual
                 case VisualKind.Key: return _key;
                 case VisualKind.Medkit: return _medkit;
                 case VisualKind.Weapon: return _weapon;
-                case VisualKind.Zombie: return _zombie;
                 case VisualKind.Decor: return _decor;
                 case VisualKind.Light: return _light;
                 case VisualKind.Barrel:
@@ -100,7 +98,6 @@ namespace Purge.Core.Visual
                 case VisualKind.Key: _key = set; break;
                 case VisualKind.Medkit: _medkit = set; break;
                 case VisualKind.Weapon: _weapon = set; break;
-                case VisualKind.Zombie: _zombie = set; break;
                 case VisualKind.Decor: _decor = set; break;
                 case VisualKind.Light: _light = set; break;
                 default: throw new ArgumentOutOfRangeException(nameof(kind), kind, null);

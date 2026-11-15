@@ -73,10 +73,6 @@ namespace Purge.Editor.LevelDesigner
                     continue;
 
                 var choice = VisualResolver.ResolveObject(level, entity);
-                // Zombie orientation is gameplay state (Facing), not part of the visual assignment.
-                if (entity is ZombieSpawnData zombie)
-                    choice = new VisualChoice(choice.VariantId, (int)zombie.Facing);
-
                 var set = theme != null ? theme.GetSet(kind) : null;
                 var instance = Spawn(set, choice, entity.Position, objectsRoot, entity.Id);
                 if (!instance)

@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - Polski
   - USTAWIENIA
@@ -918,4 +932,23 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - "Dotrzyj do znacznika klawiszami ruchu lub lew\u0105 ga\u0142k\u0105."
+  - "Strzel lewym przyciskiem myszy, spacj\u0105 lub dolnym przyciskiem pada."
+  - "Podejd\u017A do oznaczonej broni i wci\u015Bnij E lub lewy przycisk akcji na
+    padzie."
+  - "Zmie\u0144 miejsce klawiszem 1 lub 2 albo g\xF3rnym przyciskiem pada."
+  - "Przytrzymaj przycisk miejsca z podniesion\u0105 broni\u0105, aby j\u0105 upu\u015Bci\u0107."
+  - "Naci\u015Bnij G lub lewy spust, a potem wybierz cel rzutu. Rzut rozpocznie pierwsz\u0105
+    fal\u0119."
+  - "Pokonaj pierwsz\u0105 fal\u0119 i wybierz kart\u0119 ulepszenia."
+  - "Mi\u0119dzy falami poczekaj lub naci\u015Bnij Pomi\u0144, aby rozpocz\u0105\u0107
+    kolejn\u0105."
+  - "Obserwuj oficera strzelaj\u0105cego z dystansu. Gdy zobaczysz ostrze\u017Cenie,
+    zejd\u017A z linii ognia. Uko\u0144cz fal\u0119, aby zobaczy\u0107 wynik."
+  - Dotrzyj do znacznika
+  - "Celuj praw\u0105 ga\u0142k\u0105 lub naci\u015Bnij przycisk ataku w trybie jednej
+    ga\u0142ki."
+  - "Podejd\u017A do oznaczonej broni i dotknij przycisku interakcji."
+  - "Dotknij drugiego miejsca na bro\u0144."
+  - "Dotknij przycisku granatu, a potem celu. Rzut rozpocznie pierwsz\u0105 fal\u0119."
   _missing: []

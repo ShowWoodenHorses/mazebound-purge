@@ -180,7 +180,6 @@ namespace Purge.Editor.LevelDesigner
             {
                 case DoorData door: DrawDoor(door); break;
                 case KeyData key: DrawKey(key); break;
-                case ZombieSpawnData zombie: DrawZombie(zombie); break;
                 case WeaponPickupData weapon: DrawWeapon(weapon); break;
                 case PlayerStartData start: DrawStart(start); break;
                 case BarrelData barrel:
@@ -277,14 +276,6 @@ namespace Purge.Editor.LevelDesigner
             EditorGUILayout.LabelField("Opens", door != null ? door.Id : "no door (link it from a door)");
         }
 
-        private void DrawZombie(ZombieSpawnData zombie)
-        {
-            EditorGUI.BeginChangeCheck();
-            var definition = (ZombieDefinition)EditorGUILayout.ObjectField("Definition", zombie.Definition, typeof(ZombieDefinition), false);
-            var facing = (Direction)EditorGUILayout.EnumPopup("Facing", zombie.Facing);
-            if (EditorGUI.EndChangeCheck())
-                Apply("Change Zombie", () => LevelEditing.SetZombie(Level, zombie, definition, facing));
-        }
 
         private void DrawWeapon(WeaponPickupData weapon)
         {

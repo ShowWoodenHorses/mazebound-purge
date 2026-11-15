@@ -16,7 +16,6 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
-using Purge.Gameplay.Zombies;
 using Purge.Presentation.UI;
 using Purge.Presentation.Visual;
 using UnityEngine;
@@ -47,7 +46,6 @@ namespace Purge.Presentation.Map
         private readonly DoorSystem _doors;
         private readonly SettingsService _settings;
         private readonly PickupSystem _pickups;
-        private readonly ZombieSystem _zombies;
         private readonly PlatformService _platform;
         private readonly MapExploration _exploration;
         private readonly VisibilitySystem _visibility;
@@ -66,14 +64,13 @@ namespace Purge.Presentation.Map
         private bool _bound;
 
         public MapPresenter(UIRoot ui, LevelData level, LevelGrid grid, PlayerSystem player, DoorSystem doors,
-            SettingsService settings, PickupSystem pickups, ZombieSystem zombies, PlatformService platform = null,
+            SettingsService settings, PickupSystem pickups, PlatformService platform = null,
             MapExploration exploration = null, VisibilitySystem visibility = null, HordeSystem horde = null,
             BarrelSystem barrels = null, ChestSystem chests = null, RefugeSystem refuge = null, VehicleSystem vehicles = null)
         {
             _vehicles = vehicles;
             _platform = platform;
             _pickups = pickups;
-            _zombies = zombies;
             _ui = ui;
             _level = level;
             _grid = grid;
@@ -267,16 +264,6 @@ namespace Purge.Presentation.Map
             AddObjectIcons(set, _icons, IsShown(MapLayer.Objects));
 
             var showMonsters = IsShown(MapLayer.Zombies);
-            foreach (var zombie in _zombies.Zombies)
-                _icons.Add(new MapIcon
-                {
-                    Kind = MapIconKind.Zombie,
-                    Center = MapIconLayout.CenterOf(zombie.Position),
-                    Rotation = MapIconLayout.Tilt(zombie.Id, set.MaxTilt),
-                    Size = set.ItemSize,
-                    Color = set.ZombieColor,
-                    Visible = showMonsters && zombie.IsAlive && InView(zombie.Cell),
-                });
             AddMonsterIcons(set, _icons, MonsterSlots, showMonsters, null);
 
             _icons.Add(new MapIcon

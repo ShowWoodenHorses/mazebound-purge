@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -911,4 +925,24 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - "Chegue ao marcador com as teclas de movimento ou o anal\xF3gico esquerdo."
+  - "Atire com o bot\xE3o esquerdo do mouse, Espa\xE7o ou o bot\xE3o inferior do
+    controle."
+  - "Aproxime-se da arma marcada e pressione E ou o bot\xE3o frontal esquerdo do
+    controle."
+  - "Troque de espa\xE7o com 1, 2 ou os bot\xF5es superiores do controle."
+  - "Segure o bot\xE3o do espa\xE7o da arma que voc\xEA pegou para larg\xE1-la."
+  - Pressione G ou o gatilho esquerdo para mirar e escolha o alvo. O arremesso inicia
+    a primeira onda.
+  - "Ven\xE7a a primeira onda e escolha uma carta de melhoria."
+  - "Entre as ondas, espere ou pressione Pular para come\xE7ar a pr\xF3xima."
+  - "Observe o oficial de ataque \xE0 dist\xE2ncia. Saia da linha de tiro ao ver
+    o aviso. Termine a onda para ver o resultado."
+  - Chegue ao marcador
+  - "Mire com o anal\xF3gico direito para atirar ou toque no bot\xE3o de ataque no
+    modo de um anal\xF3gico."
+  - "Aproxime-se da arma marcada e toque no bot\xE3o de intera\xE7\xE3o."
+  - "Toque no outro espa\xE7o de arma."
+  - "Toque no bot\xE3o de granada e depois no alvo. O arremesso inicia a primeira
+    onda."
   _missing: []

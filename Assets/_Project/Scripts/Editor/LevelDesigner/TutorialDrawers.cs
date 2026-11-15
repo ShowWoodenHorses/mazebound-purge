@@ -124,7 +124,6 @@ namespace Purge.Editor.LevelDesigner
         private static string Kind(LevelEntityData entity) => entity switch
         {
             DoorData door => door.RequiresKey ? "Locked door" : "Door",
-            ZombieSpawnData _ => "Zombie",
             WeaponPickupData weapon => weapon.Definition != null ? weapon.Definition.name : "Weapon",
             KeyData _ => "Key",
             MedkitData _ => "Medkit",

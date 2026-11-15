@@ -19,7 +19,6 @@ namespace Purge.Core.Level
         [SerializeField] private LevelGeometry _geometry = new LevelGeometry(21, 21);
         [SerializeField] private List<DoorData> _doors = new List<DoorData>();
         [SerializeField] private List<PlayerStartData> _playerStarts = new List<PlayerStartData>();
-        [SerializeField] private List<ZombieSpawnData> _zombieSpawns = new List<ZombieSpawnData>();
         [SerializeField] private List<WeaponPickupData> _weapons = new List<WeaponPickupData>();
         [SerializeField] private List<KeyData> _keys = new List<KeyData>();
         [SerializeField] private List<MedkitData> _medkits = new List<MedkitData>();
@@ -71,7 +70,6 @@ namespace Purge.Core.Level
         public LevelGeometry Geometry => _geometry;
         public IReadOnlyList<DoorData> Doors => _doors;
         public IReadOnlyList<PlayerStartData> PlayerStarts => _playerStarts;
-        public IReadOnlyList<ZombieSpawnData> ZombieSpawns => _zombieSpawns;
         public IReadOnlyList<WeaponPickupData> Weapons => _weapons;
         public IReadOnlyList<KeyData> Keys => _keys;
         public IReadOnlyList<MedkitData> Medkits => _medkits;
@@ -93,7 +91,6 @@ namespace Purge.Core.Level
 
         internal List<DoorData> MutableDoors => _doors;
         internal List<PlayerStartData> MutablePlayerStarts => _playerStarts;
-        internal List<ZombieSpawnData> MutableZombieSpawns => _zombieSpawns;
         internal List<WeaponPickupData> MutableWeapons => _weapons;
         internal List<KeyData> MutableKeys => _keys;
         internal List<MedkitData> MutableMedkits => _medkits;
@@ -108,7 +105,6 @@ namespace Purge.Core.Level
         {
             foreach (var e in _doors) yield return e;
             foreach (var e in _playerStarts) yield return e;
-            foreach (var e in _zombieSpawns) yield return e;
             foreach (var e in _weapons) yield return e;
             foreach (var e in _keys) yield return e;
             foreach (var e in _medkits) yield return e;
@@ -167,7 +163,6 @@ namespace Purge.Core.Level
         {
             _doors.Clear();
             _playerStarts.Clear();
-            _zombieSpawns.Clear();
             _weapons.Clear();
             _keys.Clear();
             _medkits.Clear();

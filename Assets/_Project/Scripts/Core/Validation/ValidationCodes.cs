@@ -12,7 +12,6 @@ namespace Purge.Core.Validation
         public const string DoorNotOnDoorCell = "DoorNotOnDoorCell";
         public const string DoorCellWithoutDoor = "DoorCellWithoutDoor";
         public const string Intersection = "Intersection";
-        public const string ZombieOnPlayerStart = "ZombieOnPlayerStart";
         public const string MissingKeyReference = "MissingKeyReference";
         public const string UnusedKey = "UnusedKey";
         public const string KeySharedByDoors = "KeySharedByDoors";

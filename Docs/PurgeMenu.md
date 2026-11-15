@@ -196,20 +196,6 @@ Look поля Idle / Drive / Start / Rev (выпадающие списки па
 2. **Purge → Dev → Build Light Fixtures**.
 3. Если из пака — **Collect Used Third-Party Assets**.
 
-### Добавить внешний вид зомби
-1. Префаб модели — в `Assets/_Project/Art/Zombie/`.
-2. **Purge → Dev → Build Zombie Animations** — префаб получит контроллер и масштаб, в наборе зомби
-   (`Data/Themes/PlaceholderZombieSet`) появится вариант с id по имени префаба (`Zombie_04` → `zombie_04`).
-   Тип зомби новому виду ставится автоматически (тип, у которого ещё нет вида, иначе первый), в консоли — предупреждение.
-   **Проверить** поле `Definition` у варианта в наборе и при необходимости поменять — билдер его больше не трогает.
-3. **Extract Character Meshes** → **Convert Object Materials to Purge Lit** → (если из пака) **Collect Used Third-Party Assets**.
-
-Несколько видов у одного типа — можно: в игре вид выбирается из них по весам (`Weight` варианта).
-
-Новый **тип** зомби (поведение) — новый `ZombieDefinition` в `Data/Zombies` (можно скопировать существующий), затем
-вид для него (шаги выше; Build Zombie Animations называет в консоли типы без вида — в игре такие зомби невидимы);
-тон голоса — список `Zombie Voices` в `AudioCatalog`.
-
 ### Заменить модель игрока или анимации
 - Клипы — файлы Mixamo в `Art/Animations` с фиксированными именами `Player_*` (`Player_rifle_weapon_shoot`, …). Заменить
   клип — положить файл с тем же именем → **Build Player Animations**.
@@ -410,14 +396,6 @@ Visuals; в конце — каталог контента. Запускать: 
 по имени (`Vehicle_Light` → `Sounds/Vehicle/light_*`); существующий сохраняет числа — обновляется только модель. Модели
 Addressable в Purge Visuals; в конце — каталог контента. Запускать: после новой модели машины (и Build Audio — для звуков);
 затем Convert Object Materials to Purge Lit.
-
-#### Build Zombie Animations
-Клипы Mixamo `Zombie_*` → Humanoid; общий `Art/Zombie/Zombie.controller` (Idle ×2, Walk, Scream (Alert), Run, 3 атаки,
-смерть; замеряет скорость шага клипов); каждому префабу в `Art/Zombie` — контроллер и масштаб; набор зомби темы —
-по варианту на префаб: существующие варианты сохраняют id, вес и тип (`Definition`), новому префабу тип ставится
-автоматически с предупреждением (см. рецепт), варианты удалённых моделей убираются; префабы Addressable;
-переназначает визуал зомби в уровнях; предупреждает о типах без вида.
-Запускать: после смены/добавления моделей или клипов зомби. Контроллер пересобирается на месте — **не удалять его ассет**.
 
 #### Build Horde Visuals
 Встроенный монстр стресс-теста (этап 2; монстры этапа 5 — **Build Monsters**): модель первого префаба в `Art/Zombie` сваривается по позиции+UV (Synty плоские —
@@ -731,7 +709,7 @@ Build Combat Effects). Подстроенные числа темы сохран
 двери (простая и цветные запираемые), ключи, аптечка, оружие, зомби.
 **Осторожно:** наборы `Placeholder<Вид>Set` очищаются и заполняются заново — в том числе `PlaceholderWeaponSet` и
 `PlaceholderZombieSet`, которые использует и основная тема. После запуска нужно заново выполнить
-Build Weapons и Build Zombie Animations (и Build Light Fixtures для набора света).
+Build Weapons (и Build Light Fixtures для набора света).
 
 #### Rebuild Placeholder Doors
 Пересобирает только префабы дверей-заглушек на месте (закрытая створка, открытая у западной стороны, замок у цветных).
@@ -739,21 +717,6 @@ Build Weapons и Build Zombie Animations (и Build Light Fixtures для наб�
 #### Create Placeholder Player
 Капсула-игрок с «носом» и ассеты `PlayerDefinition` / `PlayerVisual` (Addressable). Значения существующего определения
 сохраняются. Настоящий игрок — Build Player Animations.
-
-#### Create Placeholder Zombies
-Типы зомби в `Data/Zombies`: Walker (зрение), Listener (слух), Hunter (зрение + слух). Существующие ассеты не трогает.
-
----
-
-## Зависимости между командами
-- **Build Combat Effects** → до Build Light Fixtures (материал пламени) и Build Footprints (пыль).
-- **Build Pack Effects** → затем **Build Combat Effects** (пых у ствола на дыме пака) и **Collect Used Third-Party Assets**.
-- **Create Placeholder Theme** → до Build Weapons и Build Zombie Animations (им нужны наборы темы-заглушки).
-- **Build Player Animations** → затем Build Weapons (риг рук по модели игрока).
-- Билдеры персонажей → затем **Extract Character Meshes**.
-- Новые модели объектов → **Convert Object Materials to Purge Lit** (Light Fixtures делает это сам).
-- Что-то из `Import` → в конце **Collect Used Third-Party Assets**.
-- Правка `Strings.tsv` → **Build Localization** (сама запускает Build UI Style). Новая подпись в `RuntimeScenesBuilder` → ещё **Build Runtime Scenes**.
 
 ### Build Arsenal (11в)
 - **Purge → Dev → Build Arsenal** — цены покупки оружия/метательного и признак уникального оружия из CSV модели в Definitions. Классы настраиваются в инспекторе; перестройка не затирает их. После изменений экрана — Build Runtime Scenes; строк — Build Localization; звука покупки `Sounds/UI/purchase*` — Build Audio.

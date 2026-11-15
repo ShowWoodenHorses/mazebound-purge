@@ -94,9 +94,6 @@ namespace Purge.Editor.Dev
                 Variant("medkit_01", 1, Small("medkit_01", PrimitiveType.Cube, new Color(0.95f, 0.95f, 0.95f), new Vector3(0.4f, 0.25f, 0.3f))));
             AddSet(theme, VisualKind.Weapon, null,
                 Variant("weapon_01", 1, Small("weapon_01", PrimitiveType.Cube, new Color(1f, 0.55f, 0.1f), new Vector3(0.15f, 0.12f, 0.6f))));
-            AddSet(theme, VisualKind.Zombie, null,
-                Variant("zombie_01", 1, Small("zombie_01", PrimitiveType.Capsule, new Color(0.35f, 0.6f, 0.3f), new Vector3(0.6f, 0.9f, 0.6f))),
-                Variant("zombie_02", 1, Small("zombie_02", PrimitiveType.Capsule, new Color(0.45f, 0.5f, 0.3f), new Vector3(0.6f, 0.9f, 0.6f))));
 
             EditorUtility.SetDirty(theme);
             AssetDatabase.SaveAssets();
@@ -106,7 +103,6 @@ namespace Purge.Editor.Dev
         }
 
         private const string PlayerDataPath = "Assets/_Project/Data/Player";
-        private const string ZombieDataPath = "Assets/_Project/Data/Zombies";
 
         /// <summary>
         /// Placeholder player: capsule with a "nose" showing the facing (+Z), plus PlayerDefinition and PlayerVisual
@@ -136,31 +132,7 @@ namespace Purge.Editor.Dev
             Debug.Log($"[Purge] Placeholder player created in {PlayerDataPath} and made Addressable.");
         }
 
-        /// <summary>
-        /// Placeholder zombie types in Data/Zombies, one per detection type (ТЗ §73): Walker (vision), Listener
-        /// (hearing), Hunter (vision + hearing radius). Existing assets are kept with their values.
-        /// </summary>
-        [MenuItem("Purge/Dev/Create Placeholder Zombies")]
-        public static void CreateZombies()
-        {
-            EnsureFolder(ZombieDataPath);
-            Zombie("ZombieWalker", "walker", ZombieDetectionType.VisionOnly);
-            Zombie("ZombieListener", "listener", ZombieDetectionType.HearingOnly);
-            Zombie("ZombieHunter", "hunter", ZombieDetectionType.VisionAndHearing);
-            AssetDatabase.SaveAssets();
-            Debug.Log($"[Purge] Placeholder zombies created in {ZombieDataPath}.");
-        }
 
-        private static void Zombie(string assetName, string id, ZombieDetectionType detection)
-        {
-            var path = $"{ZombieDataPath}/{assetName}.asset";
-            if (AssetDatabase.LoadAssetAtPath<ZombieDefinition>(path) != null)
-                return;
-
-            var zombie = ScriptableObject.CreateInstance<ZombieDefinition>();
-            zombie.Configure(id, detection);
-            AssetDatabase.CreateAsset(zombie, path);
-        }
 
         private static AssetReferenceGameObject Reference(GameObject prefab) =>
             new AssetReferenceGameObject(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(prefab)));

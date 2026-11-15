@@ -447,6 +447,20 @@ MonoBehaviour:
   - character.node.SecondDome.text
   - booster.booster_second_dome
   - booster.booster_second_dome.text
+  - tutorial.run.move
+  - tutorial.run.fire
+  - tutorial.run.pickup
+  - tutorial.run.switch
+  - tutorial.run.drop
+  - tutorial.run.grenade
+  - tutorial.run.card
+  - tutorial.run.pause
+  - tutorial.run.officer
+  - tutorial.run.move.hint
+  - tutorial.run.fire.touch
+  - tutorial.run.pickup.touch
+  - tutorial.run.switch.touch
+  - tutorial.run.grenade.touch
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -910,4 +924,23 @@ MonoBehaviour:
   - The first shelter timeout grants ten more seconds of protection and healing.
   - Second dome
   - The first shelter timeout grants ten more seconds of protection and healing.
+  - Llega a la marca con las teclas de movimiento o la palanca izquierda.
+  - "Dispara con el bot\xF3n izquierdo del rat\xF3n, Espacio o el bot\xF3n inferior
+    del mando."
+  - "Ac\xE9rcate al arma marcada y pulsa E o el bot\xF3n frontal izquierdo del mando."
+  - Cambia de ranura con 1 o 2, o con los botones superiores del mando.
+  - "Mant\xE9n pulsado el bot\xF3n de la ranura del arma que recogiste para soltarla."
+  - "Pulsa G o el gatillo izquierdo para apuntar y elige el lugar del lanzamiento.
+    As\xED empieza la primera oleada."
+  - Derrota a la primera oleada y elige una carta de mejora.
+  - Entre oleadas, espera o pulsa Saltar para iniciar la siguiente.
+  - "Vigila al oficial a distancia. Cuando veas el aviso, sal de la l\xEDnea de fuego.
+    Termina la oleada para ver el resultado."
+  - Llega a la marca
+  - "Apunta con la palanca derecha para disparar o toca el bot\xF3n de ataque en
+    el modo de una palanca."
+  - "Ac\xE9rcate al arma marcada y toca el bot\xF3n de interacci\xF3n."
+  - Toca la otra ranura de arma.
+  - "Toca el bot\xF3n de granada y despu\xE9s el punto de lanzamiento. As\xED empieza
+    la primera oleada."
   _missing: []

@@ -154,6 +154,8 @@ namespace Purge.Gameplay.Waves
 
         public event Action Completed;
 
+        internal bool TutorialHold { get; set; }
+
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
             if (!_horde.UsesWaves || !_horde.IsActive || _horde.Horde.Waves.Count == 0)
@@ -175,6 +177,7 @@ namespace Purge.Gameplay.Waves
             {
                 case WavePhase.Delay:
                 case WavePhase.Pause:
+                    if (TutorialHold) break;
                     TimeLeft -= deltaTime;
                     if (TimeLeft <= 0f) StartWave(WaveIndex + 1);
                     break;
@@ -208,7 +211,7 @@ namespace Purge.Gameplay.Waves
         /// <summary>Starts the next wave at once, without the bonus (tests, dev). False when not waiting.</summary>
         public bool StartNextWave()
         {
-            if (Phase != WavePhase.Delay && Phase != WavePhase.Pause) return false;
+            if (TutorialHold || Phase != WavePhase.Delay && Phase != WavePhase.Pause) return false;
             StartWave(WaveIndex + 1);
             return true;
         }
@@ -219,7 +222,7 @@ namespace Purge.Gameplay.Waves
         /// </summary>
         public bool Skip()
         {
-            if (Phase != WavePhase.Pause) return false;
+            if (TutorialHold || Phase != WavePhase.Pause) return false;
             var bonus = SkipBonus;
             _wallet?.Add(bonus);
             GameLog.Info(LogChannel.Gameplay, $"Pause skipped with {TimeLeft:0.#} s left: +{bonus}.");

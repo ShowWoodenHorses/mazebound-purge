@@ -119,6 +119,7 @@ namespace Purge.Gameplay.Weapons
 
         /// <summary>(slot) the player held the slot key to drop its weapon (not the base one).</summary>
         public event Action<WeaponSlot> DropRequested;
+        public event Action<WeaponSlot> Dropped;
 
         public WeaponRuntime Get(WeaponSlot slot) => _slots[(int)slot];
 
@@ -171,6 +172,7 @@ namespace Purge.Gameplay.Weapons
             weapon.Stop();
             _slots[(int)slot] = BaseFor();
             Changed?.Invoke();
+            Dropped?.Invoke(slot);
             return weapon;
         }
 

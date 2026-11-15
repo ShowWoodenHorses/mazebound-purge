@@ -14,7 +14,6 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Weapons;
-using Purge.Gameplay.Zombies;
 using Purge.Presentation.Localization;
 using Purge.Presentation.Visual;
 using UnityEngine;
@@ -38,7 +37,6 @@ namespace Purge.Presentation.UI
         private readonly PlayerInteraction _interaction;
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
-        private readonly ZombieSystem _zombies;
         private readonly WeaponVisualCatalog _visuals;
         private readonly LocalizationService _texts;
         private readonly LevelProgress _progress;
@@ -54,7 +52,7 @@ namespace Purge.Presentation.UI
 
         public HudPresenter(UIRoot ui, LevelData level, PlayerHealth health, PlayerInventory inventory,
             WeaponSystem weapons, PlayerInteraction interaction, PlayerSystem player,
-            PickupSystem pickups, ZombieSystem zombies, WeaponVisualCatalog visuals, LocalizationService texts,
+            PickupSystem pickups, WeaponVisualCatalog visuals, LocalizationService texts,
             LevelProgress progress, PlatformService platform = null, PlayerThrowing throwing = null, ItemVisualCatalog items = null,
             AmmoStock ammo = null, PlayerCombat combat = null, Purge.Gameplay.Run.CharacterRunEffects character = null)
         {
@@ -74,7 +72,6 @@ namespace Purge.Presentation.UI
             _interaction = interaction;
             _player = player;
             _pickups = pickups;
-            _zombies = zombies;
             _visuals = visuals;
         }
 
@@ -91,8 +88,6 @@ namespace Purge.Presentation.UI
                 _inventory.KeysChanged += RefreshKeys;
                 _interaction.Interacted += OnInteracted;
                 _player.CellChanged += OnPlayerCellChanged;
-                _zombies.Spawned += OnZombie;
-                _zombies.Died += OnZombie;
                 _bound = true;
             }
 
@@ -117,8 +112,6 @@ namespace Purge.Presentation.UI
             _inventory.KeysChanged -= RefreshKeys;
             _interaction.Interacted -= OnInteracted;
             _player.CellChanged -= OnPlayerCellChanged;
-            _zombies.Spawned -= OnZombie;
-            _zombies.Died -= OnZombie;
             _bound = false;
             if (_ui != null && _ui.Hud != null)
                 _ui.Hud.ClearLevelInfo();
@@ -206,11 +199,10 @@ namespace Purge.Presentation.UI
 
         private void OnThreat(Vector2 direction) => _ui.Hud.ShowDamageArc(direction, warning: true);
 
-        private void OnZombie(ZombieRuntime zombie) => RefreshCounters();
 
         private void RefreshCounters()
         {
-            _ui.Hud.SetKills(_zombies.KilledCount, _zombies.TotalCount);
+            _ui.Hud.SetKills(0, 0);
         }
 
         private void RefreshKeys()

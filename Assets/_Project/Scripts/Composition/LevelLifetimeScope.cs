@@ -22,7 +22,6 @@ using Purge.Gameplay.Tutorial;
 using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Weapons;
-using Purge.Gameplay.Zombies;
 using Purge.Presentation.Audio;
 using Purge.Presentation.Map;
 using Purge.Presentation.Stress;
@@ -106,7 +105,6 @@ namespace Purge.Composition
             builder.Register<PlayerInteraction>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<BulletSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<NavigationSystem>(Lifetime.Singleton);
-            builder.Register<ZombieSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Mass monsters and the stress test weapons (inactive unless the level has StressTest settings).
             builder.Register<HordeSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // Abilities of its monsters (stage 5c): casts on the fresh positions, monster projectiles.
@@ -151,14 +149,13 @@ namespace Purge.Composition
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MapExploration>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
-            // Stage SpawnZombies, registered after ZombieSystem: every target exists when the first step starts.
+            // Registered after the wave and pickup systems, before the tutorial UI.
             builder.Register<TutorialSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelAnalytics>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
             // The simulation's pace (stage 8a: a boss's death slows it for a moment).
             builder.Register<LevelClock>(Lifetime.Singleton);
             builder.Register<LevelRuntime>(Lifetime.Singleton);
             builder.Register<PlayerDeathRule>(Lifetime.Singleton);
-            builder.Register<AllKilledRule>(Lifetime.Singleton);
             builder.Register<WavesClearedRule>(Lifetime.Singleton);
             builder.RegisterEntryPoint<LevelTickDriver>();
 
@@ -214,7 +211,6 @@ namespace Purge.Composition
             builder.Register<PackEmitters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, IViewWarmup>();
             // After the weapon presenter: the late tick reads the muzzle of the posed gun.
             builder.Register<CombatViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
-            builder.Register<ZombieViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<HordeRenderer>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Officers, elite, bosses (Animator) and what their abilities show.
             builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
@@ -253,7 +249,6 @@ namespace Purge.Composition
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
             builder.Register<BreathView>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>().As<IViewWarmup>();
-            builder.Register<VisionZonesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<NoiseWavesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // After the zombie views: shows their hits when they show.
             builder.Register<CombatFeedbackView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();

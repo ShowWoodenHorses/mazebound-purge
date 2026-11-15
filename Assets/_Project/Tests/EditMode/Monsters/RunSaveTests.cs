@@ -146,7 +146,7 @@ namespace Purge.Tests.EditMode.Monsters
             _waves = new WaveSystem(_level, _horde, player, options, _pickups, _wallet);
             _score = new RunScore(_horde, _waves);
             var revival = new PlayerRevival(_health, player);
-            _progress = new LevelProgress(null, _score, _wallet, _waves, revival);
+            _progress = new LevelProgress(_score, _wallet, _waves, revival);
             var loadout = new RunLoadout(_level, _weapons, _pickups, _health, _slot, _cards, options, revival, _content);
             _boosters = new RunBoosters(options, _experience, _cards, _pickups, player, passability);
             _checkpoints = new RunCheckpoints(_waves, _wallet, _score, _experience, _cards, _health, _weapons, _slot, _progress,

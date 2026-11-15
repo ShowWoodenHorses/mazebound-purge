@@ -19,7 +19,6 @@ MonoBehaviour:
   _key: {fileID: 11400000, guid: d514ec6ab1427244bb5232b1b7456ef7, type: 2}
   _medkit: {fileID: 11400000, guid: 1f00f2b132e561c44b33e15696e05cfa, type: 2}
   _weapon: {fileID: 11400000, guid: fb15d3c7f0ca317498e3750cb736fd43, type: 2}
-  _zombie: {fileID: 11400000, guid: 57b71dca180984d488eb03f23f3bef0b, type: 2}
   _decor: {fileID: 11400000, guid: e1e3a08f74b470148a08ad6db9711a10, type: 2}
   _light: {fileID: 11400000, guid: cfa9392684729334e801c808b8fda77a, type: 2}
   _fogMaterial: {fileID: 2100000, guid: e44f05f90fed0e446b142333febf4f9e, type: 2}

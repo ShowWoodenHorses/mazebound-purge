@@ -19,7 +19,6 @@ namespace Purge.Presentation.Visual
     {
         private readonly LevelData _level;
         private readonly PlayerViewPresenter _player;
-        private readonly ZombieViewPresenter _zombies;
         private readonly LevelViewRoot _root;
 
         private ThemeWeather _weather;
@@ -27,11 +26,10 @@ namespace Purge.Presentation.Visual
         private float _time;
         private bool _ticked;
 
-        public BreathView(LevelData level, PlayerViewPresenter player, ZombieViewPresenter zombies, LevelViewRoot root)
+        public BreathView(LevelData level, PlayerViewPresenter player, LevelViewRoot root)
         {
             _level = level;
             _player = player;
-            _zombies = zombies;
             _root = root;
         }
 
@@ -62,9 +60,7 @@ namespace Purge.Presentation.Visual
             _time += deltaTime;
 
             TryPuff(_player.Head, before, interval);
-            var heads = _zombies.Heads;
-            for (var i = 0; i < heads.Count; i++)
-                TryPuff(heads[i], before, interval);
+
         }
 
         public void LateTick(float deltaTime)

@@ -2363,6 +2363,8 @@ namespace Purge.Editor.Dev
                 compareButtons.Add(segment);
             }
 
+            var replayTutorial = TextButton(gamePage, "ReplayTutorial", Loc(TextKeys.MenuTutorial), false, icons.Retry, 60f, 26f);
+
             var otherPage = Page(pages.transform, "OtherPage");
             var languageRow = SettingRow(otherPage, "Language", Loc(TextKeys.SettingsLanguage));
             var languageButton = TextButton(languageRow, "LanguageButton", "", false, icons.ChevronRight, 60f, 26f);
@@ -2431,6 +2433,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_supportValue", supportValue);
             SetReference(screen, "_privacyRow", privacyRow.gameObject);
             SetReference(screen, "_privacyButton", privacyButton);
+            SetReference(screen, "_replayTutorialButton", replayTutorial);
             SetReference(screen, "_resetButton", reset);
             SetReference(screen, "_backButton", back);
             return screen;

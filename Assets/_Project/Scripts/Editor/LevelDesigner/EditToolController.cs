@@ -18,7 +18,6 @@ namespace Purge.Editor.LevelDesigner
         Door,
         PlayerStart,
         Key,
-        Zombie,
         Weapon,
         Medkit,
         Spawn,
@@ -70,8 +69,6 @@ namespace Purge.Editor.LevelDesigner
         /// <summary>False outside the Edit tab: clicks only select.</summary>
         public bool EditingEnabled { get; set; }
 
-        public ZombieDefinition ZombieDefinition { get; set; }
-        public Direction ZombieFacing { get; set; } = Direction.South;
         public WeaponDefinition WeaponDefinition { get; set; }
         public ObstacleDefinition ObstacleDefinition { get; set; }
         public BarrelKind BarrelKind { get; set; }
@@ -359,9 +356,6 @@ namespace Purge.Editor.LevelDesigner
                         Tool = EditTool.Select;
                     }
                     break;
-                case EditTool.Zombie:
-                    Apply("Add Zombie", () => created = LevelEditing.AddZombie(Level, cell, ZombieDefinition, ZombieFacing));
-                    break;
                 case EditTool.Weapon:
                     Apply("Add Weapon", () => created = LevelEditing.AddWeapon(Level, cell, WeaponDefinition));
                     break;
@@ -431,11 +425,7 @@ namespace Purge.Editor.LevelDesigner
                 return false;
             }
 
-            if (Tool == EditTool.Zombie && ZombieDefinition == null)
-            {
-                reason = "Choose a Zombie Definition in the tool options.";
-                return false;
-            }
+
 
             if (Tool == EditTool.Weapon && WeaponDefinition == null)
             {
@@ -447,18 +437,9 @@ namespace Purge.Editor.LevelDesigner
                 return CanPlaceVehicle(cell, out reason);
 
             var others = Level.AllEntities().Where(e => e.Position == cell).ToList();
-            if (Tool == EditTool.Zombie)
+            if (others.Count > 0)
             {
-                if (others.Any(e => e is PlayerStartData))
-                    reason = "A zombie cannot spawn on a player start.";
-            }
-            else if (others.Any(e => !(e is ZombieSpawnData)))
-            {
-                reason = $"Cell already holds {others.First(e => !(e is ZombieSpawnData)).Id}.";
-            }
-            else if (Tool == EditTool.PlayerStart && others.Count > 0)
-            {
-                reason = "A player start cannot share a cell with a zombie.";
+                reason = $"Cell already holds {others[0].Id}.";
             }
 
             return reason == null;
@@ -475,7 +456,7 @@ namespace Purge.Editor.LevelDesigner
             }
 
             var taken = new System.Collections.Generic.HashSet<GridPosition>(
-                Level.AllEntities().Where(e => !(e is VehicleData) && !(e is ZombieSpawnData)).Select(e => e.Position));
+                Level.AllEntities().Where(e => !(e is VehicleData)).Select(e => e.Position));
             var cells = new System.Collections.Generic.List<GridPosition>();
             foreach (var other in Level.Vehicles)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Core.Vehicles;
 using Purge.Core.Navigation;
 using Purge.Core.Visual;
@@ -63,10 +64,24 @@ namespace Purge.Core.Validation
             ValidateFloors(level, report);
             ValidateTutorial(level, report);
             ValidateMonsterSpawns(level, report);
+            ValidateChestKeySource(level, report);
 
             foreach (var door in level.Doors.Where(d => d.IsFrozen && d.IsInitiallyOpen))
                 report.Add(Error, Structural, ValidationCodes.FrozenDoorInitiallyOpen,
                     $"Door '{door.Id}' is frozen and initially open: a frozen door starts closed.", door.Position, door.Id);
+        }
+
+        private static void ValidateChestKeySource(LevelData level, ValidationReport report)
+        {
+            if (level.StressTest != null || !level.Chests.Any(chest => chest.Kind == ChestKind.Locked)) return;
+
+            var waves = level.Horde?.Waves?.Waves;
+            if (waves != null && waves.Take(4).Any(wave => wave != null &&
+                wave.Groups.Any(group => group?.Monster != null && group.Monster.Rank == MonsterRank.Elite)))
+                return;
+
+            report.Add(Error, Gameplay, ValidationCodes.MissingEarlyChestKeySource,
+                "A locked chest needs an elite in a guaranteed group before wave 5; random wave monsters do not guarantee a key.");
         }
 
         /// <summary>Spawn points of the waves (stage 6): inside, on a floor cell, not in an obstacle that blocks movement.</summary>

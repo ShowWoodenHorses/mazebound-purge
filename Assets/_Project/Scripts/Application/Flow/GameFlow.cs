@@ -533,7 +533,7 @@ namespace Purge.Application.Flow
 
             try
             {
-                _progress.RecordRun(CurrentLevelId, levelResult, CurrentDifficulty, CurrentArenaClosed);
+                LastResult = _progress.RecordRun(CurrentLevelId, levelResult, CurrentDifficulty, CurrentArenaClosed);
                 if (_session.IsRun) _progress.ClearRun(); // ТЗ: смерть удаляет сейв забега; a won run has none either
             }
             catch (Exception e)

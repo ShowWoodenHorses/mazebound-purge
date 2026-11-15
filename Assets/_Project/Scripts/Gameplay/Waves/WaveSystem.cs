@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Common;
 using Purge.Core.Level;
+using Purge.Core.Monsters;
 using Purge.Core.Navigation;
 using Purge.Core.Waves;
 using Purge.Gameplay.Horde;
@@ -96,7 +97,7 @@ namespace Purge.Gameplay.Waves
             _bossSlot >= 0 && _horde.Generations[_bossSlot] == _bossGeneration && HordeSystem.IsAlive(_horde.States[_bossSlot]);
 
         /// <summary>The wave being fought is a boss wave.</summary>
-        public bool IsBossWave => Phase == WavePhase.Running && Scenario.Waves[WaveIndex].IsBossWave;
+        public bool IsBossWave => Phase == WavePhase.Running && BossOf(Scenario.Waves[WaveIndex]) != null;
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
@@ -227,6 +228,12 @@ namespace Purge.Gameplay.Waves
             return true;
         }
 
+        private WaveBoss BossOf(WaveDefinition wave)
+        {
+            var boss = wave.Boss;
+            return boss != null && boss.IsEnabled(_horde.Difficulty?.Level ?? DifficultyLevel.Easy) ? boss : null;
+        }
+
         private void StartWave(int index)
         {
             // ТЗ: дроп волны лежит до начала следующей волны, потом исчезает.
@@ -247,7 +254,7 @@ namespace Purge.Gameplay.Waves
             _escortPoints.Clear();
             _escortNext = 0;
             _bossSlot = -1;
-            var boss = wave.Boss;
+            var boss = BossOf(wave);
             _bossKind = boss != null ? _horde.KindIndexOf(boss.Monster) : -1;
             _bossPending = _bossKind >= 0;
             if (boss != null && _bossKind < 0)

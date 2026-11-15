@@ -52,6 +52,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f9ba67d81e07a64989e88bb30acd0d2, type: 2}
   - {fileID: 11400000, guid: d4a4a6da66223894b80b7c10e3e7e3b5, type: 2}
   - {fileID: 11400000, guid: d49aaafd2027e4f4eba080a895771fb6, type: 2}
+  - {fileID: 11400000, guid: 3b9202af9d1ea3040a737c121af943f6, type: 2}
   _maxAlive: 300
   _reserveSlots: 64
   _difficulty: {fileID: 11400000, guid: 8e3955f51ef0b7744b39b01e5550619f, type: 2}

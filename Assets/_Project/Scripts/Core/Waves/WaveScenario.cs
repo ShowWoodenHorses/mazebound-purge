@@ -69,7 +69,10 @@ namespace Purge.Core.Waves
         [Tooltip("Comes with the boss: × the difficulty's count factor (at least one), from the spawn points nearest the arena.")]
         [SerializeField] private WaveGroup[] _escort = Array.Empty<WaveGroup>();
 
+        [SerializeField] private DifficultyLevel _minimumDifficulty;
+
         public MonsterDefinition Monster => _monster;
+        public bool IsEnabled(DifficultyLevel difficulty) => difficulty >= _minimumDifficulty;
         public WaveGroup[] Escort => _escort ??= Array.Empty<WaveGroup>();
 
         public WaveBoss()

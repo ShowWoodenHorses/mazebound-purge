@@ -67,6 +67,24 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(writes + 1, _storage.Writes, "Saved at once; nothing to add — no write.");
         }
 
+        [Test]
+        public void ForestRewards_AreRecordedPerDifficulty_WithArenaAndRepeatModifiers()
+        {
+            const string forest = "Level_Forest_01";
+            var lost = _progress.RecordRun(forest, new LevelResult(false, 0, money: 10), 2, true);
+            Assert.AreEqual(10, lost.Money);
+            Assert.IsFalse(_progress.Owns("mortar"));
+
+            Assert.AreEqual(292, _progress.RecordRun(forest, Completed(money: 10), 0).Money);
+            Assert.AreEqual(3442, _progress.RecordRun(forest, Completed(money: 10), 2, true).Money);
+            Assert.IsTrue(_progress.Owns("mortar"));
+            Assert.IsFalse(_progress.Owns("railgun"));
+            Assert.AreEqual(868, _progress.RecordRun(forest, Completed(money: 10), 2, true).Money);
+            Assert.AreEqual(5866, _progress.RecordRun(forest, Completed(), 3).Money);
+            Assert.IsTrue(_progress.Owns("railgun"));
+            Assert.AreEqual(10478, _progress.Money);
+        }
+
         // ------------------------------------------------------------ The run's choice (stage 11б)
 
         [Test]

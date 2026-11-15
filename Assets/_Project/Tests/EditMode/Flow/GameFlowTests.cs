@@ -568,12 +568,13 @@ namespace Purge.Tests.EditMode.Flow
             public int RecordedDifficulty;
             public bool RecordedArena;
 
-            public void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
+            public LevelResult RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
             {
                 Recorded.Add(new KeyValuePair<string, LevelResult>(levelId, result));
                 RecordedDifficulty = difficulty;
                 RecordedArena = arenaClosed;
                 Money += result.Money;
+                return result;
             }
 
             public void AddMoney(int amount) => Money += amount;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Forest_01
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Waves.WaveScenario
   _waves:
-  - _budget: 40
+  - _budget: 20
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
       _weight: 3
@@ -22,16 +22,34 @@ MonoBehaviour:
     - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
       _weight: 2
     _groups: []
-    _spawnTime: 25
+    _spawnTime: 13
     _packSize: 6
     _maxAlive: 80
-    _skipRate: 0
-    _moneyBonus: 0
+    _skipRate: 1
+    _moneyBonus: 3
     _scoreBonus: 0
     _boss:
       _monster: {fileID: 0}
       _escort: []
-  - _budget: 70
+  - _budget: 25
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    _groups: []
+    _spawnTime: 14
+    _packSize: 6
+    _maxAlive: 80
+    _skipRate: 1
+    _moneyBonus: 4
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+  - _budget: 30
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
       _weight: 3
@@ -50,52 +68,16 @@ MonoBehaviour:
       _count: 1
       _time: 15
       _point: -1
-    _spawnTime: 35
+    _spawnTime: 15
     _packSize: 6
     _maxAlive: 120
-    _skipRate: 0
-    _moneyBonus: 0
+    _skipRate: 2
+    _moneyBonus: 5
     _scoreBonus: 0
     _boss:
       _monster: {fileID: 0}
       _escort: []
-  - _budget: 110
-    _monsters:
-    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
-      _weight: 3
-    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
-      _weight: 2
-    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
-      _weight: 2
-    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
-      _weight: 0.2
-    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
-      _weight: 0.1
-    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
-      _weight: 0.1
-    _groups:
-    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
-      _count: 2
-      _time: 25
-      _point: -1
-    _spawnTime: 40
-    _packSize: 8
-    _maxAlive: 150
-    _skipRate: 0
-    _moneyBonus: 0
-    _scoreBonus: 0
-    _boss:
-      _monster: {fileID: 11400000, guid: 954c2a9655ab2b047ace4faec39a8805, type: 2}
-      _escort:
-      - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
-        _count: 10
-        _time: 0
-        _point: -1
-      - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
-        _count: 10
-        _time: 8
-        _point: -1
-  - _budget: 150
+  - _budget: 40
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
       _weight: 3
@@ -118,16 +100,125 @@ MonoBehaviour:
       _count: 1
       _time: 30
       _point: -1
-    _spawnTime: 45
+    _spawnTime: 16
     _packSize: 8
     _maxAlive: 200
-    _skipRate: 0
-    _moneyBonus: 0
+    _skipRate: 2
+    _moneyBonus: 6
     _scoreBonus: 0
     _boss:
       _monster: {fileID: 0}
       _escort: []
-  - _budget: 185
+  - _budget: 45
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.2
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.1
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.1
+    _groups:
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _count: 2
+      _time: 25
+      _point: -1
+    _spawnTime: 17
+    _packSize: 8
+    _maxAlive: 150
+    _skipRate: 3
+    _moneyBonus: 7
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: 954c2a9655ab2b047ace4faec39a8805, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 10
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+        _count: 10
+        _time: 8
+        _point: -1
+      _minimumDifficulty: 1
+  - _budget: 50
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.2
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.1
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.1
+    _groups: []
+    _spawnTime: 18
+    _packSize: 8
+    _maxAlive: 150
+    _skipRate: 3
+    _moneyBonus: 8
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+  - _budget: 55
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.3
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.15
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.15
+    _groups: []
+    _spawnTime: 19
+    _packSize: 8
+    _maxAlive: 200
+    _skipRate: 4
+    _moneyBonus: 9
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+  - _budget: 65
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.35
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.175
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.175
+    _groups: []
+    _spawnTime: 20
+    _packSize: 9
+    _maxAlive: 225
+    _skipRate: 4
+    _moneyBonus: 10
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+  - _budget: 75
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
       _weight: 3
@@ -154,16 +245,73 @@ MonoBehaviour:
       _count: 1
       _time: 50
       _point: -1
-    _spawnTime: 50
+    _spawnTime: 21
     _packSize: 9
     _maxAlive: 225
-    _skipRate: 0
-    _moneyBonus: 0
+    _skipRate: 5
+    _moneyBonus: 11
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: ae6321e2dfe487d428724459e3734e44, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+        _count: 10
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+        _count: 10
+        _time: 8
+        _point: -1
+      _minimumDifficulty: 1
+  - _budget: 90
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.35
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.175
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.175
+    _groups: []
+    _spawnTime: 22
+    _packSize: 9
+    _maxAlive: 225
+    _skipRate: 5
+    _moneyBonus: 12
     _scoreBonus: 0
     _boss:
       _monster: {fileID: 0}
       _escort: []
-  - _budget: 220
+  - _budget: 105
+    _monsters:
+    - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
+      _weight: 3
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: a383ca08f0449be4a88e95211bf92d5c, type: 2}
+      _weight: 2
+    - _monster: {fileID: 11400000, guid: cfb638289f694dd43af1b58464ff94b1, type: 2}
+      _weight: 0.4
+    - _monster: {fileID: 11400000, guid: 61ac7834342a27c4c9ea51af6feb08dd, type: 2}
+      _weight: 0.2
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _weight: 0.2
+    _groups: []
+    _spawnTime: 23
+    _packSize: 10
+    _maxAlive: 250
+    _skipRate: 6
+    _moneyBonus: 14
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+  - _budget: 130
     _monsters:
     - _monster: {fileID: 11400000, guid: 5d49284c216ee704f983791110983176, type: 2}
       _weight: 3
@@ -190,11 +338,11 @@ MonoBehaviour:
       _count: 2
       _time: 50
       _point: -1
-    _spawnTime: 55
+    _spawnTime: 24
     _packSize: 10
     _maxAlive: 250
-    _skipRate: 0
-    _moneyBonus: 0
+    _skipRate: 6
+    _moneyBonus: 16
     _scoreBonus: 0
     _boss:
       _monster: {fileID: 11400000, guid: 7312a3b097175d44d9599c486efd9c41, type: 2}

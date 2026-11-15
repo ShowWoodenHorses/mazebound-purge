@@ -26,6 +26,7 @@ namespace Purge.Core.Validation
         public const string VehicleBlocked = "VehicleBlocked";
         public const string FloorOverhang = "FloorOverhang";
         public const string MonsterSpawnBlocked = "MonsterSpawnBlocked";
+        public const string MissingEarlyChestKeySource = "MissingEarlyChestKeySource";
         public const string WavesWithoutSpawns = "WavesWithoutSpawns";
 
         // Visual

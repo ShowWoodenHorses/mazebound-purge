@@ -45,7 +45,7 @@ namespace Purge.Application.Save
         /// the completed difficulty (with the closed arena — <see cref="LevelRecord.ClosedArenaMask"/>, stage 11б), the win,
         /// and unlocks the next level. Saves.
         /// </summary>
-        void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false);
+        LevelResult RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false);
 
         /// <summary>Adds money (the result's rewarded ×2) and saves.</summary>
         void AddMoney(int amount);
@@ -144,10 +144,13 @@ namespace Purge.Application.Save
 
         public int Money => Data.Money;
 
-        public void RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
+        public LevelResult RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
         {
             if (string.IsNullOrEmpty(levelId)) throw new ArgumentException("Level id is empty.", nameof(levelId));
             if (difficulty < 0 || difficulty > 30) throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null);
+
+            if (result.Completed && levelId == "Level_Forest_01")
+                result = ApplyForestReward(result, difficulty, IsCompletedOn(levelId, difficulty), arenaClosed);
 
             Data.Money = SafeAdd(Data.Money, result.Money);
             Data.Stats.TotalKills = SafeAdd(Data.Stats.TotalKills, result.Kills);
@@ -165,6 +168,26 @@ namespace Purge.Application.Save
             _save.Save();
             GameLog.Info(LogChannel.Save, $"Run saved: '{levelId}' (difficulty {difficulty}{(arenaClosed ? ", closed arena" : "")}) {result}" +
                                           (next != null ? $", unlocked '{next}'." : "."));
+            return result;
+        }
+
+        private LevelResult ApplyForestReward(LevelResult result, int difficulty, bool repeat, bool arenaClosed)
+        {
+            // Tools/Balance/Model/economy.csv: Forest first_clear_bonus.
+            int bonus = difficulty switch { 0 => 282, 1 => 735, 2 => 2288, 3 => 5866, _ => 0 };
+            if (bonus == 0) return result;
+
+            // Apply both modifiers before rounding to whole coins.
+            int numerator = bonus * (arenaClosed && difficulty > 0 ? 4 + difficulty : 4);
+            int denominator = repeat ? 16 : 4;
+            bonus = (numerator + denominator / 2) / denominator;
+
+            // Existing saves can have a clear from before rewards were introduced. Grant missing weapons on a win.
+            string weapon = difficulty switch { 2 => "mortar", 3 => "railgun", _ => null };
+            if (weapon != null && !Owns(weapon)) Data.Arsenal.Add(new OwnedItem { Id = weapon });
+
+            return new LevelResult(result.Completed, result.Kills, result.Time, result.Waves, result.WaveCount,
+                SafeAdd(result.Money, bonus), result.Score, result.Revives);
         }
 
         public void AddMoney(int amount)

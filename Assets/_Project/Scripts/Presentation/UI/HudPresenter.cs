@@ -126,12 +126,15 @@ namespace Purge.Presentation.UI
             var throwable = ThrowableState();
             _ui.Hud.SetThrowable(throwable);
 
+            var target = _interaction.CurrentTarget();
+            _ui.Hud.SetDesktopUse(target != InteractionTarget.None);
+
             var touch = _ui.TouchControls;
             if (touch == null) return;
             touch.SetDriving(_player.InVehicle);
             touch.SetWeapons(melee, ranged);
             touch.SetThrowable(throwable);
-            touch.SetUse(_interaction.CurrentTarget() switch
+            touch.SetUse(target switch
             {
                 InteractionTarget.Weapon => UseTarget.PickUp,
                 InteractionTarget.Throwable => UseTarget.PickUp,

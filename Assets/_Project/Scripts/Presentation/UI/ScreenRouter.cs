@@ -74,6 +74,7 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
             _ui.MainMenu.ArsenalClicked += OnArsenal;
+            if (_arsenal != null) _arsenal.GuidedPurchaseCompleted += OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked += OnCharacter;
             if (_ui.Character != null && _character != null)
             {
@@ -141,6 +142,7 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
             _ui.MainMenu.ArsenalClicked -= OnArsenal;
+            if (_arsenal != null) _arsenal.GuidedPurchaseCompleted -= OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked -= OnCharacter;
             if (_ui.Character != null)
             {
@@ -242,7 +244,7 @@ namespace Purge.Presentation.UI
             if (_ui.Confirm != null && (_ui.Confirm.IsOpen || _ui.Confirm.IsVisible)) _ui.Confirm.Close();
             if (_ui.Tutorial != null)
             {
-                _ui.Tutorial.SetVisible(inLevel && _flow.IsTutorialLevel);
+                _ui.Tutorial.SetVisible(state == GameFlowState.Tip || inLevel && _flow.IsTutorialLevel);
                 _ui.Tutorial.SetDialogVisible(state == GameFlowState.Tip);
             }
         }
@@ -251,7 +253,22 @@ namespace Purge.Presentation.UI
         /// The main menu's money and buttons; in development builds (and the editor) the level list: the tutorial, every
         /// catalog level (locked ones too, so any level can be tested) and the development levels.
         /// </summary>
-        private void OnArsenal() { if (_flow.State != GameFlowState.MainMenu) return; _arsenal?.Open(); Show(_flow.State); }
+        private bool NeedsGuidedPurchase => _catalog.Tutorial != null && _catalog.Levels.Count > 0 &&
+            _progress.IsCompleted(_catalog.Tutorial.LevelId) && !_progress.IsCompleted(_catalog.Levels[0].LevelId) &&
+            !_flow.HasSavedRun && _arsenal?.CanBuyGuidedWeapon == true;
+
+        private void OnArsenal()
+        {
+            if (_flow.State != GameFlowState.MainMenu) return;
+            _arsenal?.Open(NeedsGuidedPurchase);
+            Show(_flow.State);
+        }
+
+        private void OnGuidedPurchaseCompleted()
+        {
+            if (_flow.State == GameFlowState.MainMenu && _catalog.Levels.Count > 0)
+                _flow.StartLevel(_catalog.Levels[0].LevelId).Forget();
+        }
         private void OnArsenalBack() => Show(_flow.State);
 
         private void OnCharacter()
@@ -283,6 +300,16 @@ namespace Purge.Presentation.UI
             var levels = _catalog.Levels;
             _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: _ui.Character != null && _tree != null, tasks: false, shop: false);
             _ui.MainMenu.SetMoney(_progress.Money);
+            var availableNode = false;
+            if (_ui.Character != null && _tree != null)
+                foreach (var node in Purge.Application.Meta.CharacterTree.Nodes)
+                {
+                    if (!_tree.CanPurchase(node)) continue;
+                    availableNode = true;
+                    break;
+                }
+
+            _ui.MainMenu.SetPurchaseIndicators(_arsenal?.HasAvailablePurchase() == true, availableNode, NeedsGuidedPurchase);
             _ui.MainMenu.SetPlayable(levels.Count > 0);
             _ui.MainMenu.SetContinueAvailable(_flow.HasSavedRun);
             RefreshSignIn();
@@ -374,6 +401,12 @@ namespace Purge.Presentation.UI
         private void OnPlayClicked()
         {
             if (_flow.State != GameFlowState.MainMenu) return;
+            if (NeedsGuidedPurchase)
+            {
+                OnArsenal();
+                return;
+            }
+
             var next = LevelToPlay();
             if (next == null) return;
             if (_setup != null && _setup.IsAvailable) OpenSetup(next);

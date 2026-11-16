@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -944,4 +962,26 @@ MonoBehaviour:
   - Tocca l'altro slot dell'arma.
   - Tocca il pulsante della granata e poi il bersaglio. Il lancio avvia la prima
     ondata.
+  - Suggerimenti di gioco
+  - Compra la Desert per iniziare il primo livello.
+  - SUGGERIMENTO
+  - Il silenziatore attutisce gli spari e allerta meno mostri.
+  - "L\u2019ufficiale attacca a distanza. Esci dalla zona segnalata prima del colpo."
+  - Lo sciamano rianima i mostri caduti. Eliminalo per fermare i rinforzi.
+  - Il nemico corazzato subisce meno danni frontalmente. Spara ai fianchi o alle
+    spalle.
+  - "I campioni hanno tratti speciali che li rendono pi\xF9 pericolosi dei mostri
+    comuni."
+  - "L\u2019Uncino pu\xF2 attirarti a s\xE9. Scansa il colpo quando prepara l\u2019attacco."
+  - Apri il forziere comune per prendere il bottino.
+  - "Il forziere chiuso richiede una chiave. Contiene un\u2019arma pi\xF9 rara."
+  - Questo forziere evoca campioni. Sconfiggili per ottenere il premio.
+  - Questa chiave apre un forziere chiuso.
+  - "La cupola tiene fuori i mostri e ti cura. Durante un\u2019ondata il tempo all\u2019interno
+    \xE8 limitato."
+  - "Spara al barile per attivarne l\u2019effetto. Tieniti a distanza quando esplode."
+  - Sali su un veicolo per travolgere i mostri. Si rompe se subisce troppi danni.
+  - Il boss preannuncia gli attacchi. Esci dalla zona segnalata prima del colpo.
+  - "L\u2019arena resta chiusa fino alla sconfitta del boss. Vincere con l\u2019arena
+    chiusa d\xE0 un bonus."
   _missing: []

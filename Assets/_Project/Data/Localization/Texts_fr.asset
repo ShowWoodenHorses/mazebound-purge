@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -947,4 +965,29 @@ MonoBehaviour:
   - Touche l'autre emplacement d'arme.
   - "Touche le bouton de grenade puis le point \xE0 viser. Le lancer d\xE9clenche
     la premi\xE8re vague."
+  - Conseils de jeu
+  - "Ach\xE8te le Desert pour lancer le premier niveau."
+  - CONSEIL
+  - "Le silencieux r\xE9duit le bruit des tirs et alerte moins de monstres."
+  - "L\u2019officier attaque \xE0 distance. Sors de la zone marqu\xE9e avant l\u2019impact."
+  - "Le chaman rel\xE8ve les monstres tomb\xE9s. \xC9limine-le pour couper les renforts."
+  - "L\u2019ennemi blind\xE9 r\xE9siste aux tirs de face. Tire sur le c\xF4t\xE9
+    ou dans son dos."
+  - Les champions ont des traits qui les rendent plus dangereux que les monstres
+    ordinaires.
+  - "Le Crochet peut t\u2019attirer vers lui. \xC9carte-toi quand il pr\xE9pare son
+    attaque."
+  - "Ouvre le coffre ordinaire pour r\xE9cup\xE9rer le butin."
+  - "Le coffre verrouill\xE9 exige une cl\xE9. Il contient une arme plus rare."
+  - "Ce coffre invoque des champions. Bats-les pour r\xE9cup\xE9rer la r\xE9compense."
+  - "Cette cl\xE9 ouvre un coffre verrouill\xE9."
+  - "Le d\xF4me bloque les monstres et te soigne. Pendant une vague, le temps \xE0
+    l\u2019int\xE9rieur est limit\xE9."
+  - "Tire sur le baril pour d\xE9clencher son effet. Garde tes distances quand il
+    \xE9clate."
+  - "Monte dans un v\xE9hicule pour percuter les monstres. Il casse s\u2019il subit
+    trop de d\xE9g\xE2ts."
+  - "Le boss annonce ses attaques. Sors de la zone marqu\xE9e avant l\u2019impact."
+  - "L\u2019ar\xE8ne reste ferm\xE9e jusqu\u2019\xE0 la d\xE9faite du boss. R\xE9ussir
+    une partie en ar\xE8ne ferm\xE9e donne un bonus."
   _missing: []

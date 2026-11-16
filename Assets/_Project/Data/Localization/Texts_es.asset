@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -943,4 +961,28 @@ MonoBehaviour:
   - Toca la otra ranura de arma.
   - "Toca el bot\xF3n de granada y despu\xE9s el punto de lanzamiento. As\xED empieza
     la primera oleada."
+  - Consejos de juego
+  - Compra la Desert para empezar el primer nivel.
+  - CONSEJO
+  - El silenciador reduce el ruido de los disparos y alerta a menos monstruos.
+  - El oficial a distancia ataca desde lejos. Sal de la zona marcada antes del ataque.
+  - "El cham\xE1n revive a los monstruos ca\xEDdos. Derr\xF3talo para cortar los
+    refuerzos."
+  - "El enemigo acorazado resiste los impactos frontales. Dispara desde el flanco
+    o por detr\xE1s."
+  - "Los campeones tienen rasgos que los hacen m\xE1s peligrosos que los monstruos
+    normales."
+  - "El Gancho puede atraerte. Ap\xE1rtate cuando prepare el ataque."
+  - "Abre el cofre com\xFAn para recoger su bot\xEDn."
+  - "El cofre cerrado exige una llave. Contiene un arma m\xE1s rara."
+  - "Este cofre invoca campeones. Derr\xF3talos para reclamar la recompensa."
+  - Esta llave abre un cofre cerrado.
+  - "La c\xFApula bloquea a los monstruos y cura. Durante la oleada, el tiempo dentro
+    es limitado."
+  - "Dispara al barril para activar su efecto. Al\xE9jate cuando estalle."
+  - "Sube a un veh\xEDculo para embestir a los monstruos. Si recibe mucho da\xF1o,
+    se rompe."
+  - Los jefes avisan antes de atacar. Sal de la zona marcada antes del impacto.
+  - "La arena sigue cerrada hasta vencer al jefe. Completar la partida con la arena
+    cerrada da una bonificaci\xF3n."
   _missing: []

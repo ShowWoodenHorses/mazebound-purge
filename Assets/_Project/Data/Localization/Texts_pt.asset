@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -945,4 +963,25 @@ MonoBehaviour:
   - "Toque no outro espa\xE7o de arma."
   - "Toque no bot\xE3o de granada e depois no alvo. O arremesso inicia a primeira
     onda."
+  - Dicas de jogo
+  - "Compre a Desert para iniciar o primeiro n\xEDvel."
+  - DICA
+  - "O silenciador reduz o ru\xEDdo dos tiros e alerta menos monstros."
+  - "O oficial ataca \xE0 dist\xE2ncia. Saia da \xE1rea marcada antes do ataque."
+  - "O xam\xE3 revive monstros ca\xEDdos. Derrote-o para deter os refor\xE7os."
+  - "O inimigo blindado recebe menos dano de frente. Atire pelo lado ou por tr\xE1s."
+  - "Campe\xF5es t\xEAm caracter\xEDsticas que os tornam mais perigosos que monstros
+    comuns."
+  - "O Gancho pode puxar voc\xEA. Desvie para o lado quando ele preparar o ataque."
+  - "Abra o ba\xFA comum para pegar a recompensa."
+  - "O ba\xFA trancado exige uma chave. Ele cont\xE9m uma arma mais rara."
+  - "Este ba\xFA invoca campe\xF5es. Derrote-os para pegar a recompensa."
+  - "Esta chave abre um ba\xFA trancado."
+  - "A c\xFApula impede a entrada de monstros e cura. Durante a onda, o tempo dentro
+    \xE9 limitado."
+  - "Atire no barril para ativar seu efeito. Mantenha dist\xE2ncia quando ele explodir."
+  - "Entre num ve\xEDculo para atropelar monstros. Ele quebra se sofrer muito dano."
+  - "Os chefes avisam antes de atacar. Saia da \xE1rea marcada antes do impacto."
+  - "A arena fica trancada at\xE9 voc\xEA derrotar o chefe. Vencer com a arena fechada
+    rende um b\xF4nus."
   _missing: []

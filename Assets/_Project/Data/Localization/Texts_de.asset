@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -948,4 +966,30 @@ MonoBehaviour:
   - Tippe auf den anderen Waffenplatz.
   - Tippe auf die Granatentaste und dann auf das Ziel. Der Wurf startet die erste
     Welle.
+  - Spieltipps
+  - Kaufe die Desert, um das erste Level zu starten.
+  - TIPP
+  - "Ein Schalld\xE4mpfer macht Sch\xFCsse leiser, sodass dich weniger Monster h\xF6ren."
+  - Der Fernkampfoffizier greift aus der Distanz an. Verlasse vor dem Angriff den
+    markierten Bereich.
+  - Der Schamane belebt gefallene Monster wieder. Schalte ihn aus, um den Nachschub
+    zu stoppen.
+  - "Gepanzerte Gegner nehmen von vorn weniger Schaden. Schie\xDFe von der Seite
+    oder von hinten."
+  - "Champions haben besondere Eigenschaften und sind gef\xE4hrlicher als gew\xF6hnliche
+    Monster."
+  - Der Haken kann dich heranziehen. Weiche zur Seite aus, wenn er ausholt.
+  - "\xD6ffne die gew\xF6hnliche Truhe, um die Beute einzusammeln."
+  - "Die verschlossene Truhe braucht einen Schl\xFCssel. Darin liegt eine seltenere
+    Waffe."
+  - "Diese Truhe ruft Champions herbei. Besiege sie f\xFCr die Belohnung."
+  - "Dieser Schl\xFCssel \xF6ffnet eine verschlossene Truhe."
+  - "Die Kuppel h\xE4lt Monster ab und heilt dich. W\xE4hrend einer Welle ist die
+    Zeit darin begrenzt."
+  - "Schie\xDFe auf ein Fass, um seinen Effekt auszul\xF6sen. Halte dabei Abstand."
+  - "Steig in ein Fahrzeug, um Monster zu rammen. Zu viel Schaden zerst\xF6rt es."
+  - "Bossangriffe werden angek\xFCndigt. Verlasse den markierten Bereich vor dem
+    Treffer."
+  - "Die Arena bleibt bis zum Sieg \xFCber den Boss zu. Ein erfolgreicher Durchlauf
+    mit geschlossener Arena bringt einen Bonus."
   _missing: []

@@ -30,6 +30,9 @@ namespace Purge.Application.Save
         /// <summary>Bought weapons and throwables: upgrade level, chosen forks, drop pool mark.</summary>
         public List<OwnedItem> Arsenal = new List<OwnedItem>();
 
+        /// <summary>Optional gameplay hints already shown (stable ids).</summary>
+        public List<string> SeenHints = new List<string>();
+
         /// <summary>Bought nodes of the character tree (stable ids).</summary>
         public List<string> CharacterNodes = new List<string>();
         public int CharacterResetGeneration;
@@ -58,6 +61,9 @@ namespace Purge.Application.Save
             Levels ??= new List<LevelRecord>();
             Survival ??= new List<SurvivalRecord>();
             Arsenal ??= new List<OwnedItem>();
+            SeenHints ??= new List<string>();
+            SeenHints.RemoveAll(string.IsNullOrEmpty);
+            Distinct(SeenHints, id => id);
             CharacterNodes ??= new List<string>();
             Boosters ??= new List<string>();
             Loadout ??= new LoadoutSave();
@@ -169,6 +175,8 @@ namespace Purge.Application.Save
                 if (!Boosters.Contains(booster))
                     Boosters.Add(booster);
 
+            foreach (var id in other.SeenHints)
+                if (!SeenHints.Contains(id)) SeenHints.Add(id);
             Stats.MergeFrom(other.Stats);
             if (!HasRun && other.HasRun) Run = other.Run;
         }
@@ -253,6 +261,9 @@ namespace Purge.Application.Save
 
         public bool MonsterArrows => !NoMonsterArrows;
 
+        public bool NoGameplayHints;
+        public bool GameplayHints => !NoGameplayHints;
+
         public static GameSettings Default => new GameSettings
         {
             CameraDistance = DefaultCameraDistance,
@@ -277,11 +288,11 @@ namespace Purge.Application.Save
         public bool Equals(GameSettings other) =>
             CameraDistance == other.CameraDistance && NoCameraShake == other.NoCameraShake &&
             UnityEngine.Mathf.Approximately(ResolutionScale, other.ResolutionScale) && Compare == other.Compare &&
-            NoMonsterArrows == other.NoMonsterArrows;
+            NoMonsterArrows == other.NoMonsterArrows && NoGameplayHints == other.NoGameplayHints;
 
         public override bool Equals(object obj) => obj is GameSettings other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(CameraDistance, NoCameraShake, ResolutionScale, Compare, NoMonsterArrows);
+        public override int GetHashCode() => HashCode.Combine(CameraDistance, NoCameraShake, ResolutionScale, Compare, NoMonsterArrows, NoGameplayHints);
     }
 
     /// <summary>How a phone's on-screen controls attack (decision 2026-10-19).</summary>

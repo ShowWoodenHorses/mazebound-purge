@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - English
   - SETTINGS
@@ -960,4 +978,27 @@ MonoBehaviour:
   - Tap the other weapon slot.
   - Tap the grenade button, then tap the spot to throw at. The throw starts the first
     wave.
+  - Gameplay hints
+  - Buy the Desert to start the first level.
+  - HINT
+  - A silencer reduces the noise of your shots, so fewer monsters hear you.
+  - The ranged officer attacks from a distance. Move out of the marked area before
+    the attack.
+  - Shamans raise fallen monsters. Take the shaman out to stop the reinforcements.
+  - The armored enemy takes less damage from the front. Shoot from the side or behind.
+  - Champions have special traits that make them more dangerous than ordinary monsters.
+  - The Hook can pull you toward it. Move aside when it winds up.
+  - Use a common chest to claim its loot.
+  - A locked chest needs a key. It contains a rarer weapon.
+  - Opening this chest starts a fight with champions. Defeat them to claim the reward.
+  - This key opens a locked chest.
+  - The dome keeps monsters out and restores health. During a wave, time inside is
+    limited.
+  - Shoot a barrel to trigger its effect. Keep your distance when it goes off.
+  - Get into a vehicle to ram monsters. The vehicle can break if it takes too much
+    damage.
+  - Boss attacks are telegraphed. Watch the marked zones and move before the attack
+    lands.
+  - The arena is locked until you defeat the boss. Winning a run with a closed arena
+    grants a bonus.
   _missing: []

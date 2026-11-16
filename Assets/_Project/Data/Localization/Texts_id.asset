@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -958,4 +976,27 @@ MonoBehaviour:
   - Dekati senjata yang ditandai dan ketuk tombol interaksi.
   - Ketuk slot senjata lainnya.
   - Ketuk tombol granat lalu titik sasaran. Lemparan memulai gelombang pertama.
+  - Tips permainan
+  - Beli Desert untuk memulai level pertama.
+  - TIPS
+  - Peredam meredakan suara tembakan sehingga lebih sedikit monster mendengarmu.
+  - Perwira jarak jauh menyerang dari jauh. Keluar dari area bertanda sebelum serangan.
+  - Dukun membangkitkan monster yang tumbang. Kalahkan dia untuk menghentikan bala
+    bantuan.
+  - Musuh berzirah menerima lebih sedikit kerusakan dari depan. Tembak dari samping
+    atau belakang.
+  - Champion memiliki ciri khusus yang membuatnya lebih berbahaya dari monster biasa.
+  - Si Kait bisa menarikmu. Menyampinglah saat ia bersiap menyerang.
+  - Buka peti biasa untuk mengambil jarahannya.
+  - Peti terkunci perlu kunci. Isinya senjata yang lebih langka.
+  - Peti ini memanggil champion. Kalahkan mereka untuk mengambil hadiah.
+  - Kunci ini membuka peti terkunci.
+  - Kubah menghalau monster dan memulihkan kesehatan. Saat gelombang, waktu di dalam
+    terbatas.
+  - Tembak tong untuk memicu efeknya. Jaga jarak saat tong meledak.
+  - Masuk ke kendaraan untuk menabrak monster. Kendaraan rusak jika menerima terlalu
+    banyak kerusakan.
+  - Serangan bos diberi tanda. Keluar dari area bertanda sebelum serangan mengenai
+    sasaran.
+  - Arena terkunci sampai bos dikalahkan. Menang dengan arena tertutup memberi bonus.
   _missing: []

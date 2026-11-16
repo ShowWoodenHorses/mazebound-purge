@@ -6,6 +6,7 @@ using System.Text;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Save;
 using Purge.Application.Services;
+using Purge.Core.Level;
 using Purge.Core.Localization;
 using Purge.Presentation.Localization;
 using Purge.Tests.EditMode.Common;
@@ -165,6 +166,11 @@ namespace Purge.Tests.EditMode.UI
             foreach (var field in typeof(TextKeys).GetFields(BindingFlags.Public | BindingFlags.Static))
                 if (field.IsLiteral)
                     (field.Name.EndsWith("Prefix") ? prefixes : keys).Add((string)field.GetRawConstantValue());
+
+            var hints = HintCatalog.LoadDefinitions();
+            Assert.IsNotEmpty(hints);
+            CollectionAssert.AllItemsAreUnique(hints.Select(hint => hint.Id));
+            keys.AddRange(hints.Select(hint => hint.TextKey));
 
             var issues = LocalizationCheck.Run(source, keys, prefixes);
 

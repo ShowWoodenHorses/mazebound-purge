@@ -45,6 +45,7 @@ namespace Purge.Tests.PlayMode
         private GameFlow _flow;
         private IAddressablesService _addressables;
         private AudioService _audio;
+        private string _savedProgress;
 
         /// <summary>Addressables handles without music (it loads and unloads with the flow, asynchronously).</summary>
         private int AppHandles => _addressables.ActiveHandleCount - _audio.MusicHandleCount;
@@ -52,6 +53,8 @@ namespace Purge.Tests.PlayMode
         [UnitySetUp]
         public IEnumerator SetUp() => Async(async () =>
         {
+            _savedProgress = PlayerPrefs.HasKey(PlayerPrefsSaveStorage.Key)
+                ? PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key) : null;
             var loading = SceneManager.LoadSceneAsync(BootstrapScene, LoadSceneMode.Single);
             Assert.IsNotNull(loading, $"Scene '{BootstrapScene}' could not be loaded: is it in Build Settings?");
             await loading.ToUniTask();
@@ -66,6 +69,10 @@ namespace Purge.Tests.PlayMode
             await WaitFor(() => _flow.State == GameFlowState.MainMenu || _flow.State == GameFlowState.Error || _flow.IsTutorialLevel && _flow.State == GameFlowState.Playing);
             if (_flow.IsTutorialLevel && _flow.State == GameFlowState.Playing) await _flow.ExitToMenu();
             Assert.AreEqual(GameFlowState.MainMenu, _flow.State, _flow.ErrorMessage);
+            var save = _container.Resolve<SaveService>();
+            var game = save.Data.Settings.Game;
+            game.NoGameplayHints = true; // Gameplay hints have a separate test that verifies the pause flow.
+            save.Data.Settings.Game = game;
             var podium = _container.Resolve<MenuPodiumPresenter>();
             await WaitFor(() => !podium.IsLoading); // its assets stay for the application's lifetime
         });
@@ -84,6 +91,71 @@ namespace Purge.Tests.PlayMode
                 if (unloading != null)
                     await unloading.ToUniTask();
             }
+
+            if (_savedProgress == null) PlayerPrefs.DeleteKey(PlayerPrefsSaveStorage.Key);
+            else PlayerPrefs.SetString(PlayerPrefsSaveStorage.Key, _savedProgress);
+            PlayerPrefs.Save();
+        });
+
+        [UnityTest]
+        public IEnumerator MenuTutorial_SelectsDesertAndStartsFirstLevelAfterPurchase() => Async(async () =>
+        {
+            var save = _container.Resolve<SaveService>();
+            var catalog = _container.Resolve<ILevelCatalog>();
+            var ui = _container.Resolve<UIRoot>();
+            var desert = _container.Resolve<ArsenalPresenter>().GuidedWeapon;
+            Assert.IsNotNull(desert);
+
+            save.Data.Levels.Clear();
+            save.Data.Levels.Add(new LevelRecord { LevelId = catalog.Tutorial.LevelId, CompletedMask = 1 });
+            save.Data.Run = null;
+            save.Data.Arsenal.Clear();
+            save.Data.Money = desert.PurchasePrice;
+
+            var play = ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "PlayButton");
+            play.onClick.Invoke();
+            Assert.IsTrue(ui.Arsenal.IsVisible);
+            var buy = ui.Arsenal.GetComponentsInChildren<Button>(true).Single(b => b.name == "Buy");
+            Assert.IsTrue(buy.interactable);
+            buy.onClick.Invoke();
+
+            await WaitFor(() => _flow.State == GameFlowState.Playing || _flow.State == GameFlowState.Error);
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            Assert.AreEqual(catalog.Levels[0].LevelId, _flow.CurrentLevelId);
+            Assert.IsNotNull(save.Data.FindItem(desert.Id));
+            Assert.AreEqual(0, save.Data.Money);
+        });
+
+        [UnityTest]
+        public IEnumerator GameplayHints_SettingsAndPausePersistTheSeenHint() => Async(async () =>
+        {
+            var ui = _container.Resolve<UIRoot>();
+            var save = _container.Resolve<SaveService>();
+            var settings = _container.Resolve<SettingsService>();
+            var catalog = _container.Resolve<ILevelCatalog>();
+            save.Data.SeenHints.Clear();
+            save.Data.Run = null;
+            await _flow.StartLevel(catalog.Levels[0].LevelId);
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            await UniTask.Delay(500);
+            Assert.AreEqual(GameFlowState.Playing, _flow.State);
+            Assert.IsEmpty(save.Data.SeenHints);
+
+            var game = settings.Game;
+            game.NoGameplayHints = false;
+            settings.PreviewGame(game);
+            await WaitFor(() => _flow.State == GameFlowState.Tip);
+            Assert.IsTrue(ui.Tutorial.IsVisible);
+            Assert.AreEqual(1, save.Data.SeenHints.Count);
+            var seen = save.Data.SeenHints[0];
+            var persisted = JsonUtility.FromJson<SaveData>(PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key));
+            Assert.That(persisted.SeenHints, Does.Contain(seen));
+
+            await WaitFor(() => ui.Tutorial.CanContinue);
+            var next = ui.Tutorial.GetComponentsInChildren<Button>(true).Single(b => b.name == "ContinueButton");
+            next.onClick.Invoke();
+            Assert.AreEqual(GameFlowState.Playing, _flow.State);
+            Assert.IsFalse(ui.Tutorial.IsVisible);
         });
 
         [UnityTest]

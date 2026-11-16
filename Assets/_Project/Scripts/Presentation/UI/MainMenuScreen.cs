@@ -18,6 +18,8 @@ namespace Purge.Presentation.UI
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _arsenalButton;
         [SerializeField] private Button _characterButton;
+        [SerializeField] private GameObject _arsenalDot;
+        [SerializeField] private GameObject _characterDot;
         [SerializeField] private Button _tasksButton;
         [SerializeField] private Button _shopButton;
         [SerializeField] private Button _settingsButton;
@@ -74,6 +76,13 @@ namespace Purge.Presentation.UI
             if (_characterButton != null) _characterButton.interactable = character;
             if (_tasksButton != null) _tasksButton.gameObject.SetActive(tasks);
             if (_shopButton != null) _shopButton.gameObject.SetActive(shop);
+        }
+
+        public void SetPurchaseIndicators(bool arsenal, bool character, bool guided)
+        {
+            if (_arsenalDot != null) _arsenalDot.SetActive(arsenal);
+            if (_characterDot != null) _characterDot.SetActive(character);
+            if (_arsenalButton is Style.UiButton button) button.Accent = guided;
         }
 
         /// <summary>«Продолжить» above Play while a run is saved (stage 6e); it is the main action then.</summary>

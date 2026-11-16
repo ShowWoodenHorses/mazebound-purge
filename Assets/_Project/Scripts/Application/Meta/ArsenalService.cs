@@ -21,6 +21,8 @@ namespace Purge.Application.Meta
         public bool IsOpen(ContentDefinition item) => item != null && IsItem(item) && (IsStart(item) || _save.Data.FindItem(item.Id) != null);
         public int Level(ContentDefinition item) => item == null ? 1 : _save.Data.FindItem(item.Id)?.Level ?? 1;
         public PoolMark Mark(ContentDefinition item) => item == null ? PoolMark.Normal : _save.Data.FindItem(item.Id)?.Mark ?? PoolMark.Normal;
+        public const string TutorialPurchaseId = "desert";
+
         public bool CanBuy(ContentDefinition item) => item != null && IsItem(item) && !IsBase(item) && !IsOpen(item)
             && !(item is WeaponDefinition w && w.UniqueReward) && Price(item) > 0 && Money >= Price(item);
         public bool Buy(ContentDefinition item)

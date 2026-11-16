@@ -114,6 +114,9 @@ namespace Purge.Editor.Dev
                 keys.Add(key + ".text");
             }
 
+            foreach (var hint in HintCatalog.LoadDefinitions())
+                if (!string.IsNullOrEmpty(hint?.TextKey)) keys.Add(hint.TextKey);
+
             var issues = LocalizationCheck.Run(source, keys, prefixes);
             var tableKeys = new HashSet<string>(source.Rows.Select(row => row.Key));
 

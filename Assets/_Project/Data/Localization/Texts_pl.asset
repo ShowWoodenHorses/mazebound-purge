@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - Polski
   - USTAWIENIA
@@ -951,4 +969,30 @@ MonoBehaviour:
   - "Podejd\u017A do oznaczonej broni i dotknij przycisku interakcji."
   - "Dotknij drugiego miejsca na bro\u0144."
   - "Dotknij przycisku granatu, a potem celu. Rzut rozpocznie pierwsz\u0105 fal\u0119."
+  - "Wskaz\xF3wki w grze"
+  - "Kup Desert, aby rozpocz\u0105\u0107 pierwszy poziom."
+  - "WSKAZ\xD3WKA"
+  - "T\u0142umik wycisza strza\u0142y, wi\u0119c s\u0142yszy ci\u0119 mniej potwor\xF3w."
+  - "Oficer atakuje z dystansu. Opu\u015B\u0107 oznaczon\u0105 stref\u0119 przed
+    atakiem."
+  - "Szaman wskrzesza poleg\u0142e potwory. Pokonaj go, by zatrzyma\u0107 posi\u0142ki."
+  - "Opancerzony wr\xF3g otrzymuje mniej obra\u017Ce\u0144 od przodu. Strzelaj z
+    boku lub od ty\u0142u."
+  - "Czempioni maj\u0105 cechy, kt\xF3re czyni\u0105 ich gro\u017Aniejszymi od zwyk\u0142ych
+    potwor\xF3w."
+  - "Hak mo\u017Ce ci\u0119 przyci\u0105gn\u0105\u0107. Odskocz w bok, gdy przygotowuje
+    atak."
+  - "Otw\xF3rz zwyk\u0142\u0105 skrzyni\u0119, aby zabra\u0107 \u0142up."
+  - "Zamkni\u0119ta skrzynia wymaga klucza. Zawiera rzadsz\u0105 bro\u0144."
+  - "Ta skrzynia przyzywa czempion\xF3w. Pokonaj ich, by odebra\u0107 nagrod\u0119."
+  - "Ten klucz otwiera zamkni\u0119t\u0105 skrzyni\u0119."
+  - "Kopu\u0142a powstrzymuje potwory i leczy. Podczas fali czas wewn\u0105trz jest
+    ograniczony."
+  - "Strzel w beczk\u0119, by uruchomi\u0107 jej efekt. Zachowaj dystans, gdy wybucha."
+  - "Wsi\u0105d\u017A do pojazdu, by taranowa\u0107 potwory. Pojazd zepsuje si\u0119
+    po du\u017Cych obra\u017Ceniach."
+  - "Ataki bossa s\u0105 zapowiadane. Opu\u015B\u0107 oznaczon\u0105 stref\u0119
+    przed uderzeniem."
+  - "Arena pozostaje zamkni\u0119ta a\u017C do pokonania bossa. Wygrana z zamkni\u0119t\u0105
+    aren\u0105 daje premi\u0119."
   _missing: []

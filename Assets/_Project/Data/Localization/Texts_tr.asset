@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -953,4 +971,31 @@ MonoBehaviour:
   - "Di\u011Fer silah yuvas\u0131na dokun."
   - "El bombas\u0131 tu\u015Funa, sonra hedefe dokun. At\u0131\u015Fla ilk dalga
     ba\u015Flar."
+  - "Oyun ipu\xE7lar\u0131"
+  - "\u0130lk b\xF6l\xFCme ba\u015Flamak i\xE7in Desert\u2019i sat\u0131n al."
+  - "\u0130PUCU"
+  - "Susturucu at\u0131\u015F sesini azalt\u0131r; seni daha az canavar duyar."
+  - "Menzilli subay uzaktan sald\u0131r\u0131r. Sald\u0131r\u0131dan \xF6nce i\u015Faretli
+    alandan \xE7\u0131k."
+  - "\u015Eaman d\xFC\u015Fen canavarlar\u0131 diriltir. Takviyeyi durdurmak i\xE7in
+    \u015Faman\u0131 alt et."
+  - "Z\u0131rhl\u0131 d\xFC\u015Fman \xF6nden daha az hasar al\u0131r. Yandan ya
+    da arkadan vur."
+  - "\u015Eampiyonlar\u0131n \xF6zel \xF6zellikleri onlar\u0131 s\u0131radan canavarlardan
+    daha tehlikeli k\u0131lar."
+  - "Kanca seni kendine \xE7ekebilir. Sald\u0131r\u0131ya haz\u0131rlan\u0131rken
+    yana ka\xE7."
+  - "\xD6d\xFCl\xFC almak i\xE7in s\u0131radan sand\u0131\u011F\u0131 a\xE7."
+  - "Kilitli sand\u0131k anahtar ister. \u0130\xE7inde daha nadir bir silah var."
+  - "Bu sand\u0131k \u015Fampiyonlar\u0131 \xE7a\u011F\u0131r\u0131r. \xD6d\xFCl
+    i\xE7in onlar\u0131 yen."
+  - "Bu anahtar kilitli sand\u0131\u011F\u0131 a\xE7ar."
+  - "Kubbe canavarlar\u0131 uzak tutar ve can yeniler. Dalga s\u0131ras\u0131nda
+    i\xE7eride kalma s\xFCresi s\u0131n\u0131rl\u0131d\u0131r."
+  - "Etkisini tetiklemek i\xE7in varile ate\u015F et. Patlarken uzak dur."
+  - "Canavarlara \xE7arpmak i\xE7in araca bin. \xC7ok hasar al\u0131rsa ara\xE7 bozulur."
+  - "Boss sald\u0131r\u0131lar\u0131 \xF6nceden i\u015Faretlenir. Sald\u0131r\u0131dan
+    \xF6nce i\u015Faretli alandan \xE7\u0131k."
+  - "Boss yenilene kadar arena kilitli kal\u0131r. Kapal\u0131 arenayla b\xF6l\xFCm\xFC
+    bitirmek ek \xF6d\xFCl verir."
   _missing: []

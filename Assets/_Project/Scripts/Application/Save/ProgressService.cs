@@ -355,6 +355,7 @@ namespace Purge.Application.Save
             Data.Survival.Clear();
             Data.Arsenal.Clear();
             Data.CharacterNodes.Clear();
+            Data.SeenHints.Clear();
             Data.Boosters.Clear();
             Data.Loadout = new LoadoutSave();
             Data.Stats = new SaveStats();

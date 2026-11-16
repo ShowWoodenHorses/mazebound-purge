@@ -354,6 +354,15 @@ namespace Purge.Editor.Dev
         /// larger), Tasks, Shop at fixed places (hidden tabs leave their place empty: PLAY stays in the middle) with
         /// «Продолжить» above PLAY; DEV and the debug reset under the money, the version at the bottom right.
         /// </summary>
+        private static GameObject BuildPurchaseDot(Transform parent)
+        {
+            var dot = Shape(parent, "PurchaseDot", Vector2.one, new Vector2(-18f, -18f), new Vector2(16f, 16f));
+            dot.Fill = _style.Danger;
+            dot.CornerRadius = 8f;
+            dot.gameObject.SetActive(false);
+            return dot.gameObject;
+        }
+
         private static MainMenuScreen BuildMainMenu(Transform parent)
         {
             var screen = Screen<MainMenuScreen>(parent, "MainMenuScreen", Color.clear);
@@ -410,6 +419,8 @@ namespace Purge.Editor.Dev
 
             SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);
+            SetReference(screen, "_arsenalDot", BuildPurchaseDot(arsenal.transform));
+            SetReference(screen, "_characterDot", BuildPurchaseDot(character.transform));
             SetReference(screen, "_arsenalButton", arsenal);
             SetReference(screen, "_characterButton", character);
             SetReference(screen, "_tasksButton", tasks);
@@ -2353,6 +2364,7 @@ namespace Purge.Editor.Dev
             var (cameraDistance, cameraDistanceLabel) = SliderSetting(gamePage, "CameraDistance", Loc(TextKeys.SettingsCameraDistance));
             var cameraShake = SwitchSetting(gamePage, "CameraShake", Loc(TextKeys.SettingsCameraShake));
             var monsterArrows = SwitchSetting(gamePage, "MonsterArrows", Loc(TextKeys.SettingsMonsterArrows));
+            var gameplayHints = SwitchSetting(gamePage, "GameplayHints", Loc(TextKeys.SettingsGameplayHints));
             var (resolution, resolutionLabel) = SliderSetting(gamePage, "Resolution", Loc(TextKeys.SettingsResolution));
             var compareRow = SettingRow(gamePage, "Compare", Loc(TextKeys.SettingsCompare));
             var compareButtons = new List<Object>();
@@ -2433,6 +2445,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_supportValue", supportValue);
             SetReference(screen, "_privacyRow", privacyRow.gameObject);
             SetReference(screen, "_privacyButton", privacyButton);
+            SetReference(screen, "_gameplayHints", gameplayHints);
             SetReference(screen, "_replayTutorialButton", replayTutorial);
             SetReference(screen, "_resetButton", reset);
             SetReference(screen, "_backButton", back);

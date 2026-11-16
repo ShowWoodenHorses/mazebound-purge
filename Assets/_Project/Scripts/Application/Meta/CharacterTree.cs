@@ -129,9 +129,12 @@ namespace Purge.Application.Meta
             return false;
         }
 
+        public bool CanPurchase(CharacterNode node) =>
+            node != null && !Has(node.Id) && Money >= node.Price && MeetsRequirements(node);
+
         public bool TryPurchase(CharacterNode node)
         {
-            if (node == null || Has(node.Id) || Money < node.Price || !MeetsRequirements(node)) return false;
+            if (!CanPurchase(node)) return false;
             var data = _save.Data;
             data.Money -= node.Price;
             data.CharacterNodes.Add(node.Id);

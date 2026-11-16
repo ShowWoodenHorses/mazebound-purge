@@ -7,6 +7,9 @@ namespace Purge.Presentation.Localization
     /// </summary>
     public static class TextKeys
     {
+        public const string SettingsGameplayHints = "settings.gameplay_hints";
+        public const string GuidedDesertPurchase = "tutorial.menu.buy_desert";
+        public const string GameplayHintTitle = "hint.title";
         public const string CharacterBranchPrefix = "character.branch.";
         public const string CharacterNodePrefix = "character.node.";
         public const string CharacterBuy = "character.buy";

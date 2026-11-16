@@ -10,6 +10,7 @@ using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Common;
 using Purge.Core.Audio;
+using Purge.Presentation.Localization;
 using UnityEngine;
 namespace Purge.Presentation.UI
 {
@@ -23,7 +24,22 @@ namespace Purge.Presentation.UI
         private int _category, _selected; private bool _initialized;
         public bool IsOpen { get; private set; }
         public bool IsLoading { get; private set; }
+        private WeaponDefinition _guidedPurchase;
+        private readonly List<ContentDefinition> _catalogItems = new List<ContentDefinition>();
+
         public event Action BackRequested;
+        public event Action GuidedPurchaseCompleted;
+
+        public WeaponDefinition GuidedWeapon => _shared.Content?.Find<WeaponDefinition>(ArsenalService.TutorialPurchaseId);
+
+        public bool CanBuyGuidedWeapon => _arsenal.CanBuy(GuidedWeapon);
+
+        public bool HasAvailablePurchase()
+        {
+            _catalogItems.Clear();
+            _shared.Content?.GetAll(_catalogItems);
+            return _catalogItems.Exists(_arsenal.CanBuy);
+        }
         public ArsenalPresenter(UIRoot ui, ArsenalService arsenal, SharedDefinitionsService shared, LocalizationService texts,
             IAddressablesService assets, AudioService audio) { _ui=ui; _arsenal=arsenal; _shared=shared; _texts=texts; _assets=assets; _audio=audio; }
         private ArsenalScreen View => _ui.Arsenal;
@@ -35,11 +51,22 @@ namespace Purge.Presentation.UI
             View.Selected += Select; View.BuyClicked += Buy; View.FavoriteClicked += Favorite; View.ExcludeClicked += Exclude;
             _texts.LanguageChanged += LanguageChanged;
         }
-        public void Open() { Initialize(); if (View == null) return; IsOpen=true; View.SetVisible(true); Fill(); }
-        public void Close() { IsOpen=false; ClearPreview(); if (View != null) View.SetVisible(false); }
+        public void Open() => Open(false);
+
+        public void Open(bool guidePurchase)
+        {
+            Initialize();
+            if (View == null) return;
+            _guidedPurchase = guidePurchase ? GuidedWeapon : null;
+            if (_guidedPurchase != null) _category = (int)_guidedPurchase.ArsenalClass;
+            IsOpen = true;
+            View.SetVisible(true);
+            Fill();
+        }
+        public void Close() { _guidedPurchase = null; IsOpen=false; ClearPreview(); if (View != null) View.SetVisible(false); }
         private void Back() { Close(); BackRequested?.Invoke(); }
-        private void Previous() { _category=(_category+8)%9; _selected=0; Fill(); }
-        private void Next() { _category=(_category+1)%9; _selected=0; Fill(); }
+        private void Previous() { if (_guidedPurchase != null) return; _category=(_category+8)%9; _selected=0; Fill(); }
+        private void Next() { if (_guidedPurchase != null) return; _category=(_category+1)%9; _selected=0; Fill(); }
         private void LanguageChanged() { if (IsOpen) Fill(); }
         private string T(string key) => _texts.Get(key);
         private ContentDefinition Item => _items.Count > _selected ? _items[_selected] : null;
@@ -49,6 +76,7 @@ namespace Purge.Presentation.UI
             foreach (var item in all)
                 if (!ArsenalService.IsBase(item) && (item is WeaponDefinition w && (int)w.ArsenalClass == _category || item is ThrowableDefinition && _category==8)) _items.Add(item);
             _items.Sort((a,b) => { var r=RarityOf(a).CompareTo(RarityOf(b)); return r!=0?r:string.CompareOrdinal(a.Id,b.Id); });
+            if (_guidedPurchase != null) _selected = _items.IndexOf(_guidedPurchase);
             _selected=Mathf.Clamp(_selected,0,Mathf.Max(0,_items.Count-1)); _labels.Clear(); _icons.Clear();
             foreach (var item in _items)
             {
@@ -62,9 +90,11 @@ namespace Purge.Presentation.UI
         private static Rarity RarityOf(ContentDefinition item) => item is WeaponDefinition w?w.Rarity:((ThrowableDefinition)item).Rarity;
         private void Select(int index)
         {
+            if (_guidedPurchase != null) index = _items.IndexOf(_guidedPurchase);
             _selected=index; View.List(T("arsenal.class."+_category),_arsenal.Money,_labels,_icons,_selected); var item=Item; if(item==null) { ClearPreview(); return; }
             var open=_arsenal.IsOpen(item); var mark=_arsenal.Mark(item);
             var details=T("arsenal.rarity."+(int)RarityOf(item))+" · "+T("arsenal.level")+" "+_arsenal.Level(item);
+            if (_guidedPurchase != null) details = T(TextKeys.GuidedDesertPurchase) + "\n" + details;
             if(item is WeaponDefinition w)
             {
                 float damage=0,range=0; string unit=T("arsenal.damage");
@@ -127,7 +157,19 @@ namespace Purge.Presentation.UI
             if(ok)UpgradeDone();
         }
         private void UpgradeDone(){if(_audio.Catalog!=null)_audio.Play(_audio.Catalog.Purchase,SoundChannel.Interface);Fill();}
-        private void Buy() { if(_arsenal.Buy(Item)) { if(_audio.Catalog!=null)_audio.Play(_audio.Catalog.Purchase,SoundChannel.Interface); Fill(); } }
+        private void Buy()
+        {
+            if (!_arsenal.Buy(Item)) return;
+            if (_audio.Catalog != null) _audio.Play(_audio.Catalog.Purchase, SoundChannel.Interface);
+            if (_guidedPurchase == null)
+            {
+                Fill();
+                return;
+            }
+
+            Close();
+            GuidedPurchaseCompleted?.Invoke();
+        }
         private void Favorite() => Mark(PoolMark.Favorite);
         private void Exclude() => Mark(PoolMark.Excluded);
         private void Mark(PoolMark value) { var item=Item;if(item!=null && _arsenal.SetMark(item,_arsenal.Mark(item)==value?PoolMark.Normal:value))Fill(); }

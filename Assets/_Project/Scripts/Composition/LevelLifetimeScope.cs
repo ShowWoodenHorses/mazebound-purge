@@ -203,6 +203,7 @@ namespace Purge.Composition
             builder.Register<MonsterArrowsPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<TutorialPresenter>(Lifetime.Singleton).AsSelf()
                 .As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
+            builder.Register<GameplayHintPresenter>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<PlayerViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<PlayerWeaponPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Pack effects (stage Э) named by content: loaded before the combat views and effects that play them.

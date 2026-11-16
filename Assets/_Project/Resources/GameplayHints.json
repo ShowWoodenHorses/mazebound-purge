@@ -1,0 +1,85 @@
+{
+  "hints": [
+    {
+      "id": "silencer",
+      "textKey": "hint.silencer",
+      "condition": 0
+    },
+    {
+      "id": "distant_officer",
+      "textKey": "hint.distant_officer",
+      "condition": 1,
+      "monsterIdPrefix": "distant_"
+    },
+    {
+      "id": "shaman",
+      "textKey": "hint.shaman",
+      "condition": 1,
+      "monsterIdPrefix": "shaman_"
+    },
+    {
+      "id": "armored",
+      "textKey": "hint.armored",
+      "condition": 2
+    },
+    {
+      "id": "champion",
+      "textKey": "hint.champion",
+      "condition": 3
+    },
+    {
+      "id": "hook",
+      "textKey": "hint.hook",
+      "condition": 1,
+      "monsterIdPrefix": "capture_"
+    },
+    {
+      "id": "chest_common",
+      "textKey": "hint.chest_common",
+      "condition": 4,
+      "chestKind": 0
+    },
+    {
+      "id": "chest_locked",
+      "textKey": "hint.chest_locked",
+      "condition": 4,
+      "chestKind": 1
+    },
+    {
+      "id": "chest_challenge",
+      "textKey": "hint.chest_challenge",
+      "condition": 4,
+      "chestKind": 2
+    },
+    {
+      "id": "chest_key",
+      "textKey": "hint.chest_key",
+      "condition": 5
+    },
+    {
+      "id": "refuge",
+      "textKey": "hint.refuge",
+      "condition": 6
+    },
+    {
+      "id": "barrel",
+      "textKey": "hint.barrel",
+      "condition": 7
+    },
+    {
+      "id": "vehicle",
+      "textKey": "hint.vehicle",
+      "condition": 8
+    },
+    {
+      "id": "boss",
+      "textKey": "hint.boss",
+      "condition": 9
+    },
+    {
+      "id": "closed_arena",
+      "textKey": "hint.closed_arena",
+      "condition": 10
+    }
+  ]
+}

@@ -461,6 +461,24 @@ MonoBehaviour:
   - tutorial.run.pickup.touch
   - tutorial.run.switch.touch
   - tutorial.run.grenade.touch
+  - settings.gameplay_hints
+  - tutorial.menu.buy_desert
+  - hint.title
+  - hint.silencer
+  - hint.distant_officer
+  - hint.shaman
+  - hint.armored
+  - hint.champion
+  - hint.hook
+  - hint.chest_common
+  - hint.chest_locked
+  - hint.chest_challenge
+  - hint.chest_key
+  - hint.refuge
+  - hint.barrel
+  - hint.vehicle
+  - hint.boss
+  - hint.closed_arena
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -946,4 +964,27 @@ MonoBehaviour:
   - Boshqa qurol uyasini bosing.
   - Granata tugmasini, keyin uloqtirish joyini bosing. Uloqtirgandan keyin birinchi
     to'lqin boshlanadi.
+  - "O\u2018yin maslahatlari"
+  - Birinchi bosqichni boshlash uchun Desert sotib ol.
+  - MASLAHAT
+  - "Ovoz so\u2018ndirgich o\u2018q tovushini pasaytiradi, shunda seni kamroq maxluq
+    eshitadi."
+  - Uzoqdan otuvchi ofitser masofadan hujum qiladi. Zarbagacha belgilangan hududdan
+    chiq.
+  - "Shaman yiqilgan maxluqlarni tiriltiradi. Yordamni to\u2018xtatish uchun shamanni
+    yeng."
+  - "Zirhli dushman oldidan kamroq zarar ko\u2018radi. Yonidan yoki orqasidan ot."
+  - Chempionlarning maxsus xususiyatlari ularni oddiy maxluqlardan xavfliroq qiladi.
+  - "Ilgak seni o\u2018ziga tortishi mumkin. U hujumga tayyorlanganda chetga chiq."
+  - "O\u2018ljani olish uchun oddiy sandiqni och."
+  - Qulflangan sandiq uchun kalit kerak. Ichida noyobroq qurol bor.
+  - Bu sandiq chempionlarni chaqiradi. Mukofot uchun ularni yeng.
+  - Bu kalit qulflangan sandiqni ochadi.
+  - "Gumbaz maxluqlarni kiritmaydi va sog\u2018liqni tiklaydi. To\u2018lqin paytida
+    ichkarida qolish vaqti cheklangan."
+  - "Ta\u2019sirini ishga tushirish uchun bochkaga ot. Portlaganda uzoq tur."
+  - "Maxluqlarni urish uchun mashinaga o\u2018tir. Qattiq shikastlansa, mashina buziladi."
+  - Boshliq hujumdan oldin ogohlantiradi. Zarbagacha belgilangan hududdan chiq.
+  - Boshliqni yengmaguncha arena yopiq. Yopiq arena bilan bosqichni yutsang, bonus
+    olasan.
   _missing: []

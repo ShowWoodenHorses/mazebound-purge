@@ -162,6 +162,7 @@ namespace Purge.Presentation.UI
 
         private readonly List<Image> _keyImages = new List<Image>();
         private float _messageHideTime;
+        private bool _desktopUseShown;
         private float _damageElapsed = float.MaxValue;
         private Texture2D _vignette;
         private Texture2D _arcTexture;
@@ -256,8 +257,11 @@ namespace Purge.Presentation.UI
                 }
             }
 
-            if (_messageRow != null && _messageRow.activeSelf && Time.unscaledTime >= _messageHideTime)
-                _messageRow.SetActive(false);
+            if (_messageHideTime > 0f && Time.unscaledTime >= _messageHideTime)
+            {
+                _messageHideTime = 0f;
+                RefreshDesktopUse();
+            }
 
             UpdateHealthBar(Time.unscaledDeltaTime);
             UpdateDamagePulse();
@@ -534,7 +538,22 @@ namespace Purge.Presentation.UI
             if (_message == null) return;
             _message.text = message;
             if (_messageRow != null) _messageRow.SetActive(!string.IsNullOrEmpty(message));
-            _messageHideTime = Time.unscaledTime + MessageSeconds;
+            _messageHideTime = string.IsNullOrEmpty(message) ? 0f : Time.unscaledTime + MessageSeconds;
+            if (_messageHideTime == 0f) RefreshDesktopUse();
+        }
+
+        public void SetDesktopUse(bool hasTarget)
+        {
+            var shown = hasTarget && !TouchShown && Keyboard.current != null;
+            if (_desktopUseShown == shown) return;
+            _desktopUseShown = shown;
+            if (_messageHideTime == 0f) RefreshDesktopUse();
+        }
+
+        private void RefreshDesktopUse()
+        {
+            if (_message != null) _message.text = _desktopUseShown ? "E" : string.Empty;
+            if (_messageRow != null) _messageRow.SetActive(_desktopUseShown);
         }
 
         /// <summary>The level caption as shown (already in the language's letter case).</summary>
@@ -575,7 +594,9 @@ namespace Purge.Presentation.UI
             _low = false;
             SetKeys(Array.Empty<Color>());
             SetWaveShown(false);
-            if (_messageRow != null) _messageRow.SetActive(false);
+            _messageHideTime = 0f;
+            _desktopUseShown = false;
+            RefreshDesktopUse();
             _damageElapsed = float.MaxValue;
             if (_damageFlash != null) _damageFlash.enabled = false;
             foreach (var arc in _damageArcs)

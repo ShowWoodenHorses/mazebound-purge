@@ -543,7 +543,7 @@ namespace Purge.Application.Flow
                 if (IsTutorialLevel)
                 {
                     var reward = outcome == LevelOutcome.Completed && !LastWasCompletedBefore
-                        ? _shared?.Content?.Find<Purge.Core.Definitions.WeaponDefinition>("desert")?.PurchasePrice ?? 0
+                        ? _shared?.Content?.Find<Purge.Core.Definitions.WeaponDefinition>(Purge.Application.Meta.ArsenalService.TutorialPurchaseId)?.PurchasePrice ?? 0
                         : 0;
                     LastResult = new LevelResult(levelResult.Completed, levelResult.Kills, levelResult.Time,
                         levelResult.Waves, levelResult.WaveCount, money: reward, score: levelResult.Score);

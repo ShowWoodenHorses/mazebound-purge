@@ -138,3 +138,9 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _arenaGateLength: 2.5
   _biome: 1
+  _stairs:
+    m_AssetGUID: d670102a7dac66846a84d7a418a97596
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

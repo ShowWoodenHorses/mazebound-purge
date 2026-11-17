@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Purge.Core.Common;
 using Purge.Core.Grid;
 using Purge.Core.Level;
@@ -33,10 +34,11 @@ namespace Purge.Core.Generation
             var height = settings.Height;
             var old = existing != null ? existing.Geometry : null;
             var sameSize = old != null && old.IsConsistent && old.Width == width && old.Height == height;
+            var oldGround = sameSize ? old.GroundFloor : 0;
             var kept = new bool[width * height];
             if (sameSize)
                 for (var i = 0; i < kept.Length; i++)
-                    kept[i] = existing.Marks.IsKept(old, old.ToPosition(i));
+                    kept[i] = existing.Marks.IsKept(old, old.ToPosition(i).OnFloor(oldGround));
 
             var layout = new LevelLayout(width, height, settings.LayoutSeed, kept);
             if (sameSize) LoadKept(layout, existing);
@@ -50,15 +52,30 @@ namespace Purge.Core.Generation
             }
 
             layout.Connect();
-            var result = new GenerationResult(Build(layout, sameSize ? old : null),
-                layout.HasStart && !layout.StartKept ? new[] { layout.Start } : Array.Empty<GridPosition>(),
-                layout.Spawns.GetRange(layout.KeptSpawnCount, layout.Spawns.Count - layout.KeptSpawnCount),
-                layout.Arena, layout.Problems)
+            var ground = sameSize ? oldGround : layout.Building?.GroundFloor ?? 0;
+            if (sameSize && layout.Building != null && oldGround != layout.Building.GroundFloor)
+                layout.Problems.Add("Building: use Generate New to change the basement setting.");
+            var geometry = Build(layout, sameSize ? old : null, ground);
+            if (layout.Building != null && (old == null || !sameSize || old.FloorCount == 1 && old.Stairs.Count == 0))
+                layout.Building.Build(geometry, layout);
+
+            var arena = layout.Arena;
+            if (arena != null && arena.Floor != ground)
+            {
+                var moved = new ArenaData(arena.Rect, arena.Ring, ground);
+                moved.MutableEntries.AddRange(arena.Entries);
+                arena = moved;
+            }
+
+            var result = new GenerationResult(geometry,
+                layout.HasStart && !layout.StartKept ? new[] { layout.Start.OnFloor(ground) } : Array.Empty<GridPosition>(),
+                layout.Spawns.Skip(layout.KeptSpawnCount).Select(cell => cell.OnFloor(ground)).ToArray(),
+                arena, layout.Problems)
             {
                 Decor = layout.Decor,
-                Barrels = layout.Barrels.GetRange(layout.KeptBarrelCount, layout.Barrels.Count - layout.KeptBarrelCount),
-                Chests = layout.Chests.GetRange(layout.KeptChestCount, layout.Chests.Count - layout.KeptChestCount),
-                Vehicles = layout.Vehicles.GetRange(layout.KeptVehicleCount, layout.Vehicles.Count - layout.KeptVehicleCount),
+                Barrels = layout.Barrels.Skip(layout.KeptBarrelCount).Select(o => new LayoutObject<BarrelKind>(o.Cell.OnFloor(ground), o.Kind)).ToArray(),
+                Chests = layout.Chests.Skip(layout.KeptChestCount).Select(o => new LayoutObject<ChestKind>(o.Cell.OnFloor(ground), o.Kind)).ToArray(),
+                Vehicles = layout.Vehicles.Skip(layout.KeptVehicleCount).Select(o => new LayoutVehicle(o.Cell.OnFloor(ground), o.Definition, o.Heading)).ToArray(),
             };
             return result;
         }
@@ -67,41 +84,42 @@ namespace Purge.Core.Generation
         private static void LoadKept(LevelLayout layout, LevelData level)
         {
             var geometry = level.Geometry;
+            var ground = geometry.GroundFloor;
             for (var i = 0; i < layout.CellCount; i++)
             {
                 if (!layout.IsKept(i)) continue;
-                var p = layout.Position(i);
+                var p = layout.Position(i).OnFloor(ground);
                 layout.Load(i, geometry.GetCell(p), geometry.GetSurface(p), geometry.GetObstacle(p));
             }
 
             foreach (var start in level.PlayerStarts)
-                if (start.Position.Floor == 0 && layout.IsKept(layout.Index(start.Position)))
+                if (start.Position.Floor == ground && layout.IsKept(layout.Index(start.Position)))
                 {
-                    layout.SetStart(start.Position);
+                    layout.SetStart(start.Position.OnFloor(0));
                     layout.StartKept = true;
                     break;
                 }
 
             foreach (var spawn in level.MonsterSpawns)
-                if (spawn.Position.Floor == 0 && layout.IsKept(layout.Index(spawn.Position)))
-                    layout.Spawns.Add(spawn.Position);
+                if (spawn.Position.Floor == ground && layout.IsKept(layout.Index(spawn.Position)))
+                    layout.Spawns.Add(spawn.Position.OnFloor(0));
             layout.KeptSpawnCount = layout.Spawns.Count;
 
             foreach (var barrel in level.Barrels)
-                if (barrel.Position.Floor == 0 && layout.IsKept(layout.Index(barrel.Position)))
-                    layout.Barrels.Add(new LayoutObject<BarrelKind>(barrel.Position, barrel.Kind));
+                if (barrel.Position.Floor == ground && layout.IsKept(layout.Index(barrel.Position)))
+                    layout.Barrels.Add(new LayoutObject<BarrelKind>(barrel.Position.OnFloor(0), barrel.Kind));
             layout.KeptBarrelCount = layout.Barrels.Count;
             foreach (var chest in level.Chests)
-                if (chest.Position.Floor == 0 && layout.IsKept(layout.Index(chest.Position)))
-                    layout.Chests.Add(new LayoutObject<ChestKind>(chest.Position, chest.Kind));
+                if (chest.Position.Floor == ground && layout.IsKept(layout.Index(chest.Position)))
+                    layout.Chests.Add(new LayoutObject<ChestKind>(chest.Position.OnFloor(0), chest.Kind));
             layout.KeptChestCount = layout.Chests.Count;
             foreach (var vehicle in level.Vehicles)
-                if (vehicle.Position.Floor == 0 && layout.IsKept(layout.Index(vehicle.Position)))
-                    layout.Vehicles.Add(new LayoutVehicle(vehicle.Position, vehicle.Definition, vehicle.Heading));
+                if (vehicle.Position.Floor == ground && layout.IsKept(layout.Index(vehicle.Position)))
+                    layout.Vehicles.Add(new LayoutVehicle(vehicle.Position.OnFloor(0), vehicle.Definition, vehicle.Heading));
             layout.KeptVehicleCount = layout.Vehicles.Count;
 
             var arena = level.Arena;
-            if (arena.IsEmpty || arena.Floor != 0) return;
+            if (arena.IsEmpty || arena.Floor != ground) return;
             var outer = arena.Outer;
             for (var y = outer.Y; y < outer.YMax; y++)
             for (var x = outer.X; x < outer.XMax; x++)
@@ -112,28 +130,32 @@ namespace Purge.Core.Generation
                 }
         }
 
-        private static LevelGeometry Build(LevelLayout layout, LevelGeometry old)
+        private static LevelGeometry Build(LevelLayout layout, LevelGeometry old, int ground)
         {
-            var floors = old != null ? old.FloorCount : 1;
-            var geometry = new LevelGeometry(layout.Width, layout.Height, CellType.Floor, floors);
+            var floors = old != null ? old.FloorCount : ground + 1;
+            var geometry = new LevelGeometry(layout.Width, layout.Height, CellType.Void, floors, ground);
             for (var i = 0; i < layout.CellCount; i++)
             {
-                var p = layout.Position(i);
+                var p = layout.Position(i).OnFloor(ground);
                 geometry.SetCell(p, layout.Cell(i));
                 if (layout.Surface(i) != CellSurface.None) geometry.SetSurface(p, layout.Surface(i));
                 if (layout.Obstacle(i) != null) geometry.SetObstacle(p, layout.Obstacle(i));
             }
 
-            for (var floor = 1; floor < floors; floor++)
+            for (var floor = 0; old != null && floor < floors; floor++)
             for (var y = 0; y < layout.Height; y++)
             for (var x = 0; x < layout.Width; x++)
             {
+                if (floor == ground) continue;
                 var p = new GridPosition(x, y, floor);
                 geometry.SetCell(p, old.GetCell(p));
                 if (old.GetSurface(p) != CellSurface.None) geometry.SetSurface(p, old.GetSurface(p));
                 if (old.GetObstacle(p) != null) geometry.SetObstacle(p, old.GetObstacle(p));
             }
 
+            if (old != null)
+                foreach (var stair in old.Stairs)
+                    if (stair.Fits(geometry)) geometry.AddStair(stair);
             return geometry;
         }
 

@@ -7,7 +7,6 @@ using Purge.Core.Grid;
 using Purge.Core.Monsters;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Player;
 using UnityEngine;
 
 namespace Purge.Gameplay.Horde
@@ -30,10 +29,10 @@ namespace Purge.Gameplay.Horde
         private readonly HordeSystem _horde;
         private readonly EffectSystem _effects;
         private readonly ZoneSystem _zones;
-        private readonly PlayerSystem _player;
         private readonly PlayerStatusSystem _playerStatuses;
 
         private readonly Vector2[] _blastAt = new Vector2[MaxBlasts];
+        private readonly int[] _blastFloor = new int[MaxBlasts];
         private readonly float[] _blastStart = new float[MaxBlasts];
         private readonly DeathBlastAffix[] _blast = new DeathBlastAffix[MaxBlasts];
         private readonly List<int> _due = new List<int>(MaxBlasts);
@@ -41,13 +40,12 @@ namespace Purge.Gameplay.Horde
         private int[] _trailGeneration;
         private bool _subscribed;
 
-        public ChampionSystem(HordeSystem horde, EffectSystem effects, ZoneSystem zones, PlayerSystem player,
+        public ChampionSystem(HordeSystem horde, EffectSystem effects, ZoneSystem zones,
             PlayerStatusSystem playerStatuses)
         {
             _horde = horde;
             _effects = effects;
             _zones = zones;
-            _player = player;
             _playerStatuses = playerStatuses;
         }
 
@@ -63,6 +61,7 @@ namespace Purge.Gameplay.Horde
         public int TrailCells { get; private set; }
         public float Healed { get; private set; }
 
+        public int BlastFloor(int index) => _blastFloor[index];
         public Vector2 BlastPosition(int index) => _blastAt[index];
 
         /// <summary>Radius of the waiting blast's warning circle.</summary>
@@ -113,9 +112,9 @@ namespace Purge.Gameplay.Horde
             var generations = _horde.Generations;
             var kinds = _horde.Kinds;
             var kindList = _horde.KindList;
-            var floor = _player.Floor;
             for (var i = 0; i < _horde.HighWater; i++)
             {
+                var floor = _horde.FloorOf(i);
                 var kind = kindList[kinds[i]];
                 ZoneDefinition zone;
                 float duration, strength;
@@ -178,14 +177,15 @@ namespace Purge.Gameplay.Horde
                     _due.Add(b);
             if (_due.Count == 0) return;
 
-            var floor = _player.Floor;
             foreach (var b in _due)
             {
                 var blast = _blast[b];
                 var at = _blastAt[b];
+                var floor = _blastFloor[b];
                 // Removed first (swap with the last; _due runs from the highest index down, so the rest stay valid).
                 var last = --BlastCount;
                 _blastAt[b] = _blastAt[last];
+                _blastFloor[b] = _blastFloor[last];
                 _blastStart[b] = _blastStart[last];
                 _blast[b] = _blast[last];
                 _blast[last] = null;
@@ -200,6 +200,7 @@ namespace Purge.Gameplay.Horde
         {
             var blast = _horde.AffixOf(agent)?.DeathBlast;
             if (blast == null || blast.Effects.Count == 0 || BlastCount >= MaxBlasts) return;
+            _blastFloor[BlastCount] = _horde.FloorOf(agent);
             _blastAt[BlastCount] = position;
             _blastStart[BlastCount] = _horde.Time;
             _blast[BlastCount] = blast;

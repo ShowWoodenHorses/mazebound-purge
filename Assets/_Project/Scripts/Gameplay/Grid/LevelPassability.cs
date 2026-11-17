@@ -34,6 +34,8 @@ namespace Purge.Gameplay.Grid
             return _grid.GetCell(cell) != CellType.Door || _doors.IsOpenAt(cell);
         }
 
+        public bool TryGetStair(GridPosition cell, out StairLink stair) => _grid.TryGetStair(cell, out stair);
+
         /// <summary>Deep snow in the cell (walkers there move slower).</summary>
         public bool IsSnowdrift(GridPosition cell) => _grid.IsSnowdrift(cell);
 

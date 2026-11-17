@@ -498,7 +498,7 @@ namespace Purge.Gameplay.Objects
             if (definition == null || definition.Rank != MonsterRank.Elite) return;
             KeyDropped = true;
             if (_key == null) GameLog.Warning(LogChannel.Gameplay, "No chest key asset: the key has no look.");
-            _pickups.DropChestKey(position, _player.Floor, _key);
+            _pickups.DropChestKey(position, _horde.FloorOf(agent), _key);
             GameLog.Info(LogChannel.Gameplay, "The chest key dropped.");
             KeyDroppedAt?.Invoke(position);
         }

@@ -83,6 +83,8 @@ namespace Purge.Gameplay.Visibility
         }
 
         /// <summary>False until the player spawned: then nothing is visible.</summary>
+        public int Floor => _player.Floor;
+
         public bool HasResult => _fieldOfView.HasResult;
 
         public IReadOnlyList<GridPosition> VisibleCells => _fieldOfView.VisibleCells;

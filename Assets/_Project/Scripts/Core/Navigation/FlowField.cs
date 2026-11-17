@@ -8,8 +8,8 @@ namespace Purge.Core.Navigation
     /// grid in 8 directions (orthogonal step 2, diagonal 3 ≈ 2·1.41), a diagonal only when both orthogonal cells
     /// beside it are passable (no corner cutting). Every reached cell stores its distance and the neighbour to step
     /// to. Rebuilt on events (the target changed cell, a door changed), never per frame. Allocation-free after
-    /// construction. Covers the floor of the target (<see cref="Floor"/>); public indices are within that floor
-    /// (y · Width + x).
+    /// construction. A level grid adds stairs as edges between floors. Integer indices refer to the target's floor;
+    /// use grid positions to query other floors.
     /// Inside, the grid has a one-cell border that is never passable (stage 7г): the search needs no bounds checks
     /// and no division — a rebuild of 100×100 from a cached mask (<see cref="Build(GridPosition, bool[])"/>) is the
     /// hot path, on every step of the player.
@@ -21,6 +21,9 @@ namespace Purge.Core.Navigation
         public const int DiagonalCost = 3;
 
         private readonly int _stride; // padded row: Width + 2
+        private readonly int _paddedFloorSize;
+        private readonly int _floors;
+        private readonly int[] _stairs;
         private readonly ushort[] _distance; // padded
         private readonly int[] _next; // padded index of the next cell, -1
         private readonly int[] _offset = new int[8];
@@ -35,7 +38,11 @@ namespace Purge.Core.Navigation
         private readonly bool[] _passable; // padded, the border false
         private int _entryCount;
 
-        public FlowField(int width, int height)
+        public FlowField(int width, int height) : this(width, height, null) { }
+
+        public FlowField(LevelGrid grid) : this(grid.Width, grid.Height, grid) { }
+
+        private FlowField(int width, int height, LevelGrid grid)
         {
             if (width <= 0 || height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(width), $"Invalid grid size {width}x{height}.");
@@ -43,12 +50,25 @@ namespace Purge.Core.Navigation
             Width = width;
             Height = height;
             _stride = width + 2;
-            var count = _stride * (height + 2);
+            _paddedFloorSize = _stride * (height + 2);
+            _floors = grid?.FloorCount ?? 1;
+            var count = _paddedFloorSize * _floors;
+            if (grid != null && grid.HasStairs)
+            {
+                _stairs = new int[count];
+                Array.Fill(_stairs, -1);
+                for (var i = 0; i < grid.CellCount; i++)
+                {
+                    var cell = grid.ToPosition(i);
+                    if (grid.TryGetStairDestination(cell, out var landing))
+                        _stairs[Padded(cell)] = Padded(landing);
+                }
+            }
             _distance = new ushort[count];
             _next = new int[count];
             // Each cell is queued at most once per incoming direction.
-            _entryCell = new int[width * height * 8 + 1];
-            _entryNext = new int[width * height * 8 + 1];
+            _entryCell = new int[width * height * _floors * (_stairs == null ? 8 : 9) + 1];
+            _entryNext = new int[_entryCell.Length];
             _passable = new bool[count];
             _bucketHead = new int[DiagonalCost + 1];
             Array.Fill(_distance, Unreachable);
@@ -78,22 +98,43 @@ namespace Purge.Core.Navigation
         public bool IsInside(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
 
         /// <summary>Path cost to the target in half-steps (orthogonal step = 2), or <see cref="Unreachable"/>.</summary>
-        public ushort DistanceAt(int index) => _distance[Padded(index)];
+        public ushort DistanceAt(int index) => _distance[Padded(Target.Floor, index)];
+
+        public ushort DistanceAt(GridPosition cell) =>
+            IsInside(cell.X, cell.Y) && IsFloorInField(cell.Floor) ? _distance[Padded(cell)] : Unreachable;
 
         /// <summary>Index of the neighbour to step to from <paramref name="index"/>; -1 at the target or when unreachable.</summary>
         public int NextAt(int index)
         {
-            var next = _next[Padded(index)];
-            return next < 0 ? -1 : (next / _stride - 1) * Width + next % _stride - 1;
+            var next = _next[Padded(Target.Floor, index)];
+            if (next < 0 || StorageFloor(Target.Floor) != next / _paddedFloorSize) return -1;
+            var local = next % _paddedFloorSize;
+            return (local / _stride - 1) * Width + local % _stride - 1;
+        }
+
+        public bool TryNext(GridPosition cell, out GridPosition nextCell)
+        {
+            nextCell = default;
+            if (!IsFloorInField(cell.Floor) || !IsInside(cell.X, cell.Y)) return false;
+            var next = _next[Padded(cell)];
+            if (next < 0) return false;
+            var local = next % _paddedFloorSize;
+            nextCell = new GridPosition(local % _stride - 1, local / _stride - 1,
+                _floors == 1 ? cell.Floor : next / _paddedFloorSize);
+            return true;
         }
 
         public void Build<TPass>(GridPosition target, in TPass passability) where TPass : struct, IGridPassability
         {
-            for (var y = 0; y < Height; y++)
+            for (var layer = 0; layer < _floors; layer++)
             {
-                var row = (y + 1) * _stride + 1;
-                for (var x = 0; x < Width; x++)
-                    _passable[row + x] = passability.IsPassable(new GridPosition(x, y, target.Floor));
+                var floor = _floors == 1 ? target.Floor : layer;
+                for (var y = 0; y < Height; y++)
+                {
+                    var row = layer * _paddedFloorSize + (y + 1) * _stride + 1;
+                    for (var x = 0; x < Width; x++)
+                        _passable[row + x] = passability.IsPassable(new GridPosition(x, y, floor));
+                }
             }
 
             Search(target);
@@ -105,14 +146,24 @@ namespace Purge.Core.Navigation
         /// </summary>
         public void Build(GridPosition target, bool[] floorMask)
         {
-            if (floorMask == null || floorMask.Length < Width * Height)
-                throw new ArgumentException($"Expected a mask of {Width * Height} cells.", nameof(floorMask));
+            var count = Width * Height * _floors;
+            if (floorMask == null || floorMask.Length < count)
+                throw new ArgumentException($"Expected a mask of {count} cells.", nameof(floorMask));
+            for (var floor = 0; floor < _floors; floor++)
             for (var y = 0; y < Height; y++)
-                Array.Copy(floorMask, y * Width, _passable, (y + 1) * _stride + 1, Width);
+                Array.Copy(floorMask, (floor * Height + y) * Width, _passable,
+                    floor * _paddedFloorSize + (y + 1) * _stride + 1, Width);
             Search(target);
         }
 
-        private int Padded(int index) => (index / Width + 1) * _stride + index % Width + 1;
+        private int StorageFloor(int floor) => _floors == 1 ? 0 : floor;
+
+        private bool IsFloorInField(int floor) => _floors == 1 ? floor == Floor : (uint)floor < (uint)_floors;
+
+        private int Padded(int floor, int index) =>
+            StorageFloor(floor) * _paddedFloorSize + (index / Width + 1) * _stride + index % Width + 1;
+
+        private int Padded(GridPosition cell) => Padded(cell.Floor, cell.Y * Width + cell.X);
 
         private void Search(GridPosition target)
         {
@@ -122,7 +173,7 @@ namespace Purge.Core.Navigation
             Target = target;
             HasResult = true;
             Version++;
-            if (!IsInside(target.X, target.Y))
+            if (!IsInside(target.X, target.Y) || !IsFloorInField(target.Floor))
                 return;
 
             for (var b = 0; b < _bucketHead.Length; b++)
@@ -132,7 +183,7 @@ namespace Purge.Core.Navigation
             var distance = _distance;
             var passable = _passable;
             var next = _next;
-            var start = (target.Y + 1) * _stride + target.X + 1;
+            var start = Padded(target);
             distance[start] = 0;
             Push(start, 0);
             var pending = 1;
@@ -176,6 +227,15 @@ namespace Purge.Core.Navigation
                     Push(neighbour, cost);
                     pending++;
                 }
+
+                if (_stairs == null) continue;
+                var stair = _stairs[index];
+                var stairCost = current + DiagonalCost;
+                if (stair < 0 || !passable[stair] || stairCost >= distance[stair]) continue;
+                distance[stair] = (ushort)stairCost;
+                next[stair] = index;
+                Push(stair, stairCost);
+                pending++;
             }
         }
 

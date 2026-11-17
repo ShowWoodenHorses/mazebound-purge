@@ -13,6 +13,7 @@ namespace Purge.Presentation.Map
     public static class MapRenderer
     {
         public static readonly Color32 Floor = new Color32(196, 188, 168, 255);
+        public static readonly Color32 Stairs = new Color32(153, 128, 86, 255);
         public static readonly Color32 Wall = new Color32(64, 66, 74, 255);
 
         /// <summary>Floor with an obstacle the player cannot walk through (trees, rocks).</summary>
@@ -44,6 +45,7 @@ namespace Purge.Presentation.Map
 
         public static Color32 ColorOf(LevelGrid grid, GridPosition cell)
         {
+            if (grid.TryGetStairDestination(cell, out _)) return Stairs;
             var type = grid.GetCell(cell);
             return type == CellType.Floor && grid.Has(cell, CellFlags.BlocksMovement) ? Obstacle : ColorOf(type);
         }

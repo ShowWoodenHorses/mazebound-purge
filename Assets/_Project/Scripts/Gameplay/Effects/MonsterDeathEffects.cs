@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using Purge.Core.Effects;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
-using Purge.Gameplay.Player;
 using UnityEngine;
 
 namespace Purge.Gameplay.Effects
@@ -22,18 +21,16 @@ namespace Purge.Gameplay.Effects
 
         private readonly HordeSystem _horde;
         private readonly EffectSystem _effects;
-        private readonly PlayerSystem _player;
-        private readonly List<(IReadOnlyList<EffectModule> Effects, Vector2 At)> _pending =
-            new List<(IReadOnlyList<EffectModule>, Vector2)>();
-        private readonly List<(IReadOnlyList<EffectModule> Effects, Vector2 At)> _applying =
-            new List<(IReadOnlyList<EffectModule>, Vector2)>();
+        private readonly List<(IReadOnlyList<EffectModule> Effects, Vector2 At, int Floor)> _pending =
+            new List<(IReadOnlyList<EffectModule>, Vector2, int)>();
+        private readonly List<(IReadOnlyList<EffectModule> Effects, Vector2 At, int Floor)> _applying =
+            new List<(IReadOnlyList<EffectModule>, Vector2, int)>();
         private bool _subscribed;
 
-        public MonsterDeathEffects(HordeSystem horde, EffectSystem effects, PlayerSystem player)
+        public MonsterDeathEffects(HordeSystem horde, EffectSystem effects)
         {
             _horde = horde;
             _effects = effects;
-            _player = player;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -65,8 +62,7 @@ namespace Purge.Gameplay.Effects
             var count = Mathf.Min(_pending.Count, MaxPerTick);
             for (var i = 0; i < count; i++) _applying.Add(_pending[i]);
             _pending.RemoveRange(0, count);
-            var floor = _player.Floor; // the horde lives on the player's floor
-            foreach (var (effects, at) in _applying)
+            foreach (var (effects, at, floor) in _applying)
                 _effects.Apply(effects, at, floor, hostile: true);
             _applying.Clear();
         }
@@ -82,7 +78,7 @@ namespace Purge.Gameplay.Effects
         {
             var definition = _horde.DefinitionOf(agent);
             if (definition != null && definition.DeathEffects.Count > 0)
-                _pending.Add((definition.DeathEffects, position));
+                _pending.Add((definition.DeathEffects, position, _horde.FloorOf(agent)));
         }
     }
 }

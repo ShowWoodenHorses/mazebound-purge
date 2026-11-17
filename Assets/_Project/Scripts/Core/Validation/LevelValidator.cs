@@ -62,6 +62,7 @@ namespace Purge.Core.Validation
             ValidateSurfaces(level, report);
             ValidateObstacles(level, report);
             ValidateFloors(level, report);
+            ValidateStairs(level, report);
             ValidateTutorial(level, report);
             ValidateMonsterSpawns(level, report);
             ValidateChestKeySource(level, report);
@@ -69,6 +70,33 @@ namespace Purge.Core.Validation
             foreach (var door in level.Doors.Where(d => d.IsFrozen && d.IsInitiallyOpen))
                 report.Add(Error, Structural, ValidationCodes.FrozenDoorInitiallyOpen,
                     $"Door '{door.Id}' is frozen and initially open: a frozen door starts closed.", door.Position, door.Id);
+        }
+
+        private static void ValidateStairs(LevelData level, ValidationReport report)
+        {
+            var geometry = level.Geometry;
+            var occupied = new HashSet<GridPosition>();
+            foreach (var stair in geometry.Stairs)
+            {
+                if (!stair.Fits(geometry))
+                {
+                    report.Add(Error, Structural, ValidationCodes.InvalidStair, "A stair needs a clear footprint and an open landing beyond each end.", stair.First);
+                    continue;
+                }
+
+                var distinct = occupied.Add(stair.First) & occupied.Add(stair.Second) &
+                               occupied.Add(stair.First.OnFloor(stair.UpperFloor)) &
+                               occupied.Add(stair.Second.OnFloor(stair.UpperFloor)) &
+                               occupied.Add(stair.LowerLanding) & occupied.Add(stair.UpperLanding);
+                foreach (var entity in level.AllEntities())
+                    if (stair.Contains(entity.Position))
+                        report.Add(Error, Structural, ValidationCodes.InvalidStair, "An object occupies the stair flight.", entity.Position);
+                foreach (var spawn in level.MonsterSpawns)
+                    if (stair.Contains(spawn.Position))
+                        report.Add(Error, Structural, ValidationCodes.InvalidStair, "A spawn point occupies the stair flight.", spawn.Position);
+                if (!distinct)
+                    report.Add(Error, Structural, ValidationCodes.InvalidStair, "Stair landings overlap.", stair.First);
+            }
         }
 
         private static void ValidateChestKeySource(LevelData level, ValidationReport report)

@@ -21,9 +21,12 @@ namespace Purge.Presentation.Visual
         private readonly PrefabMeshParts _parts = new PrefabMeshParts();
         private readonly MeshAccumulator _accumulator = new MeshAccumulator();
 
-        public GeometryBuilder(IVisualPrefabs prefabs, int chunkSize = DefaultChunkSize)
+        private readonly GameObject _stairs;
+
+        public GeometryBuilder(IVisualPrefabs prefabs, int chunkSize = DefaultChunkSize, GameObject stairs = null)
         {
             _prefabs = prefabs;
+            _stairs = stairs;
             _chunkSize = Mathf.Max(1, chunkSize);
         }
 
@@ -33,13 +36,27 @@ namespace Purge.Presentation.Visual
             var root = new GameObject("Geometry").transform;
             root.SetParent(parent, false);
 
+            var openings = new HashSet<GridPosition>();
+            var flights = new Dictionary<GridPosition, StairLink>();
+            foreach (var stair in geometry.Stairs)
+            {
+                if (stair.UpperFloor == floor)
+                {
+                    openings.Add(stair.First.OnFloor(floor));
+                    openings.Add(stair.Second.OnFloor(floor));
+                    flights[stair.UpperLanding] = stair;
+                }
+                else if (stair.LowerFloor == floor)
+                    flights[stair.LowerLanding] = stair;
+            }
+
             var chunks = new List<VisibilityChunk>();
             var missing = 0;
             for (var y = 0; y < geometry.Height; y += _chunkSize)
             for (var x = 0; x < geometry.Width; x += _chunkSize)
             {
                 var rect = new GridRect(x, y, Mathf.Min(_chunkSize, geometry.Width - x), Mathf.Min(_chunkSize, geometry.Height - y));
-                var chunk = BuildChunk(level, rect, floor, root, ref missing);
+                var chunk = BuildChunk(level, rect, floor, root, openings, flights, ref missing);
                 if (chunk != null)
                     chunks.Add(chunk);
             }
@@ -53,7 +70,8 @@ namespace Purge.Presentation.Visual
             return view;
         }
 
-        private VisibilityChunk BuildChunk(LevelData level, GridRect rect, int floor, Transform root, ref int missing)
+        private VisibilityChunk BuildChunk(LevelData level, GridRect rect, int floor, Transform root,
+            HashSet<GridPosition> openings, Dictionary<GridPosition, StairLink> flights, ref int missing)
         {
             var geometry = level.Geometry;
             _accumulator.Clear();
@@ -62,6 +80,14 @@ namespace Purge.Presentation.Visual
             for (var x = rect.X; x < rect.XMax; x++)
             {
                 var cell = new GridPosition(x, y, floor);
+                if (_stairs != null && flights.TryGetValue(cell, out var flight))
+                {
+                    var matrix = StairMeshPlacement.Matrix(flight);
+                    foreach (var part in _parts.Get(_stairs))
+                        _accumulator.Append(part, matrix * part.LocalMatrix, new Vector2(x, y));
+                }
+
+                if (openings.Contains(cell)) continue;
                 var cellType = geometry.GetCell(cell);
                 foreach (var layer in CellLayers.All)
                 {

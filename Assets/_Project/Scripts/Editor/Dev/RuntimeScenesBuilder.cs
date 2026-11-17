@@ -2199,6 +2199,19 @@ namespace Purge.Editor.Dev
             var mapIcons = AssetDatabase.LoadAssetAtPath<MapIconSet>(MapIconsBuilder.SetPath);
             if (mapIcons == null) mapIcons = MapIconsBuilder.Build();
 
+            var floors = new List<Object>();
+            for (var i = 0; i < 3; i++)
+            {
+                var tab = TextButton(safe.transform, "Floor" + i, (i + 1).ToString(), false, null, 64f);
+                var rect = (RectTransform)tab.transform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
+                rect.anchoredPosition = new Vector2(120f + i * 86f, -90f);
+                rect.sizeDelta = new Vector2(72f, 64f);
+                tab.gameObject.SetActive(false);
+                floors.Add(tab);
+            }
+
+            SetReferences(screen, "_floorTabs", floors);
             SetReference(screen, "_icons", mapIcons);
             SetReferences(screen, "_layers", toggles);
             SetReference(screen, "_image", image);

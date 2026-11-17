@@ -125,6 +125,20 @@ namespace Purge.Gameplay.Horde
         private readonly float _totalWeight;
 
         private Vector2[] _positions;
+        private int[] _floors;
+        private StairTraversal[] _stairsInUse;
+        private FlowField _stairsFlow;
+        private bool[] _stairsWalkable;
+
+        public int FloorOf(int agent) => _floors[agent];
+
+        public bool IsVisibleOnFloor(int agent, int floor) =>
+            _floors[agent] == floor || (_stairsInUse != null && _stairsInUse[agent].Active &&
+                                        _stairsInUse[agent].Destination.Floor == floor);
+
+        public float ViewHeightOf(int agent) => _stairsInUse != null && _stairsInUse[agent].Active
+            ? _stairsInUse[agent].Position.y
+            : _floors[agent] * GridPosition.FloorHeight;
         private float[] _facing; // radians, 0 = North (+Y), clockwise
         private float[] _health;
         private HordeAgentState[] _states;
@@ -604,7 +618,7 @@ namespace Purge.Gameplay.Horde
             if (!IsActive) return false;
             for (var y = cell.Y - 1; y <= cell.Y + 1; y++)
             for (var x = cell.X - 1; x <= cell.X + 1; x++)
-            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            for (var agent = _buckets.First(x, y, _player.Floor); agent >= 0; agent = _buckets.Next(agent))
             {
                 if (!IsAlive(_states[agent])) continue;
                 var reach = 0.5f + _kinds[_kind[agent]].Stats.Radius * 0.9f;
@@ -729,6 +743,13 @@ namespace Purge.Gameplay.Horde
 
             var capacity = MaxCount + Horde.ReserveSlots;
             _positions = new Vector2[capacity];
+            _floors = new int[capacity];
+            if (_grid.FloorCount > 1)
+            {
+                _stairsInUse = new StairTraversal[capacity];
+                _stairsFlow = new FlowField(_grid);
+                _stairsWalkable = new bool[_grid.CellCount];
+            }
             _facing = new float[capacity];
             _health = new float[capacity];
             _states = new HordeAgentState[capacity];
@@ -785,7 +806,7 @@ namespace Purge.Gameplay.Horde
             RefreshWalkable();
             _flow = new FlowField(_grid.Width, _grid.Height);
             InitializeBodies();
-            _buckets = new CellBuckets(_grid.Width, _grid.Height, capacity);
+            _buckets = new CellBuckets(_grid.Width, _grid.Height, capacity, _grid.FloorCount);
             _random = new DeterministicRandom((int)StableHash.Of(_level.name + "/horde"));
 
             if (!_subscribed)
@@ -881,7 +902,10 @@ namespace Purge.Gameplay.Horde
             _buckets.Clear();
             for (var i = 0; i < _highWater; i++)
                 if (IsAlive(_states[i]))
-                    _buckets.Insert(i, CellIndex(_positions[i]));
+                {
+                    var cell = CellIndex(_positions[i]);
+                    if (cell >= 0) _buckets.Insert(i, _floors[i] * _grid.FloorSize + cell);
+                }
             CollectWide();
 
             if (!Frozen) Perception.Tick(Time);
@@ -894,7 +918,12 @@ namespace Purge.Gameplay.Horde
                     case HordeAgentState.Moving:
                     case HordeAgentState.Attacking:
                         if (!Frozen)
-                            TickAlive(i, playerPosition, deltaTime);
+                        {
+                            if (_stairsInUse != null && (_floors[i] != _player.Floor || _stairsInUse[i].Active))
+                                TickStairChase(i, deltaTime);
+                            else
+                                TickAlive(i, playerPosition, deltaTime);
+                        }
                         break;
                     case HordeAgentState.Emerging:
                         if (!Frozen && Time - _stateStart[i] >= _emergeTime[i])
@@ -907,7 +936,7 @@ namespace Purge.Gameplay.Horde
                     case HordeAgentState.Dying:
                         if (Time - _stateStart[i] >= StatsOf(i).CorpseTime)
                             _states[i] = HordeAgentState.Inactive;
-                        else
+                        else if (_floors[i] == _player.Floor)
                             _positions[i] = ApplyPush(i, _positions[i], deltaTime);
                         break;
                 }
@@ -957,7 +986,7 @@ namespace Purge.Gameplay.Horde
         /// <paramref name="t"/> — fraction 0..1 along the segment; <paramref name="ignore"/> is skipped (a piercing bullet
         /// inside the monster it has just hit).
         /// </summary>
-        public int QuerySegment(Vector2 from, Vector2 to, out float t, int ignore = -1)
+        public int QuerySegment(Vector2 from, Vector2 to, out float t, int ignore = -1, int? floor = null)
         {
             t = 1f;
             if (!IsActive) return -1;
@@ -971,9 +1000,9 @@ namespace Purge.Gameplay.Horde
             var best = -1;
             for (var y = minY; y <= maxY; y++)
             for (var x = minX; x <= maxX; x++)
-            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            for (var agent = _buckets.First(x, y, floor ?? _player.Floor); agent >= 0; agent = _buckets.Next(agent))
             {
-                if (agent == ignore || !IsAlive(_states[agent])) continue;
+                if (agent == ignore || _floors[agent] != (floor ?? _player.Floor) || !IsAlive(_states[agent])) continue;
                 if (SegmentCircle(from, delta, _positions[agent], _kinds[_kind[agent]].Stats.Radius, out var hit) && hit < t)
                 {
                     t = hit;
@@ -985,7 +1014,7 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>Living monsters in the cone (centres within <paramref name="range"/>, angle by cosine); count written.</summary>
-        public int QueryCone(Vector2 origin, Vector2 direction, float range, float cosHalfAngle, int[] results)
+        public int QueryCone(Vector2 origin, Vector2 direction, float range, float cosHalfAngle, int[] results, int? floor = null)
         {
             if (!IsActive) return 0;
             var count = 0;
@@ -996,9 +1025,9 @@ namespace Purge.Gameplay.Horde
             var maxY = Mathf.FloorToInt(origin.y + reach + 0.5f);
             for (var y = minY; y <= maxY; y++)
             for (var x = minX; x <= maxX; x++)
-            for (var agent = _buckets.First(x, y); agent >= 0 && count < results.Length; agent = _buckets.Next(agent))
+            for (var agent = _buckets.First(x, y, floor ?? _player.Floor); agent >= 0 && count < results.Length; agent = _buckets.Next(agent))
             {
-                if (!IsAlive(_states[agent])) continue;
+                if (_floors[agent] != (floor ?? _player.Floor) || !IsAlive(_states[agent])) continue;
                 var offset = _positions[agent] - origin;
                 var distance = offset.magnitude;
                 if (distance > range + _kinds[_kind[agent]].Stats.Radius) continue;
@@ -1010,7 +1039,7 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>First living-or-not monster bucketed in the cell this tick (-1 = none); iterate with <see cref="NextInCell"/>.</summary>
-        public int FirstInCell(int x, int y) => IsActive ? _buckets.First(x, y) : -1;
+        public int FirstInCell(int x, int y, int? floor = null) => IsActive ? _buckets.First(x, y, floor ?? _player.Floor) : -1;
 
         public int NextInCell(int agent) => _buckets.Next(agent);
 
@@ -1021,7 +1050,7 @@ namespace Purge.Gameplay.Horde
             var bestDistance = maxDistance * maxDistance;
             for (var i = 0; i < _highWater; i++)
             {
-                if (!IsAlive(_states[i])) continue;
+                if (_floors[i] != _player.Floor || !IsAlive(_states[i])) continue;
                 var distance = (_positions[i] - position).sqrMagnitude;
                 if (distance < bestDistance)
                 {
@@ -1046,6 +1075,64 @@ namespace Purge.Gameplay.Horde
             }
 
             Perception.Dispose();
+        }
+
+        private void TickStairChase(int agent, float deltaTime)
+        {
+            _states[agent] = HordeAgentState.Moving;
+            _pace[agent] = HordePace.Still;
+            if (_stunned[agent] || _held[agent] || Time < _staggerUntil[agent]) return;
+
+            ref var traversal = ref _stairsInUse[agent];
+            if (traversal.Active)
+            {
+                var arrived = traversal.Advance(deltaTime);
+                _positions[agent] = new Vector2(traversal.Position.x, traversal.Position.z);
+                _pace[agent] = arrived ? HordePace.Still : HordePace.Walk;
+                if (arrived && _passability.IsWalkable(traversal.Destination, false) &&
+                    traversal.Destination != _player.Cell)
+                {
+                    _floors[agent] = traversal.Destination.Floor;
+                    traversal = default;
+                }
+                return;
+            }
+
+            var cell = PlayerMovement.CellOf(_positions[agent], _floors[agent]);
+            if (Perception.AwarenessOf(agent) == HordeAwareness.Chase)
+            {
+                if (_stairsFlow != null && _stairsFlow.TryNext(cell, out var next))
+                    FollowStairPath(agent, cell, next, deltaTime);
+            }
+            else if (Perception.TryInvestigate(agent, cell, out var noiseStep) && _passability.IsWalkable(noiseStep, false))
+                FollowStairPath(agent, cell, noiseStep, deltaTime);
+        }
+
+        private void FollowStairPath(int agent, GridPosition cell, GridPosition next, float deltaTime)
+        {
+            var previous = _positions[agent];
+            if (cell.Floor != next.Floor)
+            {
+                if (_passability.TryGetStair(cell, out var stair) && stair.ExitFrom(cell) == next)
+                {
+                    ref var traversal = ref _stairsInUse[agent];
+                    traversal.Begin(stair, cell, previous);
+                    _facing[agent] = Mathf.Atan2(traversal.Direction.x, traversal.Direction.y);
+                    _pace[agent] = HordePace.Walk;
+                }
+                return;
+            }
+
+            var target = new Vector2(next.X, next.Y);
+            var moved = Vector2.MoveTowards(previous, target, _speed[agent] * _speedFactor[agent] * deltaTime);
+            _positions[agent] = moved;
+            var direction = moved - previous;
+            if (direction.sqrMagnitude > 1e-8f)
+            {
+                _pace[agent] = HordePace.Run;
+                Turn(agent, direction.normalized, StatsOf(agent), deltaTime);
+            }
+
         }
 
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
@@ -1089,8 +1176,26 @@ namespace Purge.Gameplay.Horde
             var awareness = Perception.AwarenessOf(i);
             if (awareness != HordeAwareness.Chase)
             {
-                TickUnaware(i, position, playerPosition, stats, awareness, deltaTime);
+                var cell = PlayerMovement.CellOf(position, _floors[i]);
+                if (Perception.TryInvestigate(i, cell, out var noiseStep) && noiseStep.Floor != cell.Floor)
+                {
+                    _positions[i] = position;
+                    FollowStairPath(i, cell, noiseStep, deltaTime);
+                }
+                else TickUnaware(i, position, playerPosition, stats, awareness, deltaTime);
                 return;
+            }
+
+            if (_stairsFlow != null && !_held[i] && _states[i] == HordeAgentState.Moving)
+            {
+                var cell = PlayerMovement.CellOf(position, _floors[i]);
+                if (_stairsFlow.TryNext(cell, out var next) &&
+                    (next.Floor != cell.Floor || _flow.DistanceAt(CellIndex(position)) == FlowField.Unreachable))
+                {
+                    _positions[i] = position;
+                    FollowStairPath(i, cell, next, deltaTime);
+                    return;
+                }
             }
 
             var toPlayer = playerPosition - position;
@@ -1357,7 +1462,7 @@ namespace Purge.Gameplay.Horde
                 var cy = Mathf.FloorToInt(position.y + 0.5f);
                 for (var y = cy - 1; y <= cy + 1; y++)
                 for (var x = cx - 1; x <= cx + 1; x++)
-                for (var other = _buckets.First(x, y); other >= 0; other = _buckets.Next(other))
+                for (var other = _buckets.First(x, y, _player.Floor); other >= 0; other = _buckets.Next(other))
                 {
                     if (other == i || _wideCount > 0 && IsWide(other)) continue; // wide bodies — below
                     var minDistance = radius + _kinds[_kind[other]].Stats.Radius;
@@ -1415,7 +1520,7 @@ namespace Purge.Gameplay.Horde
             var deepest = 0f;
             for (var y = minY - 1; y <= maxY + 1; y++)
             for (var x = minX - 1; x <= maxX + 1; x++)
-            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            for (var agent = _buckets.First(x, y, _player.Floor); agent >= 0; agent = _buckets.Next(agent))
             {
                 if (!IsAlive(_states[agent])) continue;
                 var kind = _kinds[_kind[agent]];
@@ -1462,7 +1567,7 @@ namespace Purge.Gameplay.Horde
             var maxY = Mathf.FloorToInt(center.y + reach + 0.5f);
             for (var y = minY - 1; y <= maxY + 1; y++)
             for (var x = minX - 1; x <= maxX + 1; x++)
-            for (var agent = _buckets.First(x, y); agent >= 0; agent = _buckets.Next(agent))
+            for (var agent = _buckets.First(x, y, _player.Floor); agent >= 0; agent = _buckets.Next(agent))
             {
                 if (!IsAlive(_states[agent])) continue;
                 var kind = _kinds[_kind[agent]];
@@ -1583,7 +1688,7 @@ namespace Purge.Gameplay.Horde
         /// cell within <paramref name="radius"/> of <paramref name="center"/>, with its kind's perception; may become a
         /// champion. Its slot, or -1 (no free slot, no such cell).
         /// </summary>
-        public int SpawnEmerging(Vector2 center, int kind, float radius)
+        public int SpawnEmerging(Vector2 center, int kind, float radius, int? floor = null)
         {
             if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
             for (var attempt = 0; attempt < 16; attempt++)
@@ -1592,8 +1697,12 @@ namespace Purge.Gameplay.Horde
                     ? Vector2.zero
                     : new Vector2((float)_random.NextDouble() * 2f - 1f, (float)_random.NextDouble() * 2f - 1f) * radius;
                 var cell = CellIndex(center + offset);
-                if (!CanStand(cell) || _flow.DistanceAt(cell) == FlowField.Unreachable) continue;
-                var slot = Place(cell, true, null, null, kind);
+                var spawnFloor = floor ?? _player.Floor;
+                if (cell < 0) continue;
+                var position = new GridPosition(cell % _grid.Width, cell / _grid.Width, spawnFloor);
+                if (FlowDistance(position) == FlowField.Unreachable ||
+                    !(spawnFloor == _player.Floor ? CanStand(cell) : _passability.IsWalkable(position))) continue;
+                var slot = Place(cell, true, null, null, kind, floor: spawnFloor);
                 if (slot >= 0) RollChampion(slot);
                 return slot;
             }
@@ -1706,7 +1815,7 @@ namespace Purge.Gameplay.Horde
             var outward = new Vector2(offset.X, offset.Y);
             for (var i = 0; i < _highWater; i++)
             {
-                if (!IsAlive(_states[i])) continue;
+                if (_floors[i] != floor || !IsAlive(_states[i])) continue;
                 var position = _positions[i];
                 var radius = RadiusOf(i);
                 var half = radius * 0.9f;
@@ -1789,7 +1898,7 @@ namespace Purge.Gameplay.Horde
             if (_positions == null || floor != _player.Floor) return;
             for (var i = 0; i < _highWater; i++)
             {
-                if (!IsAlive(_states[i])) continue;
+                if (_floors[i] != floor || !IsAlive(_states[i])) continue;
                 var position = _positions[i];
                 if ((position - center).sqrMagnitude > reach * reach || CanStand(CellIndex(position))) continue;
                 var radius = RadiusOf(i);
@@ -1818,6 +1927,10 @@ namespace Purge.Gameplay.Horde
         private bool CanStand(int cell) => cell >= 0 && _walkable[cell] && !InRefugeCell(cell);
 
         /// <summary>Flow distance from the cell to the player (orthogonal step 2, diagonal 3), or <see cref="FlowField.Unreachable"/>.</summary>
+        public int FlowDistance(GridPosition cell) =>
+            _stairsFlow != null ? _stairsFlow.DistanceAt(cell) :
+            cell.Floor == _player.Floor ? FlowDistance(cell.X, cell.Y) : FlowField.Unreachable;
+
         public int FlowDistance(int x, int y)
         {
             if (!IsActive || x < 0 || y < 0 || x >= _grid.Width || y >= _grid.Height) return FlowField.Unreachable;
@@ -1888,7 +2001,7 @@ namespace Purge.Gameplay.Horde
         /// <param name="perception">Overrides the kind's (sandbox groups).</param>
         /// <param name="emergeTime">How long it climbs out when <paramref name="emerge"/> (negative = its kind's).</param>
         private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null, int forcedKind = -1,
-            float emergeTime = -1f)
+            float emergeTime = -1f, int? floor = null)
         {
             var slot = FreeSlot();
             if (slot < 0) return -1;
@@ -1896,6 +2009,8 @@ namespace Purge.Gameplay.Horde
             var kind = forcedKind >= 0 && forcedKind < _kinds.Length ? forcedKind : PickKind();
             var stats = _kinds[kind].Stats;
             var jitter = new Vector2((float)_random.NextDouble() - 0.5f, (float)_random.NextDouble() - 0.5f) * 0.6f;
+            _floors[slot] = floor ?? _player.Floor;
+            if (_stairsInUse != null) _stairsInUse[slot] = default;
             _positions[slot] = exact ?? new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
@@ -1954,6 +2069,10 @@ namespace Purge.Gameplay.Horde
 
         private void RefreshWalkable()
         {
+            if (_stairsWalkable != null)
+                for (var i = 0; i < _stairsWalkable.Length; i++)
+                    _stairsWalkable[i] = _passability.IsWalkable(_grid.ToPosition(i), false);
+
             _walkableCount = 0;
             _passableDoors = 0;
             for (var y = 0; y < _grid.Height; y++)
@@ -1975,7 +2094,9 @@ namespace Purge.Gameplay.Horde
 
         private void RebuildFlow()
         {
+            if (_flowTarget.Floor != _player.Floor) RefreshWalkable();
             _flowTarget = _player.Cell;
+            _stairsFlow?.Build(_flowTarget, _stairsWalkable);
             _flow.Build(_flowTarget, _walkable);
             if (UsesDoorFlow) _doorFlow.Build(_flowTarget, _doorWalkable);
             if (_wideKinds) RebuildBodyFlow();

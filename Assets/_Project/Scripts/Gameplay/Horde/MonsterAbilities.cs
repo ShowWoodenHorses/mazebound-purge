@@ -144,6 +144,7 @@ namespace Purge.Gameplay.Horde
         private readonly Vector2[] _direction = new Vector2[MaxProjectiles];
         private readonly float[] _left = new float[MaxProjectiles];
         private readonly float[] _age = new float[MaxProjectiles];
+        private readonly int[] _projectileFloor = new int[MaxProjectiles];
         private readonly int[] _projectileKind = new int[MaxProjectiles];
         private readonly ProjectileAbility[] _projectile = new ProjectileAbility[MaxProjectiles];
         private readonly float[] _projectileFactor = new float[MaxProjectiles]; // × damage (the shooter's rage)
@@ -180,7 +181,7 @@ namespace Purge.Gameplay.Horde
         public int HealthPhaseOf(int agent) => IsActive && (uint)agent < (uint)_healthPhase.Length ? _healthPhase[agent] : 0;
 
         /// <summary>(where, the horde kind that shot it, its ability, hit the player) a projectile ended.</summary>
-        public event Action<Vector2, int, ProjectileAbility, bool> ProjectileEnded;
+        public event Action<Vector2, int, ProjectileAbility, bool, int> ProjectileEnded;
 
         /// <summary>Casts that went off (tests, metrics).</summary>
         public int Casts { get; private set; }
@@ -329,6 +330,7 @@ namespace Purge.Gameplay.Horde
         public int ProjectileCount => _projectileCount;
         public Vector2 ProjectilePosition(int index) => _position[index];
         public Vector2 ProjectileDirection(int index) => _direction[index];
+        public int ProjectileFloor(int index) => _projectileFloor[index];
         public int ProjectileKind(int index) => _projectileKind[index];
 
         /// <summary>Number of projectile <paramref name="index"/> that stays the same while it flies (indices shift as others end).</summary>
@@ -473,6 +475,7 @@ namespace Purge.Gameplay.Horde
 
                 var state = states[i];
                 if (state != HordeAgentState.Moving && state != HordeAgentState.Attacking ||
+                    _horde.FloorOf(i) != _player.Floor ||
                     _horde.Perception.AwarenessOf(i) != HordeAwareness.Chase)
                 {
                     if (_cast[i] >= 0) Break(i, time);
@@ -908,6 +911,7 @@ namespace Purge.Gameplay.Horde
             var arc = ability.IsArc;
             _projectile[p] = ability;
             _projectileKind[p] = _horde.Kinds[agent];
+            _projectileFloor[p] = _horde.FloorOf(agent);
             _projectileFactor[p] = _horde.DamageFactorOf(agent);
             _projectileOwner[p] = agent;
             _projectileGeneration[p] = _horde.Generations[agent];
@@ -931,9 +935,10 @@ namespace Purge.Gameplay.Horde
 
         private void TickProjectiles(float deltaTime)
         {
-            var floor = _player.Floor;
             for (var p = _projectileCount - 1; p >= 0; p--)
             {
+                var floor = _projectileFloor[p];
+                var playerOnFloor = _player.IsSpawned && _player.Floor == floor;
                 var ability = _projectile[p];
                 _age[p] += deltaTime;
                 if (ability.IsArc)
@@ -956,7 +961,7 @@ namespace Purge.Gameplay.Horde
                         continue;
                     }
 
-                    var hit = _player.IsSpawned && (_player.Position - at).magnitude <= ability.ArcRadius + PlayerRadius;
+                    var hit = playerOnFloor && (_player.Position - at).magnitude <= ability.ArcRadius + PlayerRadius;
                     if (hit) HurtPlayer(_projectileOwner[p], _projectileGeneration[p], ability.Damage * _projectileFactor[p], _from[p], ability.Status, ability.StatusDuration);
                     End(p, at, floor, hit);
                     continue;
@@ -969,7 +974,7 @@ namespace Purge.Gameplay.Horde
                 var segment = _targets.Spatial.QuerySegment(from, next, floor);
                 if (segment.Kind == SegmentHitKind.Blocker) wall = segment.T;
                 var player = 2f;
-                if (_player.IsSpawned && SegmentCircle(from, next - from, _player.Position, PlayerRadius, out var t)) player = t;
+                if (playerOnFloor && SegmentCircle(from, next - from, _player.Position, PlayerRadius, out var t)) player = t;
 
                 if (player <= 1f && player <= wall)
                 {
@@ -1007,6 +1012,7 @@ namespace Purge.Gameplay.Horde
             _left[p] = _left[last];
             _age[p] = _age[last];
             _projectileKind[p] = _projectileKind[last];
+            _projectileFloor[p] = _projectileFloor[last];
             _projectileFactor[p] = _projectileFactor[last];
             _projectileOwner[p] = _projectileOwner[last];
             _projectileGeneration[p] = _projectileGeneration[last];
@@ -1014,7 +1020,7 @@ namespace Purge.Gameplay.Horde
             _projectile[p] = _projectile[last];
             _projectile[last] = null;
             if (impact && ability.Impact.Count > 0) _effects?.Apply(ability.Impact, at, floor, hostile: true);
-            ProjectileEnded?.Invoke(at, kind, ability, hitPlayer);
+            ProjectileEnded?.Invoke(at, kind, ability, hitPlayer, floor);
         }
 
         /// <summary>

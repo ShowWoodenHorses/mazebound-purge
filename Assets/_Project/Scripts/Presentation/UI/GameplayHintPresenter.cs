@@ -148,6 +148,8 @@ namespace Purge.Presentation.UI
                     return _vehicles.Current != null || _vehicles.FindEnterable() != null;
                 case HintCondition.Boss:
                     return _boss.IsBossAlive;
+                case HintCondition.Stairs:
+                    return _player.IsOnStairs;
                 case HintCondition.ClosedArena:
                     return _flow.CurrentArenaClosed && _boss.GatesClosed;
                 default:
@@ -164,7 +166,7 @@ namespace Purge.Presentation.UI
                 var states = _horde.States;
                 var positions = _horde.Positions;
                 for (var i = 0; i < _horde.HighWater; i++)
-                    if (HordeSystem.IsAlive(states[i]) && IsVisible(positions[i]))
+                    if (_horde.FloorOf(i) == _player.Floor && HordeSystem.IsAlive(states[i]) && IsVisible(positions[i]))
                         _visibleMonsters.Add(i);
             }
 

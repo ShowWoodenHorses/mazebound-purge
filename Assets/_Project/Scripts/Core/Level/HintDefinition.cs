@@ -16,6 +16,7 @@ namespace Purge.Core.Level
         Vehicle = 8,
         Boss = 9,
         ClosedArena = 10,
+        Stairs = 11,
     }
 
     /// <summary>One optional hint, with a stable save ID, a localized message and a reusable condition.</summary>

@@ -230,7 +230,6 @@ namespace Purge.Gameplay.Effects
         {
             var floorSize = _grid.FloorSize;
             var width = _grid.Width;
-            var hordeFloor = _player.Floor;
             var playerIndex = _player.IsSpawned && _grid.IsInside(_player.Cell) ? _grid.ToIndex(_player.Cell) : -1;
             // New cells (spread) are appended: count them from the next tick.
             for (var i = Count - 1; i >= 0; i--)
@@ -243,12 +242,12 @@ namespace Purge.Gameplay.Effects
 
                 var damage = zone.Damage != null ? zone.Damage.DamagePerSecond * interval * _strength[index] : 0f;
                 var status = zone.Status;
-                if ((damage > 0f || status != null) && floor == hordeFloor)
+                if (damage > 0f || status != null)
                 {
-                    for (var agent = _horde.FirstInCell(x, y); agent >= 0; agent = _horde.NextInCell(agent))
+                    for (var agent = _horde.FirstInCell(x, y, floor); agent >= 0; agent = _horde.NextInCell(agent))
                     {
                         var target = CombatTarget.OfAgent(agent);
-                        if (!_targets.IsAlive(target) || _horde.IgnoresZone(agent, zone)) continue;
+                        if (_horde.FloorOf(agent) != floor || !_targets.IsAlive(target) || _horde.IgnoresZone(agent, zone)) continue;
                         if (status != null && status.Status != null) _statuses.Apply(target, status.Status, status.Duration);
                         if (damage > 0f) _targets.Damage(target, damage, Vector2.zero); // no direction: armor does not cover
                     }

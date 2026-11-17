@@ -306,7 +306,7 @@ namespace Purge.Tests.EditMode.Monsters
             Build();
             ProjectileAbility ended = null;
             var where = Vector2.zero;
-            _abilities.ProjectileEnded += (at, kind, ability, hit) =>
+            _abilities.ProjectileEnded += (at, kind, ability, hit, floor) =>
             {
                 ended = ability;
                 where = at;
@@ -330,7 +330,7 @@ namespace Purge.Tests.EditMode.Monsters
             _elite.SetAbilities(balls);
             Build();
             var ends = new List<Vector2>();
-            _abilities.ProjectileEnded += (at, kind, ability, hit) => ends.Add(at);
+            _abilities.ProjectileEnded += (at, kind, ability, hit, floor) => ends.Add(at);
             var demon = Spawn(_elite, 12f, 10f);
             Tick(0.1f);
             Assert.That(_abilities.LandingCount(demon), Is.EqualTo(3), "a warning circle per ball");
@@ -386,7 +386,7 @@ namespace Purge.Tests.EditMode.Monsters
             _elite.Stats.Radius = 1f;
             _elite.SetAbilities(new TrailAbility { Zone = fire, Duration = 5f, Strength = 1f });
             Build();
-            var champions = new ChampionSystem(_horde, _effects, _zones, _player, _playerStatuses);
+            var champions = new ChampionSystem(_horde, _effects, _zones, _playerStatuses);
             champions.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             Assert.That(champions.IsActive, Is.True, "a kind with a trail, no champions");
             var demon = Spawn(_elite, 25.5f, 10.5f);

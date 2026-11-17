@@ -36,12 +36,27 @@ namespace Purge.Editor.LevelDesigner
             var geometry = level.Geometry;
             var theme = level.VisualTheme;
 
-            // Every cell has a floor; wall cells get the wall on top of it.
+            var openings = new System.Collections.Generic.HashSet<GridPosition>();
+            var stairAsset = theme != null ? theme.Stairs : null;
+            var stairPrefab = stairAsset == null ? null :
+                AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(stairAsset.AssetGUID));
+            foreach (var stair in geometry.Stairs)
+            {
+                openings.Add(stair.First.OnFloor(stair.UpperFloor));
+                openings.Add(stair.Second.OnFloor(stair.UpperFloor));
+                if (stairPrefab == null) continue;
+                var flight = (GameObject)PrefabUtility.InstantiatePrefab(stairPrefab, geometryRoot);
+                var matrix = StairMeshPlacement.Matrix(stair);
+                flight.transform.SetLocalPositionAndRotation(matrix.GetColumn(3), matrix.rotation);
+                flight.transform.localScale = matrix.lossyScale;
+            }
+
+            // Every cell outside the stair openings has a floor; wall cells get a wall on top.
             for (var i = 0; i < geometry.CellCount; i++)
             foreach (var layer in CellLayers.All)
             {
                 var cell = geometry.ToPosition(i);
-                if (!CellLayers.Exists(geometry.GetCell(cell), layer))
+                if (openings.Contains(cell) || !CellLayers.Exists(geometry.GetCell(cell), layer))
                     continue;
 
                 var set = theme != null ? theme.GetSet(CellLayers.Kind(layer)) : null;
@@ -54,6 +69,7 @@ namespace Purge.Editor.LevelDesigner
             for (var i = 0; i < geometry.CellCount; i++)
             {
                 var cell = geometry.ToPosition(i);
+                if (openings.Contains(cell)) continue;
                 var decor = VisualResolver.ResolveDecor(level, cell);
                 if (decor.IsEmpty)
                     continue;

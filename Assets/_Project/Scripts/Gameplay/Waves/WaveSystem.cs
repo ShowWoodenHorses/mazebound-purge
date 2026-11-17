@@ -296,7 +296,8 @@ namespace Purge.Gameplay.Waves
                 }
 
                 var center = point >= 0 ? CenterOf(point) : FallbackCenter();
-                if (_horde.SpawnEmerging(center, kind, SpawnRadius) < 0)
+                var floor = point >= 0 ? _level.MonsterSpawns[point].Position.Floor : _player.Floor;
+                if (_horde.SpawnEmerging(center, kind, SpawnRadius, floor) < 0)
                     return; // no free slot or cell this tick: tries again
                 _next++;
             }
@@ -396,8 +397,11 @@ namespace Purge.Gameplay.Waves
             for (var i = 0; i < points.Count; i++)
             {
                 var cell = points[i].Position;
-                if (cell.Floor != floor || _horde.FlowDistance(cell.X, cell.Y) == FlowField.Unreachable) continue;
-                var distance = (new Vector2(cell.X, cell.Y) - player).magnitude;
+                var path = _horde.FlowDistance(cell);
+                if (path == FlowField.Unreachable) continue;
+                var distance = cell.Floor == floor
+                    ? (new Vector2(cell.X, cell.Y) - player).magnitude
+                    : path * 0.5f;
                 if (distance >= MinPlayerDistance) _allowed.Add(i);
                 if (distance > farthestDistance)
                 {

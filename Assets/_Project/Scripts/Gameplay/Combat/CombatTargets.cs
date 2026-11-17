@@ -172,7 +172,7 @@ namespace Purge.Gameplay.Combat
 
             if (HordeActive)
             {
-                var agent = _horde.QuerySegment(from, to, out var t, ignore.Agent);
+                var agent = _horde.QuerySegment(from, to, out var t, ignore.Agent, floor);
                 // A monster exactly at the wall: the bullet hits it first.
                 if (agent >= 0 && t <= bestT)
                     best = new CombatHit(CombatHitKind.Target, t, from + (to - from) * t, CombatTarget.OfAgent(agent));
@@ -192,7 +192,7 @@ namespace Purge.Gameplay.Combat
             if (HordeActive)
             {
                 var count = _horde.QueryCone(origin, direction.sqrMagnitude > 0f ? direction.normalized : Vector2.up, radius,
-                    cosHalfAngle, _agents);
+                    cosHalfAngle, _agents, floor);
                 for (var i = 0; i < count; i++)
                     results.Add(CombatTarget.OfAgent(_agents[i]));
             }

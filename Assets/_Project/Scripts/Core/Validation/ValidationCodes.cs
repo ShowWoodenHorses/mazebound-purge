@@ -23,6 +23,7 @@ namespace Purge.Core.Validation
         public const string ObstacleNotOnFloor = "ObstacleNotOnFloor";
         public const string ObjectInBlockedCell = "ObjectInBlockedCell";
         public const string VehicleBlocked = "VehicleBlocked";
+        public const string InvalidStair = "InvalidStair";
         public const string FloorOverhang = "FloorOverhang";
         public const string MonsterSpawnBlocked = "MonsterSpawnBlocked";
         public const string MissingEarlyChestKeySource = "MissingEarlyChestKeySource";

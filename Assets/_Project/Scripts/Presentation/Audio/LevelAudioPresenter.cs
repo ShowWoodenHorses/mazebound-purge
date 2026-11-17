@@ -208,7 +208,7 @@ namespace Purge.Presentation.Audio
 
         private void OnSound(SoundEvent sound)
         {
-            if (sound.Type == SoundType.Step)
+            if (sound.Type == SoundType.Step || sound.Type == SoundType.Stairs)
                 PlayAt(FootstepAt(sound.Position), sound.Position);
         }
 

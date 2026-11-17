@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -984,4 +985,5 @@ MonoBehaviour:
   - "Os chefes avisam antes de atacar. Saia da \xE1rea marcada antes do impacto."
   - "A arena fica trancada at\xE9 voc\xEA derrotar o chefe. Vencer com a arena fechada
     rende um b\xF4nus."
+  - "Pise na escada para mudar de andar. Os monstros podem seguir voc\xEA."
   _missing: []

@@ -58,9 +58,10 @@ namespace Purge.Presentation.Map
         private readonly List<Pickup> _lying = new List<Pickup>();
         private readonly Dictionary<string, Color> _pairColors = new Dictionary<string, Color>(StringComparer.Ordinal);
         private readonly Dictionary<string, Color> _keyColors = new Dictionary<string, Color>(StringComparer.Ordinal);
-        private Texture2D _texture;
-        private Color32[] _pixels;
-        private bool _pending;
+        private Texture2D[] _textures;
+        private Color32[][] _pixels;
+        private bool[] _pending;
+        private int _selectedFloor;
         private bool _bound;
 
         public MapPresenter(UIRoot ui, LevelData level, LevelGrid grid, PlayerSystem player, DoorSystem doors,
@@ -88,7 +89,7 @@ namespace Purge.Presentation.Map
         public LevelLoadStage Stage => LevelLoadStage.InitializeUI;
 
         /// <summary>The current map texture (also the mini-map's); null before loading and after disposal.</summary>
-        public Texture2D Texture => _texture;
+        public Texture2D Texture => _textures?[_player.Floor];
 
         /// <summary>
         /// Icons as last refreshed (for tests), in order: start, doors (as in the level), keys, the chest key, medkits,
@@ -101,21 +102,32 @@ namespace Purge.Presentation.Map
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (_texture == null)
+            if (_textures == null)
             {
-                _texture = new Texture2D(_grid.Width, _grid.Height, TextureFormat.RGBA32, false)
+                _textures = new Texture2D[_grid.FloorCount];
+                _pixels = new Color32[_grid.FloorCount][];
+                _pending = new bool[_grid.FloorCount];
+                for (var floor = 0; floor < _textures.Length; floor++)
                 {
-                    name = "Map " + _level.name,
-                    filterMode = FilterMode.Point,
-                    wrapMode = TextureWrapMode.Clamp,
-                };
-                _pixels = new Color32[_grid.FloorSize];
+                    _textures[floor] = new Texture2D(_grid.Width, _grid.Height, TextureFormat.RGBA32, false)
+                    {
+                        name = $"Map {_level.name}, floor {floor}",
+                        filterMode = FilterMode.Point,
+                        wrapMode = TextureWrapMode.Clamp,
+                    };
+                    _pixels[floor] = new Color32[_grid.FloorSize];
+                    MapRenderer.Render(_grid, _pixels[floor], floor, _exploration != null ? IsExplored : (Func<GridPosition, bool>)null);
+                    _pending[floor] = true;
+                    Upload(floor);
+                }
+
                 CollectPairColors();
             }
 
             if (!_bound)
             {
                 _ui.Map.Opened += OnOpened;
+                _ui.Map.FloorSelected += SelectFloor;
                 _ui.Map.LayerChanged += OnLayerChanged;
                 if (_exploration != null) _exploration.Explored += OnExplored;
                 _bound = true;
@@ -123,8 +135,7 @@ namespace Purge.Presentation.Map
 
             _ui.Map.ShiftTopRightButtons(_platform?.Traits.TopRightButtonsShift ?? 0f);
             ApplyLayerSwitches();
-            Redraw();
-            RefreshIcons(); // Creates the icon images now, while loading.
+            SelectFloor(_player.Floor); // Creates the icon images now, while loading.
             return UniTask.CompletedTask;
         }
 
@@ -135,6 +146,7 @@ namespace Purge.Presentation.Map
                 if (_ui != null && _ui.Map != null)
                 {
                     _ui.Map.Opened -= OnOpened;
+                    _ui.Map.FloorSelected -= SelectFloor;
                     _ui.Map.LayerChanged -= OnLayerChanged;
                 }
 
@@ -144,20 +156,25 @@ namespace Purge.Presentation.Map
 
             if (_ui != null && _ui.Map != null)
                 _ui.Map.Clear();
-            UnityObjects.Destroy(_texture);
-            _texture = null;
+            if (_textures != null)
+                foreach (var texture in _textures) UnityObjects.Destroy(texture);
+            _textures = null;
+            _pixels = null;
+            _pending = null;
         }
 
         /// <summary>The player switched the layer on (the mini-map follows the same switches).</summary>
         public bool IsLayerShown(MapLayer layer) => IsShown(layer);
 
         /// <summary>Uploads the cells explored since the last call (the texture is shared with the mini-map).</summary>
-        public void ApplyPending()
+        public void ApplyPending() => Upload(_player.Floor);
+
+        private void Upload(int floor)
         {
-            if (!_pending || _texture == null) return;
-            _texture.SetPixels32(_pixels);
-            _texture.Apply(false);
-            _pending = false;
+            if (_textures == null || !_pending[floor]) return;
+            _textures[floor].SetPixels32(_pixels[floor]);
+            _textures[floor].Apply(false);
+            _pending[floor] = false;
         }
 
         /// <summary>The cell is drawn on the map: explored (always, when the level has no exploration).</summary>
@@ -166,17 +183,17 @@ namespace Purge.Presentation.Map
         private void OnExplored(IReadOnlyList<GridPosition> cells)
         {
             if (_pixels == null) return;
-            for (var i = 0; i < cells.Count; i++)
-                if (cells[i].Floor == 0)
-                    MapRenderer.RenderCell(_grid, _pixels, cells[i]);
-            _pending = true;
+            foreach (var cell in cells)
+            {
+                MapRenderer.RenderCell(_grid, _pixels[cell.Floor], cell);
+                _pending[cell.Floor] = true;
+            }
         }
 
         private void OnOpened()
         {
-            ApplyPending();
             ApplyLayerSwitches();
-            RefreshIcons();
+            SelectFloor(_player.Floor);
         }
 
         private void ApplyLayerSwitches()
@@ -214,19 +231,20 @@ namespace Purge.Presentation.Map
             _ => true,
         };
 
-        private void Redraw()
+        private void SelectFloor(int floor)
         {
-            MapRenderer.Render(_grid, _pixels, 0, _exploration != null ? IsExplored : (Func<GridPosition, bool>)null);
-            _texture.SetPixels32(_pixels);
-            _texture.Apply(false);
-            _pending = false;
-            _ui.Map.SetMap(_texture);
+            if (_textures == null || (uint)floor >= (uint)_textures.Length) return;
+            _selectedFloor = floor;
+            Upload(floor);
+            _ui.Map.SetMap(_textures[floor]);
+            _ui.Map.SetFloors(_textures.Length, floor, _level.Geometry.GroundFloor);
+            RefreshIcons();
         }
 
         private void RefreshIcons()
         {
             var set = Set;
-            if (set == null || _texture == null) return;
+            if (set == null || _textures == null) return;
             _icons.Clear();
 
             // The start the player began at.
@@ -239,7 +257,7 @@ namespace Purge.Presentation.Map
 
             foreach (var door in _level.Doors)
             {
-                if (!IsExplored(door.Position))
+                if (door.Position.Floor != _selectedFloor || !IsExplored(door.Position))
                     _icons.Add(new MapIcon { Kind = MapIconKind.Door });
                 else if (_doors.IsLocked(door.Id))
                 {
@@ -261,10 +279,10 @@ namespace Purge.Presentation.Map
             AddItemIcons(set, PickupKind.Medkit, _level.Medkits.Count, IsShown(MapLayer.Medkits));
             AddItemIcons(set, PickupKind.Weapon, _level.Weapons.Count, IsShown(MapLayer.Weapons));
             _lying.Clear();
-            AddObjectIcons(set, _icons, IsShown(MapLayer.Objects));
+            AddObjectIcons(set, _icons, IsShown(MapLayer.Objects), _selectedFloor);
 
             var showMonsters = IsShown(MapLayer.Zombies);
-            AddMonsterIcons(set, _icons, MonsterSlots, showMonsters, null);
+            AddMonsterIcons(set, _icons, MonsterSlots, showMonsters, null, _selectedFloor);
 
             _icons.Add(new MapIcon
             {
@@ -273,7 +291,7 @@ namespace Purge.Presentation.Map
                 Rotation = MapIconLayout.PlayerRotation(_player.Facing),
                 Size = set.PlayerSize,
                 Color = set.PlayerColor,
-                Visible = IsShown(MapLayer.Player) && _player.IsSpawned,
+                Visible = IsShown(MapLayer.Player) && _player.IsSpawned && _player.Floor == _selectedFloor,
             });
 
             _ui.Map.SetIcons(_icons);
@@ -288,7 +306,7 @@ namespace Purge.Presentation.Map
             var added = 0;
             foreach (var pickup in _lying)
             {
-                if (pickup.Kind != kind || pickup.IsDropped) continue; // monsters' drops: not on the map (icon count fixed)
+                if (pickup.Cell.Floor != _selectedFloor || pickup.Kind != kind || pickup.IsDropped) continue; // monsters' drops: not on the map (icon count fixed)
                 if (added >= slots) break;
                 var color = kind switch
                 {
@@ -315,7 +333,7 @@ namespace Purge.Presentation.Map
                 if (pickup.Kind != PickupKind.ChestKey) continue;
                 var icon = ObjectIcon(set, MapIconKind.Key, "chest_key", pickup.Cell, 0f, set.ChestColor);
                 icon.Size = set.ItemSize;
-                icon.Visible = shown && IsExplored(pickup.Cell);
+                icon.Visible = shown && pickup.Cell.Floor == _selectedFloor && IsExplored(pickup.Cell);
                 _icons.Add(icon);
                 return;
             }
@@ -328,14 +346,15 @@ namespace Purge.Presentation.Map
         /// explored cells; vehicles not used up (parked, whole) — everywhere, turned to their heading; a slot each, as
         /// many as the level has (also the mini-map's).
         /// </summary>
-        public void AddObjectIcons(MapIconSet set, List<MapIcon> icons, bool shown)
+        public void AddObjectIcons(MapIconSet set, List<MapIcon> icons, bool shown, int? floor = null)
         {
+            var mapFloor = floor ?? _player.Floor;
             if (_barrels != null)
                 foreach (var barrel in _barrels.Barrels)
                 {
                     var icon = ObjectIcon(set, MapIconKind.Barrel, barrel.Id, barrel.Cell, 0f, BarrelColor(set, barrel.Data.Kind));
                     icon.Size = set.ItemSize;
-                    icon.Visible = shown && !barrel.IsBroken && IsExplored(barrel.Cell);
+                    icon.Visible = shown && barrel.Cell.Floor == mapFloor && !barrel.IsBroken && IsExplored(barrel.Cell);
                     icons.Add(icon);
                 }
 
@@ -345,7 +364,7 @@ namespace Purge.Presentation.Map
                     var opened = chest.State == ChestState.Open;
                     var kind = chest.Kind == ChestKind.Locked && !opened ? MapIconKind.LockedChest : MapIconKind.Chest;
                     var icon = ObjectIcon(set, kind, chest.Id, chest.Cell, 0f, opened ? set.OpenedChestColor : set.ChestColor);
-                    icon.Visible = shown && IsExplored(chest.Cell);
+                    icon.Visible = shown && chest.Cell.Floor == mapFloor && IsExplored(chest.Cell);
                     icons.Add(icon);
                 }
 
@@ -358,7 +377,7 @@ namespace Purge.Presentation.Map
                         Rotation = -vehicle.Heading * Mathf.Rad2Deg,
                         Size = set.VehicleScale * vehicle.HalfLength * 2f,
                         Color = set.VehicleColor,
-                        Visible = shown && vehicle.State == VehicleState.Parked && !vehicle.Broken,
+                        Visible = shown && vehicle.Floor == mapFloor && vehicle.State == VehicleState.Parked && !vehicle.Broken,
                     });
 
             if (_refuge != null)
@@ -368,7 +387,7 @@ namespace Purge.Presentation.Map
                     Center = MapIconLayout.CenterOf(_refuge.Center),
                     Size = _refuge.Edge * 2f,
                     Color = set.RefugeColor,
-                    Visible = shown && _refuge.Exists && _refuge.IsUp,
+                    Visible = shown && _refuge.Floor == mapFloor && _refuge.Exists && _refuge.IsUp,
                 });
         }
 
@@ -384,18 +403,18 @@ namespace Purge.Presentation.Map
         /// rank-and-file bigger), exactly <paramref name="slots"/> icons (the rest hidden). <paramref name="window"/>:
         /// only those inside it (grid units; the mini-map), null — anywhere.
         /// </summary>
-        public void AddMonsterIcons(MapIconSet set, List<MapIcon> icons, int slots, bool shown, Rect? window)
+        public void AddMonsterIcons(MapIconSet set, List<MapIcon> icons, int slots, bool shown, Rect? window, int? mapFloor = null)
         {
             var added = 0;
             if (_horde != null && _horde.IsActive && _visibility != null)
             {
                 var positions = _horde.Positions;
                 var states = _horde.States;
-                var floor = _player.Floor;
+                var floor = mapFloor ?? _player.Floor;
                 for (var agent = 0; agent < _horde.HighWater && added < slots; agent++)
                 {
                     var state = states[agent];
-                    if (state == HordeAgentState.Inactive || state == HordeAgentState.Dying) continue;
+                    if (_horde.FloorOf(agent) != floor || state == HordeAgentState.Inactive || state == HordeAgentState.Dying) continue;
                     var position = positions[agent];
                     if (window.HasValue && !window.Value.Contains(position)) continue;
                     var definition = _horde.DefinitionOf(agent);
@@ -444,7 +463,7 @@ namespace Purge.Presentation.Map
         private void AddObjectIcon(MapIconSet set, MapIconKind kind, string id, GridPosition cell, float rotation, Color color)
         {
             var icon = ObjectIcon(set, kind, id, cell, rotation, color);
-            icon.Visible = true;
+            icon.Visible = cell.Floor == _selectedFloor;
             _icons.Add(icon);
         }
 

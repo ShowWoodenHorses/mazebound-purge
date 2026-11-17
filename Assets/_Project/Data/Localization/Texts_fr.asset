@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -990,4 +991,5 @@ MonoBehaviour:
   - "Le boss annonce ses attaques. Sors de la zone marqu\xE9e avant l\u2019impact."
   - "L\u2019ar\xE8ne reste ferm\xE9e jusqu\u2019\xE0 la d\xE9faite du boss. R\xE9ussir
     une partie en ar\xE8ne ferm\xE9e donne un bonus."
+  - "Emprunte un escalier pour changer d\u2019\xE9tage. Les monstres peuvent te suivre."
   _missing: []

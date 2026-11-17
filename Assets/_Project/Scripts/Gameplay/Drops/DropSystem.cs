@@ -29,13 +29,12 @@ namespace Purge.Gameplay.Drops
         private readonly WeaponSystem _weapons;
         private readonly PlayerCombat _combat;
         private readonly PlayerHealth _health;
-        private readonly PlayerSystem _player;
         private DeterministicRandom _random;
         private bool _subscribed;
         private readonly bool _lucky;
 
         public DropSystem(LevelData level, HordeSystem horde, DropPool pool, PickupSystem pickups, WeaponSystem weapons,
-            PlayerCombat combat, PlayerHealth health, PlayerSystem player, LevelLaunchOptions options = null)
+            PlayerCombat combat, PlayerHealth health, LevelLaunchOptions options = null)
         {
             _level = level;
             _horde = horde;
@@ -44,7 +43,6 @@ namespace Purge.Gameplay.Drops
             _weapons = weapons;
             _combat = combat;
             _health = health;
-            _player = player;
             _lucky = options?.HasSkill(CharacterSkills.Luck) == true;
         }
 
@@ -104,7 +102,7 @@ namespace Purge.Gameplay.Drops
             var roll = DropRoller.Roll(table, _pool, Context(), _random, weaponChanceFactor: _lucky ? 1.15f : 1f);
             if (roll.Kind == DropKind.Nothing) return;
 
-            var floor = _player.Floor; // the horde lives on the player's floor
+            var floor = _horde.FloorOf(agent);
             // On a wave level the drop lies until the next wave starts (stage 6b: WaveSystem clears it), not for a lifetime.
             var lifetime = _horde.UsesWaves ? float.PositiveInfinity : table.Lifetime;
             var pickup = roll.Kind switch

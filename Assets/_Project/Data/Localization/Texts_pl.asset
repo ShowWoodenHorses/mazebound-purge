@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - Polski
   - USTAWIENIA
@@ -995,4 +996,6 @@ MonoBehaviour:
     przed uderzeniem."
   - "Arena pozostaje zamkni\u0119ta a\u017C do pokonania bossa. Wygrana z zamkni\u0119t\u0105
     aren\u0105 daje premi\u0119."
+  - "Wejd\u017A na schody, by zmieni\u0107 pi\u0119tro. Potwory mog\u0105 ruszy\u0107
+    za tob\u0105."
   _missing: []

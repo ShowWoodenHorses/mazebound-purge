@@ -42,6 +42,9 @@ namespace Purge.Editor.LevelDesigner
                     if (tools.ObstacleDefinition != null)
                         EditorGUILayout.LabelField("Blocks", Blocks(tools.ObstacleDefinition), EditorStyles.miniLabel);
                     break;
+                case EditTool.Stairs:
+                    tools.StairsAlongX = EditorGUILayout.Toggle("Along X", tools.StairsAlongX);
+                    break;
                 case EditTool.Barrel:
                     tools.BarrelKind = (BarrelKind)EditorGUILayout.EnumPopup("Kind", tools.BarrelKind);
                     break;
@@ -140,6 +143,7 @@ namespace Purge.Editor.LevelDesigner
             {
                 case EditTool.Select: return "Click a cell to select it and its object (click again to cycle objects). Drag an object to move it. Delete key removes the selected object.";
                 case EditTool.Wall: return "Click or drag to paint walls.";
+                case EditTool.Stairs: return "Click the first cell of the flight on the lower floor. Leave a free cell behind it and beyond the top. Right-click to remove.";
                 case EditTool.Floor: return "Click or drag to paint floor. Painting over a door removes the door.";
                 case EditTool.Door: return "Click to place a door cell. Then link a key in the inspector below.";
                 case EditTool.Key: return "Click a floor cell to place a key. Link it to a door from the door's inspector (one key = one door).";

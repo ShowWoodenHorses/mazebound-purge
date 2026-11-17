@@ -148,9 +148,9 @@ namespace Purge.Presentation.Audio
         }
 
         /// <summary>Where a projectile ended — a boulder crashing down (stage 8c).</summary>
-        private void OnProjectileEnded(Vector2 at, int kind, Core.Monsters.ProjectileAbility ability, bool hitPlayer)
+        private void OnProjectileEnded(Vector2 at, int kind, Core.Monsters.ProjectileAbility ability, bool hitPlayer, int floor)
         {
-            if (ability != null && !string.IsNullOrEmpty(ability.ImpactSound)) PlayAt(Catalog.MonsterSound(ability.ImpactSound), at);
+            if (floor == _player.Floor && ability != null && !string.IsNullOrEmpty(ability.ImpactSound)) PlayAt(Catalog.MonsterSound(ability.ImpactSound), at);
         }
 
         private void OnChampionMade(int slot) => PlayAt(Catalog.ChampionAppear, _horde.Positions[slot]);
@@ -159,7 +159,7 @@ namespace Purge.Presentation.Audio
 
         private void OnSound(SoundEvent sound)
         {
-            if (sound.Type == SoundType.Call) PlayAt(Catalog.MonsterCall, sound.Position);
+            if (sound.Floor == _player.Floor && sound.Type == SoundType.Call) PlayAt(Catalog.MonsterCall, sound.Position);
         }
 
         /// <summary>A broken door has its own sound (<see cref="OnDoorBroken"/>), not the opening.</summary>

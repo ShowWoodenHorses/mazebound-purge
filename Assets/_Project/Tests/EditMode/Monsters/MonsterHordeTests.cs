@@ -215,7 +215,7 @@ namespace Purge.Tests.EditMode.Monsters
             var statuses = new StatusSystem(horde, targets);
             var zones = new ZoneSystem(_grid, _doors, targets, horde, statuses, _player, _health);
             var effects = new EffectSystem(targets, zones, statuses, new SoundEventBus());
-            var deaths = new MonsterDeathEffects(horde, effects, _player);
+            var deaths = new MonsterDeathEffects(horde, effects);
             deaths.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             horde.Tick(Dt); // buckets for the blast's query
 

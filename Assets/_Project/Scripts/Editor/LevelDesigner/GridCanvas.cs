@@ -52,6 +52,8 @@ namespace Purge.Editor.LevelDesigner
         private readonly Dictionary<GridPosition, (string Text, Color Color)> _glyphs = new Dictionary<GridPosition, (string, Color)>();
         private static readonly Color SelectedEntityColor = new Color(0.2f, 1f, 1f);
 
+        public int Floor { get; set; }
+
         private float _cellSize;
         private Vector2 _origin;
         private GUIStyle _glyphStyle;
@@ -226,7 +228,7 @@ namespace Purge.Editor.LevelDesigner
         {
             var x = Mathf.FloorToInt((point.x - _origin.x) / _cellSize);
             var row = Mathf.FloorToInt((point.y - _origin.y) / _cellSize);
-            cell = new GridPosition(x, geometry.Height - 1 - row);
+            cell = new GridPosition(x, geometry.Height - 1 - row, Floor);
             return geometry.IsInside(cell);
         }
 
@@ -240,10 +242,9 @@ namespace Purge.Editor.LevelDesigner
             EditorGUI.DrawRect(local, Background);
 
             var gap = _cellSize >= 8f ? 1f : 0f;
-            // The ground floor (switching floors comes with buildings and stairs).
             for (var i = 0; i < geometry.FloorSize; i++)
             {
-                var cell = geometry.ToPosition(i);
+                var cell = geometry.ToPosition(i).OnFloor(Floor);
                 var r = CellRect(cell, geometry.Height);
                 if (!r.Overlaps(local))
                     continue;
@@ -263,6 +264,13 @@ namespace Purge.Editor.LevelDesigner
                 }
             }
 
+            foreach (var stair in geometry.Stairs)
+            {
+                if (stair.LowerFloor != Floor && stair.UpperFloor != Floor) continue;
+                EditorGUI.DrawRect(CellRect(stair.First, geometry.Height), VehicleFill);
+                EditorGUI.DrawRect(CellRect(stair.Second, geometry.Height), VehicleFill);
+            }
+
             PaintDecor(level, local);
             PaintLights(level, local);
             PaintAreas(state);
@@ -275,7 +283,7 @@ namespace Purge.Editor.LevelDesigner
                 DrawOutline(CellRect(state.SelectedCell.Value, geometry.Height), SelectedColor, 2f);
 
             var selected = state.SelectedEntity;
-            if (selected != null && geometry.IsInside(selected.Position))
+            if (selected != null && selected.Position.Floor == Floor && geometry.IsInside(selected.Position))
             {
                 var r = CellRect(selected.Position, geometry.Height);
                 DrawOutline(new Rect(r.x + 3f, r.y + 3f, r.width - 6f, r.height - 6f), SelectedEntityColor, 2f);
@@ -295,7 +303,7 @@ namespace Purge.Editor.LevelDesigner
             var size = Mathf.Max(3f, _cellSize * 0.22f);
             for (var i = 0; i < geometry.FloorSize; i++)
             {
-                var cell = geometry.ToPosition(i);
+                var cell = geometry.ToPosition(i).OnFloor(Floor);
                 var r = CellRect(cell, geometry.Height);
                 if (!r.Overlaps(local))
                     continue;
@@ -316,6 +324,7 @@ namespace Purge.Editor.LevelDesigner
             var radius = Mathf.Max(2f, _cellSize * 0.16f);
             foreach (var light in level.Lights)
             {
+                if (light.Cell.Floor != Floor) continue;
                 var point = light.Point;
                 var center = new Vector3(_origin.x + (point.x + 0.5f) * _cellSize, _origin.y + (height - 0.5f - point.y) * _cellSize);
                 if (!local.Contains(center))
@@ -340,14 +349,14 @@ namespace Purge.Editor.LevelDesigner
             var height = level.Geometry.Height;
             foreach (var area in level.Marks.LockedAreas)
             {
-                if (area.Floor != 0) continue;
+                if (area.Floor != Floor) continue;
                 var r = AreaRect(area.Rect, height);
                 EditorGUI.DrawRect(r, LockedFill);
                 DrawOutline(r, LockedColor, 1f);
             }
 
             var arena = level.Arena;
-            if (!arena.IsEmpty && arena.Floor == 0)
+            if (!arena.IsEmpty && arena.Floor == Floor)
             {
                 foreach (var entry in ArenaLayout.FindEntries(level.Geometry, arena))
                     EditorGUI.DrawRect(AreaRect(entry.Gap, height),
@@ -359,7 +368,7 @@ namespace Purge.Editor.LevelDesigner
             // Vehicles: the cells their parked bodies block.
             foreach (var vehicle in level.Vehicles)
             {
-                if (vehicle.Position.Floor != 0) continue;
+                if (vehicle.Position.Floor != Floor) continue;
                 VehicleFootprint.Cells(vehicle, _vehicleCells);
                 foreach (var cell in _vehicleCells)
                     EditorGUI.DrawRect(CellRect(cell, height), VehicleFill);
@@ -389,6 +398,7 @@ namespace Purge.Editor.LevelDesigner
 
             foreach (var pair in _glyphs)
             {
+                if (pair.Key.Floor != Floor) continue;
                 var r = CellRect(pair.Key, height);
                 if (!r.Overlaps(local))
                     continue;
@@ -420,7 +430,7 @@ namespace Purge.Editor.LevelDesigner
             var height = state.Level.Geometry.Height;
             foreach (var issue in state.Report.Issues)
             {
-                if (!issue.Position.HasValue || issue.Severity == ValidationSeverity.Info || !state.Level.Geometry.IsInside(issue.Position.Value))
+                if (!issue.Position.HasValue || issue.Position.Value.Floor != Floor || issue.Severity == ValidationSeverity.Info || !state.Level.Geometry.IsInside(issue.Position.Value))
                     continue;
 
                 var color = issue.Severity == ValidationSeverity.Error ? ErrorColor : WarningColor;

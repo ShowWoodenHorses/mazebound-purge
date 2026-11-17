@@ -50,6 +50,9 @@ namespace Purge.Core.Visual
         public Monsters.MonsterBiome Biome { get => _biome; internal set => _biome = value; }
 
         public UnityEngine.AddressableAssets.AssetReferenceGameObject ArenaGate { get => _arenaGate; internal set => _arenaGate = value; }
+        [SerializeField] private UnityEngine.AddressableAssets.AssetReferenceGameObject _stairs;
+        public UnityEngine.AddressableAssets.AssetReferenceGameObject Stairs { get => _stairs; internal set => _stairs = value; }
+
         public float ArenaGateLength => _arenaGateLength;
 
         public string Id => _id;

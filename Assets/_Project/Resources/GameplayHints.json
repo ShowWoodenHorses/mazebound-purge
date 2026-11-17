@@ -80,6 +80,11 @@
       "id": "closed_arena",
       "textKey": "hint.closed_arena",
       "condition": 10
+    },
+    {
+      "id": "stairs",
+      "textKey": "hint.stairs",
+      "condition": 11
     }
   ]
 }

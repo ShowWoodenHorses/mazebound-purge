@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Purge.Core.Definitions;
+using Purge.Core.Common;
+using Purge.Core.Generation.Steps;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 
@@ -81,6 +83,8 @@ namespace Purge.Core.Generation
         public int KeptVehicleCount { get; internal set; }
 
         public List<string> Problems { get; } = new List<string>();
+        internal BuildingStep Building { get; set; }
+        internal DeterministicRandom BuildingRandom { get; set; }
         public DecorSettings Decor { get; internal set; }
 
         // ------------------------------------------------------------ Cells

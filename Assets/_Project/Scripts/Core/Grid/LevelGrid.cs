@@ -17,6 +17,8 @@ namespace Purge.Core.Grid
         private readonly ObstacleDefinition[] _obstacles;
         private readonly CellFlags[] _flags;
 
+        private readonly Dictionary<int, StairLink> _stairs = new Dictionary<int, StairLink>();
+
         public LevelGrid(LevelGeometry geometry)
         {
             if (geometry == null) throw new ArgumentNullException(nameof(geometry));
@@ -41,6 +43,52 @@ namespace Purge.Core.Grid
                 _flags[i] = CellRules.StructureFlags(type) | CellRules.SurfaceFlags(_surfaces[i]) |
                             (_obstacles[i] != null ? _obstacles[i].Flags : CellFlags.None);
             }
+
+            foreach (var stair in geometry.Stairs)
+            {
+                if (!stair.Fits(geometry)) continue;
+                var lower = ToIndex(stair.LowerLanding);
+                var upper = ToIndex(stair.UpperLanding);
+                if (_stairs.ContainsKey(lower) || _stairs.ContainsKey(upper) ||
+                    Has(stair.LowerLanding, CellFlags.BlocksMovement) || Has(stair.UpperLanding, CellFlags.BlocksMovement) ||
+                    _stairs.ContainsKey(ToIndex(stair.First)) || _stairs.ContainsKey(ToIndex(stair.Second)) ||
+                    _stairs.ContainsKey(ToIndex(stair.First.OnFloor(stair.UpperFloor))) ||
+                    _stairs.ContainsKey(ToIndex(stair.Second.OnFloor(stair.UpperFloor)))) continue;
+                _stairs.Add(lower, stair);
+                _stairs.Add(upper, stair);
+                ReserveFlight(stair.First, stair.UpperFloor);
+                ReserveFlight(stair.Second, stair.UpperFloor);
+            }
+        }
+
+        private void ReserveFlight(GridPosition lower, int upperFloor)
+        {
+            _flags[ToIndex(lower)] |= CellFlags.BlocksMovement;
+            var upper = ToIndex(lower.OnFloor(upperFloor));
+            _cells[upper] = CellType.Void;
+            _flags[upper] = CellRules.StructureFlags(CellType.Void);
+            _surfaces[upper] = CellSurface.None;
+            _obstacles[upper] = null;
+        }
+
+        public bool HasStairs => _stairs.Count != 0;
+
+        public bool TryGetStair(GridPosition entrance, out StairLink stair)
+        {
+            stair = default;
+            return HasStairs && IsInside(entrance) && _stairs.TryGetValue(ToIndex(entrance), out stair);
+        }
+
+        public bool TryGetStairDestination(GridPosition cell, out GridPosition destination)
+        {
+            if (TryGetStair(cell, out var stair))
+            {
+                destination = stair.ExitFrom(cell);
+                return true;
+            }
+
+            destination = default;
+            return false;
         }
 
         public int Width { get; }

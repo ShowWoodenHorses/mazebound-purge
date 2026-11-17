@@ -127,7 +127,10 @@ namespace Purge.Editor.LevelDesigner
                 // Prefabs already in some group are left where the team put them.
                 // The ice of frozen doors (weather) is loaded the same way as the variants.
                 var ice = theme.Weather.HasIceOverlay ? new[] { theme.Weather.IceOverlay.AssetGUID } : Array.Empty<string>();
-                foreach (var guid in prefabGuids.Concat(ice).Distinct())
+                var stairs = level.Geometry.Stairs.Count > 0 && theme.Stairs != null && theme.Stairs.RuntimeKeyIsValid()
+                    ? new[] { theme.Stairs.AssetGUID }
+                    : Array.Empty<string>();
+                foreach (var guid in prefabGuids.Concat(ice).Concat(stairs).Distinct())
                     if (settings.FindAssetEntry(guid) == null && !string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(guid)))
                     {
                         settings.CreateOrMoveEntry(guid, visualsGroup);

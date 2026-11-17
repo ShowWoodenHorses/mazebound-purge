@@ -149,7 +149,7 @@ namespace Purge.Gameplay.Horde
             _fieldTime = new float[NoiseSlots];
             for (var s = 0; s < NoiseSlots; s++)
             {
-                _fields[s] = new NoiseField(MaxNoiseRadius);
+                _fields[s] = new NoiseField(MaxNoiseRadius, _grid);
                 _fieldTime[s] = float.MinValue;
             }
 
@@ -241,11 +241,10 @@ namespace Purge.Gameplay.Horde
 
             if (_awareness[agent] == HordeAwareness.Investigate)
             {
-                var slot = _noise[agent];
-                var field = slot >= 0 ? _fields[slot] : null;
-                if (field != null && field.Version == _noiseVersion[agent] && field.TryStepToward(x, y, out var nx, out var ny))
+                var cell = new GridPosition(x, y, _horde.FloorOf(agent));
+                if (TryInvestigate(agent, cell, out var nextStep))
                 {
-                    direction = Toward(position, nx, ny);
+                    direction = Toward(position, nextStep.X, nextStep.Y);
                     pace = HordePace.Run;
                     return;
                 }
@@ -263,6 +262,14 @@ namespace Purge.Gameplay.Horde
             if (next < 0) return;
             direction = Toward(position, next % _grid.Width, next / _grid.Width);
             pace = HordePace.Walk;
+        }
+
+        internal bool TryInvestigate(int agent, GridPosition cell, out GridPosition next)
+        {
+            next = cell;
+            if (_awareness[agent] != HordeAwareness.Investigate || _noise[agent] < 0) return false;
+            var field = _fields[_noise[agent]];
+            return field.Version == _noiseVersion[agent] && field.TryStepToward(cell, out next);
         }
 
         private static Vector2 Toward(Vector2 position, int x, int y)
@@ -292,31 +299,32 @@ namespace Purge.Gameplay.Horde
             Calls++;
             var radius = _horde.StatsOf(agent).CallRadius * _call;
             var position = _horde.Positions[agent];
-            if (_sounds != null) _sounds.Emit(SoundType.Call, position, radius, _player.Floor);
-            else Enqueue(SoundType.Call, position, radius);
+            var floor = _horde.FloorOf(agent);
+            if (_sounds != null) _sounds.Emit(SoundType.Call, position, radius, floor);
+            else Enqueue(SoundType.Call, position, radius, floor);
         }
 
         private void OnSound(SoundEvent sound)
         {
-            if (_awareness == null || sound.Floor != _player.Floor) return;
+            if (_awareness == null) return;
             // The call carries its own radius (× difficulty already); everything else × hearing.
-            Enqueue(sound.Type, sound.Position, sound.Type == SoundType.Call ? sound.Radius : sound.Radius * _hearing);
+            Enqueue(sound.Type, sound.Position, sound.Type == SoundType.Call ? sound.Radius : sound.Radius * _hearing, sound.Floor);
         }
 
-        private void Enqueue(SoundType type, Vector2 position, float radius)
+        private void Enqueue(SoundType type, Vector2 position, float radius, int floor)
         {
             if (radius <= 0f) return;
             for (var p = 0; p < _pendingCount; p++)
             {
                 ref var pending = ref _pending[p];
-                if (pending.Type != type || (pending.Position - position).sqrMagnitude > MergeDistance * MergeDistance) continue;
+                if (pending.Type != type || pending.Floor != floor || (pending.Position - position).sqrMagnitude > MergeDistance * MergeDistance) continue;
                 pending.Position = position; // a burst from one place: the latest spot, the loudest radius
                 pending.Radius = Mathf.Max(pending.Radius, radius);
                 return;
             }
 
             if (_pendingCount < MaxPending)
-                _pending[_pendingCount++] = new PendingSound { Type = type, Position = position, Radius = radius };
+                _pending[_pendingCount++] = new PendingSound { Type = type, Position = position, Radius = radius, Floor = floor };
         }
 
         private void ProcessSounds(float time)
@@ -328,8 +336,8 @@ namespace Purge.Gameplay.Horde
                 var field = _fields[slot];
                 var sx = Mathf.FloorToInt(sound.Position.x + 0.5f);
                 var sy = Mathf.FloorToInt(sound.Position.y + 0.5f);
-                field.Build(_grid.Width, _grid.Height, sx, sy, _player.Floor, sound.Radius,
-                    new Acoustics(_grid, _doors, _player.Floor));
+                field.Build(_grid.Width, _grid.Height, sx, sy, sound.Floor, sound.Radius,
+                    new Acoustics(_grid, _doors, sound.Floor));
                 FieldBuilds++;
                 _fieldType[slot] = sound.Type;
                 _fieldTime[slot] = time;
@@ -346,7 +354,7 @@ namespace Purge.Gameplay.Horde
             for (var s = 0; s < NoiseSlots; s++)
             {
                 var field = _fields[s];
-                if (field.HasResult && _fieldType[s] == sound.Type &&
+                if (field.HasResult && _fieldType[s] == sound.Type && field.Floor == sound.Floor &&
                     Mathf.Abs(field.SourceX - sound.Position.x) <= MergeDistance &&
                     Mathf.Abs(field.SourceY - sound.Position.y) <= MergeDistance)
                     return s;
@@ -367,7 +375,7 @@ namespace Purge.Gameplay.Horde
                 if (awareness == HordeAwareness.Alert || awareness == HordeAwareness.Chase) continue;
                 if (!HordeSystem.IsAlive(states[i])) continue;
                 var p = positions[i];
-                if (!field.IsHeardAt(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f))) continue;
+                if (field.LoudnessAt(PlayerMovement.CellOf(p, _horde.FloorOf(i))) <= 0f) continue;
 
                 if (call)
                 {
@@ -396,6 +404,7 @@ namespace Purge.Gameplay.Horde
                 if (awareness == HordeAwareness.Alert || awareness == HordeAwareness.Chase) continue;
                 if (!HordeSystem.IsAlive(states[i])) continue;
                 var p = positions[i];
+                if (_horde.FloorOf(i) != floor) continue;
                 var range = _horde.StatsOf(i).SightRange * _sight;
                 if ((p - player).sqrMagnitude > range * range) continue;
                 if (!_visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f), floor)))
@@ -455,9 +464,11 @@ namespace Purge.Gameplay.Horde
                 _floor = floor;
             }
 
-            public float Transmission(int x, int y)
+            public float Transmission(int x, int y) => Transmission(x, y, _floor);
+
+            public float Transmission(int x, int y, int floor)
             {
-                var cell = new GridPosition(x, y, _floor);
+                var cell = new GridPosition(x, y, floor);
                 if (_grid.GetCellOrWall(cell) == CellType.Door)
                     return _doors.IsOpenAt(cell) ? 1f : ClosedDoorTransmission;
                 return _grid.Has(cell, CellFlags.BlocksSight) ? 0f : 1f;
@@ -469,6 +480,7 @@ namespace Purge.Gameplay.Horde
             public SoundType Type;
             public Vector2 Position;
             public float Radius;
+            public int Floor;
         }
 
         private sealed class WanderGroup

@@ -43,7 +43,7 @@ namespace Purge.Gameplay.Horde
             _wideCount = 0;
             if (!_wideKinds) return;
             for (var i = 0; i < _highWater && _wideCount < MaxWideBodies; i++)
-                if (IsAlive(_states[i]) && IsWide(i))
+                if (_floors[i] == _player.Floor && IsAlive(_states[i]) && IsWide(i))
                     _wide[_wideCount++] = i;
         }
 

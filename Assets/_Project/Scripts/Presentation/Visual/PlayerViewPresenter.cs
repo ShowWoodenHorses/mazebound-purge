@@ -150,7 +150,7 @@ namespace Purge.Presentation.Visual
         {
             if (_view == null) return;
 
-            var position = new Vector3(_player.Position.x, 0f, _player.Position.y);
+            var position = new Vector3(_player.Position.x, _player.ViewHeight, _player.Position.y);
             // Inside a vehicle (stage 9a) the player is not seen; the camera still follows them.
             if (_view.activeSelf == _player.InVehicle) _view.SetActive(!_player.InVehicle);
             if (_player.InVehicle)

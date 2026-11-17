@@ -65,6 +65,16 @@ namespace Purge.Presentation.Visual
         private void Apply()
         {
             if (_geometry == null) return;
+            if (_visibility.HasResult)
+            {
+                var previous = _geometry;
+                _geometry = _visuals.ShowFloor(_visibility.Floor);
+                if (_geometry != previous)
+                {
+                    _geometry.SetAllVisible(false);
+                    _shown.Clear();
+                }
+            }
 
             // Only cells whose state changed are touched; the mask uploads once in ApplyVisibility.
             // Geometry follows revealed cells (no one-cell holes), objects follow strict visibility.

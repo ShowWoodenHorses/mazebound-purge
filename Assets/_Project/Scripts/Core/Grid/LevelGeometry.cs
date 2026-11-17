@@ -30,7 +30,28 @@ namespace Purge.Core.Grid
         [Tooltip("Obstacle of every cell: 0 = none, n = Obstacle Types[n − 1]; empty = no obstacles.")]
         [SerializeField] private byte[] _obstacles;
 
-        public LevelGeometry(int width, int height, CellType fill = CellType.Wall, int floors = 1)
+        [SerializeField] private int _groundFloor;
+        public int GroundFloor => _groundFloor;
+
+        [SerializeField] private List<StairLink> _stairs = new List<StairLink>();
+
+        public IReadOnlyList<StairLink> Stairs => _stairs == null
+            ? (IReadOnlyList<StairLink>)Array.Empty<StairLink>()
+            : _stairs;
+
+        internal void AddStair(StairLink stair)
+        {
+            if (!stair.Fits(this))
+                throw new ArgumentException("A stair needs a clear 1x2 footprint and a free cell beyond each end.", nameof(stair));
+            foreach (var existing in Stairs)
+                if (existing.Overlaps(stair))
+                    throw new ArgumentException("Stair landings cannot overlap.", nameof(stair));
+            (_stairs ??= new List<StairLink>()).Add(stair);
+        }
+
+        internal bool RemoveStairAt(GridPosition cell) => _stairs?.RemoveAll(stair => stair.Uses(cell)) > 0;
+
+        public LevelGeometry(int width, int height, CellType fill = CellType.Wall, int floors = 1, int groundFloor = 0)
         {
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), width, "Width must be positive.");
             if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height), height, "Height must be positive.");
@@ -38,7 +59,9 @@ namespace Purge.Core.Grid
 
             _width = width;
             _height = height;
+            if ((uint)groundFloor >= (uint)floors) throw new ArgumentOutOfRangeException(nameof(groundFloor));
             _floorCount = floors;
+            _groundFloor = groundFloor;
             _cells = new CellType[width * height * floors];
             _surfaces = Array.Empty<CellSurface>();
             _obstacles = Array.Empty<byte>();
@@ -56,7 +79,8 @@ namespace Purge.Core.Grid
         public int CellCount => FloorSize * FloorCount;
 
         /// <summary>False if the serialized data is corrupted (e.g. cell array does not match the size).</summary>
-        public bool IsConsistent => _width > 0 && _height > 0 && _cells != null && _cells.Length == CellCount;
+        public bool IsConsistent => _width > 0 && _height > 0 && _cells != null && _cells.Length == CellCount &&
+                                    (uint)_groundFloor < (uint)FloorCount;
 
         /// <summary>False if the surfaces do not match the size (empty — none set — is fine).</summary>
         public bool SurfacesConsistent => _surfaces == null || _surfaces.Length == 0 || _surfaces.Length == CellCount;
@@ -212,7 +236,9 @@ namespace Purge.Core.Grid
         {
             if (FloorCount <= 1) throw new InvalidOperationException("A level has at least one floor.");
 
+            _stairs?.RemoveAll(stair => stair.UpperFloor >= FloorCount - 1);
             _floorCount = FloorCount - 1;
+            _groundFloor = Math.Min(_groundFloor, _floorCount - 1);
             Array.Resize(ref _cells, CellCount);
             if (_surfaces != null && _surfaces.Length > CellCount) Array.Resize(ref _surfaces, CellCount);
             if (_obstacles != null && _obstacles.Length > CellCount) Array.Resize(ref _obstacles, CellCount);

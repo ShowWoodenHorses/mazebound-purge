@@ -74,11 +74,18 @@ namespace Purge.Presentation.Map
                 view.SetView(MapIconLayout.CenterOf(_player.Position), MapIconLayout.PlayerRotation(_player.Facing));
         }
 
+        private int _mapFloor = -1;
+
         private void Refresh(MiniMapView view)
         {
             var set = _ui.Map != null ? _ui.Map.Icons : null;
             if (set == null) return;
             _map.ApplyPending();
+            if (_mapFloor != _player.Floor)
+            {
+                _mapFloor = _player.Floor;
+                view.SetMap(_map.Texture, WindowCells);
+            }
             _icons.Clear();
             _map.AddObjectIcons(set, _icons, _map.IsLayerShown(MapLayer.Objects));
             var center = MapIconLayout.CenterOf(_player.Position);

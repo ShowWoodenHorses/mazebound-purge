@@ -34,6 +34,7 @@ namespace Purge.Core.Authoring
             if (old == type)
                 return false;
 
+            if (type != CellType.Floor) geometry.RemoveStairAt(position);
             geometry.SetCell(position, type);
             Mark(level, position);
 
@@ -148,6 +149,20 @@ namespace Purge.Core.Authoring
             return true;
         }
 
+        public static void AddStair(LevelData level, GridPosition lower, bool alongX)
+        {
+            var stair = new StairLink(lower, alongX);
+            level.Geometry.AddStair(stair);
+            Mark(level, stair.First);
+            Mark(level, stair.Second);
+            Mark(level, stair.First.OnFloor(stair.UpperFloor));
+            Mark(level, stair.Second.OnFloor(stair.UpperFloor));
+            Mark(level, stair.LowerLanding);
+            Mark(level, stair.UpperLanding);
+        }
+
+        public static bool RemoveStair(LevelData level, GridPosition cell) => level.Geometry.RemoveStairAt(cell);
+
         // ------------------------------------------------------------ Placement
 
         public static PlayerStartData AddPlayerStart(LevelData level, GridPosition position) =>
@@ -255,7 +270,7 @@ namespace Purge.Core.Authoring
                 return false;
 
             Mark(level, position);
-            var changed = false;
+            var changed = level.Geometry.RemoveStairAt(position);
             foreach (var entity in level.AllEntities().Where(e => e.Position == position).ToList())
             {
                 Remove(level, entity);

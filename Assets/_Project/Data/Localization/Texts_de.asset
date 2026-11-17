@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -992,4 +993,5 @@ MonoBehaviour:
     Treffer."
   - "Die Arena bleibt bis zum Sieg \xFCber den Boss zu. Ein erfolgreicher Durchlauf
     mit geschlossener Arena bringt einen Bonus."
+  - "Betritt eine Treppe, um das Stockwerk zu wechseln. Monster k\xF6nnen dir folgen."
   _missing: []

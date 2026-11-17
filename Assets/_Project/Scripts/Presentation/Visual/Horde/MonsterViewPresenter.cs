@@ -201,16 +201,17 @@ namespace Purge.Presentation.Visual.Horde
                 }
 
                 held++;
+                var floor = _visibility.Floor;
                 var p = positions[i];
-                var visible = !_visibility.HasResult ||
-                              _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f)));
+                var visible = _horde.IsVisibleOnFloor(i, floor) && (!_visibility.HasResult ||
+                              _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f), floor)));
                 if (view.GameObject.activeSelf != visible) view.GameObject.SetActive(visible);
                 // A corpse sinks into the ground at the end of its time (stage Э3).
                 var sink = states[i] == HordeAgentState.Dying && _visual != null
                     ? _visual.CorpseSink(_horde.Time - _horde.StateStart[i], _horde.StatsOf(i).CorpseTime) * _visual.CorpseSinkDepth *
                       view.Transform.localScale.y / Mathf.Max(1e-3f, view.BaseScale.y)
                     : 0f;
-                view.Transform.SetPositionAndRotation(new Vector3(p.x, -sink, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
+                view.Transform.SetPositionAndRotation(new Vector3(p.x, _horde.ViewHeightOf(i) - sink, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
                 if (!visible) continue;
                 shown++;
                 if (view.Animator != null && view.Animator.speed != pace) view.Animator.speed = pace;

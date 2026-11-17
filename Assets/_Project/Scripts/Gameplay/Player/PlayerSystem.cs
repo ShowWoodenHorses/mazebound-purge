@@ -8,6 +8,7 @@ using Purge.Core.Level;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
+using Purge.Gameplay.Sound;
 using UnityEngine;
 
 namespace Purge.Gameplay.Player
@@ -53,6 +54,9 @@ namespace Purge.Gameplay.Player
         /// </summary>
         public const float RideCellInterval = 0.25f;
 
+        private StairTraversal _stair;
+        private readonly SoundEventBus _sounds;
+
         private float _rideCellTimer;
 
         private Vector2 _push;
@@ -69,9 +73,10 @@ namespace Purge.Gameplay.Player
         private Vector2 _aimFacing;
 
         public PlayerSystem(LevelData level, PlayerDefinition definition, IPlayerInput input, LevelPassability passability,
-            OccupancyMap occupancy, LevelLaunchOptions options, IAimSettings aim)
+            OccupancyMap occupancy, LevelLaunchOptions options, IAimSettings aim, SoundEventBus sounds = null)
         {
             _aim = aim;
+            _sounds = sounds;
             _level = level;
             _definition = definition;
             _input = input;
@@ -92,6 +97,8 @@ namespace Purge.Gameplay.Player
 
         /// <summary>Floor the player is on (the start's; stairs come with buildings).</summary>
         public int Floor => Cell.Floor;
+        public bool IsOnStairs => _stair.Active;
+        public float ViewHeight => IsOnStairs ? _stair.Position.y : Floor * GridPosition.FloorHeight;
 
         /// <summary>
         /// Unit look direction of the body: where the player attacks while attacking (<see cref="AimAt"/>), otherwise the
@@ -177,6 +184,12 @@ namespace Purge.Gameplay.Player
                 return; // the vehicle moves the player (Ride)
             }
 
+            if (IsOnStairs)
+            {
+                TickStair(deltaTime);
+                return;
+            }
+
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
             if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned || Down)
             {
@@ -200,6 +213,7 @@ namespace Purge.Gameplay.Player
             SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);
             Position = target;
             ApplyPush(deltaTime);
+            TryStartStair(move);
         }
 
         /// <summary>
@@ -231,8 +245,10 @@ namespace Purge.Gameplay.Player
         public void Displace(Vector2 delta)
         {
             if (!IsSpawned || delta.sqrMagnitude < 1e-10f || InVehicle) return;
+            if (IsOnStairs) return;
             Position = PlayerMovement.Move(Position, delta, _definition.BodyHalfSize, _definition.CornerAssist, this);
             UpdateCell();
+            TryStartStair(delta);
         }
 
         /// <summary>The push in progress, cells per second (views, tests).</summary>
@@ -302,13 +318,55 @@ namespace Purge.Gameplay.Player
         private void UpdateCell()
         {
             var cell = PlayerMovement.CellOf(Position, Floor);
-            if (cell != Cell)
+            if (cell != Cell) ChangeCell(cell);
+        }
+
+        private void TryStartStair(Vector2 movement)
+        {
+            if (InVehicle || Down || Stunned || !_passability.TryGetStair(Cell, out var stair)) return;
+            var from = Cell == stair.LowerLanding ? stair.Bottom : stair.Top;
+            var entrance = new Vector2(from.x, from.z);
+            var toward = (entrance - new Vector2(Cell.X, Cell.Y)).normalized;
+            if (Vector2.Dot(movement, toward) <= 0.0001f ||
+                Vector2.Dot(entrance - Position, toward) > _definition.BodyHalfSize + 0.08f ||
+                !CanLand(stair.ExitFrom(Cell))) return;
+
+            _stair.Begin(stair, Cell, Position);
+            _push = Vector2.zero;
+            MoveDirection = Facing = _stair.Direction;
+            SpeedFactor = 0.65f;
+            _sounds?.EmitPlayer(SoundType.Stairs, Position, 3f, Floor);
+        }
+
+        private bool CanLand(GridPosition cell) =>
+            _passability.IsWalkable(cell, Bodies == null) && _occupancy.CanPlayerEnter(cell) &&
+            (Bodies == null || !Bodies.Overlaps(new Vector2(cell.X, cell.Y), _definition.BodyHalfSize, cell.Floor));
+
+        private void TickStair(float deltaTime)
+        {
+            if (Down)
             {
-                var previous = Cell;
-                _occupancy.SetPlayer(cell);
-                Cell = cell;
-                CellChanged?.Invoke(previous, cell);
+                Position = new Vector2(Cell.X, Cell.Y);
+                _stair = default;
+                SpeedFactor = 0f;
+                return;
             }
+
+            var arrived = _stair.Advance(deltaTime);
+            Position = new Vector2(_stair.Position.x, _stair.Position.z);
+            if (!arrived || !CanLand(_stair.Destination)) return;
+
+            var destination = _stair.Destination;
+            _stair = default;
+            ChangeCell(destination);
+        }
+
+        private void ChangeCell(GridPosition cell)
+        {
+            var previous = Cell;
+            _occupancy.SetPlayer(cell);
+            Cell = cell;
+            CellChanged?.Invoke(previous, cell);
         }
 
         bool IPlayerBlockers.IsWalkable(GridPosition cell) => _passability.IsWalkable(cell, Bodies == null);
@@ -325,6 +383,7 @@ namespace Purge.Gameplay.Player
             var start = _level.PlayerStarts[startIndex];
             _occupancy.SetPlayer(start.Position);
             StartIndex = startIndex;
+            _stair = default;
             Cell = start.Position;
             Position = new Vector2(start.Position.X, start.Position.Y);
             Facing = InitialFacing(start.Position);

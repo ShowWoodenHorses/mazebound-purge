@@ -19,6 +19,7 @@ namespace Purge.Gameplay.Sound
 
         /// <summary>A caller's call (stage 5b): monsters that hear it chase the player.</summary>
         Call = 7,
+        Stairs = 8,
     }
 
     /// <summary>

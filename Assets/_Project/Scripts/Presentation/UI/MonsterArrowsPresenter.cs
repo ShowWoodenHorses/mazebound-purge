@@ -130,7 +130,7 @@ namespace Purge.Presentation.UI
         /// </summary>
         private void PlaceSpecial(MonsterArrowsView view, Vector2 origin)
         {
-            var boss = _bosses != null && _bosses.IsBossAlive;
+            var boss = _bosses != null && _bosses.IsBossAlive && _horde.FloorOf(_bosses.Boss) == _player.Floor;
             var arena = _bosses != null && _bosses.ShowArenaArrow;
             if (!TryBounds(view, origin, out var bounds, out var localOrigin))
             {
@@ -205,7 +205,7 @@ namespace Purge.Presentation.UI
             var boss = _bosses != null ? _bosses.Boss : -1;
             for (var agent = 0; agent < _horde.HighWater; agent++)
             {
-                if (agent == boss) continue; // its own arrow
+                if (agent == boss || _horde.FloorOf(agent) != _player.Floor) continue; // its own arrow
                 if (!IsAlive(states[agent]) || !TryScreen(positions[agent], out var point) || _screen.Contains(point)) continue;
                 var offset = point - origin;
                 var distance = offset.sqrMagnitude;
@@ -229,7 +229,7 @@ namespace Purge.Presentation.UI
             for (var i = 0; i < Sectors; i++)
             {
                 var agent = _agents[i];
-                if (agent < 0 || agent >= _horde.HighWater || !IsAlive(states[agent]) ||
+                if (agent < 0 || agent >= _horde.HighWater || _horde.FloorOf(agent) != _player.Floor || !IsAlive(states[agent]) ||
                     !TryScreen(positions[agent], out var point) || _screen.Contains(point))
                 {
                     view.Hide(i);
@@ -268,7 +268,7 @@ namespace Purge.Presentation.UI
         /// <summary>Screen point (pixels) of a grid position on the ground; false behind the camera.</summary>
         private bool TryScreen(Vector2 position, out Vector2 point)
         {
-            var clip = _toClip * new Vector4(position.x, 0f, position.y, 1f);
+            var clip = _toClip * new Vector4(position.x, _player.ViewHeight, position.y, 1f);
             if (clip.w <= 1e-5f)
             {
                 point = default;

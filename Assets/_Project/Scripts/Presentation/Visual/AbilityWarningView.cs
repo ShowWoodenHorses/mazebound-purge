@@ -194,6 +194,7 @@ namespace Purge.Presentation.Visual
             var height = _player.Floor * GridPosition.FloorHeight + Height;
             for (var b = 0; b < _champions.BlastCount; b++)
             {
+                if (_champions.BlastFloor(b) != _player.Floor) continue;
                 var at = _champions.BlastPosition(b);
                 var radius = _champions.BlastRadius(b);
                 Draw(0f, _champions.BlastProgress(b), 0f, 0.07f / radius,

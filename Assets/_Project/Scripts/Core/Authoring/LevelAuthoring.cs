@@ -43,7 +43,7 @@ namespace Purge.Core.Authoring
             var sameSize = geometry.IsConsistent && geometry.Width == level.Generation.Width &&
                            geometry.Height == level.Generation.Height;
             var marks = level.Marks;
-            bool Kept(GridPosition p) => sameSize && (p.Floor > 0 || marks.IsKept(geometry, p));
+            bool Kept(GridPosition p) => sameSize && (p.Floor != geometry.GroundFloor || marks.IsKept(geometry, p));
 
             foreach (var entity in level.AllEntities().Where(e => !Kept(e.Position)).ToList())
                 if (level.FindEntity(entity.Id) != null) // a key may go with its door

@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - English
   - SETTINGS
@@ -1001,4 +1002,5 @@ MonoBehaviour:
     lands.
   - The arena is locked until you defeat the boss. Winning a run with a closed arena
     grants a bonus.
+  - Step onto stairs to change floors. Monsters can follow you.
   _missing: []

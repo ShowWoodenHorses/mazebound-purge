@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7381d61aacb1c046ad207b41f255958, type: 3}
+  m_Name: DevBuilding
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Generation.BiomeRecipe
+  _id: dev_building
+  _steps:
+  - rid: 8342087475534757888
+  - rid: 8342087475534757889
+  - rid: 8342087475534757890
+  references:
+    version: 2
+    RefIds:
+    - rid: 8342087475534757888
+      type: {class: PerimeterStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _thickness: 2
+    - rid: 8342087475534757889
+      type: {class: StartStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _position: {x: 0.5, y: 0.5}
+        _clearRadius: 3
+    - rid: 8342087475534757890
+      type: {class: BuildingStep, ns: Purge.Core.Generation.Steps, asm: Purge.Core}
+      data:
+        _aboveGroundFloors: 2
+        _basement: 1
+        _insetPerFloor: 2
+        _stairsPerFloor: 2

@@ -5,6 +5,7 @@
 ## Уровень, тулза, сборки, ассеты
 - Клетка `(x, y)` ↔ мир `(x, 0, y)`; North = +Y сетки = +Z мира. За пределами сетки = Wall.
 - Мутация `LevelData` (и `LevelCatalog`) только `internal` (InternalsVisibleTo `Purge.Editor`, `Purge.Tests.EditMode`); команды тулзы — `LevelAuthoring` (GenerateNew, RegenerateVisuals).
+  - **Building (13а)** добавляет 1–2 надземных этажа и опциональный подвал, сужает внешний контур и размещает 2–3 лестницы на пару этажей. Generate того же размера сохраняет существующие дополнительные этажи. Для смены конфигурации этажей используй Generate New.
   - **Генератор биомов (7а)** — `BiomeGenerator` (Core/Generation) по `BiomeRecipe` (`LevelGenerationSettings.Recipe`, `ContentDefinition`, `Data/Recipes`): список шагов `[SerializeReference, ModuleList] GenerationStep` над общей `LevelLayout` (этаж 0); у шага свой `DeterministicRandom` (seed + номер шага).
     - Шаги: `PerimeterStep`, `StartStep`, `ArenaStep` (→ `LevelData.Arena`: `ArenaData` — прямоугольник, кольцо, `ArenaEntry` — проём и сторона), `SpawnPointsStep` (→ `MonsterSpawns`), `ClearingsStep`, `TrailsStep` (Prim по узлам + Dijkstra с запасом ширины, шум — петляние), `ObstaclesStep` (`WeightedObstacle`, шум рощ, ≤ `MaxChunkShare` чанка 8×8; Лес с 7г — Tree 60 / Stone 40 (камни и пни), без Bush: куст-препятствие на телефоне похож на проходимую горючую траву; предел 0,2), `GroundStep` (7г: `CellSurface.Ground` на тропах, полянах и у старта — свободный пол без другой поверхности), `GrassStep` (`CellSurface.Grass`, не поверх земли), `DecorStep` (→ `DecorSettings` в настройки уровня). Шум — `LayoutNoise`.
     - После шагов `LevelLayout.Connect`: всё проходимое достижимо от старта (0-1 поиск снимает препятствия, замкнутые стенами карманы → стена). «Открытые» клетки (`IsOpen`: старт, арена, поляны, тропы, точки) препятствия не получают.
@@ -64,6 +65,8 @@
   - Области блокировки — кисть **Lock Area** (`AuthoringMarks.FindLockedArea` по клетке, ПКМ снимает).
 
 ## Визуал уровня в игре
+
+- `LevelVisualSystem` строит геометрию этажей при загрузке. `VisibilityController` включает этаж игрока и применяет его маску. `FogOfWarView` переключает маску и высоту плоскости тумана. Префаб из `VisualTheme.Stairs` подгоняется под начало и конец марша. Его видно с обоих этажей. `GeometryBuilder` пропускает клетки проёма в верхнем перекрытии.
 - `LevelVisualSystem` (Presentation, шаг `BuildVisuals`): `VisualPrefabLibrary` грузит через `IAssetOwner` уровня **только используемые** варианты (`LevelVisualUsage`) → `GeometryBuilder` → `EntityViewFactory`. Варианты берутся только через `VisualResolver` (сохранённые id), никакого выбора в runtime.
 - Геометрия (пол, стены) — без GameObject на клетку: меши префабов склеиваются вручную (`MeshAccumulator`) в `VisibilityChunk` 8×8, сабмеш на материал, затем `StaticBatchingUtility.Combine`. В **UV3** каждой вершины — её клетка.
 - Поклеточное скрытие (§54) — шейдер **`Purge/Geometry`** (`Art/Shaders/PurgeGeometry.shader`): при глобальном keyword `PURGE_VISIBILITY` вершины клеток, скрытых в `_PurgeVisibility` (R8-текстура W×H, `CellVisibilityMask`), схлопываются; тени тоже.

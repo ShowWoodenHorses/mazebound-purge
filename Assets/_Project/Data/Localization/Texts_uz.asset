@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -987,4 +988,5 @@ MonoBehaviour:
   - Boshliq hujumdan oldin ogohlantiradi. Zarbagacha belgilangan hududdan chiq.
   - Boshliqni yengmaguncha arena yopiq. Yopiq arena bilan bosqichni yutsang, bonus
     olasan.
+  - Qavatni almashtirish uchun zinaga chiq. Maxluqlar ortingdan ergashishi mumkin.
   _missing: []

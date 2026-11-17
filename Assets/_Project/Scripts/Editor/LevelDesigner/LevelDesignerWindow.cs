@@ -89,6 +89,7 @@ namespace Purge.Editor.LevelDesigner
                 return;
             }
 
+            DrawFloorControls();
             HandleShortcuts();
             _tools.EditingEnabled = _tab == EditTab;
 
@@ -99,6 +100,45 @@ namespace Purge.Editor.LevelDesigner
 
             DrawStatusBar();
         }
+
+        private void DrawFloorControls()
+        {
+            var geometry = _state.Level.Geometry;
+            _canvas.Floor = Mathf.Clamp(_canvas.Floor, 0, geometry.FloorCount - 1);
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+            for (var floor = 0; floor < geometry.FloorCount; floor++)
+            {
+                var label = FloorLabel(floor, geometry.GroundFloor);
+                if (GUILayout.Toggle(_canvas.Floor == floor, label, EditorStyles.toolbarButton) && _canvas.Floor != floor)
+                {
+                    _canvas.Floor = floor;
+                    _state.ClearSelection();
+                }
+            }
+
+            if (GUILayout.Button("+", EditorStyles.toolbarButton, GUILayout.Width(28f)))
+            {
+                LevelEditorCommands.Modify(_state.Level, "Add Floor",
+                    () => _canvas.Floor = LevelEditing.AddFloor(_state.Level));
+                _state.ClearSelection();
+                _state.Revalidate();
+            }
+
+            using (new EditorGUI.DisabledScope(geometry.FloorCount <= 1 || _canvas.Floor != geometry.FloorCount - 1))
+                if (GUILayout.Button("−", EditorStyles.toolbarButton, GUILayout.Width(28f)) &&
+                    EditorUtility.DisplayDialog("Remove floor", "Remove the top floor and its contents?", "Remove", "Cancel"))
+                {
+                    LevelEditorCommands.Modify(_state.Level, "Remove Floor", () => LevelEditing.RemoveTopFloor(_state.Level));
+                    _canvas.Floor--;
+                    _state.ClearSelection();
+                    _state.Revalidate();
+                }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static string FloorLabel(int floor, int ground) =>
+            (floor < ground ? floor - ground : floor - ground + 1).ToString();
 
         private void DrawToolbar()
         {

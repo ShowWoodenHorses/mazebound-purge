@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -998,4 +999,6 @@ MonoBehaviour:
     \xF6nce i\u015Faretli alandan \xE7\u0131k."
   - "Boss yenilene kadar arena kilitli kal\u0131r. Kapal\u0131 arenayla b\xF6l\xFCm\xFC
     bitirmek ek \xF6d\xFCl verir."
+  - "Kat de\u011Fi\u015Ftirmek i\xE7in merdivene \xE7\u0131k. Canavarlar seni takip
+    edebilir."
   _missing: []

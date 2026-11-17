@@ -282,6 +282,14 @@ namespace Purge.Gameplay.Pickups
             for (var i = _attracted.Count - 1; i >= 0 && i < _attracted.Count; i--)
             {
                 var pickup = _attracted[i];
+                if (pickup.Cell.Floor != _player.Floor)
+                {
+                    _attracted.RemoveAt(i);
+                    pickup.Attracted = false;
+                    pickup.Position = pickup.Home;
+                    continue;
+                }
+
                 pickup.Position = Vector2.MoveTowards(pickup.Position, target, step);
                 if ((pickup.Position - target).sqrMagnitude > MagnetArrival * MagnetArrival) continue;
                 _attracted.RemoveAt(i);

@@ -995,6 +995,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d670102a7dac66846a84d7a418a97596
+    m_Address: Assets/_Project/Art/Items/Purge/Stairs/Stairs_1x2.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d701131d6feb34d4e8f55054c3c5d81b
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Floor_decor/SM_Env_Grass_Short_Clump_02.prefab
     m_ReadOnly: 0

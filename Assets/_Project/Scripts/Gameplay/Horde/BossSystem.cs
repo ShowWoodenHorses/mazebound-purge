@@ -100,7 +100,7 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>A boss waits in the arena the player is not in yet: point them there.</summary>
-        public bool ShowArenaArrow => IsBossAlive && HasArena && !PlayerInArena && !GatesClosed;
+        public bool ShowArenaArrow => IsBossAlive && HasArena && _level.Arena.Floor == _player.Floor && !PlayerInArena && !GatesClosed;
 
         /// <summary>(slot) a boss came (its bar, music, the roar).</summary>
         public event Action<int> Appeared;

@@ -35,7 +35,19 @@ namespace Purge.Presentation.Visual
         public LevelLoadStage Stage => LevelLoadStage.BuildVisuals;
 
         /// <summary>Available after loading.</summary>
-        public LevelGeometryView Geometry { get; private set; }
+        private LevelGeometryView[] _floors;
+        private int _activeFloor;
+
+        public LevelGeometryView Geometry => _floors?[_activeFloor];
+
+        internal LevelGeometryView ShowFloor(int floor)
+        {
+            if (floor == _activeFloor) return Geometry;
+            Geometry.Root.gameObject.SetActive(false);
+            _activeFloor = floor;
+            Geometry.Root.gameObject.SetActive(true);
+            return Geometry;
+        }
 
         /// <summary>Creates views of objects that appear later (zombies, dropped items). Available after loading.</summary>
         public EntityViewFactory EntityViews { get; private set; }
@@ -46,8 +58,21 @@ namespace Purge.Presentation.Visual
             await prefabs.LoadAsync(_level, _assets, cancellation);
             cancellation.ThrowIfCancellationRequested();
 
-            Geometry = new GeometryBuilder(prefabs).Build(_level, _root.transform, staticBatching: true);
-            Geometry.Bind();
+            var stairRef = _level.VisualTheme != null ? _level.VisualTheme.Stairs : null;
+            var stairs = _level.Geometry.Stairs.Count > 0 && stairRef != null && stairRef.RuntimeKeyIsValid()
+                ? await _assets.LoadAsync<GameObject>(stairRef, cancellation) : null;
+            cancellation.ThrowIfCancellationRequested();
+            var builder = new GeometryBuilder(prefabs, stairs: stairs);
+            _floors = new LevelGeometryView[_level.Geometry.FloorCount];
+            for (var floor = 0; floor < _floors.Length; floor++)
+            {
+                var view = builder.Build(_level, _root.transform, staticBatching: true, floor: floor);
+                _floors[floor] = view;
+                view.Bind();
+                view.SetAllVisible(false);
+                view.ApplyVisibility();
+                view.Root.gameObject.SetActive(floor == _activeFloor);
+            }
 
             EntityViews = new EntityViewFactory(prefabs);
             var missingObjects = 0;
@@ -77,8 +102,10 @@ namespace Purge.Presentation.Visual
 
         public void Dispose()
         {
-            Geometry?.Dispose();
-            Geometry = null;
+            if (_floors != null)
+                foreach (var floor in _floors) floor?.Dispose();
+            _floors = null;
+            _activeFloor = 0;
             EntityViews = null;
         }
     }

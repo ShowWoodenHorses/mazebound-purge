@@ -363,10 +363,12 @@ namespace Purge.Presentation.Visual.Horde
                         MinPlayback, MaxPlayback);
                 }
 
+                var floor = _visibility.Floor;
+                if (!_horde.IsVisibleOnFloor(i, floor)) continue;
                 var p = positions[i];
                 if (p.x < rect.x || p.x > rect.z || p.y < rect.y || p.y > rect.w) continue;
                 if (CullByVisibility && _visibility.HasResult &&
-                    !_visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f))))
+                    !_visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f), floor)))
                     continue;
 
                 var reacting = state != HordeAgentState.Dying && !stunned[i] && clips.HitReact.Length > 0 &&
@@ -467,13 +469,14 @@ namespace Purge.Presentation.Visual.Horde
                 var sink = state == HordeAgentState.Dying && _visual != null
                     ? _visual.CorpseSink(time - stateStart[i], stats.CorpseTime) * _visual.CorpseSinkDepth * scale
                     : 0f;
-                var world = new Vector3(p.x, -sink, p.y);
+                var viewHeight = _horde.ViewHeightOf(i);
+                var world = new Vector3(p.x, viewHeight - sink, p.y);
                 batch.Matrices[slot] = Matrix4x4.TRS(world, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f), size);
                 batch.Frames[slot] = frame;
                 batch.Glows[slot] = glow;
                 if (_shadowMaterial != null && state != HordeAgentState.Dying)
                 {
-                    batch.Shadows[batch.ShadowCount++] = Matrix4x4.TRS(new Vector3(p.x, ShadowHeight, p.y),
+                    batch.Shadows[batch.ShadowCount++] = Matrix4x4.TRS(new Vector3(p.x, viewHeight + ShadowHeight, p.y),
                         Quaternion.identity, Vector3.one * (_shadowSize * stats.Radius / 0.3f * (affix != 0 ? _championScale : 1f)));
                 }
 

@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -984,4 +985,5 @@ MonoBehaviour:
   - Il boss preannuncia gli attacchi. Esci dalla zona segnalata prima del colpo.
   - "L\u2019arena resta chiusa fino alla sconfitta del boss. Vincere con l\u2019arena
     chiusa d\xE0 un bonus."
+  - Sali sulle scale per cambiare piano. I mostri possono seguirti.
   _missing: []

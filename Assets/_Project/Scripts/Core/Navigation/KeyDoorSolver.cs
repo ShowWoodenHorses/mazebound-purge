@@ -73,17 +73,18 @@ namespace Purge.Core.Navigation
             var collected = new HashSet<string>();
             var passable = new bool[count];
             var reachable = new bool[count];
+            var grid = new LevelGrid(geometry);
 
             while (true)
             {
                 for (var i = 0; i < count; i++)
                 {
                     var lockKey = requiredKey[i];
-                    passable[i] = (geometry.GetFlags(geometry.ToPosition(i)) & CellFlags.BlocksMovement) == 0 &&
+                    passable[i] = !grid.Has(grid.ToPosition(i), CellFlags.BlocksMovement) &&
                                   (lockKey == null || collected.Contains(lockKey));
                 }
 
-                FloodFill(geometry, passable, start, reachable);
+                FloodFill(grid, passable, start, reachable);
 
                 var foundNew = false;
                 foreach (var pair in keysAt)
@@ -96,7 +97,7 @@ namespace Purge.Core.Navigation
             }
         }
 
-        private static void FloodFill(LevelGeometry geometry, bool[] passable, GridPosition start, bool[] reachable)
+        private static void FloodFill(LevelGrid geometry, bool[] passable, GridPosition start, bool[] reachable)
         {
             System.Array.Clear(reachable, 0, reachable.Length);
             if (!geometry.IsInside(start) || !passable[geometry.ToIndex(start)])
@@ -110,18 +111,18 @@ namespace Purge.Core.Navigation
             {
                 var current = queue.Dequeue();
                 foreach (var direction in DirectionExtensions.All)
-                {
-                    var next = current.Neighbour(direction);
-                    if (!geometry.IsInside(next))
-                        continue;
+                    Visit(current.Neighbour(direction));
+                if (geometry.TryGetStairDestination(current, out var landing))
+                    Visit(landing);
+            }
 
-                    var index = geometry.ToIndex(next);
-                    if (reachable[index] || !passable[index])
-                        continue;
-
-                    reachable[index] = true;
-                    queue.Enqueue(next);
-                }
+            void Visit(GridPosition next)
+            {
+                if (!geometry.IsInside(next)) return;
+                var index = geometry.ToIndex(next);
+                if (reachable[index] || !passable[index]) return;
+                reachable[index] = true;
+                queue.Enqueue(next);
             }
         }
     }

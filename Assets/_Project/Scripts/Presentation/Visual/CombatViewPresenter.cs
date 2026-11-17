@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Assets;
 using Purge.Core.Definitions;
+using Purge.Core.Grid;
 using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Level;
@@ -278,7 +279,7 @@ namespace Purge.Presentation.Visual
             if (_tracerPool == null || bullet.Throwable != null) return; // thrown items: DropViewPresenter
             var tracer = _tracerPool.Get();
             tracer.Spawn = bullet.Position;
-            tracer.Origin = new Vector3(bullet.Position.x, ShotHeight, bullet.Position.y);
+            tracer.Origin = new Vector3(bullet.Position.x, BulletHeight(bullet), bullet.Position.y);
             tracer.FromMuzzle = false;
             _tracers[bullet] = tracer;
             _newTracers.Add(tracer);
@@ -288,7 +289,7 @@ namespace Purge.Presentation.Visual
         private void OnBulletEnded(Bullet bullet, Vector2 point, BulletEnd reason)
         {
             if (bullet.Throwable != null) return;
-            var height = ShotHeight;
+            var height = BulletHeight(bullet);
             if (_tracers.TryGetValue(bullet, out var tracer))
             {
                 height = tracer.Origin.y;
@@ -298,9 +299,9 @@ namespace Purge.Presentation.Visual
             }
 
             if (reason == BulletEnd.Blocked)
-                Show(_impactPool, point, height, WallNormal(point, bullet.Direction));
+                Show(_impactPool, point, height, WallNormal(point, bullet.Direction), bullet.Floor);
             else if (reason == BulletEnd.Hit)
-                Show(_hitPool, point, height, -bullet.Direction);
+                Show(_hitPool, point, height, -bullet.Direction, bullet.Floor);
         }
 
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
@@ -463,7 +464,7 @@ namespace Purge.Presentation.Visual
             if (!_swingShown)
                 ShowSwing();
             foreach (var target in _meleeTargets)
-                Show(_hitPool, target.Position - _meleeDirection * (target.Radius * 0.8f), ShotHeight, -_meleeDirection);
+                Show(_hitPool, target.Position - _meleeDirection * (target.Radius * 0.8f), _player.ViewHeight + ShotHeight, -_meleeDirection, _player.Floor);
             _meleeTargets.Clear();
             _meleePending = false;
         }
@@ -472,7 +473,7 @@ namespace Purge.Presentation.Visual
         private void ShowSwing()
         {
             _swingShown = true;
-            var swing = Show(_swingPool, _player.Position, SwingHeight, _meleeDirection, play: false);
+            var swing = Show(_swingPool, _player.Position, _player.ViewHeight + SwingHeight, _meleeDirection, _player.Floor, play: false);
             if (swing == null) return;
             if (swing.Component != null && swing.Component.Swing != null)
             {
@@ -496,9 +497,10 @@ namespace Purge.Presentation.Visual
             {
                 var forward = _player.Position + _shotDirection * 0.5f;
                 var flat = new Vector3(_shotDirection.x, 0f, _shotDirection.y);
-                if (!PlayPackFlash(new Vector3(forward.x, ShotHeight, forward.y),
+                var height = _player.ViewHeight + ShotHeight;
+                if (!PlayPackFlash(new Vector3(forward.x, height, forward.y),
                         flat.sqrMagnitude > 0f ? Quaternion.LookRotation(flat, Vector3.up) : Quaternion.identity))
-                    Show(_flashPool, forward, ShotHeight, _shotDirection);
+                    Show(_flashPool, forward, height, _shotDirection, _player.Floor);
                 _newTracers.Clear();
                 return;
             }
@@ -556,14 +558,14 @@ namespace Purge.Presentation.Visual
             if (_visual.TracerLength > 0f)
                 transform.localScale = new Vector3(1f, 1f, Mathf.Max(Mathf.Min(_visual.TracerLength, distance), 0.01f));
 
-            var visible = _visibility.IsVisible(Cell(bullet.Position));
+            var visible = _visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor));
             if (tracer.View.activeSelf != visible)
                 tracer.View.SetActive(visible);
         }
 
-        private Effect Show(EffectPool pool, Vector2 position, float height, Vector2 direction, bool play = true)
+        private Effect Show(EffectPool pool, Vector2 position, float height, Vector2 direction, int floor, bool play = true)
         {
-            if (pool == null || !_visibility.IsVisible(Cell(position)))
+            if (pool == null || !_visibility.IsVisible(PlayerMovement.CellOf(position, floor)))
                 return null;
 
             var rotation = direction.sqrMagnitude > 0f
@@ -599,7 +601,7 @@ namespace Purge.Presentation.Visual
             return -direction;
         }
 
-        private static Core.Grid.GridPosition Cell(Vector2 position) => PlayerMovement.CellOf(position);
+        private static float BulletHeight(Bullet bullet) => bullet.Floor * GridPosition.FloorHeight + ShotHeight;
 
         private sealed class Tracer
         {

@@ -1,4 +1,5 @@
 using System;
+using Purge.Core.Grid;
 
 namespace Purge.Core.Navigation
 {
@@ -6,6 +7,7 @@ namespace Purge.Core.Navigation
     public interface IGridAcoustics
     {
         float Transmission(int x, int y);
+        float Transmission(int x, int y, int floor) => Transmission(x, y);
     }
 
     /// <summary>
@@ -24,6 +26,9 @@ namespace Purge.Core.Navigation
         private static readonly int[] OffsetX = { 0, 1, 0, -1, 1, 1, -1, -1 };
         private static readonly int[] OffsetY = { 1, 0, -1, 0, 1, -1, -1, 1 };
 
+        private readonly LevelGrid _grid;
+        private readonly int _floors;
+        private int _layerSize;
         private readonly float[] _loudness;
         private readonly float[] _transmission;
         private readonly int[] _toward;
@@ -31,18 +36,20 @@ namespace Purge.Core.Navigation
         private readonly float[] _heapKey;
         private int _heapCount;
 
-        public NoiseField(int maxRadius)
+        public NoiseField(int maxRadius, LevelGrid grid = null)
         {
             if (maxRadius < 1) throw new ArgumentOutOfRangeException(nameof(maxRadius));
             MaxRadius = maxRadius;
             var side = maxRadius * 2 + 1;
-            var count = side * side;
+            _grid = grid;
+            _floors = grid != null && grid.HasStairs ? grid.FloorCount : 1;
+            var count = side * side * _floors;
             _loudness = new float[count];
             _transmission = new float[count];
             _toward = new int[count];
             // A cell is queued again only when reached louder — at most once per incoming direction.
-            _heapCell = new int[count * 8 + 1];
-            _heapKey = new float[count * 8 + 1];
+            _heapCell = new int[count * (_floors > 1 ? 9 : 8) + 1];
+            _heapKey = new float[_heapCell.Length];
         }
 
         /// <summary>Largest radius covered (louder sounds are cut to it).</summary>
@@ -79,20 +86,24 @@ namespace Purge.Core.Navigation
             OriginY = sourceY - reach;
             HasResult = true;
 
-            var count = Side * Side;
+            _layerSize = Side * Side;
+            var count = _layerSize * _floors;
             for (var i = 0; i < count; i++)
             {
                 _loudness[i] = 0f;
                 _toward[i] = -1;
-                var x = OriginX + i % Side;
-                var y = OriginY + i / Side;
+                var local = i % _layerSize;
+                var x = OriginX + local % Side;
+                var y = OriginY + local / Side;
+                var layer = _floors == 1 ? floor : i / _layerSize;
                 _transmission[i] = x >= 0 && x < width && y >= 0 && y < height
-                    ? Math.Max(0f, Math.Min(1f, acoustics.Transmission(x, y)))
+                    ? Math.Max(0f, Math.Min(1f, acoustics.Transmission(x, y, layer)))
                     : 0f;
             }
 
             if (Radius <= 0f) return;
-            var start = reach * Side + reach;
+            var start = WindowIndex(sourceX, sourceY, floor);
+            if (start < 0) return;
             _loudness[start] = Radius;
             _heapCount = 0;
             Push(start, Radius);
@@ -104,19 +115,21 @@ namespace Purge.Core.Navigation
                 if (key < _loudness[cell] - Epsilon)
                     continue; // stale: reached louder later
 
-                var cx = cell % Side;
-                var cy = cell / Side;
+                var offset = cell / _layerSize * _layerSize;
+                var local = cell - offset;
+                var cx = local % Side;
+                var cy = local / Side;
                 for (var d = 0; d < 8; d++)
                 {
                     var nx = cx + OffsetX[d];
                     var ny = cy + OffsetY[d];
                     if (nx < 0 || nx >= Side || ny < 0 || ny >= Side) continue;
-                    var neighbour = ny * Side + nx;
+                    var neighbour = offset + ny * Side + nx;
                     var transmission = _transmission[neighbour];
                     if (transmission <= 0f) continue;
 
                     var diagonal = d >= 4;
-                    if (diagonal && (!Passes(cx + OffsetX[d], cy) || !Passes(cx, cy + OffsetY[d])))
+                    if (diagonal && (!Passes(cx + OffsetX[d], cy, offset) || !Passes(cx, cy + OffsetY[d], offset)))
                         continue;
 
                     var left = (key - (diagonal ? Diagonal : 1f)) * transmission;
@@ -125,13 +138,25 @@ namespace Purge.Core.Navigation
                     _toward[neighbour] = cell;
                     Push(neighbour, left);
                 }
+
+                if (_floors == 1 || !_grid.TryGetStairDestination(
+                        new GridPosition(OriginX + cx, OriginY + cy, cell / _layerSize), out var landing)) continue;
+                var next = WindowIndex(landing.X, landing.Y, landing.Floor);
+                if (next < 0) continue;
+                var muffled = key * 0.5f;
+                if (_transmission[next] <= 0f || muffled <= _loudness[next] + Epsilon) continue;
+                _loudness[next] = muffled;
+                _toward[next] = cell;
+                Push(next, muffled);
             }
         }
 
         /// <summary>Loudness left in the cell, cells of radius (0 = not heard; the source has the whole radius).</summary>
-        public float LoudnessAt(int x, int y)
+        public float LoudnessAt(int x, int y) => LoudnessAt(new GridPosition(x, y, Floor));
+
+        public float LoudnessAt(GridPosition cell)
         {
-            var index = WindowIndex(x, y);
+            var index = WindowIndex(cell.X, cell.Y, cell.Floor);
             return index >= 0 ? _loudness[index] : 0f;
         }
 
@@ -140,29 +165,34 @@ namespace Purge.Core.Navigation
         /// <summary>The neighbour to step to from a cell that hears the sound, towards its source; false at the source or out of reach.</summary>
         public bool TryStepToward(int x, int y, out int nextX, out int nextY)
         {
-            var index = WindowIndex(x, y);
-            var next = index >= 0 ? _toward[index] : -1;
-            if (next < 0)
-            {
-                nextX = x;
-                nextY = y;
-                return false;
-            }
+            var found = TryStepToward(new GridPosition(x, y, Floor), out var next) && next.Floor == Floor;
+            nextX = found ? next.X : x;
+            nextY = found ? next.Y : y;
+            return found;
+        }
 
-            nextX = OriginX + next % Side;
-            nextY = OriginY + next / Side;
+        public bool TryStepToward(GridPosition cell, out GridPosition nextCell)
+        {
+            nextCell = cell;
+            var index = WindowIndex(cell.X, cell.Y, cell.Floor);
+            var next = index >= 0 ? _toward[index] : -1;
+            if (next < 0) return false;
+            var local = next % _layerSize;
+            nextCell = new GridPosition(OriginX + local % Side, OriginY + local / Side,
+                _floors == 1 ? Floor : next / _layerSize);
             return true;
         }
 
-        private int WindowIndex(int x, int y)
+        private int WindowIndex(int x, int y, int floor)
         {
-            if (!HasResult) return -1;
+            if (!HasResult || (_floors == 1 ? floor != Floor : (uint)floor >= (uint)_floors)) return -1;
+            var offset = _floors == 1 ? 0 : floor * _layerSize;
             var wx = x - OriginX;
             var wy = y - OriginY;
-            return wx >= 0 && wx < Side && wy >= 0 && wy < Side ? wy * Side + wx : -1;
+            return wx >= 0 && wx < Side && wy >= 0 && wy < Side ? offset + wy * Side + wx : -1;
         }
 
-        private bool Passes(int wx, int wy) => wx >= 0 && wx < Side && wy >= 0 && wy < Side && _transmission[wy * Side + wx] > 0f;
+        private bool Passes(int wx, int wy, int offset) => wx >= 0 && wx < Side && wy >= 0 && wy < Side && _transmission[offset + wy * Side + wx] > 0f;
 
         // Max-heap on the loudness left.
         private void Push(int cell, float key)

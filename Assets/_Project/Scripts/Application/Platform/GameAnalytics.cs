@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
 using Purge.Application.Services;
+using Purge.Core.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Navigation;
@@ -91,6 +92,7 @@ namespace Purge.Application.Platform
         {
             if (_subscribed) return UniTask.CompletedTask;
             _pickups.Removed += OnPickupRemoved;
+            _player.CellChanged += OnPlayerCellChanged;
             if (_tutorial != null) _tutorial.StepStarted += OnTutorialStep;
             if (_chests != null)
             {
@@ -136,6 +138,7 @@ namespace Purge.Application.Platform
         {
             if (!_subscribed) return;
             _pickups.Removed -= OnPickupRemoved;
+            _player.CellChanged -= OnPlayerCellChanged;
             if (_tutorial != null) _tutorial.StepStarted -= OnTutorialStep;
             if (_chests != null)
             {
@@ -253,6 +256,17 @@ namespace Purge.Application.Platform
             parameters["level"] = _levelId;
             parameters["weapon"] = pickup.Weapon.Definition != null ? pickup.Weapon.Definition.Id : "unknown";
             Send(AnalyticsEvents.WeaponPickup);
+        }
+
+        private void OnPlayerCellChanged(GridPosition previous, GridPosition current)
+        {
+            if (previous.Floor == current.Floor || _flow?.IsTestRun == true) return;
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["from_floor"] = previous.Floor;
+            parameters["to_floor"] = current.Floor;
+            parameters["wave"] = Wave;
+            Send(AnalyticsEvents.FloorChanged);
         }
 
         private void OnTutorialStep(int index)

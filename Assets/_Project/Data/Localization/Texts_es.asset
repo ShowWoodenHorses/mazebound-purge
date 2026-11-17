@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -985,4 +986,5 @@ MonoBehaviour:
   - Los jefes avisan antes de atacar. Sal de la zona marcada antes del impacto.
   - "La arena sigue cerrada hasta vencer al jefe. Completar la partida con la arena
     cerrada da una bonificaci\xF3n."
+  - Pisa la escalera para cambiar de planta. Los monstruos pueden seguirte.
   _missing: []

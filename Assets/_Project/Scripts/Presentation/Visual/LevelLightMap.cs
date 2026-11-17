@@ -25,22 +25,25 @@ namespace Purge.Presentation.Visual
         private readonly LevelData _level;
         private readonly LevelGrid _grid;
         private readonly DoorSystem _doors;
+        private readonly VisibilitySystem _visibility;
 
-        private LightField _field;
-        private Texture2D _texture;
+        private LightField[] _fields;
+        private Texture2D[] _textures;
+        private int _activeFloor = -1;
         private bool _subscribed;
 
-        public LevelLightMap(LevelData level, LevelGrid grid, DoorSystem doors)
+        public LevelLightMap(LevelData level, LevelGrid grid, DoorSystem doors, VisibilitySystem visibility = null)
         {
             _level = level;
             _grid = grid;
             _doors = doors;
+            _visibility = visibility;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.BuildVisuals;
 
         /// <summary>Null when the level has no lights.</summary>
-        public LightField Field => _field;
+        public LightField Field => _activeFloor >= 0 ? _fields?[_activeFloor] : null;
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
@@ -48,26 +51,35 @@ namespace Purge.Presentation.Visual
             if (_level.Lights.Count == 0)
                 return UniTask.CompletedTask;
 
-            _field = new LightField(_grid.Width, _grid.Height, _level.Lights);
-            _field.Rebuild(new LevelOpacity(_grid, _doors));
-            _texture = new Texture2D(_field.TextureWidth, _field.TextureHeight, TextureFormat.RGBA32, false, true)
+            _fields = new LightField[_grid.FloorCount];
+            _textures = new Texture2D[_grid.FloorCount];
+            foreach (var light in _level.Lights)
             {
-                name = "Purge Light Map",
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Clamp,
-                hideFlags = HideFlags.DontSave,
-            };
-            Upload();
-            Shader.SetGlobalTexture(MapId, _texture);
-            Shader.SetGlobalVector(MapSizeId, new Vector4(1f / _grid.Width, 1f / _grid.Height, LightField.MaxLight, 0f));
+                var floor = light.Cell.Floor;
+                if ((uint)floor >= (uint)_fields.Length || _fields[floor] != null) continue;
+                var field = new LightField(_grid.Width, _grid.Height, _level.Lights, floor);
+                field.Rebuild(new LevelOpacity(_grid, _doors));
+                _fields[floor] = field;
+                _textures[floor] = new Texture2D(field.TextureWidth, field.TextureHeight, TextureFormat.RGBA32, false, true)
+                {
+                    name = $"Purge Light Map {floor}",
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Clamp,
+                    hideFlags = HideFlags.DontSave,
+                };
+                Upload(floor);
+            }
+
+            ShowFloor();
 
             if (!_subscribed)
             {
                 _doors.DoorChanged += OnDoorChanged;
+                if (_visibility != null) _visibility.Changed += ShowFloor;
                 _subscribed = true;
             }
 
-            GameLog.Info(LogChannel.Visual, $"Light map {_field.TextureWidth}x{_field.TextureHeight}, {_level.Lights.Count} light(s).");
+            GameLog.Info(LogChannel.Visual, $"Prepared light maps for {_level.Lights.Count} light(s).");
             return UniTask.CompletedTask;
         }
 
@@ -76,6 +88,7 @@ namespace Purge.Presentation.Visual
             if (_subscribed)
             {
                 _doors.DoorChanged -= OnDoorChanged;
+                if (_visibility != null) _visibility.Changed -= ShowFloor;
                 _subscribed = false;
             }
 
@@ -84,24 +97,41 @@ namespace Purge.Presentation.Visual
 
         private void OnDoorChanged(DoorData door, bool open)
         {
-            if (_field == null) return;
-            var region = _field.RebuildAround(door.Position, new LevelOpacity(_grid, _doors));
-            if (region.width > 0) Upload();
+            var floor = door.Position.Floor;
+            if (_fields == null || (uint)floor >= (uint)_fields.Length) return;
+            var field = _fields[floor];
+            if (field == null) return;
+            var region = field.RebuildAround(door.Position, new LevelOpacity(_grid, _doors));
+            if (region.width > 0) Upload(floor);
         }
 
-        private void Upload()
+        private void ShowFloor()
         {
-            _texture.SetPixels32(_field.Pixels);
-            _texture.Apply(false);
+            var floor = _visibility?.Floor ?? 0;
+            if (floor == _activeFloor) return;
+            _activeFloor = floor;
+            var texture = _textures?[floor];
+            Shader.SetGlobalTexture(MapId, texture != null ? texture : Texture2D.blackTexture);
+            Shader.SetGlobalVector(MapSizeId, texture != null
+                ? new Vector4(1f / _grid.Width, 1f / _grid.Height, LightField.MaxLight, 0f)
+                : Vector4.zero);
+        }
+
+        private void Upload(int floor)
+        {
+            _textures[floor].SetPixels32(_fields[floor].Pixels);
+            _textures[floor].Apply(false);
         }
 
         private void Clear()
         {
             Shader.SetGlobalVector(MapSizeId, Vector4.zero);
             Shader.SetGlobalTexture(MapId, Texture2D.blackTexture);
-            UnityObjects.Destroy(_texture);
-            _texture = null;
-            _field = null;
+            if (_textures != null)
+                foreach (var texture in _textures) UnityObjects.Destroy(texture);
+            _textures = null;
+            _fields = null;
+            _activeFloor = -1;
         }
     }
 }

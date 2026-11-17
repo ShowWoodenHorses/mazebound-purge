@@ -114,6 +114,7 @@ namespace Purge.Presentation.Visual.Horde
             var floorHeight = _player.Floor * GridPosition.FloorHeight;
             for (var p = 0; p < _abilities.ProjectileCount; p++)
             {
+                if (_abilities.ProjectileFloor(p) != _player.Floor) continue;
                 var kind = _abilities.ProjectileKind(p);
                 if ((uint)kind >= (uint)_looks.Length) continue;
                 var look = _looks[kind];

@@ -40,6 +40,7 @@ namespace Purge.Presentation.Visual
         private Texture2D _texture;
         private Mesh _mesh;
         private GameObject _plane;
+        private FogMask[] _floorMasks;
         private bool _revealedOnce;
         private bool _subscribed;
 
@@ -72,7 +73,10 @@ namespace Purge.Presentation.Visual
                 return UniTask.CompletedTask;
             }
 
-            _mask = new FogMask(_grid.Width, _grid.Height);
+            _floorMasks = new FogMask[_grid.FloorCount];
+            for (var floor = 0; floor < _floorMasks.Length; floor++)
+                _floorMasks[floor] = new FogMask(_grid.Width, _grid.Height, floor);
+            _mask = _floorMasks[0];
             _texture = new Texture2D(_mask.TextureWidth, _mask.TextureHeight, TextureFormat.R8, false, true)
             {
                 name = "Purge Fog Mask",
@@ -128,15 +132,24 @@ namespace Purge.Presentation.Visual
             _mesh = null;
             _texture = null;
             _mask = null;
+            _floorMasks = null;
         }
 
         private void OnVisibilityChanged()
         {
+            var changedFloor = _visibility.HasResult && _mask.Floor != _visibility.Floor;
+            if (changedFloor)
+            {
+                var oldFloor = _mask.Floor;
+                _mask = _floorMasks[_visibility.Floor];
+                _plane.transform.localPosition += UnityEngine.Vector3.up *
+                    ((_mask.Floor - oldFloor) * GridPosition.FloorHeight);
+            }
             var revealed = _visibility.RevealedCells;
             // The first reveal happens behind the loading screen: no fade.
-            var instant = !_revealedOnce;
+            var instant = !_revealedOnce || changedFloor;
             if (revealed.Count > 0) _revealedOnce = true;
-            if (_mask.SetRevealed(revealed, instant))
+            if (_mask.SetRevealed(revealed, instant) || changedFloor)
                 Upload();
         }
 

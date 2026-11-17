@@ -165,7 +165,7 @@ namespace Purge.Tests.EditMode.Monsters
             _playerStatuses = new PlayerStatusSystem(_player, _health, _zones, _horde);
             _effects = new EffectSystem(_targets, _zones, _statuses, new SoundEventBus(), _player, _health, _playerStatuses, _horde);
             _abilities = new MonsterAbilities(_horde, _targets, _player, _health, _playerStatuses, _effects);
-            _champions = new ChampionSystem(_horde, _effects, _zones, _player, _playerStatuses);
+            _champions = new ChampionSystem(_horde, _effects, _zones, _playerStatuses);
             _horde.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _abilities.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             _statuses.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();

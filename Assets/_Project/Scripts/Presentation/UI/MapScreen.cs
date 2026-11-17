@@ -22,9 +22,11 @@ namespace Purge.Presentation.UI
         [SerializeField] private MapIconSet _icons;
         [Tooltip("A switch per MapLayer, in its order.")]
         [SerializeField] private Toggle[] _layers;
+        [SerializeField] private Button[] _floorTabs;
 
         private readonly List<Image> _iconImages = new List<Image>();
         private readonly List<MapIcon> _iconData = new List<MapIcon>();
+        private TMP_Text[] _floorLabels;
         private int _iconCount;
         private Vector2 _laidOutSize;
         private Vector2Int _mapSize;
@@ -37,12 +39,36 @@ namespace Purge.Presentation.UI
 
         /// <summary>Raised when the screen is shown (icons are refreshed then).</summary>
         public event Action Opened;
+        public event Action<int> FloorSelected;
+
+        public void SetFloors(int floorCount, int selected, int ground = 0)
+        {
+            if (_floorTabs == null) return;
+            for (var i = 0; i < _floorTabs.Length; i++)
+            {
+                _floorTabs[i].gameObject.SetActive(floorCount > 1 && i < floorCount);
+                _floorTabs[i].interactable = i != selected;
+                if (_floorLabels != null && _floorLabels[i] != null)
+                    _floorLabels[i].SetText("{0}", i < ground ? i - ground : i - ground + 1);
+            }
+        }
 
         public MapIconSet Icons => _icons;
 
         private void Awake()
         {
             Bind(_closeButton, () => CloseClicked?.Invoke());
+
+            if (_floorTabs != null)
+            {
+                _floorLabels = new TMP_Text[_floorTabs.Length];
+                for (var i = 0; i < _floorTabs.Length; i++)
+                {
+                    var floor = i;
+                    _floorLabels[i] = _floorTabs[i].GetComponentInChildren<TMP_Text>(true);
+                    Bind(_floorTabs[i], () => FloorSelected?.Invoke(floor));
+                }
+            }
 
             if (_layers == null) return;
             for (var i = 0; i < _layers.Length; i++)
@@ -103,6 +129,7 @@ namespace Purge.Presentation.UI
         public void Clear()
         {
             SetMap(null);
+            SetFloors(0, 0);
             _iconData.Clear();
             _iconCount = 0;
             LayoutIcons();

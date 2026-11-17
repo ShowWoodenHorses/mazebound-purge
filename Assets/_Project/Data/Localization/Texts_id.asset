@@ -479,6 +479,7 @@ MonoBehaviour:
   - hint.vehicle
   - hint.boss
   - hint.closed_arena
+  - hint.stairs
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -999,4 +1000,5 @@ MonoBehaviour:
   - Serangan bos diberi tanda. Keluar dari area bertanda sebelum serangan mengenai
     sasaran.
   - Arena terkunci sampai bos dikalahkan. Menang dengan arena tertutup memberi bonus.
+  - Injak tangga untuk berpindah lantai. Monster bisa mengikutimu.
   _missing: []

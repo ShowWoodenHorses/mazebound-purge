@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -12,6 +13,7 @@ using Purge.Composition;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
+using Purge.Core.Navigation;
 using Purge.Core.Visual;
 using Purge.Gameplay.Doors;
 using Purge.Gameplay.Level;
@@ -761,6 +763,144 @@ namespace Purge.Tests.PlayMode
         });
 
         private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];
+
+        [UnityTest]
+        public IEnumerator Stairs_TravelSwitchesVisibilityAndMapFloor() => Async(async () =>
+        {
+            const string id = "Level_Stairs";
+            var catalog = _container.Resolve<ILevelCatalog>();
+            Assert.That(catalog.Find(id), Is.Not.Null, "Run Purge > Dev > Build Stairs Level.");
+            await _flow.StartLevel(id, new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+
+            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var player = container.Resolve<PlayerSystem>();
+            var map = container.Resolve<MapPresenter>();
+            var geometry = container.Resolve<LevelData>().Geometry;
+            var visuals = container.Resolve<LevelVisualSystem>();
+            Assert.AreEqual(geometry.GroundFloor, player.Floor);
+            var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
+            var bullets = container.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+            var root = container.Resolve<LevelViewRoot>();
+            Assert.AreEqual(0, bullets.Active.Count);
+            Assert.IsTrue(combat.TryAttack(Vector2.up), "The starter pistol can fire on the ground floor of Stairs.");
+            var bullet = bullets.Active.Single();
+            Assert.AreEqual(player.Floor, bullet.Floor);
+            var tracer = root.GetComponentsInChildren<Transform>().Single(view => view.name == "Bullet");
+            Assert.That(tracer.localPosition.y, Is.InRange(player.ViewHeight + 0.1f, player.ViewHeight + 2f));
+            bullets.Spawn(player.Position, Vector2.up, speed: 10f, damage: 1f, floor: player.Floor - 1);
+            Assert.AreEqual(2, bullets.Active.Count);
+            Assert.AreEqual(1, root.GetComponentsInChildren<Transform>().Count(view => view.name == "Bullet"),
+                "A tracer on the floor below remains hidden at the same horizontal coordinates.");
+            var oldView = visuals.Geometry;
+            var oldTexture = map.Texture;
+            var stair = geometry.Stairs.First(link => link.LowerFloor == player.Floor);
+            var cell = stair.LowerLanding;
+            var grid = container.Resolve<LevelGrid>();
+            MovePlayerTo(player, grid, cell);
+            var direction = new Vector2(stair.Second.X - stair.First.X, stair.Second.Y - stair.First.Y);
+            Assert.IsFalse(player.IsOnStairs, "Walking to the landing does not start climbing.");
+            var startPosition = player.Position;
+            player.Displace(direction);
+            Assert.IsTrue(player.IsOnStairs);
+            player.Tick(0.4f);
+            Assert.AreEqual(cell.Floor, player.Floor);
+            Assert.That(player.ViewHeight, Is.InRange(stair.Bottom.y + 0.4f, stair.Top.y - 0.4f));
+            Assert.That(Vector2.Dot(player.Position - startPosition, direction), Is.GreaterThan(0.8f));
+            player.Tick(1f);
+            Assert.AreEqual(stair.UpperLanding, player.Cell);
+            Assert.IsFalse(oldView.Root.gameObject.activeSelf);
+            Assert.IsTrue(visuals.Geometry.Root.gameObject.activeSelf);
+            Assert.AreNotSame(oldTexture, map.Texture);
+
+            Assert.AreEqual(CellType.Void, grid.GetCell(stair.First.OnFloor(stair.UpperFloor)));
+            Assert.AreEqual(CellType.Void, grid.GetCell(stair.Second.OnFloor(stair.UpperFloor)));
+            Assert.IsFalse(HasFloorOverOpening(visuals.Geometry, stair.First.OnFloor(stair.UpperFloor)));
+
+            var upperLanding = player.Position;
+            var sideways = new Vector2(-direction.y, direction.x);
+            var sideExit = PlayerMovement.CellOf(upperLanding + sideways, player.Floor);
+            if (grid.Has(sideExit, CellFlags.BlocksMovement)) sideways = -sideways;
+            player.Displace(sideways);
+            Assert.IsFalse(player.IsOnStairs, "Walking sideways away from the landing does not start descending.");
+
+            var horde = container.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            horde.Tick(0.01f);
+            var kind = Enumerable.Range(0, horde.KindList.Count).First(i =>
+                horde.KindList[i].Definition?.Perception == Purge.Core.Monsters.MonsterPerception.Hunter);
+            var slot = horde.SpawnEmerging(new Vector2(cell.X, cell.Y), kind, 0f, cell.Floor);
+            Assert.That(slot, Is.GreaterThanOrEqualTo(0), "A monster can spawn on the other floor.");
+            Assert.AreEqual(cell.Floor, horde.FloorOf(slot));
+            var traversedFlight = false;
+            var spawnPosition = AgentPosition(horde, slot);
+            for (var i = 0; i < 150 && horde.FloorOf(slot) != player.Floor; i++)
+            {
+                horde.Tick(1f / 30f);
+                var height = horde.ViewHeightOf(slot);
+                if (height > stair.Bottom.y + 0.25f && height < stair.Top.y - 0.25f &&
+                    Vector2.Distance(spawnPosition, AgentPosition(horde, slot)) > 0.5f &&
+                    horde.IsVisibleOnFloor(slot, player.Floor)) traversedFlight = true;
+            }
+            Assert.IsTrue(traversedFlight, "The monster walks along the flight at intermediate heights.");
+            Assert.AreEqual(player.Floor, horde.FloorOf(slot), "A chasing monster can climb to the player.");
+
+            _flow.OpenMap();
+            Assert.AreEqual(GameFlowState.Map, _flow.State);
+            var ui = _container.Resolve<UIRoot>();
+            var tab = ui.Map.transform.Find($"SafeArea/Floor{geometry.GroundFloor}").GetComponent<Button>();
+            Assert.IsTrue(tab.gameObject.activeInHierarchy);
+            tab.onClick.Invoke();
+            Assert.IsFalse(map.Icons[map.Icons.Count - 1].Visible, "The player is not on the map's selected floor.");
+            Assert.AreEqual(stair.UpperFloor, player.Floor);
+            _flow.CloseMap();
+            MovePlayerTo(player, grid, stair.UpperLanding);
+            player.Displace(-direction);
+            Assert.IsTrue(player.IsOnStairs);
+            player.Tick(0.4f);
+            Assert.That(player.ViewHeight, Is.InRange(stair.Bottom.y + 0.4f, stair.Top.y - 0.4f));
+            Assert.That(Vector2.Dot(upperLanding - player.Position, direction), Is.GreaterThan(0.8f));
+            player.Tick(1f);
+            Assert.AreEqual(stair.LowerLanding, player.Cell);
+            await _flow.ExitToMenu();
+        });
+
+        private static void MovePlayerTo(PlayerSystem player, LevelGrid grid, GridPosition destination)
+        {
+            var mask = new bool[grid.CellCount];
+            for (var i = 0; i < mask.Length; i++)
+                mask[i] = !grid.Has(grid.ToPosition(i), CellFlags.BlocksMovement);
+            var path = new List<GridPosition>();
+            var pathfinder = new GridPathfinder(grid.Width, grid.Height);
+            Assert.IsTrue(pathfinder.TryFindPath(player.Cell, destination,
+                new CellMaskPassability(grid.Width, grid.Height, mask), path));
+            foreach (var cell in path.Skip(1))
+                player.Displace(new Vector2(cell.X, cell.Y) - player.Position);
+            Assert.AreEqual(destination, player.Cell);
+        }
+
+        private static bool HasFloorOverOpening(LevelGeometryView view, GridPosition opening)
+        {
+            var height = opening.ToWorld().y;
+            foreach (var chunk in view.Chunks)
+            {
+                var mesh = chunk.Mesh;
+                var vertices = mesh.vertices;
+                var triangles = mesh.triangles;
+                for (var i = 0; i < triangles.Length; i += 3)
+                {
+                    var a = vertices[triangles[i]];
+                    var b = vertices[triangles[i + 1]];
+                    var c = vertices[triangles[i + 2]];
+                    if (Mathf.Abs(a.y - height) > 0.04f || Mathf.Abs(b.y - height) > 0.04f ||
+                        Mathf.Abs(c.y - height) > 0.04f) continue;
+                    var center = (a + b + c) / 3f;
+                    if (Mathf.Abs(center.x - opening.X) < 0.45f && Mathf.Abs(center.z - opening.Y) < 0.45f)
+                        return true;
+                }
+            }
+
+            return false;
+        }
 
         [UnityTest]
         public IEnumerator Map_Icons_AndFog_UpdateOnOpen() => Async(async () =>

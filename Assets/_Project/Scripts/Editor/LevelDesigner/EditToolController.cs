@@ -32,6 +32,7 @@ namespace Purge.Editor.LevelDesigner
         Obstacle,
         LockArea,
         Erase,
+        Stairs,
     }
 
     /// <summary>What the Decor brush paints.</summary>
@@ -79,6 +80,8 @@ namespace Purge.Editor.LevelDesigner
         public float VehicleHeading { get; set; }
 
         /// <summary>Ring width of an arena drawn with the Arena brush.</summary>
+        public bool StairsAlongX { get; set; }
+
         public int ArenaRing { get; set; } = 2;
 
         /// <summary>Corner where the rectangle of the Arena / Lock Area brush was started.</summary>
@@ -112,11 +115,23 @@ namespace Purge.Editor.LevelDesigner
                     RemoveSpawn(cell);
                 else if (ActiveTool == EditTool.LockArea)
                     RemoveLockedArea(cell);
+                else if (ActiveTool == EditTool.Stairs)
+                    Apply("Remove Stair", () => LevelEditing.RemoveStair(Level, cell));
                 return;
             }
 
             switch (ActiveTool)
             {
+                case EditTool.Stairs:
+                    try
+                    {
+                        Apply("Place Stair", () => LevelEditing.AddStair(Level, cell, StairsAlongX));
+                    }
+                    catch (ArgumentException exception)
+                    {
+                        _notify(exception.Message);
+                    }
+                    break;
                 case EditTool.Select:
                     SelectAt(cell);
                     break;
@@ -488,6 +503,7 @@ namespace Purge.Editor.LevelDesigner
             Level.Geometry.IsInside(cell) &&
             (Level.Geometry.GetCell(cell) != CellType.Floor
              || Level.AllEntities().Any(e => e.Position == cell)
+             || Level.Geometry.Stairs.Any(stair => stair.Contains(cell))
              || Level.Lights.Any(l => l.Cell == cell)
              || !Purge.Core.Visual.VisualResolver.ResolveDecor(Level, cell).IsEmpty);
 

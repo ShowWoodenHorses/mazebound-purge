@@ -101,7 +101,10 @@ namespace Purge.Presentation.Visual
                 if (whole <= 0) continue;
                 // A burning bush: the flames rise from its top, not from under its mesh.
                 var top = grid.Has(new GridPosition(x, y, floor), CellFlags.BlocksMovement) ? ObstacleTop : 0f;
-                _kindEmitters[kind].Emit(new Vector3(x, h + top, y), whole);
+                var lift = kinds[kind].CloudOnly ? 0.35f : 0f;
+                var definition = kinds[kind];
+                _kindEmitters[kind].Emit(new Vector3(x, h + top + lift, y), whole, definition.ParticleScale,
+                    definition.ParticleTint == Color.white ? null : definition.ParticleTint);
             }
         }
 
@@ -126,7 +129,7 @@ namespace Purge.Presentation.Visual
             {
                 if (index / floorSize != floor) continue;
                 var kind = _zones.KindAt(index);
-                if (kind < 0 || kind >= _layers.Count) continue;
+                if (kind < 0 || kind >= _layers.Count || kinds[kind].CloudOnly) continue;
                 var layer = _layers[kind];
                 var flat = index % floorSize;
                 layer.Pixels[flat] = (byte)(Mathf.Clamp01(0.6f + _zones.Strength01(index) * 0.6f) * 255f);

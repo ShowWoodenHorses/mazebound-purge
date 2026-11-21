@@ -101,6 +101,11 @@ namespace Purge.Presentation.UI
                 switch(w.Attack) {
                     case BulletAttack a: damage=a.Damage*a.Pellets; range=a.Range; break;
                     case StreamAttack a: damage=a.DamagePerSecond;range=a.Range;unit=T("arsenal.dps");break;
+                    case BeamAttack a:
+                        damage = a.ChargeTime > 0f ? a.Damage : a.Damage / a.Interval;
+                        range = a.Range;
+                        if (a.ChargeTime <= 0f) unit = T("arsenal.dps");
+                        break;
                     case ChainAttack a:damage=a.Damage;range=a.Range;break;
                     case ExplosiveAttack a:damage=a.DirectDamage+a.ExplosionDamage;range=a.Range;break;
                     case MeleeAttack a:damage=a.Damage;range=a.Range;break;

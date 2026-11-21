@@ -20,7 +20,7 @@ namespace Purge.Gameplay.Weapons
             IsDropped = dropped;
             Definition = source.Definition ?? throw new ArgumentException($"Weapon pickup '{source.Id}' has no definition.", nameof(source));
             Id = source.Id;
-            Ammo = (int)Math.Ceiling(Definition.MagazineSize * (upgrades!=null && upgrades.Has(Definition,WeaponUpgrade.Magazine)?1.5f:1f));
+            Ammo = MagazineCapacity(Definition, upgrades);
         }
 
         /// <summary>The base weapon of an empty slot.</summary>
@@ -29,6 +29,15 @@ namespace Purge.Gameplay.Weapons
             Definition = baseWeapon ?? throw new ArgumentNullException(nameof(baseWeapon));
             Id = "base_" + Definition.Id;
             Ammo = Definition.MagazineSize;
+        }
+
+        internal static int MagazineCapacity(WeaponDefinition definition, IItemUpgrades upgrades, int? runCapacity = null)
+        {
+            if (definition == null) return 0;
+            if (definition.Ammo?.FixedMagazine == true) return definition.MagazineSize;
+            var baseCapacity = runCapacity ?? definition.MagazineSize;
+            var factor = upgrades?.Has(definition, WeaponUpgrade.Magazine) == true ? 1.5f : 1f;
+            return (int)Math.Ceiling(baseCapacity * factor);
         }
 
         public string Id { get; }
@@ -89,7 +98,7 @@ namespace Purge.Gameplay.Weapons
         public const float DropHoldTime = 0.6f;
 
         private readonly IItemUpgrades _upgrades;
-        private int Magazine(WeaponDefinition w) => (int)Math.Ceiling(w.MagazineSize * (_upgrades!=null && _upgrades.Has(w,WeaponUpgrade.Magazine)?1.5f:1f));
+        private int Magazine(WeaponDefinition weapon) => WeaponRuntime.MagazineCapacity(weapon, _upgrades);
         private readonly IPlayerInput _input;
         private readonly WeaponDefinition _baseWeapon;
         private readonly WeaponRuntime[] _slots = new WeaponRuntime[2];

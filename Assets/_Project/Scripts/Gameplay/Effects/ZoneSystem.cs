@@ -49,6 +49,7 @@ namespace Purge.Gameplay.Effects
         private float[] _strength;
         private byte[] _steps;
         private bool[] _hostile;
+        private string[] _weaponSources;
         private int[] _cells;
         private float _tickTimer;
         private float _playerDamage;
@@ -89,6 +90,7 @@ namespace Purge.Gameplay.Effects
             _strength = new float[size];
             _steps = new byte[size];
             _hostile = new bool[size];
+            _weaponSources = new string[size];
             _cells = new int[MaxCells];
             Count = 0;
             return UniTask.CompletedTask;
@@ -111,6 +113,32 @@ namespace Purge.Gameplay.Effects
 
         /// <summary>The zone in the cell is the monsters' (it hurts the player and puts its state on them).</summary>
         public bool IsHostileAt(int index) => _kind != null && (uint)index < (uint)_kind.Length && _kind[index] != 0 && _hostile[index];
+
+        public int RemainingWeaponCells(string weaponId, int limit)
+        {
+            for (var i = 0; i < Count; i++)
+                if (_weaponSources[_cells[i]] == weaponId)
+                    limit--;
+            return Mathf.Max(0, limit);
+        }
+
+        public void PlaceFromWeapon(GridPosition cell, ZoneDefinition zone, float duration, float strength,
+            string weaponId, ref int remainingCells)
+        {
+            if (weaponId == null)
+            {
+                Place(cell, zone, duration, strength);
+                return;
+            }
+
+            if (!_grid.IsInside(cell)) return;
+            var index = _grid.ToIndex(cell);
+            var alreadyOwned = _kind[index] != 0 && _weaponSources[index] == weaponId;
+            if (!alreadyOwned && remainingCells <= 0) return;
+            if (!Place(cell, zone, duration, strength)) return;
+            _weaponSources[index] = weaponId;
+            if (!alreadyOwned) remainingCells--;
+        }
 
         /// <summary>The zone on one cell (see the class remarks for overlaps). False when the cell cannot hold it.</summary>
         public bool Place(GridPosition cell, ZoneDefinition zone, float duration, float strength = 1f, bool hostile = false,
@@ -148,6 +176,7 @@ namespace Purge.Gameplay.Effects
             _strength[index] = strength;
             _steps[index] = (byte)Mathf.Clamp(steps, 0, 255);
             _hostile[index] = hostile;
+            _weaponSources[index] = null;
             Version++;
             return true;
         }

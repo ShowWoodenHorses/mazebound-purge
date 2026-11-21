@@ -18,6 +18,12 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  _rocket:
+    m_AssetGUID: f322b803f2403c24db1d2c5c28c4828a
+  _fireball:
+    m_AssetGUID: f3c0ce2e4a62f3a4190ef0546d171d13
+  _frostStream:
+    m_AssetGUID: fd520d69f3fd2094fa0216be8d810635
   _tracerLength: 1.2
   _muzzleFlash:
     m_AssetGUID: 6f7df8ab0f74eb943ac0a4e89f9a49dc

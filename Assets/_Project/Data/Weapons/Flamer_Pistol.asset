@@ -92,7 +92,7 @@ MonoBehaviour:
   _rarity: 1
   _noUpgrades: 0
   _startPool: 0
-  _hold: 3
+  _hold: 0
   _sound: 
   _soundPitch: 1
   _soundVolume: 1
@@ -101,17 +101,26 @@ MonoBehaviour:
   - rid: 1763807262009983092
   - rid: 1763807262009983093
   - rid: 1763807262009983167
+  - rid: 1763807300000000016
   references:
     version: 2
     RefIds:
     - rid: 1763807262009983091
-      type: {class: StreamAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      type: {class: ExplosiveAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.1
-        _automatic: 1
-        _damagePerSecond: 117
-        _range: 3.5
-        _angle: 30
+        _automatic: 0
+        _speed: 8
+        _range: 5.25
+        _directDamage: 11.7
+        _explosionDamage: 0
+        _radius: 0.35
+        _explosionLook:
+          m_AssetGUID: ef80f724a4f186b4faef6c72e18dcf86
+    - rid: 1763807300000000016
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _fireProjectile: 1
     - rid: 1763807262009983092
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

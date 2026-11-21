@@ -1140,6 +1140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f322b803f2403c24db1d2c5c28c4828a
+    m_Address: Assets/_Project/Art/Weapons/Purge/Another/RPG_Ammo.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f394106ec9b389145a5e11af5330412f
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/FX_LootRay_Green.prefab
     m_ReadOnly: 0

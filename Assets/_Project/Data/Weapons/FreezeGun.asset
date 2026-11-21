@@ -153,6 +153,7 @@ MonoBehaviour:
     - rid: 1763807284696973423
       type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
+        _frostStream: 1
         _muzzleFlash:
           m_AssetGUID: 
           m_SubObjectName: 

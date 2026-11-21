@@ -105,16 +105,14 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 1763807262009983079
-      type: {class: ChainAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      type: {class: BeamAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.45
         _automatic: 1
         _damage: 145
-        _range: 6
-        _aimAngle: 25
-        _jumps: 3
-        _jumpRange: 2.5
-        _jumpFalloff: 0.75
+        _range: 10
+        _chargeTime: 0.6
+        _piercing: 1
     - rid: 1763807262009983080
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

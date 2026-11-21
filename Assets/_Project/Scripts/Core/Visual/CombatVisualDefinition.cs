@@ -18,6 +18,9 @@ namespace Purge.Core.Visual
         [Tooltip("Flying bullet (tracer), oriented along +Z, pivot at its head. With Tracer Length > 0 it is modelled " +
                  "1 unit long behind the pivot (-Z) and stretched to the visible length; otherwise it is not scaled.")]
         [SerializeField] private AssetReferenceGameObject _bullet;
+        [SerializeField] private AssetReferenceGameObject _rocket;
+        [SerializeField] private AssetReferenceGameObject _fireball;
+        [SerializeField] private AssetReferenceGameObject _frostStream;
 
         [Tooltip("Longest visible tracer, cells. 0 = the bullet prefab is shown as is.")]
         [SerializeField, Min(0f)] private float _tracerLength = 1.2f;
@@ -210,6 +213,9 @@ namespace Purge.Core.Visual
         public Material HitRing { get => _hitRing; internal set => _hitRing = value; }
 
         public AssetReferenceGameObject Bullet { get => _bullet; internal set => _bullet = value; }
+        public AssetReferenceGameObject Rocket => _rocket;
+        public AssetReferenceGameObject Fireball => _fireball;
+        public AssetReferenceGameObject FrostStream => _frostStream;
         public float TracerLength { get => _tracerLength; internal set => _tracerLength = value; }
         public AssetReferenceGameObject MuzzleFlash { get => _muzzleFlash; internal set => _muzzleFlash = value; }
         public AssetReferenceGameObject ShellCasing { get => _shellCasing; internal set => _shellCasing = value; }

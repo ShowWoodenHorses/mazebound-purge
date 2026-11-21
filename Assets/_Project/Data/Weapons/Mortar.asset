@@ -92,7 +92,7 @@ MonoBehaviour:
   _rarity: 4
   _noUpgrades: 1
   _startPool: 0
-  _hold: 4
+  _hold: 3
   _sound: 
   _soundPitch: 1
   _soundVolume: 1
@@ -108,13 +108,15 @@ MonoBehaviour:
       type: {class: ExplosiveAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.9
-        _automatic: 0
+        _automatic: 1
         _speed: 14
         _range: 10
-        _directDamage: 174
+        _directDamage: 0
         _explosionDamage: 522
         _radius: 2
         _edgeDamage: 0.3
+        _minimumRange: 2
+        _flightTime: 1
         _explosionLook:
           m_AssetGUID: 
           m_SubObjectName: 
@@ -125,7 +127,8 @@ MonoBehaviour:
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _ammo: {fileID: 11400000, guid: f8e702f46f833fe48883f8c075ad39be, type: 2}
-        _magazine: 4
+        _magazine: 1
+        _fixedMagazine: 1
         _reloadTime: 2.5
         _perAttack: 1
         _infiniteReserve: 0
@@ -134,7 +137,7 @@ MonoBehaviour:
       type: {class: MobilityModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _inHands: 0.8
-        _whileFiring: 1
+        _whileFiring: 0
     - rid: 1763807262009983192
       type: {class: FeelModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

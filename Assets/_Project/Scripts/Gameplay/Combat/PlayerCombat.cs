@@ -98,6 +98,8 @@ namespace Purge.Gameplay.Combat
         private readonly Vector2[] _chainPoints = new Vector2[MaxChainPoints];
         private readonly CombatTarget[] _chainTargets = new CombatTarget[MaxChainPoints];
         private readonly DeterministicRandom _random = new DeterministicRandom(0x5eed);
+        private WeaponRuntime _chargingWeapon;
+        private float _chargeElapsed;
         private float _firingLeft;
         private float _stanceLeft;
         private bool _stickWasFiring;
@@ -146,6 +148,7 @@ namespace Purge.Gameplay.Combat
         public ReadOnlySpan<Vector2> ChainPoints => new ReadOnlySpan<Vector2>(_chainPoints, 0, ChainCount);
 
         public int ChainCount { get; private set; }
+        public Vector2 BeamEnd { get; private set; }
 
         /// <summary>The player attacked within <see cref="FiringLinger"/> (or holds an automatic attack).</summary>
         public bool IsFiring => _firingLeft > 0f;
@@ -160,6 +163,11 @@ namespace Purge.Gameplay.Combat
         {
             _firingLeft = Mathf.Max(0f, _firingLeft - deltaTime);
             _stanceLeft = Mathf.Max(0f, _stanceLeft - deltaTime);
+            if (_player.Down || _player.InVehicle)
+            {
+                _chargingWeapon = null;
+                _chargeElapsed = 0f;
+            }
             if (_player.Down) return; // dead: neither aims nor attacks until revived
             if (_player.InVehicle)
             {
@@ -181,6 +189,7 @@ namespace Purge.Gameplay.Combat
                 TryReload();
 
             var definition = weapon.Definition;
+            var chargeTime = (definition.Attack as BeamAttack)?.ChargeTime ?? 0f;
             var stickAiming = StickAiming();
             var stickFiring = stickAiming && _input.AimStick.sqrMagnitude >= StickFireFrom * StickFireFrom;
             var stickPressed = stickFiring && !_stickWasFiring;
@@ -188,6 +197,12 @@ namespace Purge.Gameplay.Combat
             // A slight deflection only turns the body; the stance keeps it there after the stick is let go.
             if (stickAiming) _stanceLeft = Mathf.Max(_stanceLeft, StanceTime);
             var wantsToAttack = stickFiring || WantsToAttack(weapon);
+            var canAttack = wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned;
+            if (!canAttack || _chargingWeapon != weapon)
+                _chargeElapsed = 0f;
+            _chargingWeapon = canAttack && chargeTime > 0f && HasRounds(weapon) ? weapon : null;
+            if (_chargingWeapon != null)
+                _chargeElapsed += deltaTime;
             if (wantsToAttack || _stanceLeft > 0f || pointerAim)
             {
                 // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
@@ -195,9 +210,16 @@ namespace Purge.Gameplay.Combat
                 var direction = stickAiming
                     ? StickAim(definition, _input.AimStick.normalized)
                     : wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
-                if (wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned)
+                if (canAttack)
                 {
-                    if (HasRounds(weapon)) Attack(weapon, direction);
+                    if (HasRounds(weapon))
+                    {
+                        if (_chargeElapsed >= chargeTime)
+                        {
+                            if (Attack(weapon, direction, useInput: true)) direction = AimDirection;
+                            _chargeElapsed = 0f;
+                        }
+                    }
                     else if (!TryReload() && (stickPressed || _input.WasPressed(PlayerAction.Attack))) DryFired?.Invoke(weapon);
                 }
 
@@ -216,8 +238,7 @@ namespace Purge.Gameplay.Combat
             if (weapon == null || !_player.IsSpawned || weapon.Cooldown > 0f || weapon.IsReloading || !HasRounds(weapon))
                 return false;
 
-            Attack(weapon, direction.normalized);
-            return true;
+            return Attack(weapon, direction.normalized);
         }
 
         /// <summary>
@@ -239,7 +260,7 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>Rounds of the weapon's full magazine, with the run's cards.</summary>
         public int MagazineOf(WeaponDefinition definition) =>
-            Mathf.CeilToInt((_stats != null ? _stats.MagazineOf(definition) : definition != null ? definition.MagazineSize : 0) * (Has(definition,WeaponUpgrade.Magazine)?1.5f:1f));
+            WeaponRuntime.MagazineCapacity(definition, _upgrades, _stats?.MagazineOf(definition));
 
         /// <summary>Rounds in the reserve for this weapon (int.MaxValue — infinite).</summary>
         public int ReserveOf(WeaponDefinition definition)
@@ -295,13 +316,18 @@ namespace Purge.Gameplay.Combat
         private bool TryPointerAim(out Vector2 direction)
         {
             direction = default;
-            if (_pointer == null || !_input.LookIsPointer || !_player.IsSpawned ||
-                !_pointer.TryGetGroundPoint(_input.Look, out var point))
-                return false;
+            if (!TryPointerGround(out var point)) return false;
             var offset = point - _player.Position;
             if (offset.sqrMagnitude <= 0.01f) return false;
             direction = offset.normalized;
             return true;
+        }
+
+        private bool TryPointerGround(out Vector2 point)
+        {
+            point = default;
+            return _pointer != null && _input.LookIsPointer && _player.IsSpawned &&
+                _pointer.TryGetGroundPoint(_input.Look, out point);
         }
 
         /// <summary>The gamepad's right stick past the dead zone; zero otherwise (and for a mouse).</summary>
@@ -379,9 +405,29 @@ namespace Purge.Gameplay.Combat
             ReloadChanged?.Invoke(weapon);
         }
 
-        private void Attack(WeaponRuntime weapon, Vector2 direction)
+        private bool Attack(WeaponRuntime weapon, Vector2 direction, bool useInput = false)
         {
             var definition = weapon.Definition;
+            var origin = _player.Position;
+            var floor = _player.Floor;
+            var lob = definition.Attack is ExplosiveAttack { FlightTime: > 0f };
+            var landing = origin;
+            if (lob)
+            {
+                var mortar = (ExplosiveAttack)definition.Attack;
+                var useStick = useInput && StickAiming();
+                if (useInput && TryPointerGround(out var point))
+                {
+                    var offset = point - origin;
+                    var aim = offset.sqrMagnitude > 0.0001f ? offset.normalized : direction;
+                    landing = origin + aim * Mathf.Max(offset.magnitude, mortar.MinimumRange);
+                }
+                else if (!TryFindLanding(mortar, origin, useStick ? _input.AimStick.normalized : direction,
+                        floor, !useStick, out landing))
+                    return false;
+                direction = (landing - origin).normalized;
+            }
+
             weapon.Shots++;
             if(Has(definition,WeaponUpgrade.Ramp))
             {
@@ -395,8 +441,6 @@ namespace Purge.Gameplay.Combat
             AimDirection = direction;
             _player.AimAt(direction);
 
-            var origin = _player.Position;
-            var floor = _player.Floor;
             switch (definition.Attack)
             {
                 case BulletAttack bullets:
@@ -404,11 +448,16 @@ namespace Purge.Gameplay.Combat
                     if(Has(definition,WeaponUpgrade.DoubleShot) && _random.NextDouble()<definition.UpgradeParameter("double_shot_chance")) FireBullets(definition,bullets,origin,direction,floor);
                     break;
                 case ExplosiveAttack explosive:
-                    _bullets.Spawn(origin, direction, explosive.Speed, explosive.DirectDamage, floor, explosive.Range,
-                        explosive: explosive, weapon: definition);
+                    var range = lob ? Vector2.Distance(origin, landing) : explosive.Range;
+                    var speed = lob ? range / explosive.FlightTime : explosive.Speed;
+                    _bullets.Spawn(origin, direction, speed, explosive.DirectDamage, floor, range, explosive: explosive,
+                        weapon: definition);
                     break;
                 case StreamAttack stream:
                     Stream(definition, stream, origin, direction, floor);
+                    break;
+                case BeamAttack beam:
+                    FireBeam(definition, beam, origin, direction, floor);
                     break;
                 case ChainAttack chain:
                     Chain(definition, chain, origin, direction, floor);
@@ -426,6 +475,52 @@ namespace Purge.Gameplay.Combat
             }
 
             Attacked?.Invoke(weapon, direction);
+            return true;
+        }
+
+        private bool TryFindLanding(ExplosiveAttack attack, Vector2 origin, Vector2 direction, int floor,
+            bool autoTarget, out Vector2 landing)
+        {
+            landing = origin;
+            if (autoTarget)
+            {
+                _targets.Collect(origin, attack.Range, floor, _found);
+                var bestCount = 0;
+                var bestDistance = float.PositiveInfinity;
+                var radiusSquared = attack.Radius * attack.Radius;
+                foreach (var target in _found)
+                {
+                    if (target.Agent < 0) continue;
+                    var candidate = _targets.PositionOf(target);
+                    var distance = Vector2.Distance(origin, candidate);
+                    if (distance < attack.MinimumRange || distance > attack.Range) continue;
+                    var count = 0;
+                    foreach (var other in _found)
+                    {
+                        if (other.Agent < 0) continue;
+                        var position = _targets.PositionOf(other);
+                        if ((position - candidate).sqrMagnitude <= radiusSquared &&
+                            _targets.IsClear(candidate, position, floor))
+                            count++;
+                    }
+                    if (count < bestCount || count == bestCount && distance >= bestDistance) continue;
+                    bestCount = count;
+                    bestDistance = distance;
+                    landing = candidate;
+                }
+                _found.Clear();
+                if (bestCount > 0) return true;
+            }
+
+            if (direction.sqrMagnitude < 0.001f) return false;
+            for (var range = attack.Range; range >= attack.MinimumRange; range -= 0.5f)
+            {
+                var candidate = origin + direction * range;
+                if (!_targets.IsClear(candidate, candidate, floor)) continue;
+                landing = candidate;
+                return true;
+            }
+            return false;
         }
 
         private void FireBullets(WeaponDefinition definition, BulletAttack attack, Vector2 origin, Vector2 direction, int floor)
@@ -461,15 +556,48 @@ namespace Purge.Gameplay.Combat
 
             var ignite = weapon.Ignite;
             if (ignite != null && ignite.Zone != null && _zones != null)
-                Ignite(ignite, stream, origin, direction, floor);
+                PlaceStreamZones(weapon, ignite, stream, origin, direction, floor);
         }
 
-        /// <summary>Flammable cells in the stream's cone and reach, not behind what stops bullets, catch fire.</summary>
-        private void Ignite(IgniteCellsModule ignite, StreamAttack stream, Vector2 origin, Vector2 direction, int floor)
+        private void FireBeam(WeaponDefinition weapon, BeamAttack beam, Vector2 origin, Vector2 direction, int floor)
+        {
+            BeamEnd = _targets.Spatial.QueryBlocker(origin, origin + direction * beam.Range, floor).Point;
+            if (!beam.Piercing)
+            {
+                var hit = _targets.Segment(origin, BeamEnd, floor, CombatTarget.None);
+                if (hit.Kind == CombatHitKind.Target)
+                {
+                    BeamEnd = hit.Point;
+                    _targets.Damage(hit.Target, beam.Damage, direction, weapon, PlayerDamage.Precise);
+                }
+                return;
+            }
+
+            var distance = Vector2.Distance(origin, BeamEnd);
+            if (distance <= 0f) return;
+            _targets.Collect((origin + BeamEnd) * 0.5f, distance * 0.5f, floor, _found);
+            foreach (var target in _found)
+            {
+                var position = _targets.PositionOf(target);
+                var along = Vector2.Dot(position - origin, direction);
+                if (along < 0f || along > distance) continue;
+                var offset = position - origin - direction * along;
+                var radius = _targets.RadiusOf(target);
+                if (offset.sqrMagnitude <= radius * radius && _targets.IsClear(origin, position, floor))
+                    _targets.Damage(target, beam.Damage, direction, weapon, PlayerDamage.Precise);
+            }
+            _found.Clear();
+        }
+
+        private void PlaceStreamZones(WeaponDefinition weapon, IgniteCellsModule ignite, StreamAttack stream,
+            Vector2 origin, Vector2 direction, int floor)
         {
             var grid = _zones.Grid;
             var cos = Mathf.Cos(stream.Angle * 0.5f * Mathf.Deg2Rad);
             var range = stream.Range;
+            var source = ignite.MaxCells > 0 ? weapon.Id : null;
+            var remainingCells = source == null ? 0 : _zones.RemainingWeaponCells(source, ignite.MaxCells);
+            var duration = ignite.Duration * (1f + 0.5f * (_upgrades?.Count(weapon, WeaponUpgrade.Duration) ?? 0));
             var reach = Mathf.CeilToInt(range);
             var cx = Mathf.FloorToInt(origin.x + 0.5f);
             var cy = Mathf.FloorToInt(origin.y + 0.5f);
@@ -477,13 +605,14 @@ namespace Purge.Gameplay.Combat
             for (var x = cx - reach; x <= cx + reach; x++)
             {
                 var cell = new GridPosition(x, y, floor);
-                if (!grid.Has(cell, CellFlags.Flammable)) continue;
+                if (!grid.IsInside(cell) || !ignite.AllowNonFlammable && !grid.Has(cell, CellFlags.Flammable)) continue;
                 var offset = new Vector2(x, y) - origin;
                 var distance = offset.magnitude;
                 // The player's own cell burns when they stand in a bush; the rest must be in the cone.
-                if (distance > range || distance > 0.5f && Vector2.Dot(offset / distance, direction) < cos) continue;
+                if (distance < ignite.MinimumDistance || distance > range ||
+                    distance > 0.5f && Vector2.Dot(offset / distance, direction) < cos) continue;
                 if (distance > 0.5f && !_targets.IsClear(origin, new Vector2(x, y), floor)) continue;
-                _zones.Place(cell, ignite.Zone, ignite.Duration * (1f+0.5f*(_upgrades?.Count(_weapons.Active.Definition,WeaponUpgrade.Duration)??0)), ignite.Strength);
+                _zones.PlaceFromWeapon(cell, ignite.Zone, duration, ignite.Strength, source, ref remainingCells);
             }
         }
 

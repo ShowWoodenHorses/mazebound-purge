@@ -101,9 +101,14 @@ MonoBehaviour:
   - rid: 1763807262009983045
   - rid: 1763807262009983046
   - rid: 1763807262009983173
+  - rid: 1763807300000000017
   references:
     version: 2
     RefIds:
+    - rid: 1763807300000000017
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _rocketProjectile: 1
     - rid: 1763807262009983044
       type: {class: ExplosiveAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
@@ -125,7 +130,8 @@ MonoBehaviour:
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _ammo: {fileID: 11400000, guid: f8e702f46f833fe48883f8c075ad39be, type: 2}
-        _magazine: 4
+        _magazine: 1
+        _fixedMagazine: 1
         _reloadTime: 2.5
         _perAttack: 1
         _infiniteReserve: 0

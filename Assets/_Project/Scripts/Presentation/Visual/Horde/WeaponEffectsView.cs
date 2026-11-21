@@ -54,6 +54,7 @@ namespace Purge.Presentation.Visual.Horde
         private readonly CombatTargets _targets;
         private readonly VisibilitySystem _visibility;
         private readonly LevelViewRoot _root;
+        private readonly PlayerWeaponPresenter _weaponView;
         private readonly List<GameObject> _objects = new List<GameObject>();
         private readonly Vector2[] _bolt = new Vector2[PlayerCombat.MaxChainPoints];
         private readonly EffectSystem _effects;
@@ -77,11 +78,41 @@ namespace Purge.Presentation.Visual.Horde
         private bool _bound;
         private int _boltCount;
         private float _boltLeft;
+        private Mesh _groundQuad;
+        private Mesh _lightningMesh;
+        private MaterialPropertyBlock _landingLook;
+        private MaterialPropertyBlock _shadowLook;
+        private MaterialPropertyBlock _energyLook;
+        private Material _energyCore;
+        private Vector3 _railOrigin;
+        private Vector2 _railEnd;
+        private int _railFloor;
+        private float _railLeft;
+        private bool _railPending;
+        private bool _chargedBeam;
+        private bool _chainMuzzlePending;
+        private float _boltHeight = GunHeight;
+        private int _boltFloor;
+        private Vector3 _plasmaEnd;
+        private int _plasmaFloor;
+        private float _plasmaImpactLeft;
+        private float _flashLeft;
+        private float _shockLeft;
+        private float _shockRange;
+        private float _shockAngle;
+        private Vector2 _energyAim;
+        private Color _flashColor;
+        private static readonly Color LaserColor = new Color(0.25f, 1.05f, 1.65f, 0.9f);
+        private static readonly Color RailColor = new Color(0.46f, 0.72f, 1.85f, 0.9f);
+        private static readonly Color PlasmaColor = new Color(0.42f, 0.73f, 1.65f, 0.95f);
+        private static readonly Color ShockColor = new Color(0.75f, 0.48f, 1.4f, 0.95f);
+        private static readonly Color FrostColor = new Color(0.6f, 0.95f, 1.5f, 0.85f);
 
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
             StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
-            PackEffectsPlayer packEffects = null, PackEmitters emitters = null, UpgradeCombat upgrades = null)
+            PackEffectsPlayer packEffects = null, PackEmitters emitters = null, UpgradeCombat upgrades = null,
+            PlayerWeaponPresenter weaponView = null)
         {
             _emitters = emitters; _upgrades=upgrades;
             _visual = visual;
@@ -96,6 +127,7 @@ namespace Purge.Presentation.Visual.Horde
             _targets = targets;
             _visibility = visibility;
             _root = root;
+            _weaponView = weaponView;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -117,6 +149,27 @@ namespace Purge.Presentation.Visual.Horde
             _bounds = new Bounds(new Vector3(width * 0.5f, 1f, height * 0.5f), new Vector3(width + 4f, 4f, height + 4f));
 
             _boltMaterial = boltMaterial;
+            _groundQuad = new Mesh { name = "Weapon Markers", hideFlags = HideFlags.DontSave };
+            _groundQuad.vertices = new[]
+            {
+                new Vector3(-0.5f, 0f, -0.5f), new Vector3(-0.5f, 0f, 0.5f),
+                new Vector3(0.5f, 0f, 0.5f), new Vector3(0.5f, 0f, -0.5f),
+            };
+            _groundQuad.uv = new[] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+            _groundQuad.triangles = new[] { 0, 1, 2, 0, 2, 3 };
+            _groundQuad.RecalculateBounds();
+            _landingLook = new MaterialPropertyBlock();
+            _landingLook.SetColor("_Color", new Color(1f, 0.62f, 0.25f, 0.9f));
+            _landingLook.SetFloat("_Thickness", 0.085f);
+            _shadowLook = new MaterialPropertyBlock();
+            _shadowLook.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
+            _shadowLook.SetFloat("_Thickness", 0.45f);
+            _energyLook = new MaterialPropertyBlock();
+            if (_visual?.BoltMaterial != null)
+            {
+                _energyCore = new Material(_visual.BoltMaterial) { hideFlags = HideFlags.DontSave };
+                _energyCore.SetTexture("_MainTex", Texture2D.whiteTexture);
+            }
             if (_boltMaterial != null)
             {
                 _boltVertices = new Vector3[MaxBoltQuads * 4];
@@ -147,6 +200,10 @@ namespace Purge.Presentation.Visual.Horde
                 _boltMesh.uv = uvs;
                 _boltMesh.SetIndices(_boltIndices, MeshTopology.Triangles, 0, false);
                 _boltMesh.bounds = _bounds;
+                _lightningMesh = new Mesh { name = "Beam Lightning", hideFlags = HideFlags.DontSave };
+                _lightningMesh.MarkDynamic();
+                _lightningMesh.vertices = _boltVertices;
+                _lightningMesh.bounds = _bounds;
             }
 
             if (particles != null)
@@ -159,6 +216,7 @@ namespace Purge.Presentation.Visual.Horde
             _hitSparks = _emitters?.Get(_visual?.HitSparks);
             _combat.Attacked += OnAttacked;
             _bullets.Exploded += OnExploded;
+            _bullets.Ended += OnBulletEnded;
             if(_upgrades!=null)_upgrades.Ricochet+=OnRicochet;
             if (_effects != null)
             {
@@ -183,6 +241,10 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             if (_boltLeft > 0f) _boltLeft -= deltaTime;
+            if (_railLeft > 0f) _railLeft -= deltaTime;
+            if (_flashLeft > 0f) _flashLeft -= deltaTime;
+            if (_shockLeft > 0f) _shockLeft -= deltaTime;
+            if (_plasmaImpactLeft > 0f) _plasmaImpactLeft -= deltaTime;
             _statusTimer -= deltaTime;
             if (_statusTimer <= 0f)
             {
@@ -261,7 +323,15 @@ namespace Purge.Presentation.Visual.Horde
 
         public void LateTick(float deltaTime)
         {
-            if (_boltMesh == null || _boltLeft <= 0f || _boltCount < 2) return;
+            DrawWeaponMarkers();
+            if (_boltMesh == null || _boltLeft <= 0f || _boltCount < 2 || _boltFloor != _player.Floor) return;
+
+            if (_energyCore != null)
+            {
+                for (var i = 1; i < _boltCount; i++)
+                    DrawEnergyLine(AtHeight(_bolt[i - 1], _boltHeight), AtHeight(_bolt[i], _boltHeight), 0.035f, RailColor, false);
+                DrawEnergyImpact(AtHeight(_bolt[_boltCount - 1], _boltHeight), RailColor);
+            }
 
             var quads = 0;
             for (var p = 1; p < _boltCount && _texturedBolt && quads < MaxBoltQuads; p++)
@@ -298,12 +368,158 @@ namespace Purge.Presentation.Visual.Horde
             }, _boltMesh, 0, Matrix4x4.identity);
         }
 
+        private void DrawWeaponMarkers()
+        {
+            if (_groundQuad == null || _visual == null) return;
+            var muzzle = MuzzlePosition();
+            if (_railPending)
+            {
+                _railOrigin = muzzle;
+                _railPending = false;
+            }
+            if (_railLeft > 0f && _player.Floor == _railFloor)
+            {
+                var end = AtHeight(_railEnd, _railOrigin.y);
+                var color = _chargedBeam ? RailColor : LaserColor;
+                DrawLightning(_railOrigin, end, _chargedBeam, color);
+                DrawEnergyImpact(end, color);
+            }
+            if (_chainMuzzlePending && _boltCount > 0)
+            {
+                _bolt[0] = new Vector2(muzzle.x, muzzle.z);
+                _boltHeight = muzzle.y;
+                _chainMuzzlePending = false;
+            }
+            if (_flashLeft > 0f) DrawEnergyFlash(muzzle);
+            if (_shockLeft > 0f) DrawShockCone(muzzle);
+            if (_plasmaImpactLeft > 0f && _plasmaFloor == _player.Floor && Visible(new Vector2(_plasmaEnd.x, _plasmaEnd.z), _plasmaFloor))
+                DrawEnergyImpact(_plasmaEnd, PlasmaColor);
+            if (_visual.StatusRing == null) return;
+            foreach (var bullet in _bullets.Active)
+            {
+                if (!bullet.IsLobbed || bullet.Floor != _player.Floor) continue;
+                var height = bullet.Floor * GridPosition.FloorHeight + 0.04f;
+                if (Visible(bullet.LandingPoint, bullet.Floor))
+                    DrawMarker(_visual.StatusRing, bullet.LandingPoint, height, bullet.Explosive.Radius * 2f, _landingLook);
+                if (Visible(bullet.Position, bullet.Floor))
+                    DrawMarker(_visual.StatusRing, bullet.Position, height, 0.45f, _shadowLook);
+            }
+        }
+
+        private Vector3 MuzzlePosition()
+        {
+            var model = _weaponView?.ShownModel;
+            if (model?.Muzzle != null && _root != null)
+                return _root.transform.InverseTransformPoint(model.MuzzlePosition);
+            return AtHeight(_player.Position + _combat.AimDirection * 0.5f,
+                _player.Floor * GridPosition.FloorHeight + GunHeight);
+        }
+
+        private static Vector3 AtHeight(Vector2 point, float height) => new Vector3(point.x, height, point.y);
+
+        private void DrawEnergyLine(Vector3 from, Vector3 to, float width, Color color, bool jagged)
+        {
+            var material = jagged ? _visual.ChainBolt : _energyCore;
+            var delta = to - from;
+            var length = delta.magnitude;
+            if (material == null || length < 0.01f) return;
+            _energyLook.SetColor("_Color", color);
+            Graphics.RenderMesh(new RenderParams(material) { matProps = _energyLook, shadowCastingMode = ShadowCastingMode.Off },
+                _groundQuad, 0, Matrix4x4.TRS((from + to) * 0.5f, Quaternion.LookRotation(delta), new Vector3(width, 1f, length)));
+        }
+
+        private void DrawEnergyImpact(Vector3 point, Color color)
+        {
+            DrawEnergyLine(point - Vector3.right * 0.09f, point + Vector3.right * 0.09f, 0.055f, color, false);
+            DrawEnergyLine(point - Vector3.forward * 0.09f, point + Vector3.forward * 0.09f, 0.055f, color, false);
+        }
+
+        private void DrawLightning(Vector3 origin, Vector3 end, bool charged, Color color)
+        {
+            if (_lightningMesh == null || _energyCore == null) return;
+            var offset = end - origin;
+            if (offset.sqrMagnitude < 0.0001f) return;
+            var side = Vector3.Cross(Vector3.up, offset).normalized;
+            var strands = charged ? 5 : 2;
+            var segments = Mathf.Clamp(Mathf.CeilToInt(offset.magnitude * 2f), 3, 22);
+            var flicker = 1f - Mathf.Clamp01(_railLeft / BoltTime);
+            var quads = 0;
+            for (var strand = 0; strand < strands; strand++)
+            {
+                var previous = origin;
+                for (var segment = 1; segment <= segments; segment++)
+                {
+                    var fraction = (float)segment / segments;
+                    var displacement = Mathf.Sin(fraction * Mathf.PI) *
+                        (Mathf.Sin(segment * 2.2f + strand * 1.8f + flicker * 7f) * (charged ? 0.23f : 0.055f)
+                        + (strand - (strands - 1) * 0.5f) * (charged ? 0.12f : 0.025f));
+                    var point = Vector3.Lerp(origin, end, fraction) + side * displacement;
+                    var halfWidth = side * (charged ? 0.0135f : 0.016f);
+                    var vertex = 4 * quads++;
+                    _boltVertices[vertex] = previous - halfWidth;
+                    _boltVertices[vertex + 1] = point - halfWidth;
+                    _boltVertices[vertex + 2] = point + halfWidth;
+                    _boltVertices[vertex + 3] = previous + halfWidth;
+                    previous = point;
+                }
+            }
+            _lightningMesh.SetVertices(_boltVertices, 0, _boltVertices.Length, MeshUpdateFlags.DontRecalculateBounds);
+            _lightningMesh.SetIndices(_boltIndices, 0, quads * 6, MeshTopology.Triangles, 0, false);
+            _energyLook.SetColor("_Color", color);
+            Graphics.RenderMesh(new RenderParams(_energyCore)
+            {
+                matProps = _energyLook,
+                shadowCastingMode = ShadowCastingMode.Off,
+                worldBounds = _bounds,
+            }, _lightningMesh, 0, Matrix4x4.identity);
+        }
+
+
+        private void DrawEnergyFlash(Vector3 muzzle)
+        {
+            var forward = AtHeight(_energyAim, 0f);
+            var spread = 1f - Mathf.Clamp01(_flashLeft / 0.12f);
+            var color = _flashColor;
+            color.a *= 1f - spread;
+            for (var i = 0; i < 5; i++)
+            {
+                var ray = Quaternion.Euler(0f, (i - 2) * 21f, 0f) * forward;
+                var reach = (0.38f + 0.34f * spread) * (i % 2 == 0 ? 0.75f : 1f);
+                DrawEnergyLine(muzzle, muzzle + ray * reach, 0.2f, color, true);
+            }
+        }
+
+        private void DrawShockCone(Vector3 muzzle)
+        {
+            var origin = _player.Position;
+            for (var i = 0; i < 5; i++)
+            {
+                var angle = _shockAngle * (i * 0.25f - 0.5f);
+                var ray = Quaternion.Euler(0f, angle, 0f) * AtHeight(_energyAim, 0f);
+                var end = _targets.Spatial.QueryBlocker(origin,
+                    origin + new Vector2(ray.x, ray.z) * _shockRange, _player.Floor).Point;
+                var hit = AtHeight(end, muzzle.y);
+                DrawEnergyLine(muzzle, hit, 0.035f, ShockColor, false);
+                var flicker = 0.05f * Mathf.Sin(i + _shockLeft * 34f);
+                DrawEnergyLine(muzzle, hit, (i == 2 ? 0.54f : 0.35f) + flicker, ShockColor, true);
+                DrawEnergyImpact(hit, ShockColor);
+            }
+        }
+
+        private void DrawMarker(Material material, Vector2 point, float height, float size, MaterialPropertyBlock appearance)
+        {
+            Graphics.RenderMesh(new RenderParams(material) { matProps = appearance, shadowCastingMode = ShadowCastingMode.Off },
+                _groundQuad, 0, Matrix4x4.TRS(new Vector3(point.x, height, point.y), Quaternion.identity,
+                    new Vector3(size, 1f, size)));
+        }
+
         public void Dispose()
         {
             if (_bound)
             {
                 _combat.Attacked -= OnAttacked;
                 _bullets.Exploded -= OnExploded;
+                _bullets.Ended -= OnBulletEnded;
                 if(_upgrades!=null)_upgrades.Ricochet-=OnRicochet;
                 if (_effects != null)
                 {
@@ -315,6 +531,9 @@ namespace Purge.Presentation.Visual.Horde
             }
 
             UnityObjects.Destroy(_boltMesh);
+            UnityObjects.Destroy(_groundQuad);
+            UnityObjects.Destroy(_lightningMesh);
+            UnityObjects.Destroy(_energyCore);
             foreach (var go in _objects)
                 UnityObjects.Destroy(go);
             _objects.Clear();
@@ -322,18 +541,48 @@ namespace Purge.Presentation.Visual.Horde
 
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
+            var effects = weapon.Definition.Effects;
+            _energyAim = direction;
+            if (effects?.ElectricProjectile == true)
+            {
+                _flashColor = PlasmaColor;
+                _flashLeft = 0.12f;
+            }
             switch (weapon.Definition.Attack)
             {
+                case StreamAttack _ when effects?.FrostStream == true:
+                    _flashColor = FrostColor;
+                    _flashLeft = 0.12f;
+                    break;
+                case StreamAttack shock when effects?.ElectricCone == true:
+                    _flashColor = ShockColor;
+                    _flashLeft = 0.12f;
+                    _shockRange = shock.Range;
+                    _shockAngle = shock.Angle;
+                    _shockLeft = 0.18f;
+                    break;
                 // The pack's stream is held by CombatViewPresenter; the draft flame only without it.
-                case StreamAttack stream when _flame != null && !HasPackStream(weapon.Definition):
+                case StreamAttack stream when !stream.SuppressFallbackFlame && _flame != null && !HasPackStream(weapon.Definition):
                     EmitFlame(stream, direction);
+                    break;
+                case BeamAttack beam:
+                    _railEnd = _combat.BeamEnd;
+                    _railFloor = _player.Floor;
+                    _railLeft = BoltTime;
+                    _railPending = true;
+                    _chargedBeam = beam.ChargeTime > 0f;
+                    _flashColor = _chargedBeam ? RailColor : LaserColor;
+                    _flashLeft = 0.12f;
                     break;
                 case ChainAttack _:
                     var points = _combat.ChainPoints;
                     _boltCount = points.Length;
                     for (var i = 0; i < _boltCount; i++) _bolt[i] = points[i];
-                    if (_boltCount > 0) _bolt[0] += direction * 0.5f; // from the gun, not the chest
+                    _chainMuzzlePending = true;
+                    _boltFloor = _player.Floor;
                     _boltLeft = BoltTime;
+                    _flashColor = RailColor;
+                    _flashLeft = 0.12f;
                     PlayChainHits(weapon.Definition, points);
                     break;
             }
@@ -341,8 +590,19 @@ namespace Purge.Presentation.Visual.Horde
 
         private void OnRicochet(Vector2 from,Vector2 to,WeaponDefinition weapon)
         {
+            _chainMuzzlePending = false;
+            _boltFloor = _player.Floor;
+            _boltHeight = GunHeight + _boltFloor * GridPosition.FloorHeight;
             _boltCount=2;_bolt[0]=from;_bolt[1]=to;_boltLeft=BoltTime;
             PlayChainHits(weapon,new ReadOnlySpan<Vector2>(_bolt,0,2));
+        }
+
+        private void OnBulletEnded(Bullet bullet, Vector2 point, BulletEnd reason)
+        {
+            if (reason == BulletEnd.Cleared || bullet.Weapon?.Effects?.ElectricProjectile != true) return;
+            _plasmaFloor = bullet.Floor;
+            _plasmaEnd = AtHeight(point, GunHeight + bullet.Floor * GridPosition.FloorHeight);
+            _plasmaImpactLeft = 0.16f;
         }
         private void EmitFlame(StreamAttack stream, Vector2 aim)
         {
@@ -419,7 +679,8 @@ namespace Purge.Presentation.Visual.Horde
             var look = _visual?.ChainHitOf(weapon);
             if (look == null || _packEffects == null) return;
             for (var i = 1; i < points.Length; i++)
-                _packEffects.Play(look, new Vector3(points[i].x, GunHeight, points[i].y), Quaternion.identity);
+                _packEffects.Play(look, AtHeight(points[i], GunHeight + _boltFloor * GridPosition.FloorHeight),
+                    Quaternion.identity, floor: _boltFloor);
         }
 
         private void OnLookShown(Vector2 at, int floor, float radius, IExplosionLook source)
@@ -436,10 +697,10 @@ namespace Purge.Presentation.Visual.Horde
             var side = new Vector2(-direction.y, direction.x) * (_visual.ChainBoltWidth * 0.5f * mirror);
             var v = quad * 4;
             // The quads' UVs are (0,0) (0,1) (1,1) (1,0): U runs across here, V along.
-            _boltVertices[v] = new Vector3(from.x - side.x, GunHeight, from.y - side.y);
-            _boltVertices[v + 1] = new Vector3(to.x - side.x, GunHeight, to.y - side.y);
-            _boltVertices[v + 2] = new Vector3(to.x + side.x, GunHeight, to.y + side.y);
-            _boltVertices[v + 3] = new Vector3(from.x + side.x, GunHeight, from.y + side.y);
+            _boltVertices[v] = new Vector3(from.x - side.x, _boltHeight, from.y - side.y);
+            _boltVertices[v + 1] = new Vector3(to.x - side.x, _boltHeight, to.y - side.y);
+            _boltVertices[v + 2] = new Vector3(to.x + side.x, _boltHeight, to.y + side.y);
+            _boltVertices[v + 3] = new Vector3(from.x + side.x, _boltHeight, from.y + side.y);
         }
 
         private void AddQuad(int quad, Vector2 from, Vector2 to)
@@ -447,10 +708,10 @@ namespace Purge.Presentation.Visual.Horde
             var direction = (to - from).normalized;
             var side = new Vector2(-direction.y, direction.x) * (BoltWidth * 0.5f);
             var v = quad * 4;
-            _boltVertices[v] = new Vector3(from.x - side.x, GunHeight, from.y - side.y);
-            _boltVertices[v + 1] = new Vector3(from.x + side.x, GunHeight, from.y + side.y);
-            _boltVertices[v + 2] = new Vector3(to.x + side.x, GunHeight, to.y + side.y);
-            _boltVertices[v + 3] = new Vector3(to.x - side.x, GunHeight, to.y - side.y);
+            _boltVertices[v] = new Vector3(from.x - side.x, _boltHeight, from.y - side.y);
+            _boltVertices[v + 1] = new Vector3(from.x + side.x, _boltHeight, from.y + side.y);
+            _boltVertices[v + 2] = new Vector3(to.x + side.x, _boltHeight, to.y + side.y);
+            _boltVertices[v + 3] = new Vector3(to.x - side.x, _boltHeight, to.y - side.y);
         }
 
         private bool Visible(Vector2 point, int floor = 0) =>

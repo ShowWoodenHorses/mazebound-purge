@@ -181,7 +181,7 @@ namespace Purge.Core.Definitions
         /// <summary>Looks of the attack (<see cref="WeaponEffectsModule"/>), or null: defaults only.</summary>
         public WeaponEffectsModule Effects => Cache()._effects;
 
-        /// <summary>Flammable cells the stream sets alight (<see cref="IgniteCellsModule"/>), or null.</summary>
+        /// <summary>Zone placement by the stream (<see cref="IgniteCellsModule"/>), or null.</summary>
         public IgniteCellsModule Ignite => Cache()._ignite;
 
         public bool TryGet<T>(out T module) where T : WeaponModule => Purge.Core.Modules.Modules.TryGet(_modules, out module);

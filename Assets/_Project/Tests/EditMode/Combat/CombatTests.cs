@@ -331,6 +331,49 @@ namespace Purge.Tests.EditMode.Combat
         }
 
         [Test]
+        public void ChargedBeam_ReleaseRestartsCharge_PiercesTargetsOnlyBeforeTheDoor()
+        {
+            var beam = new BeamAttack { Damage = 20f, Range = 8f, ChargeTime = 0.6f, Piercing = true, Automatic = true };
+            var weapon = Equip(Weapon("rail", beam, Ammo(4)));
+            var first = AddTarget(3f, 2f);
+            var second = AddTarget(5f, 2f);
+            var behindDoor = AddTarget(8f, 2f);
+            _input.Look = Vector2.right;
+            _input.AttackHeld = true;
+            for (var i = 0; i < 20; i++) Frame();
+            _input.AttackHeld = false;
+            Frame();
+            _input.AttackHeld = true;
+            for (var i = 0; i < 20; i++) Frame();
+            Assert.That(first.Hits, Is.Zero);
+            Assert.That(weapon.Ammo, Is.EqualTo(4));
+
+            for (var i = 0; i < 20; i++) Frame();
+            Assert.That(first.Hits, Is.EqualTo(1));
+            Assert.That(second.Hits, Is.EqualTo(1));
+            Assert.That(behindDoor.Hits, Is.Zero);
+            Assert.That(weapon.Ammo, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void SingleBeam_FiresOnceOnHold_AndEndsAtTheFirstTarget()
+        {
+            var beam = new BeamAttack { Damage = 10f, Range = 8f, Interval = 0.1f };
+            var weapon = Equip(Weapon("laser", beam, Ammo(4)));
+            var near = AddTarget(3f, 2f);
+            var far = AddTarget(5f, 2f);
+            _input.Look = Vector2.right;
+            _input.AttackHeld = true;
+            _input.Press(PlayerAction.Attack);
+            for (var i = 0; i < 30; i++) Frame();
+
+            Assert.That(weapon.Ammo, Is.EqualTo(3));
+            Assert.That(near.Hits, Is.EqualTo(1));
+            Assert.That(far.Hits, Is.Zero);
+            Assert.That(_combat.BeamEnd.x, Is.InRange(2f, 3f));
+        }
+
+        [Test]
         public void Melee_RepeatsWhileHeld_AtItsAttackSpeed()
         {
             Equip(_knife);
@@ -469,6 +512,45 @@ namespace Purge.Tests.EditMode.Combat
                 gridPoint = Point;
                 return true;
             }
+        }
+
+        [TestCase(0.4f, 2f)]
+        [TestCase(5f, 5f)]
+        public void Mortar_LandsAtPointerOrMinimumRange_ThenReloads(float pointerDistance, float landingDistance)
+        {
+            var origin = _player.Position;
+            var pointer = new FixedPointer { Point = origin + Vector2.right * pointerDistance };
+            var upgrades = new Upgrades { Kind = WeaponUpgrade.Magazine };
+            _combat = new PlayerCombat(_input, _player, _weapons, _targets, _bullets, _sounds, _aim, _doors, _stock,
+                pointer, upgrades: upgrades);
+            var mortar = new ExplosiveAttack { MinimumRange = 2f, FlightTime = 1f, Range = 4f };
+            var ammo = Ammo(1);
+            ammo.FixedMagazine = true;
+            var definition = Weapon("mortar", mortar, ammo);
+            var runtime = Equip(definition);
+            Assert.That(_combat.MagazineOf(definition), Is.EqualTo(1));
+            _input.LookIsPointer = true;
+            _input.Press(PlayerAction.Attack);
+            Frame();
+
+            Assert.That(_bullets.Active, Has.Count.EqualTo(1));
+            Assert.That(_bullets.Active[0].LandingPoint.x, Is.EqualTo(origin.x + landingDistance).Within(0.001f));
+            Assert.That(_bullets.Active[0].LandingPoint.y, Is.EqualTo(origin.y).Within(0.001f));
+            Assert.That(runtime.Ammo, Is.Zero);
+            Assert.That(runtime.IsReloading, Is.True);
+        }
+
+        [Test]
+        public void Mortar_DirectAttackDoesNotReadTheMouse()
+        {
+            var origin = _player.Position;
+            var pointer = new FixedPointer { Point = origin + Vector2.left };
+            _combat = new PlayerCombat(_input, _player, _weapons, _targets, _bullets, _sounds, _aim, _doors, _stock, pointer);
+            Equip(Weapon("mortar", new ExplosiveAttack { MinimumRange = 2f, FlightTime = 1f, Range = 4f }, Ammo(1)));
+            _input.LookIsPointer = true;
+
+            Assert.That(_combat.TryAttack(Vector2.right), Is.True);
+            Assert.That(_bullets.Active[0].LandingPoint, Is.EqualTo(origin + Vector2.right * 4f));
         }
 
         [Test]

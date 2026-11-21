@@ -21,7 +21,10 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _particlesPerSecond: 5
+  _particlesPerSecond: 12
+  _cloudOnly: 1
+  _particleScale: 2
+  _particleTint: {r: 0.46, g: 1, b: 0.23, a: 0.72}
   _modules:
   - rid: 1763807284696973393
   references:

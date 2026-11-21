@@ -119,7 +119,8 @@ namespace Purge.Presentation.Visual
             if (_rig == null || !_rig.IsValid) return;
             var gun = _shownIsGun && _shown != null ? _shown.transform : null;
             if (gun != null) gun.localPosition = Vector3.zero; // The recoil moved it last frame.
-            _rig.PoseGun(gun, _shownGrip, deltaTime);
+            var aim = gun != null && _shownModel?.AlignWithAim == true ? _playerView.WeaponAim : Vector3.zero;
+            _rig.PoseGun(gun, _shownGrip, deltaTime, aim, _shownModel?.ShoulderMount == true);
         }
 
         /// <summary>A shot's spring recoil of the gun in hands and the chest (<see cref="CharacterWeaponRig.Kick"/>).</summary>
@@ -190,6 +191,7 @@ namespace Purge.Presentation.Visual
             instance.transform.localPosition = Vector3.zero;
             var model = instance.GetComponent<WeaponModel>();
             instance.transform.localRotation = model != null ? model.GripRotation : Quaternion.identity;
+            if (model != null) instance.transform.localScale *= model.HeldScale;
             _instances[definition] = instance;
             return instance;
         }

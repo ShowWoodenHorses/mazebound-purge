@@ -38,6 +38,12 @@ namespace Purge.Core.Effects
         public Color Edge => _edge;
         public AssetReferenceGameObject Particles { get => _particles; internal set => _particles = value; }
         public float ParticlesPerSecond { get => _particlesPerSecond; internal set => _particlesPerSecond = value; }
+        [SerializeField] private bool _cloudOnly;
+        [SerializeField, Min(0.1f)] private float _particleScale = 1f;
+        [SerializeField] private Color _particleTint = Color.white;
+        public bool CloudOnly => _cloudOnly;
+        public float ParticleScale => _particleScale > 0f ? _particleScale : 1f;
+        public Color ParticleTint => _particleTint;
         public IReadOnlyList<ZoneModule> Modules => _modules;
 
         public ZoneDamage Damage => Cache()._damage;

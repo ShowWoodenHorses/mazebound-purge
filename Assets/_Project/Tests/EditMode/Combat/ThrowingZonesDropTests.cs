@@ -312,6 +312,41 @@ namespace Purge.Tests.EditMode.Combat
         // ------------------------------------------------------------------ Zones
 
         [Test]
+        public void WeaponZones_RefreshAtLimit_AndReuseExpiredCapacity()
+        {
+            var first = new GridPosition(5, 3);
+            var second = new GridPosition(6, 3);
+            var remaining = _zones.RemainingWeaponCells("acid_cannon", 1);
+            _zones.PlaceFromWeapon(first, _fire, 1f, 1f, "acid_cannon", ref remaining);
+            _zones.PlaceFromWeapon(second, _fire, 1f, 1f, "acid_cannon", ref remaining);
+            Assert.That(_zones.ZoneAt(first), Is.SameAs(_fire));
+            Assert.That(_zones.ZoneAt(second), Is.Null);
+
+            Tick(0.75f);
+            _zones.PlaceFromWeapon(first, _fire, 1f, 1f, "acid_cannon", ref remaining);
+            Tick(0.75f);
+            Assert.That(_zones.ZoneAt(first), Is.SameAs(_fire));
+            Tick(0.5f);
+            Assert.That(_zones.ZoneAt(first), Is.Null);
+            Assert.That(_zones.RemainingWeaponCells("acid_cannon", 1), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void LobbedProjectile_PassesWallAndExplodesAtLandingAfterOneSecond()
+        {
+            var origin = new Vector2(10f, 3f);
+            var attack = new ExplosiveAttack { FlightTime = 1f, Radius = 2f };
+            var explosions = new List<Vector2>();
+            _bullets.Exploded += (at, floor, radius, look) => explosions.Add(at);
+            var bullet = _bullets.Spawn(origin, Vector2.right, 6f, 0f, range: 6f, explosive: attack);
+            _bullets.Tick(0.5f);
+            Assert.That(bullet.Position.x, Is.EqualTo(13f));
+            Assert.That(explosions, Is.Empty);
+            _bullets.Tick(0.5f);
+            Assert.That(explosions, Is.EqualTo(new[] { new Vector2(16f, 3f) }));
+        }
+
+        [Test]
         public void Zone_Overlap_KeepsLongerDuration_AndStrongerStrength_NotTheirSum()
         {
             var cell = new GridPosition(5, 3);
@@ -367,7 +402,7 @@ namespace Purge.Tests.EditMode.Combat
         // ------------------------------------------------------------------ Flamethrower on cells (stage Э2)
 
         /// <summary>A flamethrower aimed from the start (2,3) down-right at the hedge (y = 1); one stream tick.</summary>
-        private void FlameOnce(bool ignite)
+        private void FlameOnce(bool ignite, bool leavePuddle = false)
         {
             var gas = ScriptableObject.CreateInstance<AmmoDefinition>();
             gas.Configure("ammo_gas", 6f);
@@ -377,7 +412,13 @@ namespace Purge.Tests.EditMode.Combat
                 new StreamAttack { DamagePerSecond = 40f, Range = 3f, Angle = 60f, Interval = 0.1f },
                 new AmmoModule { Ammo = gas, Magazine = 50, ReloadTime = 1f },
             };
-            if (ignite) modules.Add(new IgniteCellsModule { Zone = _fire, Duration = 3f });
+            if (ignite) modules.Add(new IgniteCellsModule
+            {
+                Zone = _fire,
+                Duration = 3f,
+                AllowNonFlammable = leavePuddle,
+                MinimumDistance = leavePuddle ? 1f : 0f,
+            });
             var flamer = ScriptableObject.CreateInstance<WeaponDefinition>();
             flamer.Configure("flamer", modules.ToArray());
             _created.Add(flamer);
@@ -390,6 +431,14 @@ namespace Purge.Tests.EditMode.Combat
             _weapons.Tick(Dt);
             combat.Tick(Dt);
             _input.EndFrame();
+        }
+
+        [Test]
+        public void PuddleStream_LeavesThePlayersCellClear_AndCoversBareFloorAhead()
+        {
+            FlameOnce(ignite: true, leavePuddle: true);
+            Assert.That(_zones.ZoneAt(new GridPosition(2, 3)), Is.Null);
+            Assert.That(_zones.ZoneAt(new GridPosition(3, 2)), Is.SameAs(_fire));
         }
 
         [Test]

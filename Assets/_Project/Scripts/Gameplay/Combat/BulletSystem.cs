@@ -59,6 +59,8 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>0 at the start, 1 at the end of its flight (the arc of a throwable).</summary>
         public float Progress => Travel > 0f ? Mathf.Clamp01(1f - RangeLeft / Travel) : 1f;
+        public bool IsLobbed => Explosive != null && Explosive.FlightTime > 0f;
+        public Vector2 LandingPoint { get; internal set; }
 
         internal CombatTarget Ignore { get; set; }
     }
@@ -116,6 +118,7 @@ namespace Purge.Gameplay.Combat
             bullet.Explosive = explosive;
             bullet.Weapon = weapon;
             bullet.Throwable = throwable;
+            bullet.LandingPoint = origin + bullet.Direction * range;
             bullet.Ignore = CombatTarget.None;
             _active.Add(bullet);
             Spawned?.Invoke(bullet);
@@ -131,6 +134,17 @@ namespace Purge.Gameplay.Combat
                 bullet.Age += deltaTime;
                 var distance = Mathf.Min(bullet.Speed * deltaTime, bullet.RangeLeft);
                 var next = bullet.Position + bullet.Direction * distance;
+                if (bullet.IsLobbed)
+                {
+                    bullet.RangeLeft = Mathf.Max(0f, bullet.RangeLeft - distance);
+                    bullet.Position = bullet.RangeLeft > 0f ? next : bullet.LandingPoint;
+                    if (bullet.RangeLeft <= 0f)
+                    {
+                        Explode(bullet, bullet.LandingPoint);
+                        End(i, BulletEnd.Expired);
+                    }
+                    continue;
+                }
                 if (bullet.Throwable != null)
                 {
                     TickThrown(i, bullet, next, distance);

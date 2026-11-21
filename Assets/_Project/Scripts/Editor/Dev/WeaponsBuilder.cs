@@ -473,7 +473,15 @@ namespace Purge.Editor.Dev
             try
             {
                 var model = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(heldPath), root.transform);
-                model.transform.localScale = Vector3.one * PickupScale;
+                var tags = model.GetComponent<WeaponModel>();
+                var scale = Vector3.one * PickupScale;
+                if (tags?.MatchPickupSize == true)
+                {
+                    var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerAnimationsBuilder.PlayerPrefabPath());
+                    var rig = player.GetComponent<CharacterWeaponRig>();
+                    scale = Vector3.Scale(model.transform.localScale, rig.PalmRight.lossyScale) * tags.HeldScale;
+                }
+                model.transform.localScale = scale;
                 model.transform.localRotation = Quaternion.Euler(0f, PickupYaw, 0f) * Quaternion.Euler(0f, 0f, 90f);
                 model.transform.localPosition = Vector3.zero;
 
@@ -561,6 +569,13 @@ namespace Purge.Editor.Dev
                     gun.transform.localPosition = Vector3.zero;
                     gun.transform.localRotation = Quaternion.identity;
                     gun.transform.rotation = rig.TwoHandedRotation();
+                    var model = gun.GetComponent<WeaponModel>();
+                    if (model != null)
+                    {
+                        gun.transform.localScale *= model.HeldScale;
+                        if (model.AlignWithAim)
+                            gun.transform.rotation = Quaternion.LookRotation(player.transform.forward, Vector3.up);
+                    }
                     var position = gun.transform.InverseTransformPoint(rig.PalmLeft.position);
                     var rotation = Quaternion.Inverse(gun.transform.rotation) * rig.PalmLeft.rotation;
                     UnityEngine.Object.DestroyImmediate(gun);

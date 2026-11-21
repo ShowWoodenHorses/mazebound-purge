@@ -61,6 +61,7 @@ namespace Purge.Presentation.Visual
         private Animator _animator;
         private Transform _leftShoulder;
         private Transform _rightShoulder;
+        private Transform _rightLowerArm;
         private Transform _leftUpperArm;
         private Transform _leftLowerArm;
         private Transform _leftHand;
@@ -99,7 +100,7 @@ namespace Purge.Presentation.Visual
         /// Call every frame after the Animator, with the gun in hands (a child of <see cref="PalmRight"/> at its pivot)
         /// or null when no gun is held, and the gun's left-hand mark (null: the left hand is not moved).
         /// </summary>
-        public void PoseGun(Transform gun, Transform gripLeft, float deltaTime)
+        public void PoseGun(Transform gun, Transform gripLeft, float deltaTime, Vector3 aim = default, bool shoulderMount = false)
         {
             ResolveBones();
             var posing = gun != null && !InState(PlayerAnimatorParameters.NoWeaponPoseTag);
@@ -130,7 +131,24 @@ namespace Purge.Presentation.Visual
 
             _rightHand.rotation = Quaternion.Slerp(_rightHand.rotation, clipRightHand, _poseWeight);
             gun.rotation = Quaternion.Slerp(TwoHandedRotation(), clipGun, _poseWeight);
-            if (_aimBarrel > 0f)
+            var alignWithAim = posing && aim.sqrMagnitude > 0.001f;
+            if (alignWithAim)
+            {
+                var rotation = Quaternion.LookRotation(aim, Vector3.up);
+                var turnToAim = rotation * Quaternion.Inverse(gun.rotation);
+                _rightHand.rotation = turnToAim * _rightHand.rotation;
+                gun.rotation = rotation;
+                if (shoulderMount && _rightLowerArm != null && !InState(PlayerAnimatorParameters.NoHandIKTag))
+                {
+                    var shoulder = _rightShoulder.position + Vector3.up * 0.12f + gun.right * 0.045f;
+                    var offset = Vector3.ClampMagnitude(Vector3.ProjectOnPlane(shoulder - gun.position, gun.forward), 0.24f);
+                    var wristRotation = _rightHand.rotation;
+                    TwoBoneIK.Solve(_rightShoulder, _rightLowerArm, _rightHand, _rightHand.position + offset, 1f);
+                    _rightHand.rotation = wristRotation;
+                    gun.rotation = rotation;
+                }
+            }
+            else if (_aimBarrel > 0f)
                 AimBarrel(gun, _aimBarrel * _poseWeight);
             if (_recoil > 0f)
             {
@@ -145,7 +163,7 @@ namespace Purge.Presentation.Visual
             var handRotation = gripLeft.rotation * Quaternion.Inverse(_palmLeft.localRotation);
             var palmOffset = handRotation * (Quaternion.Inverse(_leftHand.rotation) * (_palmLeft.position - _leftHand.position));
             var handTarget = gripLeft.position - palmOffset;
-            var turn = BringIntoReach(gun.position, handTarget);
+            var turn = alignWithAim ? Quaternion.identity : BringIntoReach(gun.position, handTarget);
             if (turn != Quaternion.identity)
             {
                 gun.rotation = turn * gun.rotation;
@@ -275,6 +293,7 @@ namespace Purge.Presentation.Visual
             _spine[2] = _animator.GetBoneTransform(HumanBodyBones.UpperChest);
             _leftShoulder = _animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
             _rightShoulder = _animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
+            _rightLowerArm = _animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
             _leftUpperArm = _leftShoulder;
             _leftLowerArm = _animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
             _leftHand = _animator.GetBoneTransform(HumanBodyBones.LeftHand);

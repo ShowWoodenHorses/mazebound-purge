@@ -76,7 +76,7 @@ namespace Purge.Editor.Dev
                 foreach (var model in Models(ThrowModels))
                 {
                     var throwable = LoadOrCreate<ThrowableDefinition>($"{ThrowablesPath}/{Name(model)}.asset", created);
-                    var pickup = BuildPrefab(model, "_Pickup", PickupSize, onFloor: true);
+                    var pickup = BuildPrefab(model, "_Pickup", PickupSize, onFloor: true, layOnSide: Name(model) != "Mine");
                     var flying = BuildPrefab(model, "_Flying", FlyingSize, onFloor: false);
                     used.Add(pickup);
                     used.Add(flying);
@@ -183,7 +183,7 @@ namespace Purge.Editor.Dev
         /// Art/Items/Pickups/&lt;model&gt;&lt;suffix&gt;: the model scaled so its largest size is <paramref name="size"/>,
         /// centred, resting on the floor or centred at the pivot. Rebuilt in place (GUID kept).
         /// </summary>
-        private static string BuildPrefab(string modelPath, string suffix, float size, bool onFloor)
+        private static string BuildPrefab(string modelPath, string suffix, float size, bool onFloor, bool layOnSide = false)
         {
             var name = Name(modelPath) + suffix;
             var path = $"{PickupsPath}/{name}.prefab";
@@ -192,7 +192,7 @@ namespace Purge.Editor.Dev
             {
                 var model = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(modelPath), root.transform);
                 model.transform.localPosition = Vector3.zero;
-                model.transform.localRotation = Quaternion.identity;
+                model.transform.localRotation = layOnSide ? Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
                 model.transform.localScale = Vector3.one;
                 var bounds = Bounds(model);
                 var largest = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);

@@ -136,7 +136,7 @@ namespace Purge.Presentation.Visual
             /// About <paramref name="count"/> particles of the main system at a point (the effect's shape around it; the
             /// other systems — their share).
             /// </summary>
-            public void Emit(Vector3 position, float count)
+            public void Emit(Vector3 position, float count, float scale = 1f, Color? tint = null)
             {
                 var emit = new ParticleSystem.EmitParams { position = position, applyShapeToPosition = true };
                 for (var i = 0; i < _systems.Length; i++)
@@ -146,6 +146,8 @@ namespace Purge.Presentation.Visual
                     if (whole <= 0) continue;
                     _carry[i] -= whole;
                     var system = _systems[i];
+                    if (scale != 1f) emit.startSize = system.main.startSize.constantMax * scale;
+                    if (tint.HasValue) emit.startColor = tint.Value;
                     // The level warmup stops every particle system once it has drawn them.
                     if (!system.isPlaying) system.Play(false);
                     system.Emit(emit, whole);

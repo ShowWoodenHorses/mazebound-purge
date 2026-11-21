@@ -519,7 +519,7 @@ MonoBehaviour:
     _icon: {fileID: 0}
   - _item: {fileID: 11400000, guid: 11eea5431b2761b4bbb2180f7cdb6eff, type: 2}
     _pickup:
-      m_AssetGUID: 742ec294e32feff4cbe94b12b28e7939
+      m_AssetGUID: 0c349a22058d0db44a3c862408ac2820
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -533,7 +533,7 @@ MonoBehaviour:
     _icon: {fileID: 0}
   - _item: {fileID: 11400000, guid: ee57852e624141a47884aaee6822c53c, type: 2}
     _pickup:
-      m_AssetGUID: 0c349a22058d0db44a3c862408ac2820
+      m_AssetGUID: 929067955a537b44e9c33dd534ebdb10
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -547,7 +547,7 @@ MonoBehaviour:
     _icon: {fileID: 0}
   - _item: {fileID: 11400000, guid: ceec1fe9f5ec65848973ff21c3ec4673, type: 2}
     _pickup:
-      m_AssetGUID: 929067955a537b44e9c33dd534ebdb10
+      m_AssetGUID: 742ec294e32feff4cbe94b12b28e7939
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 

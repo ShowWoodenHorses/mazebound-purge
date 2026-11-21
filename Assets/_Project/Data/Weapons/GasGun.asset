@@ -102,6 +102,7 @@ MonoBehaviour:
   - rid: 1763807262009983078
   - rid: 1763807262009983201
   - rid: 1763807284696973427
+  - rid: 1763807300000000015
   references:
     version: 2
     RefIds:
@@ -177,3 +178,11 @@ MonoBehaviour:
           m_SubObjectType: 
           m_SubObjectGUID: 
           m_EditorAssetChanged: 0
+    - rid: 1763807300000000015
+      type: {class: IgniteCellsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _zone: {fileID: 11400000, guid: 21233689e7b7d9340a34ac060e6b6698, type: 2}
+        _duration: 4
+        _strength: 1
+        _allowNonFlammable: 1
+        _minimumDistance: 1

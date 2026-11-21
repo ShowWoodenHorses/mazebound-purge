@@ -382,6 +382,11 @@ MonoBehaviour:
   _tip: {fileID: 0}
   _gripLeft: {fileID: 1258238786254586314}
   _gripRotation: {x: 0, y: 0, z: 0, w: 1}
+  _alignWithAim: 1
+  _heldScale: 1
+  _muzzleOffset: {x: 0, y: 0, z: 0}
+  _shoulderMount: 0
+  _matchPickupSize: 0
 --- !u!1 &1529751969934678
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,8 +1079,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3820979135957017530}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.9428209, y: 0.0012550522, z: -0.13784051, w: -0.3034587}
-  m_LocalPosition: {x: -0.00000025704503, y: -0.00000028312206, z: 0.08153234}
+  m_LocalRotation: {x: -0.38798666, y: 0.074022256, z: 0.91809595, w: -0.03296665}
+  m_LocalPosition: {x: 0.030825196, y: -0.055518437, z: -0.0511374}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -78,6 +78,8 @@ namespace Purge.Core.Definitions
         [SerializeField, Min(0.5f)] private float _range = 3.5f;
         [Tooltip("Full width of the cone, degrees.")]
         [SerializeField, Range(5f, 120f)] private float _angle = 30f;
+        [Tooltip("Do not render the default flame for this cone.")]
+        [SerializeField] private bool _suppressFallbackFlame;
 
         public StreamAttack()
         {
@@ -88,7 +90,23 @@ namespace Purge.Core.Definitions
         public float DamagePerSecond { get => _damagePerSecond; internal set => _damagePerSecond = value; }
         public float Range { get => _range; internal set => _range = value; }
         public float Angle { get => _angle; internal set => _angle = value; }
+        public bool SuppressFallbackFlame => _suppressFallbackFlame;
         public float DamagePerTick => _damagePerSecond * Interval;
+        public override float AimRange => _range;
+    }
+
+    [Serializable, ModuleInfo("Beam", Category = "Attack")]
+    public sealed class BeamAttack : WeaponAttack
+    {
+        [SerializeField, Min(0f)] private float _damage = 10f;
+        [SerializeField, Min(0.5f)] private float _range = 6f;
+        [SerializeField, Min(0f)] private float _chargeTime;
+        [SerializeField] private bool _piercing;
+
+        public float Damage { get => _damage; internal set => _damage = value; }
+        public float Range { get => _range; internal set => _range = value; }
+        public float ChargeTime { get => _chargeTime; internal set => _chargeTime = value; }
+        public bool Piercing { get => _piercing; internal set => _piercing = value; }
         public override float AimRange => _range;
     }
 
@@ -137,6 +155,10 @@ namespace Purge.Core.Definitions
         [SerializeField, Min(0.3f)] private float _radius = 2f;
         [Tooltip("Share of the damage at the edge of the radius.")]
         [SerializeField, Range(0f, 1f)] private float _edgeDamage = 0.3f;
+        [Tooltip("Minimum landing distance of a lobbed projectile.")]
+        [SerializeField, Min(0f)] private float _minimumRange;
+        [Tooltip("Seconds to reach the landing point. Zero uses direct projectile flight.")]
+        [SerializeField, Min(0f)] private float _flightTime;
         [Tooltip("Look of the explosion (an effect of Art/Effects, scaled to the radius); empty = by size (Combat Visual).")]
         [SerializeField] private AssetReferenceGameObject _explosionLook;
 
@@ -150,6 +172,8 @@ namespace Purge.Core.Definitions
         public float ExplosionDamage { get => _explosionDamage; internal set => _explosionDamage = value; }
         public float Radius { get => _radius; internal set => _radius = value; }
         public float EdgeDamage { get => _edgeDamage; internal set => _edgeDamage = value; }
+        public float MinimumRange { get => _minimumRange; internal set => _minimumRange = value; }
+        public float FlightTime { get => _flightTime; internal set => _flightTime = value; }
         public override float AimRange => Mathf.Min(_range, 9f);
     }
 
@@ -185,6 +209,8 @@ namespace Purge.Core.Definitions
     {
         [SerializeField] private AmmoDefinition _ammo;
         [SerializeField, Min(1)] private int _magazine = 10;
+        [Tooltip("Keep the authored capacity when cards or upgrades increase magazine size.")]
+        [SerializeField] private bool _fixedMagazine;
         [Tooltip("Seconds.")]
         [SerializeField, Min(0f)] private float _reloadTime = 1.5f;
         [Tooltip("Rounds one attack takes (a stream: one damage tick).")]
@@ -196,6 +222,7 @@ namespace Purge.Core.Definitions
 
         public AmmoDefinition Ammo { get => _ammo; internal set => _ammo = value; }
         public int Magazine { get => _magazine; internal set => _magazine = value; }
+        public bool FixedMagazine { get => _fixedMagazine; internal set => _fixedMagazine = value; }
         public float ReloadTime { get => _reloadTime; internal set => _reloadTime = value; }
         public int PerAttack { get => _perAttack; internal set => _perAttack = value; }
         public bool InfiniteReserve { get => _infiniteReserve; internal set => _infiniteReserve = value; }
@@ -262,11 +289,21 @@ namespace Purge.Core.Definitions
 
         [Tooltip("Bullets: smoke out of the muzzle when a burst ends.")]
         [SerializeField] private AssetReferenceGameObject _barrelSmoke;
+        [SerializeField] private bool _electricProjectile;
+        [SerializeField] private bool _electricCone;
+        [SerializeField] private bool _fireProjectile;
+        [SerializeField] private bool _rocketProjectile;
+        [SerializeField] private bool _frostStream;
 
         public AssetReferenceGameObject MuzzleFlash { get => _muzzleFlash; internal set => _muzzleFlash = value; }
         public AssetReferenceGameObject Stream { get => _stream; internal set => _stream = value; }
         public AssetReferenceGameObject TargetHit { get => _targetHit; internal set => _targetHit = value; }
         public AssetReferenceGameObject BarrelSmoke { get => _barrelSmoke; internal set => _barrelSmoke = value; }
+        public bool ElectricProjectile => _electricProjectile;
+        public bool ElectricCone => _electricCone;
+        public bool FireProjectile => _fireProjectile;
+        public bool RocketProjectile => _rocketProjectile;
+        public bool FrostStream => _frostStream;
     }
 
     [Serializable, ModuleInfo("Feel", Category = "Feel")]
@@ -373,23 +410,28 @@ namespace Purge.Core.Definitions
     }
 
     /// <summary>
-    /// A stream sets the flammable cells it reaches alight (a flamethrower: bushes, grass) — never bare floor; the zone
-    /// spreads on by itself as its definition says. Each tick of the stream, cells within its cone and reach that a
-    /// bullet from the player could reach. Other attacks ignore the module.
+    /// Places a zone on cells reached by the stream. The zone can spread according to its own definition.
     /// </summary>
     [Serializable, ModuleInfo("Ignite cells", Category = "Effect")]
     public sealed class IgniteCellsModule : WeaponModule
     {
-        [Tooltip("The fire (a zone with Spread).")]
+        [Tooltip("Zone left on the cells reached by the stream.")]
         [SerializeField] private ZoneDefinition _zone;
-        [Tooltip("Seconds a cell burns once set alight (renewed while the stream stays on it).")]
+        [Tooltip("Seconds the zone remains on a cell after the stream leaves it.")]
         [SerializeField, Min(0.1f)] private float _duration = 4f;
         [Tooltip("Multiplier of the zone's damage.")]
         [SerializeField, Min(0f)] private float _strength = 1f;
+        [SerializeField] private bool _allowNonFlammable;
+        [SerializeField, Min(0f)] private float _minimumDistance;
+        [Tooltip("Maximum active cells from this weapon definition. Zero uses the level-wide limit.")]
+        [SerializeField, Min(0)] private int _maxCells;
 
         public ZoneDefinition Zone { get => _zone; internal set => _zone = value; }
         public float Duration { get => _duration; internal set => _duration = value; }
         public float Strength { get => _strength; internal set => _strength = value; }
+        public bool AllowNonFlammable { get => _allowNonFlammable; internal set => _allowNonFlammable = value; }
+        public float MinimumDistance { get => _minimumDistance; internal set => _minimumDistance = value; }
+        public int MaxCells => _maxCells;
 
         public override void Validate(List<string> problems)
         {

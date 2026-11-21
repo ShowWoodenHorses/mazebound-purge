@@ -190,7 +190,8 @@ MonoBehaviour:
       _maxVoices: 1
       _minInterval: 0
     _loop:
-      _clips: []
+      _clips:
+      - {fileID: 8300000, guid: 89596c324fe965e44b65129ed7c3dcbf, type: 3}
       _volume: 0.5
       _pitch: {x: 1, y: 1}
       _range: 0
@@ -427,7 +428,6 @@ MonoBehaviour:
   - _group: dragunov
     _attack:
       _clips:
-      - {fileID: 8300000, guid: dcb0031c2511aa84abad5c300c866313, type: 3}
       - {fileID: 8300000, guid: 343a1610da44cf749960fcebacf8f28a, type: 3}
       _volume: 0.8
       _pitch: {x: 0.95, y: 1.05}
@@ -637,7 +637,8 @@ MonoBehaviour:
       _maxVoices: 1
       _minInterval: 0
     _loop:
-      _clips: []
+      _clips:
+      - {fileID: 8300000, guid: e9d197cdca84cb548a2623f84740f17f, type: 3}
       _volume: 0.5
       _pitch: {x: 1, y: 1}
       _range: 0

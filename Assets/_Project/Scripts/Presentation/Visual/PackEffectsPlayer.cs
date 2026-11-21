@@ -296,6 +296,7 @@ namespace Purge.Presentation.Visual
                 Add(wanted, _visual.ExplosionMedium);
                 Add(wanted, _visual.ExplosionLarge);
                 Add(wanted, _visual.Stream);
+                Add(wanted, _visual.FrostStream);
                 Add(wanted, _visual.ChainHit);
                 Add(wanted, _visual.BarrelSmoke);
                 Add(wanted, _visual.RageFlash);

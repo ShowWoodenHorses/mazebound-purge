@@ -115,6 +115,7 @@ namespace Purge.Gameplay.Spatial
         /// segment hits (bullets: previous → current position).
         /// </summary>
         SegmentHit QuerySegment(Vector2 from, Vector2 to, int floor = 0);
+        SegmentHit QueryBlocker(Vector2 from, Vector2 to, int floor = 0);
 
         SegmentHit QueryDirection(Vector2 origin, Vector2 direction, float distance, int floor = 0);
 
@@ -196,11 +197,31 @@ namespace Purge.Gameplay.Spatial
 
         public SegmentHit QuerySegment(Vector2 from, Vector2 to, int floor = 0)
         {
+            var blocker = QueryBlocker(from, to, floor);
+            var delta = to - from;
+            ISpatialObject nearest = null;
+            var nearestT = blocker.Kind == SegmentHitKind.Blocker ? blocker.T : float.PositiveInfinity;
+            foreach (var item in _objects)
+            {
+                if (item.Floor != floor || item is IDamageable damageable && !damageable.IsAlive)
+                    continue;
+                if (SegmentCircle(from, delta, item.Position, item.Radius, out var t) && t <= nearestT && t <= 1f)
+                {
+                    nearest = item;
+                    nearestT = t;
+                }
+            }
+
+            return nearest == null ? blocker : new SegmentHit(SegmentHitKind.Object, nearestT, from + delta * nearestT,
+                PlayerMovement.CellOf(nearest.Position, floor), nearest);
+        }
+
+        public SegmentHit QueryBlocker(Vector2 from, Vector2 to, int floor = 0)
+        {
             var opacity = LevelOpacity.ForBullets(_grid, _doors);
             var blocked = GridRaycast.Cast(from, to, opacity, out var wallT, out var wallCell, floor);
             var delta = to - from;
 
-            ISpatialObject nearest = null;
             var nearestT = blocked ? wallT : float.PositiveInfinity;
             // The dome's edge stops the shot like a wall (the cell is where it crosses).
             if (Barrier != null && Barrier.Crosses(from, to, floor, out var edgeT) && edgeT < nearestT)
@@ -218,20 +239,6 @@ namespace Purge.Gameplay.Spatial
                     wallCell = PlayerMovement.CellOf(from + delta * blockT, floor);
                 }
 
-            foreach (var item in _objects)
-            {
-                if (item.Floor != floor || item is IDamageable damageable && !damageable.IsAlive)
-                    continue;
-                if (SegmentCircle(from, delta, item.Position, item.Radius, out var t) && t <= nearestT && t <= 1f)
-                {
-                    nearest = item;
-                    nearestT = t;
-                }
-            }
-
-            if (nearest != null)
-                return new SegmentHit(SegmentHitKind.Object, nearestT, from + delta * nearestT,
-                    PlayerMovement.CellOf(nearest.Position, floor), nearest);
             if (blocked)
                 return new SegmentHit(SegmentHitKind.Blocker, wallT, from + delta * wallT, wallCell, null);
             return new SegmentHit(SegmentHitKind.None, 1f, to, PlayerMovement.CellOf(to, floor), null);

@@ -101,20 +101,31 @@ MonoBehaviour:
   - rid: 1763807262009983127
   - rid: 1763807262009983128
   - rid: 1763807262009983190
+  - rid: 1763807300000000016
   references:
     version: 2
     RefIds:
+    - rid: 1763807300000000016
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _electricProjectile: 1
     - rid: 1763807262009983126
-      type: {class: ChainAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      type: {class: ExplosiveAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.45
         _automatic: 1
-        _damage: 145
+        _speed: 6
         _range: 6
-        _aimAngle: 25
-        _jumps: 3
-        _jumpRange: 2.5
-        _jumpFalloff: 0.75
+        _directDamage: 0
+        _explosionDamage: 145
+        _radius: 1.5
+        _edgeDamage: 0.3
+        _explosionLook:
+          m_AssetGUID: f78e1b1121a44264dbf379920270f7bf
+          m_SubObjectName:
+          m_SubObjectType:
+          m_SubObjectGUID:
+          m_EditorAssetChanged: 0
     - rid: 1763807262009983127
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

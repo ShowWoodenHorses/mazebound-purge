@@ -50,6 +50,7 @@ namespace Purge.Presentation.Visual
 
         /// <summary>Cells over which a tracer moves from the muzzle onto the bullet's real line.</summary>
         public const float ConvergeDistance = 1.5f;
+        private static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
 
         /// <summary>Where along the gun (grip → muzzle) shells come out.</summary>
         private const float EjectShare = 0.4f;
@@ -86,6 +87,8 @@ namespace Purge.Presentation.Visual
         private readonly List<IDamageable> _meleeTargets = new List<IDamageable>();
 
         private ObjectPool<Tracer> _tracerPool;
+        private ObjectPool<Tracer> _rocketPool;
+        private ObjectPool<Tracer> _fireballPool;
         private EffectPool _flashPool;
         private EffectPool _shellPool;
         private EffectPool _impactPool;
@@ -137,18 +140,23 @@ namespace Purge.Presentation.Visual
 
         public async UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            var (bullet, flash, shell, impact, hit, swing) = await UniTask.WhenAll(
+            var (bullet, flash, shell, impact, hit, swing, rocket, fireball) = await UniTask.WhenAll(
                 Load(_visual.Bullet, cancellation), Load(_visual.MuzzleFlash, cancellation), Load(_visual.ShellCasing, cancellation),
-                Load(_visual.Impact, cancellation), Load(_visual.TargetHit, cancellation), Load(_visual.MeleeSwing, cancellation));
+                Load(_visual.Impact, cancellation), Load(_visual.TargetHit, cancellation), Load(_visual.MeleeSwing, cancellation),
+                Load(_visual.Rocket, cancellation), Load(_visual.Fireball, cancellation));
             cancellation.ThrowIfCancellationRequested();
 
             _tracerPool = CreateTracerPool(bullet);
+            _rocketPool = CreateTracerPool(rocket, rocket: true);
+            _fireballPool = CreateTracerPool(fireball, fireball: true);
             _flashPool = CreateEffectPool(flash, "MuzzleFlash", PrefilledFlashes);
             _shellPool = CreateEffectPool(shell, "ShellCasing", PrefilledShells);
             _impactPool = CreateEffectPool(impact, "Impact", PrefilledImpacts);
             _hitPool = CreateEffectPool(hit, "TargetHit", PrefilledHits);
             _swingPool = CreateEffectPool(swing, "MeleeSwing", PrefilledSwings);
-            PrefillTracers();
+            PrefillTracers(_tracerPool, PrefilledBullets);
+            PrefillTracers(_rocketPool, 4);
+            PrefillTracers(_fireballPool, 4);
 
             if (!_subscribed)
             {
@@ -169,7 +177,7 @@ namespace Purge.Presentation.Visual
             UpdateBurst(deltaTime);
 
             foreach (var pair in _tracers)
-                PlaceTracer(pair.Key, pair.Value);
+                PlaceTracer(pair.Key, pair.Value, startFireball: true);
 
             for (var i = _effects.Count - 1; i >= 0; i--)
             {
@@ -215,7 +223,10 @@ namespace Purge.Presentation.Visual
             _burstWeapon = null;
 
             _tracerPool?.Dispose();
+            _rocketPool?.Dispose();
+            _fireballPool?.Dispose();
             _tracerPool = null;
+            _rocketPool = _fireballPool = null;
             foreach (var pool in new[] { _flashPool, _shellPool, _impactPool, _hitPool, _swingPool })
                 pool?.Dispose();
             _flashPool = _shellPool = _impactPool = _hitPool = _swingPool = null;
@@ -228,7 +239,7 @@ namespace Purge.Presentation.Visual
 
         // ---- Pools ----
 
-        private ObjectPool<Tracer> CreateTracerPool(GameObject prefab)
+        private ObjectPool<Tracer> CreateTracerPool(GameObject prefab, bool rocket = false, bool fireball = false)
         {
             if (prefab == null)
                 return null;
@@ -238,7 +249,43 @@ namespace Purge.Presentation.Visual
                 {
                     var instance = UnityEngine.Object.Instantiate(prefab, _root.transform);
                     instance.name = "Bullet";
-                    return new Tracer { View = instance };
+                    var renderer = instance.GetComponentInChildren<Renderer>();
+                    var particles = instance.GetComponentsInChildren<ParticleSystem>(true);
+                    var head = fireball ? instance.GetComponent<ParticleSystem>() : null;
+                    if (head != null)
+                    {
+                        var emission = head.emission;
+                        emission.enabled = false;
+                        var shape = head.shape;
+                        shape.enabled = false;
+                        var size = head.sizeOverLifetime;
+                        size.enabled = false;
+                        var color = head.colorOverLifetime;
+                        color.enabled = false;
+                    }
+                    var fireballTrail = fireball ? new List<Renderer>() : null;
+                    if (fireball)
+                    {
+                        foreach (var system in particles)
+                        {
+                            var main = system.main;
+                            main.playOnAwake = false;
+                            if (system != head && system.TryGetComponent<ParticleSystemRenderer>(out var trailRenderer))
+                                fireballTrail.Add(trailRenderer);
+                        }
+                    }
+                    return new Tracer
+                    {
+                        View = instance,
+                        OriginalScale = instance.transform.localScale,
+                        Renderer = renderer,
+                        OriginalMaterial = renderer != null ? renderer.sharedMaterial : null,
+                        Tint = renderer != null ? new MaterialPropertyBlock() : null,
+                        Particles = particles,
+                        FireballHead = head,
+                        FireballTrail = fireballTrail?.ToArray(),
+                        Trail = rocket ? CreateRocketTrail(instance, renderer) : null,
+                    };
                 },
                 tracer => tracer.View.SetActive(true),
                 tracer => tracer.View.SetActive(false),
@@ -246,15 +293,36 @@ namespace Purge.Presentation.Visual
                 collectionCheck: false, defaultCapacity: PrefilledBullets);
         }
 
-        private void PrefillTracers()
+        private TrailRenderer CreateRocketTrail(GameObject rocket, Renderer renderer)
         {
-            if (_tracerPool == null) return;
-            var taken = new Tracer[PrefilledBullets];
+            if (_visual.BoltMaterial == null) return null;
+            var exhaust = new GameObject("Rocket Exhaust");
+            exhaust.transform.SetParent(rocket.transform, false);
+            if (renderer != null)
+                exhaust.transform.localPosition = new Vector3(0f, 0f, renderer.localBounds.min.z);
+            var trail = exhaust.AddComponent<TrailRenderer>();
+            trail.sharedMaterial = _visual.BoltMaterial;
+            trail.time = 0.07f;
+            trail.minVertexDistance = 0.035f;
+            trail.startWidth = 0.13f;
+            trail.endWidth = 0.015f;
+            trail.startColor = new Color(1f, 0.82f, 0.48f, 0.9f);
+            trail.endColor = new Color(1f, 0.34f, 0.09f, 0f);
+            trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            trail.receiveShadows = false;
+            trail.emitting = false;
+            return trail;
+        }
+
+        private void PrefillTracers(ObjectPool<Tracer> pool, int count)
+        {
+            if (pool == null) return;
+            var taken = new Tracer[count];
             for (var i = 0; i < taken.Length; i++)
-                taken[i] = _tracerPool.Get();
+                taken[i] = pool.Get();
             _warmup.Add(taken[0].View); // one of each kind is enough to draw
             foreach (var tracer in taken)
-                _tracerPool.Release(tracer);
+                pool.Release(tracer);
         }
 
         private EffectPool CreateEffectPool(GameObject prefab, string name, int prefill)
@@ -277,12 +345,40 @@ namespace Purge.Presentation.Visual
         private void OnBulletSpawned(Bullet bullet)
         {
             if (_tracerPool == null || bullet.Throwable != null) return; // thrown items: DropViewPresenter
-            var tracer = _tracerPool.Get();
+            var effects = bullet.Weapon?.Effects;
+            var special = effects?.RocketProjectile == true ? _rocketPool : effects?.FireProjectile == true ? _fireballPool : null;
+            var pool = special ?? _tracerPool;
+            var tracer = pool.Get();
+            tracer.Pool = pool;
+            tracer.Model = special != null;
             tracer.Spawn = bullet.Position;
             tracer.Origin = new Vector3(bullet.Position.x, BulletHeight(bullet), bullet.Position.y);
             tracer.FromMuzzle = false;
+            tracer.Electric = bullet.Weapon?.Effects?.ElectricProjectile == true;
+            tracer.Fire = bullet.Weapon?.Effects?.FireProjectile == true;
+            tracer.FireballPending = tracer.FireballTrail != null;
+            if (tracer.Model)
+            {
+                if (tracer.Trail != null)
+                {
+                    tracer.Trail.emitting = false;
+                    tracer.Trail.Clear();
+                }
+                foreach (var particles in tracer.Particles)
+                {
+                    particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    if (!tracer.FireballPending) particles.Play(false);
+                }
+            }
+            else if (tracer.Renderer != null)
+            {
+                tracer.Tint.Clear();
+                tracer.Renderer.sharedMaterial = tracer.Electric && _visual.ChainBolt != null ? _visual.ChainBolt : tracer.OriginalMaterial;
+                if (tracer.Fire) tracer.Tint.SetColor("_Color", new Color(2f, 0.65f, 0.12f, 1f));
+                tracer.Renderer.SetPropertyBlock(tracer.Tint);
+            }
             _tracers[bullet] = tracer;
-            _newTracers.Add(tracer);
+            if (!bullet.IsLobbed) _newTracers.Add(tracer);
             PlaceTracer(bullet, tracer);
         }
 
@@ -295,7 +391,7 @@ namespace Purge.Presentation.Visual
                 height = tracer.Origin.y;
                 _tracers.Remove(bullet);
                 _newTracers.Remove(tracer);
-                _tracerPool.Release(tracer);
+                tracer.Pool.Release(tracer);
             }
 
             if (reason == BulletEnd.Blocked)
@@ -307,7 +403,8 @@ namespace Purge.Presentation.Visual
         private void OnAttacked(WeaponRuntime weapon, Vector2 direction)
         {
             var definition = weapon.Definition;
-            if (definition.Attack is StreamAttack stream && HoldsStream(definition, stream))
+            if (definition.Attack is StreamAttack stream && definition.Effects?.ElectricCone != true &&
+                HoldsStream(definition, stream))
                 return; // the stream's look is the whole shot: no flash, no shell
             if (definition.Attack is BulletAttack bullets)
                 CountBurst(definition, bullets);
@@ -422,7 +519,7 @@ namespace Purge.Presentation.Visual
             if (muzzle != null)
             {
                 var rootTransform = _root.transform;
-                position = rootTransform.InverseTransformPoint(muzzle.position);
+                position = rootTransform.InverseTransformPoint(model.MuzzlePosition);
                 var barrel = rootTransform.InverseTransformDirection(muzzle.forward);
                 if (flat) barrel = Vector3.ProjectOnPlane(barrel, Vector3.up);
                 if (barrel.sqrMagnitude > 1e-4f) forward = barrel;
@@ -492,30 +589,39 @@ namespace Purge.Presentation.Visual
             var model = _weaponView != null ? _weaponView.ShownModel : null;
             var muzzle = model != null ? model.Muzzle : null;
             var rootTransform = _root.transform;
+            var electric = _shotWeapon?.Attack is BeamAttack or ChainAttack || _shotWeapon?.Effects?.ElectricCone == true ||
+                _shotWeapon?.Effects?.ElectricProjectile == true || _shotWeapon?.Effects?.FrostStream == true;
 
             if (muzzle == null)
             {
                 var forward = _player.Position + _shotDirection * 0.5f;
                 var flat = new Vector3(_shotDirection.x, 0f, _shotDirection.y);
                 var height = _player.ViewHeight + ShotHeight;
-                if (!PlayPackFlash(new Vector3(forward.x, height, forward.y),
+                if (!electric && !PlayPackFlash(new Vector3(forward.x, height, forward.y),
                         flat.sqrMagnitude > 0f ? Quaternion.LookRotation(flat, Vector3.up) : Quaternion.identity))
                     Show(_flashPool, forward, height, _shotDirection, _player.Floor);
+                foreach (var tracer in _newTracers)
+                {
+                    if (!tracer.FireballPending) continue;
+                    tracer.Origin = new Vector3(forward.x, height, forward.y);
+                    tracer.FromMuzzle = true;
+                }
                 _newTracers.Clear();
                 return;
             }
 
-            var muzzlePoint = rootTransform.InverseTransformPoint(muzzle.position);
+            var muzzlePoint = rootTransform.InverseTransformPoint(model.MuzzlePosition);
             var barrel = rootTransform.InverseTransformDirection(muzzle.forward);
             var barrelRotation = Quaternion.LookRotation(barrel, Vector3.up);
-            if (!PlayPackFlash(muzzlePoint, barrelRotation))
+            if (!electric && !PlayPackFlash(muzzlePoint, barrelRotation))
                 ShowAt(_flashPool, muzzlePoint, barrelRotation);
 
             var gun = model.transform;
             var eject = rootTransform.InverseTransformPoint(Vector3.Lerp(gun.position, muzzle.position, EjectShare));
             var right = Vector3.ProjectOnPlane(rootTransform.InverseTransformDirection(gun.right), Vector3.up);
             // Only guns that fire cartridges throw out shells (not streams or lightning).
-            var shells = _shotWeapon != null && (_shotWeapon.Attack is BulletAttack || _shotWeapon.Attack is ExplosiveAttack);
+            var shells = _shotWeapon != null && _shotWeapon.ArsenalClass != ArsenalClass.Energy &&
+                (_shotWeapon.Attack is BulletAttack || _shotWeapon.Attack is ExplosiveAttack { FlightTime: <= 0f });
             if (shells && right.sqrMagnitude > 1e-4f)
                 ShowAt(_shellPool, eject, Quaternion.LookRotation(right, Vector3.up));
 
@@ -536,18 +642,30 @@ namespace Purge.Presentation.Visual
             return flash != null && _packEffects.Play(flash, position, rotation);
         }
 
-        private void PlaceTracer(Bullet bullet, Tracer tracer)
+        private void PlaceTracer(Bullet bullet, Tracer tracer, bool startFireball = false)
         {
-            var height = tracer.Origin.y;
-            var head = new Vector3(bullet.Position.x, height, bullet.Position.y);
-            if (tracer.FromMuzzle)
+            if (bullet.IsLobbed)
             {
-                var travelled = (bullet.Position - tracer.Spawn).magnitude;
-                var line = new Vector3(tracer.Spawn.x, height, tracer.Spawn.y);
-                head += (tracer.Origin - line) * (1f - Mathf.Clamp01(travelled / ConvergeDistance));
+                var progress = bullet.Progress;
+                var arc = 4f * progress * (1f - progress);
+                var position = new Vector3(bullet.Position.x,
+                    bullet.Floor * GridPosition.FloorHeight + ShotHeight * (1f - progress) + 3f * arc,
+                    bullet.Position.y);
+                tracer.View.transform.localPosition = position;
+                tracer.View.transform.localRotation = Quaternion.LookRotation(
+                    new Vector3(bullet.Direction.x, 1f - 2f * progress, bullet.Direction.y));
+                var size = 0.4f + 0.5f * arc;
+                tracer.View.transform.localScale = new Vector3(size, size, size);
+                tracer.View.SetActive(_visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor)));
+                return;
             }
 
-            var toHead = head - tracer.Origin;
+            var travelled = Mathf.Max(0f, bullet.Travel - bullet.RangeLeft);
+            var length = tracer.Fire ? 0.22f : tracer.Electric ? 0.7f : _visual.TracerLength;
+            var head = TracerPoint(bullet, tracer, bullet.Position, travelled);
+            var tailDistance = Mathf.Min(Mathf.Max(length, 0.01f), travelled);
+            var tail = TracerPoint(bullet, tracer, bullet.Position - bullet.Direction * tailDistance, travelled - tailDistance);
+            var toHead = head - tail;
             var distance = toHead.magnitude;
             var forward = distance > 1e-3f ? toHead / distance : new Vector3(bullet.Direction.x, 0f, bullet.Direction.y);
 
@@ -555,12 +673,63 @@ namespace Purge.Presentation.Visual
             transform.localPosition = head;
             if (forward.sqrMagnitude > 0f)
                 transform.localRotation = Quaternion.LookRotation(forward, Vector3.up);
-            if (_visual.TracerLength > 0f)
-                transform.localScale = new Vector3(1f, 1f, Mathf.Max(Mathf.Min(_visual.TracerLength, distance), 0.01f));
+            var width = tracer.Fire ? 3.2f : tracer.Electric ? 2.2f : 1f;
+            transform.localScale = tracer.Model
+                ? tracer.OriginalScale * (tracer.Fire ? 0.5f : 1f)
+                : length > 0f
+                ? new Vector3(width, width, Mathf.Max(distance, 0.01f))
+                : tracer.OriginalScale;
 
             var visible = _visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor));
+            if (tracer.Trail != null)
+            {
+                if (!visible) tracer.Trail.Clear();
+                tracer.Trail.emitting = visible && travelled > 0.05f;
+            }
             if (tracer.View.activeSelf != visible)
                 tracer.View.SetActive(visible);
+            if (visible && startFireball && tracer.FireballPending)
+                StartFireball(bullet, tracer, head);
+        }
+
+        private void StartFireball(Bullet bullet, Tracer tracer, Vector3 head)
+        {
+            tracer.FireballPending = false;
+            var root = _root.transform;
+            var muzzle = root.TransformPoint(tracer.Origin);
+            var backward = -root.TransformDirection(new Vector3(bullet.Direction.x, 0f, bullet.Direction.y));
+            var plane = new Vector4(backward.x, backward.y, backward.z, Vector3.Dot(backward, muzzle));
+            foreach (var renderer in tracer.FireballTrail)
+            {
+                renderer.GetPropertyBlock(tracer.Tint);
+                tracer.Tint.SetVector(ClipPlaneId, plane);
+                renderer.SetPropertyBlock(tracer.Tint);
+            }
+
+            tracer.View.transform.localPosition = tracer.Origin;
+            foreach (var particles in tracer.Particles)
+                particles.Play(false);
+            if (tracer.FireballHead != null)
+                tracer.FireballHead.Emit(new ParticleSystem.EmitParams
+                {
+                    position = Vector3.zero,
+                    velocity = Vector3.zero,
+                    startSize = 0.58f,
+                    startLifetime = 2f,
+                    startColor = new Color(1f, 0.48f, 0.14f, 1f),
+                }, 1);
+            tracer.View.transform.localPosition = head;
+        }
+
+        private static Vector3 TracerPoint(Bullet bullet, Tracer tracer, Vector2 point, float travelled)
+        {
+            var height = BulletHeight(bullet);
+            var position = new Vector3(point.x, height, point.y);
+            if (!tracer.FromMuzzle) return position;
+            var simulatedOrigin = new Vector3(tracer.Spawn.x, height, tracer.Spawn.y);
+            var offset = tracer.Origin - simulatedOrigin;
+            var barrelLead = Mathf.Max(0f, Vector2.Dot(new Vector2(offset.x, offset.z), bullet.Direction));
+            return position + offset * (1f - Mathf.Clamp01(travelled / (ConvergeDistance + barrelLead)));
         }
 
         private Effect Show(EffectPool pool, Vector2 position, float height, Vector2 direction, int floor, bool play = true)
@@ -606,6 +775,19 @@ namespace Purge.Presentation.Visual
         private sealed class Tracer
         {
             public GameObject View;
+            public Vector3 OriginalScale;
+            public Renderer Renderer;
+            public Material OriginalMaterial;
+            public MaterialPropertyBlock Tint;
+            public ParticleSystem[] Particles;
+            public ParticleSystem FireballHead;
+            public Renderer[] FireballTrail;
+            public bool FireballPending;
+            public TrailRenderer Trail;
+            public ObjectPool<Tracer> Pool;
+            public bool Model;
+            public bool Electric;
+            public bool Fire;
 
             /// <summary>Where the gameplay bullet started (the player's centre), grid units.</summary>
             public Vector2 Spawn;

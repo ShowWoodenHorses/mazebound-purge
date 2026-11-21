@@ -92,7 +92,7 @@ MonoBehaviour:
   _rarity: 2
   _noUpgrades: 0
   _startPool: 0
-  _hold: 3
+  _hold: 0
   _sound: 
   _soundPitch: 1
   _soundVolume: 1
@@ -105,16 +105,14 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 1763807262009983097
-      type: {class: ChainAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      type: {class: BeamAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.45
-        _automatic: 1
+        _automatic: 0
         _damage: 85
         _range: 6
-        _aimAngle: 25
-        _jumps: 3
-        _jumpRange: 2.5
-        _jumpFalloff: 0.75
+        _chargeTime: 0
+        _piercing: 0
     - rid: 1763807262009983098
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
@@ -144,7 +142,7 @@ MonoBehaviour:
         _bodyKick: 1
         _lightIntensity: 1.2
         _lightRadius: 3
-        _lightColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+        _lightColor: {r: 0.25, g: 0.85, b: 1, a: 1}
         _hitFlash: 1
         _dent: 0.12
         _hitSplash: 3

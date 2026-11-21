@@ -48,7 +48,7 @@ namespace Purge.Presentation.Visual
         private Animator _animator;
         private int _upperBodyLayer = -1;
         private float _upperBodyWeight;
-        private int _attackCounter;
+        private const int ForwardMeleeAttack = 0;
         private int _lastHealth;
         private bool _subscribed;
 
@@ -77,6 +77,14 @@ namespace Purge.Presentation.Visual
         public LevelLoadStage Stage => LevelLoadStage.SpawnPlayer;
 
         public GameObject View => _view;
+        public Vector3 WeaponAim
+        {
+            get
+            {
+                var direction = _player.IsAiming ? _combat.AimDirection : _player.Facing;
+                return _root.transform.TransformDirection(new Vector3(direction.x, 0f, direction.y));
+            }
+        }
 
         /// <summary>The player's head (breath); default until the view is created.</summary>
         public CharacterHead Head { get; private set; }
@@ -185,7 +193,7 @@ namespace Purge.Presentation.Visual
         {
             if (weapon.Definition.IsMelee)
             {
-                var variant = _attackCounter++ % P.AttackVariants;
+                var variant = ForwardMeleeAttack;
                 LastMeleeContactDelay = _attackContacts[variant] * weapon.Definition.Cooldown;
                 LastMeleeSweep = _attackSweeps[variant];
                 SetInt(P.AttackIndexHash, variant);

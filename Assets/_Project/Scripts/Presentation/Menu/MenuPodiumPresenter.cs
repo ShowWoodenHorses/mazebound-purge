@@ -212,6 +212,7 @@ namespace Purge.Presentation.Menu
             instance.transform.localPosition = Vector3.zero;
             var model = instance.GetComponent<WeaponModel>();
             instance.transform.localRotation = model != null ? model.GripRotation : Quaternion.identity;
+            if (model != null) instance.transform.localScale *= model.HeldScale;
             return _weapons[weapon] = instance;
         }
     }

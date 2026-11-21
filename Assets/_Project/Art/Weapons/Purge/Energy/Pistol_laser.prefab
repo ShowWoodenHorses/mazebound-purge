@@ -24,8 +24,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 483335856017969835}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2507424, y: 0.696001, z: 0.40451723, w: 0.5376585}
-  m_LocalPosition: {x: 0.0000005066395, y: -0.0000002682209, z: 0.42176563}
+  m_LocalRotation: {x: -0.38798666, y: 0.074022256, z: 0.91809595, w: -0.03296665}
+  m_LocalPosition: {x: 0.030825196, y: -0.055518437, z: -0.0511374}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141,6 +141,11 @@ MonoBehaviour:
   _tip: {fileID: 0}
   _gripLeft: {fileID: 1015398206871793966}
   _gripRotation: {x: 0, y: 0, z: 0, w: 1}
+  _alignWithAim: 1
+  _heldScale: 1
+  _muzzleOffset: {x: 0, y: 0, z: 0}
+  _shoulderMount: 0
+  _matchPickupSize: 0
 --- !u!1 &7419482892977998895
 GameObject:
   m_ObjectHideFlags: 0

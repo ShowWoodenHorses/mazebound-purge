@@ -101,20 +101,30 @@ MonoBehaviour:
   - rid: 1763807262009983104
   - rid: 1763807262009983105
   - rid: 1763807262009983172
+  - rid: 1763807300000000015
+  - rid: 1763807300000000016
   references:
     version: 2
     RefIds:
+    - rid: 1763807300000000016
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _electricCone: 1
+    - rid: 1763807300000000015
+      type: {class: StatusOnHitModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: 0aa7530f0d5b5ce4daf704fd3c40b6f4, type: 2}
+        _duration: 1
+        _chance: 1
     - rid: 1763807262009983103
-      type: {class: ChainAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
+      type: {class: StreamAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.45
         _automatic: 1
-        _damage: 110
+        _damagePerSecond: 244.44444
         _range: 6
-        _aimAngle: 25
-        _jumps: 3
-        _jumpRange: 2.5
-        _jumpFalloff: 0.75
+        _angle: 50
+        _suppressFallbackFlame: 1
     - rid: 1763807262009983104
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:

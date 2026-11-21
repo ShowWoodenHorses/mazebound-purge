@@ -14,6 +14,17 @@ namespace Purge.Presentation.Visual
 
         [Tooltip("Turns the model to point along +Z in the hand (models of packs that point elsewhere; Build Weapons).")]
         [SerializeField] private Quaternion _gripRotation = Quaternion.identity;
+        [SerializeField] private bool _alignWithAim;
+        [SerializeField, Min(0.1f)] private float _heldScale = 1f;
+        [SerializeField] private Vector3 _muzzleOffset;
+        [SerializeField] private bool _shoulderMount;
+        [SerializeField] private bool _matchPickupSize;
+
+        public bool AlignWithAim => _alignWithAim;
+        public bool ShoulderMount => _shoulderMount;
+        public bool MatchPickupSize => _matchPickupSize;
+        public float HeldScale => _heldScale > 0f ? _heldScale : 1f;
+        public Vector3 MuzzlePosition => _muzzle != null ? _muzzle.position + transform.TransformVector(_muzzleOffset) : transform.position;
 
         /// <summary>End of the barrel, facing along it; null for melee.</summary>
         public Transform Muzzle => _muzzle;

@@ -28,7 +28,7 @@ Weapon/awm/attack1.wav	01_Оружие\03_Снайперки\AWM_7.62\Выстр
 Weapon/awm/attack2.wav	01_Оружие\03_Снайперки\AWM_7.62\Выстрел\_ImportSounds\M200_1p_03.wav
 Weapon/lynx/attack1.wav	01_Оружие\03_Снайперки\Lynx_7.62\Выстрел\_ImportSounds\AntiMaterialRifle_1p_01.wav
 Weapon/lynx/attack2.wav	01_Оружие\03_Снайперки\Lynx_7.62\Выстрел\_ImportSounds\AntiMaterialRifle_1p_03.wav
-Weapon/dragunov/attack1.wav	01_Оружие\03_Снайперки\Драгунов_7.62\Выстрел\Gun_SniperRifle_Shot01.wav
+Weapon/dragunov/alternate.wav	01_Оружие\03_Снайперки\Драгунов_7.62\Выстрел\Gun_SniperRifle_Shot01.wav
 Weapon/dragunov/attack2.wav	01_Оружие\03_Снайперки\Драгунов_7.62\Выстрел\_добавлено_2026-10-17\HellfireRifle_1p_01.wav
 Weapon/hunter_sniper/attack1.wav	01_Оружие\03_Снайперки\Охотничья_5.45\Выстрел\_добавлено_2026-10-16\Gun_SniperRifle_Shot02.wav
 Weapon/hunter_sniper/attack2.wav	01_Оружие\03_Снайперки\Охотничья_5.45\Выстрел\_добавлено_2026-10-16\Gun_SniperRifle_Shot07.wav

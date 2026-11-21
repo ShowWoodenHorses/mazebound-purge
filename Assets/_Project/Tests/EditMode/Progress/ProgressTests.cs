@@ -48,6 +48,25 @@ namespace Purge.Tests.EditMode.Progress
         // ------------------------------------------------------------ Money (stage 6d)
 
         [Test]
+        public void SurvivalPreservesRecordPairAndDoesNotUnlockCampaign()
+        {
+            _progress.SaveRun("first", 0, new RunSnapshot { Survival = true, Wave = 39 });
+            Assert.That(_progress.LoadRun().Survival, Is.True);
+            Assert.That(_progress.LoadRun().NextWave, Is.EqualTo(40));
+            Assert.That(_progress.RecordSurvival("forest", new LevelResult(false, 10, waves: 7, money: 12, score: 1500)), Is.True);
+            Assert.That(_progress.RecordSurvival("forest", new LevelResult(false, 8, waves: 9, money: 8, score: 1400)), Is.False);
+            var other = new SaveData();
+            other.Survival.Add(new SurvivalRecord { LocationId = "forest", BestScore = 1600, BestWave = 6 });
+            _save.Data.MergeFrom(other);
+            Assert.That(_progress.FindSurvival("forest").BestScore, Is.EqualTo(1600));
+            Assert.That(_progress.FindSurvival("forest").BestWave, Is.EqualTo(6));
+            Assert.That(_progress.Money, Is.EqualTo(20));
+            Assert.That(_progress.HasRun, Is.False);
+            Assert.That(_progress.IsCompleted("first"), Is.False);
+            Assert.That(_progress.IsUnlocked("second"), Is.False);
+        }
+
+        [Test]
         public void RunMoney_IsKeptOnDeathAndWin_AddMoneySaves()
         {
             _progress.RecordRun("first", new LevelResult(false, 3, money: 10));

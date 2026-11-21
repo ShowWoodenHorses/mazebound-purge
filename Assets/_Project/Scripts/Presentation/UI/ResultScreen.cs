@@ -81,7 +81,7 @@ namespace Purge.Presentation.UI
         /// given (already in the language's letter case).
         /// </summary>
         /// <param name="canDouble">The ×2 offer is shown (the rows' reveal ends before it appears).</param>
-        public void SetResult(bool completed, LevelResult? result, string levelName, bool hasNext, bool canDouble)
+        public void SetResult(bool completed, LevelResult? result, string levelName, bool hasNext, bool canDouble, bool survival = false)
         {
             _title.text = Text(completed ? TextKeys.ResultComplete : TextKeys.ResultFailed);
             if (_levelName != null) _levelName.text = levelName ?? string.Empty;
@@ -94,7 +94,7 @@ namespace Purge.Presentation.UI
             _shown[Time] = r.Time > 0f;
             _shown[Score] = r.Score > 0 || r.WaveCount > 0;
             _shown[Money] = true;
-            SetValue(Waves, r.Waves + " / " + r.WaveCount);
+            SetValue(Waves, survival ? r.Waves.ToString() : r.Waves + " / " + r.WaveCount);
             SetValue(Kills, r.Kills.ToString());
             SetValue(Time, TimeFormat.ToText(r.Time));
             SetValue(Score, r.Score.ToString());

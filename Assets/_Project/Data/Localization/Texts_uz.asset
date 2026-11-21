@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -1065,4 +1075,15 @@ MonoBehaviour:
     faollashadi."
   - "Evolyutsiyani ochish uchun \u25C6 raqami bir xil ikki kartani ham eng yuqori
     darajaga chiqar."
+  - DARAJALAR
+  - OMON QOLISH
+  - REKORDLAR
+  - "Shaxsiy rekord hali yo\u2018q"
+  - "Rekord {0} \xB7 Yakunlangan to\u2018lqinlar {1}"
+  - "Eng yaxshi o\u2018yinchilar"
+  - Onlayn reyting mavjud emas
+  - "Reyting jadvali bo\u2018sh"
+  - "TO\u2018LQIN {0}"
+  - "Iloji boricha ko\u2018p to\u2018lqindan omon qoling. Har o\u2018ninchi to\u2018lqinda
+    boss chiqadi. Har bir joyning o\u2018z rekordi bor."
   _missing: []

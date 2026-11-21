@@ -297,6 +297,7 @@ namespace Purge.Gameplay.Run
             var difficulty = _horde != null ? _horde.Difficulty : options.Difficulty;
             run.Difficulty = difficulty != null ? (int)difficulty.Level : 0;
             run.ArenaClosed = options.CloseArena;
+            run.Survival = options.Survival;
             foreach (var booster in options.Boosters)
                 if (booster != null && !string.IsNullOrEmpty(booster.Id)) run.Boosters.Add(booster.Id);
             run.FreeRerolls = _cards.FreeRerolls;
@@ -322,7 +323,7 @@ namespace Purge.Gameplay.Run
 
         private void OnWaveCleared(int index)
         {
-            if (index + 1 >= _waves.WaveCount) return; // the last one: the run ends
+            if (!_waves.IsSurvival && index + 1 >= _waves.WaveCount) return; // the last one: the run ends
             Reached?.Invoke(Take(index, inProgress: false));
         }
     }

@@ -206,6 +206,10 @@ namespace Purge.Gameplay.Horde
         private bool _flowDirty = true;
         private bool _subscribed;
         private int _highWater;
+        private readonly bool _survival;
+        internal float WaveHealthFactor { get; set; } = 1f;
+        internal float WaveDamageFactor { get; set; } = 1f;
+        internal float? WaveChampionChance { get; set; }
         private readonly float _healthFactor; // difficulty
 
         public HordeSystem(LevelData level, LevelGrid grid, LevelPassability passability, DoorSystem doors,
@@ -222,6 +226,7 @@ namespace Purge.Gameplay.Horde
             Horde = level.Horde;
             Stress = level.StressTest;
             Difficulty = options?.Difficulty != null ? options.Difficulty : Horde != null ? Horde.Difficulty : null;
+            _survival = options?.Survival == true;
             _healthFactor = Difficulty != null ? Difficulty.Health : 1f;
             _kinds = CreateKinds(Horde);
             Perception = new HordePerception(this, grid, doors, sounds, visibility, player, smoke);
@@ -532,8 +537,9 @@ namespace Purge.Gameplay.Horde
         private void RollChampion(int slot)
         {
             var rules = Champions;
-            if (rules == null || rules.Chance <= 0f || rules.Affixes.Length == 0) return;
-            if (_random.NextDouble() >= rules.Chance) return;
+            var chance = WaveChampionChance ?? rules?.Chance ?? 0f;
+            if (chance <= 0f || rules == null || rules.Affixes.Length == 0) return;
+            if (_random.NextDouble() >= chance) return;
             MakeChampion(slot, _random.NextInt(rules.Affixes.Length));
         }
 
@@ -1139,15 +1145,14 @@ namespace Purge.Gameplay.Horde
             ref var traversal = ref _stairsInUse[agent];
             if (traversal.Active)
             {
-                var arrived = traversal.Advance(deltaTime);
-                _positions[agent] = new Vector2(traversal.Position.x, traversal.Position.z);
-                _pace[agent] = arrived ? HordePace.Still : HordePace.Walk;
-                if (arrived && _passability.IsWalkable(traversal.Destination, false) &&
-                    traversal.Destination != _player.Cell)
+                if (!traversal.Arrived)
                 {
-                    _floors[agent] = traversal.Destination.Floor;
-                    traversal = default;
+                    traversal.Advance(deltaTime);
+                    _positions[agent] = new Vector2(traversal.Position.x, traversal.Position.z);
+                    _pace[agent] = HordePace.Walk;
+                    if (!traversal.Arrived) return;
                 }
+                LeaveStair(agent, ref traversal, deltaTime);
                 return;
             }
 
@@ -1159,6 +1164,89 @@ namespace Purge.Gameplay.Horde
             }
             else if (Perception.TryInvestigate(agent, cell, out var noiseStep) && _passability.IsWalkable(noiseStep, false))
                 FollowStairPath(agent, cell, noiseStep, deltaTime);
+        }
+
+        private void LeaveStair(int agent, ref StairTraversal traversal, float deltaTime)
+        {
+            int floor = traversal.Destination.Floor;
+            if (!_passability.IsWalkable(traversal.Destination, false)) return;
+            _floors[agent] = floor;
+            var position = _positions[agent];
+            var stats = StatsOf(agent);
+            if (FootprintFree(position, stats.Radius, floor))
+            {
+                traversal = default;
+                return;
+            }
+
+            if (!traversal.ExitStep.HasValue)
+            {
+                if (Time < traversal.RetryExitAt) return;
+                var cell = PlayerMovement.CellOf(position, floor);
+                if (!TryStairExitStep(cell, stats.Radius, out var step))
+                {
+                    traversal.RetryExitAt = Time + 0.5f;
+                    return;
+                }
+                traversal.ExitStep = step;
+            }
+
+            var next = traversal.ExitStep.Value;
+            if (!_passability.IsWalkable(next, false))
+            {
+                traversal.ExitStep = null;
+                return;
+            }
+
+            var target = new Vector2(next.X, next.Y);
+            var moved = Vector2.MoveTowards(position, target, _speed[agent] * _speedFactor[agent] * deltaTime);
+            _positions[agent] = moved;
+            _pace[agent] = HordePace.Walk;
+            Turn(agent, (target - position).normalized, stats, deltaTime);
+            if (moved == target) traversal.ExitStep = null;
+        }
+
+        private bool TryStairExitStep(GridPosition start, float radius, out GridPosition step)
+        {
+            // Stair landings are single-cell links. Find a short cardinal route to the first full footprint,
+            // through walkable landing cells only. The search runs when a step is chosen, not during traversal.
+            const int reach = 4;
+            const int width = reach * 2 + 1;
+            Span<int> queue = stackalloc int[width * width];
+            Span<int> first = stackalloc int[width * width];
+            first.Fill(-1);
+            int root = reach * width + reach;
+            int tail = 1;
+            queue[0] = root;
+            first[root] = root;
+            for (int head = 0; head < tail; head++)
+            {
+                int current = queue[head];
+                int x = current % width;
+                int y = current / width;
+                var cell = new GridPosition(start.X + x - reach, start.Y + y - reach, start.Floor);
+                if (current != root && FootprintFree(new Vector2(cell.X, cell.Y), radius, cell.Floor))
+                {
+                    int exit = first[current];
+                    step = new GridPosition(start.X + exit % width - reach, start.Y + exit / width - reach, start.Floor);
+                    return true;
+                }
+
+                for (int direction = 0; direction < 4; direction++)
+                {
+                    int nx = x + (direction == 0 ? 1 : direction == 1 ? -1 : 0);
+                    int ny = y + (direction == 2 ? 1 : direction == 3 ? -1 : 0);
+                    if ((uint)nx >= width || (uint)ny >= width) continue;
+                    int index = ny * width + nx;
+                    if (first[index] >= 0 || !_passability.IsWalkable(
+                        new GridPosition(start.X + nx - reach, start.Y + ny - reach, start.Floor), false)) continue;
+                    first[index] = current == root ? index : first[current];
+                    queue[tail++] = index;
+                }
+            }
+
+            step = default;
+            return false;
         }
 
         private void FollowStairPath(int agent, GridPosition cell, GridPosition next, float deltaTime)
@@ -1320,7 +1408,8 @@ namespace Purge.Gameplay.Horde
                 return;
 
             var desired = toPlayerDirection;
-            if (_states[i] == HordeAgentState.Moving && distance > DirectChaseDistance + (stats.Radius > 0.5f ? stats.Radius : 0f))
+            if (_states[i] == HordeAgentState.Moving &&
+                (_stairsFlow != null || distance > DirectChaseDistance + (stats.Radius > 0.5f ? stats.Radius : 0f)))
             {
                 var next = flow == _bodyFlow ? BodyNext(CellIndex(position)) : flow.NextAt(CellIndex(position));
                 if (next >= 0)
@@ -2099,6 +2188,7 @@ namespace Purge.Gameplay.Horde
         private int Place(int cell, bool emerge, MonsterPerception? perception, Vector2? exact = null, int forcedKind = -1,
             float emergeTime = -1f, int? floor = null)
         {
+            if (_survival && AliveCount >= Core.Waves.SurvivalWaves.MaxAlive) return -1;
             var slot = FreeSlot();
             if (slot < 0) return -1;
 
@@ -2110,7 +2200,7 @@ namespace Purge.Gameplay.Horde
             _positions[slot] = exact ?? new Vector2(cell % _grid.Width, cell / _grid.Width) + jitter;
             _facing[slot] = (float)(_random.NextDouble() * Math.PI * 2.0);
             _kind[slot] = (byte)kind;
-            _health[slot] = stats.MaxHp * _healthFactor;
+            _health[slot] = stats.MaxHp * _healthFactor * WaveHealthFactor;
             _maxHealth[slot] = _health[slot];
             _affix[slot] = 0;
             _attackRate[slot] = 1f;
@@ -2118,7 +2208,7 @@ namespace Purge.Gameplay.Horde
             _states[slot] = _emergeTime[slot] > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
             _protectionUntil[slot] = 0f;
             _damageReduction[slot] = 0f;
-            _damageFactor[slot] = 1f;
+            _damageFactor[slot] = WaveDamageFactor;
             _enraged[slot] = false;
             _stateStart[slot] = Time;
             _attackTimer[slot] = 0f;

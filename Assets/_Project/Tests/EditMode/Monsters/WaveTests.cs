@@ -172,7 +172,43 @@ namespace Purge.Tests.EditMode.Monsters
 
         // ---------------------------------------------------------------- the wave system
 
-        private (LevelRuntime Runtime, HordeSystem Horde, WaveSystem Waves) Run(WaveScenario scenario, DifficultyDefinition difficulty = null)
+        [Test]
+        public void SurvivalRestoresScalingAndContinuesPastTheCampaign()
+        {
+            var scenario = Scenario(new WaveDefinition(20f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f));
+            var fresh = new SurvivalWaves(scenario, null, 5);
+            foreach (var sample in new[] { (Index: 0, Count: 10), (Index: 4, Count: 46),
+                         (Index: 9, Count: 98), (Index: 14, Count: 141), (Index: 16, Count: 150) })
+                Assert.That(fresh.Generate(fresh.Definition(sample.Index), sample.Index, SurvivalWaves.MaxAlive),
+                    Has.Count.EqualTo(sample.Count));
+            Assert.That(fresh.HealthFactor(16), Is.EqualTo(1f));
+            Assert.That(fresh.HealthFactor(17), Is.EqualTo(1.12f).Within(0.001f));
+            Assert.That(fresh.DamageFactor(17), Is.EqualTo(1.05f).Within(0.001f));
+            var late = fresh.Definition(39);
+            Assert.That(fresh.Generate(late, 39, SurvivalWaves.MaxAlive), Has.Count.EqualTo(150));
+            Assert.That(fresh.HealthFactor(39), Is.GreaterThan(1f));
+            Assert.That(fresh.DamageFactor(39), Is.GreaterThan(1f));
+            Assert.That(fresh.MoneyBonus(39) - fresh.MoneyBonus(38),
+                Is.EqualTo(fresh.MoneyBonus(38) - fresh.MoneyBonus(37)).Within(0.001f));
+            Assert.That(SurvivalWaves.ChampionChance(29), Is.EqualTo(0.3f).Within(0.0001f));
+
+            var (runtime, horde, waves) = Run(scenario, survival: true);
+            waves.ResumeAt(39);
+            Assert.That(waves.StartNextWave(), Is.True);
+            Assert.That(waves.WaveIndex, Is.EqualTo(39));
+            Assert.That(waves.WaveSize, Is.EqualTo(150));
+            for (int i = 0; i < 30 && waves.Phase == WavePhase.Running; i++)
+            {
+                runtime.Tick(Dt);
+                KillAll(horde);
+            }
+            Assert.That(waves.Phase, Is.EqualTo(WavePhase.Pause));
+            Assert.That(waves.StartNextWave(), Is.True);
+            Assert.That(waves.WaveIndex, Is.EqualTo(40));
+        }
+
+        private (LevelRuntime Runtime, HordeSystem Horde, WaveSystem Waves) Run(WaveScenario scenario,
+            DifficultyDefinition difficulty = null, bool survival = false)
         {
             var horde = Create<HordeDefinition>();
             horde.ConfigureCapacity(200, 8);
@@ -186,12 +222,13 @@ namespace Purge.Tests.EditMode.Monsters
             var player = new PlayerSystem(_level, _playerDefinition, new FakePlayerInput(), passability, new OccupancyMap(grid),
                 new LevelLaunchOptions(startIndex: 0), new Aim());
             var health = new PlayerHealth(_playerDefinition);
-            var system = new HordeSystem(_level, grid, passability, doors, player, health, options: new LevelLaunchOptions(seed: 5));
+            var options = new LevelLaunchOptions(seed: 5, survival: survival);
+            var system = new HordeSystem(_level, grid, passability, doors, player, health, options: options);
             system.GodMode = true;
             _pickups = new PickupSystem(_level, player, health, new PlayerInventory(), new WeaponSystem(new FakePlayerInput(), _playerDefinition),
                 new SoundEventBus());
             _wallet = new RunWallet(system);
-            var waves = new WaveSystem(_level, system, player, new LevelLaunchOptions(seed: 5), _pickups, _wallet);
+            var waves = new WaveSystem(_level, system, player, options, _pickups, _wallet);
             var runtime = new LevelRuntime(_level, new ILevelLoadStep[] { player, _pickups, system, _wallet, waves },
                 new ILevelTickable[] { _pickups, system, waves });
             _rule = new WavesClearedRule(waves, runtime);

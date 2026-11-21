@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Purge.Application.Levels;
 using Purge.Application.Meta;
+using Purge.Application.Platform;
 using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Boosters;
@@ -39,6 +42,8 @@ namespace Purge.Presentation.UI
         private readonly LocalizationService _texts;
         private readonly Application.Flow.GameFlow _flow;
         private readonly MenuPodiumPresenter _podium;
+        private readonly PlatformService _platform;
+        private CancellationTokenSource _recordsRequest;
 
         private readonly List<WeaponDefinition> _weapons = new List<WeaponDefinition>();
         private readonly List<ThrowableDefinition> _throwables = new List<ThrowableDefinition>();
@@ -53,13 +58,15 @@ namespace Purge.Presentation.UI
         private int _location;
         private int _difficulty;
         private bool _arena;
+        private bool _survival;
+        private bool _records;
         private int _weapon; // 0 = the base pistol, i = _weapons[i - 1]
         private int _throwable; // 0 = none, i = _throwables[i - 1]
         private bool _initialized;
 
         public RunSetupPresenter(UIRoot ui, RunPreparation preparation, IProgressService progress, ILevelCatalog catalog,
             SharedDefinitionsService shared, LocalizationService texts, Application.Flow.GameFlow flow,
-            MenuPodiumPresenter podium = null)
+            MenuPodiumPresenter podium = null, PlatformService platform = null)
         {
             _ui = ui;
             _preparation = preparation;
@@ -69,6 +76,7 @@ namespace Purge.Presentation.UI
             _texts = texts;
             _flow = flow;
             _podium = podium;
+            _platform = platform;
         }
 
         private RunSetupScreen Screen => _ui != null ? _ui.RunSetup : null;
@@ -91,6 +99,7 @@ namespace Purge.Presentation.UI
             var screen = Screen;
             screen.BackClicked += OnBack;
             screen.FightClicked += OnFight;
+            screen.ModeChanged += OnModeChanged;
             screen.LocationClicked += OnLocation;
             screen.DifficultyClicked += OnDifficulty;
             screen.ArenaChanged += OnArena;
@@ -103,6 +112,7 @@ namespace Purge.Presentation.UI
 
         public void Dispose()
         {
+            CancelRecordsRequest();
             if (!_initialized) return;
             _initialized = false;
             _texts.LanguageChanged -= OnLanguageChanged;
@@ -110,6 +120,7 @@ namespace Purge.Presentation.UI
             if (screen == null) return; // the scene is gone on quit
             screen.BackClicked -= OnBack;
             screen.FightClicked -= OnFight;
+            screen.ModeChanged -= OnModeChanged;
             screen.LocationClicked -= OnLocation;
             screen.DifficultyClicked -= OnDifficulty;
             screen.ArenaChanged -= OnArena;
@@ -120,12 +131,14 @@ namespace Purge.Presentation.UI
         }
 
         /// <summary>Fills the screen for <paramref name="levelId"/> (the next level to play) with the last preparation.</summary>
-        public void Open(string levelId)
+        public void Open(string levelId, bool records = false, bool survival = false)
         {
             if (Screen == null) return;
             IsOpen = true;
+            _records = records;
+            _survival = survival || records;
             _location = LocationIndexOf(levelId);
-            _difficulty = HighestOpenDifficulty(LevelAt(_location));
+            _difficulty = _survival ? 0 : HighestOpenDifficulty(LevelAt(_location));
             _arena = false;
 
             _preparation.GetStartWeapons(_weapons);
@@ -148,6 +161,7 @@ namespace Purge.Presentation.UI
 
         public void Close()
         {
+            CancelRecordsRequest();
             if (!IsOpen) return;
             IsOpen = false;
             _podium?.EndPreview();
@@ -165,16 +179,34 @@ namespace Purge.Presentation.UI
             var screen = Screen;
             if (screen == null) return;
             screen.SetMoney(_progress.Money);
+            screen.SetMode(_survival, _records);
 
             for (var i = 0; i < screen.LocationCount && i < Locations.Length; i++)
             {
                 var level = LevelAt(i);
-                var open = level != null && _progress.IsUnlocked(level.LevelId);
+                var open = level != null && (_survival || _progress.IsUnlocked(level.LevelId));
                 screen.SetLocation(i, _texts.Get(TextKeys.LocationPrefix + Locations[i].ToString().ToLowerInvariant()),
                     _texts.Get(TextKeys.SetupSoon), level != null, open, i == _location);
             }
 
             var chosen = LevelAt(_location);
+            if (_records)
+            {
+                screen.SetArena(false, false);
+                var location = Locations[_location];
+                var record = _progress.FindSurvival(location.ToString().ToLowerInvariant());
+                var personal = record == null
+                    ? _texts.Get(TextKeys.SurvivalRecordsEmpty)
+                    : _texts.Format(TextKeys.SurvivalRecordsPersonal, record.BestScore, record.BestWave);
+                screen.SetRecords(personal);
+                CancelRecordsRequest();
+                if (_platform?.SurvivalLeaderboards is { } boards && chosen != null)
+                {
+                    _recordsRequest = new CancellationTokenSource();
+                    ShowLeaderboardAsync(boards, location, personal, _recordsRequest.Token).Forget();
+                }
+                return;
+            }
             for (var d = 0; d < screen.DifficultyCount && d < DifficultyNames.Length; d++)
             {
                 var open = chosen != null && _progress.IsDifficultyOpen(chosen.LevelId, d);
@@ -182,7 +214,7 @@ namespace Purge.Presentation.UI
                 screen.SetDifficulty(d, _texts.Get(TextKeys.DifficultyPrefix + DifficultyNames[d]), open, completed, d == _difficulty);
             }
 
-            screen.SetArena(_difficulty >= 1, _arena && _difficulty >= 1);
+            screen.SetArena(!_survival && _difficulty >= 1, _arena && _difficulty >= 1);
 
             _items.Clear();
             _items.Add(new RunSetupScreen.Item { Icon = WeaponIcon(_preparation.BaseWeapon), Plain = true });
@@ -220,20 +252,60 @@ namespace Purge.Presentation.UI
 
             screen.SetBoosters(_rows);
             var total = Total();
-            screen.SetTotal(total, chosen != null && _progress.IsDifficultyOpen(chosen.LevelId, _difficulty) &&
+            screen.SetTotal(total, chosen != null && (_survival || _progress.IsDifficultyOpen(chosen.LevelId, _difficulty)) &&
                                    total <= _progress.Money);
         }
 
         private void ShowWeapon() => _podium?.Preview(_weapon > 0 ? _weapons[_weapon - 1] : null);
 
+        private void CancelRecordsRequest()
+        {
+            _recordsRequest?.Cancel();
+            _recordsRequest?.Dispose();
+            _recordsRequest = null;
+        }
+
+        private async UniTask ShowLeaderboardAsync(ISurvivalLeaderboards boards, LevelLocation location, string personal,
+            CancellationToken cancellation)
+        {
+            SurvivalLeaderboardRow[] rows;
+            try
+            {
+                // Rapidly switching location tiles only requests the last selected table.
+                await UniTask.Delay(350, ignoreTimeScale: true, cancellationToken: cancellation);
+                rows = await boards.GetTopAsync(location, cancellation);
+            }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { return; }
+            catch (Exception) { rows = null; }
+            if (cancellation.IsCancellationRequested) return;
+            var online = rows == null ? _texts.Get(TextKeys.SurvivalRecordsUnavailable) :
+                rows.Length == 0 ? _texts.Get(TextKeys.SurvivalRecordsOnlineEmpty) :
+                _texts.Get(TextKeys.SurvivalRecordsPlatform) + "\n" +
+                string.Join("\n", rows.Where(row => row != null)
+                    .Select(row => $"{row.Rank}. {row.Name}  ·  {row.Score}"));
+            Screen?.SetRecords(personal + "\n\n" + online);
+        }
+
         // ---------------------------------------------------------------- events
+
+        private void OnModeChanged(bool survival)
+        {
+            if (_survival == survival || _records) return;
+            _survival = survival;
+            _arena = false;
+            var level = LevelAt(_location);
+            if (!_survival && (level == null || !_progress.IsUnlocked(level.LevelId))) _location = 0;
+            _difficulty = _survival ? 0 : HighestOpenDifficulty(LevelAt(_location));
+            DropUnavailableBoosters();
+            Refresh();
+        }
 
         private void OnLocation(int index)
         {
             var level = LevelAt(index);
-            if (level == null || !_progress.IsUnlocked(level.LevelId)) return;
+            if (level == null || !_survival && !_progress.IsUnlocked(level.LevelId)) return;
             _location = index;
-            _difficulty = HighestOpenDifficulty(level);
+            _difficulty = _survival ? 0 : HighestOpenDifficulty(level);
             DropUnavailableBoosters();
             Refresh();
         }
@@ -291,7 +363,7 @@ namespace Purge.Presentation.UI
         private void OnFight()
         {
             var level = LevelAt(_location);
-            if (level == null || !_progress.IsDifficultyOpen(level.LevelId, _difficulty)) return;
+            if (_records || level == null || !_survival && !_progress.IsDifficultyOpen(level.LevelId, _difficulty)) return;
             var cost = Total();
             if (cost > _progress.Money) return;
 
@@ -312,7 +384,7 @@ namespace Purge.Presentation.UI
                 closeArena: _arena && _difficulty >= 1, skills: _preparation.Skills,
                 secondWeapon: _launchBoosters.Any(booster => IsSpecial(booster, SpecialBoosterKind.SecondBarrel))
                     ? (_secondWeapon == 0 ? _preparation.BaseWeapon : _weapons[_secondWeapon - 1]) : null,
-                fallbackGrenade: _preparation.FallbackGrenade);
+                fallbackGrenade: _preparation.FallbackGrenade, survival: _survival);
             FightRequested?.Invoke(level.LevelId, options, cost);
         }
 

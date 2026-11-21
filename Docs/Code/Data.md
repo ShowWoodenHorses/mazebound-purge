@@ -39,3 +39,4 @@
 
 - **11г:** Weapon/ThrowableDefinition содержат `_upgradeCosts` (цены перехода на уровни 2–10/2–5), `UpgradeCost(targetLevel)` возвращает 0 для отсутствующего уровня. Импорт — Build Arsenal; OwnedItem.Level/Forks сохраняют покупку и выбор.
 - RunWeapon.Shots сохраняет счётчик выстрелов; старые сейвы получают 0. WeaponDefinition хранит кривую урона, развилки и параметры эффектов; ThrowableDefinition — кривые урона/радиуса/стопки и флаг запрета прокачки.
+- **Выживание (16а)**: `RunSave.Mode` восстанавливает режим через `RunSnapshot.Survival`. `SurvivalRecord.LocationId` — имя `LevelLocation` в нижнем регистре. При слиянии вся пара «очки, волны» приходит из одного забега. При равных очках выбирается большее число завершённых волн.

@@ -129,6 +129,66 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
+        public IEnumerator SurvivalOpensLockedCastleAndStartsTheTenthWaveBoss() => Async(async () =>
+        {
+            var save = _container.Resolve<SaveService>();
+            var progress = _container.Resolve<IProgressService>();
+            var ui = _container.Resolve<UIRoot>();
+            save.Data.Levels.Clear();
+            save.Data.Survival.Clear();
+            save.Data.Run = null;
+            save.Data.Loadout = null;
+            save.Data.Arsenal.Clear();
+            save.Data.Arsenal.Add(new OwnedItem { Id = "desert" });
+            Assert.That(progress.IsUnlocked("Level_Castle_01"), Is.False);
+
+            ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "SurvivalButton").onClick.Invoke();
+            Assert.That(ui.RunSetup.IsVisible, Is.True);
+            var castle = ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "Location1");
+            Assert.That(castle.interactable, Is.True);
+            castle.onClick.Invoke();
+            ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "FightButton").onClick.Invoke();
+            await WaitFor(() => _flow.State == GameFlowState.Playing || _flow.State == GameFlowState.Error);
+            Assert.That(_flow.State, Is.EqualTo(GameFlowState.Playing), _flow.ErrorMessage);
+            Assert.That(_flow.CurrentLevelId, Is.EqualTo("Level_Castle_01"));
+            Assert.That(_flow.CurrentLaunch.Survival, Is.True);
+
+            var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+            var horde = level.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            var drops = level.Resolve<Purge.Gameplay.Drops.DropSystem>();
+            var rewards = new List<Purge.Gameplay.Drops.DropKind>();
+            drops.ItemDropped += (roll, _) => rewards.Add(roll.Kind);
+            Assert.That(waves.StartNextWave(), Is.True);
+            Assert.That(waves.RemainingCount, Is.EqualTo(10));
+            horde.Tick(0.05f);
+            waves.Tick(0.05f);
+            var living = Enumerable.Range(0, horde.HighWater)
+                .Where(slot => Purge.Gameplay.Horde.HordeSystem.IsAlive(horde.States[slot])).ToArray();
+            Assert.That(living.Length, Is.GreaterThanOrEqualTo(3));
+            foreach (var slot in living.Take(2)) Assert.That(horde.Damage(slot, 100000f), Is.True);
+            rewards.Clear();
+            Assert.That(horde.Damage(living[2], 100000f), Is.True);
+            Assert.That(rewards, Does.Contain(Purge.Gameplay.Drops.DropKind.Ammo));
+            Assert.That(rewards, Does.Contain(Purge.Gameplay.Drops.DropKind.Weapon));
+            foreach (var slot in living.Skip(3)) horde.Damage(slot, 100000f);
+
+            waves.ResumeAt(9);
+            level.Resolve<Purge.Gameplay.Run.RunScore>().Restore(9, 9, 4500);
+            Assert.That(waves.StartNextWave(), Is.True);
+            Assert.That(waves.IsBossWave, Is.True);
+            Assert.That(waves.RemainingCount, Is.EqualTo(98), "The boss and its escort count toward the wave total.");
+            var boss = level.Resolve<Purge.Gameplay.Horde.BossSystem>();
+            await WaitFor(() => boss.IsBossAlive);
+            Assert.That(progress.LoadRun().Survival, Is.True);
+            _flow.FailLevel();
+            Assert.That(progress.FindSurvival("castle").BestScore, Is.EqualTo(4500));
+            Assert.That(progress.FindSurvival("castle").BestWave, Is.EqualTo(9));
+            Assert.That(progress.IsUnlocked("Level_Castle_01"), Is.False);
+            Assert.That(progress.HasRun, Is.False);
+        });
+
+        [UnityTest]
         public IEnumerator GameplayHints_SettingsAndPausePersistTheSeenHint() => Async(async () =>
         {
             var ui = _container.Resolve<UIRoot>();

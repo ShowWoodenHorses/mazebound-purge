@@ -16,6 +16,8 @@ namespace Purge.Presentation.UI
     {
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _playButton;
+        [SerializeField] private Button _recordsButton;
+        [SerializeField] private Button _survivalButton;
         [SerializeField] private Button _arsenalButton;
         [SerializeField] private Button _characterButton;
         [SerializeField] private GameObject _arsenalDot;
@@ -36,6 +38,8 @@ namespace Purge.Presentation.UI
 
         public event Action ContinueClicked;
         public event Action PlayClicked;
+        public event Action RecordsClicked;
+        public event Action SurvivalClicked;
         public event Action ArsenalClicked;
         public event Action CharacterClicked;
         public event Action SettingsClicked;
@@ -47,6 +51,8 @@ namespace Purge.Presentation.UI
         {
             Bind(_continueButton, () => ContinueClicked?.Invoke());
             Bind(_playButton, () => PlayClicked?.Invoke());
+            Bind(_recordsButton, () => RecordsClicked?.Invoke());
+            Bind(_survivalButton, () => SurvivalClicked?.Invoke());
             Bind(_arsenalButton, () => ArsenalClicked?.Invoke());
             Bind(_characterButton, () => CharacterClicked?.Invoke());
             Bind(_settingsButton, () => SettingsClicked?.Invoke());

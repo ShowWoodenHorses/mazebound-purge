@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -1064,4 +1074,15 @@ MonoBehaviour:
   - La granata stordisce e poi acceca i mostri.
   - Premi Lancia per posare una mina ai tuoi piedi. Si arma in mezzo secondo.
   - "Porta al massimo le due carte con lo stesso numero \u25C6 per sbloccare l\u2019evoluzione."
+  - LIVELLI
+  - SOPRAVVIVENZA
+  - RECORD
+  - Nessun record personale
+  - "Record {0} \xB7 Ondate completate {1}"
+  - Migliori giocatori
+  - Classifica online non disponibile
+  - "La classifica \xE8 vuota"
+  - ONDATA {0}
+  - "Sopravvivi a pi\xF9 ondate che puoi. Ogni dieci ondate compare un boss. Ogni
+    luogo ha il proprio record."
   _missing: []

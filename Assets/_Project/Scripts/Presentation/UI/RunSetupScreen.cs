@@ -23,6 +23,13 @@ namespace Purge.Presentation.UI
         [SerializeField] private UiStyle _style;
         [SerializeField] private Button _backButton;
         [SerializeField] private UiButton _fightButton;
+        [SerializeField] private UiButton _levelsButton;
+        [SerializeField] private UiButton _survivalButton;
+        [SerializeField] private GameObject _difficultyTitle;
+        [SerializeField] private GameObject _preparationPanel;
+        [SerializeField] private GameObject _totalLabel;
+        [SerializeField] private GameObject _totalCoin;
+        [SerializeField] private TMP_Text _records;
         [SerializeField] private TMP_Text _money;
         [SerializeField] private TMP_Text _total;
 
@@ -52,6 +59,7 @@ namespace Purge.Presentation.UI
 
         public event Action BackClicked;
         public event Action FightClicked;
+        public event Action<bool> ModeChanged;
         public event Action<int> LocationClicked;
         public event Action<int> DifficultyClicked;
         public event Action<bool> ArenaChanged;
@@ -85,9 +93,30 @@ namespace Purge.Presentation.UI
         public int LocationCount => _locations.Length;
         public int DifficultyCount => _difficulties.Length;
 
+        public void SetMode(bool survival, bool records)
+        {
+            if (_levelsButton != null) { _levelsButton.gameObject.SetActive(!records); _levelsButton.Accent = !survival; }
+            if (_survivalButton != null) { _survivalButton.gameObject.SetActive(!records); _survivalButton.Accent = survival; }
+            if (_difficultyTitle != null) _difficultyTitle.SetActive(!survival);
+            foreach (var button in _difficulties) button.gameObject.SetActive(!survival);
+            if (_preparationPanel != null) _preparationPanel.SetActive(!records);
+            if (_totalLabel != null) _totalLabel.SetActive(!records);
+            if (_totalCoin != null) _totalCoin.SetActive(!records);
+            if (_total != null) _total.gameObject.SetActive(!records);
+            if (_fightButton != null) _fightButton.gameObject.SetActive(!records);
+            if (_records != null) _records.gameObject.SetActive(records);
+        }
+
+        public void SetRecords(string text)
+        {
+            if (_records != null) _records.text = text;
+        }
+
         private void Awake()
         {
             Bind(_backButton, () => BackClicked?.Invoke());
+            Bind(_levelsButton, () => ModeChanged?.Invoke(false));
+            Bind(_survivalButton, () => ModeChanged?.Invoke(true));
             Bind(_fightButton, () => FightClicked?.Invoke());
             for (var i = 0; i < _locations.Length; i++)
             {

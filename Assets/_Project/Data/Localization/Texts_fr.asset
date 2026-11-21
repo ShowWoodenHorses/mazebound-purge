@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -1074,4 +1084,15 @@ MonoBehaviour:
     demi-seconde."
   - "Monte au maximum les deux cartes avec le m\xEAme num\xE9ro \u25C6 pour d\xE9bloquer
     leur \xE9volution."
+  - NIVEAUX
+  - SURVIE
+  - RECORDS
+  - Aucun record personnel
+  - "Record {0} \xB7 Vagues termin\xE9es {1}"
+  - Meilleurs joueurs
+  - Classement en ligne indisponible
+  - Le classement est vide
+  - VAGUE {0}
+  - "Survivez \xE0 autant de vagues que possible. Toutes les dix vagues, un boss
+    appara\xEEt. Chaque lieu a son propre record."
   _missing: []

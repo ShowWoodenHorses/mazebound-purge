@@ -119,11 +119,12 @@ namespace Purge.Presentation.UI
             }
 
             var phase = _waves.Phase;
-            var number = Math.Min(_waves.WaveIndex + 1, _waves.WaveCount);
+            var number = _waves.IsSurvival ? _waves.WaveIndex + 1 : Math.Min(_waves.WaveIndex + 1, _waves.WaveCount);
             if (number != _waveShown)
             {
                 _waveShown = number;
-                hud.SetWave(_texts.Format(TextKeys.HudWave, Math.Max(1, number), _waves.WaveCount));
+                hud.SetWave(_waves.IsSurvival ? _texts.Format(TextKeys.SurvivalWave, Math.Max(1, number))
+                    : _texts.Format(TextKeys.HudWave, Math.Max(1, number), _waves.WaveCount));
             }
 
             hud.SetEnemies(_waves.RemainingCount);
@@ -162,7 +163,7 @@ namespace Purge.Presentation.UI
         private void OnWaveCleared(int index)
         {
             // The last one is followed by the level's result.
-            if (index + 1 < _waves.WaveCount) Hud?.ShowBanner(_texts.Get(TextKeys.HudWaveCleared));
+            if (_waves.IsSurvival || index + 1 < _waves.WaveCount) Hud?.ShowBanner(_texts.Get(TextKeys.HudWaveCleared));
         }
 
         private void OnSkipClicked() => TrySkip();

@@ -83,6 +83,15 @@ namespace Purge.Presentation.Localization
 
         // Waves (stage 6b).
         public const string HudWave = "hud.wave";
+        public const string SurvivalLevels = "survival.levels";
+        public const string SurvivalMode = "survival.mode";
+        public const string SurvivalRecords = "survival.records";
+        public const string SurvivalRecordsEmpty = "survival.records.empty";
+        public const string SurvivalRecordsPersonal = "survival.records.personal";
+        public const string SurvivalRecordsPlatform = "survival.records.platform";
+        public const string SurvivalRecordsUnavailable = "survival.records.unavailable";
+        public const string SurvivalRecordsOnlineEmpty = "survival.records.online.empty";
+        public const string SurvivalWave = "survival.wave";
         public const string HudWaveStart = "hud.wave.start";
         public const string HudWaveCleared = "hud.wave.cleared";
         public const string HudWaveCountdown = "hud.wave.countdown";

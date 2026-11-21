@@ -131,6 +131,7 @@ namespace Purge.Presentation.Visual
                 cancellation.ThrowIfCancellationRequested();
                 // Weapons: the most monsters can leave of one + the player's two slots dropped.
                 var poolSize = item is WeaponDefinition ? PickupSystem.MaxSameWeaponDropped + 2 : PickupPoolSize;
+                if (_options?.Survival == true && item is AmmoDefinition) poolSize += PickupSystem.SurvivalAmmoPilesPerType;
                 for (var i = 0; i < poolSize; i++) kind.FreePickups.Push(Create(kind.Pickup, item.Id));
                 if (kind.Flying != null)
                     for (var i = 0; i < FlyingPoolSize; i++) kind.FreeFlying.Push(Create(kind.Flying, item.Id + " (flying)"));

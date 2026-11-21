@@ -164,6 +164,38 @@ namespace Purge.Tests.EditMode.Monsters
             return (runtime, waves);
         }
 
+        [Test]
+        public void MonstersLeaveAStairLandingThatTurnsIntoAWiderRoom()
+        {
+            _level = ScriptableObject.CreateInstance<LevelData>();
+            var geometry = new LevelGeometry(10, 10, CellType.Wall, floors: 2);
+            for (int y = 1; y <= 8; y++)
+            for (int x = 1; x <= 8; x++)
+            {
+                geometry.SetCell(new GridPosition(x, y), CellType.Floor);
+                if (y >= 5 && x >= 4)
+                    geometry.SetCell(new GridPosition(x, y, 1), CellType.Floor);
+            }
+            for (int x = 3; x <= 5; x++)
+                geometry.SetCell(new GridPosition(x, 3, 1), CellType.Floor);
+            geometry.SetCell(new GridPosition(5, 4, 1), CellType.Floor);
+            _level.ReplaceGeometry(geometry);
+            LevelEditing.AddStair(_level, new GridPosition(3, 3), alongX: true);
+            _level.MutablePlayerStarts.Add(new PlayerStartData("start", new GridPosition(7, 7, 1)));
+            Run(BossScenario());
+
+            var boss = _horde.SpawnBoss(new Vector2(2, 5), _horde.KindIndexOf(_boss), floor: 0);
+            var walker = _horde.SpawnEmerging(new Vector2(2, 4), _horde.KindIndexOf(_mass), 0f, 0);
+            Assert.That(boss, Is.GreaterThanOrEqualTo(0));
+            Assert.That(walker, Is.GreaterThanOrEqualTo(0));
+            for (int i = 0; i < 330; i++) _horde.Tick(Dt);
+            foreach (var slot in new[] { boss, walker })
+            {
+                Assert.That(_horde.FloorOf(slot), Is.EqualTo(1));
+                Assert.That(_horde.Positions[slot].y, Is.GreaterThan(5f));
+            }
+        }
+
         /// <summary>A boss wave: the boss, 3 of its escort at once, a budget of 5 rank-and-file; then an ordinary wave.</summary>
         private WaveScenario BossScenario()
         {

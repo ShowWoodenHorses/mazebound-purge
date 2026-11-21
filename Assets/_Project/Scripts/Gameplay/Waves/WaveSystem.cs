@@ -53,6 +53,8 @@ namespace Purge.Gameplay.Waves
         private const int SpawnsPerTick = 8;
 
         private readonly LevelData _level;
+        private SurvivalWaves _survival;
+        private WaveDefinition _currentWave;
         private readonly HordeSystem _horde;
         private readonly PlayerSystem _player;
         private readonly PickupSystem _pickups;
@@ -87,6 +89,7 @@ namespace Purge.Gameplay.Waves
             _wallet = wallet;
             _bosses = bosses;
             _abilities = abilities;
+            IsSurvival = options?.Survival == true;
             Seed = options?.Seed ?? Environment.TickCount;
         }
 
@@ -97,7 +100,7 @@ namespace Purge.Gameplay.Waves
             _bossSlot >= 0 && _horde.Generations[_bossSlot] == _bossGeneration && HordeSystem.IsAlive(_horde.States[_bossSlot]);
 
         /// <summary>The wave being fought is a boss wave.</summary>
-        public bool IsBossWave => Phase == WavePhase.Running && BossOf(Scenario.Waves[WaveIndex]) != null;
+        public bool IsBossWave => Phase == WavePhase.Running && CurrentBoss != null;
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
 
@@ -110,6 +113,10 @@ namespace Purge.Gameplay.Waves
 
         /// <summary>Current (or last) wave, from 0; -1 before the first.</summary>
         public int WaveIndex { get; private set; } = -1;
+
+        public bool IsSurvival { get; }
+
+        private WaveBoss CurrentBoss => IsSurvival ? _survival.Boss(WaveIndex) : BossOf(_currentWave);
 
         public int WaveCount => Scenario != null ? Scenario.Count : 0;
 
@@ -139,7 +146,8 @@ namespace Purge.Gameplay.Waves
             {
                 if (Phase != WavePhase.Pause) return 0;
                 var factor = _horde.Difficulty != null ? _horde.Difficulty.Money : 1f;
-                return Mathf.FloorToInt(Mathf.Ceil(TimeLeft) * Scenario.SkipRateOf(WaveIndex + 1) * factor + 1e-4f);
+                var rate = Scenario.SkipRateOf(IsSurvival ? 0 : WaveIndex + 1);
+                return Mathf.FloorToInt(Mathf.Ceil(TimeLeft) * rate * factor + 1e-4f);
             }
         }
 
@@ -162,6 +170,7 @@ namespace Purge.Gameplay.Waves
                 return UniTask.CompletedTask;
 
             Scenario = _horde.Horde.Waves;
+            if (IsSurvival) _survival = new SurvivalWaves(Scenario, _horde.Difficulty, Seed);
             _random = new DeterministicRandom((int)StableHash.Of($"{_level.name}/spawns/{Seed}"));
             if (_level.MonsterSpawns.Count == 0)
                 GameLog.Warning(LogChannel.Gameplay, $"Level '{_level.name}' has waves but no monster spawn points: monsters appear anywhere far from the player.");
@@ -185,9 +194,12 @@ namespace Purge.Gameplay.Waves
                     _waveTime += deltaTime;
                     if (_bossPending) SpawnBoss();
                     SpawnEscort();
-                    // ТЗ: обычное появление ждёт до смерти босса.
-                    if (!BossHolds) _budgetTime += deltaTime;
-                    if (!BossHolds) SpawnDue();
+                    // Campaign keeps its boss phase. Survival sends the full wave while the boss is alive.
+                    if (IsSurvival || !BossHolds)
+                    {
+                        _budgetTime += deltaTime;
+                        SpawnDue();
+                    }
                     if (_next >= _spawns.Count && _escortNext >= _escort.Count && !BossHolds && _horde.WaveAliveCount == 0)
                         ClearWave();
                     break;
@@ -201,7 +213,7 @@ namespace Purge.Gameplay.Waves
         public void ResumeAt(int index)
         {
             if (!IsActive || index <= 0) return;
-            index = Mathf.Min(index, Scenario.Count - 1);
+            if (!IsSurvival) index = Mathf.Min(index, Scenario.Count - 1);
             WaveIndex = index - 1;
             Phase = WavePhase.Pause;
             TimeLeft = Scenario.PauseTime;
@@ -242,12 +254,14 @@ namespace Purge.Gameplay.Waves
             // ТЗ: дроп волны лежит до начала следующей волны, потом исчезает.
             if (index > 0) _pickups?.ClearDropped();
             WaveIndex = index;
-            var wave = Scenario.Waves[index];
+            _currentWave = IsSurvival ? _survival.Definition(index) : Scenario.Waves[index];
+            if (IsSurvival)
+            {
+                _horde.WaveHealthFactor = _survival.HealthFactor(index);
+                _horde.WaveDamageFactor = _survival.DamageFactor(index);
+                _horde.WaveChampionChance = SurvivalWaves.ChampionChance(index);
+            }
             _spawns.Clear();
-            _spawns.AddRange(WaveGenerator.Generate(wave, _horde.Difficulty, WaveGenerator.SeedOf(Seed, index)));
-            if (_kinds.Length < _spawns.Count) _kinds = new int[_spawns.Count];
-            for (var i = 0; i < _spawns.Count; i++)
-                _kinds[i] = _horde.KindIndexOf(_spawns[i].Monster);
             _packPoints.Clear();
             _next = 0;
             _waveTime = 0f;
@@ -257,14 +271,22 @@ namespace Purge.Gameplay.Waves
             _escortPoints.Clear();
             _escortNext = 0;
             _bossSlot = -1;
-            var boss = BossOf(wave);
+            var boss = CurrentBoss;
             _bossKind = boss != null ? _horde.KindIndexOf(boss.Monster) : -1;
             _bossPending = _bossKind >= 0;
             if (boss != null && _bossKind < 0)
                 GameLog.Warning(LogChannel.Gameplay, $"Wave {index + 1}: boss '{boss.Monster.Id}' is not one of the horde's kinds (run Build Monsters).");
-            if (boss != null) _escort.AddRange(WaveGenerator.Escort(boss, _horde.Difficulty));
+            if (boss != null)
+                _escort.AddRange(WaveGenerator.Escort(boss, _horde.Difficulty,
+                    IsSurvival ? SurvivalWaves.TargetCount(index) - 1 : WaveGenerator.MaxSpawns));
+            _spawns.AddRange(IsSurvival
+                ? _survival.Generate(_currentWave, index, SurvivalWaves.TargetCount(index) - (boss == null ? 0 : 1 + _escort.Count))
+                : WaveGenerator.Generate(_currentWave, _horde.Difficulty, WaveGenerator.SeedOf(Seed, index)));
+            if (_kinds.Length < _spawns.Count) _kinds = new int[_spawns.Count];
+            for (var i = 0; i < _spawns.Count; i++)
+                _kinds[i] = _horde.KindIndexOf(_spawns[i].Monster);
             // A summon with no monster calls this wave's rank-and-file (stage 8d, the Gorgon).
-            _abilities?.SetWave(wave);
+            _abilities?.SetWave(_currentWave);
             TimeLeft = 0f;
             Phase = WavePhase.Running;
             GameLog.Info(LogChannel.Gameplay, $"Wave {index + 1}/{Scenario.Count}: {_spawns.Count} monster(s)" +
@@ -274,8 +296,7 @@ namespace Purge.Gameplay.Waves
 
         private void SpawnDue()
         {
-            var wave = Scenario.Waves[WaveIndex];
-            var limit = Mathf.Min(wave.MaxAlive, _horde.MaxCount);
+            var limit = Mathf.Min(_currentWave.MaxAlive, _horde.MaxCount);
             for (var n = 0; n < SpawnsPerTick && _next < _spawns.Count; n++)
             {
                 var spawn = _spawns[_next];
@@ -382,9 +403,9 @@ namespace Purge.Gameplay.Waves
         {
             GameLog.Info(LogChannel.Gameplay, $"Wave {WaveIndex + 1}/{Scenario.Count} cleared.");
             // The wave's money (stage 6d); its score — RunScore.
-            if (_wallet != null) _wallet.Add(Scenario.MoneyBonusOf(WaveIndex) * _wallet.Factor);
+            if (_wallet != null) _wallet.Add((IsSurvival ? _survival.MoneyBonus(WaveIndex) : Scenario.MoneyBonusOf(WaveIndex)) * _wallet.Factor);
             WaveCleared?.Invoke(WaveIndex);
-            if (WaveIndex + 1 >= Scenario.Count)
+            if (!IsSurvival && WaveIndex + 1 >= Scenario.Count)
             {
                 Phase = WavePhase.Completed;
                 Completed?.Invoke();

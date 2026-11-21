@@ -147,8 +147,12 @@ namespace Purge.Application.Save
                     continue;
                 }
 
-                mine.BestScore = Math.Max(mine.BestScore, theirs.BestScore);
-                mine.BestWave = Math.Max(mine.BestWave, theirs.BestWave);
+                if (theirs.BestScore > mine.BestScore ||
+                    theirs.BestScore == mine.BestScore && theirs.BestWave > mine.BestWave)
+                {
+                    mine.BestScore = theirs.BestScore;
+                    mine.BestWave = theirs.BestWave;
+                }
             }
 
             foreach (var theirs in other.Arsenal)

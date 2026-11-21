@@ -126,6 +126,8 @@ namespace Purge.Application.Flow
         /// </summary>
         public LevelLaunchOptions CurrentLaunch { get; private set; } = LevelLaunchOptions.Default;
 
+        public event Action<LevelLocation, long> SurvivalRecordSet;
+
         /// <summary>The current run's difficulty: 0 = easy … 3 = unreal (stage 11б).</summary>
         public int CurrentDifficulty => DifficultyIndex(CurrentLaunch);
 
@@ -399,12 +401,12 @@ namespace Purge.Application.Flow
                 GameLog.Info(LogChannel.GameFlow, $"Boosters cost {boosterCost}, money {_progress.Money}: the run starts without them.");
                 options = new LevelLaunchOptions(options.StartIndex, options.Seed, options.Difficulty, options.Resume, options.Bot,
                     options.StartWeapon, options.StartThrowable, null, options.CloseArena,
-                    options.Skills, fallbackGrenade: options.FallbackGrenade);
+                    options.Skills, fallbackGrenade: options.FallbackGrenade, survival: options.Survival);
                 boosterCost = 0;
             }
 
             _launchOptions = options.Resume != null
-                ? new LevelLaunchOptions(difficulty: options.Difficulty, closeArena: options.CloseArena)
+                ? new LevelLaunchOptions(difficulty: options.Difficulty, closeArena: options.CloseArena, survival: options.Survival)
                 : options;
             _launchCost = options.Resume != null ? 0 : boosterCost;
             if (!options.Seed.HasValue) options = options.WithSeed(NewSeed());
@@ -549,6 +551,11 @@ namespace Purge.Application.Flow
                         levelResult.Waves, levelResult.WaveCount, money: reward, score: levelResult.Score);
                     if (levelResult.Completed && !LastWasCompletedBefore)
                         _progress.RecordRun(CurrentLevelId, LastResult.Value, CurrentDifficulty);
+                }
+                else if (CurrentLaunch.Survival && _catalog.Find(CurrentLevelId) is { } entry)
+                {
+                    if (_progress.RecordSurvival(entry.Location.ToString().ToLowerInvariant(), levelResult) && !IsTestRun)
+                        SurvivalRecordSet?.Invoke(entry.Location, levelResult.Score);
                 }
                 else
                 {

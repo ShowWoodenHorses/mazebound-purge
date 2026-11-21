@@ -409,6 +409,7 @@ namespace Purge.Application.Platform
             };
             // The run's choice and preparation (stage 11б).
             var launch = _flow.CurrentLaunch;
+            parameters["mode"] = launch.Survival ? "survival" : "level";
             parameters["difficulty"] = _flow.CurrentDifficulty;
             parameters["closed_arena"] = _flow.CurrentArenaClosed;
             parameters["resumed"] = launch.Resume != null;
@@ -430,6 +431,8 @@ namespace Purge.Application.Platform
             _inRun = false;
             var result = _flow.LastResult ?? default;
             var parameters = Level(level);
+            var survival = _flow.CurrentLaunch.Survival;
+            parameters["mode"] = survival ? "survival" : "level";
             parameters["time"] = Mathf.RoundToInt(result.Time);
             parameters["kills"] = result.Kills;
             parameters["waves"] = result.Waves;
@@ -450,7 +453,7 @@ namespace Purge.Application.Platform
                 parameters["cell_x"] = _stats.PlayerCell.x;
                 parameters["cell_y"] = _stats.PlayerCell.y;
                 parameters["killer"] = _stats.LastAttacker ?? "unknown";
-                _failsSinceWin[level] = fails + 1;
+                if (!survival) _failsSinceWin[level] = fails + 1;
                 _analytics.Send(AnalyticsEvents.LevelFail);
             }
         }

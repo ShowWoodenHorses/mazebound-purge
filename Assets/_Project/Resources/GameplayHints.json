@@ -1,6 +1,11 @@
 {
   "hints": [
     {
+      "id": "survival",
+      "textKey": "hint.survival",
+      "condition": 14
+    },
+    {
       "id": "silencer",
       "textKey": "hint.silencer",
       "condition": 0

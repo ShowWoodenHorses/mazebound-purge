@@ -456,6 +456,40 @@ namespace Purge.Gameplay.Pickups
                 : AddDrop(Dropped(PickupKind.Ammo, at, floor, keep ? float.PositiveInfinity : lifetime, ammo: ammo, amount: rounds),
                     expires: !keep);
 
+        public const int SurvivalAmmoPilesPerType = 20;
+
+        public Pickup DropSurvivalAmmo(Vector2 at, int floor, AmmoDefinition ammo, int rounds, float lifetime)
+        {
+            if (ammo == null || rounds <= 0) return null;
+            Pickup oldest = null;
+            Pickup nearest = null;
+            var nearestDistance = float.PositiveInfinity;
+            int count = 0;
+            foreach (var pickup in _expiring)
+            {
+                if (pickup.Kind != PickupKind.Ammo || (pickup.Ammo != ammo && pickup.Ammo?.Id != ammo.Id)) continue;
+                count++;
+                oldest ??= pickup;
+                if (pickup.Cell.Floor != floor || pickup.Attracted) continue;
+                var distance = (pickup.Position - at).sqrMagnitude;
+                if (distance >= nearestDistance) continue;
+                nearest = pickup;
+                nearestDistance = distance;
+            }
+
+            if (nearest != null && (nearestDistance <= 1f || count >= SurvivalAmmoPilesPerType))
+            {
+                nearest.Amount += rounds;
+                return nearest;
+            }
+            if (count >= SurvivalAmmoPilesPerType)
+            {
+                rounds += oldest.Amount;
+                Take(oldest, taken: false);
+            }
+            return DropAmmo(at, floor, ammo, rounds, lifetime);
+        }
+
         public Pickup DropThrowable(Vector2 at, int floor, ThrowableDefinition throwable, int count, float lifetime, bool keep = false) =>
             throwable == null || count <= 0 ? null
                 : AddDrop(Dropped(PickupKind.Throwable, at, floor, keep ? float.PositiveInfinity : lifetime, throwable: throwable,

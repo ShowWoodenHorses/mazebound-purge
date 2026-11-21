@@ -95,6 +95,29 @@ namespace Purge.Gameplay.Drops
         private static bool NeedsAmmo(WeaponDefinition weapon) =>
             weapon != null && weapon.UsesAmmo && !weapon.Ammo.InfiniteReserve && weapon.Ammo.Ammo != null;
 
+        public static DropRoll SurvivalAmmo(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
+        {
+            var first = NeedsAmmo(context.First) ? HeldWeight(context.First, context.FirstReserve, context.ActiveSlot == 0) : 0f;
+            var second = NeedsAmmo(context.Second) ? HeldWeight(context.Second, context.SecondReserve, context.ActiveSlot == 1) : 0f;
+            if (first + second > 0f)
+            {
+                var weapon = random.NextDouble() * (first + second) < first ? context.First : context.Second;
+                return new DropRoll(DropKind.Ammo, weapon.Ammo.Ammo, weapon.MagazineSize * random.NextInt(2, 4));
+            }
+            if (!HasAmmo(pool, context)) return DropRoll.Nothing;
+            var roll = RollAmmo(table, pool, context, random);
+            return new DropRoll(DropKind.Ammo, roll.Item, roll.Amount * 3);
+        }
+
+        /// <summary>Retains 30% of the rounds across drops, including drops smaller than one round after scaling.</summary>
+        public static DropRoll ScaleSurvivalAmmo(in DropRoll roll, ref int tenthsLeft)
+        {
+            var tenths = (long)roll.Amount * 3 + tenthsLeft;
+            tenthsLeft = (int)(tenths % 10);
+            var rounds = (int)(tenths / 10);
+            return rounds > 0 ? new DropRoll(DropKind.Ammo, roll.Item, rounds) : DropRoll.Nothing;
+        }
+
         private static DropRoll RollAmmo(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
         {
             var first = NeedsAmmo(context.First) ? HeldWeight(context.First, context.FirstReserve, context.ActiveSlot == 0) : 0f;
@@ -202,10 +225,12 @@ namespace Purge.Gameplay.Drops
         /// A weapon of the pool by the table's rarities (a locked chest, stage 7в), not one in the slots; when the slots
         /// hold every weapon of the pool, any of them; nothing only with an empty pool.
         /// </summary>
-        public static DropRoll Weapon(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random)
+        public static DropRoll Weapon(DropTable table, DropPool pool, in DropContext context, DeterministicRandom random,
+            bool allowEquipped = true)
         {
             if (table == null || pool == null || pool.Weapons.Count == 0) return DropRoll.Nothing;
             if (WeaponTotal(table, pool, context) > 0f) return RollWeapon(table, pool, context, random);
+            if (!allowEquipped) return DropRoll.Nothing;
             var any = context;
             any.First = any.Second = null;
             return WeaponTotal(table, pool, any) > 0f ? RollWeapon(table, pool, any, random) : DropRoll.Nothing;

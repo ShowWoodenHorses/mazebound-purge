@@ -417,6 +417,12 @@ namespace Purge.Editor.Dev
             var version = Text(area, "Version", "v0.1", 24f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
                 new Vector2(-64f, 52f), new Vector2(140f, 36f), TextAlignmentOptions.BottomRight, _style.MutedText, 6f);
 
+            var records = TextButton(area, "RecordsButton", Loc(TextKeys.SurvivalRecords), false, icons.Star, 62f, 24f);
+            Place(records, TopLeft, new Vector2(374f, -170f), new Vector2(260f, 62f));
+            var survival = TextButton(area, "SurvivalButton", Loc(TextKeys.SurvivalMode), false, null, 84f, 30f);
+            Place(survival, bottom, new Vector2(380f, 240f), new Vector2(320f, 84f));
+            SetReference(screen, "_recordsButton", records);
+            SetReference(screen, "_survivalButton", survival);
             SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);
             SetReference(screen, "_arsenalDot", BuildPurchaseDot(arsenal.transform));
@@ -533,7 +539,14 @@ namespace Purge.Editor.Dev
                 locations.Add(MakeButton(tile, false, number, name));
             }
 
-            SectionTitle(left, "DifficultyTitle", Loc(TextKeys.SetupDifficulty), new Vector2(0f, -250f));
+            var difficultyTitle = SectionTitle(left, "DifficultyTitle", Loc(TextKeys.SetupDifficulty), new Vector2(0f, -250f));
+            var levels = TextButton(area, "LevelsButton", Loc(TextKeys.SurvivalLevels), false, null, 68f, 24f);
+            var survival = TextButton(area, "SurvivalButton", Loc(TextKeys.SurvivalMode), false, null, 68f, 24f);
+            Place(levels, TopLeft, new Vector2(320f, -90f), new Vector2(230f, 68f));
+            Place(survival, TopLeft, new Vector2(575f, -90f), new Vector2(265f, 68f));
+            var records = Text(left, "Records", string.Empty, 29f, false, TopLeft, new Vector2(0f, 1f),
+                new Vector2(28f, -252f), new Vector2(640f, 430f), TextAlignmentOptions.TopLeft);
+            records.richText = false;
             var difficulties = new List<Object>();
             for (var i = 0; i < 4; i++)
             {
@@ -600,6 +613,13 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_fightButton", fight);
             SetReference(screen, "_money", money);
             SetReference(screen, "_total", total);
+            SetReference(screen, "_levelsButton", levels);
+            SetReference(screen, "_survivalButton", survival);
+            SetReference(screen, "_difficultyTitle", difficultyTitle.gameObject);
+            SetReference(screen, "_preparationPanel", right.gameObject);
+            SetReference(screen, "_totalLabel", totalLabel.gameObject);
+            SetReference(screen, "_totalCoin", totalCoin.gameObject);
+            SetReference(screen, "_records", records);
             SetReferences(screen, "_locations", locations);
             SetReferences(screen, "_difficulties", difficulties);
             SetReference(screen, "_arenaRow", arenaRow.gameObject);

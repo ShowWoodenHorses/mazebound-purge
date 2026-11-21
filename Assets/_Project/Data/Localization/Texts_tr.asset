@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -1082,4 +1092,15 @@ MonoBehaviour:
     saniyede kurulur."
   - "Evrim i\xE7in ayn\u0131 \u25C6 numaral\u0131 iki kart\u0131 en y\xFCksek seviyeye
     \xE7\u0131kar."
+  - "B\xD6L\xDCMLER"
+  - HAYATTA KALMA
+  - REKORLAR
+  - "Hen\xFCz ki\u015Fisel rekor yok"
+  - "En iyi puan {0} \xB7 Tamamlanan dalga {1}"
+  - En iyi oyuncular
+  - "\xC7evrimi\xE7i rekorlara ula\u015F\u0131lam\u0131yor"
+  - "Liderlik tablosu bo\u015F"
+  - DALGA {0}
+  - "Olabildi\u011Fince \xE7ok dalgadan sa\u011F \xE7\u0131k. Her onuncu dalgada
+    bir b\xF6l\xFCm sonu canavar\u0131 gelir. Her konumun kendi rekoru vard\u0131r."
   _missing: []

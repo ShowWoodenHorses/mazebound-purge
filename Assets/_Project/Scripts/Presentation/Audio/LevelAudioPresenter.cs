@@ -271,7 +271,7 @@ namespace Purge.Presentation.Audio
 
         private void OnWaveCleared(int index)
         {
-            if (index + 1 < _waves.WaveCount) _audio.Play(Catalog.WaveCleared, SoundChannel.Level);
+            if (_waves.IsSurvival || index + 1 < _waves.WaveCount) _audio.Play(Catalog.WaveCleared, SoundChannel.Level);
         }
 
         private void OnItemDropped(DropRoll roll, Vector2 at)

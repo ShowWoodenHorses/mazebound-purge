@@ -6,9 +6,24 @@ using Purge.Application.Levels;
 using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Common;
+using Purge.Core.Level;
 
 namespace Purge.Application.Platform
 {
+    public interface ISurvivalLeaderboards
+    {
+        UniTask<SurvivalLeaderboardRow[]> GetTopAsync(LevelLocation location, CancellationToken cancellation);
+        UniTask SubmitAsync(LevelLocation location, long score, CancellationToken cancellation);
+    }
+
+    [Serializable]
+    public sealed class SurvivalLeaderboardRow
+    {
+        public int Rank;
+        public long Score;
+        public string Name;
+    }
+
     /// <summary>
     /// Saves kept by the platform for the player (Yandex Games player data, CrazyGames Data…): they follow the player
     /// between devices and survive a new build at a new address, unlike the browser's own storage.
@@ -169,6 +184,8 @@ namespace Purge.Application.Platform
 
         public ICloudSave CloudSave => _ready ? _platform.CloudSave : null;
 
+        public ISurvivalLeaderboards SurvivalLeaderboards => _ready ? _platform as ISurvivalLeaderboards : null;
+
         /// <summary>The player can sign in now (the site has accounts, the player is not signed in).</summary>
         public bool CanSignIn => _ready && _platform.SupportsSignIn && !_platform.IsSignedIn;
 
@@ -271,6 +288,7 @@ namespace Purge.Application.Platform
         private bool _initialized;
         private bool _loaded;
         private bool _playing;
+        private CancellationTokenSource _lifetime;
 
         public PlatformEvents(GameFlow flow, PlatformService platform, AppFocusController focus = null,
             ILevelCatalog catalog = null, IProgressService progress = null)
@@ -286,7 +304,9 @@ namespace Purge.Application.Platform
         {
             if (_initialized) return;
             _initialized = true;
+            _lifetime = new CancellationTokenSource();
             _flow.StateChanged += OnStateChanged;
+            _flow.SurvivalRecordSet += OnSurvivalRecord;
         }
 
         public void Dispose()
@@ -294,6 +314,16 @@ namespace Purge.Application.Platform
             if (!_initialized) return;
             _initialized = false;
             _flow.StateChanged -= OnStateChanged;
+            _flow.SurvivalRecordSet -= OnSurvivalRecord;
+            _lifetime.Cancel();
+            _lifetime.Dispose();
+            _lifetime = null;
+        }
+
+        private void OnSurvivalRecord(LevelLocation location, long score)
+        {
+            if (_platform.SurvivalLeaderboards is { } boards)
+                boards.SubmitAsync(location, score, _lifetime.Token).Forget();
         }
 
         private void OnStateChanged(GameFlowState state)

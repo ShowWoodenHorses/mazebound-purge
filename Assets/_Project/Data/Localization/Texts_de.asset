@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -1070,4 +1080,15 @@ MonoBehaviour:
   - "Die Blendgranate bet\xE4ubt Monster zuerst und blendet sie dann."
   - "Dr\xFCcke Werfen, um eine Mine zu legen. Sie ist nach einer halben Sekunde scharf."
   - "Beide Karten mit derselben \u25C6-Nummer maximieren, um ihre Evolution freizuschalten."
+  - LEVEL
+  - "\xDCBERLEBEN"
+  - REKORDE
+  - "Noch kein pers\xF6nlicher Rekord"
+  - "Bestwert {0} \xB7 Wellen geschafft {1}"
+  - Beste Spieler
+  - "Online-Rangliste nicht verf\xFCgbar"
+  - Die Rangliste ist leer
+  - WELLE {0}
+  - "\xDCberlebe so viele Wellen wie m\xF6glich. In jeder zehnten Welle erscheint
+    ein Boss. Jeder Ort hat seinen eigenen Rekord."
   _missing: []

@@ -51,6 +51,12 @@ namespace Purge.Application.Platform
         public static UniTask<WebReply> ShowAdAsync(AdKind kind, CancellationToken cancellation) =>
             Calls.Call(kind == AdKind.Rewarded ? (Action<int>)Native.ShowRewarded : Native.ShowFullscreen, cancellation);
 
+        public static UniTask<WebReply> GetLeaderboardAsync(string name, CancellationToken cancellation) =>
+            Calls.Call(id => Native.GetLeaderboard(id, name), cancellation);
+
+        public static UniTask<WebReply> SetLeaderboardScoreAsync(string name, long score, CancellationToken cancellation) =>
+            Calls.Call(id => Native.SetLeaderboardScore(id, name, (double)score), cancellation);
+
         public static void LoadingReady()
         {
             if (IsReady) Native.LoadingReady();
@@ -98,6 +104,12 @@ namespace Purge.Application.Platform
             [DllImport("__Internal", EntryPoint = "PurgeYandex_SignIn")]
             public static extern void SignIn(int id);
 
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_GetLeaderboard")]
+            public static extern void GetLeaderboard(int id, string name);
+
+            [DllImport("__Internal", EntryPoint = "PurgeYandex_SetLeaderboardScore")]
+            public static extern void SetLeaderboardScore(int id, string name, double score);
+
             [DllImport("__Internal", EntryPoint = "PurgeYandex_GetData")]
             public static extern void GetData(int id);
 
@@ -124,6 +136,8 @@ namespace Purge.Application.Platform
             public static int HasPlayer() => 0;
             public static int IsAuthorized() => 0;
             public static void SignIn(int id) => throw NoSdk();
+            public static void GetLeaderboard(int id, string name) => throw NoSdk();
+            public static void SetLeaderboardScore(int id, string name, double score) => throw NoSdk();
             public static void GetData(int id) => throw NoSdk();
             public static void SetData(int id, string json) => throw NoSdk();
             public static void ShowFullscreen(int id) => throw NoSdk();
@@ -140,8 +154,34 @@ namespace Purge.Application.Platform
     /// the account between devices and new build addresses), sign-in on request, loading/gameplay events, pauses
     /// asked by the site.
     /// </summary>
-    public sealed class YandexPlatform : IGamePlatform, ICloudSave
+    public sealed class YandexPlatform : IGamePlatform, ICloudSave, ISurvivalLeaderboards
     {
+        [Serializable]
+        private sealed class EntriesReply
+        {
+            public SurvivalLeaderboardRow[] Entries;
+        }
+
+        private static string BoardName(Purge.Core.Level.LevelLocation location) =>
+            "survival_" + location.ToString().ToLowerInvariant();
+
+        public async UniTask<SurvivalLeaderboardRow[]> GetTopAsync(Purge.Core.Level.LevelLocation location,
+            CancellationToken cancellation)
+        {
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+            timeout.CancelAfterSlim(InitTimeout);
+            var result = await YandexBridge.GetLeaderboardAsync(BoardName(location), timeout.Token);
+            return result.Code == 1 ? UnityEngine.JsonUtility.FromJson<EntriesReply>(result.Text)?.Entries : null;
+        }
+
+        public async UniTask SubmitAsync(Purge.Core.Level.LevelLocation location, long score, CancellationToken cancellation)
+        {
+            if (!IsSignedIn) return;
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+            timeout.CancelAfterSlim(InitTimeout);
+            await YandexBridge.SetLeaderboardScoreAsync(BoardName(location), score, timeout.Token);
+        }
+
         /// <summary>A site that does not answer in this time is treated as absent (the game starts without it).</summary>
         public static readonly TimeSpan InitTimeout = TimeSpan.FromSeconds(10);
 

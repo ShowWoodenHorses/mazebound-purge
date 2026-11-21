@@ -16,7 +16,10 @@ namespace Purge.Gameplay.Grid
         private float _distance;
 
         public bool Active => _totalLength > 0f;
+        public bool Arrived => Active && _distance >= _totalLength;
         public GridPosition Destination { get; private set; }
+        public GridPosition? ExitStep { get; set; }
+        public float RetryExitAt { get; set; }
         public Vector2 Direction { get; private set; }
         public Vector3 Position { get; private set; }
 
@@ -34,6 +37,8 @@ namespace Purge.Gameplay.Grid
             Direction = horizontal.normalized;
             Position = _origin;
             _distance = 0f;
+            ExitStep = null;
+            RetryExitAt = 0f;
         }
 
         public bool Advance(float deltaTime)

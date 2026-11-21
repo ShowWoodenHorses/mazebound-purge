@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - Polski
   - USTAWIENIA
@@ -1077,4 +1087,15 @@ MonoBehaviour:
     si\u0119 w p\xF3\u0142 sekundy."
   - "Ulepsz obie karty o tym samym numerze \u25C6 do maksimum, aby odblokowa\u0107
     ewolucj\u0119."
+  - POZIOMY
+  - PRZETRWANIE
+  - REKORDY
+  - Brak rekordu osobistego
+  - "Rekord {0} \xB7 Uko\u0144czone fale {1}"
+  - Najlepsi gracze
+  - "Ranking online niedost\u0119pny"
+  - Ranking jest pusty
+  - FALA {0}
+  - "Przetrwaj jak najwi\u0119cej fal. W co dziesi\u0105tej fali pojawia si\u0119
+    boss. Ka\u017Cda lokacja ma w\u0142asny rekord."
   _missing: []

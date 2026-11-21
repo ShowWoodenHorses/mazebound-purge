@@ -15,6 +15,9 @@ namespace Purge.Application.Save
         /// <summary>The one currency, kept between runs.</summary>
         int Money { get; }
 
+        SurvivalRecord FindSurvival(string locationId) => null;
+        bool RecordSurvival(string locationId, LevelResult result) => false;
+
         /// <summary>
         /// The first catalog level is always unlocked; the others once the previous one is completed on any difficulty
         /// (also levels added to the catalog after that completion — an update with new levels opens them for players who
@@ -144,6 +147,32 @@ namespace Purge.Application.Save
 
         public int Money => Data.Money;
 
+        public SurvivalRecord FindSurvival(string locationId) =>
+            Data.Survival.Find(record => record.LocationId == locationId);
+
+        public bool RecordSurvival(string locationId, LevelResult result)
+        {
+            var best = FindSurvival(locationId);
+            bool improved = result.Score > 0 && (best == null || result.Score > best.BestScore ||
+                result.Score == best.BestScore && result.Waves > best.BestWave);
+            if (improved)
+            {
+                if (best == null)
+                {
+                    best = new SurvivalRecord { LocationId = locationId };
+                    Data.Survival.Add(best);
+                }
+                best.BestScore = result.Score;
+                best.BestWave = result.Waves;
+            }
+
+            Data.Money = SafeAdd(Data.Money, result.Money);
+            Data.Stats.TotalKills = SafeAdd(Data.Stats.TotalKills, result.Kills);
+            Data.Run?.Clear();
+            _save.Save();
+            return improved;
+        }
+
         public LevelResult RecordRun(string levelId, LevelResult result, int difficulty = 0, bool arenaClosed = false)
         {
             if (string.IsNullOrEmpty(levelId)) throw new ArgumentException("Level id is empty.", nameof(levelId));
@@ -227,6 +256,7 @@ namespace Purge.Application.Save
             var run = new RunSnapshot
             {
                 Seed = save.Seed,
+                Survival = save.Mode == RunMode.Survival,
                 Wave = save.Wave - 1,
                 WaveInProgress = save.WaveInProgress,
                 Money = save.Money,
@@ -285,7 +315,7 @@ namespace Purge.Application.Save
             var save = Data.Run ??= new RunSave();
             save.Clear();
             save.Active = true;
-            save.Mode = RunMode.Level;
+            save.Mode = run.Survival ? RunMode.Survival : RunMode.Level;
             save.LevelId = levelId;
             save.Difficulty = difficulty;
             save.Seed = run.Seed;

@@ -71,6 +71,7 @@ namespace Purge.Gameplay.Run
         public int Difficulty;
 
         public bool ArenaClosed;
+        public bool Survival;
 
         /// <summary>Boosters bought for the run (stable ids, stage 11б): applied at its start, a continued run keeps what lasts.</summary>
         public List<string> Boosters = new List<string>();

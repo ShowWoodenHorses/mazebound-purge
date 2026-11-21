@@ -128,6 +128,8 @@ namespace Purge.Presentation.UI
         {
             switch (hint.Condition)
             {
+                case HintCondition.Survival:
+                    return _flow.CurrentLaunch.Survival;
                 case HintCondition.EquippedThrowable:
                     return !_throwables.IsEmpty && _throwables.Definition.Id == hint.ThrowableId;
                 case HintCondition.EvolutionIngredient:

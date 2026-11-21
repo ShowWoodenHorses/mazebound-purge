@@ -582,6 +582,28 @@ namespace Purge.Tests.EditMode.Combat
                 Assert.AreSame(nine, roll.Item, "Held share 1: the weapon in the slot's ammo.");
                 Assert.AreEqual(12, roll.Amount, "One magazine.");
             }
+            for (var i = 0; i < 20; i++)
+            {
+                var roll = DropRoller.SurvivalAmmo(table, pool, context, random);
+                Assert.AreSame(nine, roll.Item);
+                Assert.That(roll.Amount, Is.EqualTo(24).Or.EqualTo(36));
+            }
+            var tenths = 0;
+            var originalRounds = 0;
+            var survivalRounds = 0;
+            foreach (var amount in new[] { 1, 1, 2, 5, 24, 36, 1 })
+            {
+                survivalRounds += DropRoller.ScaleSurvivalAmmo(new DropRoll(DropKind.Ammo, nine, amount), ref tenths).Amount;
+                originalRounds += amount;
+            }
+            Assert.That(survivalRounds, Is.EqualTo(originalRounds * 3 / 10));
+            var sameAmmoFromAnotherBundle = ScriptableObject.CreateInstance<AmmoDefinition>();
+            _created.Add(sameAmmoFromAnotherBundle);
+            sameAmmoFromAnotherBundle.Configure(nine.Id, 6f);
+            var pile = _pickups.DropSurvivalAmmo(new Vector2(10f, 3f), 0, nine, 24, float.PositiveInfinity);
+            var merged = _pickups.DropSurvivalAmmo(new Vector2(11f, 3f), 0, sameAmmoFromAnotherBundle, 36, float.PositiveInfinity);
+            Assert.That(merged, Is.SameAs(pile));
+            Assert.That(pile.Amount, Is.EqualTo(60));
 
             table.Configure("weapons_only", 0f, 0f, 0f, 0f, 1f);
             for (var i = 0; i < 50; i++)

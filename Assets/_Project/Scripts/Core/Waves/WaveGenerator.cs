@@ -37,7 +37,8 @@ namespace Purge.Core.Waves
         /// <summary>A runaway budget (cheap monsters, huge points) stops here.</summary>
         public const int MaxSpawns = 2000;
 
-        public static List<WaveSpawn> Generate(WaveDefinition wave, DifficultyDefinition difficulty, int seed)
+        public static List<WaveSpawn> Generate(WaveDefinition wave, DifficultyDefinition difficulty, int seed,
+            int maxSpawns = MaxSpawns)
         {
             var result = new List<WaveSpawn>();
             if (wave == null) return result;
@@ -53,7 +54,7 @@ namespace Purge.Core.Waves
                     pool.Add((entry.Monster, entry.Weight * (entry.Monster.Rank != MonsterRank.Mass ? senior : 1f), entry.Monster.Cost));
 
             var left = wave.Budget * countFactor;
-            while (pool.Count > 0 && picks.Count < MaxSpawns)
+            while (pool.Count > 0 && picks.Count < maxSpawns)
             {
                 var total = 0f;
                 foreach (var entry in pool)
@@ -90,7 +91,7 @@ namespace Purge.Core.Waves
             {
                 if (group == null || group.Monster == null) continue;
                 var count = Math.Max(1, (int)Math.Round(group.Count * countFactor));
-                for (var i = 0; i < count && result.Count < MaxSpawns; i++)
+                for (var i = 0; i < count && result.Count < maxSpawns; i++)
                     result.Add(new WaveSpawn(group.Time, group.Monster, groupPack, group.Point));
                 groupPack++;
             }
@@ -103,7 +104,7 @@ namespace Purge.Core.Waves
         /// The escort of a boss wave (stage 8a): each group × the difficulty's count (at least one) at its time, a pack per
         /// group (the point — chosen when it appears: one of those nearest the arena).
         /// </summary>
-        public static List<WaveSpawn> Escort(WaveBoss boss, DifficultyDefinition difficulty)
+        public static List<WaveSpawn> Escort(WaveBoss boss, DifficultyDefinition difficulty, int maxSpawns = MaxSpawns)
         {
             var result = new List<WaveSpawn>();
             if (boss == null) return result;
@@ -113,7 +114,7 @@ namespace Purge.Core.Waves
             {
                 if (group == null || group.Monster == null) continue;
                 var count = Math.Max(1, (int)Math.Round(group.Count * countFactor));
-                for (var i = 0; i < count && result.Count < MaxSpawns; i++)
+                for (var i = 0; i < count && result.Count < maxSpawns; i++)
                     result.Add(new WaveSpawn(group.Time, group.Monster, pack, group.Point));
                 pack++;
             }

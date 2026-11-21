@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -1065,4 +1075,15 @@ MonoBehaviour:
   - "Pressione Arremessar para p\xF4r uma mina aos seus p\xE9s. Ela arma em meio
     segundo."
   - "Maximize as duas cartas com o mesmo n\xFAmero \u25C6 para liberar a evolu\xE7\xE3o."
+  - FASES
+  - "SOBREVIV\xCANCIA"
+  - RECORDES
+  - Ainda sem recorde pessoal
+  - "Recorde {0} \xB7 Ondas conclu\xEDdas {1}"
+  - Melhores jogadores
+  - "Classifica\xE7\xE3o online indispon\xEDvel"
+  - "A classifica\xE7\xE3o est\xE1 vazia"
+  - ONDA {0}
+  - "Sobreviva ao maior n\xFAmero de ondas que puder. A cada dez ondas surge um chefe.
+    Cada local tem seu pr\xF3prio recorde."
   _missing: []

@@ -19,6 +19,7 @@ namespace Purge.Core.Level
         Stairs = 11,
         EquippedThrowable = 12,
         EvolutionIngredient = 13,
+        Survival = 14,
     }
 
     /// <summary>One optional hint, with a stable save ID, a localized message and a reusable condition.</summary>

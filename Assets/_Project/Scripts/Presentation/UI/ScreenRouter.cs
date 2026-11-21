@@ -73,6 +73,8 @@ namespace Purge.Presentation.UI
             _texts.LanguageChanged += OnLanguageChanged;
             _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
+            _ui.MainMenu.RecordsClicked += OnRecordsClicked;
+            _ui.MainMenu.SurvivalClicked += OnSurvivalClicked;
             _ui.MainMenu.ArsenalClicked += OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted += OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked += OnCharacter;
@@ -141,6 +143,8 @@ namespace Purge.Presentation.UI
 
             _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
+            _ui.MainMenu.RecordsClicked -= OnRecordsClicked;
+            _ui.MainMenu.SurvivalClicked -= OnSurvivalClicked;
             _ui.MainMenu.ArsenalClicked -= OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted -= OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked -= OnCharacter;
@@ -220,7 +224,7 @@ namespace Purge.Presentation.UI
                     _ui.Result.SetTutorialComplete(_flow.LastResult);
                 else
                     _ui.Result.SetResult(completed, _flow.LastResult, LevelCaption(_flow.CurrentLevelId),
-                        completed && NextLevelId() != null, _flow.CanDoubleReward);
+                        completed && NextLevelId() != null, _flow.CanDoubleReward, _flow.CurrentLaunch.Survival);
             }
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
@@ -411,6 +415,20 @@ namespace Purge.Presentation.UI
             if (next == null) return;
             if (_setup != null && _setup.IsAvailable) OpenSetup(next);
             else StartNewRun(() => _flow.StartLevel(next).Forget());
+        }
+
+        private void OnRecordsClicked()
+        {
+            if (_flow.State != GameFlowState.MainMenu || _setup?.IsAvailable != true) return;
+            _setup.Open(null, records: true);
+            Show(_flow.State);
+        }
+
+        private void OnSurvivalClicked()
+        {
+            if (_flow.State != GameFlowState.MainMenu || _setup?.IsAvailable != true) return;
+            _setup.Open(null, survival: true);
+            Show(_flow.State);
         }
 
         private void OpenSetup(string levelId)

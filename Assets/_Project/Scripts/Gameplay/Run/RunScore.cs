@@ -73,7 +73,8 @@ namespace Purge.Gameplay.Run
         private void OnWaveCleared(int index)
         {
             WavesCleared++;
-            if (_waves.Scenario != null) _score += _waves.Scenario.ScoreBonusOf(index) * Factor;
+            if (_waves.IsSurvival) _score += (index + 1d) * 100d * Factor;
+            else if (_waves.Scenario != null) _score += _waves.Scenario.ScoreBonusOf(index) * Factor;
         }
     }
 }

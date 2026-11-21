@@ -514,6 +514,16 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - survival.levels
+  - survival.mode
+  - survival.records
+  - survival.records.empty
+  - survival.records.personal
+  - survival.records.platform
+  - survival.records.unavailable
+  - survival.records.online.empty
+  - survival.wave
+  - hint.survival
   _texts:
   - English
   - SETTINGS
@@ -1077,4 +1087,15 @@ MonoBehaviour:
   - Flashbangs stun monsters, then blind them.
   - Press Throw to place a mine at your feet. It arms after half a second.
   - "Max out both cards marked \u25C6 in a pair to unlock their evolution."
+  - LEVELS
+  - SURVIVAL
+  - RECORDS
+  - No personal record yet
+  - "Best score {0} \xB7 Waves cleared {1}"
+  - Top players
+  - Online records unavailable
+  - The leaderboard is empty
+  - WAVE {0}
+  - Survive as many waves as you can. Every tenth wave brings a boss. Each location
+    has its own score record.
   _missing: []

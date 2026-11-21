@@ -60,7 +60,8 @@ namespace Purge.Gameplay.Level
         public LevelLaunchOptions(int? startIndex = null, int? seed = null, Core.Monsters.DifficultyDefinition difficulty = null,
             Run.RunSnapshot resume = null, Balance.BotRun bot = null, WeaponDefinition startWeapon = null,
             ThrowableDefinition startThrowable = null, IReadOnlyList<BoosterDefinition> boosters = null, bool closeArena = true,
-            CharacterSkills skills = CharacterSkills.None, WeaponDefinition secondWeapon = null, ThrowableDefinition fallbackGrenade = null)
+            CharacterSkills skills = CharacterSkills.None, WeaponDefinition secondWeapon = null, ThrowableDefinition fallbackGrenade = null,
+            bool survival = false)
         {
             StartIndex = startIndex;
             Seed = resume != null ? resume.Seed : seed;
@@ -70,7 +71,8 @@ namespace Purge.Gameplay.Level
             StartWeapon = startWeapon;
             StartThrowable = startThrowable;
             Boosters = boosters ?? NoBoosters;
-            CloseArena = closeArena;
+            Survival = resume?.Survival ?? survival;
+            CloseArena = !Survival && closeArena;
             Skills = resume?.Skills ?? skills;
             SecondWeapon = secondWeapon;
             FallbackGrenade = fallbackGrenade;
@@ -122,9 +124,11 @@ namespace Purge.Gameplay.Level
         /// </summary>
         public bool CloseArena { get; }
 
+        public bool Survival { get; }
+
         /// <summary>The same launch with another seed.</summary>
         public LevelLaunchOptions WithSeed(int seed) =>
-            new LevelLaunchOptions(StartIndex, seed, Difficulty, Resume, Bot, StartWeapon, StartThrowable, Boosters, CloseArena, Skills, SecondWeapon, FallbackGrenade);
+            new LevelLaunchOptions(StartIndex, seed, Difficulty, Resume, Bot, StartWeapon, StartThrowable, Boosters, CloseArena, Skills, SecondWeapon, FallbackGrenade, Survival);
 
         /// <summary>The first booster of the run with a module of this kind.</summary>
         public bool TryGetBoost<T>(out T module) where T : BoosterModule

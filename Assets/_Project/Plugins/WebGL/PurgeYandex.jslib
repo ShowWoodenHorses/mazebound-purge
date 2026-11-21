@@ -99,6 +99,33 @@ mergeInto(LibraryManager.library, {
     } });
   },
 
+  PurgeYandex_GetLeaderboard: function (id, name) {
+    var state = window.purgeYandex;
+    var board = UTF8ToString(name);
+    Promise.resolve().then(function () {
+      return state.ysdk.leaderboards.getEntries(board, { quantityTop: 5 });
+    }).then(function (result) {
+      var entries = result.entries.map(function (entry) {
+        var name = entry.player.publicName || '';
+        return { Rank: entry.rank, Score: entry.score, Name: name.replace(/[\r\n]+/g, ' ').slice(0, 40) };
+      });
+      state.reply(id, 1, JSON.stringify({ Entries: entries }));
+    }).catch(function () { state.reply(id, 0, null); });
+  },
+
+  PurgeYandex_SetLeaderboardScore: function (id, name, score) {
+    var state = window.purgeYandex;
+    var board = UTF8ToString(name);
+    Promise.resolve().then(function () {
+      return state.ysdk.isAvailableMethod('leaderboards.setScore');
+    }).then(function (available) {
+      if (!available) throw new Error('Leaderboard submission is unavailable');
+      return state.ysdk.leaderboards.setScore(board, score);
+    }).then(function () {
+      state.reply(id, 1, null);
+    }).catch(function () { state.reply(id, 0, null); });
+  },
+
   PurgeYandex_LoadingReady: function () {
     var ysdk = window.purgeYandex && window.purgeYandex.ysdk;
     if (ysdk && ysdk.features.LoadingAPI) ysdk.features.LoadingAPI.ready();

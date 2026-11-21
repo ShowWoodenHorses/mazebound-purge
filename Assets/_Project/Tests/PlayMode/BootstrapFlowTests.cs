@@ -1030,6 +1030,67 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
+        public IEnumerator Castle_ExplosionEffects_UseTheSourceFloor() => Async(async () =>
+        {
+            await _flow.StartLevel("Level_Castle_01", new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var player = level.Resolve<PlayerSystem>();
+            Assert.Greater(player.Floor, 0);
+            var barrels = level.Resolve<Purge.Gameplay.Objects.BarrelSystem>();
+            var effects = level.Resolve<Purge.Gameplay.Effects.EffectSystem>();
+            var bullets = level.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+            var pack = level.Resolve<PackEffectsPlayer>();
+            var before = pack.ActiveEffects;
+
+            var barrelEffects = barrels.DefinitionOf(BarrelKind.Fire).Effects;
+            effects.Apply(barrelEffects, player.Position, player.Floor - 1);
+            Assert.AreEqual(before, pack.ActiveEffects, "A blast on the floor below is hidden.");
+
+            effects.Apply(barrelEffects, player.Position, player.Floor);
+            Assert.AreEqual(before + 1, pack.ActiveEffects, "A fire barrel uses the shared explosion effect on this floor.");
+
+            bullets.Explode(player.Position, new ExplosiveAttack(), player.Floor);
+            Assert.AreEqual(before + 2, pack.ActiveEffects, "An explosive projectile uses the same floor-aware presentation.");
+
+            var root = level.Resolve<LevelViewRoot>().transform.Find("Pack Effects");
+            var height = player.Floor * GridPosition.FloorHeight;
+            Assert.That(root.Cast<Transform>().Count(child => child.gameObject.activeSelf &&
+                Mathf.Approximately(child.localPosition.y, height)), Is.GreaterThanOrEqualTo(2));
+        });
+
+        [UnityTest]
+        public IEnumerator Castle_StartsBossWaves_OnTheirConfiguredDifficulties() => Async(async () =>
+        {
+            var catalog = _container.Resolve<ILevelCatalog>();
+            Assert.AreEqual(4, catalog.Difficulties.Count);
+            foreach (var difficulty in catalog.Difficulties)
+            {
+                await _flow.StartLevel("Level_Castle_01", new LevelLaunchOptions(startIndex: 0, seed: 13, difficulty: difficulty));
+                Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+                var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+                var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+                Assert.AreEqual(16, waves.Scenario.Count);
+                var intermediate = difficulty.Level >= Purge.Core.Monsters.DifficultyLevel.Normal;
+                foreach (var entry in new[] { (Index: 4, Id: "zombie_boss_common"), (Index: 8, Id: "demon_common"), (Index: 15, Id: "gargoyle_castle") })
+                {
+                    var enabled = entry.Index == 15 || intermediate;
+                    var wave = waves.Scenario.Waves[entry.Index];
+                    Assert.AreEqual(entry.Id, wave.Boss.Monster.Id);
+                    Assert.AreEqual(enabled, wave.Boss.IsEnabled(difficulty.Level));
+                }
+
+                waves.ResumeAt(15);
+                Assert.IsTrue(waves.StartNextWave());
+                waves.Tick(0.02f);
+                var bosses = level.Resolve<Purge.Gameplay.Horde.BossSystem>();
+                Assert.IsTrue(bosses.IsBossAlive);
+                Assert.AreEqual("gargoyle_castle", bosses.Definition.Id);
+                await _flow.ExitToMenu();
+            }
+        });
+
+        [UnityTest]
         public IEnumerator Retry_AfterFail_ReloadsLevel_WithSingleLevelScope() => Async(async () =>
         {
             var levelId = FirstLevelId();

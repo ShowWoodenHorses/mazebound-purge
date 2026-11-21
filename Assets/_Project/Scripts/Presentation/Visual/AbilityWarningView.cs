@@ -126,7 +126,7 @@ namespace Purge.Presentation.Visual
                     case AreaStrikeAbility area:
                         var areaRadius = area.WarningRadius;
                         // The Mutant's blow on the ground (stage 8c): a ring closing in instead of the fill.
-                        Draw(area.Closing ? 3f : 0f, progress, 0f, (area.Closing ? 0.1f : 0.07f) / areaRadius,
+                        Draw(area.DiveHeight > 0f ? 4f : area.Closing ? 3f : 0f, progress, 0f, (area.Closing ? 0.1f : 0.07f) / areaRadius,
                             Matrix4x4.TRS(new Vector3(aims[i].x, height, aims[i].y), Quaternion.identity,
                                 new Vector3(areaRadius * 2f, 1f, areaRadius * 2f)));
                         break;

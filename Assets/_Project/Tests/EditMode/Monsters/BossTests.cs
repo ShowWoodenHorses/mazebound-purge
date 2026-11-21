@@ -193,6 +193,29 @@ namespace Purge.Tests.EditMode.Monsters
         // ---------------------------------------------------------------- the boss wave
 
         [Test]
+        public void BossWave_UsesArenaFloor_WhilePlayerIsOnAnotherFloor()
+        {
+            ArenaLevel(Inside);
+            var floor = LevelEditing.AddFloor(_level);
+            for (var y = ArenaRect.Y; y < ArenaRect.YMax; y++)
+            for (var x = ArenaRect.X; x < ArenaRect.XMax; x++)
+                _level.Geometry.SetCell(new GridPosition(x, y, floor), CellType.Floor);
+            _level.SetArena(new ArenaData(ArenaRect, 2, floor));
+            var wave = new WaveDefinition(0f, System.Array.Empty<WaveMonster>());
+            wave.SetBoss(new WaveBoss(_boss));
+            var scenario = Create<WaveScenario>();
+            scenario.Configure(new[] { wave }, 5f, 1f);
+
+            var (runtime, waves) = Run(scenario);
+            Tick(runtime, 1.1f);
+
+            Assert.That(waves.IsBossWave, Is.True);
+            Assert.That(_bosses.IsBossAlive, Is.True);
+            Assert.That(_horde.FloorOf(_bosses.Boss), Is.EqualTo(floor));
+            Assert.That(_player.Floor, Is.Not.EqualTo(floor));
+        }
+
+        [Test]
         public void BossWave_BossInTheArena_EscortNearIt_BudgetWaitsForItsDeath()
         {
             ArenaLevel(Inside);
@@ -422,7 +445,11 @@ namespace Purge.Tests.EditMode.Monsters
             _boss.Stats.Radius = 0.45f; // a narrow body: the test is about the phase
             var strike = new StrikeAbility { Cooldown = 1f, FirstDelay = 0f, MinRange = 0f, MaxRange = 30f, NeedsSight = false, Warning = 0.2f, Recovery = 0.1f };
             strike.UntilPhase = 0; // the first phase only
-            var phase = new PhaseAbility { HealthBelow = 0.5f, Warning = 0.3f, DamageFactor = 2f, CooldownFactor = 0.5f, Rage = true };
+            var phase = new PhaseAbility
+            {
+                HealthBelow = 0.5f, Warning = 0.3f, DamageFactor = 2f, CooldownFactor = 0.5f, Rage = true,
+                ProtectionDuration = 5f, DamageReduction = 0.7f,
+            };
             _boss.SetAbilities(phase, strike);
             SandboxHorde();
             var abilities = new MonsterAbilities(_horde, new CombatTargets(new SpatialQueryService(_grid, _doors), _horde), _player,
@@ -452,8 +479,17 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(_horde.DamageFactorOf(boss), Is.EqualTo(2f));
             Assert.That(_horde.IsEnraged(boss), Is.True, "a rage phase glows");
 
+            Assert.That(_horde.IsProtected(boss), Is.True);
+            var health = _horde.Health[boss];
+            _horde.Damage(boss, 10f);
+            Assert.That(_horde.Health[boss], Is.EqualTo(health - 3f).Within(0.001f));
+
             var casts = abilities.Casts;
-            Tick(3f);
+            Tick(5f);
+            Assert.That(_horde.IsProtected(boss), Is.False);
+            health = _horde.Health[boss];
+            _horde.Damage(boss, 10f);
+            Assert.That(_horde.Health[boss], Is.EqualTo(health - 10f).Within(0.001f));
             Assert.That(abilities.Casts, Is.EqualTo(casts), "the strike was the first phase's only; the phase itself once");
         }
     }

@@ -80,8 +80,14 @@ namespace Purge.Core.Waves
         }
 
         public WaveBoss(MonsterDefinition monster, params WaveGroup[] escort)
+            : this(monster, DifficultyLevel.Easy, escort)
+        {
+        }
+
+        public WaveBoss(MonsterDefinition monster, DifficultyLevel minimumDifficulty, params WaveGroup[] escort)
         {
             _monster = monster;
+            _minimumDifficulty = minimumDifficulty;
             _escort = escort ?? Array.Empty<WaveGroup>();
         }
     }

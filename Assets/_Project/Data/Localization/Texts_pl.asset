@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - Polski
   - USTAWIENIA
@@ -998,4 +1000,7 @@ MonoBehaviour:
     aren\u0105 daje premi\u0119."
   - "Wejd\u017A na schody, by zmieni\u0107 pi\u0119tro. Potwory mog\u0105 ruszy\u0107
     za tob\u0105."
+  - Gargulec
+  - "Wyjd\u017A z cienia, zanim gargulec zanurkuje. Jego kamienna sk\xF3ra poch\u0142ania
+    wi\u0119kszo\u015B\u0107 obra\u017Ce\u0144 przez kilka sekund."
   _missing: []

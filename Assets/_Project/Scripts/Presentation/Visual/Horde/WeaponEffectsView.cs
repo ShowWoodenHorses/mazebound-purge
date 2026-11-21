@@ -362,15 +362,17 @@ namespace Purge.Presentation.Visual.Horde
             }
         }
 
-        private void OnExploded(Vector2 at, float radius, IExplosionLook source)
+        private void OnExploded(Vector2 at, int floor, float radius, IExplosionLook source)
         {
+            if (!Visible(at, floor)) return;
+            var height = floor * GridPosition.FloorHeight;
             // The pack effect of the source, else the default by size; the draft particles only without both.
             var look = source != null && CombatVisualDefinition.IsSet(source.Look) ? source.Look : _visual?.ExplosionOf(radius);
             if (look != null && _packEffects != null &&
-                _packEffects.Play(look, new Vector3(at.x, 0f, at.y), Quaternion.identity, radius))
+                _packEffects.Play(look, new Vector3(at.x, height, at.y), Quaternion.identity, radius, floor))
                 return;
-            if (_blast == null || !Visible(at)) return;
-            var emit = new ParticleSystem.EmitParams { position = new Vector3(at.x, 0.4f, at.y) };
+            if (_blast == null) return;
+            var emit = new ParticleSystem.EmitParams { position = new Vector3(at.x, height + 0.4f, at.y) };
             var count = Mathf.Clamp(Mathf.RoundToInt(radius * 25f), 20, 120);
             for (var i = 0; i < count; i++)
             {
@@ -420,10 +422,10 @@ namespace Purge.Presentation.Visual.Horde
                 _packEffects.Play(look, new Vector3(points[i].x, GunHeight, points[i].y), Quaternion.identity);
         }
 
-        private void OnLookShown(Vector2 at, float radius, IExplosionLook source)
+        private void OnLookShown(Vector2 at, int floor, float radius, IExplosionLook source)
         {
             if (_packEffects != null && source != null)
-                _packEffects.Play(source.Look, new Vector3(at.x, 0f, at.y), Quaternion.identity, radius);
+                _packEffects.Play(source.Look, new Vector3(at.x, floor * GridPosition.FloorHeight, at.y), Quaternion.identity, radius, floor);
         }
 
         /// <summary>One quad per jump, the texture's bolt along V, mirrored at random every frame (it flickers).</summary>
@@ -451,8 +453,8 @@ namespace Purge.Presentation.Visual.Horde
             _boltVertices[v + 3] = new Vector3(to.x - side.x, GunHeight, to.y - side.y);
         }
 
-        private bool Visible(Vector2 point) =>
-            _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(point.x + 0.5f), Mathf.FloorToInt(point.y + 0.5f)));
+        private bool Visible(Vector2 point, int floor = 0) =>
+            _visibility.IsVisible(PlayerMovement.CellOf(point, floor));
 
         private ParticleSystem CreateParticles(string name, Material material, int max, Color color, float lifetime, float size)
         {

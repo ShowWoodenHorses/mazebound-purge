@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -1001,4 +1003,7 @@ MonoBehaviour:
     bitirmek ek \xF6d\xFCl verir."
   - "Kat de\u011Fi\u015Ftirmek i\xE7in merdivene \xE7\u0131k. Canavarlar seni takip
     edebilir."
+  - Gargoyl
+  - "Gargoyl dal\u0131\u015Fa ge\xE7meden g\xF6lgeden \xE7\u0131k. Ta\u015F derisi
+    birka\xE7 saniye boyunca hasar\u0131n \xE7o\u011Funu emer."
   _missing: []

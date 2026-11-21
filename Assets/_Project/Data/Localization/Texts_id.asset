@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -1001,4 +1003,7 @@ MonoBehaviour:
     sasaran.
   - Arena terkunci sampai bos dikalahkan. Menang dengan arena tertutup memberi bonus.
   - Injak tangga untuk berpindah lantai. Monster bisa mengikutimu.
+  - Patung bersayap
+  - Keluar dari bayangan sebelum patung bersayap menukik. Kulit batunya menyerap
+    sebagian besar kerusakan selama beberapa detik.
   _missing: []

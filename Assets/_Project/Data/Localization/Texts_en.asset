@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - English
   - SETTINGS
@@ -1003,4 +1005,7 @@ MonoBehaviour:
   - The arena is locked until you defeat the boss. Winning a run with a closed arena
     grants a bonus.
   - Step onto stairs to change floors. Monsters can follow you.
+  - Gargoyle
+  - Leave the shadow before the Gargoyle dives. Its stone skin absorbs most damage
+    for a few seconds.
   _missing: []

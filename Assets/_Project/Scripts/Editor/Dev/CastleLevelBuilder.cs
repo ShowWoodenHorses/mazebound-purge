@@ -8,6 +8,7 @@ using Purge.Core.Level;
 using Purge.Core.Monsters;
 using Purge.Core.Validation;
 using Purge.Core.Visual;
+using Purge.Core.Waves;
 using Purge.Editor.LevelDesigner;
 using UnityEditor;
 using UnityEngine;
@@ -57,20 +58,102 @@ namespace Purge.Editor.Dev
             var result = isNew ? LevelAuthoring.GenerateNew(level) : LevelAuthoring.Generate(level);
             if (result.Problems.Count > 0)
                 throw new InvalidOperationException(string.Join("; ", result.Problems));
+            if (isNew) AssetDatabase.CreateAsset(level, LevelPath);
+            BuildCommonMaterials();
+            ConfigureCampaign(level);
+        }
+
+        internal static void ConfigureCampaign(LevelData level)
+        {
+            level.Horde = EnsureCastleHorde();
             var report = EditorLevelValidator.Validate(level);
             if (!report.IsValid)
                 throw new InvalidOperationException(string.Join("; ", report.Issues
                     .Where(issue => issue.Severity == ValidationSeverity.Error).Select(issue => issue.Message)));
 
-            if (isNew)
-            {
-                AssetDatabase.CreateAsset(level, LevelPath);
-                LevelSync.SetDevLevel(level, true);
-            }
             EditorUtility.SetDirty(level);
-            BuildCommonMaterials();
+            if (LevelSync.IsDevLevel(level)) LevelSync.SetDevLevel(level, false);
             LevelSync.Sync(level);
         }
+
+        private static HordeDefinition EnsureCastleHorde()
+        {
+            const string hordePath = Data + "/Horde/Castle01Horde.asset";
+            const string wavesPath = Data + "/Waves/Castle_01.asset";
+            var forest = Require<HordeDefinition>("/Horde/Forest01Horde.asset");
+            var sandbox = Require<HordeDefinition>("/Horde/SandboxHorde.asset");
+            var waves = AssetDatabase.LoadAssetAtPath<WaveScenario>(wavesPath);
+            if (waves == null)
+            {
+                waves = ScriptableObject.CreateInstance<WaveScenario>();
+                ConfigureWaves(waves, forest.Waves);
+                AssetDatabase.CreateAsset(waves, wavesPath);
+            }
+
+            var horde = AssetDatabase.LoadAssetAtPath<HordeDefinition>(hordePath);
+            if (horde == null)
+            {
+                horde = UnityEngine.Object.Instantiate(forest);
+                AssetDatabase.CreateAsset(horde, hordePath);
+            }
+
+            horde.SetWaves(waves);
+            var monsterIds = horde.AllMonsters().Select(monster => monster.Id).ToHashSet();
+            horde.SetMonsterVisuals(sandbox.MonsterVisuals
+                .Where(visual => visual != null && monsterIds.Contains(visual.MonsterId)).ToArray());
+            horde.SetMonsterViews(sandbox.MonsterViews
+                .Where(view => view != null && monsterIds.Contains(view.MonsterId)).ToArray());
+            EditorUtility.SetDirty(horde);
+            return horde;
+        }
+
+        private static void ConfigureWaves(WaveScenario castle, WaveScenario forest)
+        {
+            var skeleton = Require<MonsterDefinition>("/Monsters/Castle/Skeleton_Castle.asset");
+            var distant = Require<MonsterDefinition>("/Monsters/Castle/Distant_Castle.asset");
+            var ram = Require<MonsterDefinition>("/Monsters/Castle/Ram_Castle.asset");
+            var shaman = Require<MonsterDefinition>("/Monsters/Castle/Shaman_Castle.asset");
+            var capture = Require<MonsterDefinition>("/Monsters/Castle/Capture_Castle.asset");
+            var gargoyle = Require<MonsterDefinition>("/Monsters/Castle/Gargoyle_Castle.asset");
+            MonsterDefinition CastleRoster(MonsterDefinition monster) => monster.name switch
+            {
+                "Zombie_Forest" => skeleton,
+                "Distant_Forest" => distant,
+                "Ram_Forest" => ram,
+                "Shaman_Forest" => shaman,
+                "Capture_Forest" => capture,
+                _ => monster,
+            };
+            WaveGroup CastleGroup(WaveGroup group) =>
+                new WaveGroup(CastleRoster(group.Monster), group.Count, group.Time, group.Point);
+
+            // Keep the Forest's opening, then use four more steps between its late compositions.
+            var sourceWaves = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 9, 10, 10, 11, 11, 12 };
+            var waves = new WaveDefinition[sourceWaves.Length];
+            for (var i = 0; i < waves.Length; i++)
+            {
+                var source = forest.Waves[sourceWaves[i] - 1];
+                var pool = source.Monsters.Select(entry => new WaveMonster(CastleRoster(entry.Monster), entry.Weight)).ToArray();
+                var groups = source.Groups.Select(CastleGroup).ToList();
+                if (i == 6 || i == 12) groups.Add(new WaveGroup(capture, 1, 18f));
+                var budget = source.Budget + Mathf.Max(0, i - 8) * 2f;
+                var wave = new WaveDefinition(budget, pool, groups.ToArray(), source.SpawnTime, source.PackSize, source.MaxAlive)
+                {
+                    MoneyBonus = source.MoneyBonus,
+                    SkipRate = source.SkipRate,
+                };
+                if (i == 4 || i == 8)
+                    wave.SetBoss(new WaveBoss(source.Boss.Monster, DifficultyLevel.Normal, source.Boss.Escort.Select(CastleGroup).ToArray()));
+                if (i == waves.Length - 1)
+                    wave.SetBoss(new WaveBoss(gargoyle, source.Boss.Escort.Select(CastleGroup).ToArray()));
+                waves[i] = wave;
+            }
+
+            castle.Configure(waves, forest.PauseTime, forest.FirstDelay);
+        }
+
+        private static T Require<T>(string path) where T : UnityEngine.Object =>
+            AssetDatabase.LoadAssetAtPath<T>(Data + path) ?? throw new InvalidOperationException("Missing " + Data + path);
 
         private static void BuildCommonMaterials()
         {

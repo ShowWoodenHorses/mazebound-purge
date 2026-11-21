@@ -15464,5 +15464,5 @@ MonoBehaviour:
         _rotation: 0
     _objectOverrides: []
   _tutorial: {fileID: 0}
-  _horde: {fileID: 0}
+  _horde: {fileID: 11400000, guid: ad4cd176d5cb2024d82e4c4f6c1ed361, type: 2}
   _stressTest: {fileID: 0}

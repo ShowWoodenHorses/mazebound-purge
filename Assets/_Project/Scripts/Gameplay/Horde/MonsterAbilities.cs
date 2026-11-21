@@ -104,6 +104,7 @@ namespace Purge.Gameplay.Horde
         private AbilityPhase[] _phase;
         private float[] _phaseStart;
         private Vector2[] _origin;
+        private Vector2[] _diveLanding;
         private Vector2[] _aim; // unit direction (line, fan, sector) or the landing point (arc)
         private float[] _ready; // agent · MaxAbilities + ability: game time it may be cast again
         private float[] _chaseSince; // -1 = not chasing
@@ -314,6 +315,7 @@ namespace Purge.Gameplay.Horde
         public ReadOnlySpan<float> PhaseStart => _phaseStart;
         public ReadOnlySpan<Vector2> Origins => _origin;
         public ReadOnlySpan<Vector2> Aims => _aim;
+        public Vector2 DiveLandingOf(int agent) => _diveLanding[agent];
 
         /// <summary>The ability <paramref name="index"/> of the monster in <paramref name="agent"/> (null = none).</summary>
         public AbilityModule AbilityOf(int agent, int index)
@@ -412,6 +414,7 @@ namespace Purge.Gameplay.Horde
             _phaseStart = new float[capacity];
             _origin = new Vector2[capacity];
             _aim = new Vector2[capacity];
+            _diveLanding = new Vector2[capacity];
             _ready = new float[capacity * MaxAbilities];
             _chaseSince = new float[capacity];
             _nextSight = new float[capacity];
@@ -540,7 +543,7 @@ namespace Purge.Gameplay.Horde
                 if (ability.Passive) continue;
                 var phaseNumber = phases[a];
                 // The roars (rage, a phase) may begin in melee: a monster at the player still turns at its threshold.
-                if (inMelee && !(ability is RageAbility) && phaseNumber == 0) continue;
+                if (inMelee && !ability.CastInMelee && !(ability is RageAbility) && phaseNumber == 0) continue;
                 if (phaseNumber > 0 ? phaseNumber != current + 1 : !ability.InPhase(current)) continue;
                 if (time < _ready[i * MaxAbilities + a] || time - _chaseSince[i] < ability.FirstDelay) continue;
                 if (distance < ability.MinRange || distance > ability.MaxRange) continue;
@@ -576,6 +579,8 @@ namespace Purge.Gameplay.Horde
                 SummonAbility => position,
                 _ => direction,
             };
+            if (ability is AreaStrikeAbility { DiveHeight: > 0f } dive)
+                _diveLanding[i] = _horde.DiveLanding(i, _aim[i], dive.Radius);
             if (ability is ChargeAbility charge)
                 _length[i] = _horde.DashReach(position, direction, charge.Distance, _horde.RadiusOf(i));
             else if (ability is PullAbility pull)
@@ -619,6 +624,7 @@ namespace Purge.Gameplay.Horde
                     Shove(i, push, position);
                     break;
                 case AreaStrikeAbility area:
+                    if (area.DiveHeight > 0f) _horde.LandDive(i, _diveLanding[i]);
                     AreaStrike(i, area, _aim[i]);
                     break;
                 case RaiseAbility raise:
@@ -633,6 +639,8 @@ namespace Purge.Gameplay.Horde
                     _healthPhase[i] = _kindPhaseNumber[_horde.Kinds[i]][index];
                     _tempo[i] *= phase.CooldownFactor;
                     _horde.Strengthen(i, phase.DamageFactor, phase.SpeedFactor, phase.Rage);
+                    if (phase.ProtectionDuration > 0f)
+                        _horde.Protect(i, phase.ProtectionDuration, phase.DamageReduction);
                     PhaseChanged?.Invoke(i, _healthPhase[i]);
                     break;
                 case ChargeAbility charge:

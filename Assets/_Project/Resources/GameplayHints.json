@@ -77,6 +77,12 @@
       "condition": 9
     },
     {
+      "id": "gargoyle",
+      "textKey": "hint.gargoyle",
+      "condition": 1,
+      "monsterIdPrefix": "gargoyle_castle"
+    },
+    {
       "id": "closed_arena",
       "textKey": "hint.closed_arena",
       "condition": 10

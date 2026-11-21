@@ -71,6 +71,9 @@ namespace Purge.Core.Monsters
         public float FirstDelay { get => _firstDelay; internal set => _firstDelay = value; }
         public float MinRange { get => _minRange; internal set => _minRange = value; }
         public float MaxRange { get => _maxRange; internal set => _maxRange = value; }
+        [SerializeField] private bool _castInMelee;
+
+        public bool CastInMelee { get => _castInMelee; internal set => _castInMelee = value; }
         public bool NeedsSight { get => _needsSight; internal set => _needsSight = value; }
         public float HealthBelow { get => _healthBelow; internal set => _healthBelow = value; }
         public float Warning { get => _warning; internal set => _warning = value; }
@@ -278,6 +281,10 @@ namespace Purge.Core.Monsters
         [Tooltip("Stage 8d (the Colossus's stomp): the circle is around the monster itself, not under the player.")]
         [SerializeField] private bool _aroundSelf;
 
+        [Tooltip("Height of the diving caster, in meters; zero for an ordinary area strike.")]
+        [SerializeField, Min(0f)] private float _diveHeight;
+
+        public float DiveHeight { get => _diveHeight; internal set => _diveHeight = value; }
         public bool Closing { get => _closing; internal set => _closing = value; }
         public bool AroundSelf { get => _aroundSelf; internal set => _aroundSelf = value; }
         public float Radius { get => _radius; internal set => _radius = value; }
@@ -536,6 +543,11 @@ namespace Purge.Core.Monsters
         public float DamageFactor { get => _damageFactor; internal set => _damageFactor = value; }
         public float SpeedFactor { get => _speedFactor; internal set => _speedFactor = value; }
         public float CooldownFactor { get => _cooldownFactor; internal set => _cooldownFactor = value; }
+        [SerializeField, Min(0f)] private float _protectionDuration;
+        [SerializeField, Range(0f, 1f)] private float _damageReduction;
+
+        public float ProtectionDuration { get => _protectionDuration; internal set => _protectionDuration = value; }
+        public float DamageReduction { get => _damageReduction; internal set => _damageReduction = value; }
         public bool Rage { get => _rage; internal set => _rage = value; }
 
         public override AbilityWarningShape Shape => AbilityWarningShape.None;

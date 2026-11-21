@@ -243,7 +243,7 @@ namespace Purge.Gameplay.Combat
                     ArmoredHit?.Invoke(target.Agent, at);
                 }
 
-                killed = _horde.Damage(target.Agent, amount);
+                killed = _horde.Damage(target.Agent, amount, out amount);
             }
             else
             {

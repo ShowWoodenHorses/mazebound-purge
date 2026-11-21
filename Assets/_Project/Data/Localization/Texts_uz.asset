@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -989,4 +991,7 @@ MonoBehaviour:
   - Boshliqni yengmaguncha arena yopiq. Yopiq arena bilan bosqichni yutsang, bonus
     olasan.
   - Qavatni almashtirish uchun zinaga chiq. Maxluqlar ortingdan ergashishi mumkin.
+  - Gargoyl
+  - "Gargoyl sho\u2018ng\u2018ishidan oldin soyadan chiqing. Uning tosh terisi bir
+    necha soniya davomida zararning katta qismini yutadi."
   _missing: []

@@ -209,7 +209,7 @@ namespace Purge.Gameplay.Run
                         !_targets.IsClear(position, targetPosition, _start.Floor)) continue;
                     _targets.Damage(target, 200f, (targetPosition - position).normalized);
                 }
-                _effects.ShowExplosion(position, 2f, _mineLook);
+                _effects.ShowExplosion(position, _start.Floor, 2f, _mineLook);
                 _sounds.EmitPlayer(SoundType.Explosion, position, _mineLook?.SoundRadius ?? 8f, _start.Floor);
             }
         }

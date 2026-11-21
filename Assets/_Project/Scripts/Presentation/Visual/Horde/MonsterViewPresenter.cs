@@ -211,12 +211,14 @@ namespace Purge.Presentation.Visual.Horde
                     ? _visual.CorpseSink(_horde.Time - _horde.StateStart[i], _horde.StatsOf(i).CorpseTime) * _visual.CorpseSinkDepth *
                       view.Transform.localScale.y / Mathf.Max(1e-3f, view.BaseScale.y)
                     : 0f;
-                view.Transform.SetPositionAndRotation(new Vector3(p.x, _horde.ViewHeightOf(i) - sink, p.y), Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
+                var position = DivePosition(i, p, _horde.ViewHeightOf(i) - sink);
+                view.Transform.SetPositionAndRotation(position, Quaternion.Euler(0f, facing[i] * Mathf.Rad2Deg, 0f));
                 if (!visible) continue;
                 shown++;
                 if (view.Animator != null && view.Animator.speed != pace) view.Animator.speed = pace;
                 Animate(i, view, pool.Definition, states[i]);
                 ShowGlow(i, view, states[i]);
+                view.Glow?.SetStone(_horde.IsProtected(i));
                 // The pose of this frame is evaluated already: the body stays where the gameplay put it (deaths fall away;
                 // getting up from lying — the lying body is far from the point by nature, pulling it in would jerk).
                 if (states[i] != HordeAgentState.Dying && states[i] != HordeAgentState.Emerging) KeepInPlace(view);
@@ -354,6 +356,19 @@ namespace Purge.Presentation.Visual.Horde
             view.Glowing = glow.a > 0f;
         }
 
+        private Vector3 DivePosition(int agent, Vector2 position, float height)
+        {
+            if (_abilities == null || !_abilities.IsActive || _abilities.Phases[agent] != AbilityPhase.Warning ||
+                _abilities.CastOf(agent) is not AreaStrikeAbility { DiveHeight: > 0f } dive)
+                return new Vector3(position.x, height, position.y);
+
+            var progress = Mathf.Clamp01((_horde.Time - _abilities.PhaseStart[agent]) / Mathf.Max(0.05f, dive.Warning));
+            var flight = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.2f, 1f, progress));
+            position = Vector2.Lerp(position, _abilities.DiveLandingOf(agent), flight);
+            height += dive.DiveHeight * Mathf.Sin(Mathf.PI * progress);
+            return new Vector3(position.x, height, position.y);
+        }
+
         private float ChargeSpeed(int agent) =>
             _abilities != null && _abilities.CastOf(agent) is ChargeAbility charge ? charge.Speed : _horde.Speeds[agent];
 
@@ -391,6 +406,7 @@ namespace Purge.Presentation.Visual.Horde
             var champions = _horde.Champions;
             view.Transform.localScale = view.BaseScale * (_horde.IsChampion(slot) && champions != null ? champions.Scale : 1f);
             view.Glow?.SetGlow(Color.clear);
+            view.Glow?.SetStone(false);
             view.Glowing = false;
             if (view.Animator != null)
             {

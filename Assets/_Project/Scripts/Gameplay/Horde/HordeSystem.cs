@@ -167,6 +167,8 @@ namespace Purge.Gameplay.Horde
         private int[] _doorAt; // cell of the door it is beating down, -1
         private float[] _doorTimer;
         private float[] _emergeTime; // how long this one climbs out (its kind's, or a raise's)
+        private float[] _protectionUntil;
+        private float[] _damageReduction;
         private float[] _damageFactor; // × its damage (rage)
         private bool[] _enraged;
         private byte[] _affix; // champion's affix: index in Champions.Affixes + 1; 0 = not a champion
@@ -452,6 +454,15 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>× the damage the monster deals (rage; 1 = as its data says).</summary>
+        internal void Protect(int agent, float duration, float damageReduction)
+        {
+            _protectionUntil[agent] = Time + duration;
+            _damageReduction[agent] = Mathf.Clamp01(damageReduction);
+        }
+
+        public bool IsProtected(int agent) =>
+            (uint)agent < (uint)_highWater && IsAlive(_states[agent]) && Time < _protectionUntil[agent];
+
         public float DamageFactorOf(int agent) => (uint)agent < (uint)_highWater ? _damageFactor[agent] : 1f;
 
         /// <summary>Seconds the monster in <paramref name="agent"/> climbs out of the ground (its kind's, or a raise's).</summary>
@@ -587,6 +598,29 @@ namespace Purge.Gameplay.Horde
         public void EndDash(int agent)
         {
             if ((uint)agent < (uint)_highWater) _dashLeft[agent] = 0f;
+        }
+
+        internal Vector2 DiveLanding(int agent, Vector2 target, float radius)
+        {
+            var origin = _positions[agent];
+            if (_held[agent]) return origin;
+            var towardOrigin = origin - target;
+            var distance = towardOrigin.magnitude;
+            if (distance < 0.01f) return origin;
+
+            var direction = towardOrigin / distance;
+            var limit = Mathf.Min(distance, radius);
+            for (var offset = 0f; offset < limit; offset += 0.25f)
+            {
+                var candidate = target + direction * offset;
+                if (FootprintFree(candidate, RadiusOf(agent))) return candidate;
+            }
+            return origin;
+        }
+
+        internal void LandDive(int agent, Vector2 landing)
+        {
+            if (!_held[agent] && FootprintFree(landing, RadiusOf(agent))) _positions[agent] = landing;
         }
 
         public bool IsDashing(int agent) => (uint)agent < (uint)_highWater && _dashLeft[agent] > 0f;
@@ -778,6 +812,8 @@ namespace Purge.Gameplay.Horde
             _doorAt = new int[capacity];
             _doorTimer = new float[capacity];
             _emergeTime = new float[capacity];
+            _protectionUntil = new float[capacity];
+            _damageReduction = new float[capacity];
             _damageFactor = new float[capacity];
             _enraged = new bool[capacity];
             _affix = new byte[capacity];
@@ -951,13 +987,17 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>Damages a living monster; true when this hit killed it.</summary>
-        public bool Damage(int agent, float amount)
+        public bool Damage(int agent, float amount) => Damage(agent, amount, out _);
+
+        internal bool Damage(int agent, float amount, out float applied)
         {
+            applied = 0f;
             if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || amount <= 0f)
                 return false;
 
             _hitTime[agent] = Time;
-            _health[agent] -= amount;
+            applied = IsProtected(agent) ? amount * (1f - _damageReduction[agent]) : amount;
+            _health[agent] -= applied;
             if (_health[agent] > 0f)
             {
                 Perception.OnHit(agent, Time);
@@ -1588,11 +1628,11 @@ namespace Purge.Gameplay.Horde
             return position;
         }
 
-        private bool FootprintFree(Vector2 center, float radius)
+        private bool FootprintFree(Vector2 center, float radius, int? floor = null)
         {
             var r = radius * 0.9f;
-            if (!IsWalkableAt(center.x - r, center.y - r) || !IsWalkableAt(center.x + r, center.y - r) ||
-                !IsWalkableAt(center.x - r, center.y + r) || !IsWalkableAt(center.x + r, center.y + r))
+            if (!IsWalkableAt(center.x - r, center.y - r, floor) || !IsWalkableAt(center.x + r, center.y - r, floor) ||
+                !IsWalkableAt(center.x - r, center.y + r, floor) || !IsWalkableAt(center.x + r, center.y + r, floor))
                 return false;
             if (r <= 0.5f) return true;
             // A body wider than a cell (bosses, stage 8a): the edges and the middle too, a point per cell at most.
@@ -1600,18 +1640,25 @@ namespace Purge.Gameplay.Horde
             for (var a = 1; a < steps; a++)
             {
                 var along = -r + 2f * r * a / steps;
-                if (!IsWalkableAt(center.x + along, center.y - r) || !IsWalkableAt(center.x + along, center.y + r) ||
-                    !IsWalkableAt(center.x - r, center.y + along) || !IsWalkableAt(center.x + r, center.y + along))
+                if (!IsWalkableAt(center.x + along, center.y - r, floor) || !IsWalkableAt(center.x + along, center.y + r, floor) ||
+                    !IsWalkableAt(center.x - r, center.y + along, floor) || !IsWalkableAt(center.x + r, center.y + along, floor))
                     return false;
                 for (var b = 1; b < steps; b++)
-                    if (!IsWalkableAt(center.x + along, center.y - r + 2f * r * b / steps))
+                    if (!IsWalkableAt(center.x + along, center.y - r + 2f * r * b / steps, floor))
                         return false;
             }
 
             return true;
         }
 
-        private bool IsWalkableAt(float x, float y) => IsWalkable(Mathf.FloorToInt(x + 0.5f), Mathf.FloorToInt(y + 0.5f));
+        private bool IsWalkableAt(float x, float y, int? floor)
+        {
+            var cellX = Mathf.FloorToInt(x + 0.5f);
+            var cellY = Mathf.FloorToInt(y + 0.5f);
+            return floor is int targetFloor && targetFloor != _player.Floor
+                ? _passability.IsWalkable(new GridPosition(cellX, cellY, targetFloor))
+                : IsWalkable(cellX, cellY);
+        }
 
         private int CellIndex(Vector2 position)
         {
@@ -2020,6 +2067,8 @@ namespace Purge.Gameplay.Horde
             _attackRate[slot] = 1f;
             _emergeTime[slot] = emerge ? emergeTime >= 0f ? emergeTime : stats.EmergeTime : 0f;
             _states[slot] = _emergeTime[slot] > 0f ? HordeAgentState.Emerging : HordeAgentState.Moving;
+            _protectionUntil[slot] = 0f;
+            _damageReduction[slot] = 0f;
             _damageFactor[slot] = 1f;
             _enraged[slot] = false;
             _stateStart[slot] = Time;

@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -994,4 +996,7 @@ MonoBehaviour:
   - "Die Arena bleibt bis zum Sieg \xFCber den Boss zu. Ein erfolgreicher Durchlauf
     mit geschlossener Arena bringt einen Bonus."
   - "Betritt eine Treppe, um das Stockwerk zu wechseln. Monster k\xF6nnen dir folgen."
+  - Gargoyle
+  - "Verlasse den Schatten, bevor sich der Gargoyle herabst\xFCrzt. Seine Steinhaut
+    f\xE4ngt einige Sekunden lang den Gro\xDFteil des Schadens ab."
   _missing: []

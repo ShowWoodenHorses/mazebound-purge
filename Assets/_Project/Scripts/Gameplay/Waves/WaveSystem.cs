@@ -303,19 +303,25 @@ namespace Purge.Gameplay.Waves
             }
         }
 
-        /// <summary>The boss climbs out in the arena's centre (no arena on this floor — at a far spawn point); tries every tick.</summary>
+        /// <summary>The boss climbs out in the arena's centre or at a far spawn point on a level without an arena.</summary>
         private void SpawnBoss()
         {
             var arena = _level.Arena;
             Vector2 center;
-            if (!arena.IsEmpty && arena.Floor == _player.Floor) center = new Vector2(arena.Center.X, arena.Center.Y);
+            int floor;
+            if (!arena.IsEmpty)
+            {
+                center = new Vector2(arena.Center.X, arena.Center.Y);
+                floor = arena.Floor;
+            }
             else
             {
                 var point = PickPoint(-1);
                 center = point >= 0 ? CenterOf(point) : FallbackCenter();
+                floor = point >= 0 ? _level.MonsterSpawns[point].Position.Floor : _player.Floor;
             }
 
-            var slot = _horde.SpawnBoss(center, _bossKind);
+            var slot = _horde.SpawnBoss(center, _bossKind, floor: floor);
             if (slot < 0) return; // no free slot or place this tick
             _bossPending = false;
             _bossSlot = slot;
@@ -344,7 +350,8 @@ namespace Purge.Gameplay.Waves
                 }
 
                 var center = point >= 0 ? CenterOf(point) : FallbackCenter();
-                if (_horde.SpawnEmerging(center, kind, SpawnRadius) < 0) return;
+                var floor = point >= 0 ? _level.MonsterSpawns[point].Position.Floor : _player.Floor;
+                if (_horde.SpawnEmerging(center, kind, SpawnRadius, floor) < 0) return;
                 _escortNext++;
             }
         }
@@ -360,7 +367,13 @@ namespace Purge.Gameplay.Waves
             PickPoint(-1); // fills _allowed
             if (_allowed.Count == 0) return PickPoint(-1);
             var center = new Vector2(arena.Center.X, arena.Center.Y);
-            _allowed.Sort((a, b) => (CenterOf(a) - center).sqrMagnitude.CompareTo((CenterOf(b) - center).sqrMagnitude));
+            _allowed.Sort((a, b) =>
+            {
+                var aAway = _level.MonsterSpawns[a].Position.Floor != arena.Floor;
+                var bAway = _level.MonsterSpawns[b].Position.Floor != arena.Floor;
+                if (aAway != bAway) return aAway ? 1 : -1;
+                return (CenterOf(a) - center).sqrMagnitude.CompareTo((CenterOf(b) - center).sqrMagnitude);
+            });
             // The two nearest share the packs.
             return _allowed[pack % Mathf.Min(2, _allowed.Count)];
         }

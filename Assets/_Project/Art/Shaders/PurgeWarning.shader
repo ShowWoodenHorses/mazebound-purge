@@ -62,6 +62,16 @@ Shader "Purge/Warning"
                 half inside;
                 half edge;
                 half along; // 0 at the start of the fill, 1 at its end
+                if (_Shape > 3.5)
+                {
+                    float r = length(i.uv * 2 - 1);
+                    float aa = fwidth(r) * 1.5;
+                    half disc = 1 - smoothstep(1 - aa, 1, r);
+                    half rim = smoothstep(0.88, 0.96, r);
+                    return half4(lerp(half3(0.04, 0.035, 0.03), _Color.rgb, rim),
+                        disc * lerp(0.32 + 0.28 * _Progress, _Color.a, rim));
+                }
+
                 if (_Shape > 2.5)
                 {
                     // Closing circle (stage 8c): the rim stays, a bright ring runs from it to the centre; what it has passed

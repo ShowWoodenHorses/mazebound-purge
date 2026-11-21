@@ -120,7 +120,7 @@ namespace Purge.Presentation.Visual
         /// <paramref name="radius"/> &gt; 0 scales an effect that has a radius to it. False: no such effect loaded,
         /// or the cell is not seen.
         /// </summary>
-        public bool Play(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float radius = 0f)
+        public bool Play(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float radius = 0f, int floor = 0)
         {
             if (!CombatVisualDefinition.IsSet(reference)) return false;
             if (!_kinds.TryGetValue(reference.AssetGUID, out var kind))
@@ -130,7 +130,7 @@ namespace Purge.Presentation.Visual
                 return false;
             }
 
-            if (!_visibility.IsVisible(PlayerMovement.CellOf(new Vector2(position.x, position.z))))
+            if (!_visibility.IsVisible(PlayerMovement.CellOf(new Vector2(position.x, position.z), floor)))
                 return false;
 
             var instance = Take(kind);

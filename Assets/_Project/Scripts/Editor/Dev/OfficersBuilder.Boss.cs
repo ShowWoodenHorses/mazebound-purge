@@ -17,8 +17,7 @@ namespace Purge.Editor.Dev
     /// on the Creature Animset — the Brute's idle, walk, run and hits, their own heavy claw attacks, the roar it climbs out
     /// with (the rise state, through its emerge time), the roar of a phase (the cast), a long death; the stun is the
     /// officers'. Size by the body (<see cref="MonsterStats.Radius"/>): 3×3 bodies a head taller than 2×2. Draft numbers of
-    /// the card of stage 8: HP, speed, body, the phase; abilities — stages 8b–8d. The Gargoyle and the Elemental wait for
-    /// their stages (13, 14).
+    /// the cards of stages 8 and 13: HP, speed, body, phases and abilities. The Elemental waits for stage 14.
     /// </summary>
     internal static partial class OfficersBuilder
     {
@@ -80,6 +79,7 @@ namespace Purge.Editor.Dev
         /// Colossus — the shove, the stomp (fists on the ground), the boulder heaved; the Gorgon — the summon, the gaze, the
         /// fan (the Wizard's spells); the Demon — the fire from above, the fire balls (spells; its trail is never cast).
         /// </summary>
+        private static readonly ClipSet GargoyleClips = BossCasts("Brute_Rage", "Boss_Slam", "Brute_Roar", "Boss_Sweep");
         private static readonly ClipSet ButcherClips = BossCasts("Brute_Rage", "Brute_Charge", "Boss_Sweep");
         private static readonly ClipSet ColossusClips = BossCasts("Brute_Push", "Boss_Slam", "Brute_Push");
         private static readonly ClipSet GorgonClips = BossCasts("Elite_Wizard_Raise", "Elite_Wizard_Roar", "Elite_Wizard_Attack_1");
@@ -96,6 +96,7 @@ namespace Purge.Editor.Dev
         private static (string Controller, ClipSet Clips) BossKitOf(string prefabName) => prefabName switch
         {
             "Mutant_Forest" => (MutantControllerPath, MutantClips),
+            "Gargoyle_Castle" => ("Assets/_Project/Art/Monster/Gargoyle.controller", GargoyleClips),
             "ZombieBoss_Common" => ("Assets/_Project/Art/Monster/Butcher.controller", ButcherClips),
             "Golem_Common" => ("Assets/_Project/Art/Monster/Colossus.controller", ColossusClips),
             "Medusa_Common" => ("Assets/_Project/Art/Monster/Gorgon.controller", GorgonClips),
@@ -108,10 +109,10 @@ namespace Purge.Editor.Dev
 
         public static bool IsMutant(string prefabName) => prefabName == "Mutant_Forest";
 
-        /// <summary>The bosses this stage builds: the Mutant and the four intermediate ones (stage 8).</summary>
+        /// <summary>The bosses available to Build Monsters.</summary>
         public static bool IsBuiltBoss(string prefabName) =>
             prefabName == "Mutant_Forest" || prefabName == "ZombieBoss_Common" || prefabName == "Golem_Common" ||
-            prefabName == "Medusa_Common" || prefabName == "Demon_Common";
+            prefabName == "Medusa_Common" || prefabName == "Demon_Common" || prefabName == "Gargoyle_Castle";
 
         private static bool IsBigBoss(string prefabName) => prefabName == "Mutant_Forest" || prefabName == "Golem_Common";
 
@@ -337,6 +338,11 @@ namespace Purge.Editor.Dev
             PhaseAbility phase = null;
             switch (prefabName)
             {
+                case "Gargoyle_Castle":
+                    stats.MaxHp = 8000f;
+                    stats.Speed = 1.6f;
+                    stats.Damage = 35;
+                    break;
                 case "Mutant_Forest":
                     // The Forest's final boss: from 50 % — rage (× 1.5 damage; the summons ×2 — stage 8c).
                     stats.MaxHp = 6000f;
@@ -404,6 +410,7 @@ namespace Purge.Editor.Dev
             switch (prefabName)
             {
                 case "Mutant_Forest": return MutantAbilities(phase);
+                case "Gargoyle_Castle": return GargoyleAbilities();
                 case "ZombieBoss_Common": return ButcherAbilities(phase);
                 case "Golem_Common": return ColossusAbilities();
                 case "Medusa_Common": return GorgonAbilities();
@@ -553,6 +560,42 @@ namespace Purge.Editor.Dev
         /// of 2026-10-26), charge (line 0.8 s), blow on the ground (a ring closing in, r 3 under the player, 1 s), boulder
         /// along an arc (circle r 1.5, every 5 s)].
         /// </summary>
+        private static AbilityModule[] GargoyleAbilities()
+        {
+            var stone = new PhaseAbility
+            {
+                HealthBelow = 0.5f, Warning = 0.05f, ProtectionDuration = 5f, DamageReduction = 0.7f,
+                ReleaseSound = "gaze_stone",
+            };
+            var dive = new AreaStrikeAbility
+            {
+                Cooldown = 7f, FirstDelay = 3f, MaxRange = 9f, NeedsSight = true, Warning = 1.2f, Recovery = 0.6f,
+                Radius = 2.5f, Damage = 30f, DiveHeight = 3f, ReleaseSound = "boss_smash", CastInMelee = true,
+            };
+            var dustLook = PackEffect("PolygonArsenal/FX_Ground_Slam");
+            if (dustLook != null)
+            {
+                var dust = new LookEffect { Look = dustLook };
+                dust.SetRadius(dive.Radius);
+                dive.SetImpact(dust);
+            }
+
+            var skeleton = AssetDatabase.LoadAssetAtPath<MonsterDefinition>(
+                "Assets/_Project/Data/Monsters/Castle/Skeleton_Castle.asset")
+                ?? throw new InvalidOperationException("Build the Castle skeleton before the Gargoyle.");
+            var summon = new SummonAbility
+            {
+                Cooldown = 15f, FirstDelay = 4f, NeedsSight = false, MaxRange = 30f, Warning = 1.2f, Recovery = 0.4f,
+                Monster = skeleton, Count = 6, Radius = 4.5f, Limit = 12, CastSound = "summon",
+            };
+            var wings = new PushAbility
+            {
+                Cooldown = 5f, FirstDelay = 1f, MaxRange = 2.5f, NeedsSight = true, Warning = 0.5f, Recovery = 0.4f,
+                Radius = 2.5f, Damage = 15f, Knockback = 3f, ReleaseSound = "boss_swing", CastInMelee = true,
+            };
+            return new AbilityModule[] { stone, dive, summon, wings };
+        }
+
         private static AbilityModule[] MutantAbilities(PhaseAbility phase)
         {
             var zombie = AssetDatabase.LoadAssetAtPath<MonsterDefinition>("Assets/_Project/Data/Monsters/Forest/Zombie_Forest.asset");

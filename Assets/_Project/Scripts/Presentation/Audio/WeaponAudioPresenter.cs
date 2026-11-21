@@ -284,7 +284,7 @@ namespace Purge.Presentation.Audio
             PlayAt(Catalog.KillSplat, at, 1f);
         }
 
-        private void OnExploded(Vector2 at, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at, 1f);
+        private void OnExploded(Vector2 at, int floor, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at, 1f);
 
         // ------------------------------------------------------------------ Projectile flight
 

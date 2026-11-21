@@ -104,7 +104,7 @@ namespace Purge.Gameplay.Horde
         /// nearest <paramref name="center"/> its whole body fits on, and hunts the player at once. Its slot, or -1 (no free
         /// slot, nowhere to stand within <paramref name="searchRadius"/> cells).
         /// </summary>
-        public int SpawnBoss(Vector2 center, int kind, int searchRadius = 8)
+        public int SpawnBoss(Vector2 center, int kind, int searchRadius = 8, int? floor = null)
         {
             if (!IsActive || (uint)kind >= (uint)_kinds.Length) return -1;
             var radius = _kinds[kind].Stats.Radius;
@@ -117,10 +117,10 @@ namespace Purge.Gameplay.Horde
                 if (Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) != ring) continue; // the ring's edge only
                 var x = cx + dx;
                 var y = cy + dy;
-                if (!IsWalkable(x, y)) continue;
+                if (!IsWalkableAt(x, y, floor)) continue;
                 var position = new Vector2(x, y);
-                if (!FootprintFree(position, radius)) continue;
-                return Place(y * _grid.Width + x, true, MonsterPerception.Hunter, position, kind);
+                if (!FootprintFree(position, radius, floor)) continue;
+                return Place(y * _grid.Width + x, true, MonsterPerception.Hunter, position, kind, floor: floor);
             }
 
             return -1;

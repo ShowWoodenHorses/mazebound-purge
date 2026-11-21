@@ -95,7 +95,7 @@ namespace Purge.Gameplay.Combat
         public event Action<Bullet, Vector2, BulletEnd> Ended;
 
         /// <summary>(where, radius, what exploded — its look) of an explosion.</summary>
-        public event Action<Vector2, float, IExplosionLook> Exploded;
+        public event Action<Vector2, int, float, IExplosionLook> Exploded;
 
         public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0, float range = DefaultRange,
             int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null, bool explosiveRound = false)
@@ -147,7 +147,7 @@ namespace Purge.Gameplay.Combat
                         {
                             var w=bullet.Weapon;
                             var r=_targets.Blast(hit.Point,bullet.Damage*w.UpgradeParameter("explosive_damage_share")*(_upgrades?.DamageFactor(w)??1f),w.UpgradeParameter("explosive_radius"),0.3f,bullet.Floor,kind:PlayerDamage.WeaponExplosion);
-                            Exploded?.Invoke(hit.Point,r,w.UpgradeExplosion);
+                            Exploded?.Invoke(hit.Point,bullet.Floor,r,w.UpgradeExplosion);
                             bullet.ExplosiveRound=false;
                         }
 
@@ -198,7 +198,7 @@ namespace Purge.Gameplay.Combat
         {
             var radius = _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius * (_upgrades!=null && weapon!=null && _upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f), explosive.EdgeDamage, floor, weapon,
                 PlayerDamage.WeaponExplosion);
-            Exploded?.Invoke(at, radius, explosive);
+            Exploded?.Invoke(at, floor, radius, explosive);
             if(weapon!=null && _upgrades!=null && _upgrades.Has(weapon,WeaponUpgrade.Cluster))
             {
                 int count=Mathf.RoundToInt(weapon.UpgradeParameter("cluster_count"));
@@ -207,7 +207,7 @@ namespace Purge.Gameplay.Combat
                     float angle=i*Mathf.PI*2f/Mathf.Max(1,count);var point=at+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*radius*0.5f;
                     if(!_targets.IsClear(at,point,floor))point=at;
                     float r=_targets.Blast(point,explosive.ExplosionDamage*weapon.UpgradeParameter("cluster_damage_share")*_upgrades.DamageFactor(weapon),explosive.Radius*(_upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f)*weapon.UpgradeParameter("cluster_radius_share"),explosive.EdgeDamage,floor,kind:PlayerDamage.WeaponExplosion);
-                    Exploded?.Invoke(point,r,explosive);
+                    Exploded?.Invoke(point,floor,r,explosive);
                 }
             }
 

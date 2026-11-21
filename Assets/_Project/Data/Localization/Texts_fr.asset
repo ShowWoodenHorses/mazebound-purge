@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -992,4 +994,7 @@ MonoBehaviour:
   - "L\u2019ar\xE8ne reste ferm\xE9e jusqu\u2019\xE0 la d\xE9faite du boss. R\xE9ussir
     une partie en ar\xE8ne ferm\xE9e donne un bonus."
   - "Emprunte un escalier pour changer d\u2019\xE9tage. Les monstres peuvent te suivre."
+  - Gargouille
+  - "Quittez l\u2019ombre avant que la Gargouille ne plonge. Sa peau de pierre absorbe
+    la majeure partie des d\xE9g\xE2ts pendant quelques secondes."
   _missing: []

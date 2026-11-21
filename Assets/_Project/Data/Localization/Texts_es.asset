@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -987,4 +989,7 @@ MonoBehaviour:
   - "La arena sigue cerrada hasta vencer al jefe. Completar la partida con la arena
     cerrada da una bonificaci\xF3n."
   - Pisa la escalera para cambiar de planta. Los monstruos pueden seguirte.
+  - "G\xE1rgola"
+  - "Sal de la sombra antes de que la G\xE1rgola se lance en picado. Su piel de piedra
+    absorbe la mayor parte del da\xF1o durante unos segundos."
   _missing: []

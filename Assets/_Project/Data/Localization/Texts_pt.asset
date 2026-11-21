@@ -480,6 +480,8 @@ MonoBehaviour:
   - hint.boss
   - hint.closed_arena
   - hint.stairs
+  - monster.gargoyle_castle
+  - hint.gargoyle
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -986,4 +988,7 @@ MonoBehaviour:
   - "A arena fica trancada at\xE9 voc\xEA derrotar o chefe. Vencer com a arena fechada
     rende um b\xF4nus."
   - "Pise na escada para mudar de andar. Os monstros podem seguir voc\xEA."
+  - "G\xE1rgula"
+  - "Saia da sombra antes que a G\xE1rgula mergulhe. A pele de pedra absorve a maior
+    parte do dano por alguns segundos."
   _missing: []

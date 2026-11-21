@@ -18,6 +18,7 @@ Shader "Purge/Lit"
         [HideInInspector] _HitFlash ("Hit Flash (alpha = amount)", Color) = (1, 1, 1, 0)
         // Set from code (MaterialPropertyBlock) per model: frost of the theme's weather, 0..1. Colour and shape are
         // globals (_PurgeFrostColor, _PurgeFrostParams), set by LevelLighting.
+        [HideInInspector] _Stone ("Stone", Range(0, 1)) = 0
         [HideInInspector] _Frost ("Frost", Range(0, 1)) = 0
         // Set from code (MaterialPropertyBlock) on champions: a tint plus a bright rim (alpha = strength).
         [HideInInspector] _Glow ("Glow", Color) = (0, 0, 0, 0)
@@ -42,6 +43,7 @@ Shader "Purge/Lit"
         half4 _EmissionColor;
         fixed4 _HitFlash;
         half _Frost;
+        half _Stone;
         fixed4 _Glow;
         half4 _PurgeFrostColor;  // rgb — frost colour (linear in a linear project)
         half4 _PurgeFrostParams; // x — sharpness (power of the up-facing share), y — rim share
@@ -75,6 +77,8 @@ Shader "Purge/Lit"
                 albedo.rgb = lerp(albedo.rgb, _PurgeFrostColor.rgb, frost);
             }
 
+            half stone = dot(albedo.rgb, half3(0.22, 0.71, 0.07));
+            albedo.rgb = lerp(albedo.rgb, stone.xxx, _Stone);
             albedo.rgb = lerp(albedo.rgb, _HitFlash.rgb, _HitFlash.a);
             o.Albedo = albedo.rgb;
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));

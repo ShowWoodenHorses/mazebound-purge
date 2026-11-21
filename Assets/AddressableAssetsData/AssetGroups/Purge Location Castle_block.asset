@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Purge Location Castle_block
   m_GUID: f6108bb6f06480a49a6b42e5399625fc
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: b9bae2354c930d94ea6cea17e99f067a
+    m_Address: Levels/Level_Castle_01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7b0b4a63a91ea59479d6f21c16e4df79, type: 2}
   m_SchemaSet:

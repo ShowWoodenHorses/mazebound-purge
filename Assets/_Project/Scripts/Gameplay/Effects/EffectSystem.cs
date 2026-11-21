@@ -47,19 +47,19 @@ namespace Purge.Gameplay.Effects
             _horde = horde;
         }
 
-        /// <summary>(where, radius, what exploded — its look) of an explosion.</summary>
-        public event Action<Vector2, float, IExplosionLook> Exploded;
+        /// <summary>(where, floor, radius, what exploded — its look) of an explosion.</summary>
+        public event Action<Vector2, int, float, IExplosionLook> Exploded;
 
-        public void ShowExplosion(Vector2 position, float radius, IExplosionLook look)
+        public void ShowExplosion(Vector2 position, int floor, float radius, IExplosionLook look)
         {
-            if (look != null) Exploded?.Invoke(position, radius, look);
+            if (look != null) Exploded?.Invoke(position, floor, radius, look);
         }
 
         /// <summary>(where, zone, radius) a zone was placed.</summary>
         public event Action<Vector2, ZoneDefinition, float> ZonePlaced;
 
-        /// <summary>(where, radius, look) of a look-only effect (<see cref="LookEffect"/>).</summary>
-        public event Action<Vector2, float, IExplosionLook> LookShown;
+        /// <summary>(where, floor, radius, look) of a look-only effect (<see cref="LookEffect"/>).</summary>
+        public event Action<Vector2, int, float, IExplosionLook> LookShown;
 
         /// <param name="hostile">The monsters' effect: it reaches the player too (the player's own never do).</param>
         public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false, float damageFactor = 1f, float radiusFactor = 1f)
@@ -77,14 +77,14 @@ namespace Purge.Gameplay.Effects
                         if (hostile) BlastPlayer(at, explosion, floor);
                         if (hostile) _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
                         else _sounds.EmitPlayer(SoundType.Explosion, at, explosion.SoundRadius, floor);
-                        Exploded?.Invoke(at, radius, explosion);
+                        Exploded?.Invoke(at, floor, radius, explosion);
                         break;
                     case PlaceZoneEffect zone when zone.Zone != null:
                         _zones.PlaceArea(at, floor, zone.Radius * radiusFactor, zone.Zone, zone.Duration, zone.Strength * damageFactor, hostile);
                         ZonePlaced?.Invoke(at, zone.Zone, zone.Radius * radiusFactor);
                         break;
                     case LookEffect look:
-                        LookShown?.Invoke(at, look.Radius * radiusFactor, look);
+                        LookShown?.Invoke(at, floor, look.Radius * radiusFactor, look);
                         break;
                     case AreaStatusEffect status when status.Status != null:
                         if (hostile) StatusOnPlayer(at, status, floor);

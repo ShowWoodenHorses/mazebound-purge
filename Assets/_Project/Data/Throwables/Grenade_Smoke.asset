@@ -38,12 +38,12 @@ MonoBehaviour:
   _cooldown: 0.6
   _soundRadius: 3
   _effects:
-  - rid: 1763807284696973426
+  - rid: 1763807284696973427
   references:
     version: 2
     RefIds:
-    - rid: 1763807284696973426
-      type: {class: LookEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+    - rid: 1763807284696973427
+      type: {class: SmokeEffect, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
         _look:
           m_AssetGUID: 44cac426ebb14ee41aba10535a0ab7f0
@@ -51,4 +51,5 @@ MonoBehaviour:
           m_SubObjectType: 
           m_SubObjectGUID: 
           m_EditorAssetChanged: 0
-        _radius: 2
+        _radius: 3
+        _duration: 8

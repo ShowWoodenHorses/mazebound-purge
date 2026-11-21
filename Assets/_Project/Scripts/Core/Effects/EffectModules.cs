@@ -51,6 +51,17 @@ namespace Purge.Core.Effects
         internal void SetRadius(float radius) => _radius = radius;
     }
 
+    [Serializable, ModuleInfo("Smoke cloud", Category = "Effect")]
+    public sealed class SmokeEffect : EffectModule, IExplosionLook
+    {
+        [SerializeField] private AssetReferenceGameObject _look;
+        [SerializeField, Min(0f)] private float _radius = 3f;
+        [SerializeField, Min(0.1f)] private float _duration = 8f;
+        public AssetReferenceGameObject Look => _look;
+        public override float Radius => _radius;
+        public float Duration => _duration;
+    }
+
     /// <summary>A zone on every cell in the radius that a bullet could reach from the point.</summary>
     [Serializable, ModuleInfo("Place zone", Category = "Effect", AllowMultiple = true)]
     public sealed class PlaceZoneEffect : EffectModule

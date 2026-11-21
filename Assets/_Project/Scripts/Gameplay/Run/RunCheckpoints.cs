@@ -156,18 +156,20 @@ namespace Purge.Gameplay.Run
         private readonly RefugeSystem _refuge;
         private readonly SpecialRunBoosters _special;
         private readonly AmmoStock _ammoStock;
+        private readonly SmokeScreen _smoke;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
             ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null,
             RunBoosters boosters = null, Horde.HordeSystem horde = null, RefugeSystem refuge = null,
-            SpecialRunBoosters special = null, AmmoStock ammoStock = null)
+            SpecialRunBoosters special = null, AmmoStock ammoStock = null, SmokeScreen smoke = null)
         {
             _horde = horde;
             _refuge = refuge;
             _special = special;
             _ammoStock = ammoStock;
+            _smoke = smoke;
             _boosters = boosters;
             _vehicles = vehicles;
             _exploration = exploration;
@@ -205,6 +207,9 @@ namespace Purge.Gameplay.Run
                 _experience.Restore(resume.Level, resume.Experience);
                 _progress.Restore(resume.Time);
                 _waves.ResumeAt(resume.NextWave);
+                if (_smoke != null && resume.Smoke != null)
+                    foreach (var cloud in resume.Smoke)
+                        _smoke.Place(cloud.Position, cloud.Floor, cloud.Radius, cloud.Seconds);
             }
 
             _waves.Skipped += OnSkipped;
@@ -245,6 +250,7 @@ namespace Purge.Gameplay.Run
                 ThrowableId = _throwables.IsEmpty ? null : _throwables.Definition.Id,
                 ThrowableCount = _throwables.IsEmpty ? 0 : _throwables.Count,
             };
+            if (_smoke != null) run.Smoke.AddRange(_smoke.Clouds);
             foreach (var pair in _cards.Levels)
                 for (var i = 0; i < pair.Value; i++)
                     run.Cards.Add(pair.Key.Id);

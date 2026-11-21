@@ -7,7 +7,7 @@ namespace Purge.Core.Definitions
     [Serializable] public sealed class UpgradeFork
     {
         public WeaponUpgrade First, Second;
-        public bool Available(int choice) => (choice == 0 ? First : Second) != WeaponUpgrade.Electrify;
+        public bool Available(int choice) => choice == 0 || choice == 1;
     }
     [Serializable] public sealed class UpgradeParameter { public string Name; public float Value; }
     public interface IItemUpgrades

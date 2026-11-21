@@ -13,12 +13,14 @@ namespace Purge.Gameplay.Combat
     public sealed class UpgradeCombat : ILevelLoadStep, ILevelTickable, IDisposable
     {
         private readonly CombatTargets _targets; private readonly IItemUpgrades _upgrades;
+        private readonly Purge.Gameplay.Horde.CombatSandbox _sandbox;
         private readonly StatusSystem _statuses; private readonly PlayerHealth _health; private readonly PlayerSystem _player;
         private readonly List<CombatTarget> _found=new List<CombatTarget>();
         private float _healCredit, _healFraction;
         public event Action<Vector2,Vector2,WeaponDefinition> Ricochet;
-        public UpgradeCombat(CombatTargets targets,IItemUpgrades upgrades,StatusSystem statuses,PlayerHealth health,PlayerSystem player)
-        {_targets=targets;_upgrades=upgrades;_statuses=statuses;_health=health;_player=player;}
+        public UpgradeCombat(CombatTargets targets,IItemUpgrades upgrades,StatusSystem statuses,PlayerHealth health,PlayerSystem player,
+            Purge.Gameplay.Horde.CombatSandbox sandbox = null)
+        {_targets=targets;_upgrades=upgrades;_statuses=statuses;_health=health;_player=player;_sandbox=sandbox;}
         public LevelLoadStage Stage=>LevelLoadStage.InitializeSystems;
         public UniTask ExecuteAsync(CancellationToken cancellation){_targets.Upgrades=this;return UniTask.CompletedTask;}
         public void Dispose(){if(_targets.Upgrades==this)_targets.Upgrades=null;_found.Clear();}
@@ -40,6 +42,10 @@ namespace Purge.Gameplay.Combat
             }
             if(!killed && _upgrades.Has(weapon,WeaponUpgrade.Burn) && weapon.UpgradeBurn!=null)
                 _statuses.Apply(target,weapon.UpgradeBurn,weapon.UpgradeParameter("burn_seconds"),dealt*weapon.UpgradeParameter("burn_damage_share_per_second")/Mathf.Max(0.001f,weapon.UpgradeBurn.DamagePerSecond));
+            if (!killed && weapon.UpgradeElectrify != null &&
+                (_upgrades.Has(weapon, WeaponUpgrade.Electrify) || _sandbox?.Electrify == true))
+                _statuses.Apply(target, weapon.UpgradeElectrify, weapon.UpgradeParameter("electrify_seconds"),
+                    dealt * weapon.UpgradeParameter("electrify_damage_share"));
             if(_upgrades.Has(weapon,WeaponUpgrade.Ricochet))
             {
                 _targets.Collect(at,weapon.UpgradeParameter("ricochet_range"),_player.Floor,_found);

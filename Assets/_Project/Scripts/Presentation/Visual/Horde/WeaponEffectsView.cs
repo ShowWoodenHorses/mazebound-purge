@@ -108,11 +108,17 @@ namespace Purge.Presentation.Visual.Horde
         private static readonly Color ShockColor = new Color(0.75f, 0.48f, 1.4f, 0.95f);
         private static readonly Color FrostColor = new Color(0.6f, 0.95f, 1.5f, 0.85f);
 
+        private readonly SmokeScreen _smoke;
+        private readonly Purge.Core.Content.ContentCatalog _content;
+        private List<SmokeCloud> _resumeSmoke;
+        private SmokeEffect _smokeLook;
+
         public WeaponEffectsView(LevelData level, PlayerCombat combat, PlayerSystem player, BulletSystem bullets,
             CombatTargets targets, VisibilitySystem visibility, LevelViewRoot root, EffectSystem effects = null,
             StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
             PackEffectsPlayer packEffects = null, PackEmitters emitters = null, UpgradeCombat upgrades = null,
-            PlayerWeaponPresenter weaponView = null)
+            PlayerWeaponPresenter weaponView = null, SmokeScreen smoke = null,
+            Purge.Core.Content.ContentCatalog content = null)
         {
             _emitters = emitters; _upgrades=upgrades;
             _visual = visual;
@@ -128,6 +134,8 @@ namespace Purge.Presentation.Visual.Horde
             _visibility = visibility;
             _root = root;
             _weaponView = weaponView;
+            _smoke = smoke;
+            _content = content;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -222,8 +230,19 @@ namespace Purge.Presentation.Visual.Horde
             {
                 _effects.Exploded += OnExploded;
                 _effects.LookShown += OnLookShown;
+                _effects.SmokeShown += OnSmokeShown;
             }
             _targets.Damaged += OnDamaged;
+            if (_smoke != null && _smoke.Clouds.Count > 0 && _content?.Find<ThrowableDefinition>("grenade_smoke") is { } grenade)
+            {
+                foreach (var effect in grenade.Effects)
+                    if (effect is SmokeEffect look)
+                    {
+                        _smokeLook = look;
+                        _resumeSmoke = new List<SmokeCloud>(_smoke.Clouds);
+                        break;
+                    }
+            }
             _bound = true;
             return UniTask.CompletedTask;
         }
@@ -240,6 +259,7 @@ namespace Purge.Presentation.Visual.Horde
                 _blast.Play();
             }
 
+            RestoreSmokeLooks();
             if (_boltLeft > 0f) _boltLeft -= deltaTime;
             if (_railLeft > 0f) _railLeft -= deltaTime;
             if (_flashLeft > 0f) _flashLeft -= deltaTime;
@@ -251,6 +271,14 @@ namespace Purge.Presentation.Visual.Horde
                 _statusTimer += StatusInterval;
                 EmitStatuses();
             }
+        }
+
+        private void RestoreSmokeLooks()
+        {
+            if (_resumeSmoke == null) return;
+            foreach (var cloud in _resumeSmoke)
+                ShowSmoke(cloud.Position, cloud.Floor, cloud.Radius, cloud.Seconds, _smokeLook);
+            _resumeSmoke = null;
         }
 
         /// <summary>A flame over every visible monster with damage over time, a spark circling a stunned one.</summary>
@@ -525,6 +553,7 @@ namespace Purge.Presentation.Visual.Horde
                 {
                     _effects.Exploded -= OnExploded;
                     _effects.LookShown -= OnLookShown;
+                    _effects.SmokeShown -= OnSmokeShown;
                 }
                 _targets.Damaged -= OnDamaged;
                 _bound = false;
@@ -681,6 +710,15 @@ namespace Purge.Presentation.Visual.Horde
             for (var i = 1; i < points.Length; i++)
                 _packEffects.Play(look, AtHeight(points[i], GunHeight + _boltFloor * GridPosition.FloorHeight),
                     Quaternion.identity, floor: _boltFloor);
+        }
+
+        private void OnSmokeShown(Vector2 at, int floor, float radius, SmokeEffect smoke) =>
+            ShowSmoke(at, floor, radius, smoke.Duration, smoke);
+
+        private void ShowSmoke(Vector2 at, int floor, float radius, float seconds, SmokeEffect smoke)
+        {
+            _packEffects?.Play(smoke.Look, new Vector3(at.x, floor * GridPosition.FloorHeight, at.y),
+                Quaternion.identity, radius, floor, duration: seconds, showInFog: true);
         }
 
         private void OnLookShown(Vector2 at, int floor, float radius, IExplosionLook source)

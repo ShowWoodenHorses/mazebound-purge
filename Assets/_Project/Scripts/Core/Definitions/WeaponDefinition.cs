@@ -52,9 +52,10 @@ namespace Purge.Core.Definitions
 
         [SerializeField, Min(0)] private int _purchasePrice;
         public int PurchasePrice => _purchasePrice;
-        [SerializeField] private Purge.Core.Effects.StatusDefinition _upgradeBurn, _upgradeFreeze;
+        [SerializeField] private Purge.Core.Effects.StatusDefinition _upgradeBurn, _upgradeFreeze, _upgradeElectrify;
         [SerializeField] private ExplosiveAttack _upgradeExplosion = new ExplosiveAttack();
         public Purge.Core.Effects.StatusDefinition UpgradeBurn => _upgradeBurn;
+        public Purge.Core.Effects.StatusDefinition UpgradeElectrify => _upgradeElectrify;
         public Purge.Core.Effects.StatusDefinition UpgradeFreeze => _upgradeFreeze;
         public ExplosiveAttack UpgradeExplosion => _upgradeExplosion;
 

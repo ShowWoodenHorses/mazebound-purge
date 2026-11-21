@@ -82,6 +82,7 @@ namespace Purge.Presentation.Visual
         private static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
         private static readonly Vector4 NoClip = new Vector4(0f, 0f, 0f, 1f);
         private Renderer[] _renderers;
+        private bool _rendered = true;
         private MaterialPropertyBlock _clipBlock;
         private Vector4 _clip = NoClip;
 
@@ -95,15 +96,21 @@ namespace Purge.Presentation.Visual
         /// <summary>No cut (as built).</summary>
         public void ClearClipPlane() => ApplyClip(NoClip);
 
+        public void SetRendered(bool rendered)
+        {
+            if (_rendered == rendered) return;
+            _rendered = rendered;
+            _renderers ??= GetComponentsInChildren<Renderer>(true);
+            foreach (var renderer in _renderers)
+                renderer.forceRenderingOff = !rendered;
+        }
+
         private void ApplyClip(Vector4 plane)
         {
             if (plane == _clip) return;
             _clip = plane;
-            if (_renderers == null)
-            {
-                _renderers = GetComponentsInChildren<Renderer>(true);
-                _clipBlock = new MaterialPropertyBlock();
-            }
+            _renderers ??= GetComponentsInChildren<Renderer>(true);
+            _clipBlock ??= new MaterialPropertyBlock();
 
             foreach (var target in _renderers)
             {

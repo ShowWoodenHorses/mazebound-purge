@@ -47,7 +47,7 @@ namespace Purge.Application.Meta
         public bool Has(WeaponDefinition item,WeaponUpgrade upgrade) => Count(item,upgrade)>0;
         public int Count(WeaponDefinition item, WeaponUpgrade upgrade)
         {
-            if(item==null || !item.Upgradable || upgrade==WeaponUpgrade.None || upgrade==WeaponUpgrade.Electrify)return 0;
+            if(item==null || !item.Upgradable || upgrade==WeaponUpgrade.None)return 0;
             int count=0;
             for(int i=0;i<2;i++){int level=i==0?4:8,choice=ForkChoice(item,level);var fork=item.Fork(level);if(choice>=0 && fork!=null && (choice==0?fork.First:fork.Second)==upgrade)count++;}
             return count;

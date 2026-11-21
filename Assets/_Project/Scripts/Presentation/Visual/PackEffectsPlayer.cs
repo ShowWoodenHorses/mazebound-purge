@@ -120,7 +120,8 @@ namespace Purge.Presentation.Visual
         /// <paramref name="radius"/> &gt; 0 scales an effect that has a radius to it. False: no such effect loaded,
         /// or the cell is not seen.
         /// </summary>
-        public bool Play(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float radius = 0f, int floor = 0)
+        public bool Play(AssetReferenceGameObject reference, Vector3 position, Quaternion rotation, float radius = 0f,
+            int floor = 0, float duration = 0f, bool showInFog = false)
         {
             if (!CombatVisualDefinition.IsSet(reference)) return false;
             if (!_kinds.TryGetValue(reference.AssetGUID, out var kind))
@@ -130,7 +131,7 @@ namespace Purge.Presentation.Visual
                 return false;
             }
 
-            if (!_visibility.IsVisible(PlayerMovement.CellOf(new Vector2(position.x, position.z), floor)))
+            if (!showInFog && !_visibility.IsVisible(PlayerMovement.CellOf(new Vector2(position.x, position.z), floor)))
                 return false;
 
             var instance = Take(kind);
@@ -140,8 +141,14 @@ namespace Purge.Presentation.Visual
             if (instance.Followed) instance.Effect.SetLoop(false);
             instance.Followed = false;
             instance.View.SetActive(true);
+            instance.Effect.SetRendered(!showInFog || floor == _visibility.Floor);
             instance.Effect.Play();
-            _shown.Add(new Shown { Instance = instance, Left = instance.Effect.Duration });
+            _shown.Add(new Shown
+            {
+                Instance = instance,
+                Left = duration > 0f ? duration : instance.Effect.Duration,
+                VisibleFloor = showInFog ? floor : (int?)null
+            });
             return true;
         }
 
@@ -257,6 +264,8 @@ namespace Purge.Presentation.Visual
                 shown.Left -= deltaTime;
                 if (shown.Left > 0f)
                 {
+                    if (shown.VisibleFloor.HasValue)
+                        shown.Instance.Effect.SetRendered(shown.VisibleFloor.Value == _visibility.Floor);
                     _shown[i] = shown;
                     continue;
                 }
@@ -332,7 +341,12 @@ namespace Purge.Presentation.Visual
                 AddWeapon(wanted, _player.BaseWeapon);
                 AddEffects(wanted, _player.ReviveEffects); // the revive's wave (stage 6d)
             }
+            if (_level?.StressTest is { IsSandbox: true } sandbox)
+                foreach (var throwable in sandbox.SandboxThrowables)
+                    AddThrowable(wanted, throwable);
             if (_slot != null) AddThrowable(wanted, _slot.Definition);
+            if (_options?.Resume?.Smoke?.Count > 0)
+                AddThrowable(wanted, _content?.Find<ThrowableDefinition>("grenade_smoke"));
             if (_options?.HasBoost(Purge.Core.Boosters.SpecialBoosterKind.Minefield) == true)
                 AddThrowable(wanted, _content?.Find<ThrowableDefinition>("mine"));
             AddWeapon(wanted, _options?.SecondWeapon);
@@ -462,6 +476,7 @@ namespace Purge.Presentation.Visual
         {
             public Instance Instance;
             public float Left;
+            public int? VisibleFloor;
         }
     }
 }

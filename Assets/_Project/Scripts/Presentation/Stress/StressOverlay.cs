@@ -87,6 +87,14 @@ namespace Purge.Presentation.Stress
             bodyLayout.childForceExpandHeight = false;
             var bodyRect = (RectTransform)_body.transform;
 
+            if (sandbox)
+            {
+                var statuses = Row(bodyRect, "Statuses");
+                Button(statuses, "FEAR", controller.DemoFear, null, 100f);
+                Button(statuses, "BLIND", controller.DemoBlind, null, 100f);
+                Button(statuses, "ELECTRIFY", controller.ToggleElectrify, () => controller.DemoElectrify, 160f);
+            }
+
             _stats = Text(bodyRect, "", 22f);
             _stats.alignment = TextAlignmentOptions.TopLeft;
 

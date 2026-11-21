@@ -160,13 +160,16 @@ namespace Purge.Gameplay.Effects
         {
             var factor = 1f;
             var stunned = false;
+            var damageFactor = 1f;
             for (var i = 0; i < _left.Count; i++)
             {
                 if (_left[i] <= 0f) continue;
                 factor *= _kinds[i].SpeedFactor;
                 stunned |= _kinds[i].Stuns;
+                damageFactor *= _kinds[i].IncomingDamageFactor;
             }
 
+            _health.IncomingDamageFactor = damageFactor;
             var pulled = _pullLeft > 0f || _pullTick;
             _controlled = stunned || pulled;
             SpeedFactor = factor;

@@ -151,6 +151,9 @@ namespace Purge.Gameplay.Horde
         private float[] _speed;
         private int[] _generation; // + 1 on every spawn into the slot: states of the previous monster are not carried over
         private float[] _speedFactor; // states (StatusSystem): slow
+        private float[] _incomingDamageFactor;
+        private bool[] _afraid;
+        private bool[] _blind;
         private bool[] _stunned; // states: neither moves nor attacks
         private Vector2[] _push; // knockback (and a corpse's fling), cells per second, fading
         private float[] _staggerUntil; // a hit stops the monster's step and attack until then
@@ -207,7 +210,7 @@ namespace Purge.Gameplay.Horde
 
         public HordeSystem(LevelData level, LevelGrid grid, LevelPassability passability, DoorSystem doors,
             PlayerSystem player, PlayerHealth playerHealth, SoundEventBus sounds = null, VisibilitySystem visibility = null,
-            LevelLaunchOptions options = null)
+            LevelLaunchOptions options = null, SmokeScreen smoke = null)
         {
             _level = level;
             _grid = grid;
@@ -221,7 +224,7 @@ namespace Purge.Gameplay.Horde
             Difficulty = options?.Difficulty != null ? options.Difficulty : Horde != null ? Horde.Difficulty : null;
             _healthFactor = Difficulty != null ? Difficulty.Health : 1f;
             _kinds = CreateKinds(Horde);
-            Perception = new HordePerception(this, grid, doors, sounds, visibility, player);
+            Perception = new HordePerception(this, grid, doors, sounds, visibility, player, smoke);
             foreach (var kind in _kinds)
             {
                 _maxRadius = Mathf.Max(_maxRadius, kind.Stats.Radius);
@@ -726,11 +729,17 @@ namespace Purge.Gameplay.Horde
         public event Action<int, Vector2> Killed;
 
         /// <summary>States of a monster for this tick on (<c>StatusSystem</c>): speed × factor; stunned stands still.</summary>
-        public void SetModifiers(int agent, float speedFactor, bool stunned)
+        public bool CannotAim(int agent) => _afraid[agent] || _blind[agent];
+
+        public void SetModifiers(int agent, float speedFactor, bool stunned, float incomingDamageFactor = 1f,
+            bool afraid = false, bool blind = false)
         {
             if ((uint)agent >= (uint)_highWater) return;
             _speedFactor[agent] = speedFactor;
             _stunned[agent] = stunned;
+            _incomingDamageFactor[agent] = incomingDamageFactor;
+            _afraid[agent] = afraid;
+            _blind[agent] = blind;
         }
 
         /// <summary>1/s: how fast a knockback fades (a push of 4 cells/s carries about 0.35 cells).</summary>
@@ -797,6 +806,9 @@ namespace Purge.Gameplay.Horde
             _generation = new int[capacity];
             _speedFactor = new float[capacity];
             _stunned = new bool[capacity];
+            _incomingDamageFactor = new float[capacity];
+            _afraid = new bool[capacity];
+            _blind = new bool[capacity];
             _push = new Vector2[capacity];
             _staggerUntil = new float[capacity];
             _pace = new HordePace[capacity];
@@ -995,6 +1007,7 @@ namespace Purge.Gameplay.Horde
             if ((uint)agent >= (uint)_highWater || !IsAlive(_states[agent]) || amount <= 0f)
                 return false;
 
+            amount *= _incomingDamageFactor[agent];
             _hitTime[agent] = Time;
             applied = IsProtected(agent) ? amount * (1f - _damageReduction[agent]) : amount;
             _health[agent] -= applied;
@@ -1179,7 +1192,7 @@ namespace Purge.Gameplay.Horde
         {
             var stats = _kinds[_kind[i]].Stats;
             var position = ApplyPush(i, _positions[i], deltaTime);
-            if (_stunned[i]) _dashLeft[i] = 0f;
+            if (_stunned[i] || CannotAim(i) || Perception.LostInSmoke(i)) _dashLeft[i] = 0f;
             if (_dashLeft[i] > 0f)
             {
                 TickDash(i, position, stats, deltaTime);
@@ -1210,6 +1223,12 @@ namespace Purge.Gameplay.Horde
                 _positions[i] = position;
                 _pace[i] = HordePace.Still;
                 Turn(i, _castFace[i], stats, deltaTime);
+                return;
+            }
+
+            if (CannotAim(i))
+            {
+                TickDisoriented(i, position, playerPosition, stats, deltaTime);
                 return;
             }
 
@@ -1468,6 +1487,36 @@ namespace Purge.Gameplay.Horde
                 position = MoveWithWalls(position, step, stats.Radius);
             _positions[i] = position;
             if (desired.sqrMagnitude > 0f) Turn(i, desired, stats, deltaTime);
+        }
+
+        private void TickDisoriented(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, float deltaTime)
+        {
+            if (_states[i] == HordeAgentState.Attacking)
+            {
+                _states[i] = HordeAgentState.Moving;
+                _stateStart[i] = Time;
+            }
+
+            var away = position - playerPosition;
+            var angle = _afraid[i] && away.sqrMagnitude > 0.0001f
+                ? Mathf.Atan2(away.x, away.y)
+                : ((i + Mathf.FloorToInt(Time)) & 7) * (Mathf.PI / 4f);
+            var speed = _afraid[i] ? _speed[i] : stats.WanderSpeed;
+            var distance = speed * _speedFactor[i] * deltaTime;
+            _pace[i] = HordePace.Still;
+            // Try either side of an obstruction before staying in place.
+            for (var attempt = 0; attempt < 3; attempt++)
+            {
+                var heading = angle + (attempt == 0 ? 0f : attempt == 1 ? Mathf.PI / 3f : -Mathf.PI / 3f);
+                var direction = new Vector2(Mathf.Sin(heading), Mathf.Cos(heading));
+                var moved = MoveWithWalls(position, direction * distance, stats.Radius);
+                if (Vector2.Dot(moved - position, direction) <= distance * 0.25f) continue;
+                position = moved;
+                _pace[i] = _afraid[i] ? HordePace.Run : HordePace.Walk;
+                Turn(i, direction, stats, deltaTime);
+                break;
+            }
+            _positions[i] = position;
         }
 
         private void Turn(int i, Vector2 desired, MonsterStats stats, float deltaTime)
@@ -2079,6 +2128,9 @@ namespace Purge.Gameplay.Horde
             _generation[slot]++;
             _speedFactor[slot] = 1f;
             _stunned[slot] = false;
+            _incomingDamageFactor[slot] = 1f;
+            _afraid[slot] = false;
+            _blind[slot] = false;
             _push[slot] = Vector2.zero;
             _staggerUntil[slot] = 0f;
             // ±10 % speed: the crowd spreads out instead of marching in step.

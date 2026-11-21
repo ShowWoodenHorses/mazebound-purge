@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: status_acid
   _color: {r: 0.55, g: 1, b: 0.2, a: 1}
   _particles:
-    m_AssetGUID: 
+    m_AssetGUID: 04152a5f324977f4ebe0c24224401d29
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
@@ -23,6 +23,7 @@ MonoBehaviour:
   _particlesAtHead: 0
   _modules:
   - rid: 1763807262009983217
+  - rid: 1763807262009983218
   references:
     version: 2
     RefIds:
@@ -30,3 +31,7 @@ MonoBehaviour:
       type: {class: DamageOverTimeStatus, ns: Purge.Core.Effects, asm: Purge.Core}
       data:
         _damagePerSecond: 24
+    - rid: 1763807262009983218
+      type: {class: VulnerabilityStatus, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damageFactor: 1.25

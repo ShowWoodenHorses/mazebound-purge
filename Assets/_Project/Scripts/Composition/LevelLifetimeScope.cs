@@ -146,6 +146,7 @@ namespace Purge.Composition
             builder.Register<RunBoosters>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<StressWeapons>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             builder.Register<CombatSandbox>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<SmokeScreen>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<VisibilitySystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<MapExploration>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelProgress>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();

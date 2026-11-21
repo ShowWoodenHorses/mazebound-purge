@@ -27,6 +27,7 @@ namespace Purge.Gameplay.Effects
 
         private readonly CombatTargets _targets;
         private readonly ZoneSystem _zones;
+        private readonly Purge.Gameplay.Visibility.SmokeScreen _smoke;
         private readonly StatusSystem _statuses;
         private readonly SoundEventBus _sounds;
         private readonly PlayerSystem _player;
@@ -35,10 +36,12 @@ namespace Purge.Gameplay.Effects
         private readonly HordeSystem _horde;
 
         public EffectSystem(CombatTargets targets, ZoneSystem zones, StatusSystem statuses, SoundEventBus sounds,
-            PlayerSystem player = null, PlayerHealth health = null, PlayerStatusSystem playerStatuses = null, HordeSystem horde = null)
+            PlayerSystem player = null, PlayerHealth health = null, PlayerStatusSystem playerStatuses = null,
+            HordeSystem horde = null, Purge.Gameplay.Visibility.SmokeScreen smoke = null)
         {
             _targets = targets;
             _zones = zones;
+            _smoke = smoke;
             _statuses = statuses;
             _sounds = sounds;
             _player = player;
@@ -49,6 +52,8 @@ namespace Purge.Gameplay.Effects
 
         /// <summary>(where, floor, radius, what exploded — its look) of an explosion.</summary>
         public event Action<Vector2, int, float, IExplosionLook> Exploded;
+        public event Action SmokeDeployed;
+        public event Action<Vector2, int, float, SmokeEffect> SmokeShown;
 
         public void ShowExplosion(Vector2 position, int floor, float radius, IExplosionLook look)
         {
@@ -82,6 +87,12 @@ namespace Purge.Gameplay.Effects
                     case PlaceZoneEffect zone when zone.Zone != null:
                         _zones.PlaceArea(at, floor, zone.Radius * radiusFactor, zone.Zone, zone.Duration, zone.Strength * damageFactor, hostile);
                         ZonePlaced?.Invoke(at, zone.Zone, zone.Radius * radiusFactor);
+                        break;
+                    case SmokeEffect smoke:
+                        var smokeRadius = smoke.Radius * radiusFactor;
+                        _smoke?.Place(at, floor, smokeRadius, smoke.Duration);
+                        SmokeShown?.Invoke(at, floor, smokeRadius, smoke);
+                        if (!hostile) SmokeDeployed?.Invoke();
                         break;
                     case LookEffect look:
                         LookShown?.Invoke(at, floor, look.Radius * radiusFactor, look);

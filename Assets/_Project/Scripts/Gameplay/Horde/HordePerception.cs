@@ -97,9 +97,12 @@ namespace Purge.Gameplay.Horde
         private float _sight = 1f;
         private float _call = 1f;
         private bool _subscribed;
+        private readonly SmokeScreen _smoke;
+        private bool[] _lostInSmoke;
+        private bool _smokeSightActive;
 
         public HordePerception(HordeSystem horde, LevelGrid grid, DoorSystem doors, SoundEventBus sounds,
-            VisibilitySystem visibility, PlayerSystem player)
+            VisibilitySystem visibility, PlayerSystem player, SmokeScreen smoke = null)
         {
             _horde = horde;
             _grid = grid;
@@ -107,6 +110,7 @@ namespace Purge.Gameplay.Horde
             _sounds = sounds;
             _visibility = visibility;
             _player = player;
+            _smoke = smoke;
         }
 
         public ReadOnlySpan<HordeAwareness> Awareness => _awareness;
@@ -134,11 +138,16 @@ namespace Purge.Gameplay.Horde
         public int Calls { get; private set; }
 
         public HordeAwareness AwarenessOf(int agent) =>
+            LostInSmoke(agent) ? HordeAwareness.Wander :
             _awareness != null && (uint)agent < (uint)_awareness.Length ? _awareness[agent] : HordeAwareness.Chase;
+
+        internal bool LostInSmoke(int agent) => _smokeSightActive &&
+            (uint)agent < (uint)_lostInSmoke.Length && _lostInSmoke[agent];
 
         internal void Initialize(int capacity, HordeDefinition settings, DifficultyDefinition difficulty)
         {
             _awareness = new HordeAwareness[capacity];
+            _lostInSmoke = new bool[capacity];
             _since = new float[capacity];
             _caller = new bool[capacity];
             _willCall = new bool[capacity];
@@ -185,6 +194,7 @@ namespace Purge.Gameplay.Horde
         /// <param name="perception">What the new monster is (the sandbox may override its kind's).</param>
         internal void OnSpawn(int agent, MonsterPerception perception, float time)
         {
+            _lostInSmoke[agent] = false;
             _caller[agent] = perception == MonsterPerception.Caller;
             _willCall[agent] = false;
             _noise[agent] = -1;
@@ -224,6 +234,7 @@ namespace Purge.Gameplay.Horde
 
             if (time < _nextProcess) return;
             _nextProcess = time + ProcessInterval;
+            RefreshSmokeSight();
             ProcessSounds(time);
             Look(time);
         }
@@ -239,7 +250,7 @@ namespace Purge.Gameplay.Horde
             var x = Mathf.FloorToInt(position.x + 0.5f);
             var y = Mathf.FloorToInt(position.y + 0.5f);
 
-            if (_awareness[agent] == HordeAwareness.Investigate)
+            if (AwarenessOf(agent) == HordeAwareness.Investigate)
             {
                 var cell = new GridPosition(x, y, _horde.FloorOf(agent));
                 if (TryInvestigate(agent, cell, out var nextStep))
@@ -253,7 +264,7 @@ namespace Purge.Gameplay.Horde
                 SetAwareness(agent, HordeAwareness.Wander, time);
             }
 
-            if (_awareness[agent] != HordeAwareness.Wander || _groups == null) return;
+            if (AwarenessOf(agent) != HordeAwareness.Wander || _groups == null) return;
             var flow = _groups[agent % _groups.Length].Flow;
             if (!flow.HasResult || !flow.IsInside(x, y)) return;
             var index = y * _grid.Width + x;
@@ -267,7 +278,7 @@ namespace Purge.Gameplay.Horde
         internal bool TryInvestigate(int agent, GridPosition cell, out GridPosition next)
         {
             next = cell;
-            if (_awareness[agent] != HordeAwareness.Investigate || _noise[agent] < 0) return false;
+            if (AwarenessOf(agent) != HordeAwareness.Investigate || _noise[agent] < 0) return false;
             var field = _fields[_noise[agent]];
             return field.Version == _noiseVersion[agent] && field.TryStepToward(cell, out next);
         }
@@ -391,6 +402,20 @@ namespace Purge.Gameplay.Horde
             }
         }
 
+        private void RefreshSmokeSight()
+        {
+            _smokeSightActive = _smoke?.Clouds.Count > 0 && _player.IsSpawned;
+            if (!_smokeSightActive) return;
+
+            var floor = _player.Floor;
+            var position = _player.Position;
+            var states = _horde.States;
+            var positions = _horde.Positions;
+            for (var i = 0; i < _horde.HighWater; i++)
+                _lostInSmoke[i] = HordeSystem.IsAlive(states[i]) && _horde.FloorOf(i) == floor &&
+                    _smoke.Obscures(positions[i], position, floor);
+        }
+
         private void Look(float time)
         {
             if (_visibility == null || !_visibility.HasResult || !_player.IsSpawned) return;
@@ -404,7 +429,7 @@ namespace Purge.Gameplay.Horde
                 if (awareness == HordeAwareness.Alert || awareness == HordeAwareness.Chase) continue;
                 if (!HordeSystem.IsAlive(states[i])) continue;
                 var p = positions[i];
-                if (_horde.FloorOf(i) != floor) continue;
+                if (_horde.CannotAim(i) || LostInSmoke(i) || _horde.FloorOf(i) != floor) continue;
                 var range = _horde.StatsOf(i).SightRange * _sight;
                 if ((p - player).sqrMagnitude > range * range) continue;
                 if (!_visibility.IsVisible(new GridPosition(Mathf.FloorToInt(p.x + 0.5f), Mathf.FloorToInt(p.y + 0.5f), floor)))

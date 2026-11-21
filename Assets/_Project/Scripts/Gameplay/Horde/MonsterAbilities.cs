@@ -478,7 +478,7 @@ namespace Purge.Gameplay.Horde
 
                 var state = states[i];
                 if (state != HordeAgentState.Moving && state != HordeAgentState.Attacking ||
-                    _horde.FloorOf(i) != _player.Floor ||
+                    _horde.CannotAim(i) || _horde.FloorOf(i) != _player.Floor ||
                     _horde.Perception.AwarenessOf(i) != HordeAwareness.Chase)
                 {
                     if (_cast[i] >= 0) Break(i, time);

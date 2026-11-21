@@ -3,6 +3,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
+using Purge.Gameplay.Effects;
+using Purge.Gameplay.Player;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Throwing;
@@ -25,16 +28,20 @@ namespace Purge.Gameplay.Horde
         private readonly List<AmmoDefinition> _types = new List<AmmoDefinition>();
 
         private readonly WeaponSystem _weapons;
+        private readonly StatusSystem _statuses;
+        private readonly PlayerSystem _player;
         private WeaponRuntime _benchWeapon, _benchReplaced;
 
         public CombatSandbox(LevelData level, AmmoStock ammo, ThrowableSlot throwables = null, ContentCatalog content = null,
-            WeaponSystem weapons = null)
+            WeaponSystem weapons = null, StatusSystem statuses = null, PlayerSystem player = null)
         {
             _level = level;
             _ammo = ammo;
             _throwables = throwables;
             _content = content;
             _weapons = weapons;
+            _statuses = statuses;
+            _player = player;
         }
 
         /// <summary>
@@ -106,6 +113,22 @@ namespace Purge.Gameplay.Horde
                 _throwables.Replace(next, next.MaxStack);
                 return;
             }
+        }
+
+        public bool Electrify { get; private set; }
+
+        public void ToggleElectrify()
+        {
+            if (IsActive) Electrify = !Electrify;
+        }
+
+        public void DemoFear() => DemoStatus("status_fear", 2f);
+        public void DemoBlind() => DemoStatus("status_blind", 3f);
+
+        private void DemoStatus(string id, float duration)
+        {
+            if (!IsActive || _player?.IsSpawned != true) return;
+            _statuses?.ApplyInRadius(_player.Position, 8f, _player.Floor, _content?.Find<StatusDefinition>(id), duration);
         }
 
         private ThrowableDefinition First()

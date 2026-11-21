@@ -32,6 +32,8 @@ namespace Purge.Gameplay.Effects
         private readonly List<StatusDefinition> _kinds = new List<StatusDefinition>();
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         private readonly DeterministicRandom _random = new DeterministicRandom(0x57a7);
+        private readonly List<CombatTarget> _pulseTargets = new List<CombatTarget>();
+        private float[] _pulseTime;
         private float[] _strength;
         private float[] _left; // kind · capacity + agent
         private int[] _generation;
@@ -61,6 +63,8 @@ namespace Purge.Gameplay.Effects
             _capacity = _horde.Capacity;
             _left = new float[_capacity * MaxKinds];
             _strength = new float[_capacity * MaxKinds];
+            _pulseTime = new float[_left.Length];
+            _pulseTargets.Capacity = _capacity;
             _generation = new int[_capacity];
             _has = new bool[_capacity];
             if (!_subscribed)
@@ -107,10 +111,16 @@ namespace Purge.Gameplay.Effects
             var agent = target.Agent;
             Own(agent);
             int index = kind * _capacity + agent;
-            if(_left[index]<=0f) _strength[index]=strength; else _strength[index]=Mathf.Max(_strength[index],strength);
+            if (_left[index] <= 0f)
+            {
+                _strength[index] = strength;
+                _pulseTime[index] = status.ElectricPulse?.Interval ?? 0f;
+            }
+            else
+                _strength[index] = Mathf.Max(_strength[index], strength);
             ref var left = ref _left[index];
             if (left < duration) left = duration;
-            if (status.Stuns || status.SpeedFactor < 1f) Refresh(agent);
+            Refresh(agent);
         }
 
         /// <summary>The state on every monster in the radius not behind something that stops bullets.</summary>
@@ -149,9 +159,20 @@ namespace Purge.Gameplay.Effects
                 var dps = 0f;
                 for (var kind = 0; kind < _kinds.Count; kind++)
                 {
-                    ref var left = ref _left[kind * _capacity + agent];
+                    var index = kind * _capacity + agent;
+                    ref var left = ref _left[index];
                     if (left <= 0f) continue;
-                    dps += _kinds[kind].DamagePerSecond * _strength[kind * _capacity + agent];
+                    var status = _kinds[kind];
+                    dps += status.DamagePerSecond * _strength[index];
+                    if (status.ElectricPulse is { } pulse)
+                    {
+                        _pulseTime[index] -= Mathf.Min(left, deltaTime);
+                        while (_pulseTime[index] <= 0.00001f)
+                        {
+                            Pulse(agent, pulse.Radius, _strength[index]);
+                            _pulseTime[index] += pulse.Interval;
+                        }
+                    }
                     left -= deltaTime;
                     if (left > 0f) any = true;
                     else left = 0f;
@@ -162,6 +183,22 @@ namespace Purge.Gameplay.Effects
                     _targets.Damage(CombatTarget.OfAgent(agent), dps * DamageInterval, Vector2.zero); // no direction: armor does not cover
                 if (!any) _has[agent] = false;
             }
+        }
+
+        private void Pulse(int agent, float radius, float damage)
+        {
+            if (damage <= 0f) return;
+            var position = _horde.Positions[agent];
+            var floor = _horde.FloorOf(agent);
+            _targets.Collect(position, radius, floor, _pulseTargets);
+            foreach (var target in _pulseTargets)
+            {
+                if (target.Agent < 0 || target.Agent == agent) continue;
+                var other = _targets.PositionOf(target);
+                if ((other - position).sqrMagnitude <= radius * radius && _targets.IsClear(position, other, floor))
+                    _targets.Damage(target, damage, Vector2.zero);
+            }
+            _pulseTargets.Clear();
         }
 
         private void OnWeaponHit(CombatTarget target, WeaponDefinition weapon)
@@ -180,15 +217,21 @@ namespace Purge.Gameplay.Effects
         {
             var factor = 1f;
             var stunned = false;
+            var damageFactor = 1f;
+            var afraid = false;
+            var blind = false;
             for (var kind = 0; kind < _kinds.Count; kind++)
             {
                 if (_left[kind * _capacity + agent] <= 0f) continue;
                 var status = _kinds[kind];
                 factor *= status.SpeedFactor;
                 stunned |= status.Stuns;
+                damageFactor *= status.IncomingDamageFactor;
+                afraid |= status.Fears;
+                blind |= status.Blinds;
             }
 
-            _horde.SetModifiers(agent, factor, stunned);
+            _horde.SetModifiers(agent, factor, stunned, damageFactor, afraid, blind);
         }
 
         /// <summary>The slot's states belong to the monster in it now.</summary>

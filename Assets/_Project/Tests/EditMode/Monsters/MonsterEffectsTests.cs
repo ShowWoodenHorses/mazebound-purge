@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
@@ -9,6 +10,9 @@ using Purge.Core.Monsters;
 using Purge.Core.Visual;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Doors;
+using Purge.Gameplay.Effects;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
@@ -34,6 +38,9 @@ namespace Purge.Tests.EditMode.Monsters
         private HordeDefinition _hordeData;
         private MonsterDefinition _walker;
         private HordeSystem _horde;
+        private LevelGrid _grid;
+        private DoorSystem _doors;
+        private PlayerSystem _player;
 
         private sealed class Aim : IAimSettings
         {
@@ -81,15 +88,15 @@ namespace Purge.Tests.EditMode.Monsters
             return asset;
         }
 
-        private void Build()
+        private void Build(SmokeScreen smoke = null)
         {
-            var grid = new LevelGrid(_level.Geometry);
-            var doors = new DoorSystem(_level);
+            var grid = _grid = new LevelGrid(_level.Geometry);
+            var doors = _doors = new DoorSystem(_level);
             var passability = new LevelPassability(grid, doors);
-            var player = new PlayerSystem(_level, _playerDefinition, new FakePlayerInput(), passability, new OccupancyMap(grid),
+            var player = _player = new PlayerSystem(_level, _playerDefinition, new FakePlayerInput(), passability, new OccupancyMap(grid),
                 new LevelLaunchOptions(startIndex: 0), new Aim());
             player.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
-            _horde = new HordeSystem(_level, grid, passability, doors, player, new PlayerHealth(_playerDefinition), new SoundEventBus());
+            _horde = new HordeSystem(_level, grid, passability, doors, player, new PlayerHealth(_playerDefinition), new SoundEventBus(), smoke: smoke);
             _horde.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
@@ -109,6 +116,108 @@ namespace Purge.Tests.EditMode.Monsters
                 Assert.That(_horde.SpawnAt(new Vector2(25f + n, 25f), MonsterPerception.Hunter), Is.GreaterThanOrEqualTo(0),
                     "officer buttons and raises still find room with the waves full");
             Assert.That(_horde.SpawnAt(new Vector2(30f, 30f), MonsterPerception.Hunter), Is.LessThan(0), "until the reserve is used up");
+        }
+
+        [Test]
+        public void ElectrifyRefresh_PreservesPulseAndHitsOnlyOtherMonstersWithinOneCell()
+        {
+            _stress.ConfigureSandbox(true, 0, 10);
+            _hordeData.ConfigureCapacity(1, 6);
+            Build();
+            var source = _horde.SpawnAt(new Vector2(25f, 25f), MonsterPerception.Hunter);
+            var near = _horde.SpawnAt(new Vector2(26f, 25f), MonsterPerception.Hunter);
+            var far = _horde.SpawnAt(new Vector2(25f, 26.25f), MonsterPerception.Hunter);
+            Assert.That(new[] { source, near, far }, Has.All.GreaterThanOrEqualTo(0));
+            _horde.Tick(0.0001f);
+
+            var status = Create<StatusDefinition>();
+            status.Configure("electric_test", new ElectricPulseStatus());
+            using var statuses = new StatusSystem(_horde, new CombatTargets(new SpatialQueryService(_grid, _doors), _horde));
+            statuses.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+            var target = CombatTarget.OfAgent(source);
+            statuses.Apply(target, status, 2f, 3f);
+            statuses.Tick(0.25f);
+            statuses.Apply(target, status, 2f, 3f);
+            Assert.That(_horde.Health[near], Is.EqualTo(30f));
+            statuses.Tick(0.25f);
+            Assert.That(_horde.Health[source], Is.EqualTo(30f));
+            Assert.That(_horde.Health[near], Is.EqualTo(27f));
+            Assert.That(_horde.Health[far], Is.EqualTo(30f));
+        }
+
+        [Test]
+        public void Corrosion_IncreasesDamageImmediatelyAndExpires()
+        {
+            _stress.ConfigureSandbox(true, 0, 10);
+            _hordeData.ConfigureCapacity(1, 6);
+            Build();
+            var agent = _horde.SpawnAt(new Vector2(25f, 25f), MonsterPerception.Hunter);
+            Assert.That(agent, Is.GreaterThanOrEqualTo(0));
+            var status = Create<StatusDefinition>();
+            status.Configure("corrosion_test", new VulnerabilityStatus());
+            var targets = new CombatTargets(new SpatialQueryService(_grid, _doors), _horde);
+            using var statuses = new StatusSystem(_horde, targets);
+            statuses.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+            var target = CombatTarget.OfAgent(agent);
+
+            statuses.Apply(target, status, 1.5f);
+            targets.Damage(target, 8f, Vector2.zero);
+            Assert.That(_horde.Health[agent], Is.EqualTo(20f));
+            statuses.Tick(1.5f);
+            targets.Damage(target, 8f, Vector2.zero);
+            Assert.That(_horde.Health[agent], Is.EqualTo(12f));
+        }
+
+        [Test]
+        public void Smoke_LeavesVisibilityUnchangedAndExpiresAfterEightSeconds()
+        {
+            Build();
+            var smoke = new SmokeScreen();
+            using var visibility = new VisibilitySystem(_grid, _doors, _player);
+            visibility.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+            var target = new GridPosition(24, 20);
+            Assert.That(visibility.IsVisible(target), Is.True);
+
+            var recalculations = visibility.RecalculationCount;
+            smoke.Place(new Vector2(22, 20), 0, 3f, 8f);
+            Assert.That(visibility.IsVisible(target), Is.True);
+            Assert.That(new SpatialQueryService(_grid, _doors).QuerySegment(_player.Position, new Vector2(24, 20), 0).Kind,
+                Is.EqualTo(SegmentHitKind.None));
+            smoke.Tick(7.5f);
+            Assert.That(smoke.Clouds.Count, Is.EqualTo(1));
+            Assert.That(visibility.IsVisible(target), Is.True);
+            smoke.Tick(0.5f);
+            Assert.That(smoke.Clouds, Is.Empty);
+            Assert.That(visibility.IsVisible(target), Is.True);
+            Assert.That(visibility.RecalculationCount, Is.EqualTo(recalculations));
+        }
+
+        [Test]
+        public void Smoke_InterruptsAnExistingChaseOnlyIfItCrossesTheSightLine()
+        {
+            _stress.ConfigureSandbox(true, 0, 10);
+            _hordeData.ConfigureCapacity(1, 6);
+            var smoke = new SmokeScreen();
+            Build(smoke);
+            var blocked = _horde.SpawnAt(new Vector2(25f, 20f), MonsterPerception.Hunter);
+            var clear = _horde.SpawnAt(new Vector2(25f, 25f), MonsterPerception.Hunter);
+            Assert.That(new[] { blocked, clear }, Has.All.GreaterThanOrEqualTo(0));
+            Assert.That(_horde.Perception.AwarenessOf(blocked), Is.EqualTo(HordeAwareness.Chase));
+
+            smoke.Place(new Vector2(22.5f, 20f), 0, 1f, 8f);
+            Assert.That(smoke.Obscures(new Vector2(25f, 20f), _player.Position, 1), Is.False);
+            _horde.Tick(HordePerception.ProcessInterval);
+            Assert.That(_horde.Perception.AwarenessOf(blocked), Is.EqualTo(HordeAwareness.Wander));
+            Assert.That(_horde.Perception.AwarenessOf(clear), Is.EqualTo(HordeAwareness.Chase));
+
+            smoke.Place(_player.Position, 0, 1f, 8f);
+            _horde.Tick(HordePerception.ProcessInterval);
+            Assert.That(_horde.Perception.AwarenessOf(clear), Is.EqualTo(HordeAwareness.Wander));
+
+            smoke.Tick(8f);
+            _horde.Tick(HordePerception.ProcessInterval);
+            Assert.That(_horde.Perception.AwarenessOf(blocked), Is.EqualTo(HordeAwareness.Chase));
+            Assert.That(_horde.Perception.AwarenessOf(clear), Is.EqualTo(HordeAwareness.Chase));
         }
 
         [Test]

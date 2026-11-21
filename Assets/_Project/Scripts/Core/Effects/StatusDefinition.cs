@@ -31,6 +31,10 @@ namespace Purge.Core.Effects
         [NonSerialized] private float _damagePerSecond;
         [NonSerialized] private float _speedFactor;
         [NonSerialized] private bool _stuns;
+        [NonSerialized] private float _incomingDamageFactor;
+        [NonSerialized] private ElectricPulseStatus _electricPulse;
+        [NonSerialized] private bool _fears;
+        [NonSerialized] private bool _blinds;
 
         public Color Color => _color;
         public AssetReferenceGameObject Particles { get => _particles; internal set => _particles = value; }
@@ -45,6 +49,10 @@ namespace Purge.Core.Effects
 
         /// <summary>The monster neither moves nor attacks.</summary>
         public bool Stuns => Cache()._stuns;
+        public float IncomingDamageFactor => Cache()._incomingDamageFactor;
+        public ElectricPulseStatus ElectricPulse => Cache()._electricPulse;
+        public bool Fears => Cache()._fears;
+        public bool Blinds => Cache()._blinds;
 
         public void Validate(List<string> problems)
         {
@@ -61,12 +69,20 @@ namespace Purge.Core.Effects
             _damagePerSecond = 0f;
             _speedFactor = 1f;
             _stuns = false;
+            _incomingDamageFactor = 1f;
+            _electricPulse = null;
+            _fears = false;
+            _blinds = false;
             foreach (var module in _modules)
                 switch (module)
                 {
                     case DamageOverTimeStatus damage: _damagePerSecond += damage.DamagePerSecond; break;
                     case SlowStatus slow: _speedFactor *= slow.SpeedFactor; break;
                     case StunStatus _: _stuns = true; break;
+                    case VulnerabilityStatus vulnerability: _incomingDamageFactor *= vulnerability.DamageFactor; break;
+                    case ElectricPulseStatus pulse: _electricPulse = pulse; break;
+                    case FearStatus _: _fears = true; break;
+                    case BlindStatus _: _blinds = true; break;
                 }
 
             _cached = true;
@@ -102,6 +118,28 @@ namespace Purge.Core.Effects
     public sealed class StunStatus : StatusModule
     {
     }
+
+    [Serializable, ModuleInfo("Incoming damage multiplier", Category = "Status")]
+    public sealed class VulnerabilityStatus : StatusModule
+    {
+        [SerializeField, Min(1f)] private float _damageFactor = 1.25f;
+        public float DamageFactor => _damageFactor;
+    }
+
+    [Serializable, ModuleInfo("Electric pulses", Category = "Status")]
+    public sealed class ElectricPulseStatus : StatusModule
+    {
+        [SerializeField, Min(0.01f)] private float _interval = 0.5f;
+        [SerializeField, Min(0f)] private float _radius = 1f;
+        public float Interval => Mathf.Max(0.01f, _interval);
+        public float Radius => _radius;
+    }
+
+    [Serializable, ModuleInfo("Fear", Category = "Status")]
+    public sealed class FearStatus : StatusModule { }
+
+    [Serializable, ModuleInfo("Blind", Category = "Status")]
+    public sealed class BlindStatus : StatusModule { }
 
     /// <summary>Slower movement while the state lasts.</summary>
     [Serializable, ModuleInfo("Slow", Category = "Status", AllowMultiple = true)]

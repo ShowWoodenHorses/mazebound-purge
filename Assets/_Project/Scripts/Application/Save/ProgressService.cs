@@ -251,6 +251,7 @@ namespace Purge.Application.Save
             if (save.Vehicles != null)
                 foreach (var vehicle in save.Vehicles)
                     run.VehicleHealth[vehicle.Id] = vehicle.Health;
+            if (save.Smoke != null) run.Smoke.AddRange(save.Smoke);
             run.Explored = save.Explored;
             run.Difficulty = save.Difficulty;
             run.ArenaClosed = save.ArenaClosed;
@@ -307,6 +308,7 @@ namespace Purge.Application.Save
             save.DestroyedVehicles.AddRange(run.DestroyedVehicles);
             foreach (var pair in run.VehicleHealth)
                 save.Vehicles.Add(new RunVehicle { Id = pair.Key, Health = pair.Value });
+            if (run.Smoke != null) save.Smoke.AddRange(run.Smoke);
             save.Explored = run.Explored;
             save.ArenaClosed = run.ArenaClosed;
             save.Boosters.AddRange(run.Boosters);

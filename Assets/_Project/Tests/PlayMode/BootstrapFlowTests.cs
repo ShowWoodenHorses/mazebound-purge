@@ -758,6 +758,28 @@ namespace Purge.Tests.PlayMode
                 targets.Damaged -= count;
             }
 
+            sandbox.NextThrowable();
+            Assert.AreEqual("grenade_smoke", throwing.Slot.Definition.Id);
+            await WaitFor(() => throwing.Cooldown <= 0f);
+            Assert.IsTrue(throwing.TryThrow(player.Position + Vector2.up * 3f));
+            var smoke = container.Resolve<Purge.Gameplay.Visibility.SmokeScreen>();
+            await WaitFor(() => smoke.Clouds.Count > 0);
+            Assert.AreEqual(1, smoke.Clouds.Count);
+            Assert.That(smoke.Clouds[0].Seconds, Is.InRange(7.5f, 8f));
+            Assert.That(smoke.Clouds[0].Radius, Is.EqualTo(3f));
+            ParticleSystem smokeParticles = null;
+            await WaitFor(() =>
+            {
+                smokeParticles = SceneManager.GetSceneByName(GameScene).GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<ParticleSystem>())
+                    .FirstOrDefault(particles => particles.name == "FX_Grenade_Smoke_01" && particles.particleCount > 0);
+                return smokeParticles != null;
+            });
+            await WaitFor(() => smoke.Clouds.Count == 0 || smoke.Clouds[0].Seconds <= 0.5f);
+            Assert.IsTrue(smokeParticles.gameObject.activeInHierarchy);
+            Assert.Greater(smokeParticles.particleCount, 0);
+            await WaitFor(() => smoke.Clouds.Count == 0 && !smokeParticles.gameObject.activeInHierarchy);
+
             await _flow.ExitToMenu();
             Assert.AreEqual(handlesInMenu, AppHandles, "The items' looks released with the level.");
         });

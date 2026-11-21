@@ -5,6 +5,8 @@ cluster_count,3
 cluster_damage_share,0.2
 cluster_radius_share,0.5
 double_shot_chance,0.2
+electrify_damage_share,0.1
+electrify_seconds,2
 explosive_damage_share,0.35
 explosive_every,5
 explosive_radius,1.5

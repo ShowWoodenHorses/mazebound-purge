@@ -16,6 +16,7 @@ MonoBehaviour:
   _purchasePrice: 11000
   _upgradeBurn: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
   _upgradeFreeze: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+  _upgradeElectrify: {fileID: 11400000, guid: 1e4aa7fa677c4fa483e2f017285df6ab, type: 2}
   _upgradeExplosion:
     _interval: 0.9
     _automatic: 0
@@ -32,6 +33,10 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   _upgradeParameters:
+  - Name: electrify_damage_share
+    Value: 0.1
+  - Name: electrify_seconds
+    Value: 2
   - Name: burn_damage_share_per_second
     Value: 0.1
   - Name: burn_seconds

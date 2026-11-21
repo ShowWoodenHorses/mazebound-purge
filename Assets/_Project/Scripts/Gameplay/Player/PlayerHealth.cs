@@ -82,10 +82,12 @@ namespace Purge.Gameplay.Player
 
         /// <summary>Takes the player's damage first (the vehicle they drive, stage 9b); null — none.</summary>
         public IPlayerShield Shield { get; set; }
+        internal float IncomingDamageFactor { get; set; } = 1f;
 
         public void Damage(int amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount), amount, null);
+            amount = ScaleIncomingDamage(amount);
             if (Invulnerable || amount > 0 && Shield != null && Shield.Absorb(amount)) return;
             Set(Math.Max(_minimumHealth, Current - ThroughBarrier(amount)));
         }
@@ -94,9 +96,17 @@ namespace Purge.Gameplay.Player
         public void Damage(int amount, Vector2 source)
         {
             if (amount <= 0 || IsDead || Invulnerable) return;
+            amount = ScaleIncomingDamage(amount);
             if (Shield != null && Shield.Absorb(amount)) return;
             Set(Math.Max(_minimumHealth, Current - ThroughBarrier(amount)));
             Hurt?.Invoke(amount, source);
+        }
+
+        private int ScaleIncomingDamage(int amount)
+        {
+            if (IncomingDamageFactor == 1f) return amount;
+            var scaled = Math.Round(amount * (double)IncomingDamageFactor);
+            return (int)Math.Min(int.MaxValue, scaled);
         }
 
         private int ThroughBarrier(int amount)

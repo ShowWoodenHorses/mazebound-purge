@@ -31,6 +31,7 @@ namespace Purge.Application.Platform
         public const string LevelQuit = "level_quit";
         public const string Ad = "ad";
         public const string WeaponPickup = "weapon_pickup";
+        public const string SmokeDeployed = "smoke_deployed";
         public const string SettingsChanged = "settings_changed";
         public const string Performance = "performance";
         public const string SessionStart = "session_start";

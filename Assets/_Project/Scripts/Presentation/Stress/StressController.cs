@@ -153,6 +153,10 @@ namespace Purge.Presentation.Stress
 
         /// <summary>Sandbox: a full stack of the next throwable kind.</summary>
         public void NextThrowable() => _sandbox?.NextThrowable();
+        public bool DemoElectrify => _sandbox?.Electrify == true;
+        public void ToggleElectrify() => _sandbox?.ToggleElectrify();
+        public void DemoFear() => _sandbox?.DemoFear();
+        public void DemoBlind() => _sandbox?.DemoBlind();
 
         /// <summary>Sandbox (5b): every monster hunts / perception by the monsters' data.</summary>
         public bool AllHunters

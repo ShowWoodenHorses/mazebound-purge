@@ -247,6 +247,8 @@
     "max_levels": 40
   },
   "weapon_modifiers": {
+    "electrify_damage_share": 0.1,
+    "electrify_seconds": 2,
     "double_shot_chance": 0.2,
     "explosive_every": 5,
     "explosive_damage_share": 0.35,

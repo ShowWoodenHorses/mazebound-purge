@@ -76,6 +76,14 @@ namespace Purge.Editor.Dev
                     var category=((WeaponDefinition)asset).ArsenalClass;
                     SetFork(so.FindProperty("_fork4"),category,false);
                     SetFork(so.FindProperty("_fork8"),category,true);
+                    var item = (WeaponDefinition)asset;
+                    var fork = so.FindProperty("_fork8");
+                    if (fork.FindPropertyRelative("First").enumValueIndex == (int)WeaponUpgrade.Electrify ||
+                        fork.FindPropertyRelative("Second").enumValueIndex == (int)WeaponUpgrade.Electrify ||
+                        item.Fork(4)?.First == WeaponUpgrade.Electrify || item.Fork(4)?.Second == WeaponUpgrade.Electrify)
+                        so.FindProperty("_upgradeElectrify").objectReferenceValue =
+                            AssetDatabase.LoadAssetAtPath<Purge.Core.Effects.StatusDefinition>(
+                                "Assets/_Project/Data/Effects/Status_Electrified.asset");
                 }
                 else
                 {

@@ -779,6 +779,7 @@ namespace Purge.Tests.PlayMode
             var geometry = container.Resolve<LevelData>().Geometry;
             var visuals = container.Resolve<LevelVisualSystem>();
             Assert.AreEqual(geometry.GroundFloor, player.Floor);
+            Assert.AreSame(visuals.Geometry.Mask.Texture, Shader.GetGlobalTexture(GeometryShader.VisibilityTextureId));
             var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
             var bullets = container.Resolve<Purge.Gameplay.Combat.BulletSystem>();
             var root = container.Resolve<LevelViewRoot>();
@@ -811,6 +812,7 @@ namespace Purge.Tests.PlayMode
             Assert.AreEqual(stair.UpperLanding, player.Cell);
             Assert.IsFalse(oldView.Root.gameObject.activeSelf);
             Assert.IsTrue(visuals.Geometry.Root.gameObject.activeSelf);
+            Assert.AreSame(visuals.Geometry.Mask.Texture, Shader.GetGlobalTexture(GeometryShader.VisibilityTextureId));
             Assert.AreNotSame(oldTexture, map.Texture);
 
             Assert.AreEqual(CellType.Void, grid.GetCell(stair.First.OnFloor(stair.UpperFloor)));
@@ -861,6 +863,7 @@ namespace Purge.Tests.PlayMode
             Assert.That(Vector2.Dot(upperLanding - player.Position, direction), Is.GreaterThan(0.8f));
             player.Tick(1f);
             Assert.AreEqual(stair.LowerLanding, player.Cell);
+            Assert.AreSame(oldView.Mask.Texture, Shader.GetGlobalTexture(GeometryShader.VisibilityTextureId));
             await _flow.ExitToMenu();
         });
 
@@ -998,6 +1001,33 @@ namespace Purge.Tests.PlayMode
             Assert.IsNotNull(found, $"'{entityId}' has no '{child}' (placeholder doors: Purge → Dev → Rebuild Placeholder Doors).");
             return found.gameObject;
         }
+
+        [UnityTest]
+        public IEnumerator Castle_LoadsFromCatalog_WithItsOwnLevelContent() => Async(async () =>
+        {
+            await _flow.StartLevel("Level_Castle_01");
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+
+            var scope = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene));
+            var level = scope.Container.Resolve<LevelRuntime>().Level;
+            var geometry = scope.Container.Resolve<LevelVisualSystem>().Geometry;
+            Assert.AreEqual(level.Geometry.GroundFloor, geometry.Mask.Floor);
+            Assert.AreSame(geometry.Mask.Texture, Shader.GetGlobalTexture(GeometryShader.VisibilityTextureId));
+            Assert.AreEqual(LevelLocation.Castle, level.Settings.Location);
+            Assert.AreEqual(FloorStepSound.Stone, level.VisualTheme.FloorSteps);
+            Assert.AreEqual(32, level.Geometry.Width);
+            Assert.AreEqual(26, level.Geometry.Height);
+            Assert.AreEqual(3, level.Geometry.FloorCount);
+            Assert.IsFalse(level.Arena.IsEmpty);
+            Assert.AreEqual(16, level.Arena.Rect.Width);
+            Assert.AreEqual(16, level.Arena.Rect.Height);
+            Assert.IsNotEmpty(level.Geometry.Stairs);
+            Assert.IsNotEmpty(level.Doors.Where(door => door.RequiresKey));
+            Assert.IsNotEmpty(level.Keys);
+            Assert.That(level.Barrels.Count, Is.InRange(6, 10));
+            Assert.IsTrue(level.Barrels.All(barrel => barrel.Kind == BarrelKind.Fire));
+            Assert.IsEmpty(level.Vehicles);
+        });
 
         [UnityTest]
         public IEnumerator Retry_AfterFail_ReloadsLevel_WithSingleLevelScope() => Async(async () =>

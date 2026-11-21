@@ -175,6 +175,7 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _footstepGrass = new SoundCue(0.55f, 0f, 2, new Vector2(0.92f, 1.08f));
         [Tooltip("Steps on bare ground: Ground cells, trails (Player/step_ground*, 7г).")]
         [SerializeField] private SoundCue _footstepGround = new SoundCue(0.55f, 0f, 2, new Vector2(0.92f, 1.08f));
+        [SerializeField] private SoundCue _footstepStone = new SoundCue(0.55f, 0f, 2, new Vector2(0.92f, 1.08f));
         [Tooltip("Not used yet: for a walk animation, if one is added.")]
         [SerializeField] private SoundCue _footstepWalk = new SoundCue(0.6f, 0f, 2, new Vector2(0.92f, 1.08f));
         [SerializeField] private SoundCue _playerHurt = new SoundCue(0.8f, 0f, 1, new Vector2(0.95f, 1.05f), 0.15f);
@@ -369,6 +370,7 @@ namespace Purge.Core.Audio
         public SoundCue Footstep => _footstep;
         public SoundCue FootstepGrass => _footstepGrass;
         public SoundCue FootstepGround => _footstepGround;
+        public SoundCue FootstepStone => _footstepStone;
         public SoundCue FootstepWalk => _footstepWalk;
         public SoundCue PlayerHurt => _playerHurt;
         public SoundCue PlayerDeath => _playerDeath;

@@ -39,8 +39,15 @@ namespace Purge.Presentation.Visual
         public void Bind()
         {
             Mask.Bind();
-            Snowdrifts?.Bind();
-            Ground?.Bind();
+            if (Snowdrifts != null)
+                Snowdrifts.Bind();
+            else if (Ground != null)
+                Ground.Bind();
+            else
+            {
+                Shader.DisableKeyword(GeometryShader.SnowdriftKeyword);
+                Shader.DisableKeyword(GeometryShader.GroundKeyword);
+            }
         }
 
         /// <summary>Cell layers that should have geometry but whose visual or prefab is missing.</summary>

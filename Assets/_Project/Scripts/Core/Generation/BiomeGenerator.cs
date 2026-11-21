@@ -37,8 +37,21 @@ namespace Purge.Core.Generation
             var oldGround = sameSize ? old.GroundFloor : 0;
             var kept = new bool[width * height];
             if (sameSize)
+            {
                 for (var i = 0; i < kept.Length; i++)
                     kept[i] = existing.Marks.IsKept(old, old.ToPosition(i).OnFloor(oldGround));
+                foreach (var stair in old.Stairs)
+                {
+                    if (stair.First.Floor != oldGround && stair.UpperFloor != oldGround) continue;
+                    if (!stair.Fits(old)) continue;
+                    KeepStairCell(stair.First);
+                    KeepStairCell(stair.Second);
+                    var landing = stair.First.Floor == oldGround ? stair.LowerLanding : stair.UpperLanding;
+                    KeepStairCell(landing);
+                }
+
+                void KeepStairCell(GridPosition cell) => kept[cell.Y * width + cell.X] = true;
+            }
 
             var layout = new LevelLayout(width, height, settings.LayoutSeed, kept);
             if (sameSize) LoadKept(layout, existing);
@@ -73,6 +86,8 @@ namespace Purge.Core.Generation
                 arena, layout.Problems)
             {
                 Decor = layout.Decor,
+                Doors = layout.Doors.Select(door => new KeyValuePair<GridPosition, GridPosition?>(
+                    door.Key.OnFloor(ground), door.Value?.OnFloor(ground))).ToArray(),
                 Barrels = layout.Barrels.Skip(layout.KeptBarrelCount).Select(o => new LayoutObject<BarrelKind>(o.Cell.OnFloor(ground), o.Kind)).ToArray(),
                 Chests = layout.Chests.Skip(layout.KeptChestCount).Select(o => new LayoutObject<ChestKind>(o.Cell.OnFloor(ground), o.Kind)).ToArray(),
                 Vehicles = layout.Vehicles.Skip(layout.KeptVehicleCount).Select(o => new LayoutVehicle(o.Cell.OnFloor(ground), o.Definition, o.Heading)).ToArray(),

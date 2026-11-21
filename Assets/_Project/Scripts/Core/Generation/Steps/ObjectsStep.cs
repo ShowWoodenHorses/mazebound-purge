@@ -46,6 +46,19 @@ namespace Purge.Core.Generation
         [Tooltip("Half size of the start's view (21×21 → 10): objects are outside it.")]
         [SerializeField, Min(0)] private int _startViewRadius = 10;
 
+        internal static ObjectsStep CastleBarrels() => new ObjectsStep
+        {
+            _minBarrels = 6,
+            _maxBarrels = 10,
+            _barrelKinds = new List<BarrelKind> { BarrelKind.Fire },
+            _barrelStartDistance = 4,
+            _barrelSpacing = 3,
+            _startViewRadius = 3,
+            _commonChests = 0,
+            _lockedChests = 0,
+            _challengeChests = 0,
+        };
+
         public override void Apply(LevelLayout layout, DeterministicRandom random)
         {
             if (!layout.HasStart) return;
@@ -231,6 +244,7 @@ namespace Purge.Core.Generation
                 if (!reached[index] || taken.Contains(index) || layout.IsKept(index) || layout.IsTrail(index)) continue;
                 if (layout.Cell(index) != CellType.Floor) continue;
                 var cell = new GridPosition(x, y);
+                if (layout.SpawnArea.HasValue && layout.SpawnArea.Value.Contains(cell)) continue;
                 if (Math.Max(Math.Abs(x - layout.Start.X), Math.Abs(y - layout.Start.Y)) <= _startViewRadius) continue;
                 if (arena != null && !arena.IsEmpty && Expand(arena.Outer, 1).Contains(cell)) continue;
                 var nearSpawn = false;

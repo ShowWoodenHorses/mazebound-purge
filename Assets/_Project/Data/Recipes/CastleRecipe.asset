@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7381d61aacb1c046ad207b41f255958, type: 3}
+  m_Name: CastleRecipe
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Generation.BiomeRecipe
+  _id: castle_recipe
+  _steps:
+  - rid: 8342087553611726911
+  - rid: 8342087553611726912
+  - rid: 8342087553611726913
+  - rid: 8342087553611726914
+  - rid: 8342087553611726915
+  - rid: 8342087553611726916
+  references:
+    version: 2
+    RefIds:
+    - rid: 8342087553611726911
+      type: {class: PerimeterStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _thickness: 1
+    - rid: 8342087553611726912
+      type: {class: StartStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _position: {x: 0.16, y: 0.5}
+        _clearRadius: 1
+    - rid: 8342087553611726913
+      type: {class: CastleRoomsStep, ns: Purge.Core.Generation.Steps, asm: Purge.Core}
+      data:
+        _corridorWidth: 3
+    - rid: 8342087553611726914
+      type: {class: SpawnPointsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _minCount: 6
+        _maxCount: 8
+        _edgeBand: 12
+        _minDistance: 12
+        _startViewRadius: 10
+        _minSpacing: 5
+    - rid: 8342087553611726915
+      type: {class: ObjectsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _minBarrels: 6
+        _maxBarrels: 10
+        _barrelKinds: 01000000
+        _barrelStartDistance: 4
+        _barrelSpacing: 3
+        _commonChests: 0
+        _lockedChests: 0
+        _challengeChests: 0
+        _lockedStartDistance: 20
+        _challengeRadius: 6
+        _chestSpacing: 8
+        _startViewRadius: 3
+    - rid: 8342087553611726916
+      type: {class: BuildingStep, ns: Purge.Core.Generation.Steps, asm: Purge.Core}
+      data:
+        _aboveGroundFloors: 2
+        _basement: 1
+        _insetPerFloor: 1
+        _stairsPerFloor: 2

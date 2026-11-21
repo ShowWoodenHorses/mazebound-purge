@@ -37,7 +37,8 @@ namespace Purge.Core.Generation
         [Tooltip("Open ground around the start, cells.")]
         [SerializeField, Min(0f)] private float _clearRadius = 3f;
 
-        public float ClearRadius => _clearRadius;
+        public float ClearRadius { get => _clearRadius; internal set => _clearRadius = value; }
+        internal Vector2 Position { set => _position = value; }
 
         public override void Apply(LevelLayout layout, DeterministicRandom random)
         {
@@ -170,7 +171,7 @@ namespace Purge.Core.Generation
             }
         }
 
-        private static void Build(LevelLayout layout, ArenaData arena)
+        internal static void Build(LevelLayout layout, ArenaData arena)
         {
             var outer = arena.Outer;
             for (var y = outer.Y; y < outer.YMax; y++)
@@ -256,6 +257,8 @@ namespace Purge.Core.Generation
         public int MinDistance => _minDistance;
         public int StartViewRadius => _startViewRadius;
 
+        internal static SpawnPointsStep CastleSpawns() => new SpawnPointsStep { _edgeBand = 12, _minSpacing = 5 };
+
         public override void Apply(LevelLayout layout, DeterministicRandom random)
         {
             var target = random.NextInt(_minCount, Math.Max(_minCount, _maxCount) + 1);
@@ -314,8 +317,12 @@ namespace Purge.Core.Generation
                 var cx = x + ox;
                 var cy = y + oy;
                 var index = layout.Index(cx, cy);
+                if (layout.SpawnArea.HasValue &&
+                    (!layout.SpawnArea.Value.Contains(new GridPosition(cx, cy)) ||
+                     layout.Cell(index) != CellType.Floor || layout.IsTrail(index))) return false;
                 if (layout.IsWall(index) && !layout.IsOpen(index) && layout.IsKept(index)) return false;
-                if (arena != null && !arena.IsEmpty && Expand(arena.Outer, 1).Contains(new GridPosition(cx, cy))) return false;
+                if (arena != null && !arena.IsEmpty &&
+                    Expand(arena.Outer, layout.SpawnArea.HasValue ? 0 : 1).Contains(new GridPosition(cx, cy))) return false;
             }
 
             return true;

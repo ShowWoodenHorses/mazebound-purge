@@ -58,6 +58,11 @@ MonoBehaviour:
     _displayName: Stairs
     _location: 0
     _hasRefuge: 0
+  - _levelId: Level_Castle_01
+    _address: Levels/Level_Castle_01
+    _displayName: Castle
+    _location: 1
+    _hasRefuge: 0
   _tutorial:
     _levelId: 
     _address: 

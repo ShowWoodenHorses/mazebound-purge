@@ -17,6 +17,8 @@ MonoBehaviour:
   _mesh: {fileID: 4300000, guid: e1dedf1be5e1fda4d9f8c370a2b4ca39, type: 2}
   _variants:
   - {fileID: 2100000, guid: ca1659bdc0967024d9d74fc3f929e572, type: 2}
+  _castleVariants:
+  - {fileID: 2100000, guid: 485d007dfad75214baaec5f368686da7, type: 2}
   _extraMaterials: []
   _locomotionSpeed: 2.1104155
   _vertexAnimation: {fileID: 0}

@@ -78,6 +78,7 @@ namespace Purge.Core.Horde
         [SerializeField] private Mesh _mesh;
         [Tooltip("One material per look variant (shader Purge/Horde, same mesh, different albedo) — the body, submesh 0.")]
         [SerializeField] private Material[] _variants = Array.Empty<Material>();
+        [SerializeField] private Material[] _castleVariants = Array.Empty<Material>();
         [Tooltip("Materials of submeshes 1.. (the equipment), shared by every variant.")]
         [SerializeField] private Material[] _extraMaterials = Array.Empty<Material>();
         [Tooltip("Ground speed of the walk/run clips at normal playback, cells per second (0 = unknown: play at 1×).")]
@@ -102,6 +103,11 @@ namespace Purge.Core.Horde
 
         public Mesh Mesh => _mesh;
         public Material[] Variants => _variants;
+        internal Material[] CastleVariants { set => _castleVariants = value; }
+
+        public Material[] VariantsFor(Monsters.MonsterBiome biome) =>
+            biome == Monsters.MonsterBiome.Castle && _castleVariants != null &&
+            _castleVariants.Length == _variants.Length ? _castleVariants : _variants;
         public Texture2D VertexAnimation => _vertexAnimation;
         public Texture2D BoneAnimation => _boneAnimation;
         public int BoneCount => _boneCount;

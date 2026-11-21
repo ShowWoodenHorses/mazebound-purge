@@ -16,6 +16,7 @@ namespace Purge.Core.Generation.Steps
         [SerializeField, Range(2, 3)] private int _stairsPerFloor = 2;
 
         public bool Basement { get => _basement; internal set => _basement = value; }
+        internal int InsetPerFloor { set => _insetPerFloor = value; }
 
         internal int GroundFloor => _basement ? 1 : 0;
 
@@ -52,6 +53,10 @@ namespace Purge.Core.Generation.Steps
             }
 
             var occupied = new HashSet<GridPosition>();
+            foreach (var spawn in layout.Spawns) occupied.Add(spawn.OnFloor(ground));
+            foreach (var barrel in layout.Barrels) occupied.Add(barrel.Cell.OnFloor(ground));
+            foreach (var door in layout.Doors)
+                if (door.Value.HasValue) occupied.Add(door.Value.Value.OnFloor(ground));
             for (var floor = 0; floor < floorCount - 1; floor++)
             {
                 var candidates = new List<StairLink>();
@@ -103,6 +108,9 @@ namespace Purge.Core.Generation.Steps
                 if (first.Floor != ground && candidate.UpperFloor != ground) return false;
                 if (layout.HasStart && candidate.Uses(layout.Start.OnFloor(ground))) return true;
                 var landing = first.Floor == ground ? candidate.LowerLanding : candidate.UpperLanding;
+                if (layout.SpawnArea.HasValue && layout.Arena != null &&
+                    (layout.Arena.Outer.Contains(first) || layout.Arena.Outer.Contains(second) ||
+                     layout.Arena.Outer.Contains(landing))) return true;
                 return layout.IsKept(layout.Index(first)) || layout.IsKept(layout.Index(second)) ||
                        layout.IsKept(layout.Index(landing));
             }

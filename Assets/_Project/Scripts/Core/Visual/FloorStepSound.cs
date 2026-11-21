@@ -6,5 +6,6 @@ namespace Purge.Core.Visual
         Default = 0,
         Grass = 1,
         Ground = 2,
+        Stone = 3,
     }
 }

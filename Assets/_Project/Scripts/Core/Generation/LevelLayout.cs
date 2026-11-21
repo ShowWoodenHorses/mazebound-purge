@@ -70,6 +70,9 @@ namespace Purge.Core.Generation
 
         public List<Clearing> Clearings { get; } = new List<Clearing>();
 
+        internal Dictionary<GridPosition, GridPosition?> Doors { get; } = new Dictionary<GridPosition, GridPosition?>();
+        internal GridRect? SpawnArea { get; set; }
+
         /// <summary>Barrels (stage 7в): kept ones first (<see cref="KeptBarrelCount"/>), then the generated ones.</summary>
         public List<LayoutObject<BarrelKind>> Barrels { get; } = new List<LayoutObject<BarrelKind>>();
         public int KeptBarrelCount { get; internal set; }
@@ -121,6 +124,14 @@ namespace Purge.Core.Generation
             _surfaces[index] = CellSurface.None;
             _obstacles[index] = null;
             _open[index] = false;
+        }
+
+        internal void SetDoor(GridPosition position)
+        {
+            var index = Index(position);
+            if (_kept[index]) return;
+            _cells[index] = CellType.Door;
+            Doors.Add(position, null);
         }
 
         /// <summary>Plain floor that later steps leave free (no walls, no obstacles).</summary>

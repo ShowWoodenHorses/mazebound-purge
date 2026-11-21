@@ -56,6 +56,7 @@ namespace Purge.Editor.Dev
             ("Player", @"^Wood Walk \d+$", c => c.FootstepWalk),
             ("Player", @"^step_grass\d*$", c => c.FootstepGrass),
             ("Player", @"^step_ground\d*$", c => c.FootstepGround),
+            ("Player", @"^step_stone\d*$", c => c.FootstepStone),
             ("Player", @"^hit\d*$", c => c.PlayerHurt),
             ("Player", @"^death\d*$", c => c.PlayerDeath),
             ("Player", @"^bodyfall\d*$", c => c.BodyfallCue),

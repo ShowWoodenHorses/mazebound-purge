@@ -3,6 +3,8 @@
 Справочник по текущему коду (перенесён из CLAUDE.md 2026-10-17). Читать, когда задача касается этих систем; **обновлять при их изменении.** Общие правила — [CLAUDE.md](../../CLAUDE.md).
 
 ## Звук
+
+- **Замок (13б)** — `FloorStepSound.Stone` в `CastleBlockTheme` выбирает `AudioCatalog.FootstepStone` (`Player/step_stone*`). Эмбиент — `Sounds/Ambient/castle_block/loop.wav`. Музыка — общая `game`.
 - Исходники — `Assets/_Project/Sounds/<Player|Weapon|Other|Zombie|UI>` и `Music/` (menu, game).
   - **Purge → Dev → Build Audio** (`AudioBuilder`): импорт (звуки — Vorbis, моно кроме UI, короткие Decompress On Load, **WebGL — MP3** (короткие клипы Unity декодирует `decodeAudioData`, мобильный Chrome не декодирует AAC — звуки молчали; у WebGL-override частота только явная, Preserve молча отклоняется; **короткие петли** (`loop`, `*_loop`, `*_flight`, ≤ 6 с) на WebGL — **PCM**: MP3 не бесшовный, кодек добавлял ~40 мс тишины в начало клипа — у огнемёта на каждом круге петли была пауза (этап Э3); длинная петля `light_loop` осталась MP3); музыка — Streaming, группа **Purge Music** — бандл на трек), `AudioCatalog` (`Data/Audio`, Addressable `"Audio/Catalog"`, группа Purge Shared) по **именам файлов** (шаблоны в билдере; новые варианты с тем же префиксом подхватываются), настройка (громкость ≤ 1, разброс тона, `Range`, `MaxVoices`, `MinInterval`) при пересборке сохраняется.
   - Музыка — `AssetReferenceT<AudioClip>`, грузится только пока играет (свой owner), `LoopOverlap` — следующий круг поверх затухающего хвоста.

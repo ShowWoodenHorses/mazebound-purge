@@ -146,9 +146,19 @@ namespace Purge.Core.Level
             AddGeneratedObjects(result);
         }
 
-        /// <summary>The generated barrels and chests (stage 7в) and vehicles (stage 9в) with new ids.</summary>
+        /// <summary>Creates generated entities with new ids.</summary>
         internal void AddGeneratedObjects(GenerationResult result)
         {
+            foreach (var placement in result.Doors)
+            {
+                if (_geometry.GetCell(placement.Key) != CellType.Door) continue;
+                var door = new DoorData(CreateUniqueId(DoorData.IdPrefix), placement.Key);
+                _doors.Add(door);
+                if (!placement.Value.HasValue) continue;
+                var key = new KeyData(CreateUniqueId(KeyData.IdPrefix), placement.Value.Value);
+                _keys.Add(key);
+                door.KeyId = key.Id;
+            }
             foreach (var barrel in result.Barrels)
                 _barrels.Add(new BarrelData(CreateUniqueId(BarrelData.IdPrefix), barrel.Cell, barrel.Kind));
             foreach (var chest in result.Chests)

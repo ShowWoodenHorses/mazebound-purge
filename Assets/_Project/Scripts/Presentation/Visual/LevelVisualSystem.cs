@@ -45,6 +45,7 @@ namespace Purge.Presentation.Visual
             if (floor == _activeFloor) return Geometry;
             Geometry.Root.gameObject.SetActive(false);
             _activeFloor = floor;
+            Geometry.Bind();
             Geometry.Root.gameObject.SetActive(true);
             return Geometry;
         }
@@ -64,15 +65,16 @@ namespace Purge.Presentation.Visual
             cancellation.ThrowIfCancellationRequested();
             var builder = new GeometryBuilder(prefabs, stairs: stairs);
             _floors = new LevelGeometryView[_level.Geometry.FloorCount];
+            _activeFloor = _level.Geometry.GroundFloor;
             for (var floor = 0; floor < _floors.Length; floor++)
             {
                 var view = builder.Build(_level, _root.transform, staticBatching: true, floor: floor);
                 _floors[floor] = view;
-                view.Bind();
                 view.SetAllVisible(false);
                 view.ApplyVisibility();
                 view.Root.gameObject.SetActive(floor == _activeFloor);
             }
+            Geometry.Bind();
 
             EntityViews = new EntityViewFactory(prefabs);
             var missingObjects = 0;

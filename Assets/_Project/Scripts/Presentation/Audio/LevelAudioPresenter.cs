@@ -227,7 +227,8 @@ namespace Purge.Presentation.Audio
                 _ => _level.VisualTheme != null ? _level.VisualTheme.FloorSteps : FloorStepSound.Default,
             };
             var cue = steps == FloorStepSound.Grass ? catalog.FootstepGrass
-                : steps == FloorStepSound.Ground ? catalog.FootstepGround : null;
+                : steps == FloorStepSound.Ground ? catalog.FootstepGround
+                : steps == FloorStepSound.Stone ? catalog.FootstepStone : null;
             return cue == null || cue.IsEmpty ? catalog.Footstep : cue;
         }
 

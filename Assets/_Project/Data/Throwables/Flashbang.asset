@@ -37,7 +37,37 @@ MonoBehaviour:
   _arcHeight: 0.3
   _cooldown: 0.6
   _soundRadius: 3
-  _effects: []
+  _effects:
+  - rid: 15001
+  - rid: 15002
+  - rid: 15003
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 15001
+      type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damage: 0
+        _radius: 3
+        _edgeDamage: 0
+        _soundRadius: 12
+        _flashbangSound: 1
+        _look:
+          m_AssetGUID: e6acdc56d1dd1b6418020a088f7ca733
+          m_SubObjectName:
+          m_SubObjectType:
+          m_SubObjectGUID:
+          m_EditorAssetChanged: 0
+    - rid: 15002
+      type: {class: AreaStatusEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: 0aa7530f0d5b5ce4daf704fd3c40b6f4, type: 2}
+        _radius: 3
+        _duration: 2
+    - rid: 15003
+      type: {class: AreaStatusEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _status: {fileID: 11400000, guid: 871b6ff6d1a643eeafbc7827c7a534c9, type: 2}
+        _radius: 3
+        _duration: 3
+        _delay: 2

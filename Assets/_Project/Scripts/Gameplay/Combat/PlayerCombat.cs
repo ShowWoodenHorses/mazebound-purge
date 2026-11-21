@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Purge.Core.Common;
+using Purge.Core.Cards;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
 using Purge.Core.Level;
@@ -405,6 +406,8 @@ namespace Purge.Gameplay.Combat
             ReloadChanged?.Invoke(weapon);
         }
 
+        private float _attackDamageFactor = 1f;
+
         private bool Attack(WeaponRuntime weapon, Vector2 direction, bool useInput = false)
         {
             var definition = weapon.Definition;
@@ -437,6 +440,10 @@ namespace Purge.Gameplay.Combat
             weapon.IdleTime=0f;
             weapon.Cooldown = Mathf.Min(weapon.Cooldown, 0f) + CooldownOf(definition) / (Has(definition,WeaponUpgrade.Ramp)?Mathf.Lerp(1f,definition.UpgradeParameter("ramp_max_rate_factor"),Mathf.Clamp01(weapon.BurstTime/Mathf.Max(0.01f,definition.UpgradeParameter("ramp_seconds")))):1f);
             _firingLeft = FiringLinger;
+            if (definition.IsMelee && _stats != null) weapon.Cooldown /= _stats.ConsumeMeleeSpeed();
+            _attackDamageFactor = definition.UsesAmmo && weapon.Ammo - definition.Ammo.PerAttack < definition.Ammo.PerAttack
+                && _stats?.Has(RunPerk.LastRound) == true
+                ? (MagazineOf(definition) <= definition.Ammo.PerAttack ? 1.15f : 1.5f) : 1f;
             _stanceLeft = StanceTime;
             AimDirection = direction;
             _player.AimAt(direction);
@@ -450,8 +457,8 @@ namespace Purge.Gameplay.Combat
                 case ExplosiveAttack explosive:
                     var range = lob ? Vector2.Distance(origin, landing) : explosive.Range;
                     var speed = lob ? range / explosive.FlightTime : explosive.Speed;
-                    _bullets.Spawn(origin, direction, speed, explosive.DirectDamage, floor, range, explosive: explosive,
-                        weapon: definition);
+                    _bullets.Spawn(origin, direction, speed, explosive.DirectDamage * _attackDamageFactor, floor, range,
+                        explosive: explosive, weapon: definition, blastFactor: _attackDamageFactor);
                     break;
                 case StreamAttack stream:
                     Stream(definition, stream, origin, direction, floor);
@@ -467,10 +474,13 @@ namespace Purge.Gameplay.Combat
                     break;
             }
 
-            _sounds.EmitPlayer(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, definition.SoundRadius * (Has(definition,WeaponUpgrade.Silent)?0.5f:1f), floor);
+            var soundRadius = definition.SoundRadius * (Has(definition, WeaponUpgrade.Silent) ? 0.5f : 1f);
+            if (!definition.IsMelee && _stats?.Has(RunPerk.QuietHunt) == true) soundRadius *= 0.6f;
+            _sounds.EmitPlayer(definition.IsMelee ? SoundType.Melee : SoundType.Ranged, origin, soundRadius, floor);
             if (definition.UsesAmmo)
             {
-                weapon.Ammo = Mathf.Max(0, weapon.Ammo - definition.Ammo.PerAttack);
+                if (_stats?.Has(RunPerk.Barrage) != true || _random.NextDouble() >= 0.2)
+                    weapon.Ammo = Mathf.Max(0, weapon.Ammo - definition.Ammo.PerAttack);
                 if (!HasRounds(weapon)) TryReload();
             }
 
@@ -541,7 +551,7 @@ namespace Purge.Gameplay.Combat
                     degrees = -spread * 0.5f + share * (i + 0.5f) + ((float)_random.NextDouble() - 0.5f) * share * 0.6f;
                 }
 
-                _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage * (Has(definition,WeaponUpgrade.FullMagazineCritical) && _weapons.Active.Ammo>=MagazineOf(definition)?2f:1f), floor,
+                _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage * _attackDamageFactor * (Has(definition,WeaponUpgrade.FullMagazineCritical) && _weapons.Active.Ammo>=MagazineOf(definition)?2f:1f), floor,
                     attack.Range * (Has(definition,WeaponUpgrade.Range)?definition.UpgradeParameter("range_factor"):1f), attack.Pierce + (Has(definition,WeaponUpgrade.Pierce)?definition.ArsenalClass==ArsenalClass.Snipers?2:1:0), weapon: definition, explosiveRound: Has(definition,WeaponUpgrade.ExplosiveRounds) && _weapons.Active.Shots % Mathf.Max(1,Mathf.RoundToInt(definition.UpgradeParameter("explosive_every"))) == 0);
             }
         }
@@ -551,7 +561,7 @@ namespace Purge.Gameplay.Combat
             _targets.Collect(origin, stream.Range * (Has(weapon,WeaponUpgrade.Range)?1.3f:1f), floor, _found, direction, Mathf.Cos(stream.Angle * (Has(weapon,WeaponUpgrade.Wide)?1.5f:1f) * 0.5f * Mathf.Deg2Rad));
             foreach (var target in _found)
                 if (_targets.IsClear(origin, _targets.PositionOf(target), floor))
-                    _targets.Damage(target, stream.DamagePerTick, direction, weapon);
+                    _targets.Damage(target, stream.DamagePerTick * _attackDamageFactor, direction, weapon);
             _found.Clear();
 
             var ignite = weapon.Ignite;
@@ -568,7 +578,7 @@ namespace Purge.Gameplay.Combat
                 if (hit.Kind == CombatHitKind.Target)
                 {
                     BeamEnd = hit.Point;
-                    _targets.Damage(hit.Target, beam.Damage, direction, weapon, PlayerDamage.Precise);
+                    _targets.Damage(hit.Target, beam.Damage * _attackDamageFactor, direction, weapon, PlayerDamage.Precise);
                 }
                 return;
             }
@@ -584,7 +594,7 @@ namespace Purge.Gameplay.Combat
                 var offset = position - origin - direction * along;
                 var radius = _targets.RadiusOf(target);
                 if (offset.sqrMagnitude <= radius * radius && _targets.IsClear(origin, position, floor))
-                    _targets.Damage(target, beam.Damage, direction, weapon, PlayerDamage.Precise);
+                    _targets.Damage(target, beam.Damage * _attackDamageFactor, direction, weapon, PlayerDamage.Precise);
             }
             _found.Clear();
         }
@@ -622,7 +632,7 @@ namespace Purge.Gameplay.Combat
             _chainPoints[ChainCount++] = origin;
             var hits = 0;
             var from = origin;
-            var damage = chain.Damage;
+            var damage = chain.Damage * _attackDamageFactor;
             var target = Nearest(from, chain.Range, floor, direction, Mathf.Cos(chain.AimAngle * Mathf.Deg2Rad), hits);
             if (!target.IsValid)
             {

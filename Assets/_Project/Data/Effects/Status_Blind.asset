@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: status_blind
   _color: {r: 1, g: 0.93, b: 0.65, a: 1}
   _particles:
-    m_AssetGUID: 94535cff76d295d4ea67db490744f717
+    m_AssetGUID:
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 

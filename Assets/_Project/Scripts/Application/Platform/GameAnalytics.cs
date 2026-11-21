@@ -63,6 +63,7 @@ namespace Purge.Application.Platform
         private readonly BossSystem _bosses;
         private readonly VehicleSystem _vehicles;
         private readonly Purge.Gameplay.Effects.EffectSystem _effects;
+        private readonly Purge.Gameplay.Throwing.PlayerThrowing _throwing;
         private float _bossSince;
         private int _rideHits;
         private int _rideKills;
@@ -71,10 +72,12 @@ namespace Purge.Application.Platform
         public LevelAnalytics(LevelRunStats stats, AnalyticsService analytics, LevelProgress progress, PlayerSystem player,
             PickupSystem pickups, Purge.Core.Level.LevelData level,
             TutorialSystem tutorial = null, ChestSystem chests = null, WaveSystem waves = null, BossSystem bosses = null,
-            VehicleSystem vehicles = null, GameFlow flow = null, Purge.Gameplay.Effects.EffectSystem effects = null)
+            VehicleSystem vehicles = null, GameFlow flow = null, Purge.Gameplay.Effects.EffectSystem effects = null,
+            Purge.Gameplay.Throwing.PlayerThrowing throwing = null)
         {
             _vehicles = vehicles;
             _effects = effects;
+            _throwing = throwing;
             _flow = flow;
             _bosses = bosses;
             _chests = chests;
@@ -95,6 +98,7 @@ namespace Purge.Application.Platform
             if (_subscribed) return UniTask.CompletedTask;
             _pickups.Removed += OnPickupRemoved;
             if (_effects != null) _effects.SmokeDeployed += OnSmokeDeployed;
+            if (_throwing != null) _throwing.Landed += OnThrowableLanded;
             _player.CellChanged += OnPlayerCellChanged;
             if (_tutorial != null) _tutorial.StepStarted += OnTutorialStep;
             if (_chests != null)
@@ -142,6 +146,7 @@ namespace Purge.Application.Platform
             if (!_subscribed) return;
             _pickups.Removed -= OnPickupRemoved;
             if (_effects != null) _effects.SmokeDeployed -= OnSmokeDeployed;
+            if (_throwing != null) _throwing.Landed -= OnThrowableLanded;
             _player.CellChanged -= OnPlayerCellChanged;
             if (_tutorial != null) _tutorial.StepStarted -= OnTutorialStep;
             if (_chests != null)
@@ -284,6 +289,14 @@ namespace Purge.Application.Platform
         }
 
         private void OnSmokeDeployed() => Send(AnalyticsEvents.SmokeDeployed);
+
+        private void OnThrowableLanded(Purge.Core.Definitions.ThrowableDefinition item, Vector2 position)
+        {
+            var parameters = _analytics.Begin();
+            parameters["level"] = _levelId;
+            parameters["throwable"] = item.Id;
+            Send(AnalyticsEvents.ThrowableDeployed);
+        }
 
         private void Send(string eventName)
         {

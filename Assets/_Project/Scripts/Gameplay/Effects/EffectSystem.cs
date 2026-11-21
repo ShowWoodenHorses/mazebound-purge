@@ -67,7 +67,8 @@ namespace Purge.Gameplay.Effects
         public event Action<Vector2, int, float, IExplosionLook> LookShown;
 
         /// <param name="hostile">The monsters' effect: it reaches the player too (the player's own never do).</param>
-        public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false, float damageFactor = 1f, float radiusFactor = 1f)
+        public void Apply(IReadOnlyList<EffectModule> effects, Vector2 at, int floor, bool hostile = false,
+            float damageFactor = 1f, float radiusFactor = 1f, bool cluster = false)
         {
             if (hostile) { damageFactor = 1f; radiusFactor = 1f; }
             if (effects == null) return;
@@ -76,9 +77,16 @@ namespace Purge.Gameplay.Effects
                 switch (effects[i])
                 {
                     case ExplosionEffect explosion:
+                        if (!hostile && cluster && explosion.AllowsClusterEvolution)
+                        {
+                            ApplyCluster(explosion, at, floor, damageFactor, radiusFactor);
+                            break;
+                        }
                         // The player's own explosions are changed by the run's cards (damage, radius), the monsters' never.
-                        var radius = _targets.Blast(at, explosion.Damage * damageFactor, explosion.Radius * radiusFactor, explosion.EdgeDamage, floor,
-                            kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion, hostile: hostile);
+                        var radius = explosion.Radius * radiusFactor;
+                        if (explosion.Damage > 0f)
+                            radius = _targets.Blast(at, explosion.Damage * damageFactor, radius, explosion.EdgeDamage, floor,
+                                kind: hostile ? PlayerDamage.None : PlayerDamage.Explosion, hostile: hostile);
                         if (hostile) BlastPlayer(at, explosion, floor);
                         if (hostile) _sounds.Emit(SoundType.Explosion, at, explosion.SoundRadius, floor);
                         else _sounds.EmitPlayer(SoundType.Explosion, at, explosion.SoundRadius, floor);
@@ -99,13 +107,27 @@ namespace Purge.Gameplay.Effects
                         break;
                     case AreaStatusEffect status when status.Status != null:
                         if (hostile) StatusOnPlayer(at, status, floor);
-                        else _statuses.ApplyInRadius(at, status.Radius * radiusFactor, floor, status.Status, status.Duration);
+                        else _statuses.ApplyInRadius(at, status.Radius * radiusFactor, floor, status.Status, status.Duration, status.Delay);
                         break;
                     case PushEffect push when !hostile:
                         PushAway(at, push, floor);
                         break;
                 }
             }
+        }
+
+        private void ApplyCluster(ExplosionEffect explosion, Vector2 at, int floor, float damageFactor, float radiusFactor)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var angle = i * (2f * Mathf.PI / 3f);
+                var point = at + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 0.8f;
+                if (!_targets.IsClear(at, point, floor)) point = at;
+                var radius = _targets.Blast(point, explosion.Damage * damageFactor * 0.45f, 1.25f * radiusFactor,
+                    explosion.EdgeDamage, floor, kind: PlayerDamage.Explosion);
+                Exploded?.Invoke(point, floor, radius, explosion);
+            }
+            _sounds.EmitPlayer(SoundType.Explosion, at, explosion.SoundRadius, floor);
         }
 
         /// <summary>Monsters in the radius not behind a wall are pushed away from the point, harder near it.</summary>

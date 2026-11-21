@@ -236,6 +236,7 @@ namespace Purge.Core.Audio
         [SerializeField] private SoundCue _explosionSmall = new SoundCue(0.9f, 20f, 4, new Vector2(0.92f, 1.06f));
         [Tooltip("A blast from Large Radius on (empty: the medium one).")]
         [SerializeField] private SoundCue _explosionLarge = new SoundCue(1f, 30f, 3, new Vector2(0.92f, 1.04f));
+        [SerializeField] private SoundCue _flashbang = new SoundCue(0.9f, 20f, 3, Vector2.one);
         [Tooltip("Cells: a blast of at most this radius is small.")]
         [SerializeField, Min(0f)] private float _smallRadius = 1.5f;
         [Tooltip("Cells: a blast of at least this radius is large.")]
@@ -413,6 +414,7 @@ namespace Purge.Core.Audio
         public SoundCue DoorLocked => _doorLocked;
         public SoundCue Throw => NonEmpty(_throw) ?? _meleeSwing;
         public SoundCue Explosion => NonEmpty(_explosionMedium) ?? _shot;
+        public SoundCue Flashbang => NonEmpty(_flashbang) ?? Explosion;
 
         /// <summary>The blast sound for a radius: small, medium or large (missing ones fall back to the medium).</summary>
         public SoundCue ExplosionOf(float radius) =>
@@ -465,6 +467,7 @@ namespace Purge.Core.Audio
         internal SoundCue ExplosionCue => _explosionMedium;
         internal SoundCue ExplosionSmallCue => _explosionSmall;
         internal SoundCue ExplosionLargeCue => _explosionLarge;
+        internal SoundCue FlashbangCue => _flashbang;
         internal SoundCue PinCue => _pin;
         internal SoundCue LandCue => _land;
         internal SoundCue FireLoopCue => _fireLoop;
@@ -613,6 +616,7 @@ namespace Purge.Core.Audio
             yield return _fireLoop; yield return _bodyfall; yield return _heartbeat;
             yield return _levelUp; yield return _revive; yield return _coin;
             yield return _throw; yield return _explosionSmall; yield return _explosionMedium; yield return _explosionLarge;
+            yield return _flashbang;
             yield return _ignite; yield return _pickupAmmo; yield return _pickupThrowable; yield return _iceHit;
             yield return _iceBreak;
             yield return _pickupKey; yield return _pickupMedkit; yield return _pickupWeapon;

@@ -13,6 +13,8 @@ using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Objects;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Vehicles;
 using Purge.Gameplay.Visibility;
 using Purge.Gameplay.Weapons;
@@ -43,6 +45,8 @@ namespace Purge.Presentation.UI
         private readonly BarrelSystem _barrels;
         private readonly VehicleSystem _vehicles;
         private readonly BossSystem _boss;
+        private readonly ThrowableSlot _throwables;
+        private readonly CardSystem _cards;
         private readonly List<HintDefinition> _remaining = new List<HintDefinition>();
         private readonly List<int> _visibleMonsters = new List<int>();
         private float _untilProbe = ProbeInterval;
@@ -51,7 +55,8 @@ namespace Purge.Presentation.UI
         public GameplayHintPresenter(UIRoot ui, GameFlow flow, SettingsService settings, SaveService save,
             LocalizationService texts, AnalyticsService analytics, PlayerSystem player, WeaponSystem weapons,
             HordeSystem horde, VisibilitySystem visibility, ChestSystem chests, PlayerInventory inventory,
-            RefugeSystem refuge, BarrelSystem barrels, VehicleSystem vehicles, BossSystem boss)
+            RefugeSystem refuge, BarrelSystem barrels, VehicleSystem vehicles, BossSystem boss,
+            ThrowableSlot throwables, CardSystem cards)
         {
             _ui = ui;
             _flow = flow;
@@ -69,6 +74,8 @@ namespace Purge.Presentation.UI
             _barrels = barrels;
             _vehicles = vehicles;
             _boss = boss;
+            _throwables = throwables;
+            _cards = cards;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeUI;
@@ -121,6 +128,12 @@ namespace Purge.Presentation.UI
         {
             switch (hint.Condition)
             {
+                case HintCondition.EquippedThrowable:
+                    return !_throwables.IsEmpty && _throwables.Definition.Id == hint.ThrowableId;
+                case HintCondition.EvolutionIngredient:
+                    foreach (var pair in _cards.Levels)
+                        if (_cards.IsEvolutionIngredient(pair.Key)) return true;
+                    return false;
                 case HintCondition.SilencedWeapon:
                     var weapon = _weapons.Active?.Definition;
                     if (weapon?.Modules == null) return false;

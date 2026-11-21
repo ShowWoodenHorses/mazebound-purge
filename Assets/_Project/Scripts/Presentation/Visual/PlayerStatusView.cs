@@ -82,10 +82,14 @@ namespace Purge.Presentation.Visual
 
             var longest = -1;
             var left = 0f;
+            var hasParticles = false;
             var kinds = _statuses.Kinds;
             for (var k = 0; k < kinds.Count; k++)
             {
                 var l = _statuses.Left(k);
+                if (l <= 0f) continue;
+                hasParticles = true;
+                if (kinds[k].Stuns && kinds[k].ParticlesAtHead) continue;
                 if (l > left)
                 {
                     left = l;
@@ -108,7 +112,7 @@ namespace Purge.Presentation.Visual
             }
 
             _particlesTimer -= deltaTime;
-            if (_particlesTimer <= 0f && longest >= 0 && _emitters != null)
+            if (_particlesTimer <= 0f && hasParticles && _emitters != null)
             {
                 _particlesTimer = ParticlesInterval;
                 EmitParticles(at);

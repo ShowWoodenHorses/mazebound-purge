@@ -40,6 +40,7 @@ namespace Purge.Presentation.Stress
         private readonly TopDownCamera _camera;
         private readonly StressAutopilotInput _autopilot;
         private readonly CombatSandbox _sandbox;
+        private readonly Gameplay.Run.CardSystem _cards;
         private readonly PlayerSystem _player;
         private readonly float[] _live = new float[LiveFrames];
         private readonly float[] _sorted = new float[MaxSampleFrames];
@@ -73,7 +74,8 @@ namespace Purge.Presentation.Stress
         public StressController(LevelData level, HordeSystem horde, HordeRenderer renderer, StressWeapons weapons,
             StressEffectsView effects, VisibilitySystem visibility, TopDownCamera camera, IPlayerInput input,
             PlayerSystem player, CombatSandbox sandbox, Core.Feel.FeelChannels feel = null, Gameplay.Doors.DoorSystem doors = null,
-            Application.Services.SettingsService playerSettings = null, BossSystem bosses = null)
+            Application.Services.SettingsService playerSettings = null, BossSystem bosses = null,
+            Gameplay.Run.CardSystem cards = null)
         {
             _bosses = bosses;
             _playerSettings = playerSettings;
@@ -81,6 +83,7 @@ namespace Purge.Presentation.Stress
             _doors = doors;
             _feel = feel;
             _sandbox = sandbox;
+            _cards = cards;
             _level = level;
             _horde = horde;
             _renderer = renderer;
@@ -153,6 +156,22 @@ namespace Purge.Presentation.Stress
 
         /// <summary>Sandbox: a full stack of the next throwable kind.</summary>
         public void NextThrowable() => _sandbox?.NextThrowable();
+
+        public string GrantNextPerk()
+        {
+            if (_cards?.Deck == null) return string.Empty;
+            foreach (var card in _cards.Deck.Cards)
+            {
+                if (card == null || _cards.LevelOf(card) > 0) continue;
+                foreach (var module in card.Modules)
+                {
+                    if (module is not Purge.Core.Cards.CardPerk perk) continue;
+                    _cards.Apply(card);
+                    return perk.Perk.ToString();
+                }
+            }
+            return "DONE";
+        }
         public bool DemoElectrify => _sandbox?.Electrify == true;
         public void ToggleElectrify() => _sandbox?.ToggleElectrify();
         public void DemoFear() => _sandbox?.DemoFear();

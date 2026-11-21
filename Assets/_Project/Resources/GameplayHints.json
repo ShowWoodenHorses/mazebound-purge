@@ -91,6 +91,23 @@
       "id": "stairs",
       "textKey": "hint.stairs",
       "condition": 11
+    },
+    {
+      "id": "flashbang",
+      "textKey": "hint.flashbang",
+      "condition": 12,
+      "throwableId": "flashbang"
+    },
+    {
+      "id": "mine",
+      "textKey": "hint.mine",
+      "condition": 12,
+      "throwableId": "mine"
+    },
+    {
+      "id": "card_evolution",
+      "textKey": "hint.card_evolution",
+      "condition": 13
     }
   ]
 }

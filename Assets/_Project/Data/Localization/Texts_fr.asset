@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - "Fran\xE7ais"
   - "PARAM\xC8TRES"
@@ -997,4 +1029,49 @@ MonoBehaviour:
   - Gargouille
   - "Quittez l\u2019ombre avant que la Gargouille ne plonge. Sa peau de pierre absorbe
     la majeure partie des d\xE9g\xE2ts pendant quelques secondes."
+  - Chasse silencieuse
+  - "Rayon du bruit des tirs \u221240 %."
+  - "Derni\xE8re cartouche"
+  - "Dernier tir du chargeur : +50 % de d\xE9g\xE2ts (+15 % pour les armes \xE0 un
+    coup)."
+  - "R\xE9action en cha\xEEne"
+  - "Une \xE9limination par explosion inflige 40 d\xE9g\xE2ts au monstre le plus
+    proche \xE0 2 m. Une fois par explosion."
+  - Maudits
+  - "Les armes marquent pendant 4 s. Les coups suivants infligent +15 % de d\xE9g\xE2ts
+    \xE0 la cible marqu\xE9e."
+  - Sang-froid
+  - "Apr\xE8s 3 s sans d\xE9g\xE2ts subis, +10 points de chance critique jusqu\u2019\xE0
+    la prochaine blessure."
+  - Fugitif
+  - "Apr\xE8s une blessure, +25 % de vitesse pendant 2 s. Recharge : 8 s."
+  - Rage
+  - "Une \xE9limination donne +4 % de cadence pendant 3 s, jusqu\u2019\xE0 cinq charges.
+    Une \xE9limination relance la dur\xE9e."
+  - Convertisseur
+  - "Les munitions incompatibles donnent un quart du chargeur de base de l\u2019arme
+    active (au moins une cartouche). Apr\xE8s la premi\xE8re conversion, l\u2019aimant
+    peut aussi convertir."
+  - Hachoir
+  - "Une \xE9limination en m\xEAl\xE9e acc\xE9l\xE8re de 40 % la prochaine attaque
+    de m\xEAl\xE9e dans les 2 s."
+  - Vampire
+  - "Rend 3 % des PV retir\xE9s avec une arme, jusqu\u2019\xE0 10 PV par seconde."
+  - Bourreau
+  - "\xC9volution : d\xE9g\xE2ts critiques \xD73."
+  - Barrage
+  - "\xC9volution : chaque tir a 20 % de chances de conserver la munition dans le
+    chargeur."
+  - "Grenade \xE0 sous-munitions"
+  - "\xC9volution : trois explosions par grenade, \xE0 45 % des d\xE9g\xE2ts de base
+    et de 1,25 m de rayon chacune."
+  - Brasier
+  - "\xC9volution : les monstres en feu explosent en mourant, infligeant 60 d\xE9g\xE2ts
+    \xE0 1,5 m."
+  - "\u25C6"
+  - "La grenade flash \xE9tourdit, puis aveugle les monstres."
+  - "Appuie sur Lancer pour poser une mine \xE0 tes pieds. Elle s\u2019arme en une
+    demi-seconde."
+  - "Monte au maximum les deux cartes avec le m\xEAme num\xE9ro \u25C6 pour d\xE9bloquer
+    leur \xE9volution."
   _missing: []

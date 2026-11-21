@@ -17,6 +17,8 @@ namespace Purge.Core.Level
         Boss = 9,
         ClosedArena = 10,
         Stairs = 11,
+        EquippedThrowable = 12,
+        EvolutionIngredient = 13,
     }
 
     /// <summary>One optional hint, with a stable save ID, a localized message and a reusable condition.</summary>
@@ -28,12 +30,14 @@ namespace Purge.Core.Level
         [SerializeField] private HintCondition condition;
         [SerializeField] private string monsterIdPrefix;
         [SerializeField] private ChestKind chestKind;
+        [SerializeField] private string throwableId;
 
         public string Id => id;
         public string TextKey => textKey;
         public HintCondition Condition => condition;
         public string MonsterIdPrefix => monsterIdPrefix;
         public ChestKind ChestKind => chestKind;
+        public string ThrowableId => throwableId;
     }
 
     [Serializable]

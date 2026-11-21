@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - "T\xFCrk\xE7e"
   - AYARLAR
@@ -1006,4 +1038,48 @@ MonoBehaviour:
   - Gargoyl
   - "Gargoyl dal\u0131\u015Fa ge\xE7meden g\xF6lgeden \xE7\u0131k. Ta\u015F derisi
     birka\xE7 saniye boyunca hasar\u0131n \xE7o\u011Funu emer."
+  - Sessiz Av
+  - "Silah sesi menzili \u221240%."
+  - Son Mermi
+  - "Son mermi +50% hasar (tek at\u0131\u015Fl\u0131 silahta +15%)."
+  - Zincirleme Tepki
+  - "Patlamayla \xF6ld\xFCrme en yak\u0131n canavara 2 m i\xE7inde 40 hasar verir.
+    Patlama ba\u015F\u0131na bir kez."
+  - Lanetliler
+  - "Silah vuru\u015Fu 4 sn i\u015Faretler. \u0130\u015Faretli hedefe sonraki vuru\u015Flar
+    +15% hasar verir."
+  - "So\u011Fukkanl\u0131"
+  - "3 sn hasar almay\u0131nca kritik \u015Fans\u0131, hasar alana dek 10 y\xFCzde
+    puan artar."
+  - "Ka\xE7ak"
+  - "Hasar al\u0131nca 2 sn hareket h\u0131z\u0131 +25%. Bekleme 8 sn."
+  - "\xD6fke"
+  - "\xD6ld\xFCrme ba\u015F\u0131na 3 sn +4% at\u0131\u015F h\u0131z\u0131, en \xE7ok
+    be\u015F birikim. \xD6ld\xFCrmeler s\xFCreyi yeniler."
+  - "D\xF6n\xFC\u015Ft\xFCr\xFCc\xFC"
+  - "Uyumsuz cephane etkin silah\u0131n temel \u015Farj\xF6r\xFCn\xFCn d\xF6rtte
+    birine d\xF6n\xFC\u015F\xFCr (en az bir mermi). \u0130lk d\xF6n\xFC\u015F\xFCmden
+    sonra m\u0131knat\u0131s da d\xF6n\xFC\u015Ft\xFCr\xFCr."
+  - "K\u0131yma Makinesi"
+  - "Yak\u0131n d\xF6v\xFC\u015Fte \xF6ld\xFCrme sonras\u0131 2 sn i\xE7indeki ilk
+    yak\u0131n sald\u0131r\u0131 %40 daha h\u0131zl\u0131d\u0131r."
+  - Vampir
+  - "Silahla d\xFC\u015F\xFCrd\xFC\u011F\xFCn sa\u011Fl\u0131\u011F\u0131n %3\u2019\xFCn\xFC
+    kazan\u0131rs\u0131n. Saniyede en \xE7ok 10 CP."
+  - Cellat
+  - "Evrim: kritik hasar \xD73."
+  - "Yayl\u0131m"
+  - "Evrim: her at\u0131\u015F %20 olas\u0131l\u0131kla mermiyi \u015Farj\xF6rde
+    tutar."
+  - "Par\xE7al\u0131 Bomba"
+  - "Evrim: el bombas\u0131 \xFC\xE7 kez patlar. Her biri %45 temel hasar ve 1,25
+    m yar\u0131\xE7ap."
+  - Cehennem
+  - "Evrim: yanan canavar \xF6l\xFCnce patlar. 1,5 m i\xE7inde 60 hasar."
+  - "\u25C6"
+  - "Fla\u015F bombas\u0131 \xF6nce sersemletir, sonra k\xF6r eder."
+  - "Aya\u011F\u0131na may\u0131n koymak i\xE7in F\u0131rlat\u2019a bas. Yar\u0131m
+    saniyede kurulur."
+  - "Evrim i\xE7in ayn\u0131 \u25C6 numaral\u0131 iki kart\u0131 en y\xFCksek seviyeye
+    \xE7\u0131kar."
   _missing: []

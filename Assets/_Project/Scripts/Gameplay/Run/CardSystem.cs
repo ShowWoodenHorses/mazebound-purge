@@ -23,7 +23,7 @@ namespace Purge.Gameplay.Run
     /// deck has them. When every card is at its last level, a level-up offers nothing. Deterministic by the run's seed.
     /// The cards' heal for a kill is dealt here too.
     /// </summary>
-    public sealed class CardSystem : ILevelLoadStep, IDisposable
+    public sealed class CardSystem : ILevelLoadStep, ILevelTickable, IDisposable
     {
         private readonly RunExperience _experience;
         private readonly RunStats _stats;
@@ -42,7 +42,8 @@ namespace Purge.Gameplay.Run
         private readonly bool _wideChoice;
         private readonly bool _canBanish;
         public string BanishedCard { get; private set; }
-        public bool CanBanish => _canBanish && string.IsNullOrEmpty(BanishedCard) && _offer.Count > 0;
+        public bool CanBanish => _canBanish && string.IsNullOrEmpty(BanishedCard) &&
+            _offer.Exists(card => card.Evolution == null);
 
         public CardSystem(RunExperience experience, RunStats stats, PlayerHealth health, PlayerSystem player,
             ThrowableSlot throwables, PickupSystem pickups, HordeSystem horde, LevelLaunchOptions options = null,
@@ -67,6 +68,13 @@ namespace Purge.Gameplay.Run
         public bool IsActive => _deck != null && _experience.IsActive;
 
         public CardDeck Deck => _deck;
+        public RunPerkState PerkState => _stats.CapturePerks();
+
+        public void RestorePerks(RunPerkState state)
+        {
+            _stats.RestorePerks(state);
+            PushToPlayer();
+        }
 
         /// <summary>The cards to choose from now; empty when nothing is offered.</summary>
         public IReadOnlyList<CardDefinition> Offer => _offer;
@@ -101,8 +109,9 @@ namespace Purge.Gameplay.Run
 
         public UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (_subscribed || !IsActive || !_horde.IsActive) return UniTask.CompletedTask;
+            if (_subscribed || _deck == null || !_horde.IsActive) return UniTask.CompletedTask;
             _horde.Killed += OnKilled;
+            if (_health != null) _health.Hurt += OnHurt;
             _subscribed = true;
             return UniTask.CompletedTask;
         }
@@ -111,10 +120,28 @@ namespace Purge.Gameplay.Run
         {
             if (!_subscribed) return;
             _horde.Killed -= OnKilled;
+            if (_health != null) _health.Hurt -= OnHurt;
             _subscribed = false;
         }
 
         public int LevelOf(CardDefinition card) => card != null && _levels.TryGetValue(card, out var level) ? level : 0;
+
+        public bool IsEvolutionIngredient(CardDefinition card) => card?.Evolution == null && EvolutionNumber(card) > 0;
+
+        public int EvolutionNumber(CardDefinition card)
+        {
+            if (_deck == null) return 0;
+            var number = 0;
+            foreach (var candidate in _deck.Cards)
+            {
+                if (candidate?.Evolution is not { } evolution) continue;
+                number++;
+                if (candidate == card || (evolution.First == card || evolution.Second == card) &&
+                    LevelOf(candidate) < candidate.MaxLevel)
+                    return number;
+            }
+            return 0;
+        }
 
         /// <summary>
         /// Makes the offer of the next level-up waiting (<see cref="RunExperience.Pending"/>); level-ups with nothing to
@@ -156,6 +183,7 @@ namespace Purge.Gameplay.Run
         public bool Banish(int index)
         {
             if (!CanBanish || (uint)index >= (uint)_offer.Count) return false;
+            if (_offer[index].Evolution != null) return false;
             var choices = _offer.Count;
             BanishedCard = _offer[index].Id;
             _offer.RemoveAt(index);
@@ -190,13 +218,16 @@ namespace Purge.Gameplay.Run
 
         private void Apply(CardDefinition card, bool notify)
         {
-            if (card == null) return;
+            if (card == null || LevelOf(card) >= card.MaxLevel) return;
             var level = LevelOf(card) + 1;
             _levels[card] = level;
             foreach (var module in card.Modules)
             {
                 switch (module)
                 {
+                    case CardPerk perk:
+                        _stats.Unlock(perk.Perk);
+                        break;
                     case StatCard stat:
                         _stats.Add(stat.Stat, stat.PerLevel);
                         if (stat.Stat == RunStat.MaxHealth) AddMaxHealth(Mathf.RoundToInt(stat.PerLevel));
@@ -204,7 +235,7 @@ namespace Purge.Gameplay.Run
                     case StatusDamageCard status:
                         _stats.AddStatusDamage(status.Status, status.PerLevel);
                         break;
-                    case ThrowablesCard throwables when _throwables != null:
+                    case ThrowablesCard throwables when _throwables != null && notify:
                         var kind = _throwables.IsEmpty ? throwables.Fallback : _throwables.Definition;
                         if (kind != null) _throwables.Add(kind, throwables.Count);
                         break;
@@ -237,8 +268,17 @@ namespace Purge.Gameplay.Run
             _offer.Clear();
             _candidates.Clear();
             foreach (var card in _deck.Cards)
+            {
                 if (card != null && LevelOf(card) < card.MaxLevel && _deck.WeightOf(card) > 0f && !_candidates.Contains(card))
-                    _candidates.Add(card);
+                {
+                    var evolution = card.Evolution;
+                    if (evolution == null) _candidates.Add(card);
+                    else if (_offer.Count == 0 && evolution.Second != null &&
+                             LevelOf(evolution.First) >= evolution.First.MaxLevel &&
+                             LevelOf(evolution.Second) >= evolution.Second.MaxLevel)
+                        _offer.Add(card);
+                }
+            }
 
             var choices = _wideChoice ? 4 : _deck.Choices;
             Pick(choices, fresh: true);
@@ -273,8 +313,36 @@ namespace Purge.Gameplay.Run
 
         private void OnKilled(int agent, Vector2 position)
         {
+            if (_stats.Has(RunPerk.Rage))
+            {
+                _stats.RageStacks = Mathf.Min(5, _stats.RageStacks + 1);
+                _stats.RageTime = 3f;
+            }
             var heal = _stats.HealOnKill;
             if (heal > 0 && _health != null && !_health.IsDead && !_health.IsFull) _health.Heal(heal);
+        }
+
+        private void OnHurt(int amount, Vector2 source)
+        {
+            _stats.CalmTime = 0f;
+            if (!_stats.Has(RunPerk.Fugitive) || _stats.EscapeCooldown > 0f) return;
+            _stats.EscapeCooldown = 8f;
+            _stats.EscapeTime = 2f;
+            PushToPlayer();
+        }
+
+        public void Tick(float deltaTime)
+        {
+            _stats.CalmTime = Mathf.Min(3f, _stats.CalmTime + deltaTime);
+            _stats.GrindTime = Mathf.Max(0f, _stats.GrindTime - deltaTime);
+            _stats.EscapeCooldown = Mathf.Max(0f, _stats.EscapeCooldown - deltaTime);
+            if (_stats.EscapeTime > 0f)
+            {
+                _stats.EscapeTime = Mathf.Max(0f, _stats.EscapeTime - deltaTime);
+                if (_stats.EscapeTime == 0f) PushToPlayer();
+            }
+            _stats.RageTime = Mathf.Max(0f, _stats.RageTime - deltaTime);
+            if (_stats.RageTime == 0f) _stats.RageStacks = 0;
         }
     }
 }

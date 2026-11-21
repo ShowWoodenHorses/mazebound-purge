@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Core.Common;
+using Purge.Core.Cards;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
 using Purge.Core.Grid;
@@ -153,6 +154,7 @@ namespace Purge.Gameplay.Pickups
         private int _nextDrop;
         private readonly IItemUpgrades _upgrades;
         private readonly Run.RunWallet _wallet;
+        private readonly Run.RunStats _stats;
         private readonly bool _buyer;
         private static readonly int[] DuplicatePrices = { 5, 10, 20, 35, 60 };
         private float _expiryTimer;
@@ -160,10 +162,11 @@ namespace Purge.Gameplay.Pickups
 
         public PickupSystem(LevelData level, PlayerSystem player, PlayerHealth health, PlayerInventory inventory, WeaponSystem weapons,
             SoundEventBus sounds, AmmoStock ammo = null, ThrowableSlot throwables = null, IItemUpgrades upgrades = null,
-            Run.RunWallet wallet = null, LevelLaunchOptions options = null)
+            Run.RunWallet wallet = null, LevelLaunchOptions options = null, Run.RunStats stats = null)
         {
             _sounds = sounds; _upgrades=upgrades;
             _wallet = wallet;
+            _stats = stats;
             _buyer = options?.HasSkill(CharacterSkills.Buyer) == true;
             _level = level;
             _player = player;
@@ -329,6 +332,25 @@ namespace Purge.Gameplay.Pickups
         };
 
         /// <summary>Picked up as in its cell; what cannot be taken now goes back where it lay.</summary>
+        private void AddAmmo(Pickup pickup, bool byMagnet)
+        {
+            var active = _weapons.Active?.Definition;
+            if (_stats?.Has(RunPerk.Converter) == true && (!byMagnet || _stats.ConverterPrimed) &&
+                active != null && active.UsesAmmo && !active.Ammo.InfiniteReserve &&
+                !Fits(pickup.Ammo, _weapons.Get(WeaponSlot.First)?.Definition) &&
+                !Fits(pickup.Ammo, _weapons.Get(WeaponSlot.Second)?.Definition))
+            {
+                _ammo.Add(active.Ammo.Ammo, Mathf.Max(1, Mathf.FloorToInt(active.MagazineSize * 0.25f)));
+                _stats.ConverterPrimed = true;
+                return;
+            }
+
+            _ammo.Add(pickup.Ammo, pickup.Amount);
+        }
+
+        private static bool Fits(AmmoDefinition ammo, WeaponDefinition weapon) =>
+            weapon != null && weapon.UsesAmmo && weapon.Ammo.Ammo != null && weapon.Ammo.Ammo.Id == ammo?.Id;
+
         private void Arrive(Pickup pickup)
         {
             pickup.Attracted = false;
@@ -336,7 +358,7 @@ namespace Purge.Gameplay.Pickups
             {
                 case PickupKind.Ammo:
                     Take(pickup, taken: true);
-                    _ammo.Add(pickup.Ammo, pickup.Amount);
+                    AddAmmo(pickup, byMagnet: true);
                     return;
                 case PickupKind.Throwable:
                     pickup.Amount -= _throwables.Add(pickup.Throwable, pickup.Amount);
@@ -581,7 +603,7 @@ namespace Purge.Gameplay.Pickups
                         break;
                     case PickupKind.Ammo:
                         Take(pickup, taken: true);
-                        _ammo.Add(pickup.Ammo, pickup.Amount);
+                        AddAmmo(pickup, byMagnet: false);
                         break;
                     case PickupKind.Throwable:
                         var added = _throwables.Add(pickup.Throwable, pickup.Amount);

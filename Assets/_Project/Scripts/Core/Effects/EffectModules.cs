@@ -40,6 +40,8 @@ namespace Purge.Core.Effects
         [SerializeField, Range(0f, 1f)] private float _edgeDamage = 0.35f;
         [Tooltip("How far the blast is heard by monsters, cells.")]
         [SerializeField, Min(0f)] private float _soundRadius = 12f;
+        [SerializeField] private bool _allowsClusterEvolution;
+        [SerializeField] private bool _flashbangSound;
         [Tooltip("Look of the blast (an effect of Art/Effects, scaled to the radius); empty = by size (Combat Visual).")]
         [SerializeField] private AssetReferenceGameObject _look;
 
@@ -48,6 +50,8 @@ namespace Purge.Core.Effects
         public override float Radius => _radius;
         public float EdgeDamage { get => _edgeDamage; internal set => _edgeDamage = value; }
         public float SoundRadius { get => _soundRadius; internal set => _soundRadius = value; }
+        public bool AllowsClusterEvolution => _allowsClusterEvolution;
+        public bool FlashbangSound => _flashbangSound;
         internal void SetRadius(float radius) => _radius = radius;
     }
 
@@ -60,6 +64,17 @@ namespace Purge.Core.Effects
         public AssetReferenceGameObject Look => _look;
         public override float Radius => _radius;
         public float Duration => _duration;
+    }
+
+    [Serializable, ModuleInfo("Proximity mine", Category = "Effect")]
+    public sealed class ProximityMineEffect : EffectModule
+    {
+        [SerializeField, Min(0f)] private float _armTime = 0.5f;
+        [SerializeField, Min(0.05f)] private float _triggerRadius = 0.75f;
+
+        public float ArmTime => _armTime;
+        public float TriggerRadius => _triggerRadius;
+        public override float Radius => 0f;
     }
 
     /// <summary>A zone on every cell in the radius that a bullet could reach from the point.</summary>
@@ -135,8 +150,10 @@ namespace Purge.Core.Effects
         [SerializeField, Min(0.3f)] private float _radius = 2f;
         [Tooltip("Seconds.")]
         [SerializeField, Min(0.1f)] private float _duration = 1f;
+        [SerializeField, Min(0f)] private float _delay;
 
         public StatusDefinition Status { get => _status; internal set => _status = value; }
+        public float Delay => _delay;
         public override float Radius => _radius;
         public float Duration { get => _duration; internal set => _duration = value; }
         internal void SetRadius(float radius) => _radius = radius;

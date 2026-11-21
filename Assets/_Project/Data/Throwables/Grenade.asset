@@ -50,6 +50,7 @@ MonoBehaviour:
         _radius: 2.5
         _edgeDamage: 0.35
         _soundRadius: 12
+        _allowsClusterEvolution: 1
         _look:
           m_AssetGUID: 
           m_SubObjectName: 

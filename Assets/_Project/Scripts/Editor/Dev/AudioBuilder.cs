@@ -82,6 +82,7 @@ namespace Purge.Editor.Dev
             ("Weapon", @"^land\d*$", c => c.LandCue),
             ("Weapon", @"^explosion_small\d*$", c => c.ExplosionSmallCue),
             ("Weapon", @"^explosion_medium\d*$", c => c.ExplosionCue),
+            ("Weapon", @"^explosion_flashbang\d*$", c => c.FlashbangCue),
             ("Weapon", @"^explosion_large\d*$", c => c.ExplosionLargeCue),
             ("Weapon", @"^ignite\d*$", c => c.IgniteCue),
             ("Weapon", @"^empty_click\d*$", c => c.EmptyClickCue),

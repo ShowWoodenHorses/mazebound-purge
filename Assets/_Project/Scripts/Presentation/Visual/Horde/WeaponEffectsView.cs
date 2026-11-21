@@ -43,8 +43,9 @@ namespace Purge.Presentation.Visual.Horde
         private const float StatusInterval = 0.12f;
         private const float StatusHeight = 0.5f;
         private const int StunStars = 3;
-        private const float StunRing = 0.28f;
-        private const float StunTurn = 5f;
+        private const int StarPoints = 10;
+        private const int StarVertices = StarPoints + 1;
+        private const float StunTurn = 4.2f;
 
         private readonly LevelData _level;
         private readonly PlayerCombat _combat;
@@ -82,8 +83,15 @@ namespace Purge.Presentation.Visual.Horde
         private Mesh _lightningMesh;
         private MaterialPropertyBlock _landingLook;
         private MaterialPropertyBlock _shadowLook;
+        private MaterialPropertyBlock _curseLook;
+        private readonly Purge.Gameplay.Run.RunDamage _runDamage;
         private MaterialPropertyBlock _energyLook;
         private Material _energyCore;
+        private Material _stunStarMaterial;
+        private Mesh _stunStarMesh;
+        private Vector3[] _stunStarVertices;
+        private Color32[] _stunStarColors;
+        private int[] _stunStarIndices;
         private Vector3 _railOrigin;
         private Vector2 _railEnd;
         private int _railFloor;
@@ -118,7 +126,7 @@ namespace Purge.Presentation.Visual.Horde
             StatusSystem statuses = null, HordeSystem horde = null, CombatVisualDefinition visual = null,
             PackEffectsPlayer packEffects = null, PackEmitters emitters = null, UpgradeCombat upgrades = null,
             PlayerWeaponPresenter weaponView = null, SmokeScreen smoke = null,
-            Purge.Core.Content.ContentCatalog content = null)
+            Purge.Core.Content.ContentCatalog content = null, Purge.Gameplay.Run.RunDamage runDamage = null)
         {
             _emitters = emitters; _upgrades=upgrades;
             _visual = visual;
@@ -136,6 +144,7 @@ namespace Purge.Presentation.Visual.Horde
             _weaponView = weaponView;
             _smoke = smoke;
             _content = content;
+            _runDamage = runDamage;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -172,11 +181,15 @@ namespace Purge.Presentation.Visual.Horde
             _shadowLook = new MaterialPropertyBlock();
             _shadowLook.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
             _shadowLook.SetFloat("_Thickness", 0.45f);
+            _curseLook = new MaterialPropertyBlock();
+            _curseLook.SetColor("_Color", new Color(0.75f, 0.24f, 1f, 0.85f));
+            _curseLook.SetFloat("_Thickness", 0.18f);
             _energyLook = new MaterialPropertyBlock();
             if (_visual?.BoltMaterial != null)
             {
                 _energyCore = new Material(_visual.BoltMaterial) { hideFlags = HideFlags.DontSave };
                 _energyCore.SetTexture("_MainTex", Texture2D.whiteTexture);
+                PrepareStunStars();
             }
             if (_boltMaterial != null)
             {
@@ -281,7 +294,7 @@ namespace Purge.Presentation.Visual.Horde
             _resumeSmoke = null;
         }
 
-        /// <summary>A flame over every visible monster with damage over time, a spark circling a stunned one.</summary>
+        /// <summary>Body particles for active statuses. Normal stun is drawn separately above the head.</summary>
         private void EmitStatuses()
         {
             if (_statuses == null || _horde == null || !_statuses.IsActive || _sparks == null) return;
@@ -298,18 +311,8 @@ namespace Purge.Presentation.Visual.Horde
                     var at = positions[agent];
                     if (!Visible(at)) break;
                     var status = kinds[kind];
+                    if (status.Stuns && status.ParticlesAtHead) continue;
                     var look = _emitters?.Get(status.Particles);
-                    if (look != null && status.ParticlesAtHead)
-                    {
-                        // Stars circling the head (stage Э3): short-lived points along a turning ring.
-                        var angle = Time.time * StunTurn + agent * 2.4f;
-                        var head = StunHeightOf(agent);
-                        for (var n = 0; n < StunStars; n++, angle += Mathf.PI * 2f / StunStars)
-                            look.EmitPoint(new Vector3(at.x + Mathf.Cos(angle) * StunRing, head, at.y + Mathf.Sin(angle) * StunRing),
-                                StatusInterval * 1.6f);
-                        continue;
-                    }
-
                     if (look != null)
                     {
                         look.Emit(new Vector3(at.x, StatusHeight, at.y), 1f);
@@ -317,16 +320,7 @@ namespace Purge.Presentation.Visual.Horde
                     }
 
                     emit.startColor = status.Color;
-                    if (status.Stuns)
-                    {
-                        var angle = Time.time * 8f + agent;
-                        emit.position = new Vector3(at.x + Mathf.Cos(angle) * 0.3f, 1.5f, at.y + Mathf.Sin(angle) * 0.3f);
-                        emit.velocity = Vector3.zero;
-                        emit.startLifetime = 0.2f;
-                        emit.startSize = 0.14f;
-                        _sparks.Emit(emit, 1);
-                    }
-                    else if (_flame != null && status.DamagePerSecond > 0f)
+                    if (_flame != null && status.DamagePerSecond > 0f)
                     {
                         emit.position = new Vector3(at.x + UnityEngine.Random.Range(-0.2f, 0.2f), 0.6f,
                             at.y + UnityEngine.Random.Range(-0.2f, 0.2f));
@@ -349,8 +343,99 @@ namespace Purge.Presentation.Visual.Horde
             return height;
         }
 
+        private void PrepareStunStars()
+        {
+            if (_horde == null || _horde.Capacity == 0) return;
+            var starCount = _horde.Capacity * StunStars;
+            _stunStarVertices = new Vector3[starCount * StarVertices];
+            _stunStarColors = new Color32[_stunStarVertices.Length];
+            _stunStarIndices = new int[starCount * StarPoints * 3];
+            for (var star = 0; star < starCount; star++)
+            {
+                var center = star * StarVertices;
+                _stunStarColors[center] = new Color32(255, 238, 156, 255);
+                for (var point = 0; point < StarPoints; point++)
+                {
+                    _stunStarColors[center + 1 + point] = new Color32(255, 186, 42, 255);
+                    var index = (star * StarPoints + point) * 3;
+                    _stunStarIndices[index] = center;
+                    _stunStarIndices[index + 1] = center + 1 + (point + 1) % StarPoints;
+                    _stunStarIndices[index + 2] = center + 1 + point;
+                }
+            }
+
+            _stunStarMaterial = new Material(_energyCore) { name = "Stun Stars", hideFlags = HideFlags.DontSave };
+            _stunStarMaterial.SetColor("_Color", Color.white);
+            _stunStarMaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+            _stunStarMesh = new Mesh { name = "Stun Stars", hideFlags = HideFlags.DontSave };
+            if (_stunStarVertices.Length > ushort.MaxValue) _stunStarMesh.indexFormat = IndexFormat.UInt32;
+            _stunStarMesh.MarkDynamic();
+        }
+
+        private void DrawStunStars()
+        {
+            if (_stunStarMesh == null || _statuses?.IsActive != true) return;
+            var kinds = _statuses.Kinds;
+            var floor = _player.Floor;
+            var time = _horde.Time;
+            var stars = 0;
+            var stunned = _horde.Stunned;
+            for (var agent = 0; agent < _horde.HighWater; agent++)
+            {
+                if (!stunned[agent] || _horde.FloorOf(agent) != floor) continue;
+                var at = _horde.Positions[agent];
+                if (!Visible(at, floor)) continue;
+                for (var kind = 0; kind < kinds.Count; kind++)
+                {
+                    if (!kinds[kind].Stuns || !kinds[kind].ParticlesAtHead || _statuses.Left(agent, kind) <= 0f) continue;
+                    var head = floor * GridPosition.FloorHeight + StunHeightOf(agent) + 0.16f;
+                    var orbit = time * StunTurn + agent * 2.4f;
+                    for (var i = 0; i < StunStars; i++)
+                    {
+                        var phase = orbit + i * (2f * Mathf.PI / StunStars);
+                        var center = new Vector3(at.x + Mathf.Cos(phase) * 0.29f,
+                            head + Mathf.Sin(phase) * 0.065f, at.y + Mathf.Sin(phase) * 0.22f);
+                        AddStunStar(stars++, center, phase * 0.8f, 0.085f + 0.01f * Mathf.Sin(phase));
+                    }
+                    break;
+                }
+            }
+            var vertices = stars * StarVertices;
+            // Changing the vertex count invalidates the previous frame's indices and colors.
+            var resized = _stunStarMesh.vertexCount != vertices;
+            if (resized) _stunStarMesh.Clear();
+            if (vertices == 0) return;
+
+            _stunStarMesh.SetVertices(_stunStarVertices, 0, vertices);
+            if (resized)
+            {
+                _stunStarMesh.SetColors(_stunStarColors, 0, vertices);
+                _stunStarMesh.SetIndices(_stunStarIndices, 0, stars * StarPoints * 3, MeshTopology.Triangles, 0);
+            }
+            Graphics.RenderMesh(new RenderParams(_stunStarMaterial)
+            {
+                worldBounds = _stunStarMesh.bounds,
+                shadowCastingMode = ShadowCastingMode.Off,
+                receiveShadows = false,
+                lightProbeUsage = LightProbeUsage.Off,
+            }, _stunStarMesh, 0, Matrix4x4.identity);
+        }
+
+        private void AddStunStar(int index, Vector3 center, float spin, float size)
+        {
+            var start = index * StarVertices;
+            _stunStarVertices[start] = center;
+            for (var i = 0; i < StarPoints; i++)
+            {
+                var angle = spin + i * (2f * Mathf.PI / StarPoints);
+                var radius = i % 2 == 0 ? size : size * 0.46f;
+                _stunStarVertices[start + 1 + i] = center + new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
+            }
+        }
+
         public void LateTick(float deltaTime)
         {
+            DrawStunStars();
             DrawWeaponMarkers();
             if (_boltMesh == null || _boltLeft <= 0f || _boltCount < 2 || _boltFloor != _player.Floor) return;
 
@@ -423,6 +508,7 @@ namespace Purge.Presentation.Visual.Horde
             if (_plasmaImpactLeft > 0f && _plasmaFloor == _player.Floor && Visible(new Vector2(_plasmaEnd.x, _plasmaEnd.z), _plasmaFloor))
                 DrawEnergyImpact(_plasmaEnd, PlasmaColor);
             if (_visual.StatusRing == null) return;
+            DrawCurses();
             foreach (var bullet in _bullets.Active)
             {
                 if (!bullet.IsLobbed || bullet.Floor != _player.Floor) continue;
@@ -431,6 +517,20 @@ namespace Purge.Presentation.Visual.Horde
                     DrawMarker(_visual.StatusRing, bullet.LandingPoint, height, bullet.Explosive.Radius * 2f, _landingLook);
                 if (Visible(bullet.Position, bullet.Floor))
                     DrawMarker(_visual.StatusRing, bullet.Position, height, 0.45f, _shadowLook);
+            }
+        }
+
+        private void DrawCurses()
+        {
+            if (_horde == null || _runDamage?.CursesActive != true) return;
+            var floor = _player.Floor;
+            var height = floor * GridPosition.FloorHeight + 0.045f;
+            for (var agent = 0; agent < _horde.HighWater; agent++)
+            {
+                if (!HordeSystem.IsAlive(_horde.States[agent]) || _horde.FloorOf(agent) != floor ||
+                    !_runDamage.IsCursed(agent)) continue;
+                var at = _horde.Positions[agent];
+                if (Visible(at, floor)) DrawMarker(_visual.StatusRing, at, height, 0.85f, _curseLook);
             }
         }
 
@@ -563,6 +663,8 @@ namespace Purge.Presentation.Visual.Horde
             UnityObjects.Destroy(_groundQuad);
             UnityObjects.Destroy(_lightningMesh);
             UnityObjects.Destroy(_energyCore);
+            UnityObjects.Destroy(_stunStarMesh);
+            UnityObjects.Destroy(_stunStarMaterial);
             foreach (var go in _objects)
                 UnityObjects.Destroy(go);
             _objects.Clear();

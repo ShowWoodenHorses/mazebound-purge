@@ -135,6 +135,8 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>(target, where, direction, weapon, killed) after every damage of a weapon's attack (sounds, feel).</summary>
         public event Action<CombatTarget, Vector2, Vector2, WeaponDefinition, bool> WeaponDamaged;
+        public event Action<CombatTarget, WeaponDefinition, float, bool> WeaponDamageResolved;
+        public event Action<Vector2, int> BlastKilledMonster;
 
         private bool HordeActive => _horde != null && _horde.IsActive;
 
@@ -276,6 +278,7 @@ namespace Purge.Gameplay.Combat
             if (critical) CriticalHit?.Invoke(target, at, amount);
             if (!killed && weapon != null) WeaponHit?.Invoke(target, weapon);
             if (weapon != null) WeaponDamaged?.Invoke(target, at, direction, weapon, killed);
+            if (weapon != null) WeaponDamageResolved?.Invoke(target, weapon, dealt, killed);
             return killed;
         }
 
@@ -291,6 +294,8 @@ namespace Purge.Gameplay.Combat
         {
             if (Modifier != null && (kind == PlayerDamage.Explosion || kind == PlayerDamage.WeaponExplosion)) radius *= Modifier.ExplosionRadiusFactor;
             Collect(at, radius, floor, _blast);
+            var killedMonster = false;
+            var killedAt = Vector2.zero;
             foreach (var target in _blast)
             {
                 // The monsters' blasts leave the level's objects alone (barrels take the player's damage only).
@@ -299,11 +304,18 @@ namespace Purge.Gameplay.Combat
                 if (!IsClear(at, position, floor)) continue;
                 var offset = position - at;
                 var share = Mathf.Clamp01((offset.magnitude - RadiusOf(target)) / radius);
-                Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
-                    offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon, kind);
+                if (Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
+                        offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon, kind)
+                    && target.Agent >= 0 && !killedMonster)
+                {
+                    killedMonster = true;
+                    killedAt = position;
+                }
             }
 
             _blast.Clear();
+            if (killedMonster && (kind == PlayerDamage.Explosion || kind == PlayerDamage.WeaponExplosion))
+                BlastKilledMonster?.Invoke(killedAt, floor);
             return radius;
         }
     }

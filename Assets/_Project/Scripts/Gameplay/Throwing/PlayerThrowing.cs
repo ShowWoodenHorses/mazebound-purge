@@ -1,15 +1,26 @@
 using System;
 using System.Collections.Generic;
+using Purge.Core.Cards;
 using Purge.Core.Definitions;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Effects;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Sound;
 using UnityEngine;
 
 namespace Purge.Gameplay.Throwing
 {
+    [Serializable]
+    public struct PlantedMine
+    {
+        public string ThrowableId;
+        public Vector2 Position;
+        public int Floor;
+        public float ArmTime;
+    }
+
     /// <summary>
     /// Throwing from the throwable slot (ТЗ «Бросок»: режим прицела, дуга до клетки, тап по месту — бросок).
     /// <list type="bullet">
@@ -45,14 +56,18 @@ namespace Purge.Gameplay.Throwing
         private readonly EffectSystem _effects;
         private readonly SoundEventBus _sounds;
         private readonly IAimPointer _pointer;
+        private readonly RunStats _stats;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
+        public const int MineLimit = 3;
+        private readonly List<PlantedMine> _mines = new List<PlantedMine>(MineLimit);
+        private readonly ThrowableDefinition[] _mineDefinitions = new ThrowableDefinition[MineLimit];
         private float _held;
         private float _cooldown;
         private bool _stickAimed;
         private bool _subscribed;
 
         public PlayerThrowing(IPlayerInput input, PlayerSystem player, ThrowableSlot slot, BulletSystem bullets,
-            CombatTargets targets, EffectSystem effects, SoundEventBus sounds, IAimPointer pointer = null)
+            CombatTargets targets, EffectSystem effects, SoundEventBus sounds, IAimPointer pointer = null, RunStats stats = null)
         {
             _input = input;
             _player = player;
@@ -62,11 +77,13 @@ namespace Purge.Gameplay.Throwing
             _effects = effects;
             _sounds = sounds;
             _pointer = pointer;
+            _stats = stats;
             _bullets.Ended += OnBulletEnded;
             _subscribed = true;
         }
 
         public ThrowableSlot Slot => _slot;
+        public IReadOnlyList<PlantedMine> Mines => _mines;
 
         /// <summary>The arc is shown: the player is choosing where to throw.</summary>
         public bool IsAiming { get; private set; }
@@ -91,6 +108,7 @@ namespace Purge.Gameplay.Throwing
 
         public void Tick(float deltaTime)
         {
+            TickMines(deltaTime);
             ConsumedAttack = false;
             _cooldown = Mathf.Max(0f, _cooldown - deltaTime);
             if (!_player.IsSpawned || _slot.IsEmpty || _player.InVehicle)
@@ -101,6 +119,12 @@ namespace Purge.Gameplay.Throwing
 
             if (_input.WasPressed(PlayerAction.Throw))
             {
+                if (_slot.Definition.Mine != null)
+                {
+                    TryThrow(_player.Position);
+                    return;
+                }
+
                 if (IsAiming && WaitsForTap)
                 {
                     StopAiming(); // the key again: changed one's mind
@@ -154,6 +178,21 @@ namespace Purge.Gameplay.Throwing
                 return false;
             var definition = _slot.Definition;
             var origin = _player.Position;
+            var mine = definition.Mine;
+            if (mine != null)
+            {
+                if (!RestoreMine(definition, new PlantedMine
+                    { ThrowableId = definition.Id, Position = origin, Floor = _player.Floor, ArmTime = mine.ArmTime }))
+                    return false;
+                _slot.TakeOne();
+                _cooldown = definition.Cooldown;
+                _sounds.EmitPlayer(SoundType.Throw, origin, definition.SoundRadius, _player.Floor);
+                StopAiming();
+                Thrown?.Invoke(definition, _player.Facing);
+                Landed?.Invoke(definition, origin);
+                return true;
+            }
+
             target = Clamp(target);
             var offset = target - origin;
             var distance = offset.magnitude;
@@ -256,8 +295,50 @@ namespace Purge.Gameplay.Throwing
         {
             var definition = bullet.Throwable;
             if (definition == null || end == BulletEnd.Cleared) return;
-            _effects.Apply(definition.Effects, point, bullet.Floor, damageFactor: _slot.DamageFactor(definition), radiusFactor: _slot.RadiusFactor(definition));
+            _effects.Apply(definition.Effects, point, bullet.Floor, damageFactor: _slot.DamageFactor(definition),
+                radiusFactor: _slot.RadiusFactor(definition), cluster: _stats?.Has(RunPerk.Cluster) == true);
             Landed?.Invoke(definition, point);
+        }
+
+        public bool RestoreMine(ThrowableDefinition definition, PlantedMine mine)
+        {
+            if (_mines.Count >= MineLimit || definition == null || definition.Mine == null) return false;
+            _mineDefinitions[_mines.Count] = definition;
+            _mines.Add(mine);
+            return true;
+        }
+
+        private void TickMines(float deltaTime)
+        {
+            for (var i = _mines.Count - 1; i >= 0; i--)
+            {
+                var mine = _mines[i];
+                mine.ArmTime = Mathf.Max(0f, mine.ArmTime - deltaTime);
+                _mines[i] = mine;
+                if (mine.ArmTime > 0f) continue;
+
+                var definition = _mineDefinitions[i];
+                var triggerRadius = definition.Mine.TriggerRadius;
+                _targets.Collect(mine.Position, triggerRadius, mine.Floor, _found);
+                var triggered = false;
+                foreach (var target in _found)
+                {
+                    if (target.Agent < 0 || !_targets.IsAlive(target)) continue;
+                    var at = _targets.PositionOf(target);
+                    if ((at - mine.Position).sqrMagnitude > triggerRadius * triggerRadius ||
+                        !_targets.IsClear(mine.Position, at, mine.Floor)) continue;
+                    triggered = true;
+                    break;
+                }
+
+                _found.Clear();
+                if (!triggered) continue;
+                _mines.RemoveAt(i);
+                Array.Copy(_mineDefinitions, i + 1, _mineDefinitions, i, _mines.Count - i);
+                _mineDefinitions[_mines.Count] = null;
+                _effects.Apply(definition.Effects, mine.Position, mine.Floor,
+                    damageFactor: _slot.DamageFactor(definition), radiusFactor: _slot.RadiusFactor(definition));
+            }
         }
 
         private static Vector2 CellCentre(Vector2 point) =>

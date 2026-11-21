@@ -93,6 +93,12 @@ namespace Purge.Presentation.Stress
                 Button(statuses, "FEAR", controller.DemoFear, null, 100f);
                 Button(statuses, "BLIND", controller.DemoBlind, null, 100f);
                 Button(statuses, "ELECTRIFY", controller.ToggleElectrify, () => controller.DemoElectrify, 160f);
+                TMP_Text cardLabel = null;
+                cardLabel = Button(statuses, "CARD +", () =>
+                {
+                    var perk = controller.GrantNextPerk();
+                    if (!string.IsNullOrEmpty(perk)) cardLabel.text = perk;
+                }, null, 190f);
             }
 
             _stats = Text(bodyRect, "", 22f);

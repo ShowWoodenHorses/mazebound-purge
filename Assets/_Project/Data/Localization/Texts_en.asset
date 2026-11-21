@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - English
   - SETTINGS
@@ -1008,4 +1040,41 @@ MonoBehaviour:
   - Gargoyle
   - Leave the shadow before the Gargoyle dives. Its stone skin absorbs most damage
     for a few seconds.
+  - Quiet Hunt
+  - "Gunshot noise radius \u221240%."
+  - Last Round
+  - The last shot in a magazine deals +50% damage (+15% for single-shot weapons).
+  - Chain Reaction
+  - An explosion kill deals 40 damage to a nearby monster within 2 m. Once per blast.
+  - The Cursed
+  - Weapon hits mark targets for 4 s. Further weapon hits deal +15% damage during
+    the mark.
+  - Cool Head
+  - After 3 s without taking damage, gain +10 percentage points of critical hit chance
+    until hurt.
+  - Fugitive
+  - After taking damage, move 25% faster for 2 s. Cooldown 8 s.
+  - Rage
+  - Kills grant +4% fire rate for 3 s, up to five stacks. Each kill refreshes the
+    timer.
+  - Converter
+  - "Pick up incompatible ammo to gain a quarter of your active weapon\u2019s base
+    magazine (at least one round). The first conversion enables conversion by magnet."
+  - Meat Grinder
+  - A melee kill makes your next melee attack 40% faster if used within 2 s.
+  - Vampire
+  - Weapon damage restores HP equal to 3% of HP removed, capped at 10 HP per second.
+  - Executioner
+  - 'Evolution: critical hits deal triple damage.'
+  - Barrage
+  - 'Evolution: each attack has a 20% chance to keep its ammo in the magazine.'
+  - Cluster Grenade
+  - 'Evolution: a grenade splits into three blasts with 45% base damage and a 1.25
+    m radius each.'
+  - Inferno
+  - 'Evolution: burning monsters explode on death for 60 damage in a 1.5 m radius.'
+  - "\u25C6"
+  - Flashbangs stun monsters, then blind them.
+  - Press Throw to place a mine at your feet. It arms after half a second.
+  - "Max out both cards marked \u25C6 in a pair to unlock their evolution."
   _missing: []

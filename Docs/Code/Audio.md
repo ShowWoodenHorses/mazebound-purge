@@ -4,6 +4,8 @@
 
 ## Звук
 
+- Светошумовая выбирает `AudioCatalog.Flashbang` через флаг в модуле взрыва. Build Audio берёт монофайл `Sounds/Weapon/explosion_flashbang.wav` из шортлиста Polygon Arsenal. Мина использует общий звук установки и обычный взрыв по радиусу.
+
 - **Замок (13б)** — `FloorStepSound.Stone` в `CastleBlockTheme` выбирает `AudioCatalog.FootstepStone` (`Player/step_stone*`). Эмбиент — `Sounds/Ambient/castle_block/loop.wav`. Музыка — общая `game`.
 - Исходники — `Assets/_Project/Sounds/<Player|Weapon|Other|Zombie|UI>` и `Music/` (menu, game).
   - **Purge → Dev → Build Audio** (`AudioBuilder`): импорт (звуки — Vorbis, моно кроме UI, короткие Decompress On Load, **WebGL — MP3** (короткие клипы Unity декодирует `decodeAudioData`, мобильный Chrome не декодирует AAC — звуки молчали; у WebGL-override частота только явная, Preserve молча отклоняется; **короткие петли** (`loop`, `*_loop`, `*_flight`, ≤ 6 с) на WebGL — **PCM**: MP3 не бесшовный, кодек добавлял ~40 мс тишины в начало клипа — у огнемёта на каждом круге петли была пауза (этап Э3); длинная петля `light_loop` осталась MP3); музыка — Streaming, группа **Purge Music** — бандл на трек), `AudioCatalog` (`Data/Audio`, Addressable `"Audio/Catalog"`, группа Purge Shared) по **именам файлов** (шаблоны в билдере; новые варианты с тем же префиксом подхватываются), настройка (громкость ≤ 1, разброс тона, `Range`, `MaxVoices`, `MinInterval`) при пересборке сохраняется.

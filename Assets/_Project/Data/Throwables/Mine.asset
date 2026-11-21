@@ -37,7 +37,21 @@ MonoBehaviour:
   _arcHeight: 0.3
   _cooldown: 0.6
   _soundRadius: 3
-  _effects: []
+  _effects:
+  - rid: 15001
+  - rid: 15002
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 15001
+      type: {class: ProximityMineEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _armTime: 0.5
+        _triggerRadius: 0.75
+    - rid: 15002
+      type: {class: ExplosionEffect, ns: Purge.Core.Effects, asm: Purge.Core}
+      data:
+        _damage: 220
+        _radius: 2
+        _edgeDamage: 0.35
+        _soundRadius: 12

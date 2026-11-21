@@ -252,13 +252,15 @@ namespace Purge.Presentation.Audio
 
         private void OnThrown(ThrowableDefinition throwable, Vector2 direction)
         {
+            if (throwable.Mine != null) return;
             PlayAt(Catalog.Pin, _player.Position);
             PlayAt(Catalog.Throw, _player.Position);
         }
 
         private void OnLanded(ThrowableDefinition throwable, Vector2 at) => PlayAt(Catalog.Land, at);
 
-        private void OnExploded(Vector2 at, int floor, float radius, IExplosionLook source) => PlayAt(Catalog.ExplosionOf(radius), at);
+        private void OnExploded(Vector2 at, int floor, float radius, IExplosionLook source) =>
+            PlayAt(source is ExplosionEffect { FlashbangSound: true } ? Catalog.Flashbang : Catalog.ExplosionOf(radius), at);
 
         private void OnDropRequested(WeaponSlot slot) => PlayAt(Catalog.WeaponDrop, _player.Position);
 

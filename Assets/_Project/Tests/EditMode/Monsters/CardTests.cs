@@ -171,6 +171,32 @@ namespace Purge.Tests.EditMode.Monsters
         }
 
         [Test]
+        public void Evolution_RequiresBothMaxLevels_AndSurvivesReroll()
+        {
+            var damage = StatCard("damage", RunStat.WeaponDamage, 0.1f, maxLevel: 2);
+            var crit = StatCard("crit", RunStat.CritChance, 0.1f, maxLevel: 2);
+            var speed = StatCard("speed", RunStat.MoveSpeed, 0.1f);
+            var evolution = Card("evolution", Rarity.Legendary, 1,
+                new CardPerk { Perk = RunPerk.Executioner, First = damage, Second = crit });
+            Run(damage, crit, speed, evolution);
+            _cards.Apply(damage);
+            _cards.Apply(damage);
+            _cards.Apply(crit);
+            _experience.AddPending(2);
+            Assert.That(_cards.OpenNext(), Is.True);
+            Assert.That(_cards.Offer, Has.No.Member(evolution));
+            var index = _cards.Offer[0] == crit ? 0 : 1;
+            _cards.Choose(index);
+            Assert.That(_cards.LevelOf(crit), Is.EqualTo(2));
+            Assert.That(_cards.OpenNext(), Is.True);
+            Assert.That(_cards.Offer[0], Is.SameAs(evolution));
+            Assert.That(_cards.Reroll(), Is.True);
+            Assert.That(_cards.Offer[0], Is.SameAs(evolution));
+            _cards.Choose(0);
+            Assert.That(_stats.Has(RunPerk.Executioner), Is.True);
+        }
+
+        [Test]
         public void SeveralLevelUps_WaitInTurn()
         {
             Run(StatCard("a", RunStat.WeaponDamage, 0.1f), StatCard("b", RunStat.FireRate, 0.1f));

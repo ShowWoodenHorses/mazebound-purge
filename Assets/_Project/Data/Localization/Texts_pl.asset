@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - Polski
   - USTAWIENIA
@@ -1003,4 +1035,46 @@ MonoBehaviour:
   - Gargulec
   - "Wyjd\u017A z cienia, zanim gargulec zanurkuje. Jego kamienna sk\xF3ra poch\u0142ania
     wi\u0119kszo\u015B\u0107 obra\u017Ce\u0144 przez kilka sekund."
+  - "Ciche \u0142owy"
+  - "Promie\u0144 ha\u0142asu strza\u0142\xF3w \u221240%."
+  - "Ostatni nab\xF3j"
+  - "Ostatni strza\u0142 z magazynka: +50% obra\u017Ce\u0144 (+15% dla broni jednostrza\u0142owej)."
+  - "Reakcja \u0142a\u0144cuchowa"
+  - "Zabicie wybuchem zadaje 40 obra\u017Ce\u0144 najbli\u017Cszemu potworowi w promieniu
+    2 m. Raz na wybuch."
+  - "Przekl\u0119ci"
+  - "Trafienie broni\u0105 oznacza cel na 4 s. Kolejne trafienia w ten cel zadaj\u0105
+    +15% obra\u017Ce\u0144."
+  - Zimna krew
+  - "Po 3 s bez obra\u017Ce\u0144 szansa na trafienie krytyczne ro\u015Bnie o 10
+    p.p. do zranienia."
+  - Zbieg
+  - "Po otrzymaniu obra\u017Ce\u0144 +25% szybko\u015Bci na 2 s. Odnowienie: 8 s."
+  - Furia
+  - "Zabicie daje +4% szybkostrzelno\u015Bci na 3 s, do pi\u0119ciu \u0142adunk\xF3w.
+    Zabicia odnawiaj\u0105 czas."
+  - Konwerter
+  - "Niepasuj\u0105ca amunicja daje \u0107wier\u0107 bazowego magazynka aktywnej
+    broni (min. jeden nab\xF3j). Po pierwszej konwersji magnes te\u017C konwertuje."
+  - "Maszynka do mi\u0119sa"
+  - "Zabicie w zwarciu przyspiesza kolejny atak w zwarciu o 40%, je\u015Bli nast\u0105pi
+    w ci\u0105gu 2 s."
+  - Wampir
+  - "Leczy o 3% P\u017B odebranych broni\u0105, maks. 10 P\u017B na sekund\u0119."
+  - Kat
+  - "Ewolucja: obra\u017Cenia krytyczne \xD73."
+  - "Nawa\u0142nica"
+  - "Ewolucja: ka\u017Cdy strza\u0142 ma 20% szans na zachowanie naboju w magazynku."
+  - Granat kasetowy
+  - "Ewolucja: trzy wybuchy granatu, ka\u017Cdy z 45% bazowych obra\u017Ce\u0144
+    i promieniem 1,25 m."
+  - Inferno
+  - "Ewolucja: p\u0142on\u0105ce potwory wybuchaj\u0105 po \u015Bmierci, zadaj\u0105c
+    60 obra\u017Ce\u0144 w promieniu 1,5 m."
+  - "\u25C6"
+  - "Granat najpierw og\u0142usza, potem o\u015Blepia potwory."
+  - "Naci\u015Bnij Rzu\u0107, aby po\u0142o\u017Cy\u0107 min\u0119 pod nogami. Uzbroi
+    si\u0119 w p\xF3\u0142 sekundy."
+  - "Ulepsz obie karty o tym samym numerze \u25C6 do maksimum, aby odblokowa\u0107
+    ewolucj\u0119."
   _missing: []

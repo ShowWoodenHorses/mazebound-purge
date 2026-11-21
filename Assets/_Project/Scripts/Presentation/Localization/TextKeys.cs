@@ -95,6 +95,7 @@ namespace Purge.Presentation.Localization
         public const string CardsSubtitle = "cards.subtitle";
         public const string CardsNew = "cards.new";
         public const string CardsLevel = "cards.level";
+        public const string CardsEvolutionMark = "cards.evolution_mark";
         public const string CardsReroll = "cards.reroll";
 
         // Death window (stage 6d).

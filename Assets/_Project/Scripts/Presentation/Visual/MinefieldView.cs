@@ -10,6 +10,7 @@ using Purge.Core.Grid;
 using Purge.Core.Visual;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Run;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Visibility;
 using UnityEngine;
 
@@ -25,9 +26,12 @@ namespace Purge.Presentation.Visual
         private readonly IAssetOwner _assets;
         private readonly LevelViewRoot _root;
         private readonly GameObject[] _models = new GameObject[4];
+        private readonly GameObject[] _plantedModels = new GameObject[PlayerThrowing.MineLimit];
+        private readonly PlayerThrowing _throwing;
 
         public MinefieldView(LevelLaunchOptions options, SpecialRunBoosters boosters, ContentCatalog content,
-            ItemVisualCatalog visuals, VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root)
+            ItemVisualCatalog visuals, VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root,
+            PlayerThrowing throwing)
         {
             _options = options;
             _boosters = boosters;
@@ -36,29 +40,37 @@ namespace Purge.Presentation.Visual
             _visibility = visibility;
             _assets = assets;
             _root = root;
+            _throwing = throwing;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.BuildVisuals;
 
         public async UniTask ExecuteAsync(CancellationToken cancellation)
         {
-            if (!_options.HasBoost(SpecialBoosterKind.Minefield)) return;
             var mine = _content?.Find<ThrowableDefinition>("mine");
             var look = mine != null ? _visuals?.Find(mine)?.Flying : null;
             if (look == null || !look.RuntimeKeyIsValid()) return;
             var prefab = await _assets.LoadAsync<GameObject>(look, cancellation);
             if (prefab == null) return;
-            for (var i = 0; i < _models.Length; i++)
+            if (_options.HasBoost(SpecialBoosterKind.Minefield)) BuildModels(prefab, _models);
+            if (mine.Mine != null) BuildModels(prefab, _plantedModels);
+        }
+
+        private void BuildModels(GameObject prefab, GameObject[] models)
+        {
+            for (var i = 0; i < models.Length; i++)
             {
-                _models[i] = UnityEngine.Object.Instantiate(prefab, _root.transform);
-                _models[i].name = "Minefield mine";
-                _models[i].SetActive(false);
+                models[i] = UnityEngine.Object.Instantiate(prefab, _root.transform);
+                models[i].name = "Placed mine";
+                models[i].SetActive(false);
             }
         }
 
         public void CollectWarmup(List<GameObject> objects)
         {
             foreach (var model in _models)
+                if (model != null) objects.Add(model);
+            foreach (var model in _plantedModels)
                 if (model != null) objects.Add(model);
         }
 
@@ -79,11 +91,30 @@ namespace Purge.Presentation.Visual
                 }
                 if (model.activeSelf != shown) model.SetActive(shown);
             }
+            var planted = _throwing.Mines;
+            for (var i = 0; i < _plantedModels.Length; i++)
+            {
+                var model = _plantedModels[i];
+                if (model == null) continue;
+                var shown = false;
+                if (i < planted.Count)
+                {
+                    var mine = planted[i];
+                    var cell = new GridPosition(Mathf.RoundToInt(mine.Position.x), Mathf.RoundToInt(mine.Position.y), mine.Floor);
+                    shown = _visibility.IsVisible(cell);
+                    if (shown)
+                        model.transform.position = new Vector3(mine.Position.x, cell.ToWorld().y + 0.08f, mine.Position.y);
+                }
+
+                if (model.activeSelf != shown) model.SetActive(shown);
+            }
         }
 
         public void Dispose()
         {
             foreach (var model in _models)
+                if (model != null) UnityEngine.Object.Destroy(model);
+            foreach (var model in _plantedModels)
                 if (model != null) UnityEngine.Object.Destroy(model);
         }
     }

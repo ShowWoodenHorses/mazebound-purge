@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - Italiano
   - IMPOSTAZIONI
@@ -991,4 +1023,45 @@ MonoBehaviour:
   - Gargolla
   - "Esci dall\u2019ombra prima che la Gargolla si getti in picchiata. La sua pelle
     di pietra assorbe gran parte dei danni per alcuni secondi."
+  - Caccia silenziosa
+  - "Raggio del rumore degli spari \u221240%."
+  - Ultimo colpo
+  - 'Ultimo colpo nel caricatore: +50% danni (+15% per armi a colpo singolo).'
+  - Reazione a catena
+  - "Un\u2019uccisione con esplosione infligge 40 danni al mostro pi\xF9 vicino entro
+    2 m. Una volta per esplosione."
+  - Maledetti
+  - "I colpi d\u2019arma marchiano per 4 s. I successivi infliggono +15% danni al
+    bersaglio marchiato."
+  - Sangue freddo
+  - "Dopo 3 s senza danni subiti, +10 punti di probabilit\xE0 di critico fino al
+    prossimo danno subito."
+  - Fuggitivo
+  - "Quando subisci danni, +25% velocit\xE0 per 2 s. Ricarica: 8 s."
+  - Furia
+  - "Ogni uccisione d\xE0 +4% cadenza per 3 s, fino a cinque cariche. Le uccisioni
+    rinnovano la durata."
+  - Convertitore
+  - "I proiettili incompatibili diventano un quarto del caricatore base dell\u2019arma
+    attiva (almeno uno). Dopo la prima conversione funziona anche col magnete."
+  - Tritacarne
+  - "Un\u2019uccisione in mischia accelera del 40% il prossimo attacco in mischia
+    entro 2 s."
+  - Vampiro
+  - Cura il 3% dei PS sottratti con le armi, fino a 10 PS al secondo.
+  - Boia
+  - "Evoluzione: danni critici \xD73."
+  - Raffica
+  - "Evoluzione: ogni colpo ha il 20% di probabilit\xE0 di conservare il proiettile
+    nel caricatore."
+  - Granata a grappolo
+  - 'Evoluzione: tre esplosioni per granata, ciascuna con il 45% dei danni base e
+    raggio di 1,25 m.'
+  - Inferno
+  - 'Evoluzione: i mostri in fiamme esplodono alla morte infliggendo 60 danni entro
+    1,5 m.'
+  - "\u25C6"
+  - La granata stordisce e poi acceca i mostri.
+  - Premi Lancia per posare una mina ai tuoi piedi. Si arma in mezzo secondo.
+  - "Porta al massimo le due carte con lo stesso numero \u25C6 per sbloccare l\u2019evoluzione."
   _missing: []

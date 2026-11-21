@@ -36,6 +36,8 @@ namespace Purge.Gameplay.Effects
         private float[] _pulseTime;
         private float[] _strength;
         private float[] _left; // kind · capacity + agent
+        private float[] _delay;
+        private float[] _delayedDuration;
         private int[] _generation;
         private bool[] _has;
         private int _capacity;
@@ -62,6 +64,8 @@ namespace Purge.Gameplay.Effects
 
             _capacity = _horde.Capacity;
             _left = new float[_capacity * MaxKinds];
+            _delay = new float[_left.Length];
+            _delayedDuration = new float[_left.Length];
             _strength = new float[_capacity * MaxKinds];
             _pulseTime = new float[_left.Length];
             _pulseTargets.Capacity = _capacity;
@@ -124,13 +128,23 @@ namespace Purge.Gameplay.Effects
         }
 
         /// <summary>The state on every monster in the radius not behind something that stops bullets.</summary>
-        public void ApplyInRadius(Vector2 at, float radius, int floor, StatusDefinition status, float duration)
+        public void ApplyInRadius(Vector2 at, float radius, int floor, StatusDefinition status, float duration, float delay = 0f)
         {
             if (!IsActive || status == null) return;
+            var kind = delay > 0f ? Register(status) : -1;
             _targets.Collect(at, radius, floor, _found);
             foreach (var target in _found)
-                if (_targets.IsClear(at, _targets.PositionOf(target), floor))
-                    Apply(target, status, duration);
+            {
+                if (!_targets.IsClear(at, _targets.PositionOf(target), floor)) continue;
+                if (delay <= 0f) Apply(target, status, duration);
+                else if (kind >= 0 && target.Agent >= 0 && _targets.IsAlive(target))
+                {
+                    Own(target.Agent);
+                    var index = kind * _capacity + target.Agent;
+                    _delay[index] = delay;
+                    _delayedDuration[index] = duration;
+                }
+            }
             _found.Clear();
         }
 
@@ -160,6 +174,13 @@ namespace Purge.Gameplay.Effects
                 for (var kind = 0; kind < _kinds.Count; kind++)
                 {
                     var index = kind * _capacity + agent;
+                    if (_delay[index] > 0f)
+                    {
+                        _delay[index] -= deltaTime;
+                        if (_delay[index] > 0f) any = true;
+                        else
+                            Apply(CombatTarget.OfAgent(agent), _kinds[kind], _delayedDuration[index] - _delay[index]);
+                    }
                     ref var left = ref _left[index];
                     if (left <= 0f) continue;
                     var status = _kinds[kind];
@@ -247,7 +268,11 @@ namespace Purge.Gameplay.Effects
         private void Clear(int agent)
         {
             for (var kind = 0; kind < _kinds.Count; kind++)
-                _left[kind * _capacity + agent] = 0f;
+            {
+                var index = kind * _capacity + agent;
+                _left[index] = 0f;
+                _delay[index] = 0f;
+            }
             _has[agent] = false;
             if (HordeSystem.IsAlive(_horde.States[agent]) && _generation[agent] == _horde.Generations[agent])
                 _horde.SetModifiers(agent, 1f, false);

@@ -33,6 +33,7 @@ namespace Purge.Gameplay.Combat
         public Vector2 Direction { get; internal set; }
         public float Speed { get; internal set; }
         public float Damage { get; internal set; }
+        public float BlastFactor { get; internal set; }
         public float Age { get; internal set; }
 
         /// <summary>Cells left to fly.</summary>
@@ -100,7 +101,8 @@ namespace Purge.Gameplay.Combat
         public event Action<Vector2, int, float, IExplosionLook> Exploded;
 
         public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0, float range = DefaultRange,
-            int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null, bool explosiveRound = false)
+            int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null,
+            bool explosiveRound = false, float blastFactor = 1f)
         {
             var bullet = _pool.Count > 0 ? _pool.Pop() : new Bullet();
             bullet.ExplosiveRound=explosiveRound;
@@ -111,6 +113,7 @@ namespace Purge.Gameplay.Combat
             bullet.Direction = direction.normalized;
             bullet.Speed = speed;
             bullet.Damage = damage;
+            bullet.BlastFactor = blastFactor;
             bullet.Age = 0f;
             bullet.RangeLeft = range;
             bullet.Travel = range;
@@ -208,9 +211,9 @@ namespace Purge.Gameplay.Combat
         public void Dispose() => Clear();
 
         /// <summary>Damage of an explosion at <paramref name="at"/> to every target in the radius not behind a wall.</summary>
-        public void Explode(Vector2 at, ExplosiveAttack explosive, int floor, WeaponDefinition weapon = null)
+        public void Explode(Vector2 at, ExplosiveAttack explosive, int floor, WeaponDefinition weapon = null, float damageFactor = 1f)
         {
-            var radius = _targets.Blast(at, explosive.ExplosionDamage, explosive.Radius * (_upgrades!=null && weapon!=null && _upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f), explosive.EdgeDamage, floor, weapon,
+            var radius = _targets.Blast(at, explosive.ExplosionDamage * damageFactor, explosive.Radius * (_upgrades!=null && weapon!=null && _upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f), explosive.EdgeDamage, floor, weapon,
                 PlayerDamage.WeaponExplosion);
             Exploded?.Invoke(at, floor, radius, explosive);
             if(weapon!=null && _upgrades!=null && _upgrades.Has(weapon,WeaponUpgrade.Cluster))
@@ -220,7 +223,7 @@ namespace Purge.Gameplay.Combat
                 {
                     float angle=i*Mathf.PI*2f/Mathf.Max(1,count);var point=at+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*radius*0.5f;
                     if(!_targets.IsClear(at,point,floor))point=at;
-                    float r=_targets.Blast(point,explosive.ExplosionDamage*weapon.UpgradeParameter("cluster_damage_share")*_upgrades.DamageFactor(weapon),explosive.Radius*(_upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f)*weapon.UpgradeParameter("cluster_radius_share"),explosive.EdgeDamage,floor,kind:PlayerDamage.WeaponExplosion);
+                    float r=_targets.Blast(point,explosive.ExplosionDamage*damageFactor*weapon.UpgradeParameter("cluster_damage_share")*_upgrades.DamageFactor(weapon),explosive.Radius*(_upgrades.Has(weapon,WeaponUpgrade.Radius)?1.3f:1f)*weapon.UpgradeParameter("cluster_radius_share"),explosive.EdgeDamage,floor,kind:PlayerDamage.WeaponExplosion);
                     Exploded?.Invoke(point,floor,r,explosive);
                 }
             }
@@ -245,7 +248,7 @@ namespace Purge.Gameplay.Combat
         private void Explode(Bullet bullet, Vector2 at)
         {
             // The direct hit's extra damage is the bullet's own (applied before).
-            Explode(at, bullet.Explosive, bullet.Floor, bullet.Weapon);
+            Explode(at, bullet.Explosive, bullet.Floor, bullet.Weapon, bullet.BlastFactor);
         }
 
         private void End(int index, BulletEnd reason)

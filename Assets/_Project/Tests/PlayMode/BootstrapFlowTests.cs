@@ -784,6 +784,78 @@ namespace Purge.Tests.PlayMode
             Assert.AreEqual(handlesInMenu, AppHandles, "The items' looks released with the level.");
         });
 
+        [UnityTest]
+        public IEnumerator CombatSandbox_FlashbangSequencesControl_AndMineArmsAtFeet() => Async(async () =>
+        {
+            await _flow.StartLevel("Level_Sandbox", new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var horde = container.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            var player = container.Resolve<PlayerSystem>();
+            var throwing = container.Resolve<Purge.Gameplay.Throwing.PlayerThrowing>();
+            var sandbox = container.Resolve<Purge.Gameplay.Horde.CombatSandbox>();
+            var effects = container.Resolve<Purge.Gameplay.Effects.EffectSystem>();
+            var statuses = container.Resolve<Purge.Gameplay.Effects.StatusSystem>();
+            var targets = container.Resolve<Purge.Gameplay.Combat.CombatTargets>();
+            horde.GodMode = true;
+            for (var i = 0; i < 3; i++) sandbox.NextThrowable();
+            Assert.That(throwing.Slot.Definition.Id, Is.EqualTo("flashbang"));
+            Assert.That(throwing.Slot.Definition.Effects.Count, Is.EqualTo(3), "The flashbang loads all effects.");
+            Assert.That(statuses.IsActive, Is.True, "The sandbox has a status system.");
+            var at = player.Position;
+            var agent = horde.SpawnAt(at, Purge.Core.Monsters.MonsterPerception.Wanderer);
+            Assert.That(agent, Is.GreaterThanOrEqualTo(0));
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+            var visible = new List<Purge.Gameplay.Combat.CombatTarget>();
+            await WaitFor(() =>
+            {
+                targets.Collect(horde.Positions[agent], 3f, player.Floor, visible);
+                return visible.Exists(target => target.Agent == agent);
+            });
+            var flashPoint = horde.Positions[agent];
+            Assert.That(targets.IsClear(flashPoint, flashPoint, player.Floor), Is.True, "The target stands in a cell reached by the flash.");
+            effects.Apply(throwing.Slot.Definition.Effects, flashPoint, player.Floor);
+            Assert.That(horde.Stunned[agent], Is.True, "Flash stuns as soon as it lands.");
+            Assert.That(horde.CannotAim(agent), Is.False, "Blindness has not started during the stun.");
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+            var weaponEffects = container.Resolve<Purge.Presentation.Visual.Horde.WeaponEffectsView>();
+            var stars = (Mesh)weaponEffects.GetType().GetField("_stunStarMesh",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(weaponEffects);
+            Assert.That(stars, Is.Not.Null, "The level warms up the stun stars mesh.");
+            Assert.That(stars.vertexCount, Is.GreaterThanOrEqualTo(33), "A visible stunned monster gets a trio of stars.");
+            var other = horde.SpawnAt(flashPoint, Purge.Core.Monsters.MonsterPerception.Wanderer, kind: 0);
+            Assert.That(other, Is.GreaterThanOrEqualTo(0));
+            var stun = throwing.Slot.Definition.Effects.OfType<Purge.Core.Effects.AreaStatusEffect>()
+                .First(effect => effect.Status.Stuns).Status;
+            statuses.Apply(Purge.Gameplay.Combat.CombatTarget.OfAgent(other), stun, 4f);
+            weaponEffects.LateTick(0f);
+            var combinedStars = stars.vertexCount;
+            statuses.Tick(2.01f);
+            Assert.That(horde.Stunned[agent], Is.False);
+            Assert.That(horde.CannotAim(agent), Is.True, "Blindness starts when the stun expires.");
+            weaponEffects.LateTick(0f);
+            Assert.That(stars.vertexCount, Is.EqualTo(33).And.LessThan(combinedStars),
+                "Only the monster whose stun is still active has stars.");
+            statuses.Tick(3f);
+            Assert.That(horde.CannotAim(agent), Is.False);
+            weaponEffects.LateTick(0f);
+            Assert.That(stars.vertexCount, Is.Zero, "The stars disappear when the last stun expires.");
+
+            sandbox.NextThrowable();
+            Assert.That(throwing.Slot.Definition.Id, Is.EqualTo("mine"));
+            var plantedAt = player.Position;
+            Assert.That(throwing.TryThrow(plantedAt + Vector2.up * 4f), Is.True, "The mine can be placed.");
+            Assert.That(throwing.Mines.Count, Is.EqualTo(1));
+            Assert.That(throwing.Mines[0].Position, Is.EqualTo(plantedAt));
+            throwing.Tick(0.49f);
+            Assert.That(throwing.Mines.Count, Is.EqualTo(1));
+            var health = horde.Health[agent];
+            throwing.Tick(0.02f);
+            Assert.That(throwing.Mines.Count, Is.Zero);
+            Assert.That(horde.Health[agent], Is.LessThan(health));
+            await _flow.ExitToMenu();
+        });
+
         private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];
 
         [UnityTest]

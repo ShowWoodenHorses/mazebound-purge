@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - "Espa\xF1ol"
   - AJUSTES
@@ -992,4 +1024,44 @@ MonoBehaviour:
   - "G\xE1rgola"
   - "Sal de la sombra antes de que la G\xE1rgola se lance en picado. Su piel de piedra
     absorbe la mayor parte del da\xF1o durante unos segundos."
+  - Caza silenciosa
+  - "Alcance del ruido de disparos \u221240%."
+  - "\xDAltima bala"
+  - "\xDAltimo disparo del cargador: +50% de da\xF1o (+15% con armas de un tiro)."
+  - "Reacci\xF3n en cadena"
+  - "Una baja por explosi\xF3n causa 40 de da\xF1o al monstruo m\xE1s cercano en
+    2 m. Una vez por explosi\xF3n."
+  - Malditos
+  - "Un impacto marca por 4 s. Los siguientes disparos o golpes infligen +15% de
+    da\xF1o al objetivo marcado."
+  - "Cabeza fr\xEDa"
+  - "Tras 3 s sin da\xF1o, +10 puntos de probabilidad de cr\xEDtico hasta recibir
+    da\xF1o."
+  - Fugitivo
+  - "Al recibir da\xF1o, +25% de velocidad durante 2 s. Recarga: 8 s."
+  - Furia
+  - Cada baja da +4% de cadencia durante 3 s, hasta cinco cargas. Las bajas renuevan
+    el tiempo.
+  - Conversor
+  - "Cambia munici\xF3n incompatible por un cuarto del cargador base del arma activa
+    (m\xEDnimo un cartucho). Tras el primer cambio, tambi\xE9n funciona con el im\xE1n."
+  - Picadora
+  - Una baja cuerpo a cuerpo acelera un 40% el siguiente ataque cuerpo a cuerpo en
+    2 s.
+  - Vampiro
+  - Recuperas el 3% de la vida que quitas con armas, hasta 10 PS por segundo.
+  - Verdugo
+  - "Evoluci\xF3n: da\xF1o cr\xEDtico \xD73."
+  - "R\xE1faga"
+  - "Evoluci\xF3n: cada disparo tiene un 20% de conservar la bala en el cargador."
+  - Granada de racimo
+  - "Evoluci\xF3n: tres explosiones por granada, cada una con 45% de da\xF1o base
+    y radio de 1,25 m."
+  - Infierno
+  - "Evoluci\xF3n: los monstruos ardiendo explotan al morir e infligen 60 de da\xF1o
+    en 1,5 m."
+  - "\u25C6"
+  - La granada aturde y luego ciega a los monstruos.
+  - Pulsa Lanzar para poner una mina a tus pies. Se arma en medio segundo.
+  - "Maximiza las dos cartas con el mismo n\xFAmero \u25C6 para desbloquear su evoluci\xF3n."
   _missing: []

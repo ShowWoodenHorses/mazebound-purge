@@ -33,6 +33,7 @@ namespace Purge.Core.Cards
         public int MaxLevel => Mathf.Max(1, _maxLevel);
         public Sprite Icon { get => _icon; internal set => _icon = value; }
         public IReadOnlyList<CardModule> Modules => _modules;
+        public CardPerk Evolution => _modules.Find(module => module is CardPerk { First: not null }) as CardPerk;
 
         public void Validate(List<string> problems)
         {
@@ -57,6 +58,31 @@ namespace Purge.Core.Cards
     {
         /// <summary>The number its text shows for one level (percent stats in percent).</summary>
         public abstract float ShownValue { get; }
+    }
+
+    public enum RunPerk
+    {
+        QuietHunt, LastRound, ChainReaction, Cursed, CoolHead, Fugitive, Rage, Converter, Grinder, Vampire,
+        Executioner, Barrage, Cluster, Inferno
+    }
+
+    [Serializable, ModuleInfo("Run perk", Category = "Card")]
+    public sealed class CardPerk : CardModule
+    {
+        [SerializeField] private RunPerk _perk;
+        [SerializeField] private CardDefinition _first;
+        [SerializeField] private CardDefinition _second;
+
+        public RunPerk Perk { get => _perk; internal set => _perk = value; }
+        public CardDefinition First { get => _first; internal set => _first = value; }
+        public CardDefinition Second { get => _second; internal set => _second = value; }
+        public override float ShownValue => 0f;
+
+        public override void Validate(List<string> problems)
+        {
+            if ((_first == null) != (_second == null) || _first != null && _first == _second)
+                problems.Add("An evolution needs two different prerequisite cards.");
+        }
     }
 
     /// <summary>A stat of the run a card changes (<see cref="StatCard"/>); every level adds its number.</summary>

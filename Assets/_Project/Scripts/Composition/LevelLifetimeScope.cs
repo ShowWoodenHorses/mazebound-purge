@@ -127,8 +127,8 @@ namespace Purge.Composition
             builder.Register<RunScore>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             // Experience, cards and their damage (stage 6c): kills give experience, a level-up offers cards.
             builder.Register<RunExperience>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
-            builder.Register<CardSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
-            builder.Register<RunDamage>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
+            builder.Register<CardSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
+            builder.Register<RunDamage>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelTickable>();
             // The run's start weapon and throwable (stage 11б) or a continued run's player (stage 6e): before the views
             // gather what to load.
             builder.Register<RunLoadout>(Lifetime.Singleton).As<ILevelLoadStep>();

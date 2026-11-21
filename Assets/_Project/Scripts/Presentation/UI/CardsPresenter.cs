@@ -202,9 +202,12 @@ namespace Purge.Presentation.UI
 
                 var card = offer[i];
                 var level = _cards.LevelOf(card);
+                var name = NameOf(card);
+                var evolution = _cards.EvolutionNumber(card);
+                if (evolution > 0) name = $"{_texts.Get(TextKeys.CardsEvolutionMark)}{evolution} {name}";
                 screen.SetCard(i, true, card.Rarity,
                     _texts.Get(TextKeys.CardRarityPrefix + card.Rarity.ToString().ToLowerInvariant()), card.Icon,
-                    NameOf(card), TextOf(card),
+                    name, TextOf(card),
                     level <= 0 ? _texts.Get(TextKeys.CardsNew) : _texts.Format(TextKeys.CardsLevel, level + 1, card.MaxLevel));
             }
 

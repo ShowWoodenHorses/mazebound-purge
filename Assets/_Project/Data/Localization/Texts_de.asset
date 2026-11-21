@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - Deutsch
   - EINSTELLUNGEN
@@ -999,4 +1031,43 @@ MonoBehaviour:
   - Gargoyle
   - "Verlasse den Schatten, bevor sich der Gargoyle herabst\xFCrzt. Seine Steinhaut
     f\xE4ngt einige Sekunden lang den Gro\xDFteil des Schadens ab."
+  - Leise Jagd
+  - "Schussl\xE4rm-Radius \u221240 %."
+  - Letzte Patrone
+  - 'Letzter Schuss im Magazin: +50 % Schaden (+15 % bei Einzelschusswaffen).'
+  - Kettenreaktion
+  - "T\xF6tet eine Explosion, erleidet das n\xE4chste Monster in 2 m Umkreis 40 Schaden.
+    Einmal pro Explosion."
+  - Verfluchte
+  - Waffentreffer markieren 4 s lang. Weitere Waffentreffer am markierten Ziel verursachen
+    +15 % Schaden.
+  - "K\xFChler Kopf"
+  - "Nach 3 s ohne Schaden +10 Prozentpunkte Kritchance bis zum n\xE4chsten erlittenen
+    Treffer."
+  - "Fl\xFCchtling"
+  - "Bei erlittenem Schaden +25 % Bewegungstempo f\xFCr 2 s. Abklingzeit 8 s."
+  - Zorn
+  - "Pro T\xF6tung +4 % Feuerrate f\xFCr 3 s, bis zu f\xFCnf Stapel. T\xF6tungen
+    erneuern die Dauer."
+  - Konverter
+  - Unpassende Munition ergibt ein Viertel des Basismagazins der aktiven Waffe (mindestens
+    eine Patrone). Nach der ersten Umwandlung greift sie auch per Magnet.
+  - Fleischwolf
+  - "Eine Nahkampft\xF6tung beschleunigt den n\xE4chsten Nahkampfangriff innerhalb
+    von 2 s um 40 %."
+  - Vampir
+  - Heilt 3 % der mit Waffen abgezogenen LP, bis zu 10 LP pro Sekunde.
+  - Henker
+  - "Evolution: Kritschaden \xD73."
+  - Sperrfeuer
+  - "Evolution: Jeder Schuss beh\xE4lt die Munition mit 20 % Chance im Magazin."
+  - Splittergranate
+  - 'Evolution: Drei Explosionen mit je 45 % Basisschaden und 1,25 m Radius pro Granate.'
+  - Inferno
+  - 'Evolution: Brennende Monster explodieren beim Tod und verursachen 60 Schaden
+    in 1,5 m Radius.'
+  - "\u25C6"
+  - "Die Blendgranate bet\xE4ubt Monster zuerst und blendet sie dann."
+  - "Dr\xFCcke Werfen, um eine Mine zu legen. Sie ist nach einer halben Sekunde scharf."
+  - "Beide Karten mit derselben \u25C6-Nummer maximieren, um ihre Evolution freizuschalten."
   _missing: []

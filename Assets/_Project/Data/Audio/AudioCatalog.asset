@@ -2548,6 +2548,14 @@ MonoBehaviour:
     _range: 30
     _maxVoices: 3
     _minInterval: 0
+  _flashbang:
+    _clips:
+    - {fileID: 8300000, guid: 1f9337b9ebfc07c4095f1b971e988ad8, type: 3}
+    _volume: 0.9
+    _pitch: {x: 1, y: 1}
+    _range: 20
+    _maxVoices: 3
+    _minInterval: 0
   _smallRadius: 1.5
   _largeRadius: 2.8
   _pin:

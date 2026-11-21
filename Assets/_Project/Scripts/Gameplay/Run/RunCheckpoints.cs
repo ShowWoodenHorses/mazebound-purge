@@ -96,6 +96,7 @@ namespace Purge.Gameplay.Run
             foreach (var id in run.Cards)
                 if (Find<CardDefinition>(id) is { } card) cards.Add(card);
             _cards.Restore(cards);
+            _cards.RestorePerks(run.Perks);
             _health.Restore(run.Health);
             _ammoStock?.Restore(run.AmmoReserve);
             _health.RestoreBarrier(run.Barrier);
@@ -157,19 +158,24 @@ namespace Purge.Gameplay.Run
         private readonly SpecialRunBoosters _special;
         private readonly AmmoStock _ammoStock;
         private readonly SmokeScreen _smoke;
+        private readonly PlayerThrowing _throwing;
+        private readonly ContentCatalog _content;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
             PlayerHealth health, WeaponSystem weapons, ThrowableSlot throwables, LevelProgress progress,
             LevelLaunchOptions options = null, PlayerRevival revival = null, BarrelSystem barrels = null,
             ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null,
             RunBoosters boosters = null, Horde.HordeSystem horde = null, RefugeSystem refuge = null,
-            SpecialRunBoosters special = null, AmmoStock ammoStock = null, SmokeScreen smoke = null)
+            SpecialRunBoosters special = null, AmmoStock ammoStock = null, SmokeScreen smoke = null,
+            PlayerThrowing throwing = null, ContentCatalog content = null)
         {
             _horde = horde;
             _refuge = refuge;
             _special = special;
             _ammoStock = ammoStock;
             _smoke = smoke;
+            _throwing = throwing;
+            _content = content;
             _boosters = boosters;
             _vehicles = vehicles;
             _exploration = exploration;
@@ -210,6 +216,9 @@ namespace Purge.Gameplay.Run
                 if (_smoke != null && resume.Smoke != null)
                     foreach (var cloud in resume.Smoke)
                         _smoke.Place(cloud.Position, cloud.Floor, cloud.Radius, cloud.Seconds);
+                if (_throwing != null && _content != null && resume.Mines != null)
+                    foreach (var mine in resume.Mines)
+                        _throwing.RestoreMine(_content.Find<ThrowableDefinition>(mine.ThrowableId), mine);
             }
 
             _waves.Skipped += OnSkipped;
@@ -251,6 +260,8 @@ namespace Purge.Gameplay.Run
                 ThrowableCount = _throwables.IsEmpty ? 0 : _throwables.Count,
             };
             if (_smoke != null) run.Smoke.AddRange(_smoke.Clouds);
+            if (_throwing != null) run.Mines.AddRange(_throwing.Mines);
+            run.Perks = _cards.PerkState;
             foreach (var pair in _cards.Levels)
                 for (var i = 0; i < pair.Value; i++)
                     run.Cards.Add(pair.Key.Id);

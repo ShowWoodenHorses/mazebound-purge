@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - "Portugu\xEAs"
   - "CONFIGURA\xC7\xD5ES"
@@ -991,4 +1023,46 @@ MonoBehaviour:
   - "G\xE1rgula"
   - "Saia da sombra antes que a G\xE1rgula mergulhe. A pele de pedra absorve a maior
     parte do dano por alguns segundos."
+  - "Ca\xE7a silenciosa"
+  - "Raio do ru\xEDdo dos tiros \u221240%."
+  - "\xDAltima bala"
+  - "\xDAltimo disparo do carregador: +50% de dano (+15% para armas de tiro \xFAnico)."
+  - "Rea\xE7\xE3o em cadeia"
+  - "Uma baixa por explos\xE3o causa 40 de dano ao monstro mais pr\xF3ximo em 2 m.
+    Uma vez por explos\xE3o."
+  - "Amaldi\xE7oados"
+  - "Acertos com armas marcam por 4 s. Os pr\xF3ximos causam +15% de dano ao alvo
+    marcado."
+  - "Cabe\xE7a fria"
+  - "Ap\xF3s 3 s sem sofrer dano, +10 pontos percentuais de chance de cr\xEDtico
+    at\xE9 se ferir."
+  - Fugitivo
+  - 'Ao sofrer dano, +25% de velocidade por 2 s. Recarga: 8 s.'
+  - "F\xFAria"
+  - "Cada baixa d\xE1 +4% de cad\xEAncia por 3 s, at\xE9 cinco cargas. Baixas renovam
+    a dura\xE7\xE3o."
+  - Conversor
+  - "Muni\xE7\xE3o incompat\xEDvel vira um quarto do carregador base da arma ativa
+    (m\xEDnimo um cartucho). Ap\xF3s a primeira convers\xE3o, vale tamb\xE9m no \xEDm\xE3."
+  - Moedor
+  - "Uma baixa corpo a corpo acelera o pr\xF3ximo ataque corpo a corpo em 40% se
+    usado em 2 s."
+  - Vampiro
+  - "Recupera 3% dos PV retirados com armas, at\xE9 10 PV por segundo."
+  - Carrasco
+  - "Evolu\xE7\xE3o: dano cr\xEDtico \xD73."
+  - Rajada
+  - "Evolu\xE7\xE3o: cada disparo tem 20% de chance de poupar a muni\xE7\xE3o no
+    carregador."
+  - "Granada de dispers\xE3o"
+  - "Evolu\xE7\xE3o: tr\xEAs explos\xF5es por granada, cada uma com 45% do dano base
+    e raio de 1,25 m."
+  - Inferno
+  - "Evolu\xE7\xE3o: monstros em chamas explodem ao morrer, causando 60 de dano em
+    1,5 m."
+  - "\u25C6"
+  - A granada de luz atordoa e depois cega monstros.
+  - "Pressione Arremessar para p\xF4r uma mina aos seus p\xE9s. Ela arma em meio
+    segundo."
+  - "Maximize as duas cartas com o mesmo n\xFAmero \u25C6 para liberar a evolu\xE7\xE3o."
   _missing: []

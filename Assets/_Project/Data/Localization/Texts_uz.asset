@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - "O\u02BBzbekcha"
   - SOZLAMALAR
@@ -994,4 +1026,43 @@ MonoBehaviour:
   - Gargoyl
   - "Gargoyl sho\u2018ng\u2018ishidan oldin soyadan chiqing. Uning tosh terisi bir
     necha soniya davomida zararning katta qismini yutadi."
+  - Sokin ov
+  - "O\u2018q ovozi radiusi \u221240%."
+  - "So\u2018nggi o\u2018q"
+  - "Magazindagi oxirgi o\u2018q: +50% zarar (bir o\u2018qli qurolda +15%)."
+  - Zanjirli reaksiya
+  - "Portlash o\u2018ldirsa, 2 m ichidagi eng yaqin maxluqqa 40 zarar yetadi. Har
+    portlashda bir marta."
+  - "La\u2019natlanganlar"
+  - Qurol nishonni 4 s belgilaydi. Keyingi zarbalar belgili nishonga +15% zarar beradi.
+  - Sovuqqonlik
+  - 3 s zarar olmasang, keyingi jarohatgacha kritik zarba ehtimoli 10 foiz bandga
+    oshadi.
+  - Qochqin
+  - 'Jarohatdan keyin tezlik 2 s +25%. Tiklanish: 8 s.'
+  - "G\u2018azab"
+  - "Har o\u2018ldirish 3 s otish tezligini +4% oshiradi, ko\u2018pi bilan beshta.
+    O\u2018ldirish vaqtni yangilaydi."
+  - "O\u2018zgartirgich"
+  - "Mos kelmaydigan o\u2018qlar faol qurol magazinining choragiga aylanadi (kamida
+    bitta). Birinchi almashtirishdan keyin magnit ham almashtiradi."
+  - "Go\u2018shtqiymalagich"
+  - "Yaqin jangda o\u2018ldirish 2 s ichidagi keyingi yaqin hujumni 40% tezlashtiradi."
+  - Vampir
+  - "Qurol olib tashlagan sog\u2018liqning 3% ini tiklaydi, soniyasiga 10 gacha."
+  - Jallod
+  - "Evolyutsiya: kritik zarar \xD73."
+  - "Do\u2018l"
+  - "Evolyutsiya: har otishda 20% ehtimol bilan o\u2018q magazinda qoladi."
+  - Kassetali granata
+  - 'Evolyutsiya: uch portlash, har biri granata asosiy zararining 45% ini 1,25 m
+    radiusda beradi.'
+  - Jahannam
+  - "Evolyutsiya: yonayotgan maxluq o\u2018lsa, 1,5 m radiusda 60 zarar bilan portlaydi."
+  - "\u25C6"
+  - "Yorug\u2018lik granatasi avval karaxt, keyin ko\u2018r qiladi."
+  - "Oyoq ostiga mina qo\u2018yish uchun Uloqtirish tugmasini bos. U yarim soniyada
+    faollashadi."
+  - "Evolyutsiyani ochish uchun \u25C6 raqami bir xil ikki kartani ham eng yuqori
+    darajaga chiqar."
   _missing: []

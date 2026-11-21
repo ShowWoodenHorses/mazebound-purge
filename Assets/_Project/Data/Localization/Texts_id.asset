@@ -482,6 +482,38 @@ MonoBehaviour:
   - hint.stairs
   - monster.gargoyle_castle
   - hint.gargoyle
+  - card.card_quiet_hunt
+  - card.card_quiet_hunt.text
+  - card.card_last_round
+  - card.card_last_round.text
+  - card.card_chain_reaction
+  - card.card_chain_reaction.text
+  - card.card_cursed
+  - card.card_cursed.text
+  - card.card_cool_head
+  - card.card_cool_head.text
+  - card.card_fugitive
+  - card.card_fugitive.text
+  - card.card_rage
+  - card.card_rage.text
+  - card.card_converter
+  - card.card_converter.text
+  - card.card_grinder
+  - card.card_grinder.text
+  - card.card_vampire
+  - card.card_vampire.text
+  - card.card_executioner
+  - card.card_executioner.text
+  - card.card_barrage
+  - card.card_barrage.text
+  - card.card_cluster
+  - card.card_cluster.text
+  - card.card_inferno
+  - card.card_inferno.text
+  - cards.evolution_mark
+  - hint.flashbang
+  - hint.mine
+  - hint.card_evolution
   _texts:
   - Bahasa Indonesia
   - PENGATURAN
@@ -1006,4 +1038,45 @@ MonoBehaviour:
   - Patung bersayap
   - Keluar dari bayangan sebelum patung bersayap menukik. Kulit batunya menyerap
     sebagian besar kerusakan selama beberapa detik.
+  - Buru Senyap
+  - "Radius suara tembakan \u221240%."
+  - Peluru Terakhir
+  - 'Tembakan terakhir di magasin: +50% kerusakan (+15% untuk senjata satu tembakan).'
+  - Reaksi Berantai
+  - Bunuh dengan ledakan untuk memberi 40 kerusakan ke monster terdekat dalam 2 m.
+    Sekali per ledakan.
+  - Terkutuk
+  - Serangan senjata menandai target selama 4 dtk. Serangan berikutnya memberi +15%
+    kerusakan ke target itu.
+  - Kepala Dingin
+  - Setelah 3 dtk tanpa terluka, peluang kritis naik 10 poin persentase hingga terkena
+    serangan.
+  - Buronan
+  - Saat terluka, kecepatan +25% selama 2 dtk. Jeda 8 dtk.
+  - Amarah
+  - Setiap bunuh memberi +4% laju tembak selama 3 dtk, maksimal lima tingkat. Bunuhan
+    menyegarkan durasi.
+  - Konverter
+  - Amunisi tak cocok jadi seperempat magasin dasar senjata aktif (minimal satu peluru).
+    Setelah konversi pertama, magnet juga bisa mengonversi.
+  - Penggiling
+  - Bunuh jarak dekat membuat serangan jarak dekat berikutnya 40% lebih cepat dalam
+    2 dtk.
+  - Vampir
+  - Memulihkan 3% HP yang dihilangkan senjata, maks. 10 HP per detik.
+  - Algojo
+  - "Evolusi: kerusakan kritis \xD73."
+  - Rentetan
+  - 'Evolusi: setiap tembakan punya peluang 20% untuk menghemat peluru di magasin.'
+  - Granat Curah
+  - 'Evolusi: tiga ledakan granat, masing-masing 45% kerusakan dasar dan radius 1,25
+    m.'
+  - Inferno
+  - 'Evolusi: monster yang terbakar meledak saat mati, memberi 60 kerusakan dalam
+    radius 1,5 m.'
+  - "\u25C6"
+  - Granat kilat membuat monster linglung, lalu buta.
+  - Tekan Lempar untuk meletakkan ranjau di dekat kaki. Ranjau aktif setelah setengah
+    detik.
+  - "Maksimalkan kedua kartu bernomor \u25C6 sama untuk membuka evolusi."
   _missing: []

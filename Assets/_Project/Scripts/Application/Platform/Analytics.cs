@@ -53,6 +53,8 @@ namespace Purge.Application.Platform
         public const string VehicleEnter = "vehicle_enter";
         public const string VehicleRam = "vehicle_ram";
         public const string VehicleBroken = "vehicle_broken";
+        public const string DailyTaskClaimed = "daily_task_claimed";
+        public const string DailyRewardClaimed = "daily_reward_claimed";
     }
 
     /// <summary>

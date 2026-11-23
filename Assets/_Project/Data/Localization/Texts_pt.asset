@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: pt
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,19 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - "Portugu\xEAs"
+  - "Tarefas di\xE1rias"
+  - "Recompensas di\xE1rias"
+  - "As tarefas mudam \xE0 meia-noite local. Resgata as recompensas antes."
+  - "Resgata uma vez por dia. Se perderes um dia, mant\xE9ns o progresso."
+  - 'Derrota monstros: {0}'
+  - Conclui a onda {0} da campanha em {1} ou superior
+  - 'Conclui ondas: {0}'
+  - 'Atropela monstros: {0}'
+  - Dia {0}
+  - Resgatar {0}
+  - Resgatado
+  - "Pr\xF3xima recompensa amanh\xE3"
+  - "N\xE3o foi poss\xEDvel resgatar a recompensa."
   - "CONFIGURA\xC7\xD5ES"
   - SIM
   - "N\xC3O"

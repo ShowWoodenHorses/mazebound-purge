@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: fr
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,20 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - "Fran\xE7ais"
+  - Missions quotidiennes
+  - "R\xE9compenses quotidiennes"
+  - "Les missions changent \xE0 minuit, heure locale. R\xE9cup\xE8re tes r\xE9compenses
+    avant."
+  - "R\xE9cup\xE8re une fois par jour. Les jours manqu\xE9s ne changent pas ta progression."
+  - 'Bats des monstres : {0}'
+  - Termine la vague {0} en campagne en {1} ou plus
+  - 'Termine des vagues : {0}'
+  - "\xC9crase des monstres en v\xE9hicule : {0}"
+  - Jour {0}
+  - "R\xE9cup\xE9rer {0}"
+  - "R\xE9cup\xE9r\xE9"
+  - "Prochaine r\xE9compense demain"
+  - "Impossible de r\xE9cup\xE9rer la r\xE9compense."
   - "PARAM\xC8TRES"
   - OUI
   - NON

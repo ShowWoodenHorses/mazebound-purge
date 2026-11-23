@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: uz
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,19 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - "O\u02BBzbekcha"
+  - Kunlik topshiriqlar
+  - Kunlik mukofotlar
+  - Topshiriqlar mahalliy vaqt bilan yarim tunda yangilanadi. Mukofotni ungacha ol.
+  - "Kuniga bir marta ol. Kun o\u2018tkazib yuborsang, turgan joyingdan davom etasan."
+  - 'Maxluqlarni yeng: {0}'
+  - "Kampaniyaning {0}-to\u2018lqinini {1} yoki yuqorida tugat"
+  - "To\u2018lqinlarni tugat: {0}"
+  - 'Maxluqlarni mashina bilan bos: {0}'
+  - '{0}-kun'
+  - '{0} olish'
+  - Olindi
+  - Keyingi mukofot ertaga
+  - "Mukofotni olib bo\u2018lmadi."
   - SOZLAMALAR
   - HA
   - "YO\u02BBQ"

@@ -52,13 +52,16 @@ namespace Purge.Application.Platform
         private readonly SoundSuspension _sound;
         private readonly SaveService _save;
         private readonly PlatformService _platform;
+        private readonly Purge.Application.Meta.DailyTasks _daily;
         private bool _initialized;
         private bool _focused = true;
         private bool _visible = true;
         private bool _sitePaused;
 
-        public AppFocusController(GameFlow flow, SoundSuspension sound, SaveService save = null, PlatformService platform = null)
+        public AppFocusController(GameFlow flow, SoundSuspension sound, SaveService save = null, PlatformService platform = null,
+            Purge.Application.Meta.DailyTasks daily = null)
         {
+            _daily = daily;
             _platform = platform;
             _save = save;
             _flow = flow;
@@ -123,6 +126,7 @@ namespace Purge.Application.Platform
             _sound.Set(SoundSuspendReason.Background, !active);
             if (active) return;
             if (_flow.State == GameFlowState.Playing) _flow.PauseGameplay();
+            _daily?.Flush();
             _save?.FlushCloud(); // the tab may be closed next
         }
     }

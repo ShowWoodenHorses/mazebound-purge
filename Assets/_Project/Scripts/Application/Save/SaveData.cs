@@ -27,6 +27,8 @@ namespace Purge.Application.Save
         /// <summary>Best survival results per location.</summary>
         public List<SurvivalRecord> Survival = new List<SurvivalRecord>();
 
+        public DailySave Daily = new DailySave();
+
         /// <summary>Bought weapons and throwables: upgrade level, chosen forks, drop pool mark.</summary>
         public List<OwnedItem> Arsenal = new List<OwnedItem>();
 
@@ -60,6 +62,8 @@ namespace Purge.Application.Save
         {
             Levels ??= new List<LevelRecord>();
             Survival ??= new List<SurvivalRecord>();
+            Daily ??= new DailySave();
+            Daily.Normalize();
             Arsenal ??= new List<OwnedItem>();
             SeenHints ??= new List<string>();
             SeenHints.RemoveAll(string.IsNullOrEmpty);
@@ -181,6 +185,7 @@ namespace Purge.Application.Save
 
             foreach (var id in other.SeenHints)
                 if (!SeenHints.Contains(id)) SeenHints.Add(id);
+            Daily.MergeFrom(other.Daily);
             Stats.MergeFrom(other.Stats);
             if (!HasRun && other.HasRun) Run = other.Run;
         }

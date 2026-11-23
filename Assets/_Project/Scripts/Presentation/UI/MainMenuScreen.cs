@@ -23,6 +23,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private GameObject _arsenalDot;
         [SerializeField] private GameObject _characterDot;
         [SerializeField] private Button _tasksButton;
+        [SerializeField] private GameObject _tasksDot;
         [SerializeField] private Button _shopButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private TMP_Text _money;
@@ -42,6 +43,7 @@ namespace Purge.Presentation.UI
         public event Action SurvivalClicked;
         public event Action ArsenalClicked;
         public event Action CharacterClicked;
+        public event Action TasksClicked;
         public event Action SettingsClicked;
         public event Action DevClicked;
         public event Action DebugResetProgressClicked;
@@ -55,6 +57,7 @@ namespace Purge.Presentation.UI
             Bind(_survivalButton, () => SurvivalClicked?.Invoke());
             Bind(_arsenalButton, () => ArsenalClicked?.Invoke());
             Bind(_characterButton, () => CharacterClicked?.Invoke());
+            Bind(_tasksButton, () => TasksClicked?.Invoke());
             Bind(_settingsButton, () => SettingsClicked?.Invoke());
             Bind(_devButton, () => DevClicked?.Invoke());
             Bind(_debugResetProgressButton, () => DebugResetProgressClicked?.Invoke());
@@ -89,6 +92,11 @@ namespace Purge.Presentation.UI
             if (_arsenalDot != null) _arsenalDot.SetActive(arsenal);
             if (_characterDot != null) _characterDot.SetActive(character);
             if (_arsenalButton is Style.UiButton button) button.Accent = guided;
+        }
+
+        public void SetTasksIndicator(bool available)
+        {
+            if (_tasksDot != null) _tasksDot.SetActive(available);
         }
 
         /// <summary>«Продолжить» above Play while a run is saved (stage 6e); it is the main action then.</summary>

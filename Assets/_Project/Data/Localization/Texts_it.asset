@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: it
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,19 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - Italiano
+  - Missioni giornaliere
+  - Ricompense giornaliere
+  - Le missioni cambiano a mezzanotte locale. Riscuoti prima le ricompense.
+  - Riscuoti una volta al giorno. I giorni saltati non azzerano i progressi.
+  - 'Sconfiggi mostri: {0}'
+  - "Supera l\u2019ondata {0} della campagna a difficolt\xE0 {1} o superiore"
+  - 'Supera ondate: {0}'
+  - 'Investi mostri: {0}'
+  - Giorno {0}
+  - Riscuoti {0}
+  - Riscosso
+  - Prossima ricompensa domani
+  - Impossibile riscuotere la ricompensa.
   - IMPOSTAZIONI
   - "S\xCC"
   - NO

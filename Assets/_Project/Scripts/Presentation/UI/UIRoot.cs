@@ -17,6 +17,8 @@ namespace Purge.Presentation.UI
         public ArsenalScreen Arsenal => _arsenal;
         [SerializeField] private CharacterScreen _character;
         public CharacterScreen Character => _character;
+        [SerializeField] private TasksScreen _tasks;
+        public TasksScreen Tasks => _tasks;
         [SerializeField] private RunSetupScreen _runSetup;
         [SerializeField] private LoadingScreen _loading;
         [SerializeField] private ErrorScreen _error;

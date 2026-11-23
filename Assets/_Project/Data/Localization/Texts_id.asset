@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: id
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,19 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - Bahasa Indonesia
+  - Misi harian
+  - Hadiah harian
+  - Misi berganti tengah malam waktu setempat. Ambil hadiahnya sebelum itu.
+  - Ambil sekali sehari. Hari yang terlewat tidak menghapus progres.
+  - 'Kalahkan monster: {0}'
+  - Tuntaskan gelombang {0} kampanye di {1} atau lebih tinggi
+  - 'Tuntaskan gelombang: {0}'
+  - 'Tabrak mati monster: {0}'
+  - Hari {0}
+  - Ambil {0}
+  - Diambil
+  - Hadiah berikutnya besok
+  - Hadiah tidak dapat diambil.
   - PENGATURAN
   - YA
   - TIDAK

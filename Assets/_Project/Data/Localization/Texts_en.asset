@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: en
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,19 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - English
+  - Daily tasks
+  - Daily rewards
+  - New tasks at local midnight. Claim completed tasks before then.
+  - Claim once a day. Missed days keep your place in the cycle.
+  - 'Defeat monsters: {0}'
+  - Clear campaign wave {0} on {1} or higher
+  - 'Clear waves: {0}'
+  - 'Run over monsters: {0}'
+  - Day {0}
+  - Claim {0}
+  - Claimed
+  - Next reward tomorrow
+  - Could not claim the reward.
   - SETTINGS
   - YES
   - NO

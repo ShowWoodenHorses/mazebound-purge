@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Purge.Application.Levels;
+using Purge.Application.Meta;
+using Purge.Application.Platform;
 using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Grid;
@@ -44,6 +47,72 @@ namespace Purge.Tests.EditMode.Progress
         public void TearDown() => Object.DestroyImmediate(_catalogAsset);
 
         private static LevelResult Completed(int kills = 0, int money = 0) => new LevelResult(true, kills, money: money);
+
+        [Test]
+        public void DailyTaskRotationUsesDistinctAvailableConditionsAndPersistsClaims()
+        {
+            var daily = new DailyTasks(_save, _progress, new Catalog(_catalogAsset), new AnalyticsService(null));
+            const int day = 700000;
+            Assert.That(daily.Refresh(day), Is.True);
+            var ids = daily.Tasks.Select(task => task.Id).ToArray();
+            var offers = ids.Select(daily.Offer).ToArray();
+            Assert.That(offers.Length, Is.EqualTo(3));
+            Assert.That(offers.Select(offer => offer.Condition).Distinct().Count(), Is.EqualTo(3));
+            Assert.That(offers.All(offer => offer.Difficulty == 0), Is.True);
+            var offer = offers[0];
+            Assert.That(daily.ClaimTask(offer.Id, day), Is.False);
+            daily.Record(day, offer.Condition, offer.Target);
+            Assert.That(daily.ClaimTask(offer.Id, day), Is.True);
+            _save.Load();
+            Assert.That(daily.Refresh(day), Is.False);
+            CollectionAssert.AreEqual(ids, daily.Tasks.Select(task => task.Id));
+            Assert.That(daily.ClaimTask(offer.Id, day), Is.False);
+            Assert.That(_save.Data.Money, Is.EqualTo(offer.Money));
+            Assert.That(daily.Refresh(day + 1), Is.True);
+            Assert.That(daily.Tasks.All(task => task.Progress == 0 && !task.Claimed), Is.True);
+            Assert.That(daily.Refresh(day), Is.False);
+        }
+
+        [Test]
+        public void DailyRewardSurvivesSkippedDaysAndWrapsAfterSevenClaims()
+        {
+            var daily = new DailyTasks(_save, _progress, new Catalog(_catalogAsset), new AnalyticsService(null));
+            const int firstDay = 700000;
+            for (var slot = 0; slot < DailyTasks.RewardCount; slot++)
+            {
+                var day = firstDay + slot * 3;
+                Assert.That(daily.NextReward, Is.EqualTo(slot));
+                Assert.That(daily.ClaimReward(day), Is.True);
+                _save.Load();
+                Assert.That(daily.ClaimReward(day), Is.False);
+                Assert.That(daily.ClaimReward(day - 1), Is.False);
+            }
+            Assert.That(_save.Data.Money, Is.EqualTo(205));
+            Assert.That(daily.NextReward, Is.Zero);
+            Assert.That(daily.ClaimReward(firstDay + 19), Is.True);
+            Assert.That(_save.Data.Money, Is.EqualTo(220));
+        }
+
+        [Test]
+        public void DailyCloudMergeKeepsTheLatestRewardAndPreservesTaskClaims()
+        {
+            const int day = 700000;
+            var local = _save.Data;
+            local.Daily.TaskDay = day;
+            local.Daily.Tasks.Add(new DailyTaskSave { Id = "kills_60", Progress = 25 });
+            var remote = new SaveData
+            {
+                Money = 35,
+                Daily = new DailySave { TaskDay = day, LastRewardDay = day, NextReward = 4 }
+            };
+            remote.Daily.Tasks.Add(new DailyTaskSave { Id = "kills_60", Progress = 60, Claimed = true });
+            local.MergeFrom(remote);
+            Assert.That(local.Daily.Tasks[0].Progress, Is.EqualTo(60));
+            Assert.That(local.Daily.Tasks[0].Claimed, Is.True);
+            Assert.That(local.Daily.LastRewardDay, Is.EqualTo(day));
+            Assert.That(local.Daily.NextReward, Is.EqualTo(4));
+            Assert.That(local.Money, Is.EqualTo(35));
+        }
 
         // ------------------------------------------------------------ Money (stage 6d)
 

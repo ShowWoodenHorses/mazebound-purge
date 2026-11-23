@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Purge.Application.Assets;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
+using Purge.Application.Meta;
 using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Composition;
@@ -126,6 +127,60 @@ namespace Purge.Tests.PlayMode
             Assert.AreEqual(catalog.Levels[0].LevelId, _flow.CurrentLevelId);
             Assert.IsNotNull(save.Data.FindItem(desert.Id));
             Assert.AreEqual(0, save.Data.Money);
+        });
+
+        [UnityTest]
+        public IEnumerator DailyTasksTrackARealKillAndPayOnlyWhenClaimedFromTheMenu() => Async(async () =>
+        {
+            var save = _container.Resolve<SaveService>();
+            var ui = _container.Resolve<UIRoot>();
+            var day = DailyTasks.LocalDay;
+            var killTask = new DailyTaskSave { Id = "kills_60", Progress = 59 };
+            save.Data.Daily = new DailySave
+            {
+                TaskDay = day,
+                Tasks = new List<DailyTaskSave>
+                {
+                    killTask, new DailyTaskSave { Id = "wave_2_easy" }, new DailyTaskSave { Id = "waves_3" }
+                }
+            };
+            save.Data.Run = null;
+            Button ButtonNamed(Component screen, string name) =>
+                screen.GetComponentsInChildren<Button>(true).Single(button => button.name == name);
+
+            await _flow.StartLevel("Level_Forest_01", new LevelLaunchOptions(survival: true));
+            Assert.That(_flow.State, Is.EqualTo(GameFlowState.Playing), _flow.ErrorMessage);
+            var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+            var horde = level.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            Assert.That(waves.StartNextWave(), Is.True);
+            horde.Tick(0.05f);
+            waves.Tick(0.05f);
+            var living = Enumerable.Range(0, horde.HighWater)
+                .Where(slot => Purge.Gameplay.Horde.HordeSystem.IsAlive(horde.States[slot])).ToArray();
+            Assert.That(living, Is.Not.Empty);
+            Assert.That(horde.Damage(living[0], 100000f), Is.True);
+            Assert.That(killTask.Progress, Is.EqualTo(60));
+            Assert.That(killTask.Claimed, Is.False);
+
+            await _flow.ExitToMenu();
+            var before = save.Data.Money;
+            ButtonNamed(ui.MainMenu, "TasksButton").onClick.Invoke();
+            Assert.That(ui.Tasks.IsVisible, Is.True);
+            var claim = ButtonNamed(ui.Tasks, "Claim0");
+            Assert.That(claim.interactable, Is.True);
+            claim.onClick.Invoke();
+            Assert.That(save.Data.Money, Is.EqualTo(before + 35));
+            Assert.That(claim.interactable, Is.False);
+            claim.onClick.Invoke();
+            Assert.That(save.Data.Money, Is.EqualTo(before + 35));
+
+            var loginReward = ButtonNamed(ui.Tasks, "ClaimReward");
+            loginReward.onClick.Invoke();
+            Assert.That(save.Data.Money, Is.EqualTo(before + 50));
+            Assert.That(loginReward.interactable, Is.False);
+            ButtonNamed(ui.Tasks, "Back").onClick.Invoke();
+            Assert.That(ui.MainMenu.IsVisible, Is.True);
         });
 
         [UnityTest]

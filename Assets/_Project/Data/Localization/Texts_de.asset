@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: de
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,21 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - Deutsch
+  - Tagesaufgaben
+  - Tagesbelohnungen
+  - Die Aufgaben wechseln um Mitternacht Ortszeit. Hole deine Belohnungen vorher
+    ab.
+  - "Hole die Belohnung einmal t\xE4glich ab. Ausgelassene Tage \xE4ndern deinen
+    Fortschritt nicht."
+  - 'Besiege Monster: {0}'
+  - "Schaffe Kampagnenwelle {0} auf {1} oder h\xF6her"
+  - 'Schaffe Wellen: {0}'
+  - "\xDCberfahre Monster: {0}"
+  - Tag {0}
+  - '{0} abholen'
+  - Abgeholt
+  - "N\xE4chste Belohnung morgen"
+  - Belohnung konnte nicht abgeholt werden.
   - EINSTELLUNGEN
   - JA
   - NEIN

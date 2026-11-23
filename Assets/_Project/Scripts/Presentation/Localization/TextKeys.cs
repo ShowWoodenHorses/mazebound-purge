@@ -7,6 +7,19 @@ namespace Purge.Presentation.Localization
     /// </summary>
     public static class TextKeys
     {
+        public const string TasksDaily = "tasks.daily";
+        public const string TasksRewards = "tasks.rewards";
+        public const string TasksHint = "tasks.hint";
+        public const string TasksCycleHint = "tasks.cycle_hint";
+        public const string TasksKills = "tasks.kills";
+        public const string TasksWave = "tasks.wave";
+        public const string TasksWaves = "tasks.waves";
+        public const string TasksRam = "tasks.ram";
+        public const string TasksDay = "tasks.day";
+        public const string TasksClaim = "tasks.claim";
+        public const string TasksClaimed = "tasks.claimed";
+        public const string TasksClaimedToday = "tasks.claimed_today";
+        public const string TasksClaimFailed = "tasks.claim_failed";
         public const string SettingsGameplayHints = "settings.gameplay_hints";
         public const string GuidedDesertPurchase = "tutorial.menu.buy_desert";
         public const string GameplayHintTitle = "hint.title";

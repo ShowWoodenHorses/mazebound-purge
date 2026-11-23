@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
+using Purge.Application.Meta;
 using Purge.Application.Save;
 using Purge.Application.Platform;
 using Purge.Core.Common;
@@ -14,7 +15,7 @@ using VContainer.Unity;
 namespace Purge.Composition
 {
     /// <summary>Starts the application once the ProjectLifetimeScope is built: UI, sound, input, services, main menu.</summary>
-    public sealed class ApplicationEntryPoint : IAsyncStartable
+    public sealed class ApplicationEntryPoint : IAsyncStartable, ITickable
     {
         private readonly GameFlow _flow;
         private readonly ScreenRouter _screens;
@@ -29,12 +30,18 @@ namespace Purge.Composition
         private readonly ILevelCatalog _catalog;
         private readonly SaveService _save;
         private readonly MenuPodiumPresenter _podium;
+        private readonly DailyTasks _daily;
+        private bool _ready;
+        private int _day;
+        private float _nextDayCheck;
+        private float _nextDailySave;
 
         public ApplicationEntryPoint(GameFlow flow, ScreenRouter screens, PauseController pause, SettingsPresenter settings,
             AppAudioPresenter audio, LocalizationPresenter localization, GameAnalytics analytics, AppFocusController focus,
             PlatformEvents platformEvents, PlatformService platform, ILevelCatalog catalog, SaveService save,
-            MenuPodiumPresenter podium)
+            MenuPodiumPresenter podium, DailyTasks daily)
         {
+            _daily = daily;
             _podium = podium;
             _save = save;
             _catalog = catalog;
@@ -69,10 +76,30 @@ namespace Purge.Composition
 
             await _flow.InitializeApplication();
             if (_flow.State == GameFlowState.Error || cancellation.IsCancellationRequested) return;
+            _ready = true;
             // A new player on a site that wants it lands in gameplay straight away: no menu at all (its music would
             // start and be unloaded at once; in a browser waiting for the first click that breaks the deferred play).
             if (FirstLevelForNewPlayer() is { } first) await _flow.StartLevel(first);
             else await _flow.OpenMainMenu();
+        }
+
+        public void Tick()
+        {
+            if (!_ready) return;
+            var now = UnityEngine.Time.unscaledTime;
+            if (now >= _nextDayCheck)
+            {
+                _nextDayCheck = now + 1f;
+                var day = DailyTasks.LocalDay;
+                if (day != _day)
+                {
+                    _day = day;
+                    _screens.RefreshDaily();
+                }
+            }
+            if (now < _nextDailySave) return;
+            _nextDailySave = now + 10f;
+            _daily.Flush();
         }
 
         /// <summary>

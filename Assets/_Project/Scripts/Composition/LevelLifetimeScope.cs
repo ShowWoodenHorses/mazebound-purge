@@ -153,6 +153,7 @@ namespace Purge.Composition
             // Registered after the wave and pickup systems, before the tutorial UI.
             builder.Register<TutorialSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
             builder.Register<LevelAnalytics>(Lifetime.Singleton).As<ILevelLoadStep, ILevelTickable, ILevelLateTickable>();
+            builder.Register<Purge.Application.Meta.LevelDailyTasks>(Lifetime.Singleton).As<ILevelLoadStep>();
             // The simulation's pace (stage 8a: a boss's death slows it for a moment).
             builder.Register<LevelClock>(Lifetime.Singleton);
             builder.Register<LevelRuntime>(Lifetime.Singleton);

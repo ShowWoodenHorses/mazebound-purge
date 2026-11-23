@@ -15,6 +15,19 @@ MonoBehaviour:
   _language: tr
   _keys:
   - language.name
+  - tasks.daily
+  - tasks.rewards
+  - tasks.hint
+  - tasks.cycle_hint
+  - tasks.kills
+  - tasks.wave
+  - tasks.waves
+  - tasks.ram
+  - tasks.day
+  - tasks.claim
+  - tasks.claimed
+  - tasks.claimed_today
+  - tasks.claim_failed
   - common.settings
   - common.yes
   - common.no
@@ -526,6 +539,20 @@ MonoBehaviour:
   - hint.survival
   _texts:
   - "T\xFCrk\xE7e"
+  - "G\xFCnl\xFCk g\xF6revler"
+  - "G\xFCnl\xFCk \xF6d\xFCller"
+  - "G\xF6revler yerel saatle gece yar\u0131s\u0131 yenilenir. \xD6d\xFCllerini \xF6nceden
+    al."
+  - "G\xFCnde bir kez al. G\xFCn atlarsan kald\u0131\u011F\u0131n yerden devam edersin."
+  - "Canavar \xF6ld\xFCr: {0}"
+  - "Seferde {0}. dalgay\u0131 {1} veya \xFCst\xFCnde bitir"
+  - 'Dalga bitir: {0}'
+  - 'Canavar ez: {0}'
+  - "{0}. g\xFCn"
+  - '{0} al'
+  - "Al\u0131nd\u0131"
+  - "Sonraki \xF6d\xFCl yar\u0131n"
+  - "\xD6d\xFCl al\u0131namad\u0131."
   - AYARLAR
   - EVET
   - HAYIR

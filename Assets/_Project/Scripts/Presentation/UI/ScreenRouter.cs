@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
+using Purge.Application.Meta;
 using Purge.Application.Platform;
 using Purge.Application.Save;
 using Purge.Application.Services;
+using Purge.Core.Monsters;
 using Purge.Presentation.Localization;
 using UnityEngine;
 
@@ -35,6 +37,9 @@ namespace Purge.Presentation.UI
         private readonly Purge.Application.Meta.CharacterTree _tree;
         private readonly CharacterPresenter _character;
         private bool _characterOpen;
+        private readonly DailyTasks _daily;
+        private readonly string[] _shownTasks = new string[DailyTasks.OfferCount];
+        private bool _tasksOpen;
         private readonly List<KeyValuePair<string, string>> _devLevels = new List<KeyValuePair<string, string>>();
         private readonly SaveService _save;
         private readonly SharedDefinitionsService _shared;
@@ -46,8 +51,9 @@ namespace Purge.Presentation.UI
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
             LocalizationService texts, IInputService input = null, AccountService account = null,
             RunSetupPresenter setup = null, ArsenalPresenter arsenal = null, SaveService save = null,
-            SharedDefinitionsService shared = null, Purge.Application.Meta.CharacterTree tree = null)
+            SharedDefinitionsService shared = null, Purge.Application.Meta.CharacterTree tree = null, DailyTasks daily = null)
         {
+            _daily = daily;
             _arsenal = arsenal;
             _tree = tree;
             if (tree != null) _character = new CharacterPresenter(tree, texts);
@@ -78,6 +84,13 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ArsenalClicked += OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted += OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked += OnCharacter;
+            _ui.MainMenu.TasksClicked += OnTasks;
+            if (_ui.Tasks != null)
+            {
+                _ui.Tasks.BackClicked += OnTasksBack;
+                _ui.Tasks.TaskClicked += ClaimTask;
+                _ui.Tasks.RewardClicked += ClaimDailyReward;
+            }
             if (_ui.Character != null && _character != null)
             {
                 _character.Attach(_ui.Character);
@@ -148,6 +161,13 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ArsenalClicked -= OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted -= OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked -= OnCharacter;
+            _ui.MainMenu.TasksClicked -= OnTasks;
+            if (_ui.Tasks != null)
+            {
+                _ui.Tasks.BackClicked -= OnTasksBack;
+                _ui.Tasks.TaskClicked -= ClaimTask;
+                _ui.Tasks.RewardClicked -= ClaimDailyReward;
+            }
             if (_ui.Character != null)
             {
                 _ui.Character.BackClicked -= OnCharacterBack;
@@ -214,6 +234,7 @@ namespace Purge.Presentation.UI
                 _setup?.Close();
                 _arsenal?.Close();
                 _characterOpen = false;
+                _tasksOpen = false;
             }
             if (menu) RefreshMenus();
             if (inLevel) _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));
@@ -229,8 +250,9 @@ namespace Purge.Presentation.UI
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
             var setupOpen = _setup != null && _setup.IsOpen;
-            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !_characterOpen && !(_arsenal?.IsOpen ?? false));
+            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !_characterOpen && !_tasksOpen && !(_arsenal?.IsOpen ?? false));
             _ui.Character?.SetVisible(menu && _characterOpen);
+            _ui.Tasks?.SetVisible(menu && _tasksOpen);
             if (_ui.DevLevels != null) _ui.DevLevels.SetVisible(menu && _devLevelsOpen);
             if (_ui.RunSetup != null) _ui.RunSetup.SetVisible(menu && setupOpen);
             _ui.Loading.SetVisible(loading);
@@ -289,6 +311,84 @@ namespace Purge.Presentation.UI
             Show(_flow.State);
         }
 
+        private void OnTasks()
+        {
+            if (_flow.State != GameFlowState.MainMenu || _daily == null || _ui.Tasks == null) return;
+            _tasksOpen = true;
+            _ui.Tasks.SetStatus(string.Empty);
+            Show(_flow.State);
+        }
+
+        private void OnTasksBack()
+        {
+            _tasksOpen = false;
+            Show(_flow.State);
+        }
+
+        public void RefreshDaily()
+        {
+            if (_flow.State != GameFlowState.MainMenu || _daily == null || _ui.Tasks == null) return;
+            var day = DailyTasks.LocalDay;
+            _daily.Refresh(day);
+            var rewardAvailable = _daily.CanClaimReward(day);
+            var available = rewardAvailable;
+            foreach (var task in _daily.Tasks) available |= _daily.CanClaimTask(task, day);
+            _ui.MainMenu.SetTasksIndicator(available);
+            if (!_tasksOpen) return;
+
+            var screen = _ui.Tasks;
+            screen.SetMoney(_progress.Money);
+            screen.SetStatus(string.Empty);
+            for (var i = 0; i < _shownTasks.Length; i++)
+            {
+                var task = i < _daily.Tasks.Count ? _daily.Tasks[i] : null;
+                var offer = task == null ? null : _daily.Offer(task.Id);
+                _shownTasks[i] = offer?.Id;
+                if (offer == null)
+                {
+                    screen.SetTask(i, string.Empty, string.Empty, string.Empty, false);
+                    continue;
+                }
+                var objective = offer.Condition switch
+                {
+                    DailyCondition.Kills => _texts.Format(TextKeys.TasksKills, offer.Target),
+                    DailyCondition.CampaignWave => _texts.Format(TextKeys.TasksWave, offer.Target,
+                        _texts.Get(TextKeys.DifficultyPrefix + ((DifficultyLevel)offer.Difficulty).ToString().ToLowerInvariant())),
+                    DailyCondition.ClearedWaves => _texts.Format(TextKeys.TasksWaves, offer.Target),
+                    DailyCondition.RamKills => _texts.Format(TextKeys.TasksRam, offer.Target),
+                    _ => string.Empty
+                };
+                var progress = $"{Math.Min(task.Progress, offer.Target)} / {offer.Target}";
+                var claimable = _daily.CanClaimTask(task, day);
+                var label = task.Claimed ? _texts.Get(TextKeys.TasksClaimed) :
+                    claimable ? _texts.Format(TextKeys.TasksClaim, offer.Money) : offer.Money.ToString();
+                screen.SetTask(i, objective, progress, label, claimable);
+            }
+            for (var i = 0; i < _daily.Rewards.Count; i++)
+                screen.SetRewardDay(i, _texts.Format(TextKeys.TasksDay, i + 1), _daily.Rewards[i], i == _daily.NextReward);
+            screen.SetRewardClaim(rewardAvailable
+                ? _texts.Format(TextKeys.TasksClaim, _daily.Rewards[_daily.NextReward])
+                : _texts.Get(TextKeys.TasksClaimedToday), rewardAvailable);
+        }
+
+        private void ClaimTask(int slot)
+        {
+            if (!_tasksOpen || _shownTasks[slot] == null) return;
+            ShowDailyClaimResult(_daily.ClaimTask(_shownTasks[slot], DailyTasks.LocalDay));
+        }
+
+        private void ClaimDailyReward()
+        {
+            if (_tasksOpen) ShowDailyClaimResult(_daily.ClaimReward(DailyTasks.LocalDay));
+        }
+
+        private void ShowDailyClaimResult(bool claimed)
+        {
+            RefreshDaily();
+            if (claimed) _ui.MainMenu.SetMoney(_progress.Money);
+            else _ui.Tasks.SetStatus(_texts.Get(TextKeys.TasksClaimFailed));
+        }
+
         private void ConfirmCharacterReset()
         {
             if (_tree == null || _ui.Confirm == null || !_characterOpen) return;
@@ -302,8 +402,10 @@ namespace Purge.Presentation.UI
         private void RefreshMenus()
         {
             var levels = _catalog.Levels;
-            _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: _ui.Character != null && _tree != null, tasks: false, shop: false);
+            _ui.MainMenu.SetTabs(arsenal: _ui.Arsenal != null, character: _ui.Character != null && _tree != null,
+                tasks: _ui.Tasks != null && _daily != null, shop: false);
             _ui.MainMenu.SetMoney(_progress.Money);
+            RefreshDaily();
             var availableNode = false;
             if (_ui.Character != null && _tree != null)
                 foreach (var node in Purge.Application.Meta.CharacterTree.Nodes)
@@ -393,6 +495,7 @@ namespace Purge.Presentation.UI
         private void OnLanguageChanged()
         {
             if (_characterOpen) _character.Refresh();
+            if (_tasksOpen) RefreshDaily();
             var state = _flow.State;
             if (state == GameFlowState.Paused || state == GameFlowState.Playing || state == GameFlowState.Tip)
                 _ui.Hud.SetLevelName(LevelCaption(_flow.CurrentLevelId));

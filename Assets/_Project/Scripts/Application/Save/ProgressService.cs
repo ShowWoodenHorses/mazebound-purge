@@ -389,6 +389,7 @@ namespace Purge.Application.Save
             Data.Money = 0;
             Data.Levels.Clear();
             Data.Survival.Clear();
+            Data.Daily = new DailySave();
             Data.Arsenal.Clear();
             Data.CharacterNodes.Clear();
             Data.SeenHints.Clear();

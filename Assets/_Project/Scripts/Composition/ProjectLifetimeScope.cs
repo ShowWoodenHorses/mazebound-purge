@@ -60,6 +60,7 @@ namespace Purge.Composition
             builder.Register<SharedDefinitionsService>(Lifetime.Singleton).AsSelf().As<IApplicationService>();
             builder.Register<LevelCatalogService>(Lifetime.Singleton).As<ILevelCatalog, IApplicationService>();
             builder.Register<ProgressService>(Lifetime.Singleton).As<IProgressService>();
+            builder.Register<Purge.Application.Meta.DailyTasks>(Lifetime.Singleton);
             builder.Register<Purge.Application.Meta.CharacterTree>(Lifetime.Singleton);
             builder.Register<Purge.Application.Meta.RunPreparation>(Lifetime.Singleton);
 

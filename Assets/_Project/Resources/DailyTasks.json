@@ -1,0 +1,14 @@
+{
+  "Offers": [
+    { "Id": "kills_60", "Condition": 0, "Target": 60, "Money": 35 },
+    { "Id": "kills_100", "Condition": 0, "Target": 100, "Money": 50 },
+    { "Id": "wave_2_easy", "Condition": 1, "Target": 2, "Money": 35 },
+    { "Id": "wave_4_easy", "Condition": 1, "Target": 4, "Money": 55 },
+    { "Id": "wave_3_normal", "Condition": 1, "Target": 3, "Difficulty": 1, "Money": 65 },
+    { "Id": "waves_3", "Condition": 2, "Target": 3, "Money": 35 },
+    { "Id": "waves_5", "Condition": 2, "Target": 5, "Money": 50 },
+    { "Id": "ram_5", "Condition": 3, "Target": 5, "Money": 35 },
+    { "Id": "ram_10", "Condition": 3, "Target": 10, "Money": 50 }
+  ],
+  "Rewards": [15, 20, 20, 25, 30, 35, 60]
+}

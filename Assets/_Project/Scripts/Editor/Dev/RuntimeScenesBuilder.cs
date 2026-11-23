@@ -306,6 +306,7 @@ namespace Purge.Editor.Dev
             SetReference(root, "_runSetup", BuildRunSetup(parent));
             SetReference(root, "_arsenal", BuildArsenal(parent));
             SetReference(root, "_character", BuildCharacter(parent));
+            SetReference(root, "_tasks", BuildTasks(parent));
             SetReference(root, "_loading", BuildLoading(parent));
             SetReference(root, "_hud", BuildHud(parent));
             SetReference(root, "_tutorial", BuildTutorial(parent)); // over the HUD, under the pause and result screens
@@ -430,6 +431,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_arsenalButton", arsenal);
             SetReference(screen, "_characterButton", character);
             SetReference(screen, "_tasksButton", tasks);
+            SetReference(screen, "_tasksDot", BuildPurchaseDot(tasks.transform));
             SetReference(screen, "_shopButton", shop);
             SetReference(screen, "_settingsButton", settings);
             SetReference(screen, "_money", moneyText);

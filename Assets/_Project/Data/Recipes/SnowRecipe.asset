@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7381d61aacb1c046ad207b41f255958, type: 3}
+  m_Name: SnowRecipe
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Generation.BiomeRecipe
+  _id: snow_recipe
+  _steps:
+  - rid: 8342087609972424769
+  - rid: 8342087609972424770
+  - rid: 8342087609972424771
+  - rid: 8342087609972424772
+  - rid: 8342087609972424773
+  - rid: 8342087609972424774
+  - rid: 8342087609972424775
+  - rid: 8342087609972424776
+  - rid: 8342087609972424777
+  - rid: 8342087609972424778
+  references:
+    version: 2
+    RefIds:
+    - rid: 8342087609972424769
+      type: {class: PerimeterStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _thickness: 1
+    - rid: 8342087609972424770
+      type: {class: StartStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _position: {x: 0.17, y: 0.5}
+        _clearRadius: 2.5
+    - rid: 8342087609972424771
+      type: {class: ArenaStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _size: 16
+        _ring: 2
+        _minDistance: 20
+        _minEntries: 3
+        _maxEntries: 4
+        _entryWidth: 3
+    - rid: 8342087609972424772
+      type: {class: SpawnPointsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _minCount: 6
+        _maxCount: 8
+        _edgeBand: 6
+        _minDistance: 12
+        _startViewRadius: 10
+        _minSpacing: 10
+    - rid: 8342087609972424773
+      type: {class: ClearingsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _minCount: 3
+        _maxCount: 5
+        _minSize: 6
+        _maxSize: 10
+    - rid: 8342087609972424774
+      type: {class: TrailsStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _width: 3
+        _wander: 1.5
+        _wanderScale: 0.15
+    - rid: 8342087609972424775
+      type: {class: SnowTerrainStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data: 
+    - rid: 8342087609972424776
+      type: {class: ObstaclesStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _obstacles:
+        - _obstacle: {fileID: 11400000, guid: 72b7690f1bc6b194981389b952c5b3c3, type: 2}
+          _weight: 8
+        - _obstacle: {fileID: 11400000, guid: e74038749402533478c64197ac9db16b, type: 2}
+          _weight: 2
+        _density: 0.2
+        _maxChunkShare: 0.35
+        _groveScale: 0.15
+    - rid: 8342087609972424777
+      type: {class: VehiclesStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _vehicles:
+        - {fileID: 11400000, guid: ef0a59940228c2c49924e3e184342d63, type: 2}
+        - {fileID: 11400000, guid: 42bc1ec0aed349149a87604723b5d6ea, type: 2}
+        _runway: 8
+        _startDistance: 6
+        _spacing: 12
+    - rid: 8342087609972424778
+      type: {class: DecorStep, ns: Purge.Core.Generation, asm: Purge.Core}
+      data:
+        _density: 0.15
+        _maxHeight: 0.3
+        _grassDensity: 0.7

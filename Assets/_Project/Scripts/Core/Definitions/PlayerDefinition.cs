@@ -19,6 +19,8 @@ namespace Purge.Core.Definitions
 
         [Tooltip("Share of the speed kept while the player's centre is in a snowdrift cell.")]
         [SerializeField, Range(0.1f, 1f)] private float _snowdriftSpeed = 0.6f;
+        [Tooltip("Fraction of ground acceleration and braking applied on ice.")]
+        [SerializeField, Range(0.1f, 1f)] private float _iceAcceleration = 0.3f;
 
         [Tooltip("Half size of the player's square footprint used for collisions with walls and closed doors. " +
                  "Must be below 0.5 so the player fits a one-cell corridor.")]
@@ -56,6 +58,7 @@ namespace Purge.Core.Definitions
 
         public float MoveSpeed => _moveSpeed;
         public float SnowdriftSpeed => _snowdriftSpeed;
+        public float IceAcceleration => _iceAcceleration;
         public float BodyHalfSize => _bodyHalfSize;
         public float CornerAssist => _cornerAssist;
         public int MaxHealth => _maxHealth;

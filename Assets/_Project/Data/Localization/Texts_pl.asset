@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - Polski
   - Zadania dzienne
@@ -1114,6 +1117,7 @@ MonoBehaviour:
     si\u0119 w p\xF3\u0142 sekundy."
   - "Ulepsz obie karty o tym samym numerze \u25C6 do maksimum, aby odblokowa\u0107
     ewolucj\u0119."
+  - "Na lodzie wolniej przyspieszasz i hamujesz. Zwolnij przed skr\u0119tem."
   - POZIOMY
   - PRZETRWANIE
   - REKORDY
@@ -1125,4 +1129,7 @@ MonoBehaviour:
   - FALA {0}
   - "Przetrwaj jak najwi\u0119cej fal. W co dziesi\u0105tej fali pojawia si\u0119
     boss. Ka\u017Cda lokacja ma w\u0142asny rekord."
+  - "\u017Bywio\u0142ak lodu"
+  - "Opu\u015B\u0107 kr\u0105g przed zamro\u017Ceniem. Lodowe filary blokuj\u0105
+    drog\u0119, dop\xF3ki si\u0119 nie roztopi\u0105."
   _missing: []

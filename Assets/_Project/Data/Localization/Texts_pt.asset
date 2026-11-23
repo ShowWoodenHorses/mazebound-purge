@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - "Portugu\xEAs"
   - "Tarefas di\xE1rias"
@@ -1101,6 +1104,7 @@ MonoBehaviour:
   - "Pressione Arremessar para p\xF4r uma mina aos seus p\xE9s. Ela arma em meio
     segundo."
   - "Maximize as duas cartas com o mesmo n\xFAmero \u25C6 para liberar a evolu\xE7\xE3o."
+  - No gelo, aceleras e travas mais devagar. Abranda antes de virar.
   - FASES
   - "SOBREVIV\xCANCIA"
   - RECORDES
@@ -1112,4 +1116,7 @@ MonoBehaviour:
   - ONDA {0}
   - "Sobreviva ao maior n\xFAmero de ondas que puder. A cada dez ondas surge um chefe.
     Cada local tem seu pr\xF3prio recorde."
+  - Elemental de gelo
+  - "Sai do c\xEDrculo antes do congelamento. Os pilares de gelo bloqueiam a passagem
+    at\xE9 derreterem."
   _missing: []

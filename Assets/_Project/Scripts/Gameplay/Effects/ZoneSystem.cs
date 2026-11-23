@@ -7,6 +7,7 @@ using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Gameplay.Combat;
 using Purge.Gameplay.Doors;
+using Purge.Gameplay.Grid;
 using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
@@ -53,9 +54,10 @@ namespace Purge.Gameplay.Effects
         private int[] _cells;
         private float _tickTimer;
         private float _playerDamage;
+        private readonly CellBlockers _blockers;
 
         public ZoneSystem(LevelGrid grid, DoorSystem doors, CombatTargets targets, HordeSystem horde, StatusSystem statuses,
-            PlayerSystem player, PlayerHealth health)
+            PlayerSystem player, PlayerHealth health, CellBlockers blockers = null)
         {
             _grid = grid;
             _doors = doors;
@@ -64,6 +66,7 @@ namespace Purge.Gameplay.Effects
             _statuses = statuses;
             _player = player;
             _health = health;
+            _blockers = blockers;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.InitializeSystems;
@@ -150,6 +153,14 @@ namespace Purge.Gameplay.Effects
 
             var index = _grid.ToIndex(cell);
             var code = (byte)(kind + 1);
+            var oldTerrain = _kind[index] == 0 ? null : _kinds[_kind[index] - 1].Terrain;
+            if (oldTerrain?.Kind == ZoneTerrainKind.IcePillar && _kind[index] != code) return false;
+            if (zone.Terrain != null)
+            {
+                if (_grid.GetCell(cell) != CellType.Floor || _grid.Has(cell, CellFlags.BlocksMovement)) return false;
+                if (zone.Terrain.Kind == ZoneTerrainKind.IcePillar && _kind[index] != code && !CanPlacePillar(cell))
+                    return false;
+            }
             if (_kind[index] == code)
             {
                 if (_left[index] < duration)
@@ -169,6 +180,8 @@ namespace Purge.Gameplay.Effects
                 if (Count >= MaxCells) return false;
                 _cells[Count++] = index;
             }
+            else
+                SetTerrain(cell, oldTerrain, false);
 
             _kind[index] = code;
             _left[index] = duration;
@@ -177,6 +190,7 @@ namespace Purge.Gameplay.Effects
             _steps[index] = (byte)Mathf.Clamp(steps, 0, 255);
             _hostile[index] = hostile;
             _weaponSources[index] = null;
+            SetTerrain(cell, zone.Terrain, true);
             Version++;
             return true;
         }
@@ -188,16 +202,20 @@ namespace Purge.Gameplay.Effects
         public int PlaceArea(Vector2 at, int floor, float radius, ZoneDefinition zone, float duration, float strength = 1f,
             bool hostile = false)
         {
+            if (zone == null) return 0;
             var cx = Mathf.FloorToInt(at.x + 0.5f);
             var cy = Mathf.FloorToInt(at.y + 0.5f);
             var reach = Mathf.CeilToInt(radius);
             var origin = new Vector2(cx, cy);
             var placed = 0;
+            var pillars = zone.Terrain?.Kind == ZoneTerrainKind.IcePillar;
             for (var y = cy - reach; y <= cy + reach; y++)
             for (var x = cx - reach; x <= cx + reach; x++)
             {
                 var offset = new Vector2(x - cx, y - cy);
                 if (offset.sqrMagnitude > radius * radius + 0.01f) continue;
+                if (pillars && (x != cx && y != cy || offset.sqrMagnitude < (reach - 1) * (reach - 1) + 0.01f))
+                    continue;
                 var cell = new GridPosition(x, y, floor);
                 if ((x != cx || y != cy) && !_targets.IsClear(origin, new Vector2(x, y), floor)) continue;
                 if (Place(cell, zone, duration, strength, hostile)) placed++;
@@ -218,8 +236,7 @@ namespace Purge.Gameplay.Effects
                 var index = _cells[i];
                 var floor = index / floorSize;
                 if (!barrier.Contains(new Vector2(index % floorSize % width, index % floorSize / width), floor)) continue;
-                _kind[index] = 0;
-                _cells[i] = _cells[--Count];
+                RemoveAt(i);
                 removed++;
             }
 
@@ -230,9 +247,7 @@ namespace Purge.Gameplay.Effects
         /// <summary>Removes every zone (level stop, tests).</summary>
         public void Clear()
         {
-            for (var i = 0; i < Count; i++)
-                _kind[_cells[i]] = 0;
-            Count = 0;
+            while (Count > 0) RemoveAt(Count - 1);
             Version++;
         }
 
@@ -292,8 +307,7 @@ namespace Purge.Gameplay.Effects
                 _left[index] -= interval;
                 if (_left[index] > 0f) continue;
 
-                _kind[index] = 0;
-                _cells[i] = _cells[--Count];
+                RemoveAt(i);
                 Version++;
             }
         }
@@ -348,6 +362,35 @@ namespace Purge.Gameplay.Effects
 
             _kinds.Add(zone);
             return _kinds.Count - 1;
+        }
+
+        private bool CanPlacePillar(GridPosition cell)
+        {
+            if (_blockers == null || _blockers.BlocksMovement(cell) || _horde.AnyBodyInCell(cell))
+                return false;
+
+            if (!_player.IsSpawned || _player.Floor != cell.Floor) return true;
+            var half = _player.Definition.BodyHalfSize + 0.5f;
+            return Mathf.Abs(_player.Position.x - cell.X) >= half || Mathf.Abs(_player.Position.y - cell.Y) >= half;
+        }
+
+        private void SetTerrain(GridPosition cell, ZoneTerrain terrain, bool active)
+        {
+            if (terrain == null) return;
+            if (terrain.Kind == ZoneTerrainKind.Ice)
+                _grid.SetTemporaryIce(cell, active);
+            else if (active)
+                _blockers?.Add(cell);
+            else
+                _blockers?.Remove(cell);
+        }
+
+        private void RemoveAt(int slot)
+        {
+            var index = _cells[slot];
+            SetTerrain(_grid.ToPosition(index), _kinds[_kind[index] - 1].Terrain, false);
+            _kind[index] = 0;
+            _cells[slot] = _cells[--Count];
         }
     }
 }

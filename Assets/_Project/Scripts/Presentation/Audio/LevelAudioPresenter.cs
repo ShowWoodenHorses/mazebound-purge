@@ -220,15 +220,22 @@ namespace Purge.Presentation.Audio
         {
             var catalog = Catalog;
             var cell = PlayerMovement.CellOf(position, _player.Floor);
-            var steps = _level.Geometry.GetSurface(cell) switch
+            var steps = _player.IsOnIce ? FloorStepSound.Ice : _level.Geometry.GetSurface(cell) switch
             {
                 CellSurface.Grass => FloorStepSound.Grass,
                 CellSurface.Ground => FloorStepSound.Ground,
+                CellSurface.Ice => FloorStepSound.Ice,
                 _ => _level.VisualTheme != null ? _level.VisualTheme.FloorSteps : FloorStepSound.Default,
             };
-            var cue = steps == FloorStepSound.Grass ? catalog.FootstepGrass
-                : steps == FloorStepSound.Ground ? catalog.FootstepGround
-                : steps == FloorStepSound.Stone ? catalog.FootstepStone : null;
+            var cue = steps switch
+            {
+                FloorStepSound.Grass => catalog.FootstepGrass,
+                FloorStepSound.Ground => catalog.FootstepGround,
+                FloorStepSound.Stone => catalog.FootstepStone,
+                FloorStepSound.Snow => catalog.FootstepSnow,
+                FloorStepSound.Ice => catalog.FootstepIce,
+                _ => null,
+            };
             return cue == null || cue.IsEmpty ? catalog.Footstep : cue;
         }
 

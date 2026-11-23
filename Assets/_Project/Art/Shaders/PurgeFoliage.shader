@@ -13,6 +13,7 @@ Shader "Purge/Foliage"
         [Toggle(_ALPHATEST_ON)] _AlphaTest ("Alpha Test", Float) = 1
         _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
+        [Toggle(PURGE_WINTER)] _Winter ("Winter Palette and Snow", Float) = 0
     }
 
     SubShader
@@ -33,6 +34,7 @@ Shader "Purge/Foliage"
             #pragma target 3.5
             #pragma multi_compile _ PURGE_VISIBILITY
             #pragma shader_feature_local _ALPHATEST_ON
+            #pragma shader_feature_local _ PURGE_WINTER
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc"
             #include "PurgeLighting.cginc"
@@ -52,6 +54,9 @@ Shader "Purge/Foliage"
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 half3 light : TEXCOORD1;
+                #if PURGE_WINTER
+                float4 winter : TEXCOORD2;
+                #endif
             };
 
             v2f vert(appdata_full v)
@@ -67,6 +72,9 @@ Shader "Purge/Foliage"
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 float3 normal = UnityObjectToWorldNormal(v.normal);
+                #if PURGE_WINTER
+                o.winter = float4(worldPos, normal.y);
+                #endif
                 o.light = ShadeSH9(half4(normal, 1)) +
                           _LightColor0.rgb * saturate(dot(normal, _WorldSpaceLightPos0.xyz)) +
                           PurgeExtraLightGeometryVertex(worldPos, normal);
@@ -78,6 +86,9 @@ Shader "Purge/Foliage"
                 fixed4 albedo = tex2D(_MainTex, i.uv) * _Color;
                 #if _ALPHATEST_ON
                 clip(albedo.a - _Cutoff);
+                #endif
+                #if PURGE_WINTER
+                albedo.rgb = PurgeWinterAlbedo(albedo.rgb, i.winter.xyz, i.winter.w);
                 #endif
                 return fixed4(albedo.rgb * i.light, 1);
             }

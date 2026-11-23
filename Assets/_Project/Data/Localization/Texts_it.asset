@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - Italiano
   - Missioni giornaliere
@@ -1100,6 +1103,7 @@ MonoBehaviour:
   - La granata stordisce e poi acceca i mostri.
   - Premi Lancia per posare una mina ai tuoi piedi. Si arma in mezzo secondo.
   - "Porta al massimo le due carte con lo stesso numero \u25C6 per sbloccare l\u2019evoluzione."
+  - "Sul ghiaccio acceleri e freni pi\xF9 lentamente. Rallenta prima di girare."
   - LIVELLI
   - SOPRAVVIVENZA
   - RECORD
@@ -1111,4 +1115,7 @@ MonoBehaviour:
   - ONDATA {0}
   - "Sopravvivi a pi\xF9 ondate che puoi. Ogni dieci ondate compare un boss. Ogni
     luogo ha il proprio record."
+  - Elementale del ghiaccio
+  - "Esci dal cerchio prima del gelo. I pilastri di ghiaccio bloccano il passaggio
+    finch\xE9 non si sciolgono."
   _missing: []

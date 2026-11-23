@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Core.Visual;
@@ -49,6 +50,8 @@ namespace Purge.Presentation.Visual
         private Bounds _bounds;
         private int _width;
         private int _height;
+        private Mesh _icePillar;
+        private Material _iceMaterial;
 
         public ZoneView(LevelData level, ZoneSystem zones, PlayerSystem player, VisibilitySystem visibility,
             CombatVisualDefinition visual = null, PackEmitters emitters = null)
@@ -140,6 +143,8 @@ namespace Purge.Presentation.Visual
                 if (layer.Quads >= MaxQuads || !_visibility.IsVisible(new GridPosition(x, y, floor))) continue;
                 var v = layer.Quads++ * 4;
                 var h = Height + floor * GridPosition.FloorHeight;
+                if (kinds[kind].Terrain?.Kind == ZoneTerrainKind.IcePillar)
+                    DrawIcePillar(new Vector3(x, h, y));
                 layer.Vertices[v] = new Vector3(x - Half, h, y - Half);
                 layer.Vertices[v + 1] = new Vector3(x - Half, h, y + Half);
                 layer.Vertices[v + 2] = new Vector3(x + Half, h, y + Half);
@@ -170,6 +175,8 @@ namespace Purge.Presentation.Visual
 
         public void Dispose()
         {
+            UnityObjects.Destroy(_icePillar);
+            UnityObjects.Destroy(_iceMaterial);
             foreach (var layer in _layers)
             {
                 UnityObjects.Destroy(layer.Mesh);
@@ -177,6 +184,40 @@ namespace Purge.Presentation.Visual
             }
 
             _layers.Clear();
+        }
+
+        private void DrawIcePillar(Vector3 point)
+        {
+            if (_icePillar == null)
+            {
+                // The caller culls the cell. This mesh has no combined-geometry cell UVs.
+                var shader = Shader.Find("Purge/Lit");
+                if (shader == null) return;
+                _iceMaterial = new Material(shader) { color = new Color(0.25f, 0.68f, 0.93f) };
+                _icePillar = new Mesh { name = "Elemental ice pillar" };
+                _icePillar.vertices = new[]
+                {
+                    new Vector3(-0.45f, 0f, -0.45f), new Vector3(-0.45f, 0f, 0.45f),
+                    new Vector3(0.45f, 0f, 0.45f), new Vector3(0.45f, 0f, -0.45f),
+                    new Vector3(-0.32f, 1f, -0.32f), new Vector3(-0.32f, 1.15f, 0.32f),
+                    new Vector3(0.32f, 1.25f, 0.32f), new Vector3(0.32f, 1f, -0.32f),
+                    new Vector3(0.12f, 1.85f, 0.1f),
+                };
+                _icePillar.triangles = new[]
+                {
+                    0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5,
+                    2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7,
+                    4, 5, 8, 5, 6, 8, 6, 7, 8, 7, 4, 8,
+                };
+                _icePillar.RecalculateNormals();
+            }
+
+            Graphics.RenderMesh(new RenderParams(_iceMaterial)
+            {
+                worldBounds = new Bounds(point + Vector3.up, new Vector3(1f, 2f, 1f)),
+                shadowCastingMode = ShadowCastingMode.Off,
+                receiveShadows = false,
+            }, _icePillar, 0, Matrix4x4.Translate(point));
         }
 
         private Layer CreateLayer(Color core, Color edge)

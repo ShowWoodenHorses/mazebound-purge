@@ -1,0 +1,479 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d87e952ee1156f941b8c520f8b756029, type: 3}
+  m_Name: Snow_01
+  m_EditorClassIdentifier: Purge.Core::Purge.Core.Waves.WaveScenario
+  _waves:
+  - _budget: 22
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.75
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.25
+    _groups: []
+    _spawnTime: 15
+    _packSize: 4
+    _maxAlive: 150
+    _skipRate: 1
+    _moneyBonus: 5
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 28
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.8
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.19999999
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 1
+      _time: 9
+      _point: -1
+    _spawnTime: 16
+    _packSize: 5
+    _maxAlive: 150
+    _skipRate: 1
+    _moneyBonus: 10
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 35
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.78
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.22000003
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 2
+      _time: 8
+      _point: -1
+    _spawnTime: 17
+    _packSize: 5
+    _maxAlive: 150
+    _skipRate: 2
+    _moneyBonus: 15
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 43
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.65
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.35000002
+    _groups:
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 1
+      _time: 6
+      _point: -1
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 2
+      _time: 13
+      _point: -1
+    _spawnTime: 18
+    _packSize: 6
+    _maxAlive: 150
+    _skipRate: 2
+    _moneyBonus: 20
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 50
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.6
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.39999998
+    _groups:
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _count: 1
+      _time: 5
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 2
+      _time: 13
+      _point: -1
+    _spawnTime: 19
+    _packSize: 6
+    _maxAlive: 150
+    _skipRate: 3
+    _moneyBonus: 25
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 56
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.7
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.3
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 2
+      _time: 8
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 1
+      _time: 16
+      _point: -1
+    _spawnTime: 20
+    _packSize: 7
+    _maxAlive: 150
+    _skipRate: 3
+    _moneyBonus: 30
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: e53ac584f9cf9c14ab128896e5baa658, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+        _count: 8
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+        _count: 1
+        _time: 8
+        _point: -1
+      _minimumDifficulty: 1
+  - _budget: 62
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.85
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.14999998
+    _groups:
+    - _monster: {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
+      _count: 1
+      _time: 12
+      _point: -1
+    _spawnTime: 21
+    _packSize: 7
+    _maxAlive: 185
+    _skipRate: 4
+    _moneyBonus: 35
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 69
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.72
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.27999997
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 3
+      _time: 6
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
+      _count: 1
+      _time: 15
+      _point: -1
+    _spawnTime: 22
+    _packSize: 7
+    _maxAlive: 185
+    _skipRate: 4
+    _moneyBonus: 40
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 76
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.58
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.42000002
+    _groups:
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 1
+      _time: 9
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 2
+      _time: 17
+      _point: -1
+    _spawnTime: 23
+    _packSize: 8
+    _maxAlive: 185
+    _skipRate: 5
+    _moneyBonus: 45
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 83
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.78
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.22000003
+    _groups:
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _count: 2
+      _time: 6
+      _point: -1
+    - _monster: {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
+      _count: 1
+      _time: 16
+      _point: -1
+    _spawnTime: 24
+    _packSize: 8
+    _maxAlive: 185
+    _skipRate: 5
+    _moneyBonus: 50
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 89
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.65
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.35000002
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 3
+      _time: 7
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
+      _count: 1
+      _time: 18
+      _point: -1
+    _spawnTime: 24
+    _packSize: 8
+    _maxAlive: 185
+    _skipRate: 6
+    _moneyBonus: 55
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: cf08c176298584e418893f8a701e392b, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+        _count: 10
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
+        _count: 1
+        _time: 10
+        _point: -1
+      _minimumDifficulty: 1
+  - _budget: 96
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.82
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.18
+    _groups:
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 3
+      _time: 8
+      _point: -1
+    - _monster: {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
+      _count: 2
+      _time: 17
+      _point: -1
+    _spawnTime: 25
+    _packSize: 9
+    _maxAlive: 185
+    _skipRate: 6
+    _moneyBonus: 60
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 103
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.6
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.39999998
+    _groups:
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 2
+      _time: 9
+      _point: -1
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 4
+      _time: 18
+      _point: -1
+    _spawnTime: 26
+    _packSize: 9
+    _maxAlive: 220
+    _skipRate: 7
+    _moneyBonus: 65
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 110
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.78
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.22000003
+    _groups:
+    - _monster: {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
+      _count: 2
+      _time: 10
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 29eda624b0b3ea04890d20a97d222895, type: 2}
+      _count: 2
+      _time: 19
+      _point: -1
+    _spawnTime: 27
+    _packSize: 9
+    _maxAlive: 220
+    _skipRate: 7
+    _moneyBonus: 70
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 118
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.7
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.3
+    _groups:
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 3
+      _time: 6
+      _point: -1
+    - _monster: {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
+      _count: 2
+      _time: 19
+      _point: -1
+    _spawnTime: 28
+    _packSize: 10
+    _maxAlive: 220
+    _skipRate: 8
+    _moneyBonus: 75
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 127
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.57
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.43
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 4
+      _time: 7
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 91ddc098df49c18468c5bd8d8d908f99, type: 2}
+      _count: 2
+      _time: 20
+      _point: -1
+    _spawnTime: 29
+    _packSize: 10
+    _maxAlive: 220
+    _skipRate: 8
+    _moneyBonus: 80
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 137
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.78
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.22000003
+    _groups:
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 3
+      _time: 8
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 24efe3655b1c7264e9641273b53c28d8, type: 2}
+      _count: 2
+      _time: 15
+      _point: -1
+    - _monster: {fileID: 11400000, guid: e6cef4775d662064085ab88c9b524bf1, type: 2}
+      _count: 2
+      _time: 23
+      _point: -1
+    _spawnTime: 30
+    _packSize: 11
+    _maxAlive: 220
+    _skipRate: 8
+    _moneyBonus: 85
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 0}
+      _escort: []
+      _minimumDifficulty: 0
+  - _budget: 144
+    _monsters:
+    - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+      _weight: 0.8
+    - _monster: {fileID: 11400000, guid: eb4c321103ab4a84ca7e0a3b20dc8c87, type: 2}
+      _weight: 0.19999999
+    _groups:
+    - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+      _count: 4
+      _time: 10
+      _point: -1
+    - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+      _count: 3
+      _time: 21
+      _point: -1
+    _spawnTime: 30
+    _packSize: 11
+    _maxAlive: 220
+    _skipRate: 8
+    _moneyBonus: 90
+    _scoreBonus: 0
+    _boss:
+      _monster: {fileID: 11400000, guid: 819d98c942e016a41bc4e8aec3c26450, type: 2}
+      _escort:
+      - _monster: {fileID: 11400000, guid: c9fd1c05511a78742840223e240c7f21, type: 2}
+        _count: 12
+        _time: 0
+        _point: -1
+      - _monster: {fileID: 11400000, guid: bcf9ffb0bddf9174c81de8a7ea22bb24, type: 2}
+        _count: 2
+        _time: 6
+        _point: -1
+      - _monster: {fileID: 11400000, guid: 877bbc0e843c04841aca84b81df08222, type: 2}
+        _count: 2
+        _time: 15
+        _point: -1
+      _minimumDifficulty: 0
+  _pauseTime: 18
+  _firstDelay: 5

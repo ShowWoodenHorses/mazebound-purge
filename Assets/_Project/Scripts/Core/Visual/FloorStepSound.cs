@@ -7,5 +7,7 @@ namespace Purge.Core.Visual
         Grass = 1,
         Ground = 2,
         Stone = 3,
+        Snow = 4,
+        Ice = 5,
     }
 }

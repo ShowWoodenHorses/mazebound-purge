@@ -19,5 +19,8 @@ namespace Purge.Core.Grid
         /// (<see cref="Visual.VisualCategory.Ground"/> variant, soft edge drawn by Purge/Geometry), footsteps on ground.
         /// </summary>
         Ground = 3,
+
+        /// <summary>Ice: adds inertia to player movement without changing monster passability.</summary>
+        Ice = 4,
     }
 }

@@ -25,6 +25,7 @@ Shader "Purge/Geometry"
         [HDR] _EmissionColor ("Emission", Color) = (0, 0, 0, 0)
         [Toggle(_ALPHATEST_ON)] _AlphaTest ("Alpha Test", Float) = 0
         _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
+        [Toggle(PURGE_WINTER)] _Winter ("Winter Palette and Snow", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
     }
 
@@ -117,6 +118,9 @@ Shader "Purge/Geometry"
         fixed3 PurgeGeometryAlbedo(float2 uv, float3 worldPos, float3 normal)
         {
             fixed4 albedo = tex2D(_MainTex, uv) * _Color;
+            #if PURGE_WINTER
+            albedo.rgb = PurgeWinterAlbedo(albedo.rgb, worldPos, normal.y);
+            #endif
             #if _ALPHATEST_ON
             clip(albedo.a - _Cutoff);
             #endif
@@ -142,6 +146,7 @@ Shader "Purge/Geometry"
         #pragma multi_compile _ PURGE_VISIBILITY
         #pragma multi_compile _ PURGE_SNOWDRIFT PURGE_GROUND
         #pragma shader_feature_local _ALPHATEST_ON
+        #pragma shader_feature_local _ PURGE_WINTER
 
         sampler2D _BumpMap;
         half _Glossiness;
@@ -190,6 +195,7 @@ Shader "Purge/Geometry"
         #pragma multi_compile _ PURGE_VISIBILITY
         #pragma multi_compile _ PURGE_SNOWDRIFT PURGE_GROUND
         #pragma shader_feature_local _ALPHATEST_ON
+        #pragma shader_feature_local _ PURGE_WINTER
 
         struct Input
         {

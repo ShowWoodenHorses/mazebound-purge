@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - "Fran\xE7ais"
   - Missions quotidiennes
@@ -1111,6 +1114,8 @@ MonoBehaviour:
     demi-seconde."
   - "Monte au maximum les deux cartes avec le m\xEAme num\xE9ro \u25C6 pour d\xE9bloquer
     leur \xE9volution."
+  - "Sur la glace, tu acc\xE9l\xE8res et freines plus lentement. Ralentis avant de
+    tourner."
   - NIVEAUX
   - SURVIE
   - RECORDS
@@ -1122,4 +1127,7 @@ MonoBehaviour:
   - VAGUE {0}
   - "Survivez \xE0 autant de vagues que possible. Toutes les dix vagues, un boss
     appara\xEEt. Chaque lieu a son propre record."
+  - "\xC9l\xE9mentaire de glace"
+  - "Sors du cercle avant le gel. Les piliers de glace bloquent le passage jusqu\u2019\xE0
+    ce qu\u2019ils fondent."
   _missing: []

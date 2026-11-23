@@ -23,6 +23,11 @@ MonoBehaviour:
     _displayName: Castle
     _location: 1
     _hasRefuge: 0
+  - _levelId: Level_Snow_01
+    _address: Levels/Level_Snow_01
+    _displayName: Snow
+    _location: 2
+    _hasRefuge: 0
   _tutorial:
     _levelId: Level_Tutorial
     _address: Levels/Level_Tutorial

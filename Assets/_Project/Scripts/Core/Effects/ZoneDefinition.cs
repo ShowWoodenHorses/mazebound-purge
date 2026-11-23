@@ -33,6 +33,7 @@ namespace Purge.Core.Effects
         [NonSerialized] private ZoneDamage _damage;
         [NonSerialized] private ZoneStatus _status;
         [NonSerialized] private ZoneSpread _spread;
+        [NonSerialized] private ZoneTerrain _terrain;
 
         public Color Core => _core;
         public Color Edge => _edge;
@@ -49,6 +50,13 @@ namespace Purge.Core.Effects
         public ZoneDamage Damage => Cache()._damage;
         public ZoneStatus Status => Cache()._status;
         public ZoneSpread Spread => Cache()._spread;
+        public ZoneTerrain Terrain => Cache()._terrain;
+
+        internal void SetColors(Color core, Color edge)
+        {
+            _core = core;
+            _edge = edge;
+        }
 
         public void Validate(List<string> problems)
         {
@@ -65,12 +73,14 @@ namespace Purge.Core.Effects
             _damage = null;
             _status = null;
             _spread = null;
+            _terrain = null;
             foreach (var module in _modules)
                 switch (module)
                 {
                     case ZoneDamage damage when _damage == null: _damage = damage; break;
                     case ZoneStatus status when _status == null: _status = status; break;
                     case ZoneSpread spread when _spread == null: _spread = spread; break;
+                    case ZoneTerrain terrain when _terrain == null: _terrain = terrain; break;
                 }
 
             _cached = true;
@@ -90,6 +100,20 @@ namespace Purge.Core.Effects
     [Serializable]
     public abstract class ZoneModule : ContentModule
     {
+    }
+
+    public enum ZoneTerrainKind : byte
+    {
+        Ice,
+        IcePillar,
+    }
+
+    [Serializable, ModuleInfo("Temporary ice", Category = "Zone")]
+    public sealed class ZoneTerrain : ZoneModule
+    {
+        [SerializeField] private ZoneTerrainKind _kind;
+
+        public ZoneTerrainKind Kind { get => _kind; internal set => _kind = value; }
     }
 
     /// <summary>Damage per second (× the zone's strength) to everyone standing in the zone.</summary>

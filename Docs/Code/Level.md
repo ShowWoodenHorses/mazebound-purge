@@ -107,6 +107,10 @@
   - Новые вьюхи — через `EntityViewRegistry.Add`, движущиеся меняют клетку только `EntityViewRegistry.Move` — тогда видимость применяется сразу. AI видимость не использует (§57).
 
 ## Зима (уровни 21–30, `SnowTheme`)
+
+- **Лёд (14а)** — `CellSurface.Ice` и кисть **Ice**. `SnowFloorSet` выбирает `floor_ice` по категории `VisualCategory.Ice`; автодекор на льду не ставится. Лёд не меняет проходимость или навигацию монстров.
+- **Лёд Элементаля (14б)** — `ZoneTerrain` в `ZoneDefinition`. `ZoneSystem` выставляет временный лёд в `LevelGrid` либо добавляет блокировку в `CellBlockers` для столба. При истечении или очистке зона снимает свой эффект. Постоянный лёд хранится в `LevelGeometry`. `ZoneView` рисует временный лёд маской зон, а столбы — общим мешем по видимым клеткам.
+- **Зимний декор (14а)** — `SnowBiomeTheme` использует зимние копии материалов сосен, камней и местных сухих растений. `PURGE_WINTER` в шейдерах `Purge/Geometry` и `Purge/Foliage` охлаждает палитру и добавляет снежный покров по мировой нормали с неровным краем. Копии создаёт **Build Biome Decor**.
 - Зомби зимы — `Data/Zombies/SnowZombie{Walker,Listener,Hunter}` (сильнее лесных, в сугробе вязнут меньше игрока: ×0.7–0.75), набор `SnowZombieSet` (модели Zombie_01–03, как у заглушки). Лесной и снежный наборы ведутся вручную: Build Zombie Animations обновляет только `PlaceholderZombieSet`.
 - Погода — `VisualTheme.Weather` (`ThemeWeather`, только вид; пустой материал = нет эффекта; **Purge → Dev → Build Weather**).
   - Изморозь — `_Frost` в `Purge/Lit` **на рендерер** (общие материалы Synty у игрока/дверей): пишется в тот же `MaterialPropertyBlock`, что и вспышка (`HitFlash.SetFrost`, иначе вспышка затирает); цвет/форма — глобалы из `LevelLighting`.

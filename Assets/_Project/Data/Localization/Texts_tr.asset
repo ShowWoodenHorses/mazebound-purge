@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - "T\xFCrk\xE7e"
   - "G\xFCnl\xFCk g\xF6revler"
@@ -1119,6 +1122,8 @@ MonoBehaviour:
     saniyede kurulur."
   - "Evrim i\xE7in ayn\u0131 \u25C6 numaral\u0131 iki kart\u0131 en y\xFCksek seviyeye
     \xE7\u0131kar."
+  - "Buzda daha yava\u015F h\u0131zlan\u0131r ve fren yapars\u0131n. D\xF6nmeden
+    \xF6nce yava\u015Fla."
   - "B\xD6L\xDCMLER"
   - HAYATTA KALMA
   - REKORLAR
@@ -1130,4 +1135,7 @@ MonoBehaviour:
   - DALGA {0}
   - "Olabildi\u011Fince \xE7ok dalgadan sa\u011F \xE7\u0131k. Her onuncu dalgada
     bir b\xF6l\xFCm sonu canavar\u0131 gelir. Her konumun kendi rekoru vard\u0131r."
+  - Buz Elementali
+  - "Donmadan \xF6nce i\u015Faretli \xE7emberden \xE7\u0131k. Buz s\xFCtunlar\u0131
+    eriyene kadar yolu kapat\u0131r."
   _missing: []

@@ -14,6 +14,7 @@ namespace Purge.Core.Grid
     {
         private readonly CellType[] _cells;
         private readonly CellSurface[] _surfaces;
+        private bool[] _temporaryIce;
         private readonly ObstacleDefinition[] _obstacles;
         private readonly CellFlags[] _flags;
 
@@ -118,6 +119,17 @@ namespace Purge.Core.Grid
 
         /// <summary>Ground of the cell; None outside the grid and for non-Floor cells.</summary>
         public CellSurface GetSurface(GridPosition position) => IsInside(position) ? _surfaces[ToIndex(position)] : CellSurface.None;
+
+        public bool IsIce(GridPosition position) =>
+            IsInside(position) && (_surfaces[ToIndex(position)] == CellSurface.Ice ||
+                (_temporaryIce != null && _temporaryIce[ToIndex(position)]));
+
+        public void SetTemporaryIce(GridPosition position, bool ice)
+        {
+            if (!IsInside(position)) return;
+            if (ice) _temporaryIce ??= new bool[CellCount];
+            if (_temporaryIce != null) _temporaryIce[ToIndex(position)] = ice;
+        }
 
         public bool IsSnowdrift(GridPosition position) => GetSurface(position) == CellSurface.Snowdrift;
 

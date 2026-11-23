@@ -39,6 +39,8 @@ namespace Purge.Gameplay.Grid
         /// <summary>Deep snow in the cell (walkers there move slower).</summary>
         public bool IsSnowdrift(GridPosition cell) => _grid.IsSnowdrift(cell);
 
+        public bool IsIce(GridPosition cell) => _grid.IsIce(cell);
+
         /// <summary>Share of the speed kept in the cell because of its obstacle (1 = none); surfaces are per walker.</summary>
         public float ObstacleSpeedFactor(GridPosition cell) => _grid.ObstacleSpeedFactor(cell);
     }

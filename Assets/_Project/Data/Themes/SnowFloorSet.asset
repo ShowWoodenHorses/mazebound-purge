@@ -63,4 +63,16 @@ MonoBehaviour:
     _definition: {fileID: 0}
     _colorTag: 
     _height: 0
+  - _id: floor_ice
+    _prefab:
+      m_AssetGUID: b7242339de7d95c4e8c26ecffa4467bb
+      m_SubObjectName:
+      m_SubObjectType:
+      m_SubObjectGUID:
+      m_EditorAssetChanged: 0
+    _weight: 15
+    _category: 11
+    _definition: {fileID: 0}
+    _colorTag:
+    _height: 0
   _shapelessWalls: 0

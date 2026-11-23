@@ -49,7 +49,48 @@ namespace Purge.Editor.Dev
         public static void Build()
         {
             BuildForest();
+            BuildSnow();
             AssetDatabase.SaveAssets();
+        }
+
+        private static void BuildSnow()
+        {
+            const string biome = "Snow";
+            var folder = $"{Root}/{biome}";
+            EnsureFolder(folder, "Materials");
+            EnsureFolder(folder, "Meshes");
+
+            foreach (var model in new[]
+            {
+                "Stop_shoot_and_move/SM_Tree_Pine_01",
+                "Stop_shoot_and_move/SM_Tree_Pine_02",
+                "Stop_move/SM_Env_Rock_Pile_05",
+            })
+            {
+                var target = $"{folder}/{model}.prefab";
+                if (AssetDatabase.LoadAssetAtPath<GameObject>(target) == null)
+                    AssetDatabase.CopyAsset($"{Root}/Forest/{model}.prefab", target);
+            }
+
+            var tree = AssetDatabase.LoadAssetAtPath<ObstacleDefinition>($"{ObstaclesFolder}/Tree.asset");
+            var stone = Stone();
+            var variants = new List<(string, string, int, VisualCategory, ObstacleDefinition)>();
+            foreach (var path in Prefabs(folder))
+            {
+                var role = RoleOf(path);
+                Prepare(path, folder, role, winter: true);
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                var obstacle = role == Role.Blocker ? tree : role == Role.Low ? stone : null;
+                var weight = Triangles(prefab) <= MaxAutoTriangles ? 1 : 0;
+                variants.Add((prefab.name, AssetDatabase.AssetPathToGUID(path), weight, VisualCategory.General, obstacle));
+            }
+
+            var decor = FillSet($"{ThemesFolder}/{biome}BiomeDecorSet.asset", VisualKind.Decor, variants);
+            DecorHeights.Refresh(decor);
+            EditorUtility.SetDirty(decor);
+            var snow = AssetDatabase.LoadAssetAtPath<VisualTheme>($"{ThemesFolder}/{biome}Theme.asset");
+            var theme = Theme(biome, snow.GetSet(VisualKind.Wall), decor);
+            theme.SetSet(VisualKind.Floor, snow.GetSet(VisualKind.Floor));
         }
 
         private static void BuildForest()
@@ -135,7 +176,7 @@ namespace Purge.Editor.Dev
                 .Where(p => p.Contains("/Stop_shoot_and_move/") || p.Contains("/Stop_move/") || p.Contains("/Floor_decor/"))
                 .OrderBy(p => p);
 
-        private static void Prepare(string path, string folder, Role role)
+        private static void Prepare(string path, string folder, Role role, bool winter = false)
         {
             // Model import settings first: re-importing a model while its prefab is open for editing is unreliable.
             foreach (var filter in AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponentsInChildren<MeshFilter>(true))
@@ -150,6 +191,8 @@ namespace Purge.Editor.Dev
                     var filter = renderer.GetComponent<MeshFilter>();
                     if (filter == null || filter.sharedMesh == null) continue;
                     Convert(filter, renderer, folder, root.name);
+                    if (winter)
+                        renderer.sharedMaterials = renderer.sharedMaterials.Select(material => WinterMaterial(material, folder)).ToArray();
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 }
 
@@ -160,6 +203,26 @@ namespace Purge.Editor.Dev
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private static Material WinterMaterial(Material source, string folder)
+        {
+            if (source == null || !source.HasProperty("_Winter")) return source;
+            var sourcePath = AssetDatabase.GetAssetPath(source);
+            if (sourcePath.StartsWith($"{folder}/Materials/Winter_", System.StringComparison.Ordinal)) return source;
+            var path = $"{folder}/Materials/Winter_{source.name}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(source);
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+                material.CopyPropertiesFromMaterial(source);
+            material.SetFloat("_Winter", 1f);
+            material.EnableKeyword("PURGE_WINTER");
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         /// <summary>Materials onto Purge/Geometry (leaves — Purge/Foliage); vegetation sub-meshes split into trunk and leaves.</summary>

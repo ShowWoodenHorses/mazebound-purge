@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - Deutsch
   - Tagesaufgaben
@@ -1108,6 +1111,8 @@ MonoBehaviour:
   - "Die Blendgranate bet\xE4ubt Monster zuerst und blendet sie dann."
   - "Dr\xFCcke Werfen, um eine Mine zu legen. Sie ist nach einer halben Sekunde scharf."
   - "Beide Karten mit derselben \u25C6-Nummer maximieren, um ihre Evolution freizuschalten."
+  - Auf Eis beschleunigst und bremst du langsamer. Verringere vor dem Abbiegen dein
+    Tempo.
   - LEVEL
   - "\xDCBERLEBEN"
   - REKORDE
@@ -1119,4 +1124,7 @@ MonoBehaviour:
   - WELLE {0}
   - "\xDCberlebe so viele Wellen wie m\xF6glich. In jeder zehnten Welle erscheint
     ein Boss. Jeder Ort hat seinen eigenen Rekord."
+  - Eiselementar
+  - "Verlasse den Kreis vor dem Frostangriff. Die Eiss\xE4ulen versperren den Weg,
+    bis sie schmelzen."
   _missing: []

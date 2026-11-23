@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - "Espa\xF1ol"
   - Tareas diarias
@@ -1100,6 +1103,8 @@ MonoBehaviour:
   - La granada aturde y luego ciega a los monstruos.
   - Pulsa Lanzar para poner una mina a tus pies. Se arma en medio segundo.
   - "Maximiza las dos cartas con el mismo n\xFAmero \u25C6 para desbloquear su evoluci\xF3n."
+  - "En el hielo aceleras y frenas m\xE1s despacio. Reduce la velocidad antes de
+    girar."
   - NIVELES
   - SUPERVIVENCIA
   - "R\xC9CORDS"
@@ -1111,4 +1116,7 @@ MonoBehaviour:
   - OLEADA {0}
   - "Sobrevive a tantas oleadas como puedas. Cada diez oleadas aparece un jefe. Cada
     ubicaci\xF3n tiene su propio r\xE9cord."
+  - Elemental de hielo
+  - "Sal del c\xEDrculo antes de la congelaci\xF3n. Los pilares de hielo bloquean
+    el paso hasta que se derriten."
   _missing: []

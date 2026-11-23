@@ -84,6 +84,8 @@ namespace Purge.Editor.Dev
         private static readonly ClipSet ColossusClips = BossCasts("Brute_Push", "Boss_Slam", "Brute_Push");
         private static readonly ClipSet GorgonClips = BossCasts("Elite_Wizard_Raise", "Elite_Wizard_Roar", "Elite_Wizard_Attack_1");
         private static readonly ClipSet DemonClips = BossCasts("Elite_Wizard_Area", "Elite_Wizard_Attack_2");
+        private static readonly ClipSet ElementalClips = BossCasts(
+            "Elite_Wizard_Area", "Boss_Slam", "Elite_Wizard_Attack_2", "Elite_Wizard_Area");
 
         private static ClipSet BossCasts(params string[] casts) => new ClipSet
         {
@@ -97,6 +99,7 @@ namespace Purge.Editor.Dev
         {
             "Mutant_Forest" => (MutantControllerPath, MutantClips),
             "Gargoyle_Castle" => ("Assets/_Project/Art/Monster/Gargoyle.controller", GargoyleClips),
+            "Elemental_Snow" => ("Assets/_Project/Art/Monster/Elemental.controller", ElementalClips),
             "ZombieBoss_Common" => ("Assets/_Project/Art/Monster/Butcher.controller", ButcherClips),
             "Golem_Common" => ("Assets/_Project/Art/Monster/Colossus.controller", ColossusClips),
             "Medusa_Common" => ("Assets/_Project/Art/Monster/Gorgon.controller", GorgonClips),
@@ -112,7 +115,8 @@ namespace Purge.Editor.Dev
         /// <summary>The bosses available to Build Monsters.</summary>
         public static bool IsBuiltBoss(string prefabName) =>
             prefabName == "Mutant_Forest" || prefabName == "ZombieBoss_Common" || prefabName == "Golem_Common" ||
-            prefabName == "Medusa_Common" || prefabName == "Demon_Common" || prefabName == "Gargoyle_Castle";
+            prefabName == "Medusa_Common" || prefabName == "Demon_Common" || prefabName == "Gargoyle_Castle" ||
+            prefabName == "Elemental_Snow";
 
         private static bool IsBigBoss(string prefabName) => prefabName == "Mutant_Forest" || prefabName == "Golem_Common";
 
@@ -205,6 +209,8 @@ namespace Purge.Editor.Dev
                     view.ConfigureLook(view.Equipment, view.SplashColor, null, new Color(0.55f, 1f, 0.35f, 1f), 0.3f);
                 else if (name == "Demon_Common")
                     view.ConfigureLook(view.Equipment, view.SplashColor, null, new Color(1f, 0.45f, 0.1f, 1f), 0.55f);
+                else if (name == "Elemental_Snow")
+                    view.ConfigureLook(view.Equipment, new Color(0.65f, 0.83f, 1f), null, new Color(0.47f, 0.86f, 1f), 0.38f);
             }
 
             if (view.BasePalette == null) SetupPalettes(view, prefab);
@@ -338,6 +344,12 @@ namespace Purge.Editor.Dev
             PhaseAbility phase = null;
             switch (prefabName)
             {
+                case "Elemental_Snow":
+                    stats.MaxHp = 9000f;
+                    stats.Speed = 1.45f;
+                    stats.Damage = 36;
+                    stats.AttackInterval = 2f;
+                    break;
                 case "Gargoyle_Castle":
                     stats.MaxHp = 8000f;
                     stats.Speed = 1.6f;
@@ -411,6 +423,7 @@ namespace Purge.Editor.Dev
             {
                 case "Mutant_Forest": return MutantAbilities(phase);
                 case "Gargoyle_Castle": return GargoyleAbilities();
+                case "Elemental_Snow": return ElementalAbilities();
                 case "ZombieBoss_Common": return ButcherAbilities(phase);
                 case "Golem_Common": return ColossusAbilities();
                 case "Medusa_Common": return GorgonAbilities();
@@ -560,6 +573,63 @@ namespace Purge.Editor.Dev
         /// of 2026-10-26), charge (line 0.8 s), blow on the ground (a ring closing in, r 3 under the player, 1 s), boulder
         /// along an arc (circle r 1.5, every 5 s)].
         /// </summary>
+        private static AbilityModule[] ElementalAbilities()
+        {
+            var freeze = AssetDatabase.LoadAssetAtPath<StatusDefinition>(EffectsPath + "/Status_Freeze.asset");
+            var slow = AssetDatabase.LoadAssetAtPath<StatusDefinition>(EffectsPath + "/Status_Slow.asset");
+            var burst = PackEffect("PolygonArsenal/FX_Ice_Burst");
+            var nova = new AreaStrikeAbility
+            {
+                Cooldown = 9f, FirstDelay = 4f, Radius = 3f, MaxRange = 8f,
+                Warning = 1f, Recovery = 0.55f, Damage = 20f, Status = freeze, StatusDuration = 1.5f,
+                CastInMelee = true, ReleaseSound = "elemental_freeze",
+            };
+            var pillars = new AreaStrikeAbility
+            {
+                Cooldown = 15f, FirstDelay = 7f, Radius = 2f, MaxRange = 9f,
+                Warning = 1.15f, Recovery = 0.6f, CastInMelee = true, ReleaseSound = "boss_smash",
+            };
+            var fan = new ProjectileAbility
+            {
+                Cooldown = 5f, FirstDelay = 1f, MinRange = 2.5f, MaxRange = 11f, NeedsSight = true,
+                Warning = 0.75f, Recovery = 0.35f, Form = ProjectileForm.Fan, Count = 5, FanAngle = 50f,
+                Speed = 11f, Range = 14f, Damage = 18f, Status = slow, StatusDuration = 2f,
+                ReleaseSound = "shaman_spell",
+            };
+            var frost = new AreaStrikeAbility
+            {
+                Cooldown = 16f, FirstDelay = 2.5f, Radius = 4f, MaxRange = 5.5f, AroundSelf = true,
+                Warning = 0.85f, Recovery = 0.4f, CastInMelee = true, ReleaseSound = "elemental_freeze",
+            };
+            var novaLook = new LookEffect { Look = burst };
+            novaLook.SetRadius(nova.Radius);
+            nova.SetImpact(novaLook);
+            var shotLook = new LookEffect { Look = burst };
+            shotLook.SetRadius(0.45f);
+            fan.SetImpact(shotLook);
+            pillars.SetImpact(IceZoneEffect("Zone_IcePillars", ZoneTerrainKind.IcePillar, 2f, 6f));
+            frost.SetImpact(IceZoneEffect("Zone_ElementalIce", ZoneTerrainKind.Ice, 4f, 10f));
+            return new AbilityModule[] { nova, pillars, fan, frost };
+        }
+
+        private static PlaceZoneEffect IceZoneEffect(string name, ZoneTerrainKind kind, float radius, float duration)
+        {
+            var path = $"{EffectsPath}/{name}.asset";
+            var zone = AssetDatabase.LoadAssetAtPath<ZoneDefinition>(path);
+            if (zone == null)
+            {
+                zone = ScriptableObject.CreateInstance<ZoneDefinition>();
+                zone.Configure(kind == ZoneTerrainKind.Ice ? "zone_elemental_ice" : "zone_ice_pillars",
+                    new ZoneTerrain { Kind = kind });
+                zone.SetColors(new Color(0.38f, 0.76f, 0.98f), new Color(0.23f, 0.51f, 0.82f));
+                AssetDatabase.CreateAsset(zone, path);
+            }
+
+            var effect = new PlaceZoneEffect { Zone = zone, Duration = duration, Strength = 1f };
+            effect.SetRadius(radius);
+            return effect;
+        }
+
         private static AbilityModule[] GargoyleAbilities()
         {
             var stone = new PhaseAbility

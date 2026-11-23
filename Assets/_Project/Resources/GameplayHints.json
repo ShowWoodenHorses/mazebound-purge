@@ -88,6 +88,12 @@
       "monsterIdPrefix": "gargoyle_castle"
     },
     {
+      "id": "elemental",
+      "textKey": "hint.elemental",
+      "condition": 1,
+      "monsterIdPrefix": "elemental_snow"
+    },
+    {
       "id": "closed_arena",
       "textKey": "hint.closed_arena",
       "condition": 10
@@ -113,6 +119,11 @@
       "id": "card_evolution",
       "textKey": "hint.card_evolution",
       "condition": 13
+    },
+    {
+      "id": "ice",
+      "textKey": "hint.ice",
+      "condition": 15
     }
   ]
 }

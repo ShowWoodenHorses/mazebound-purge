@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - "O\u02BBzbekcha"
   - Kunlik topshiriqlar
@@ -1101,6 +1104,7 @@ MonoBehaviour:
     faollashadi."
   - "Evolyutsiyani ochish uchun \u25C6 raqami bir xil ikki kartani ham eng yuqori
     darajaga chiqar."
+  - Muzda sekinroq tezlanasan va tormozlaysan. Burilishdan oldin tezlikni pasaytir.
   - DARAJALAR
   - OMON QOLISH
   - REKORDLAR
@@ -1112,4 +1116,7 @@ MonoBehaviour:
   - "TO\u2018LQIN {0}"
   - "Iloji boricha ko\u2018p to\u2018lqindan omon qoling. Har o\u2018ninchi to\u2018lqinda
     boss chiqadi. Har bir joyning o\u2018z rekordi bor."
+  - Muz elementali
+  - "Muzlamasdan oldin doiradan chiq. Muz ustunlari eriguncha yo\u2018lni to\u2018sib
+    turadi."
   _missing: []

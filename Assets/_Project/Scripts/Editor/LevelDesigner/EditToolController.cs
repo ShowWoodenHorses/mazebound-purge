@@ -33,6 +33,7 @@ namespace Purge.Editor.LevelDesigner
         LockArea,
         Erase,
         Stairs,
+        Ice,
     }
 
     /// <summary>What the Decor brush paints.</summary>
@@ -160,6 +161,9 @@ namespace Purge.Editor.LevelDesigner
                 case EditTool.Ground:
                     PaintSurface(cell, CellSurface.Ground);
                     break;
+                case EditTool.Ice:
+                    PaintSurface(cell, CellSurface.Ice);
+                    break;
                 case EditTool.Obstacle:
                     if (ObstacleDefinition == null) _notify("Choose an obstacle first.");
                     else PaintObstacle(cell, ObstacleDefinition);
@@ -174,12 +178,13 @@ namespace Purge.Editor.LevelDesigner
         }
 
         private static bool IsSurfaceTool(EditTool tool) =>
-            tool == EditTool.Snowdrift || tool == EditTool.Grass || tool == EditTool.Ground;
+            tool == EditTool.Snowdrift || tool == EditTool.Grass || tool == EditTool.Ground || tool == EditTool.Ice;
 
         private static CellSurface SurfaceOf(EditTool tool) => tool switch
         {
             EditTool.Grass => CellSurface.Grass,
             EditTool.Ground => CellSurface.Ground,
+            EditTool.Ice => CellSurface.Ice,
             _ => CellSurface.Snowdrift,
         };
 

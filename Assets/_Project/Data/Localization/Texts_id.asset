@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - Bahasa Indonesia
   - Misi harian
@@ -1115,6 +1118,8 @@ MonoBehaviour:
   - Tekan Lempar untuk meletakkan ranjau di dekat kaki. Ranjau aktif setelah setengah
     detik.
   - "Maksimalkan kedua kartu bernomor \u25C6 sama untuk membuka evolusi."
+  - Di atas es, kamu lebih lambat berakselerasi dan mengerem. Kurangi kecepatan sebelum
+    berbelok.
   - LEVEL
   - BERTAHAN HIDUP
   - REKOR
@@ -1126,4 +1131,6 @@ MonoBehaviour:
   - GELOMBANG {0}
   - Bertahanlah selama mungkin. Bos muncul setiap sepuluh gelombang. Setiap lokasi
     punya rekor sendiri.
+  - Elemental Es
+  - Keluar dari lingkaran sebelum membeku. Pilar es menghalangi jalan sampai mencair.
   _missing: []

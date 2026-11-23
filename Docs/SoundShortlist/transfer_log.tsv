@@ -250,3 +250,11 @@ Vehicle/smoke_loop/smoke_loop.wav	18_Машины\Поломка\2_Дым_пар
 
 Assets/_Project/Sounds/UI/purchase.wav	16_Интерфейс_и_мета/Покупка_прокачка/Pickup_Coins04.wav
 Weapon/explosion_flashbang.wav	01_Оружие/09_Метательное/Светошумовая_хлопок_и_звон/_PolygonArsenal/poly_explosion_flashbang.wav
+Player/step_ice1.wav	15_Игрок\Шаги_лёд\Foot_Ice_Run01.wav
+Player/step_ice2.wav	15_Игрок\Шаги_лёд\Foot_Ice_Run15.wav
+Player/step_ice3.wav	15_Игрок\Шаги_лёд\Foot_Ice_Walk08.wav
+Player/step_snow1.wav	15_Игрок\Шаги_снег\Foot_Snow_Crunchy_Run24.wav
+Player/step_snow2.wav	15_Игрок\Шаги_снег\Foot_Snow_Crunchy_Walk16.wav
+Player/step_snow3.wav	15_Игрок\Шаги_снег\Foot_Snow_Crunchy_Walk39.wav
+Ambient/snow/loop.wav	17_Эмбиент_биомов\Снег_вьюга\Wind_ColdHowlingLoop4.wav
+Monster/elemental_freeze/elemental_freeze1.wav	10_Зоны_и_состояния\Заморозка_лёд\IceBlock_Freeze1.wav

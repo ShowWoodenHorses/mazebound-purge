@@ -527,6 +527,7 @@ MonoBehaviour:
   - hint.flashbang
   - hint.mine
   - hint.card_evolution
+  - hint.ice
   - survival.levels
   - survival.mode
   - survival.records
@@ -537,6 +538,8 @@ MonoBehaviour:
   - survival.records.online.empty
   - survival.wave
   - hint.survival
+  - monster.elemental_snow
+  - hint.elemental
   _texts:
   - English
   - Daily tasks
@@ -1113,6 +1116,7 @@ MonoBehaviour:
   - Flashbangs stun monsters, then blind them.
   - Press Throw to place a mine at your feet. It arms after half a second.
   - "Max out both cards marked \u25C6 in a pair to unlock their evolution."
+  - On ice, you accelerate and brake more slowly. Slow down before turning.
   - LEVELS
   - SURVIVAL
   - RECORDS
@@ -1124,4 +1128,7 @@ MonoBehaviour:
   - WAVE {0}
   - Survive as many waves as you can. Every tenth wave brings a boss. Each location
     has its own score record.
+  - Ice Elemental
+  - Leave the marked circle before the freeze hits. Ice pillars block movement until
+    they melt.
   _missing: []

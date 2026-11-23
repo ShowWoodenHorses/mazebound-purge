@@ -49,5 +49,6 @@ namespace Purge.Core.Visual
 
         /// <summary>Floor of a ground cell (<see cref="Grid.CellSurface.Ground"/>); picked only there.</summary>
         Ground = 10,
+        Ice = 11,
     }
 }

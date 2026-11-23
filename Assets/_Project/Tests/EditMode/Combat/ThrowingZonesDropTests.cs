@@ -46,6 +46,7 @@ namespace Purge.Tests.EditMode.Combat
         private HordeSystem _horde;
         private StatusSystem _statuses;
         private ZoneSystem _zones;
+        private CellBlockers _blockers;
         private EffectSystem _effects;
         private BulletSystem _bullets;
         private ThrowableSlot _slot;
@@ -112,7 +113,8 @@ namespace Purge.Tests.EditMode.Combat
             _pointer = new Pointer();
             _grid = new LevelGrid(_level.Geometry);
             _doors = new DoorSystem(_level);
-            var passability = new LevelPassability(_grid, _doors);
+            _blockers = new CellBlockers(_grid);
+            var passability = new LevelPassability(_grid, _doors, _blockers);
             _spatial = new SpatialQueryService(_grid, _doors);
             _targets = new CombatTargets(_spatial);
             _sounds = new SoundEventBus();
@@ -121,7 +123,7 @@ namespace Purge.Tests.EditMode.Combat
             _health = new PlayerHealth(_definition);
             _horde = new HordeSystem(_level, _grid, passability, _doors, _player, _health); // no stress test: inactive
             _statuses = new StatusSystem(_horde, _targets);
-            _zones = new ZoneSystem(_grid, _doors, _targets, _horde, _statuses, _player, _health);
+            _zones = new ZoneSystem(_grid, _doors, _targets, _horde, _statuses, _player, _health, _blockers);
             _effects = new EffectSystem(_targets, _zones, _statuses, _sounds);
             _bullets = new BulletSystem(_targets);
             _slot = new ThrowableSlot();
@@ -344,6 +346,43 @@ namespace Purge.Tests.EditMode.Combat
             Assert.That(explosions, Is.Empty);
             _bullets.Tick(0.5f);
             Assert.That(explosions, Is.EqualTo(new[] { new Vector2(16f, 3f) }));
+        }
+
+        [Test]
+        public void ElementalIce_Expires_AndLosesItsSurfaceWhenReplaced()
+        {
+            var ice = ScriptableObject.CreateInstance<ZoneDefinition>();
+            _created.Add(ice);
+            ice.Configure("elemental_ice", new ZoneTerrain());
+            var cell = new GridPosition(6, 3);
+
+            Assert.IsTrue(_zones.Place(cell, ice, 1f, hostile: true));
+            Assert.IsTrue(_grid.IsIce(cell));
+            Assert.AreEqual(CellSurface.None, _grid.GetSurface(cell));
+            Tick(1.2f);
+            Assert.IsFalse(_grid.IsIce(cell));
+
+            Assert.IsTrue(_zones.Place(cell, ice, 10f, hostile: true));
+            Assert.IsTrue(_zones.Place(cell, _fire, 2f));
+            Assert.IsFalse(_grid.IsIce(cell));
+        }
+
+        [Test]
+        public void IcePillars_BlockFourFreeCells_AndReleaseThemWhenTheyMelt()
+        {
+            var pillars = ScriptableObject.CreateInstance<ZoneDefinition>();
+            _created.Add(pillars);
+            pillars.Configure("ice_pillars", new ZoneTerrain { Kind = ZoneTerrainKind.IcePillar });
+            var pillar = new GridPosition(17, 3);
+
+            Assert.IsFalse(_zones.Place(_player.Cell, pillars, 6f, hostile: true), "Must not trap the player inside a pillar.");
+            Assert.AreEqual(4, _zones.PlaceArea(new Vector2(15f, 3f), 0, 2f, pillars, 6f, hostile: true));
+            Assert.IsTrue(_blockers.BlocksMovement(pillar));
+            Assert.IsFalse(_blockers.BlocksMovement(new GridPosition(15, 3)));
+            Assert.IsFalse(_zones.Place(pillar, _fire, 10f), "Another zone cannot erase a standing pillar.");
+            Tick(6.2f);
+            Assert.IsFalse(_blockers.BlocksMovement(pillar));
+            Assert.AreEqual(0, _zones.Count);
         }
 
         [Test]

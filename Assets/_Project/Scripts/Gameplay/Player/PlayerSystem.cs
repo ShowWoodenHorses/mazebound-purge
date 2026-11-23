@@ -41,6 +41,7 @@ namespace Purge.Gameplay.Player
     public sealed class PlayerSystem : ILevelLoadStep, ILevelTickable, IPlayerBlockers
     {
         private const float DeadZone = 0.1f;
+        private const float GroundAccelerationTime = 0.125f;
 
         /// <summary>1/s: how fast a push fades (14 — a recoil is over in about 0.2 s).</summary>
         private const float PushDamping = 14f;
@@ -60,6 +61,7 @@ namespace Purge.Gameplay.Player
         private float _rideCellTimer;
 
         private Vector2 _push;
+        private Vector2 _walkVelocity;
 
         private readonly LevelData _level;
         private readonly PlayerDefinition _definition;
@@ -98,6 +100,7 @@ namespace Purge.Gameplay.Player
         /// <summary>Floor the player is on (the start's; stairs come with buildings).</summary>
         public int Floor => Cell.Floor;
         public bool IsOnStairs => _stair.Active;
+        public bool IsOnIce => !InVehicle && !IsOnStairs && _passability.IsIce(Cell);
         public float ViewHeight => IsOnStairs ? _stair.Position.y : Floor * GridPosition.FloorHeight;
 
         /// <summary>
@@ -180,18 +183,34 @@ namespace Purge.Gameplay.Player
             IsAiming = aiming;
             if (InVehicle)
             {
+                _walkVelocity = Vector2.zero;
                 IsAiming = false;
                 return; // the vehicle moves the player (Ride)
             }
 
             if (IsOnStairs)
             {
+                _walkVelocity = Vector2.zero;
                 TickStair(deltaTime);
                 return;
             }
 
             var move = Vector2.ClampMagnitude(_input.Move, 1f);
-            if (move.sqrMagnitude < DeadZone * DeadZone || deltaTime <= 0f || WeaponSpeed <= 0f || Stunned || Down)
+            if (move.sqrMagnitude < DeadZone * DeadZone) move = Vector2.zero;
+            var onIce = IsOnIce;
+            var canWalk = deltaTime > 0f && WeaponSpeed > 0f && StatusSpeed > 0f && !Stunned && !Down;
+            var slow = (!onIce && _passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell) *
+                       WeaponSpeed * StatusSpeed * BonusSpeed;
+            var desired = move * (_definition.MoveSpeed * slow);
+            if (!canWalk)
+                _walkVelocity = Vector2.zero;
+            else if (onIce)
+                _walkVelocity = Vector2.MoveTowards(_walkVelocity, desired,
+                    _definition.MoveSpeed / GroundAccelerationTime * _definition.IceAcceleration * deltaTime);
+            else
+                _walkVelocity = desired;
+
+            if (_walkVelocity == Vector2.zero)
             {
                 if (aiming) Facing = _aimFacing;
                 else if (_moved) Facing = Aim.Snap(Facing, _aim.AimMode);
@@ -202,15 +221,15 @@ namespace Purge.Gameplay.Player
                 return;
             }
 
-            MoveDirection = move.normalized;
-            Facing = aiming ? _aimFacing : MoveDirection;
+            MoveDirection = _walkVelocity.normalized;
+            Facing = aiming ? _aimFacing : move == Vector2.zero ? MoveDirection : move.normalized;
             _moved = true;
             var maxDistance = _definition.MoveSpeed * deltaTime;
-            var slow = (_passability.IsSnowdrift(Cell) ? _definition.SnowdriftSpeed : 1f) * _passability.ObstacleSpeedFactor(Cell) *
-                       WeaponSpeed * StatusSpeed * BonusSpeed;
-            var target = PlayerMovement.Move(Position, move * (maxDistance * slow), _definition.BodyHalfSize, _definition.CornerAssist, this);
+            var target = PlayerMovement.Move(Position, _walkVelocity * deltaTime, _definition.BodyHalfSize, _definition.CornerAssist, this);
             // Of the full speed: in a snowdrift the walk animation slows down too.
-            SpeedFactor = Mathf.Clamp01((target - Position).magnitude / maxDistance);
+            var displacement = target - Position;
+            SpeedFactor = Mathf.Clamp01(displacement.magnitude / maxDistance);
+            if (onIce) _walkVelocity = displacement / deltaTime;
             Position = target;
             ApplyPush(deltaTime);
             TryStartStair(move);
@@ -264,6 +283,7 @@ namespace Purge.Gameplay.Player
         /// <summary>The player gets into a vehicle standing at <paramref name="position"/> (stage 9a).</summary>
         public void EnterVehicle(Vector2 position, Vector2 facing)
         {
+            _walkVelocity = Vector2.zero;
             if (!IsSpawned) return;
             InVehicle = true;
             _push = Vector2.zero;
@@ -380,6 +400,7 @@ namespace Purge.Gameplay.Player
 
         private void Spawn(int startIndex)
         {
+            _walkVelocity = Vector2.zero;
             var start = _level.PlayerStarts[startIndex];
             _occupancy.SetPlayer(start.Position);
             StartIndex = startIndex;

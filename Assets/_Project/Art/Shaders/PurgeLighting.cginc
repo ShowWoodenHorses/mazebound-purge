@@ -89,4 +89,15 @@ float3 PurgeExtraLightGeometryVertex(float3 worldPos, float3 worldNormal)
            PurgeGridLightVertex(worldPos, worldNormal) * PurgeLightCeiling(worldPos.y);
 }
 
+half3 PurgeWinterAlbedo(half3 albedo, float3 worldPos, half normalY)
+{
+    half luminance = dot(albedo, half3(0.2126, 0.7152, 0.0722));
+    half3 cold = lerp(albedo, luminance.xxx, 0.72) * half3(0.84, 0.94, 1.08);
+    float2 p = worldPos.xz * 8.0 + worldPos.y * float2(3.1, 5.7);
+    half noise = 0.12 * sin(p.x) * sin(p.y) + 0.07 * sin(dot(p, float2(2.1, -1.4)));
+    half cover = smoothstep(0.38, 0.77, normalY + noise);
+    half3 snow = half3(0.76, 0.86, 0.95) * (0.76 + 0.24 * luminance);
+    return lerp(cold, snow, cover);
+}
+
 #endif

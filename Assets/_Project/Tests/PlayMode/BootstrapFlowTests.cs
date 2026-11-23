@@ -1300,6 +1300,36 @@ namespace Purge.Tests.PlayMode
         });
 
         [UnityTest]
+        public IEnumerator Snow_LoadsItsOwnRoster_AndStartsTheElementalOnEveryDifficulty() => Async(async () =>
+        {
+            var catalog = _container.Resolve<ILevelCatalog>();
+            Assert.AreEqual(4, catalog.Difficulties.Count);
+            foreach (var difficulty in catalog.Difficulties)
+            {
+                await _flow.StartLevel("Level_Snow_01", new LevelLaunchOptions(startIndex: 0, seed: 14, difficulty: difficulty));
+                Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+                var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+                var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+                Assert.AreEqual(18, waves.Scenario.Count);
+                var intermediate = difficulty.Level >= Purge.Core.Monsters.DifficultyLevel.Normal;
+                Assert.AreEqual("golem_common", waves.Scenario.Waves[5].Boss.Monster.Id);
+                Assert.AreEqual("medusa_common", waves.Scenario.Waves[10].Boss.Monster.Id);
+                Assert.AreEqual(intermediate, waves.Scenario.Waves[5].Boss.IsEnabled(difficulty.Level));
+                Assert.AreEqual(intermediate, waves.Scenario.Waves[10].Boss.IsEnabled(difficulty.Level));
+                Assert.IsTrue(waves.Scenario.Waves[17].Boss.IsEnabled(difficulty.Level));
+
+                waves.ResumeAt(17);
+                Assert.IsTrue(waves.StartNextWave());
+                waves.Tick(0.02f);
+                var bosses = level.Resolve<Purge.Gameplay.Horde.BossSystem>();
+                Assert.IsTrue(bosses.IsBossAlive);
+                Assert.AreEqual("elemental_snow", bosses.Definition.Id);
+                Assert.AreEqual(4, bosses.Definition.Abilities.Count);
+                await _flow.ExitToMenu();
+            }
+        });
+
+        [UnityTest]
         public IEnumerator Retry_AfterFail_ReloadsLevel_WithSingleLevelScope() => Async(async () =>
         {
             var levelId = FirstLevelId();

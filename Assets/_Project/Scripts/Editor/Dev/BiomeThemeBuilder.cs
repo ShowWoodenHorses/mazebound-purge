@@ -92,6 +92,7 @@ namespace Purge.Editor.Dev
         private static Biome Snow() => new Biome
         {
             Name = "Snow",
+            FloorSteps = FloorStepSound.Snow,
             Floors = new[]
             {
                 (new Surface { Name = "floor_snow", Paint = (u, v) => SnowGround(u, v, 11, drift: false), Bump = 2.5f }, 60),
@@ -171,7 +172,8 @@ namespace Purge.Editor.Dev
                 var material = MaterialFor(folder, surface);
                 baseFloor ??= material;
                 var prefab = Prefab(folder, surface.Name, floorMesh, material);
-                floorAdds.Add(Variant(surface.Name, weight, VisualCategory.General, prefab));
+                floorAdds.Add(Variant(surface.Name, weight,
+                    surface.Name == "floor_ice" ? VisualCategory.Ice : VisualCategory.General, prefab));
             }
             if (newFloorSet)
                 floorSet.DefaultVariantId = biome.Floors[0].Surface.Name;

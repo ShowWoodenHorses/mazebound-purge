@@ -76,6 +76,26 @@ MonoBehaviour:
     _range: 0
     _maxVoices: 2
     _minInterval: 0
+  _footstepSnow:
+    _clips:
+    - {fileID: 8300000, guid: e16d963b106473a4e9ccf82c54b9a9d9, type: 3}
+    - {fileID: 8300000, guid: 23defe28ac13ba24b9425eed86eae66d, type: 3}
+    - {fileID: 8300000, guid: e6e91b3352856914496069d1fe3578b0, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
+  _footstepIce:
+    _clips:
+    - {fileID: 8300000, guid: e2b8b9460cdb44447b7a05fdf2f68cfc, type: 3}
+    - {fileID: 8300000, guid: 715497a57598aaa4ba6e417c3e415a54, type: 3}
+    - {fileID: 8300000, guid: 12e334aeda2a2274981e05faed4be2fe, type: 3}
+    _volume: 0.55
+    _pitch: {x: 0.92, y: 1.08}
+    _range: 0
+    _maxVoices: 2
+    _minInterval: 0
   _footstepWalk:
     _clips:
     - {fileID: 8300000, guid: ac0e8271dd302f646843c879c9fb898b, type: 3}
@@ -2876,6 +2896,15 @@ MonoBehaviour:
       _range: 16
       _maxVoices: 3
       _minInterval: 0.08
+  - _name: elemental_freeze
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: aa35bb0db081a134498257f0e2847fd4, type: 3}
+      _volume: 0.75
+      _pitch: {x: 0.95, y: 1.05}
+      _range: 16
+      _maxVoices: 3
+      _minInterval: 0.08
   - _name: fireball
     _cue:
       _clips:
@@ -3193,6 +3222,15 @@ MonoBehaviour:
     _cue:
       _clips:
       - {fileID: 8300000, guid: f77d781a8118ec9439a9d900fb331369, type: 3}
+      _volume: 0.35
+      _pitch: {x: 1, y: 1}
+      _range: 0
+      _maxVoices: 1
+      _minInterval: 0
+  - _name: snow
+    _cue:
+      _clips:
+      - {fileID: 8300000, guid: 7be3281bb44f89b4ab9c22c1d7e1b8d7, type: 3}
       _volume: 0.35
       _pitch: {x: 1, y: 1}
       _range: 0

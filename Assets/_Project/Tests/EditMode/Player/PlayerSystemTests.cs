@@ -106,6 +106,35 @@ namespace Purge.Tests.EditMode.Player
         }
 
         [Test]
+        public void Ice_AcceleratesGradually_Coasts_AndStopsWhenStunned()
+        {
+            for (var x = 1; x <= 4; x++)
+                _level.Geometry.SetSurface(new GridPosition(x, 1), CellSurface.Ice);
+            _grid = new LevelGrid(_level.Geometry);
+            _occupancy = new OccupancyMap(_grid);
+            var player = Spawn(new LevelLaunchOptions(startIndex: 0));
+
+            _input.Move = Vector2.right;
+            player.Tick(Dt);
+            Assert.That(player.SpeedFactor, Is.InRange(0.01f, 0.15f));
+            Run(player, 0.45f);
+            Assert.That(player.SpeedFactor, Is.EqualTo(1f).Within(0.01f));
+
+            _input.Move = Vector2.zero;
+            var beforeRelease = player.Position.x;
+            Run(player, 0.1f);
+            Assert.Greater(player.Position.x, beforeRelease);
+            Assert.Less(player.SpeedFactor, 0.9f);
+
+            var beforeStun = player.Position;
+            player.Stunned = true;
+            player.Tick(Dt);
+            player.Stunned = false;
+            player.Tick(Dt);
+            Assert.AreEqual(beforeStun, player.Position);
+        }
+
+        [Test]
         public void ForcedStart_SpawnsThere_AndOccupiesCell()
         {
             var player = Spawn(new LevelLaunchOptions(startIndex: 1));

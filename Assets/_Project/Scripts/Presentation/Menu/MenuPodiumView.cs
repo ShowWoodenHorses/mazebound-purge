@@ -23,7 +23,8 @@ namespace Purge.Presentation.Menu
 
         private CharacterWeaponRig _rig;
         private Transform _gun;
-        private Transform _gunGrip;
+        private WeaponModel _gunModel;
+        private bool _alignWithFacing;
         private float _turnTime;
 
         public Transform Anchor => _anchor;
@@ -37,12 +38,13 @@ namespace Purge.Presentation.Menu
         }
 
         /// <summary>The character's rig and the gun to pose in its hands (null — a melee weapon or none).</summary>
-        public void SetPose(CharacterWeaponRig rig, Transform gun, Transform gunGrip)
+        public void SetPose(CharacterWeaponRig rig, Transform gun, WeaponModel gunModel, bool alignWithFacing)
         {
             _rig = rig;
             _gun = gun;
-            _gunGrip = gunGrip;
-            if (_rig != null && _rig.IsValid) _rig.PoseGun(_gun, _gunGrip, 0f);
+            _gunModel = gunModel;
+            _alignWithFacing = alignWithFacing;
+            PoseGun(0f);
         }
 
         private void LateUpdate()
@@ -54,9 +56,15 @@ namespace Purge.Presentation.Menu
                 _anchor.localRotation = Quaternion.Euler(0f, Mathf.Sin(_turnTime) * _turnRange, 0f);
             }
 
+            PoseGun(Time.unscaledDeltaTime);
+        }
+
+        private void PoseGun(float deltaTime)
+        {
             if (_rig == null || !_rig.IsValid) return;
             if (_gun != null) _gun.localPosition = Vector3.zero;
-            _rig.PoseGun(_gun, _gunGrip, Time.unscaledDeltaTime);
+            var aim = _alignWithFacing && _anchor != null ? _anchor.forward : Vector3.zero;
+            _rig.PoseGun(_gun, _gunModel?.GripLeft, deltaTime, aim, _gunModel?.ShoulderMount == true);
         }
     }
 }

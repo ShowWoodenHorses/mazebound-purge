@@ -26,6 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fill: 0.1
+    - _RingZTest: 4
     - _Thickness: 0.03
     m_Colors:
     - _Color: {r: 0.914, g: 0.714, b: 0.31, a: 0.3}

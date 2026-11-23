@@ -193,6 +193,7 @@ namespace Purge.Editor.Dev
             var halo = MenuMaterial("Podium_Halo", "Purge/Ring", new Color(accent.r, accent.g, accent.b, 0.3f), null);
             halo.SetFloat("_Thickness", 0.03f);
             halo.SetFloat("_Fill", 0.1f);
+            halo.SetFloat("_RingZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
 
             MenuPrimitive(stage.transform, "Podium", PrimitiveType.Cylinder, body, new Vector3(0f, -0.09f, 0f), new Vector3(2.2f, 0.09f, 2.2f));
             MenuPrimitive(stage.transform, "Rim", PrimitiveType.Cylinder, rim, new Vector3(0f, -0.035f, 0f), new Vector3(2.27f, 0.008f, 2.27f));
@@ -296,7 +297,7 @@ namespace Purge.Editor.Dev
             var scaler = canvasObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             canvasObject.AddComponent<GraphicRaycaster>();
             var root = canvasObject.AddComponent<UIRoot>();
             var parent = canvasObject.transform;
@@ -400,7 +401,7 @@ namespace Purge.Editor.Dev
             var bottom = new Vector2(0.5f, 0f);
             var arsenal = MenuTab(area, "ArsenalButton", Loc(TextKeys.MenuArsenal), icons.Ranged, new Vector2(-600f, 110f));
             var character = MenuTab(area, "CharacterButton", Loc(TextKeys.MenuCharacter), icons.Player, new Vector2(-340f, 110f));
-            var play = TextButton(area, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 128f, 46f);
+            var play = TextButton(area, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 128f, 46f, centerLabel: true);
             Place(play, bottom, new Vector2(0f, 110f), new Vector2(400f, 128f));
             var tasks = MenuTab(area, "TasksButton", Loc(TextKeys.MenuTasks), icons.Star, new Vector2(340f, 110f));
             var shop = MenuTab(area, "ShopButton", Loc(TextKeys.MenuShop), icons.Coin, new Vector2(600f, 110f));
@@ -418,12 +419,9 @@ namespace Purge.Editor.Dev
             var version = Text(area, "Version", "v0.1", 24f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
                 new Vector2(-64f, 52f), new Vector2(140f, 36f), TextAlignmentOptions.BottomRight, _style.MutedText, 6f);
 
-            var records = TextButton(area, "RecordsButton", Loc(TextKeys.SurvivalRecords), false, icons.Star, 62f, 24f);
+            var records = TextButton(area, "RecordsButton", Loc(TextKeys.SurvivalRecords), false, icons.Star, 62f, 24f, centerLabel: true);
             Place(records, TopLeft, new Vector2(374f, -170f), new Vector2(260f, 62f));
-            var survival = TextButton(area, "SurvivalButton", Loc(TextKeys.SurvivalMode), false, null, 84f, 30f);
-            Place(survival, bottom, new Vector2(380f, 240f), new Vector2(320f, 84f));
             SetReference(screen, "_recordsButton", records);
-            SetReference(screen, "_survivalButton", survival);
             SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);
             SetReference(screen, "_arsenalDot", BuildPurchaseDot(arsenal.transform));
@@ -448,10 +446,9 @@ namespace Purge.Editor.Dev
         {
             var body = Shape(parent, name, new Vector2(0.5f, 0f), position, new Vector2(220f, 112f), true);
             body.CornerRadius = 2f;
-            var image = Icon(body.transform, "Icon", icon, new Vector2(0.5f, 1f), new Vector2(0f, -38f), 40f);
+            var image = Icon(body.transform, "Icon", icon, new Vector2(0.5f, 1f), new Vector2(0f, -28f), 36f);
             var label = Text(body.transform, "Label", text, 24f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0f, 14f), new Vector2(200f, 34f), TextAlignmentOptions.Center, spacing: 8f);
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+                new Vector2(0f, 8f), new Vector2(196f, 54f), TextAlignmentOptions.Center, spacing: 2f);
             AutoSize(label);
             return MakeButton(body, false, image, label);
         }
@@ -521,17 +518,17 @@ namespace Purge.Editor.Dev
             // The level: tiles, difficulties, the arena.
             var left = PanelArea(area, "Level", new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(48f, 40f),
                 new Vector2(748f, -160f));
-            SectionTitle(left, "LevelTitle", Loc(TextKeys.SetupLevel), new Vector2(0f, -20f));
+            var levelTitle = SectionTitle(left, "LevelTitle", Loc(TextKeys.SetupLevel), new Vector2(0f, -6.5f));
+            levelTitle.alignment = TextAlignmentOptions.MidlineLeft;
             var locations = new List<Object>();
             for (var i = 0; i < 5; i++)
             {
                 var tile = Shape(left, "Location" + i, TopLeft, new Vector2(80f + i * 135f, -140f), new Vector2(124f, 150f), true);
                 tile.CornerRadius = 2f;
                 var number = Text(tile.transform, "Number", (i + 1).ToString(), 54f, true, Center, Center,
-                    new Vector2(0f, 10f), new Vector2(110f, 70f), TextAlignmentOptions.Center);
+                    new Vector2(0f, 15f), new Vector2(110f, 56f), TextAlignmentOptions.Center);
                 var name = Text(tile.transform, "Name", "LOCATION", 20f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                    new Vector2(0f, 12f), new Vector2(116f, 28f), TextAlignmentOptions.Center, spacing: 4f);
-                name.textWrappingMode = TextWrappingModes.NoWrap;
+                    new Vector2(0f, 8f), new Vector2(112f, 46f), TextAlignmentOptions.Center, spacing: 1f);
                 AutoSize(name, 0.6f);
                 var soon = Text(tile.transform, "Soon", string.Empty, 16f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
                     new Vector2(0f, -8f), new Vector2(116f, 24f), TextAlignmentOptions.Center, _style.MutedText, 4f);
@@ -541,7 +538,7 @@ namespace Purge.Editor.Dev
                 locations.Add(MakeButton(tile, false, number, name));
             }
 
-            var difficultyTitle = SectionTitle(left, "DifficultyTitle", Loc(TextKeys.SetupDifficulty), new Vector2(0f, -250f));
+            var difficultyTitle = SectionTitle(left, "DifficultyTitle", Loc(TextKeys.SetupDifficulty), new Vector2(0f, -226f));
             var levels = TextButton(area, "LevelsButton", Loc(TextKeys.SurvivalLevels), false, null, 68f, 24f);
             var survival = TextButton(area, "SurvivalButton", Loc(TextKeys.SurvivalMode), false, null, 68f, 24f);
             Place(levels, TopLeft, new Vector2(320f, -90f), new Vector2(230f, 68f));
@@ -567,9 +564,9 @@ namespace Purge.Editor.Dev
             var arenaRow = Rect(left, "ArenaRow", TopLeft, new Vector2(374f, -520f), new Vector2(652f, 100f));
             var arena = LabeledSwitch(arenaRow, "Arena", Loc(TextKeys.SetupArena), new Vector2(0f, 1f), new Vector2(0f, -30f));
             arena.GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 60f);
-            arena.transform.Find("Label").GetComponent<RectTransform>().sizeDelta = new Vector2(480f, 40f);
+            arena.transform.Find("Label").GetComponent<RectTransform>().sizeDelta = new Vector2(480f, 58f);
             var hint = Text(arenaRow, "Hint", Loc(TextKeys.SetupArenaHint), 20f, false, TopLeft, new Vector2(0f, 1f),
-                new Vector2(0f, -66f), new Vector2(652f, 34f), TextAlignmentOptions.TopLeft, _style.MutedText);
+                new Vector2(0f, -66f), new Vector2(652f, 54f), TextAlignmentOptions.TopLeft, _style.MutedText);
             AutoSize(hint);
 
             // The preparation: a scrolling column, the total and «В БОЙ» under it.
@@ -656,10 +653,9 @@ namespace Purge.Editor.Dev
         private static TMP_Text SectionTitle(Transform parent, string name, string text, Vector2? position)
         {
             var title = Text(parent, name, text, 26f, true, TopLeft, new Vector2(0f, 1f), (position ?? Vector2.zero) +
-                new Vector2(24f, 0f), new Vector2(640f, 38f), TextAlignmentOptions.BottomLeft, _style.MutedText, 8f);
-            title.textWrappingMode = TextWrappingModes.NoWrap;
+                new Vector2(24f, 0f), new Vector2(640f, 52f), TextAlignmentOptions.BottomLeft, _style.MutedText, 3f);
             AutoSize(title);
-            if (position == null) title.gameObject.AddComponent<LayoutElement>().preferredHeight = 38f;
+            if (position == null) title.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
             return title;
         }
 
@@ -709,20 +705,19 @@ namespace Purge.Editor.Dev
         /// <summary>The booster row template: icon, name and what it gives, the price (or the lock) on the right.</summary>
         private static UiButton BoosterRow(Transform parent, UiIconSet icons)
         {
-            var row = Shape(parent, "Template", Center, Vector2.zero, new Vector2(676f, 72f), true);
+            var row = Shape(parent, "Template", Center, Vector2.zero, new Vector2(676f, 112f), true);
             row.CornerRadius = 2f;
-            row.gameObject.AddComponent<LayoutElement>().preferredHeight = 72f;
+            row.gameObject.AddComponent<LayoutElement>().preferredHeight = 112f;
             var icon = Icon(row.transform, "Icon", icons.Star, new Vector2(0f, 0.5f), new Vector2(40f, 0f), 40f);
             var name = Text(row.transform, "Name", "BOOSTER", 24f, true, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
-                new Vector2(80f, 13f), new Vector2(440f, 30f), TextAlignmentOptions.MidlineLeft, spacing: 4f);
-            name.textWrappingMode = TextWrappingModes.NoWrap;
+                new Vector2(80f, 23f), new Vector2(414f, 46f), TextAlignmentOptions.MidlineLeft, spacing: 2f);
             AutoSize(name);
             var text = Text(row.transform, "Text", "", 18f, false, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
-                new Vector2(80f, -16f), new Vector2(440f, 26f), TextAlignmentOptions.MidlineLeft, _style.MutedText);
-            text.textWrappingMode = TextWrappingModes.NoWrap;
+                new Vector2(80f, -25f), new Vector2(414f, 46f), TextAlignmentOptions.MidlineLeft, _style.MutedText);
             AutoSize(text, 0.75f);
             var price = Text(row.transform, "Price", "0", 28f, true, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
                 new Vector2(-62f, 0f), new Vector2(110f, 36f), TextAlignmentOptions.MidlineRight);
+            AutoSize(price);
             var coin = Icon(row.transform, "Coin", icons.Coin, new Vector2(1f, 0.5f), new Vector2(-34f, 0f), 30f);
             coin.color = _style.Accent;
             var lockIcon = Icon(row.transform, "Lock", icons.Lock, new Vector2(1f, 0.5f), new Vector2(-34f, 0f), 28f);
@@ -861,9 +856,10 @@ namespace Purge.Editor.Dev
             Ornament(messageRow, false);
             var message = Text(messageRow, "Message", "", 32f, false, Center, Center, Vector2.zero, new Vector2(10f, 40f),
                 TextAlignmentOptions.Center);
-            message.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(message);
             var messageFitter = message.gameObject.AddComponent<LayoutElement>();
-            messageFitter.minHeight = 40f;
+            messageFitter.preferredWidth = 920f;
+            messageFitter.preferredHeight = 76f;
             Ornament(messageRow, true);
             messageRow.gameObject.SetActive(false); // Shown with a message.
 
@@ -1234,6 +1230,7 @@ namespace Purge.Editor.Dev
             }
 
             label.fontSize = size;
+            label.textWrappingMode = TextWrappingModes.Normal;
             label.characterSpacing = spacing;
             label.alignment = alignment;
             label.color = color ?? _style.Text;
@@ -1242,12 +1239,12 @@ namespace Purge.Editor.Dev
         }
 
         /// <summary>
-        /// Long translations shrink the text down to <paramref name="min"/> of its size instead of overflowing its box
-        /// (TextMeshPro re-fits only when the text changes).
+        /// Fit a bounded label, allowing word wrap before reducing its size. Keep any excess inside the box.
         /// </summary>
         private static TMP_Text AutoSize(TMP_Text label, float min = 0.7f)
         {
             label.enableAutoSizing = true;
+            label.overflowMode = TextOverflowModes.Ellipsis;
             label.fontSizeMax = label.fontSize;
             label.fontSizeMin = Mathf.Round(label.fontSize * min);
             return label;
@@ -1807,9 +1804,10 @@ namespace Purge.Editor.Dev
             var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 940f, new RectOffset(64, 64, 52, 56), 22f);
             SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
             var title = Heading(panel, "Title", "VICTORY", 62f);
-            var levelName = Text(panel, "LevelName", "", 28f, true, Center, Center, Vector2.zero, new Vector2(600f, 34f),
-                TextAlignmentOptions.Center, _style.MutedText, 10f);
-            levelName.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+            var levelName = Text(panel, "LevelName", "", 28f, true, Center, Center, Vector2.zero, new Vector2(600f, 64f),
+                TextAlignmentOptions.Center, _style.MutedText, 4f);
+            AutoSize(levelName);
+            levelName.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
 
             var rowsRoot = new GameObject("Rows", typeof(RectTransform));
             rowsRoot.transform.SetParent(panel, false);
@@ -1832,14 +1830,14 @@ namespace Purge.Editor.Dev
                 Stretch(content);
                 var left = new Vector2(0f, 0.5f);
                 var right = new Vector2(1f, 0.5f);
-                var label = Text(content, "Label", Loc(keys[i]), 30f, true, left, left, Vector2.zero, new Vector2(380f, rowHeight),
-                    TextAlignmentOptions.MidlineLeft, _style.MutedText, 8f);
-                label.textWrappingMode = TextWrappingModes.NoWrap;
+                var label = Text(content, "Label", Loc(keys[i]), 30f, true, left, left, Vector2.zero, new Vector2(302f, rowHeight),
+                    TextAlignmentOptions.MidlineLeft, _style.MutedText, 3f);
                 AutoSize(label);
                 var money = i == ResultScreen.Money;
                 var value = Text(content, "Value", "0", 38f, true, right, right, new Vector2(money ? -52f : 0f, 0f),
-                    new Vector2(300f, rowHeight), TextAlignmentOptions.MidlineRight, _style.Text, 2f);
+                    new Vector2(218f, rowHeight), TextAlignmentOptions.MidlineRight, _style.Text, 2f);
                 value.textWrappingMode = TextWrappingModes.NoWrap;
+                AutoSize(value);
                 if (money)
                 {
                     var coin = Icon(content, "Coin", icons.Coin, right, new Vector2(-20f, 0f), 40f);
@@ -1917,7 +1915,7 @@ namespace Purge.Editor.Dev
         {
             var screen = Screen<DeathScreen>(parent, "DeathScreen", new Color(0.18f, 0f, 0f, 0.55f));
             var icons = UiIcons();
-            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 660f, new RectOffset(56, 56, 48, 56), 18f);
+            var panel = PanelBox(screen.transform, "Panel", Center, Vector2.zero, 720f, new RectOffset(56, 56, 48, 56), 18f);
             SetReference(screen.GetComponent<UiAppear>(), "_panel", panel);
             var title = Heading(panel, "Title", Loc(TextKeys.DeathTitle), 62f);
             title.color = _style.Danger;
@@ -2064,11 +2062,10 @@ namespace Purge.Editor.Dev
                 ring.Fill = Fade(_style.Fill, 0.6f / _style.Fill.a);
                 var icon = Icon(ring.transform, "Icon", null, Center, Vector2.zero, 88f);
                 var name = Text(body.transform, "Name", "CARD", 36f, true, top, top, new Vector2(0f, -224f),
-                    new Vector2(width - 40f, 48f), TextAlignmentOptions.Center, _style.Text, 4f);
-                name.textWrappingMode = TextWrappingModes.NoWrap;
+                    new Vector2(width - 40f, 76f), TextAlignmentOptions.Center, _style.Text, 2f);
                 AutoSize(name, 0.6f);
-                var text = Text(body.transform, "Text", "", 28f, false, top, top, new Vector2(0f, -290f),
-                    new Vector2(width - 56f, 180f), TextAlignmentOptions.Top, _style.Text);
+                var text = Text(body.transform, "Text", "", 28f, false, top, top, new Vector2(0f, -306f),
+                    new Vector2(width - 56f, 138f), TextAlignmentOptions.Top, _style.Text);
                 text.textWrappingMode = TextWrappingModes.Normal;
                 AutoSize(text, 0.7f);
                 var level = Text(body.transform, "Level", "NEW", 22f, true, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
@@ -2205,8 +2202,8 @@ namespace Purge.Editor.Dev
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             fitter.aspectRatio = 1f;
 
-            // Icon switches (one per MapLayer, in its order) stacked at the left of the safe area, with a margin, below
-            // the FPS counter (over every screen at about -182..-210). Children of SafeArea named "<name>Toggle" (tests).
+            // Icon switches (one per MapLayer, in its order) stacked at the left of the safe area.
+            // Children of SafeArea named "<name>Toggle" (tests).
             (string name, string caption)[] layers =
             {
                 ("ShowPlayer", TextKeys.MapPlayer), ("ShowZombies", TextKeys.MapZombies),
@@ -2300,9 +2297,9 @@ namespace Purge.Editor.Dev
             Stretch(area.GetComponent<RectTransform>());
             area.AddComponent<SafeAreaFitter>();
 
-            // Left, under the HUD counters (they end at about -165) and above the stick zone.
-            var label = Text(area.transform, "Text", "FPS -", 22f, true, TopLeft, TopLeft, new Vector2(56f, -182f),
-                new Vector2(200f, 28f), TextAlignmentOptions.TopLeft, _style.MutedText, 4f);
+            var right = new Vector2(1f, 0.5f);
+            var label = Text(area.transform, "Text", "FPS -", 22f, true, right, right, new Vector2(-56f, 0f),
+                new Vector2(200f, 28f), TextAlignmentOptions.MidlineRight, _style.MutedText, 4f);
 
             var counter = area.AddComponent<FpsCounter>();
             SetReference(counter, "_text", label);
@@ -2323,8 +2320,8 @@ namespace Purge.Editor.Dev
             var area = SafeArea(screen.transform);
 
             var back = RoundButton(area, "BackButton", icons.ChevronLeft, TopLeft, new Vector2(100f, -90f), 84f, 36f);
-            Text(area, "Title", Loc(TextKeys.Settings), 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
-                new Vector2(600f, 60f), TextAlignmentOptions.MidlineLeft, spacing: 16f);
+            AutoSize(Text(area, "Title", Loc(TextKeys.Settings), 46f, true, TopLeft, new Vector2(0f, 0.5f), new Vector2(172f, -90f),
+                new Vector2(700f, 80f), TextAlignmentOptions.MidlineLeft, spacing: 6f));
 
             var column = new GameObject("Content", typeof(RectTransform)).GetComponent<RectTransform>();
             column.SetParent(area, false);
@@ -2339,7 +2336,7 @@ namespace Purge.Editor.Dev
             var tabs = new GameObject("Tabs", typeof(RectTransform));
             tabs.transform.SetParent(column, false);
             var tabsLayout = tabs.AddComponent<HorizontalLayoutGroup>();
-            tabsLayout.spacing = 48f;
+            tabsLayout.spacing = 24f;
             tabsLayout.childAlignment = TextAnchor.LowerLeft;
             tabsLayout.childControlWidth = tabsLayout.childControlHeight = true;
             tabsLayout.childForceExpandWidth = tabsLayout.childForceExpandHeight = false;
@@ -2426,7 +2423,10 @@ namespace Purge.Editor.Dev
             var supportRow = SettingRow(otherPage, "Support", Loc(TextKeys.SettingsSupport));
             var supportValue = Text(supportRow, "SupportValue", "", 28f, true, Center, Center, Vector2.zero,
                 new Vector2(560f, 40f), TextAlignmentOptions.MidlineRight, _style.MutedText);
-            supportValue.gameObject.AddComponent<LayoutElement>().preferredWidth = 560f;
+            AutoSize(supportValue);
+            var supportLayout = supportValue.gameObject.AddComponent<LayoutElement>();
+            supportLayout.preferredWidth = 560f;
+            supportLayout.preferredHeight = 64f;
             supportRow.gameObject.SetActive(false);
             // Privacy policy: only where the platform has one (the Android stores; SettingsScreen.SetPrivacyPolicy).
             var privacyRow = SettingRow(otherPage, "Privacy", Loc(TextKeys.SettingsPrivacy));
@@ -2496,6 +2496,7 @@ namespace Purge.Editor.Dev
             Heading(panel, "Title", Loc(TextKeys.ErrorTitle), 46f);
             var message = Text(panel, "Message", "Error", 26f, false, Center, Center, Vector2.zero, new Vector2(860f, 220f),
                 TextAlignmentOptions.TopLeft, _style.MutedText);
+            AutoSize(message);
             message.gameObject.AddComponent<LayoutElement>().preferredHeight = 220f;
             var back = TextButton(panel, "BackButton", Loc(TextKeys.ErrorBack), true, icons: null, height: 86f);
 
@@ -2595,11 +2596,11 @@ namespace Purge.Editor.Dev
 
         private static TMP_Text Heading(Transform parent, string name, string text, float size)
         {
-            var label = Text(parent, name, text, size, true, Center, Center, Vector2.zero, new Vector2(800f, size * 1.3f),
-                TextAlignmentOptions.Center, spacing: size * 0.25f);
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            var label = Text(parent, name, text, size, true, Center, Center, Vector2.zero, new Vector2(800f, size * 1.65f),
+                TextAlignmentOptions.Center, spacing: size * 0.12f);
+            label.margin = new Vector4(10f, 0f, 10f, 0f);
             AutoSize(label);
-            label.gameObject.AddComponent<LayoutElement>().preferredHeight = size * 1.3f;
+            label.gameObject.AddComponent<LayoutElement>().preferredHeight = size * 1.65f;
             return label;
         }
 
@@ -2630,30 +2631,34 @@ namespace Purge.Editor.Dev
         /// Sized by its layout (preferred height <paramref name="height"/>).
         /// </summary>
         private static UiButton TextButton(Transform parent, string name, string text, bool accent, Sprite icons,
-            float height, float fontSize = 30f)
+            float height, float fontSize = 30f, bool centerLabel = false)
         {
             var body = Shape(parent, name, Center, Vector2.zero, new Vector2(300f, height), true);
             body.CornerRadius = 2f;
             body.gameObject.AddComponent<LayoutElement>().preferredHeight = height;
             var label = Text(body.transform, "Label", text, fontSize, true, Center, Center, Vector2.zero, Vector2.zero,
-                icons != null ? TextAlignmentOptions.MidlineLeft : TextAlignmentOptions.Center, spacing: fontSize * 0.45f);
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+                icons != null && !centerLabel ? TextAlignmentOptions.MidlineLeft : TextAlignmentOptions.Center, spacing: fontSize * 0.1f);
             AutoSize(label);
             var labelRect = label.rectTransform;
             Stretch(labelRect);
+            labelRect.offsetMin = new Vector2(12f, 4f);
+            labelRect.offsetMax = new Vector2(-12f, -4f);
             if (icons == null) return MakeButton(body, accent, label);
 
-            labelRect.offsetMin = new Vector2(30f, 0f);
-            labelRect.offsetMax = new Vector2(-70f, 0f);
-            var icon = Icon(body.transform, "Icon", icons, new Vector2(1f, 0.5f), new Vector2(-38f, 0f), fontSize * 1.1f);
+            var iconSize = fontSize * 1.1f;
+            var iconPadding = iconSize + 28f;
+            labelRect.offsetMax = new Vector2(-iconPadding, -4f);
+            if (centerLabel) labelRect.offsetMin = new Vector2(iconPadding, 4f);
+            var icon = Icon(body.transform, "Icon", icons, new Vector2(1f, 0.5f), new Vector2(-14f - iconSize * 0.5f, 0f), iconSize);
             return MakeButton(body, accent, label, icon);
         }
 
         /// <summary>Small underlined text that works as a button (debug actions).</summary>
         private static Button LinkButton(Transform parent, string name, string text, Vector2 anchor, Vector2 position, float width)
         {
-            var label = Text(parent, name, text, 22f, true, anchor, new Vector2(1f, 0f), position, new Vector2(width, 34f),
-                TextAlignmentOptions.BottomRight, _style.MutedText, 4f);
+            var label = Text(parent, name, text, 22f, true, anchor, new Vector2(1f, 0f), position, new Vector2(width, 54f),
+                TextAlignmentOptions.BottomRight, _style.MutedText, 2f);
+            AutoSize(label);
             label.fontStyle = FontStyles.Underline;
             label.raycastTarget = true;
             var button = label.gameObject.AddComponent<Button>();
@@ -2733,11 +2738,14 @@ namespace Purge.Editor.Dev
             hit.Fill = Color.clear;
             hit.StrokeWidth = 0f;
             var element = hit.gameObject.AddComponent<LayoutElement>();
-            element.preferredWidth = 240f;
+            element.flexibleWidth = 1f;
             element.preferredHeight = 66f;
             var label = Text(hit.transform, "Label", text, 30f, true, Center, Center, Vector2.zero, Vector2.zero,
-                TextAlignmentOptions.MidlineLeft, _style.MutedText, 12f);
+                TextAlignmentOptions.MidlineLeft, _style.MutedText, 3f);
+            AutoSize(label);
             Stretch(label.rectTransform);
+            label.rectTransform.offsetMin = new Vector2(8f, 5f);
+            label.rectTransform.offsetMax = new Vector2(-8f, -4f);
             var underline = Shape(hit.transform, "Underline", new Vector2(0f, 0f), Vector2.zero, new Vector2(0f, 3f));
             var underlineRect = underline.rectTransform;
             underlineRect.anchorMin = new Vector2(0f, 0f);
@@ -2782,7 +2790,11 @@ namespace Purge.Editor.Dev
 
             var label = Text(row.transform, "Caption", caption, 30f, false, Center, Center, Vector2.zero, new Vector2(10f, 40f),
                 TextAlignmentOptions.MidlineLeft);
-            label.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+            AutoSize(label);
+            var captionLayout = label.gameObject.AddComponent<LayoutElement>();
+            captionLayout.preferredWidth = 0f;
+            captionLayout.flexibleWidth = 1f;
+            captionLayout.preferredHeight = 66f;
 
             var line = Shape(row.transform, "Line", new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 1f));
             line.rectTransform.anchorMin = new Vector2(0f, 0f);
@@ -2908,8 +2920,7 @@ namespace Purge.Editor.Dev
             var knob = Shape(pill.transform, "Knob", Center, new Vector2(-22f, 0f), new Vector2(28f, 28f));
             knob.Kind = UiShapeKind.Capsule;
             var label = Text(hit.transform, "Label", caption, 26f, true, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
-                new Vector2(104f, 0f), new Vector2(246f, 40f), TextAlignmentOptions.MidlineLeft, spacing: 6f);
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+                new Vector2(104f, 0f), new Vector2(246f, 58f), TextAlignmentOptions.MidlineLeft, spacing: 2f);
             AutoSize(label);
             AttachSwitch(hit.gameObject, pill, knob, new Vector2(-22f, 22f));
             var toggle = hit.GetComponent<Toggle>();

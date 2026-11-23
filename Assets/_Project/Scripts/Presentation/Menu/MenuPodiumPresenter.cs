@@ -181,7 +181,9 @@ namespace Purge.Presentation.Menu
             SetHold(weapon);
             var model = instance != null ? instance.GetComponent<WeaponModel>() : null;
             var gun = instance != null && !weapon.IsMelee ? instance.transform : null;
-            _view.SetPose(_rig, gun, gun != null && model != null ? model.GripLeft : null);
+            // The base pistol uses the clip in combat, but its barrel should face forward on the podium.
+            var alignWithFacing = gun != null && (weapon == _definitions.Player?.BaseWeapon || model?.AlignWithAim == true);
+            _view.SetPose(_rig, gun, gun != null ? model : null, alignWithFacing);
         }
 
         private void SetHold(WeaponDefinition weapon)

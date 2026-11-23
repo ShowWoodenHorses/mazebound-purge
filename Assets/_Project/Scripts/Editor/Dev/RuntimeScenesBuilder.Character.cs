@@ -47,7 +47,7 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_buy", buy);
             SetReference(screen, "_buyLabel", buy.GetComponentInChildren<TMP_Text>(true));
             var reset = TextButton(area, "Reset", Loc(TextKeys.CharacterReset), false, null, 58, 23);
-            Place(reset, TopLeft, new Vector2(1660, -78), new Vector2(280, 58));
+            Place(reset, TopLeft, new Vector2(970, -78), new Vector2(280, 58));
             SetReference(screen, "_reset", reset);
             return screen;
         }

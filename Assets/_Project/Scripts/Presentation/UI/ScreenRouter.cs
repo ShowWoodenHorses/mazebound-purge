@@ -80,7 +80,6 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked += OnContinueClicked;
             _ui.MainMenu.PlayClicked += OnPlayClicked;
             _ui.MainMenu.RecordsClicked += OnRecordsClicked;
-            _ui.MainMenu.SurvivalClicked += OnSurvivalClicked;
             _ui.MainMenu.ArsenalClicked += OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted += OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked += OnCharacter;
@@ -157,7 +156,6 @@ namespace Purge.Presentation.UI
             _ui.MainMenu.ContinueClicked -= OnContinueClicked;
             _ui.MainMenu.PlayClicked -= OnPlayClicked;
             _ui.MainMenu.RecordsClicked -= OnRecordsClicked;
-            _ui.MainMenu.SurvivalClicked -= OnSurvivalClicked;
             _ui.MainMenu.ArsenalClicked -= OnArsenal;
             if (_arsenal != null) _arsenal.GuidedPurchaseCompleted -= OnGuidedPurchaseCompleted;
             _ui.MainMenu.CharacterClicked -= OnCharacter;
@@ -524,13 +522,6 @@ namespace Purge.Presentation.UI
         {
             if (_flow.State != GameFlowState.MainMenu || _setup?.IsAvailable != true) return;
             _setup.Open(null, records: true);
-            Show(_flow.State);
-        }
-
-        private void OnSurvivalClicked()
-        {
-            if (_flow.State != GameFlowState.MainMenu || _setup?.IsAvailable != true) return;
-            _setup.Open(null, survival: true);
             Show(_flow.State);
         }
 

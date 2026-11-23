@@ -197,8 +197,9 @@ namespace Purge.Tests.PlayMode
             save.Data.Arsenal.Add(new OwnedItem { Id = "desert" });
             Assert.That(progress.IsUnlocked("Level_Castle_01"), Is.False);
 
-            ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "SurvivalButton").onClick.Invoke();
+            ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "PlayButton").onClick.Invoke();
             Assert.That(ui.RunSetup.IsVisible, Is.True);
+            ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "SurvivalButton").onClick.Invoke();
             var castle = ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "Location1");
             Assert.That(castle.interactable, Is.True);
             castle.onClick.Invoke();

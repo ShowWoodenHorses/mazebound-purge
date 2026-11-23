@@ -7,6 +7,7 @@ Shader "Purge/Ring"
     {
         _Color ("Color", Color) = (0.75, 0.75, 0.78, 0.35)
         _Thickness ("Ring Width (share of radius)", Range(0.005, 1)) = 0.05
+        [Enum(UnityEngine.Rendering.CompareFunction)] _RingZTest ("Depth Test", Float) = 8
         _Fill ("Fill (share of the ring's alpha)", Range(0, 1)) = 0.12
     }
 
@@ -14,7 +15,7 @@ Shader "Purge/Ring"
     {
         Tags { "Queue" = "Transparent+500" "RenderType" = "Transparent" "IgnoreProjector" = "True" "PreviewType" = "Plane" }
         ZWrite Off
-        ZTest Always
+        ZTest [_RingZTest]
         Cull Off
         ColorMask RGB
         Blend SrcAlpha OneMinusSrcAlpha

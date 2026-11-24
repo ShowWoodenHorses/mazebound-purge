@@ -456,17 +456,22 @@ namespace Purge.Presentation.UI
             if (_skipKey != null) _skipKey.SetActive(!TouchShown);
         }
 
-        /// <summary>The ammo reserve by type under the countdown: one "name count" per entry (empty — hidden).</summary>
-        public void SetAmmo(IReadOnlyList<string> entries)
+        internal void PrepareAmmo(int count)
         {
             if (_ammoTemplate == null || _ammoRow == null) return;
-            while (_ammoTexts.Count < entries.Count)
+            while (_ammoTexts.Count < count)
             {
                 var text = Instantiate(_ammoTemplate, _ammoRow);
                 text.gameObject.name = "Ammo" + _ammoTexts.Count;
                 _ammoTexts.Add(text);
             }
+        }
 
+        /// <summary>The reserve under the wave counters, one label per stocked ammo type.</summary>
+        public void SetAmmo(IReadOnlyList<string> entries)
+        {
+            if (_ammoTemplate == null || _ammoRow == null) return;
+            PrepareAmmo(entries.Count);
             for (var i = 0; i < _ammoTexts.Count; i++)
             {
                 var shown = i < entries.Count;

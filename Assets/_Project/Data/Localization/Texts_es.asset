@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -656,6 +660,10 @@ MonoBehaviour:
   - DISPARO
   - OTROS
   - Zona muerta del stick
+  - Zona muerta del stick de apuntado
+  - Umbral de disparo
+  - "Tama\xF1o del stick de apuntado"
+  - "Tama\xF1o de ranuras de arma"
   - Respuesta del stick
   - "Tama\xF1o de los controles"
   - Opacidad de los controles

@@ -11,8 +11,7 @@ namespace Purge.Presentation.UI
     /// Fullscreen map (ТЗ §60). The level's <c>MapPresenter</c> supplies the texture (one pixel per cell) and the icons;
     /// gameplay is paused while open. Icons are Images over the map image, placed in cell units and sized from the
     /// shown map (never smaller than <see cref="MapIconSet.MinScreenSize"/>); they are created when a level sets them
-    /// (loading), reused by later levels. A switch per <see cref="MapLayer"/> (player, zombies, weapons, medkits, keys)
-    /// shows or hides those icons.
+    /// (loading), reused by later levels.
     /// </summary>
     public sealed class MapScreen : UIScreen
     {
@@ -20,8 +19,6 @@ namespace Purge.Presentation.UI
         [SerializeField] private AspectRatioFitter _fitter;
         [SerializeField] private Button _closeButton;
         [SerializeField] private MapIconSet _icons;
-        [Tooltip("A switch per MapLayer, in its order.")]
-        [SerializeField] private Toggle[] _layers;
         [SerializeField] private Button[] _floorTabs;
 
         private readonly List<Image> _iconImages = new List<Image>();
@@ -33,9 +30,6 @@ namespace Purge.Presentation.UI
         private HorizontalShift _topRightShift;
 
         public event Action CloseClicked;
-
-        /// <summary>The player switched a layer on or off.</summary>
-        public event Action<MapLayer, bool> LayerChanged;
 
         /// <summary>Raised when the screen is shown (icons are refreshed then).</summary>
         public event Action Opened;
@@ -70,12 +64,6 @@ namespace Purge.Presentation.UI
                 }
             }
 
-            if (_layers == null) return;
-            for (var i = 0; i < _layers.Length; i++)
-            {
-                var layer = (MapLayer)i;
-                if (_layers[i] != null) _layers[i].onValueChanged.AddListener(value => LayerChanged?.Invoke(layer, value));
-            }
         }
 
         private void OnEnable() => Opened?.Invoke();
@@ -102,16 +90,6 @@ namespace Purge.Presentation.UI
             _topRightShift ??= new HorizontalShift(_closeButton);
             _topRightShift.Apply(left);
         }
-
-        /// <summary>Shows the layer's switch state without raising <see cref="LayerChanged"/>.</summary>
-        public void SetLayer(MapLayer layer, bool shown)
-        {
-            var toggle = LayerToggle(layer);
-            if (toggle != null) toggle.SetIsOnWithoutNotify(shown);
-        }
-
-        public Toggle LayerToggle(MapLayer layer) =>
-            _layers != null && (int)layer < _layers.Length ? _layers[(int)layer] : null;
 
         /// <summary>
         /// Sets the icons (count and contents). Creates missing Images: call at level loading, later calls with the same

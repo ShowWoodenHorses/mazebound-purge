@@ -135,6 +135,7 @@ namespace Purge.Application.Services
 
         AimMode IAimSettings.AimMode => Controls.AimMode;
         bool IAimSettings.AimAssist => Controls.AimAssist;
+        float IAimSettings.TouchFireThreshold => Controls.TouchFireThreshold;
 
         /// <summary>Applies the controls at once; they are written by <see cref="SavePreviewed"/>.</summary>
         public void PreviewControls(ControlsSettings controls)
@@ -161,6 +162,10 @@ namespace Purge.Application.Services
             var controls = ControlsSettings.Default;
             controls.AimMode = Controls.AimMode;
             controls.AimAssist = Controls.AimAssist;
+            controls.AimStickDeadZone = Controls.AimStickDeadZone;
+            controls.TouchFireThreshold = Controls.TouchFireThreshold;
+            controls.AimStickSize = Controls.AimStickSize;
+            controls.WeaponSlotsSize = Controls.WeaponSlotsSize;
             SetControls(controls);
         }
 
@@ -170,6 +175,10 @@ namespace Purge.Application.Services
             var controls = Controls;
             controls.AimMode = ControlsSettings.Default.AimMode;
             controls.AimAssist = ControlsSettings.Default.AimAssist;
+            controls.AimStickDeadZone = ControlsSettings.Default.AimStickDeadZone;
+            controls.TouchFireThreshold = ControlsSettings.Default.TouchFireThreshold;
+            controls.AimStickSize = ControlsSettings.Default.AimStickSize;
+            controls.WeaponSlotsSize = ControlsSettings.Default.WeaponSlotsSize;
             SetControls(controls);
         }
 

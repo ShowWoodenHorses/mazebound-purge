@@ -17,6 +17,8 @@ namespace Purge.Gameplay.Combat
 
         /// <summary>Attacks turn to the nearest visible zombie near the wanted direction.</summary>
         bool AimAssist { get; }
+
+        float TouchFireThreshold => PlayerCombat.StickFireFrom;
     }
 
     public static class Aim

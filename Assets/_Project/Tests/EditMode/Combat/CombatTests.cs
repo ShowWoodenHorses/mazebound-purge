@@ -93,6 +93,7 @@ namespace Purge.Tests.EditMode.Combat
         {
             public AimMode AimMode { get; set; }
             public bool AimAssist { get; set; }
+            public float TouchFireThreshold { get; set; } = PlayerCombat.StickFireFrom;
         }
 
         private sealed class Target : IDamageable
@@ -542,6 +543,37 @@ namespace Purge.Tests.EditMode.Combat
         }
 
         [Test]
+        public void Mortar_TouchStickFiresAtPreviewPointWhenCrossingConfiguredThreshold()
+        {
+            var origin = _player.Position;
+            var pointer = new FixedPointer { Point = origin + Vector2.left * 4f };
+            _combat = new PlayerCombat(_input, _player, _weapons, _targets, _bullets, _sounds, _aim, _doors, _stock, pointer);
+            _aim.TouchFireThreshold = 0.8f;
+            Equip(Weapon("mortar", new ExplosiveAttack { MinimumRange = 2f, FlightTime = 1f, Range = 6f, Radius = 1.5f },
+                Ammo(1)));
+            _input.LookIsPointer = true;
+
+            _input.AimStick = Vector2.right * 0.01f;
+            Frame();
+            Assert.That(_combat.TryGetTouchLobAim(out var near, out var radius), Is.True);
+            Assert.That(Vector2.Distance(origin, near), Is.InRange(2f, 2.1f));
+            Assert.That(radius, Is.EqualTo(1.5f));
+
+            _input.AimStick = Vector2.up * 0.65f;
+            Frame();
+            Assert.That(_combat.TryGetTouchLobAim(out var preview, out _), Is.True);
+            Assert.That(preview.x, Is.EqualTo(origin.x));
+            Assert.That(preview.y, Is.EqualTo(origin.y + 5.25f).Within(0.001f));
+            Assert.That(_bullets.Active, Is.Empty);
+
+            _input.AimStick = Vector2.up * 0.85f;
+            Frame();
+            Assert.That(_combat.TryGetTouchLobAim(out _, out _), Is.False);
+            Assert.That(_bullets.Active, Has.Count.EqualTo(1));
+            Assert.That(_bullets.Active[0].LandingPoint, Is.EqualTo(preview));
+        }
+
+        [Test]
         public void Mortar_DirectAttackDoesNotReadTheMouse()
         {
             var origin = _player.Position;
@@ -747,6 +779,67 @@ namespace Purge.Tests.EditMode.Combat
             _combat.TryAttack(Vector2.left);
             FlyBullets();
             Assert.AreEqual(0.55f, points[1].x, 0.01f, "On the player's side of the wall at x = 0.5.");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Stream_CannotAttackOrUseAmmo_OnStairsInEitherDirection(bool touchStick)
+        {
+            var geometry = new LevelGeometry(8, 5, CellType.Floor, floors: 2);
+            geometry.AddStair(new StairLink(new GridPosition(3, 2), alongX: true));
+            var level = ScriptableObject.CreateInstance<LevelData>();
+            _created.Add(level);
+            level.ReplaceGeometry(geometry);
+            level.MutablePlayerStarts.Add(new PlayerStartData("stairs_start", new GridPosition(2, 2)));
+
+            var grid = new LevelGrid(geometry);
+            var doors = new DoorSystem(level);
+            var player = new PlayerSystem(level, _definition, _input, new LevelPassability(grid, doors),
+                new OccupancyMap(grid), new LevelLaunchOptions(startIndex: 0), _aim);
+            player.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
+
+            var targets = new CombatTargets(new SpatialQueryService(grid, doors));
+            using var combat = new PlayerCombat(_input, player, _weapons, targets, new BulletSystem(targets),
+                _sounds, _aim, doors, _stock);
+            var weapon = Equip(Weapon("stair_stream", new StreamAttack
+                { Automatic = true, DamagePerSecond = 50f, Range = 3f, Interval = 0.1f }, Ammo(20)));
+            _input.Look = Vector2.right;
+            _input.AttackHeld = !touchStick;
+            _input.AimStick = touchStick ? Vector2.right : Vector2.zero;
+
+            combat.Tick(Dt);
+            Assert.That(weapon.Shots, Is.EqualTo(1));
+            Assert.That(combat.IsHoldingStream(weapon), Is.True);
+
+            VerifyTraversal(Vector2.right, 1);
+            VerifyTraversal(Vector2.left, 0);
+
+            void VerifyTraversal(Vector2 direction, int destinationFloor)
+            {
+                player.Displace(direction * 0.25f);
+                Assert.That(player.IsOnStairs, Is.True);
+                weapon.Stop();
+                var shots = weapon.Shots;
+                var magazine = weapon.Ammo;
+                var reserve = _stock.Get(_9mm);
+                for (var i = 0; i < 120 && player.IsOnStairs; i++)
+                {
+                    Assert.That(combat.IsHoldingStream(weapon), Is.False);
+                    Assert.That(combat.IsFiring, Is.False);
+                    Assert.That(combat.TryAttack(direction), Is.False);
+                    combat.Tick(Dt);
+                    Assert.That(weapon.Shots, Is.EqualTo(shots));
+                    Assert.That(weapon.Ammo, Is.EqualTo(magazine));
+                    Assert.That(_stock.Get(_9mm), Is.EqualTo(reserve));
+                    player.Tick(Dt);
+                }
+
+                Assert.That(player.IsOnStairs, Is.False);
+                Assert.That(player.Floor, Is.EqualTo(destinationFloor));
+                combat.Tick(0.2f);
+                Assert.That(weapon.Shots, Is.EqualTo(shots + 1));
+                Assert.That(combat.IsHoldingStream(weapon), Is.True);
+            }
         }
 
         [Test]

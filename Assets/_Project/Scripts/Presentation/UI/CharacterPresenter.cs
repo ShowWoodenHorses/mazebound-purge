@@ -49,7 +49,7 @@ namespace Purge.Presentation.UI
                     ? rarity
                     : (Rarity?)null;
                 _screen.SetNode(i, (owned ? "✓ " : "") + _texts.Get(TextKeys.CharacterNodePrefix + node.Id),
-                    node == _selected, owned, owned || _tree.MeetsRequirements(node), permit);
+                    node == _selected, owned, _tree.MeetsRequirements(node), permit);
             }
 
             var selectedOwned = _tree.Has(_selected.Id);
@@ -59,7 +59,7 @@ namespace Purge.Presentation.UI
             if (_selected.RequiredBranchNodes > 0)
                 details += "\n" + string.Format(_texts.Get(TextKeys.CharacterRequired), branchCount, _selected.RequiredBranchNodes);
             if (!selectedOwned && !available && branchCount >= _selected.RequiredBranchNodes)
-                details += "\n" + _texts.Get(TextKeys.CharacterLocked);
+                details += "\n<color=#FF9B93>" + _texts.Get(TextKeys.CharacterLocked) + "</color>";
             var label = selectedOwned ? _texts.Get(TextKeys.CharacterOwned)
                 : string.Format(_texts.Get(TextKeys.CharacterBuy), _selected.Price);
             _screen.SetSummary(_tree.Money, details, label, !selectedOwned && available && _tree.Money >= _selected.Price, branchCount > 0);

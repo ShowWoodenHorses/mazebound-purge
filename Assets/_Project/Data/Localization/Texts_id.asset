@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -656,6 +660,10 @@ MonoBehaviour:
   - MENEMBAK
   - LAINNYA
   - Zona mati stik
+  - Zona mati stik bidik
+  - Ambang tembak
+  - Ukuran stik bidik
+  - Ukuran slot senjata
   - Respons stik
   - Ukuran tombol
   - Kejelasan tombol

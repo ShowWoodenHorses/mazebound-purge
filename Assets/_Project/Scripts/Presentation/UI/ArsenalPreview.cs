@@ -28,6 +28,8 @@ namespace Purge.Presentation.UI
                     / Mathf.Min(1f, _camera.aspect);
             }
             _pivot.localRotation = Quaternion.Euler(isThrowable ? -25 : 15, -35, 0);
+            _camera.Render();
+            _image.enabled = true;
         }
 
         private void EnsureTexture()
@@ -46,6 +48,7 @@ namespace Purge.Presentation.UI
         public void OnDrag(PointerEventData e) { if (_pivot != null) _pivot.Rotate(Vector3.up, -e.delta.x * 0.5f, Space.World); }
         public void Clear()
         {
+            if (_image != null) _image.enabled = false;
             if (_model != null) { _model.SetActive(false); Destroy(_model); _model = null; }
             if (_camera != null) _camera.gameObject.SetActive(false);
         }

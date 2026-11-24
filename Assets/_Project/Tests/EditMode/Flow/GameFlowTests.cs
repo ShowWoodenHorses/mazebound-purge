@@ -97,6 +97,29 @@ namespace Purge.Tests.EditMode.Flow
         });
 
         [UnityTest]
+        public IEnumerator OpenMainMenu_WaitsForPreparation() => UniTask.ToCoroutine(async () =>
+        {
+            _flow.Dispose();
+            var preparation = new MenuPreparation();
+            _flow = new GameFlow(Array.Empty<IApplicationService>(), new FakeCatalog(_catalogAsset),
+                _addressables, _sessions, _progress, menuPreparation: preparation);
+            await _flow.InitializeApplication();
+
+            var transition = _flow.OpenMainMenu();
+            Assert.AreEqual(GameFlowState.Initializing, _flow.State);
+            preparation.Ready.TrySetResult();
+            await transition;
+            Assert.AreEqual(GameFlowState.MainMenu, _flow.State);
+        });
+
+        private sealed class MenuPreparation : IMainMenuPreparation
+        {
+            public readonly UniTaskCompletionSource Ready = new UniTaskCompletionSource();
+
+            public UniTask PrepareAsync(CancellationToken cancellation) => Ready.Task.AttachExternalCancellation(cancellation);
+        }
+
+        [UnityTest]
         public IEnumerator Initialize_ServiceFails_EntersErrorState() => UniTask.ToCoroutine(async () =>
         {
             LogAssert.ignoreFailingMessages = true;

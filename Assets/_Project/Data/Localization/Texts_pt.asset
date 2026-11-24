@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -656,6 +660,10 @@ MonoBehaviour:
   - TIRO
   - OUTROS
   - "Zona morta do anal\xF3gico"
+  - Zona morta da mira
+  - Limiar de disparo
+  - "Tamanho do anal\xF3gico de mira"
+  - "Tamanho dos espa\xE7os de armas"
   - "Resposta do anal\xF3gico"
   - "Tamanho dos bot\xF5es"
   - "Opacidade dos bot\xF5es"

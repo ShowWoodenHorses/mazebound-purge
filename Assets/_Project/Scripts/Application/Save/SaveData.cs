@@ -334,6 +334,14 @@ namespace Purge.Application.Save
         /// <summary>0 = soft start (fine control near the centre), 1 = full speed quickly.</summary>
         public float StickSensitivity;
 
+        public const float MinAimDeadZone = 0.01f;
+        public const float MinTouchFireThreshold = 0.25f;
+        public const float MaxTouchFireThreshold = 0.9f;
+        public float AimStickDeadZone;
+        public float TouchFireThreshold;
+        public float AimStickSize;
+        public float WeaponSlotsSize;
+
         /// <summary>The stick appears where the thumb touches (its side of the screen) rather than staying in place.</summary>
         public bool FloatingStick;
 
@@ -369,6 +377,10 @@ namespace Purge.Application.Save
             AimAssist = UnityEngine.Application.isMobilePlatform,
             StickDeadZone = 0.2f,
             StickSensitivity = 0.5f,
+            AimStickDeadZone = 0.2f,
+            TouchFireThreshold = PlayerCombat.StickFireFrom,
+            AimStickSize = 1f,
+            WeaponSlotsSize = 1f,
             FloatingStick = true,
             Size = 1f,
             Opacity = 0.6f,
@@ -386,6 +398,13 @@ namespace Purge.Application.Save
             result.Opacity = Clamp(Opacity, MinOpacity, MaxOpacity, Default.Opacity);
             if (!Enum.IsDefined(typeof(AimMode), AimMode)) result.AimMode = Default.AimMode;
             if (!Enum.IsDefined(typeof(TouchScheme), Scheme)) result.Scheme = Default.Scheme;
+            // Zero is the default for fields missing from old saves.
+            result.AimStickDeadZone = PositiveSetting(AimStickDeadZone, MinAimDeadZone, MaxDeadZone,
+                UnityEngine.Mathf.Max(MinAimDeadZone, result.StickDeadZone));
+            result.TouchFireThreshold = PositiveSetting(TouchFireThreshold, MinTouchFireThreshold,
+                MaxTouchFireThreshold, Default.TouchFireThreshold);
+            result.AimStickSize = PositiveSetting(AimStickSize, MinSize, MaxSize, 1f);
+            result.WeaponSlotsSize = PositiveSetting(WeaponSlotsSize, MinSize, MaxSize, 1f);
             result.Layout = Layout.Clamped();
             return result;
         }
@@ -393,6 +412,10 @@ namespace Purge.Application.Save
         public bool Equals(ControlsSettings other) =>
             UnityEngine.Mathf.Approximately(StickDeadZone, other.StickDeadZone) &&
             UnityEngine.Mathf.Approximately(StickSensitivity, other.StickSensitivity) &&
+            UnityEngine.Mathf.Approximately(AimStickDeadZone, other.AimStickDeadZone) &&
+            UnityEngine.Mathf.Approximately(TouchFireThreshold, other.TouchFireThreshold) &&
+            UnityEngine.Mathf.Approximately(AimStickSize, other.AimStickSize) &&
+            UnityEngine.Mathf.Approximately(WeaponSlotsSize, other.WeaponSlotsSize) &&
             FloatingStick == other.FloatingStick &&
             UnityEngine.Mathf.Approximately(Size, other.Size) &&
             UnityEngine.Mathf.Approximately(Opacity, other.Opacity) &&
@@ -405,7 +428,11 @@ namespace Purge.Application.Save
 
         public override bool Equals(object obj) => obj is ControlsSettings other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout, Scheme, NoVibration);
+        public override int GetHashCode() => HashCode.Combine(HashCode.Combine(StickDeadZone, StickSensitivity, FloatingStick, Size, Opacity, LeftHanded, AimMode, AimAssist), Layout, Scheme, NoVibration,
+            AimStickDeadZone, TouchFireThreshold, AimStickSize, WeaponSlotsSize);
+
+        private static float PositiveSetting(float value, float min, float max, float fallback) =>
+            value <= 0f ? fallback : Clamp(value, min, max, fallback);
 
         private static float Clamp(float value, float min, float max, float fallback) =>
             float.IsNaN(value) ? fallback : UnityEngine.Mathf.Clamp(value, min, max);

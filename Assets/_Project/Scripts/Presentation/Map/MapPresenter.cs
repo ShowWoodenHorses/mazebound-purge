@@ -26,13 +26,9 @@ namespace Purge.Presentation.Map
     /// Owns the map texture of the level (one pixel per cell) and the icons over it, and shows them on
     /// <see cref="MapScreen"/> (load stage InitializeUI). Fog (stage 7г): only cells of <see cref="MapExploration"/>
     /// are drawn, the rest is black; newly explored cells are painted into the pixels as they come and uploaded when
-    /// needed (<see cref="ApplyPending"/>: the map opening, the mini-map). Icons are refreshed when the map opens and
-    /// when a switch changes, never per frame.
-    /// Icons: the start the player began at, doors (locked: a lock in the colour of its key pair) — explored cells only;
-    /// each with its <see cref="MapLayer"/> switch: monsters in view (horde dots by rank, zombies), weapons, medkits and
-    /// keys lying in explored cells (keys in the colour of their door pair, the chest key), objects (barrels, chests,
-    /// the safe dome), the player (always last, on top). Icon slots are made at loading and never grow.
-    /// The switches live in <see cref="SettingsService"/>. The texture is destroyed with the level.
+    /// needed (<see cref="ApplyPending"/>: the map opening, the mini-map). Icons are refreshed when the map opens or
+    /// the player selects a floor. All fullscreen layers follow exploration and current visibility.
+    /// Icon slots are made at loading and never grow. The texture is destroyed with the level.
     /// </summary>
     public sealed class MapPresenter : ILevelLoadStep, IDisposable
     {
@@ -128,13 +124,11 @@ namespace Purge.Presentation.Map
             {
                 _ui.Map.Opened += OnOpened;
                 _ui.Map.FloorSelected += SelectFloor;
-                _ui.Map.LayerChanged += OnLayerChanged;
                 if (_exploration != null) _exploration.Explored += OnExplored;
                 _bound = true;
             }
 
             _ui.Map.ShiftTopRightButtons(_platform?.Traits.TopRightButtonsShift ?? 0f);
-            ApplyLayerSwitches();
             SelectFloor(_player.Floor); // Creates the icon images now, while loading.
             return UniTask.CompletedTask;
         }
@@ -147,7 +141,6 @@ namespace Purge.Presentation.Map
                 {
                     _ui.Map.Opened -= OnOpened;
                     _ui.Map.FloorSelected -= SelectFloor;
-                    _ui.Map.LayerChanged -= OnLayerChanged;
                 }
 
                 if (_exploration != null) _exploration.Explored -= OnExplored;
@@ -163,7 +156,7 @@ namespace Purge.Presentation.Map
             _pending = null;
         }
 
-        /// <summary>The player switched the layer on (the mini-map follows the same switches).</summary>
+        /// <summary>The saved visibility preference for the mini-map.</summary>
         public bool IsLayerShown(MapLayer layer) => IsShown(layer);
 
         /// <summary>Uploads the cells explored since the last call (the texture is shared with the mini-map).</summary>
@@ -190,35 +183,7 @@ namespace Purge.Presentation.Map
             }
         }
 
-        private void OnOpened()
-        {
-            ApplyLayerSwitches();
-            SelectFloor(_player.Floor);
-        }
-
-        private void ApplyLayerSwitches()
-        {
-            for (var i = 0; i < MapLayers.Count; i++)
-            {
-                var layer = (MapLayer)i;
-                _ui.Map.SetLayer(layer, IsShown(layer));
-            }
-        }
-
-        private void OnLayerChanged(MapLayer layer, bool show)
-        {
-            switch (layer)
-            {
-                case MapLayer.Player: _settings.MapShowPlayer = show; break;
-                case MapLayer.Zombies: _settings.MapShowZombies = show; break;
-                case MapLayer.Weapons: _settings.MapShowWeapons = show; break;
-                case MapLayer.Medkits: _settings.MapShowMedkits = show; break;
-                case MapLayer.Keys: _settings.MapShowKeys = show; break;
-                case MapLayer.Objects: _settings.MapShowObjects = show; break;
-            }
-
-            RefreshIcons();
-        }
+        private void OnOpened() => SelectFloor(_player.Floor);
 
         private bool IsShown(MapLayer layer) => layer switch
         {
@@ -274,15 +239,14 @@ namespace Purge.Presentation.Map
             // Items lying now in explored cells. Slots: as many as the level has (a dropped weapon takes the slot of one
             // taken, so there are never more weapons lying than the level started with).
             _pickups.GetAll(_lying);
-            AddItemIcons(set, PickupKind.Key, _level.Keys.Count, IsShown(MapLayer.Keys));
-            AddChestKeyIcon(set, IsShown(MapLayer.Keys));
-            AddItemIcons(set, PickupKind.Medkit, _level.Medkits.Count, IsShown(MapLayer.Medkits));
-            AddItemIcons(set, PickupKind.Weapon, _level.Weapons.Count, IsShown(MapLayer.Weapons));
+            AddItemIcons(set, PickupKind.Key, _level.Keys.Count);
+            AddChestKeyIcon(set);
+            AddItemIcons(set, PickupKind.Medkit, _level.Medkits.Count);
+            AddItemIcons(set, PickupKind.Weapon, _level.Weapons.Count);
             _lying.Clear();
-            AddObjectIcons(set, _icons, IsShown(MapLayer.Objects), _selectedFloor);
+            AddObjectIcons(set, _icons, true, _selectedFloor);
 
-            var showMonsters = IsShown(MapLayer.Zombies);
-            AddMonsterIcons(set, _icons, MonsterSlots, showMonsters, null, _selectedFloor);
+            AddMonsterIcons(set, _icons, MonsterSlots, true, null, _selectedFloor);
 
             _icons.Add(new MapIcon
             {
@@ -291,7 +255,7 @@ namespace Purge.Presentation.Map
                 Rotation = MapIconLayout.PlayerRotation(_player.Facing),
                 Size = set.PlayerSize,
                 Color = set.PlayerColor,
-                Visible = IsShown(MapLayer.Player) && _player.IsSpawned && _player.Floor == _selectedFloor,
+                Visible = _player.IsSpawned && _player.Floor == _selectedFloor,
             });
 
             _ui.Map.SetIcons(_icons);
@@ -301,7 +265,7 @@ namespace Purge.Presentation.Map
         /// Icons of the lying pickups of a kind in explored cells, then hidden ones up to <paramref name="slots"/>
         /// (a stable icon count).
         /// </summary>
-        private void AddItemIcons(MapIconSet set, PickupKind kind, int slots, bool shown)
+        private void AddItemIcons(MapIconSet set, PickupKind kind, int slots)
         {
             var added = 0;
             foreach (var pickup in _lying)
@@ -316,7 +280,7 @@ namespace Purge.Presentation.Map
                 };
                 var icon = ObjectIcon(set, KindOf(kind), pickup.Id, pickup.Cell, 0f, color);
                 icon.Size = set.ItemSize;
-                icon.Visible = shown && IsExplored(pickup.Cell);
+                icon.Visible = IsExplored(pickup.Cell);
                 _icons.Add(icon);
                 added++;
             }
@@ -326,14 +290,14 @@ namespace Purge.Presentation.Map
         }
 
         /// <summary>The chest key lying (dropped by the first elite, stage 7в): one slot.</summary>
-        private void AddChestKeyIcon(MapIconSet set, bool shown)
+        private void AddChestKeyIcon(MapIconSet set)
         {
             foreach (var pickup in _lying)
             {
                 if (pickup.Kind != PickupKind.ChestKey) continue;
                 var icon = ObjectIcon(set, MapIconKind.Key, "chest_key", pickup.Cell, 0f, set.ChestColor);
                 icon.Size = set.ItemSize;
-                icon.Visible = shown && pickup.Cell.Floor == _selectedFloor && IsExplored(pickup.Cell);
+                icon.Visible = pickup.Cell.Floor == _selectedFloor && IsExplored(pickup.Cell);
                 _icons.Add(icon);
                 return;
             }

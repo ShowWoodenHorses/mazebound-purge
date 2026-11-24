@@ -85,6 +85,9 @@ namespace Purge.Gameplay.Pickups
         public MedkitData Medkit { get; }
 
         public WeaponRuntime Weapon { get; }
+
+        /// <summary>A weapon that was already lying on the ground before the current wave.</summary>
+        public bool RarityRingSuppressed { get; internal set; }
         public AmmoDefinition Ammo { get; }
         public ThrowableDefinition Throwable { get; }
 
@@ -536,17 +539,23 @@ namespace Purge.Gameplay.Pickups
         public WeaponRuntime CreateWeapon(WeaponDefinition weapon, GridPosition cell = default) =>
             new WeaponRuntime(new WeaponPickupData(NextId(), cell, weapon), dropped: true, upgrades:_upgrades);
 
-        /// <summary>
-        /// Every monsters' drop still lying disappears (not taken; the views show it vanish) — the next wave starts
-        /// (stage 6b). Items the player dropped stay.
-        /// </summary>
-        public int ClearDropped()
+        /// <summary>Keep temporary weapons for one extra wave, without their rarity rings.</summary>
+        public void AdvanceWaveDrops()
         {
-            var count = _expiring.Count;
             for (var i = _expiring.Count - 1; i >= 0; i--)
-                Take(_expiring[i], taken: false);
-            if (count > 0) GameLog.Info(LogChannel.Gameplay, $"Wave drop gone: {count} item(s).");
-            return count;
+            {
+                var pickup = _expiring[i];
+                if (pickup.Kind != PickupKind.Weapon || pickup.RarityRingSuppressed)
+                    Take(pickup, taken: false);
+            }
+
+            foreach (var list in _byCell.Values)
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var pickup = list[i];
+                    if (pickup.Kind == PickupKind.Weapon && pickup.IsDropped)
+                        pickup.RarityRingSuppressed = true;
+                }
         }
 
         public void Dispose()

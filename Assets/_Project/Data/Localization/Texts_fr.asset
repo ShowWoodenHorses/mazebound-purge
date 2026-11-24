@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -657,6 +661,10 @@ MonoBehaviour:
   - TIR
   - AUTRES
   - Zone morte du joystick
+  - "Zone morte du stick de vis\xE9e"
+  - Seuil de tir
+  - "Taille du stick de vis\xE9e"
+  - "Taille des emplacements d\u2019arme"
   - "R\xE9activit\xE9 du joystick"
   - Taille des boutons
   - "Opacit\xE9 des boutons"

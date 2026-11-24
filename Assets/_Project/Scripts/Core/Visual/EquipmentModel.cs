@@ -10,17 +10,20 @@ namespace Purge.Core.Visual
     /// </summary>
     public sealed class EquipmentModel : MonoBehaviour
     {
-        [Tooltip("Offset from the bone, metres in the bone's space (Humanoid hands: +Y along the fingers).")]
+        [Tooltip("Use the palm rather than the hand bone's origin and axes. +Y points toward the index finger, +Z toward the knuckles.")]
+        [SerializeField] private bool _usePalmGrip;
+        [Tooltip("Offset in metres in the selected attachment space (bone or palm).")]
         [SerializeField] private Vector3 _position;
-        [Tooltip("Rotation in the bone's space, degrees.")]
+        [Tooltip("Rotation in the selected attachment space, degrees.")]
         [SerializeField] private Vector3 _rotation;
         [SerializeField, Min(0.01f)] private float _scale = 1f;
 
+        public bool UsePalmGrip => _usePalmGrip;
         public Vector3 Position => _position;
         public Quaternion Rotation => Quaternion.Euler(_rotation);
         public float Scale => _scale;
 
-        /// <summary>Model space → the bone's space.</summary>
+        /// <summary>Model space → the selected attachment space.</summary>
         public Matrix4x4 Offset => Matrix4x4.TRS(_position, Rotation, Vector3.one * _scale);
 
         /// <summary>Editor tools.</summary>

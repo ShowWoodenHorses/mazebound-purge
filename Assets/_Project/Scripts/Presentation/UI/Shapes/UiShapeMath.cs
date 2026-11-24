@@ -76,11 +76,11 @@ namespace Purge.Presentation.UI.Shapes
         }
 
         /// <summary>Annular sector; <paramref name="p"/> relative to its centre.</summary>
-        public static float Sector(Vector2 p, float inner, float outer, float startAngle, float sweep) =>
-            SectorInFrame(ToSectorFrame(p, startAngle, sweep), inner, outer, HalfSweep(sweep));
+        public static float Sector(Vector2 p, float inner, float outer, float startAngle, float sweep, float corner = 0f) =>
+            SectorInFrame(ToSectorFrame(p, startAngle, sweep), inner, outer, HalfSweep(sweep), corner);
 
         /// <summary>Annular sector for a point already in the sector frame (<see cref="ToSectorFrame"/>).</summary>
-        public static float SectorInFrame(Vector2 q, float inner, float outer, Vector2 halfSweep)
+        public static float SectorInFrame(Vector2 q, float inner, float outer, Vector2 halfSweep, float corner = 0f)
         {
             var length = q.magnitude;
             var ring = length - outer;
@@ -93,7 +93,9 @@ namespace Purge.Presentation.UI.Shapes
             var toRay = new Vector2(x - halfSweep.x * along, q.y - halfSweep.y * along).magnitude;
             var side = halfSweep.y * x - halfSweep.x * q.y;
             var wedge = side > 0f ? toRay : -toRay;
-            return Mathf.Max(ring, wedge);
+            if (corner <= 0f) return Mathf.Max(ring, wedge);
+            return Mathf.Min(Mathf.Max(ring, wedge), -corner) +
+                new Vector2(Mathf.Max(0f, ring + corner), Mathf.Max(0f, wedge + corner)).magnitude;
         }
 
         /// <summary>Bounds of a sector (relative to its centre): the radii at the sweep ends and every axis it crosses.</summary>

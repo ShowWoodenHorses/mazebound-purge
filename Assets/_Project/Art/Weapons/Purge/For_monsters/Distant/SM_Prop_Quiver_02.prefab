@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 732dac54295983b4bb6b02a2591aadc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.EquipmentModel
-  _position: {x: 0, y: 0, z: 0}
-  _rotation: {x: 0, y: 0, z: 0}
-  _scale: 1
+  _usePalmGrip: 0
+  _position: {x: -0.22, y: -0.215, z: 0.06}
+  _rotation: {x: 20, y: 0, z: 81}
+  _scale: 0.8

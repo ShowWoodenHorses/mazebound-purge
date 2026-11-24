@@ -332,6 +332,11 @@ namespace Purge.Presentation.Visual
                 foreach (var weapon in _drops.Weapons) AddWeapon(wanted, weapon);
                 foreach (var throwable in _drops.Throwables) AddThrowable(wanted, throwable);
             }
+            // The debug pause menu can spawn weapons that are absent from the level and its drop pool.
+            if (Debug.isDebugBuild && _content != null)
+                foreach (var item in _content.Items)
+                    if (item is WeaponDefinition weapon)
+                        Add(wanted, _visual?.StreamOf(weapon));
             if (_player != null)
             {
                 AddWeapon(wanted, _player.BaseWeapon);

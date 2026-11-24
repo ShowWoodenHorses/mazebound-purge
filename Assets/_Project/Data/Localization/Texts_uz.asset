@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -656,6 +660,10 @@ MonoBehaviour:
   - OTISH
   - BOSHQA
   - "Stikning o\u02BBlik zonasi"
+  - "Nishon stigining o\u02BBlik zonasi"
+  - Otish chegarasi
+  - "Nishon stigi o\u02BBlchami"
+  - "Qurol uyalari o\u02BBlchami"
   - Stik sezgirligi
   - "Tugmalar o\u02BBlchami"
   - "Tugmalar ko\u02BBrinishi"

@@ -297,7 +297,7 @@ namespace Purge.Tests.EditMode.Level
             CollectionAssert.AreEqual(new[] { "chest_1" }, _chests.OpenedIds);
             Assert.IsNull(_chests.FindUsable(), "once per run");
 
-            _pickups.ClearDropped();
+            _pickups.AdvanceWaveDrops();
             Assert.AreEqual(1, _pickups.Count, "the reward lies until taken");
         }
 
@@ -321,7 +321,7 @@ namespace Purge.Tests.EditMode.Level
             _horde.Damage(second, 1000f);
             Assert.AreEqual(1, CountKeys(), "one key per level");
 
-            _pickups.ClearDropped();
+            _pickups.AdvanceWaveDrops();
             Assert.IsTrue(_pickups.ChestKeyLying, "the key does not go with the wave's drop");
             MovePlayer(6f, 12f);
             MovePlayer(20f, 12f);

@@ -48,6 +48,14 @@ namespace Purge.Presentation.UI
         [SerializeField] private UiButton[] _schemeButtons;
         [SerializeField] private Slider _deadZone;
         [SerializeField] private TMP_Text _deadZoneLabel;
+        [SerializeField] private Slider _aimDeadZone;
+        [SerializeField] private TMP_Text _aimDeadZoneLabel;
+        [SerializeField] private Slider _fireThreshold;
+        [SerializeField] private TMP_Text _fireThresholdLabel;
+        [SerializeField] private Slider _aimSize;
+        [SerializeField] private TMP_Text _aimSizeLabel;
+        [SerializeField] private Slider _slotsSize;
+        [SerializeField] private TMP_Text _slotsSizeLabel;
         [SerializeField] private Slider _sensitivity;
         [SerializeField] private TMP_Text _sensitivityLabel;
         [SerializeField] private Slider _size;
@@ -132,8 +140,8 @@ namespace Purge.Presentation.UI
         private void Awake()
         {
             Ranges();
-            foreach (var slider in new[] { _deadZone, _sensitivity, _size, _opacity })
-                slider.onValueChanged.AddListener(_ => OnEdited());
+            foreach (var slider in new[] { _deadZone, _sensitivity, _size, _opacity, _aimDeadZone, _fireThreshold, _aimSize, _slotsSize })
+                if (slider != null) slider.onValueChanged.AddListener(_ => OnEdited());
             _floatingStick.onValueChanged.AddListener(_ => OnEdited());
             _leftHanded.onValueChanged.AddListener(_ => OnEdited());
             _aimAssist.onValueChanged.AddListener(_ => OnEdited());
@@ -259,6 +267,10 @@ namespace Purge.Presentation.UI
             Ranges();
             _values = settings;
             _deadZone.SetValueWithoutNotify(settings.StickDeadZone);
+            _aimDeadZone?.SetValueWithoutNotify(settings.AimStickDeadZone);
+            _fireThreshold?.SetValueWithoutNotify(settings.TouchFireThreshold);
+            _aimSize?.SetValueWithoutNotify(settings.AimStickSize);
+            _slotsSize?.SetValueWithoutNotify(settings.WeaponSlotsSize);
             _sensitivity.SetValueWithoutNotify(settings.StickSensitivity);
             _size.SetValueWithoutNotify(settings.Size);
             _opacity.SetValueWithoutNotify(settings.Opacity);
@@ -277,6 +289,10 @@ namespace Purge.Presentation.UI
         {
             var settings = _values; // Keeps what the screen does not edit (the layout).
             settings.StickDeadZone = _deadZone.value;
+            if (_aimDeadZone != null) settings.AimStickDeadZone = _aimDeadZone.value;
+            if (_fireThreshold != null) settings.TouchFireThreshold = _fireThreshold.value;
+            if (_aimSize != null) settings.AimStickSize = _aimSize.value;
+            if (_slotsSize != null) settings.WeaponSlotsSize = _slotsSize.value;
             settings.StickSensitivity = _sensitivity.value;
             settings.FloatingStick = _floatingStick.isOn;
             settings.Size = _size.value;
@@ -296,6 +312,10 @@ namespace Purge.Presentation.UI
         private void Ranges()
         {
             Range(_deadZone, ControlsSettings.MinDeadZone, ControlsSettings.MaxDeadZone);
+            if (_aimDeadZone != null) Range(_aimDeadZone, ControlsSettings.MinAimDeadZone, ControlsSettings.MaxDeadZone);
+            if (_fireThreshold != null) Range(_fireThreshold, ControlsSettings.MinTouchFireThreshold, ControlsSettings.MaxTouchFireThreshold);
+            if (_aimSize != null) Range(_aimSize, ControlsSettings.MinSize, ControlsSettings.MaxSize);
+            if (_slotsSize != null) Range(_slotsSize, ControlsSettings.MinSize, ControlsSettings.MaxSize);
             Range(_sensitivity, 0f, 1f);
             Range(_size, ControlsSettings.MinSize, ControlsSettings.MaxSize);
             Range(_opacity, ControlsSettings.MinOpacity, ControlsSettings.MaxOpacity);
@@ -386,6 +406,10 @@ namespace Purge.Presentation.UI
         private void UpdateLabels(ControlsSettings settings)
         {
             _deadZoneLabel.text = Percent(settings.StickDeadZone);
+            if (_aimDeadZoneLabel != null) _aimDeadZoneLabel.text = Percent(settings.AimStickDeadZone);
+            if (_fireThresholdLabel != null) _fireThresholdLabel.text = Percent(settings.TouchFireThreshold);
+            if (_aimSizeLabel != null) _aimSizeLabel.text = Percent(settings.AimStickSize);
+            if (_slotsSizeLabel != null) _slotsSizeLabel.text = Percent(settings.WeaponSlotsSize);
             _sensitivityLabel.text = Percent(settings.StickSensitivity);
             _sizeLabel.text = Percent(settings.Size);
             _opacityLabel.text = Percent(settings.Opacity);

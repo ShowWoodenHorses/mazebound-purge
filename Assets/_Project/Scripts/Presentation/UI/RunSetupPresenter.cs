@@ -13,7 +13,6 @@ using Purge.Core.Definitions;
 using Purge.Core.Level;
 using Purge.Gameplay.Level;
 using Purge.Presentation.Localization;
-using Purge.Presentation.Menu;
 using UnityEngine;
 
 namespace Purge.Presentation.UI
@@ -41,7 +40,6 @@ namespace Purge.Presentation.UI
         private readonly SharedDefinitionsService _shared;
         private readonly LocalizationService _texts;
         private readonly Application.Flow.GameFlow _flow;
-        private readonly MenuPodiumPresenter _podium;
         private readonly PlatformService _platform;
         private CancellationTokenSource _recordsRequest;
 
@@ -66,7 +64,7 @@ namespace Purge.Presentation.UI
 
         public RunSetupPresenter(UIRoot ui, RunPreparation preparation, IProgressService progress, ILevelCatalog catalog,
             SharedDefinitionsService shared, LocalizationService texts, Application.Flow.GameFlow flow,
-            MenuPodiumPresenter podium = null, PlatformService platform = null)
+            PlatformService platform = null)
         {
             _ui = ui;
             _preparation = preparation;
@@ -75,7 +73,6 @@ namespace Purge.Presentation.UI
             _shared = shared;
             _texts = texts;
             _flow = flow;
-            _podium = podium;
             _platform = platform;
         }
 
@@ -156,7 +153,6 @@ namespace Purge.Presentation.UI
                     if (_preparation.Find<BoosterDefinition>(id) is { } booster) _chosenBoosters.Add(booster);
             DropUnavailableBoosters();
             Refresh();
-            ShowWeapon();
         }
 
         public void Close()
@@ -164,7 +160,6 @@ namespace Purge.Presentation.UI
             CancelRecordsRequest();
             if (!IsOpen) return;
             IsOpen = false;
-            _podium?.EndPreview();
         }
 
         private void OnLanguageChanged()
@@ -216,6 +211,12 @@ namespace Purge.Presentation.UI
 
             screen.SetArena(!_survival && _difficulty >= 1, _arena && _difficulty >= 1);
 
+            var weaponId = (_weapon == 0 ? _preparation.BaseWeapon : _weapons[_weapon - 1])?.Id;
+            var throwableId = _throwable == 0 ? null : _throwables[_throwable - 1].Id;
+            screen.SetLoadoutNames(
+                weaponId == null ? _texts.Get(TextKeys.No) : TextOr(TextKeys.WeaponPrefix + weaponId, weaponId),
+                throwableId == null ? _texts.Get(TextKeys.No) : TextOr(TextKeys.ThrowablePrefix + throwableId, throwableId));
+
             _items.Clear();
             _items.Add(new RunSetupScreen.Item { Icon = WeaponIcon(_preparation.BaseWeapon), Plain = true });
             foreach (var weapon in _weapons)
@@ -256,7 +257,6 @@ namespace Purge.Presentation.UI
                                    total <= _progress.Money);
         }
 
-        private void ShowWeapon() => _podium?.Preview(_weapon > 0 ? _weapons[_weapon - 1] : null);
 
         private void CancelRecordsRequest()
         {
@@ -332,7 +332,6 @@ namespace Purge.Presentation.UI
             if (_secondWeapon == _weapon) _secondWeapon = _weapon == 0 ? 1 : 0;
             DropUnavailableBoosters();
             Refresh();
-            ShowWeapon();
         }
 
         private void OnSecondWeapon(int index)

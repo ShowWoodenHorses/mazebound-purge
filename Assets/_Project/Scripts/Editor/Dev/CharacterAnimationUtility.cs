@@ -1,4 +1,5 @@
 using System;
+using Purge.Core.Visual;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -12,6 +13,50 @@ namespace Purge.Editor.Dev
     internal static class CharacterAnimationUtility
     {
         public const string AnimationsPath = "Assets/_Project/Art/Animations";
+
+        /// <summary>Model → hand/chest bone, evaluated in the source pose before any clips are sampled.</summary>
+        public static Matrix4x4 EquipmentOffset(GameObject model, Animator animator, HumanBodyBones slot, Transform bone)
+        {
+            var equipment = model.GetComponent<EquipmentModel>();
+            if (equipment == null)
+            {
+                var path = AssetDatabase.GetAssetPath(model);
+                var contents = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    contents.AddComponent<EquipmentModel>();
+                    PrefabUtility.SaveAsPrefabAsset(contents, path);
+                }
+                finally
+                {
+                    PrefabUtility.UnloadPrefabContents(contents);
+                }
+
+                equipment = AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<EquipmentModel>();
+            }
+
+            if (!equipment.UsePalmGrip) return equipment.Offset;
+
+            var left = slot == HumanBodyBones.LeftHand;
+            if (!left && slot != HumanBodyBones.RightHand)
+                throw new InvalidOperationException($"'{model.name}' uses a palm grip but is attached to {slot}.");
+            var index = animator.GetBoneTransform(left ? HumanBodyBones.LeftIndexProximal : HumanBodyBones.RightIndexProximal);
+            var middle = animator.GetBoneTransform(left ? HumanBodyBones.LeftMiddleProximal : HumanBodyBones.RightMiddleProximal);
+            if (index == null || middle == null)
+                throw new InvalidOperationException($"'{animator.name}' needs index and middle finger bones for '{model.name}'.");
+
+            // Rigs use different local hand axes. The two knuckles and wrist define a common grip frame.
+            var indexLocal = bone.InverseTransformPoint(index.position);
+            var middleLocal = bone.InverseTransformPoint(middle.position);
+            var knuckles = (indexLocal + middleLocal) * 0.5f;
+            var up = (indexLocal - middleLocal).normalized;
+            var forward = Vector3.ProjectOnPlane(knuckles, up);
+            if (up.sqrMagnitude == 0f || forward.sqrMagnitude < 1e-8f)
+                throw new InvalidOperationException($"'{animator.name}' has degenerate finger positions for '{model.name}'.");
+
+            var palm = Matrix4x4.TRS(knuckles * 0.6f, Quaternion.LookRotation(forward, up), Vector3.one);
+            return palm * equipment.Offset;
+        }
 
         /// <summary>
         /// Imports every "{prefix}*.fbx" in <see cref="AnimationsPath"/> as Humanoid (own avatar per file, retargeted

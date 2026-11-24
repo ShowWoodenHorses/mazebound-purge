@@ -406,6 +406,7 @@ namespace Purge.Editor.Dev
                 var source = renderer.sharedMesh;
                 var bones = renderer.bones;
                 var bindposes = source.bindposes;
+                var equipment = GlueEquipment(visual.Equipment, animator, renderer, bindposes, out var equipmentMaterials);
                 var map = HordeVisualsBuilder.Weld(source, out var welded);
 
                 // Clips: frames of every entry one after another.
@@ -522,7 +523,6 @@ namespace Purge.Editor.Dev
                 if (gaits > 0) speed /= gaits;
 
                 var boneAsset = HordeVisualsBuilder.SaveTexture($"{artPath}/{prefab.name}_Bones.asset", boneWidth, frameCount, boneTexture);
-                var equipment = GlueEquipment(visual.Equipment, animator, renderer, bindposes, out var equipmentMaterials);
                 var mesh = SaveMesh($"{artPath}/{prefab.name}_Mesh.asset", source, map, welded, equipment);
                 var body = SaveMaterial($"{artPath}/{prefab.name}.mat", renderer.sharedMaterial, boneAsset);
                 var extras = new Material[equipmentMaterials.Count];
@@ -619,8 +619,8 @@ namespace Purge.Editor.Dev
                     continue;
                 }
 
-                var model = EnsureEquipmentModel(item.Model);
-                var toMesh = bindposes[index].inverse * model.Offset;
+                var offset = CharacterAnimationUtility.EquipmentOffset(item.Model, animator, item.Bone, bone);
+                var toMesh = bindposes[index].inverse * offset;
                 foreach (var filter in item.Model.GetComponentsInChildren<MeshFilter>())
                 {
                     var mesh = filter.sharedMesh;
@@ -663,26 +663,6 @@ namespace Purge.Editor.Dev
             }
 
             return parts;
-        }
-
-        /// <summary>The model's <see cref="EquipmentModel"/> (added to the prefab with zero offsets when missing).</summary>
-        private static EquipmentModel EnsureEquipmentModel(GameObject model)
-        {
-            var component = model.GetComponent<EquipmentModel>();
-            if (component != null) return component;
-            var path = AssetDatabase.GetAssetPath(model);
-            var contents = PrefabUtility.LoadPrefabContents(path);
-            try
-            {
-                contents.AddComponent<EquipmentModel>();
-                PrefabUtility.SaveAsPrefabAsset(contents, path);
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(contents);
-            }
-
-            return AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<EquipmentModel>();
         }
 
         private static Mesh SaveMesh(string path, Mesh source, int[] map, List<int> welded, List<GluedPart> equipment)

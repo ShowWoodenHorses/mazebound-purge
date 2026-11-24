@@ -10,6 +10,8 @@ namespace Purge.Presentation.UI
 {
     public sealed class CharacterScreen : UIScreen
     {
+        private static readonly Color PurchasedOutline = new Color(1f, 0.53f, 0.19f);
+
         [SerializeField] private Button[] _nodes;
         [SerializeField] private UiShape[] _incoming;
         [SerializeField] private UiStyle _style;
@@ -20,6 +22,7 @@ namespace Purge.Presentation.UI
         [SerializeField] private TMP_Text _details;
         [SerializeField] private TMP_Text _buyLabel;
         private TMP_Text[] _labels;
+        private CanvasGroup[] _nodeGroups;
 
         public event Action BackClicked;
         public event Action BuyClicked;
@@ -33,10 +36,13 @@ namespace Purge.Presentation.UI
             Bind(_reset, () => ResetClicked?.Invoke());
 
             _labels = new TMP_Text[_nodes.Length];
+            _nodeGroups = new CanvasGroup[_nodes.Length];
             for (var i = 0; i < _nodes.Length; i++)
             {
                 var index = i;
                 _labels[i] = _nodes[i].GetComponentInChildren<TMP_Text>(true);
+                var group = _nodes[i].GetComponent<CanvasGroup>();
+                _nodeGroups[i] = group != null ? group : _nodes[i].gameObject.AddComponent<CanvasGroup>();
                 Bind(_nodes[i], () => NodeClicked?.Invoke(index));
             }
         }
@@ -44,15 +50,18 @@ namespace Purge.Presentation.UI
         public void SetNode(int index, string label, bool selected, bool owned, bool available, Rarity? permit)
         {
             _labels[index].text = label;
+            var locked = !owned && !available;
+            _nodeGroups[index].alpha = locked ? 0.7f : 1f;
             if (_nodes[index] is UiButton button)
             {
                 if (permit.HasValue) button.SetRarity(permit.Value);
                 button.Accent = selected;
+                button.SetOutlineOverride(owned ? PurchasedOutline : available && _style != null ? _style.Text : (Color?)null);
             }
             if (_style == null || _incoming[index] == null) return;
 
-            var color = owned ? _style.Accent : _style.Line;
-            if (!owned && !available) color.a *= 0.5f;
+            var color = owned ? PurchasedOutline : _style.Line;
+            if (locked) color.a *= 0.7f;
             _incoming[index].Fill = color;
         }
 

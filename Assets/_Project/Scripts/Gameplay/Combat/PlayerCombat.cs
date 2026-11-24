@@ -106,6 +106,21 @@ namespace Purge.Gameplay.Combat
         private float _firingLeft;
         private float _stanceLeft;
         private bool _stickWasFiring;
+        private WeaponRuntime _touchLobWeapon;
+        private Vector2 _touchLobPoint;
+        private bool _showTouchLobPoint;
+
+        public bool TryGetTouchLobAim(out Vector2 point, out float radius)
+        {
+            point = _touchLobPoint;
+            radius = 0f;
+            if (!_showTouchLobPoint || !StickAiming() || _player.Down || _player.InVehicle || _player.IsOnStairs ||
+                _weapons.Active != _touchLobWeapon || _touchLobWeapon?.Definition.Attack is not ExplosiveAttack lob)
+                return false;
+
+            radius = lob.Radius;
+            return true;
+        }
 
         public PlayerCombat(IPlayerInput input, PlayerSystem player, WeaponSystem weapons, CombatTargets targets,
             BulletSystem bullets, SoundEventBus sounds, IAimSettings aim, DoorSystem doors, AmmoStock ammo,
@@ -155,7 +170,7 @@ namespace Purge.Gameplay.Combat
         public Vector2 BeamEnd { get; private set; }
 
         /// <summary>The player attacked within <see cref="FiringLinger"/> (or holds an automatic attack).</summary>
-        public bool IsFiring => _firingLeft > 0f;
+        public bool IsFiring => _firingLeft > 0f && !_player.IsOnStairs;
 
         /// <summary>The body faces the aim: within <see cref="StanceTime"/> after an attack.</summary>
         public bool InStance => _stanceLeft > 0f;
@@ -175,7 +190,7 @@ namespace Purge.Gameplay.Combat
             _duetCooldown = Mathf.Max(0f, _duetCooldown - deltaTime);
             _firingLeft = Mathf.Max(0f, _firingLeft - deltaTime);
             _stanceLeft = Mathf.Max(0f, _stanceLeft - deltaTime);
-            if (_player.Down || _player.InVehicle)
+            if (_player.Down || _player.InVehicle || _player.IsOnStairs)
             {
                 _chargingWeapon = null;
                 _chargeElapsed = 0f;
@@ -185,6 +200,15 @@ namespace Purge.Gameplay.Combat
             {
                 _player.WeaponSpeed = 1f;
                 return; // no shooting from a vehicle (ТЗ 9)
+            }
+            if (_player.IsOnStairs)
+            {
+                _firingLeft = _stanceLeft = 0f;
+                _player.WeaponSpeed = 1f;
+                _stickWasFiring = StickAiming() && StickPastFireThreshold();
+                _touchLobWeapon = null;
+                _showTouchLobPoint = false;
+                return;
             }
             // A computer: the body always faces the mouse, the legs walk where the keys say (decision 2026-10-17).
             var pointerAim = TryPointerAim(out var toPointer);
@@ -203,12 +227,14 @@ namespace Purge.Gameplay.Combat
             var definition = weapon.Definition;
             var chargeTime = (definition.Attack as BeamAttack)?.ChargeTime ?? 0f;
             var stickAiming = StickAiming();
-            var stickFiring = stickAiming && _input.AimStick.sqrMagnitude >= StickFireFrom * StickFireFrom;
+            var stickFiring = stickAiming && StickPastFireThreshold();
             var stickPressed = stickFiring && !_stickWasFiring;
             _stickWasFiring = stickFiring;
             // A slight deflection only turns the body; the stance keeps it there after the stick is let go.
             if (stickAiming) _stanceLeft = Mathf.Max(_stanceLeft, StanceTime);
-            var wantsToAttack = stickFiring || WantsToAttack(weapon);
+            var touchLob = stickAiming && definition.Attack is ExplosiveAttack { FlightTime: > 0f };
+            UpdateTouchLobAim(weapon, touchLob, stickFiring);
+            var wantsToAttack = touchLob ? stickPressed : stickFiring || WantsToAttack(weapon);
             var canAttack = wantsToAttack && weapon.Cooldown <= 0f && !weapon.IsReloading && !_player.Stunned;
             if (!canAttack || _chargingWeapon != weapon)
                 _chargeElapsed = 0f;
@@ -220,7 +246,7 @@ namespace Purge.Gameplay.Combat
                 // In the stance without attacking, the aim stays where the last attack went (unless the mouse or the
                 // right stick aims): the body does not follow the run direction.
                 var direction = stickAiming
-                    ? StickAim(definition, _input.AimStick.normalized)
+                    ? (touchLob ? (_touchLobPoint - _player.Position).normalized : StickAim(definition, _input.AimStick.normalized))
                     : wantsToAttack || pointerAim || RightStick().sqrMagnitude > 0f ? AimFor(definition) : AimDirection;
                 if (canAttack)
                 {
@@ -239,7 +265,8 @@ namespace Purge.Gameplay.Combat
                 _player.AimAt(direction);
             }
 
-            var firing = IsFiring || (wantsToAttack && definition.Attack != null && (definition.Attack.Automatic || stickFiring));
+            var firing = IsFiring || (touchLob && stickFiring) ||
+                (wantsToAttack && definition.Attack != null && (definition.Attack.Automatic || stickFiring));
             _player.WeaponSpeed = definition.SpeedInHands * (firing ? definition.SpeedWhileFiring : 1f);
         }
 
@@ -298,6 +325,35 @@ namespace Purge.Gameplay.Combat
         /// <summary>The on-screen aim stick is deflected and not aiming a throw.</summary>
         private bool StickAiming() =>
             _input.AimStick.sqrMagnitude > 0f && (_throwing == null || !_throwing.IsAiming);
+
+        private bool StickPastFireThreshold()
+        {
+            var threshold = _aim.TouchFireThreshold;
+            return _input.AimStick.sqrMagnitude >= threshold * threshold;
+        }
+
+        private void UpdateTouchLobAim(WeaponRuntime weapon, bool aiming, bool firing)
+        {
+            _showTouchLobPoint = aiming && !firing;
+            if (!aiming)
+            {
+                _touchLobWeapon = null;
+                return;
+            }
+
+            var lob = (ExplosiveAttack)weapon.Definition.Attack;
+            var origin = _player.Position;
+            // Keep the point the player saw before crossing into the firing zone.
+            if (firing && _touchLobWeapon == weapon &&
+                (_touchLobPoint - origin).sqrMagnitude >= lob.MinimumRange * lob.MinimumRange)
+                return;
+
+            var stick = _input.AimStick;
+            var range = Mathf.Lerp(lob.MinimumRange, Mathf.Max(lob.MinimumRange, lob.Range),
+                stick.magnitude / _aim.TouchFireThreshold);
+            _touchLobPoint = origin + stick.normalized * range;
+            _touchLobWeapon = weapon;
+        }
 
         /// <summary>Where the aim stick points, turned slightly to a target in a narrow cone (aim assist on).</summary>
         private Vector2 StickAim(WeaponDefinition definition, Vector2 wanted)
@@ -390,10 +446,10 @@ namespace Purge.Gameplay.Combat
         /// <summary>Whether an automatic stream should continue between damage ticks.</summary>
         public bool IsHoldingStream(WeaponRuntime weapon) =>
             weapon != null && weapon == _weapons.Active && weapon.Definition.Attack is StreamAttack { Automatic: true } &&
-            _player.IsSpawned && !_player.Down && !_player.InVehicle && !_player.Stunned &&
+            _player.IsSpawned && !_player.Down && !_player.InVehicle && !_player.IsOnStairs && !_player.Stunned &&
             !weapon.IsReloading && HasRounds(weapon) &&
             ((_input.AttackHeld && _throwing?.ConsumedAttack != true) ||
-             (StickAiming() && _input.AimStick.sqrMagnitude >= StickFireFrom * StickFireFrom));
+             (StickAiming() && StickPastFireThreshold()));
 
         private static bool HasRounds(WeaponRuntime weapon) =>
             !weapon.Definition.UsesAmmo || weapon.Ammo >= weapon.Definition.Ammo.PerAttack;
@@ -429,6 +485,8 @@ namespace Purge.Gameplay.Combat
 
         private bool Attack(WeaponRuntime weapon, Vector2 direction, bool useInput = false)
         {
+            if (_player.IsOnStairs) return false;
+
             var definition = weapon.Definition;
             var origin = _player.Position;
             var floor = _player.Floor;
@@ -438,14 +496,15 @@ namespace Purge.Gameplay.Combat
             {
                 var mortar = (ExplosiveAttack)definition.Attack;
                 var useStick = useInput && StickAiming();
-                if (useInput && TryPointerGround(out var point))
+                if (useStick)
+                    landing = _touchLobPoint;
+                else if (useInput && TryPointerGround(out var point))
                 {
                     var offset = point - origin;
                     var aim = offset.sqrMagnitude > 0.0001f ? offset.normalized : direction;
                     landing = origin + aim * Mathf.Max(offset.magnitude, mortar.MinimumRange);
                 }
-                else if (!TryFindLanding(mortar, origin, useStick ? _input.AimStick.normalized : direction,
-                        floor, !useStick, out landing))
+                else if (!TryFindLanding(mortar, origin, direction, floor, true, out landing))
                     return false;
                 direction = (landing - origin).normalized;
             }

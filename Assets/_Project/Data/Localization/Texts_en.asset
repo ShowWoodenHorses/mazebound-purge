@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -656,6 +660,10 @@ MonoBehaviour:
   - SHOOTING
   - OTHER
   - Stick dead zone
+  - Aim stick dead zone
+  - Fire zone starts at
+  - Aim stick size
+  - Weapon slot size
   - Stick response
   - Controls size
   - Controls opacity

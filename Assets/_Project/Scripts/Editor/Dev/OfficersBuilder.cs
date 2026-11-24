@@ -655,7 +655,7 @@ namespace Purge.Editor.Dev
                         continue;
                     }
 
-                    var offset = EnsureEquipmentOffset(item.Model);
+                    var offset = CharacterAnimationUtility.EquipmentOffset(item.Model, animator, item.Bone, bone);
                     var instance = (GameObject)PrefabUtility.InstantiatePrefab(item.Model, bone);
                     PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
                     instance.name = EquipmentPrefix + item.Model.name;
@@ -674,25 +674,6 @@ namespace Purge.Editor.Dev
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
-        }
-
-        private static Matrix4x4 EnsureEquipmentOffset(GameObject model)
-        {
-            var component = model.GetComponent<EquipmentModel>();
-            if (component != null) return component.Offset;
-            var path = AssetDatabase.GetAssetPath(model);
-            var contents = PrefabUtility.LoadPrefabContents(path);
-            try
-            {
-                contents.AddComponent<EquipmentModel>();
-                PrefabUtility.SaveAsPrefabAsset(contents, path);
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(contents);
-            }
-
-            return AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<EquipmentModel>().Offset;
         }
 
         /// <summary>Opaque Standard materials of the model and its equipment → Purge/Lit (others are reported).</summary>

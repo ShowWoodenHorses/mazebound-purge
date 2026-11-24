@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -21,6 +22,7 @@ using Purge.Gameplay.Level;
 using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Visibility;
+using Purge.Presentation.Localization;
 using Purge.Presentation.Map;
 using Purge.Presentation.Menu;
 using Purge.Presentation.UI;
@@ -76,8 +78,8 @@ namespace Purge.Tests.PlayMode
             var game = save.Data.Settings.Game;
             game.NoGameplayHints = true; // Gameplay hints have a separate test that verifies the pause flow.
             save.Data.Settings.Game = game;
-            var podium = _container.Resolve<MenuPodiumPresenter>();
-            await WaitFor(() => !podium.IsLoading); // its assets stay for the application's lifetime
+            var podium = FindRoot<MenuPodiumView>(SceneManager.GetSceneByName(BootstrapScene));
+            Assert.IsTrue(podium.IsVisible, "The podium is visible as soon as the main menu opens.");
         });
 
         [UnityTearDown]
@@ -197,8 +199,38 @@ namespace Purge.Tests.PlayMode
             save.Data.Arsenal.Add(new OwnedItem { Id = "desert" });
             Assert.That(progress.IsUnlocked("Level_Castle_01"), Is.False);
 
+            var podium = FindRoot<MenuPodiumView>(SceneManager.GetSceneByName(BootstrapScene));
+            var demo = podium.transform.Find("Stage/Menu Demo");
+            Assert.IsTrue(demo.gameObject.activeInHierarchy, "The demo starts in the main menu.");
+            var camera = podium.GetComponentInChildren<Camera>();
+            var menuCameraPosition = camera.transform.position;
+            var held = podium.Anchor.GetComponentsInChildren<WeaponModel>().Single();
             ui.MainMenu.GetComponentsInChildren<Button>(true).Single(b => b.name == "PlayButton").onClick.Invoke();
             Assert.That(ui.RunSetup.IsVisible, Is.True);
+            Assert.That(demo.gameObject.activeInHierarchy, Is.True);
+            Assert.That(camera.transform.position, Is.EqualTo(menuCameraPosition));
+            Assert.That(held.gameObject.activeInHierarchy, Is.True, "Opening play keeps the current demo weapon.");
+            var texts = _container.Resolve<LocalizationService>();
+            var preparation = _container.Resolve<Purge.Application.Meta.RunPreparation>();
+            var labels = ui.RunSetup.GetComponentsInChildren<TMPro.TMP_Text>();
+            var weaponName = labels.Single(label => label.name == "SelectedWeaponTitle");
+            var throwableName = labels.Single(label => label.name == "SelectedThrowableTitle");
+            Assert.That(weaponName.text, Is.EqualTo(texts.Get(TextKeys.WeaponPrefix + preparation.BaseWeapon.Id)));
+            var choices = ui.RunSetup.GetComponentsInChildren<Button>();
+            var weapons = new System.Collections.Generic.List<WeaponDefinition>();
+            preparation.GetStartWeapons(weapons);
+            var desertSlot = "Item" + (1 + weapons.FindIndex(weapon => weapon.Id == "desert"));
+            choices.Single(button => button.name == desertSlot && button.transform.parent.name == "Weapons").onClick.Invoke();
+            Assert.That(weaponName.text, Is.EqualTo(texts.Get(TextKeys.WeaponPrefix + "desert")));
+            choices.Single(button => button.name == "Item0" && button.transform.parent.name == "Throwables").onClick.Invoke();
+            Assert.That(throwableName.text, Is.EqualTo(texts.Get(TextKeys.No)));
+            Canvas.ForceUpdateCanvases();
+            foreach (var name in new[] { weaponName, throwableName })
+            {
+                var header = name.transform.parent.GetComponent<TMPro.TMP_Text>();
+                Assert.That(name.rectTransform.rect.width, Is.GreaterThan(name.preferredWidth));
+                Assert.That(name.rectTransform.rect.height, Is.EqualTo(header.rectTransform.rect.height).Within(0.01f));
+            }
             ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "SurvivalButton").onClick.Invoke();
             var castle = ui.RunSetup.GetComponentsInChildren<Button>(true).Single(b => b.name == "Location1");
             Assert.That(castle.interactable, Is.True);
@@ -297,10 +329,22 @@ namespace Purge.Tests.PlayMode
                 Assert.IsTrue(character.interactable);
                 character.onClick.Invoke();
                 Assert.IsTrue(ui.Character.IsVisible);
-                ButtonNamed(ui.Character, "SecondWind").onClick.Invoke();
+                var availableNode = ButtonNamed(ui.Character, "SecondWind");
+                var lockedNode = ButtonNamed(ui.Character, "LastStand");
+                Assert.That(availableNode.GetComponent<CanvasGroup>().alpha, Is.EqualTo(1f));
+                Assert.That(lockedNode.GetComponent<CanvasGroup>().alpha, Is.EqualTo(0.7f));
+                lockedNode.onClick.Invoke();
+                var details = ui.Character.GetComponentsInChildren<TMPro.TMP_Text>().Single(label => label.name == "Details");
+                Assert.That(details.text, Does.Contain("<color=#FF9B93>"));
+                availableNode.onClick.Invoke();
                 ButtonNamed(ui.Character, "Buy").onClick.Invoke();
                 Assert.That(save.Data.Money, Is.EqualTo(1700));
                 Assert.That(save.Data.CharacterNodes, Does.Contain("SecondWind"));
+                lockedNode.onClick.Invoke();
+                Assert.That(availableNode.GetComponent<CanvasGroup>().alpha, Is.EqualTo(1f));
+                Assert.That(((Purge.Presentation.UI.Style.UiButton)availableNode).Body.Stroke,
+                    Is.EqualTo(new Color(1f, 0.53f, 0.19f)));
+                Assert.That(lockedNode.GetComponent<CanvasGroup>().alpha, Is.EqualTo(1f));
                 ButtonNamed(ui.Character, "Back").onClick.Invoke();
                 Assert.IsTrue(ui.MainMenu.IsVisible);
 
@@ -376,12 +420,16 @@ namespace Purge.Tests.PlayMode
             var savedJson = PlayerPrefs.GetString(PlayerPrefsSaveStorage.Key, null);
             var save = _container.Resolve<SaveService>();
             var progress = _container.Resolve<IProgressService>();
+            var texts = _container.Resolve<LocalizationService>();
+            var originalLanguage = texts.LanguageIndex;
             var ui = _container.Resolve<UIRoot>();
             Button ButtonNamed(Component screen, string name) =>
                 screen.GetComponentsInChildren<Button>(true).Single(button => button.name == name);
 
             try
             {
+                var russian = Enumerable.Range(0, texts.Languages.Count).First(i => texts.Languages[i].Code == "ru");
+                await texts.SetLanguageAsync(russian);
                 await _flow.StartLevel(levelId, new LevelLaunchOptions(startIndex: 0));
                 Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
                 _flow.PauseGameplay();
@@ -398,20 +446,61 @@ namespace Purge.Tests.PlayMode
                 ButtonNamed(ui.Cheats, "AddAmmoButton").onClick.Invoke();
                 CollectionAssert.AreEqual(before.Select(count => count + 100), ammo.Select(stock.Get));
 
-                var weapons = content.Items.OfType<WeaponDefinition>().ToArray();
-                Assert.AreEqual(weapons.Length, ui.Cheats.GetComponentsInChildren<Button>()
+                var weapons = content.Items.OfType<WeaponDefinition>().Select(weapon =>
+                {
+                    var key = TextKeys.WeaponPrefix + weapon.Id;
+                    return (weapon.Id, Caption: texts.Has(key) ? texts.Get(key) : weapon.Id.Replace('_', ' '));
+                }).ToArray();
+                var comparer = StringComparer.Create(CultureInfo.GetCultureInfo("ru"), true);
+                var cyrillic = weapons.Where(weapon => weapon.Caption.FirstOrDefault(char.IsLetter) is >= '\u0400' and <= '\u052F');
+                var latin = weapons.Except(cyrillic);
+                Assert.IsNotEmpty(cyrillic);
+                Assert.IsNotEmpty(latin);
+                var expected = cyrillic.OrderBy(weapon => weapon.Caption, comparer)
+                    .ThenBy(weapon => weapon.Id, StringComparer.Ordinal)
+                    .Concat(latin.OrderBy(weapon => weapon.Caption, comparer)
+                        .ThenBy(weapon => weapon.Id, StringComparer.Ordinal)).ToArray();
+                Assert.AreEqual(expected.Length, ui.Cheats.GetComponentsInChildren<Button>()
                     .Count(button => button.name.StartsWith("Level")));
+                CollectionAssert.AreEqual(expected.Select(weapon => weapon.Caption), Enumerable.Range(0, expected.Length)
+                    .Select(i => ButtonNamed(ui.Cheats, "Level" + i).GetComponentInChildren<TMPro.TMP_Text>().text));
+
                 var pickups = level.Resolve<PickupSystem>();
-                ButtonNamed(ui.Cheats, "Level0").onClick.Invoke();
-                var drops = new System.Collections.Generic.List<Pickup>();
+                var selected = expected.Length - 1;
+                ButtonNamed(ui.Cheats, "Level" + selected).onClick.Invoke();
+                var drops = new List<Pickup>();
                 pickups.GetAll(drops);
-                var spawned = drops.Single(pickup => pickup.IsDropped && pickup.Weapon?.Definition.Id == weapons[0].Id);
+                var spawned = drops.Single(pickup => pickup.IsDropped && pickup.Weapon?.Definition.Id == expected[selected].Id);
                 var origin = level.Resolve<PlayerSystem>().Cell;
                 Assert.AreEqual(origin.Floor, spawned.Cell.Floor);
                 Assert.LessOrEqual(Math.Abs(origin.X - spawned.Cell.X) + Math.Abs(origin.Y - spawned.Cell.Y), 1);
 
                 ButtonNamed(ui.Cheats, "BackButton").onClick.Invoke();
                 Assert.IsTrue(ui.Pause.IsVisible);
+                _flow.ResumeGameplay();
+
+                var waves = level.Resolve<Purge.Gameplay.Waves.WaveSystem>();
+                waves.ResumeAt(1);
+                var waveHud = level.Resolve<WaveHudPresenter>();
+                waveHud.LateTick(0f);
+                var ammoRow = ui.Hud.transform.Find("AmmoRow");
+                string[] VisibleAmmo() => ammoRow.GetComponentsInChildren<TMPro.TMP_Text>().Select(t => t.text).ToArray();
+                string AmmoCaption(AmmoDefinition type) =>
+                    texts.Get(TextKeys.AmmoPrefix + type.Id) + "  " + stock.Get(type);
+                Assert.IsTrue(ammoRow.gameObject.activeInHierarchy);
+                CollectionAssert.AreEqual(ammo.Select(AmmoCaption), VisibleAmmo());
+
+                Assert.IsTrue(waves.Skip());
+                waveHud.LateTick(0f);
+                Assert.IsTrue(ammoRow.gameObject.activeInHierarchy);
+                CollectionAssert.AreEqual(ammo.Select(AmmoCaption), VisibleAmmo());
+                Assert.AreEqual(1, stock.Take(ammo[0], 1));
+                waveHud.LateTick(0f);
+                CollectionAssert.AreEqual(ammo.Select(AmmoCaption), VisibleAmmo());
+                stock.Add(ammo[0], 3);
+                waveHud.LateTick(0f);
+                CollectionAssert.AreEqual(ammo.Select(AmmoCaption), VisibleAmmo());
+
                 var cleanProgress = JsonUtility.ToJson(save.Data);
                 _flow.CompleteLevel();
                 Assert.AreEqual(cleanProgress, JsonUtility.ToJson(save.Data));
@@ -428,6 +517,7 @@ namespace Purge.Tests.PlayMode
             }
             finally
             {
+                await texts.SetLanguageAsync(originalLanguage);
                 if (savedJson == null) PlayerPrefs.DeleteKey(PlayerPrefsSaveStorage.Key);
                 else PlayerPrefs.SetString(PlayerPrefsSaveStorage.Key, savedJson);
                 PlayerPrefs.Save();
@@ -440,17 +530,22 @@ namespace Purge.Tests.PlayMode
             var arsenal = _container.Resolve<Purge.Presentation.UI.ArsenalPresenter>();
             var ui = _container.Resolve<Purge.Presentation.UI.UIRoot>();
             var baseline = AppHandles;
+            var image = ui.Arsenal.Preview.GetComponent<RawImage>();
             arsenal.Open();
             for (int i=0;i<9;i++)
             {
                 await WaitFor(() => !arsenal.IsLoading);
                 Assert.IsTrue(ui.Arsenal.IsVisible);
+                Assert.That(image.isActiveAndEnabled, Is.True);
+                Assert.That(image.texture, Is.TypeOf<RenderTexture>());
                 var next = System.Array.Find(ui.Arsenal.GetComponentsInChildren<UnityEngine.UI.Button>(true), b => b.name == "Next");
                 Assert.IsNotNull(next); next.onClick.Invoke();
+                if (arsenal.IsLoading) Assert.That(image.enabled, Is.False);
             }
             arsenal.Close();
             await WaitFor(() => AppHandles == baseline);
             Assert.IsFalse(ui.Arsenal.IsVisible);
+            Assert.That(image.enabled, Is.False);
         });
 
         [Test]
@@ -459,13 +554,69 @@ namespace Purge.Tests.PlayMode
             var catalog = _container.Resolve<ILevelCatalog>();
             Assert.Greater(catalog.Levels.Count, 0, "Run Build / Sync for at least one level.");
             var devCatalog = catalog.DevLevels.Count > 0 ? 1 : 0; // Editor and development builds.
-            Assert.AreEqual(13 + devCatalog, AppHandles,
+            var menuAssets = _container.Resolve<MenuPodiumPresenter>().LoadedAssetCount;
+            Assert.AreEqual(11 + devCatalog + menuAssets, AppHandles,
                 "Only application-wide assets are resident in the menu: level catalog (+ development levels catalog), " +
                 "player definition, player visual, combat visual, weapon visuals, item visuals, card deck, content catalog, audio catalog, language catalog, " +
-                "texts of one language, the menu podium's character and its weapon (music is counted apart).");
+                "texts of one language and the menu podium's assets (music is counted apart).");
             Assert.IsNotNull(_audio.Catalog, "Audio catalog loaded.");
             Assert.AreSame(_audio.Catalog.MenuMusic, _audio.CurrentMusic, "Menu music in the menu.");
         }
+
+        [UnityTest]
+        public IEnumerator MenuPodium_PlaysWeaponCycle_AndRestartsAfterRun() => Async(async () =>
+        {
+            var podium = FindRoot<MenuPodiumView>(SceneManager.GetSceneByName(BootstrapScene));
+            Assert.IsNotNull(podium);
+            var demo = podium.transform.Find("Stage/Menu Demo");
+            Assert.IsNotNull(demo);
+            Assert.IsTrue(demo.gameObject.activeInHierarchy);
+            var camera = podium.GetComponentInChildren<Camera>();
+            Assert.That(camera.transform.eulerAngles.x, Is.EqualTo(58.5f).Within(0.1f));
+            Assert.That(Vector3.Distance(camera.transform.position, podium.Anchor.position + Vector3.up * 0.55f),
+                Is.EqualTo(21.25f).Within(0.01f));
+            var monsters = demo.Cast<Transform>().Where(child => child.name.StartsWith("Demo Monster ")).ToArray();
+            var waveSizes = new List<int>();
+            var firstEntrances = new List<float>();
+            var weapons = podium.Anchor.GetComponentsInChildren<WeaponModel>(true);
+            var tracers = demo.Cast<Transform>().Where(child => child.name.StartsWith("fx_tracer")).ToArray();
+            var sawTeslaJump = false;
+            foreach (var id in new[] { "pomp_shotgun", "lynx", "tesla", "minigun", "grenade_launcher", "flame_gun", "ak_74" })
+            {
+                var arrivals = new List<Vector3>();
+                var seen = new HashSet<Transform>();
+                var meshes = new HashSet<Mesh>();
+                await WaitFor(() =>
+                {
+                    if (id == "minigun" && tracers.Count(tracer => tracer.gameObject.activeInHierarchy) > 1)
+                        sawTeslaJump = true;
+                    foreach (var monster in monsters)
+                    {
+                        if (!monster.gameObject.activeSelf || !seen.Add(monster)) continue;
+                        arrivals.Add(camera.WorldToViewportPoint(monster.position));
+                        meshes.Add(monster.GetComponent<MeshFilter>().sharedMesh);
+                    }
+                    return weapons.Any(weapon => weapon.name == "Weapon " + id && weapon.gameObject.activeInHierarchy);
+                });
+                Assert.That(monsters.All(monster => !monster.gameObject.activeSelf), Is.True, "The gun changes between waves.");
+                Assert.That(arrivals.Skip(1).All(point => point.y > 1f && point.x > 0f && point.x < 1f), Is.True,
+                    $"Wave before {id} enters through the top: {string.Join(", ", arrivals)}");
+                Assert.That(meshes.Count, Is.EqualTo(3), "Each wave has three monster types.");
+                waveSizes.Add(arrivals.Count);
+                firstEntrances.Add(arrivals[0].x);
+            }
+            Assert.That(waveSizes, Is.EquivalentTo(Enumerable.Range(4, 7)));
+            Assert.That(firstEntrances.Max() - firstEntrances.Min(), Is.GreaterThan(0.35f));
+            Assert.IsTrue(sawTeslaJump, "Tesla shows lightning jumping between monsters.");
+
+            await _flow.StartLevel(FirstLevelId(), new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            Assert.IsFalse(demo.gameObject.activeInHierarchy, "The demo stops when the run starts.");
+            await _flow.ExitToMenu();
+            await WaitFor(() => demo.gameObject.activeInHierarchy);
+            Assert.IsTrue(weapons.Any(weapon => weapon.name == "Weapon ak_74" && weapon.gameObject.activeInHierarchy),
+                "Returning from the run restarts the cycle with the AK-74.");
+        });
 
         /// <summary>Switching the language re-texts the shown captions and keeps one table loaded.</summary>
         [UnityTest]
@@ -751,6 +902,35 @@ namespace Purge.Tests.PlayMode
             await _flow.ExitToMenu();
             Assert.AreEqual(handlesInMenu, AppHandles, "Combat and held weapon prefabs released with the level.");
             Assert.AreEqual(0, _audio.PlayingCount(SoundChannel.Level), "Level sounds stop with the level.");
+        });
+
+        [UnityTest]
+        public IEnumerator WeaponEffects_LoadCheatStreams_AndShowRoundedPlasma() => Async(async () =>
+        {
+            const string itemsLevel = "Level_Items";
+            if (_container.Resolve<ILevelCatalog>().Find(itemsLevel) == null)
+                Assert.Ignore($"Dev level '{itemsLevel}' is not in the catalog.");
+
+            var shared = _container.Resolve<SharedDefinitionsService>();
+            var plasma = shared.Content.Find<WeaponDefinition>("plasmometer");
+            await _flow.StartLevel(itemsLevel, new LevelLaunchOptions(startIndex: 0, startWeapon: plasma));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var root = level.Resolve<LevelViewRoot>().transform;
+            var streams = root.Find("Pack Effects");
+            Assert.IsNotNull(streams);
+            foreach (var name in new[] { "FX_Stream_Acid", "FX_Stream_Gas", "FX_Stream_Frost", "FX_FlameThrower_02" })
+                Assert.IsNotNull(streams.Find(name), name);
+
+            var combat = level.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
+            Assert.IsTrue(combat.TryAttack(Vector2.down));
+            Transform projectile = null;
+            await WaitFor(() => (projectile = root.Cast<Transform>().FirstOrDefault(child =>
+                child.name == "Bullet" && child.gameObject.activeSelf)) != null);
+            Assert.AreSame(shared.CombatVisual.EffectParticles, projectile.GetComponentInChildren<Renderer>().sharedMaterial);
+            Assert.That(projectile.localScale.x * 0.1f, Is.EqualTo(projectile.localScale.z).Within(0.001f));
+
+            await _flow.ExitToMenu();
         });
 
         [UnityTest]
@@ -1045,19 +1225,33 @@ namespace Purge.Tests.PlayMode
             bullets.Tick(flightTime * 0.02f);
             var turret = root.Find("MachineGun_Tower");
             var turretView = container.Resolve<DeployablesView>();
+            var combatView = container.Resolve<CombatViewPresenter>();
             var shotSeen = false;
             var tracerAtMuzzle = false;
+            var tracerAfterMuzzle = false;
             var flashAtMuzzle = false;
-            deployables.TurretFired += (item, _) =>
+            deployables.TurretFired += (item, shot) =>
             {
                 if (shotSeen) return;
                 shotSeen = true;
                 if (!turretView.TryGetMuzzle(item, out var muzzle)) return;
-                var activeViews = root.GetComponentsInChildren<Transform>();
-                tracerAtMuzzle = activeViews.Any(view => view.name == "Bullet" &&
+                var tracer = root.GetComponentsInChildren<Transform>(true).FirstOrDefault(view => view.name == "Bullet" &&
+                    !view.gameObject.activeInHierarchy && Vector3.Distance(view.position, muzzle.position) < 0.01f);
+                tracerAtMuzzle = tracer != null;
+                flashAtMuzzle = root.GetComponentsInChildren<Transform>().Any(view => view.name == "MuzzleFlash" &&
                     Vector3.Distance(view.position, muzzle.position) < 0.01f);
-                flashAtMuzzle = activeViews.Any(view => view.name == "MuzzleFlash" &&
-                    Vector3.Distance(view.position, muzzle.position) < 0.01f);
+                if (tracer == null) return;
+
+                // Sample the first shot before the normal frame can carry it all the way to the target.
+                var muzzlePoint = root.InverseTransformPoint(muzzle.position);
+                var direction = new Vector3(shot.Direction.x, 0f, shot.Direction.y);
+                var muzzleLead = Mathf.Max(0f, Vector2.Dot(new Vector2(muzzlePoint.x, muzzlePoint.z) - shot.Position,
+                    shot.Direction));
+                const float pastMuzzle = 0.05f;
+                bullets.Tick((muzzleLead + pastMuzzle) / shot.Speed);
+                combatView.LateTick(0f);
+                tracerAfterMuzzle = tracer.gameObject.activeInHierarchy &&
+                    Vector3.Distance(tracer.localPosition, muzzlePoint + direction * pastMuzzle) < 0.01f;
             };
             await WaitFor(() => deployables.Turret.Remaining > 0f && turret.gameObject.activeSelf);
             Assert.That(deployables.Turret.Position, Is.EqualTo(destination));
@@ -1065,8 +1259,9 @@ namespace Purge.Tests.PlayMode
             Assert.That(flying.gameObject.activeSelf, Is.False);
             Assert.That(deployables.Decoy.Remaining, Is.GreaterThan(0f));
             await WaitFor(() => shotSeen);
-            Assert.That(tracerAtMuzzle, Is.True);
-            Assert.That(flashAtMuzzle, Is.True);
+            Assert.That(tracerAtMuzzle, Is.True, "The tracer starts at the muzzle and stays hidden until it has length.");
+            Assert.That(tracerAfterMuzzle, Is.True, "The first visible tracer starts at the turret muzzle.");
+            Assert.That(flashAtMuzzle, Is.True, "The flash appears at the muzzle immediately.");
             await _flow.ExitToMenu();
         });
 
@@ -1090,17 +1285,22 @@ namespace Purge.Tests.PlayMode
             Assert.AreSame(visuals.Geometry.Mask.Texture, Shader.GetGlobalTexture(GeometryShader.VisibilityTextureId));
             var combat = container.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
             var bullets = container.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+            var combatView = container.Resolve<CombatViewPresenter>();
             var root = container.Resolve<LevelViewRoot>();
             Assert.AreEqual(0, bullets.Active.Count);
             Assert.IsTrue(combat.TryAttack(Vector2.up), "The starter pistol can fire on the ground floor of Stairs.");
             var bullet = bullets.Active.Single();
             Assert.AreEqual(player.Floor, bullet.Floor);
-            var tracer = root.GetComponentsInChildren<Transform>().Single(view => view.name == "Bullet");
-            Assert.That(tracer.localPosition.y, Is.InRange(player.ViewHeight + 0.1f, player.ViewHeight + 2f));
-            bullets.Spawn(player.Position, Vector2.up, speed: 10f, damage: 1f, floor: player.Floor - 1);
+            combatView.LateTick(0f);
+            var below = bullets.Spawn(player.Position, Vector2.up, speed: bullet.Speed, damage: 1f, floor: player.Floor - 1);
             Assert.AreEqual(2, bullets.Active.Count);
-            Assert.AreEqual(1, root.GetComponentsInChildren<Transform>().Count(view => view.name == "Bullet"),
-                "A tracer on the floor below remains hidden at the same horizontal coordinates.");
+            bullets.Tick(1f / bullet.Speed);
+            combatView.LateTick(0f);
+            Assert.That(bullets.Active, Does.Contain(below), "The lower-floor bullet must still be flying.");
+            Assert.That(below.RangeLeft, Is.LessThan(below.Travel), "The lower-floor tracer has had time to extend.");
+            var tracers = root.GetComponentsInChildren<Transform>().Where(view => view.name == "Bullet").ToArray();
+            Assert.That(tracers, Has.Length.EqualTo(1), "Only the tracer on the player's floor is visible.");
+            Assert.That(tracers[0].localPosition.y, Is.InRange(player.ViewHeight + 0.1f, player.ViewHeight + 2f));
             var oldView = visuals.Geometry;
             var oldTexture = map.Texture;
             var stair = geometry.Stairs.First(link => link.LowerFloor == player.Floor);
@@ -1248,13 +1448,15 @@ namespace Purge.Tests.PlayMode
                 }
 
                 var runtime = container.Resolve<LevelRuntime>();
+                var settings = _container.Resolve<SettingsService>();
+                settings.MapShowPlayer = settings.MapShowKeys = settings.MapShowMedkits = settings.MapShowWeapons = false;
                 _flow.OpenMap();
                 Assert.AreEqual(GameFlowState.Map, _flow.State);
                 Assert.AreEqual(LevelRunState.Paused, runtime.State, "ТЗ §60: the map pauses gameplay.");
                 Assert.IsTrue(ui.Map.IsVisible);
                 Assert.IsFalse(ui.Hud.IsVisible);
 
-                // Icons: refreshed on opening; the start, doors, items, zombies and the player — each with its switch.
+                // Icons: refreshed on opening; the start, doors, items, zombies and the player.
                 var icons = presenter.Icons;
                 var player = container.Resolve<PlayerSystem>();
                 var playerIcon = icons[icons.Count - 1];
@@ -1273,19 +1475,7 @@ namespace Purge.Tests.PlayMode
                 Assert.AreEqual(level.Weapons.Count(w => exploration.IsExplored(w.Position)),
                     icons.Count(icon => icon.Kind == MapIconKind.Weapon && icon.Visible));
 
-                var zombieToggle = ui.Map.transform.Find("SafeArea/ShowZombiesToggle").GetComponent<Toggle>();
-                var iconCount = presenter.Icons.Count;
-                zombieToggle.isOn = false;
-                Assert.IsFalse(presenter.Icons.Any(icon => icon.Kind == MapIconKind.Zombie && icon.Visible), "Zombies switched off.");
-                Assert.AreEqual(iconCount, presenter.Icons.Count, "The icon count never changes.");
-                zombieToggle.isOn = true;
-
-                var playerToggle = ui.Map.transform.Find("SafeArea/ShowPlayerToggle").GetComponent<Toggle>();
-                Assert.IsTrue(playerToggle.isOn);
-                playerToggle.isOn = false;
-                Assert.IsFalse(presenter.Icons[presenter.Icons.Count - 1].Visible, "Player toggle hides the icon.");
-                Assert.IsFalse(_container.Resolve<SettingsService>().MapShowPlayer, "Saved in the settings.");
-                playerToggle.isOn = true;
+                Assert.IsEmpty(ui.Map.GetComponentsInChildren<Toggle>(true));
 
                 _flow.CloseMap();
                 Assert.AreEqual(LevelRunState.Running, runtime.State);

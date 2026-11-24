@@ -34,7 +34,7 @@ namespace Purge.Presentation.UI.Shapes
         [Tooltip("Outline width, canvas units. 0 = no outline.")]
         [SerializeField, Min(0f)] private float _strokeWidth = 1.5f;
 
-        [Tooltip("Rect: corner radius; Arrow: length of the tip; canvas units.")]
+        [Tooltip("Rect and sector: corner radius; Arrow: length of the tip; canvas units.")]
         [SerializeField, Min(0f)] private float _cornerRadius;
 
         [Tooltip("Sector: centre in the rect, 0..1 (1, 0 = bottom-right corner).")]
@@ -155,7 +155,7 @@ namespace Purge.Presentation.UI.Shapes
             {
                 case UiShapeKind.Sector:
                     var center = rect.min + Vector2.Scale(_center, rect.size);
-                    return UiShapeMath.Sector(local - center, _innerRadius, _outerRadius, _startAngle, _sweep);
+                    return UiShapeMath.Sector(local - center, _innerRadius, _outerRadius, _startAngle, _sweep, _cornerRadius);
                 case UiShapeKind.Capsule:
                     return UiShapeMath.RoundedRect(local - rect.center, rect.size * 0.5f, float.MaxValue);
                 case UiShapeKind.Arrow:
@@ -218,7 +218,9 @@ namespace Purge.Presentation.UI.Shapes
                     break;
             }
 
-            var kind = _kind == UiShapeKind.Sector ? 1f : _kind == UiShapeKind.Arrow ? 2f : 0f;
+            // A negative kind carries the sector corner radius without using another vertex channel.
+            var kind = _kind == UiShapeKind.Sector ? (_cornerRadius > 0f ? -_cornerRadius : 1f) :
+                _kind == UiShapeKind.Arrow ? 2f : 0f;
             Color32 tint = color;
             AddCorner(vh, new Vector2(drawn.xMin, drawn.yMin));
             AddCorner(vh, new Vector2(drawn.xMin, drawn.yMax));

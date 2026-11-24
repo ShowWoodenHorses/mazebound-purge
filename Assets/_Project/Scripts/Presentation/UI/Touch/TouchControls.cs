@@ -77,6 +77,7 @@ namespace Purge.Presentation.UI.Touch
             {
                 _cluster.SetMirrored(settings.LeftHanded);
                 _cluster.SetScheme(settings.Scheme);
+                _cluster.SetSizes(settings.AimStickSize, settings.WeaponSlotsSize);
             }
 
             if (_marks != null) _marks.SetMode(settings.AimMode);
@@ -88,7 +89,8 @@ namespace Purge.Presentation.UI.Touch
             // cluster's content mirrors it already.
             var aim = AimStick;
             if (aim != null)
-                aim.Configure(settings.StickDeadZone, StickResponse.ExponentFor(settings.StickSensitivity), true, false);
+                aim.Configure(settings.AimStickDeadZone, StickResponse.ExponentFor(settings.StickSensitivity), true, false,
+                    settings.TouchFireThreshold);
             ApplyLayout();
         }
 

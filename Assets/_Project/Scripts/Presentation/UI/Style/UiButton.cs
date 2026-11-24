@@ -30,6 +30,7 @@ namespace Purge.Presentation.UI.Style
         private float _scale = 1f;
         private float _targetScale = 1f;
         private Rarity? _rarity;
+        private Color? _outlineOverride;
 
         public UiShape Body => _body;
 
@@ -37,6 +38,13 @@ namespace Purge.Presentation.UI.Style
         {
             if (_rarity == rarity) return;
             _rarity = rarity;
+            Paint(_state);
+        }
+
+        public void SetOutlineOverride(Color? color)
+        {
+            if (_outlineOverride == color) return;
+            _outlineOverride = color;
             Paint(_state);
         }
 
@@ -119,7 +127,7 @@ namespace Purge.Presentation.UI.Style
                     if (state == SelectionState.Highlighted || state == SelectionState.Selected)
                         _body.StrokeWidth += 0.5f;
                 }
-                _body.Stroke = line;
+                _body.Stroke = _outlineOverride ?? line;
                 _body.Fill = fill;
             }
 

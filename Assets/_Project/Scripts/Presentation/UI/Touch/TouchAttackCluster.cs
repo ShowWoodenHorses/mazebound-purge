@@ -56,6 +56,8 @@ namespace Purge.Presentation.UI.Touch
         [SerializeField] private RectTransform _content;
 
         [SerializeField] private UiShape _attack;
+        [SerializeField] private RectTransform _aimArea;
+        [SerializeField] private RectTransform _slots;
 
         [Tooltip("Shown only in the Auto scheme: the Attack button and its icon.")]
         [SerializeField] private GameObject[] _attackOnly;
@@ -102,7 +104,6 @@ namespace Purge.Presentation.UI.Touch
         private TouchPress _throwPress;
         private bool _mirrored;
         private TouchPress _attackPress;
-        private TouchPress _aimPress;
         private TouchPress _usePress;
         private TouchPress _gasPress;
         private TouchPress _brakePress;
@@ -111,7 +112,6 @@ namespace Purge.Presentation.UI.Touch
         private void Awake()
         {
             _attackPress = Watch(_attack);
-            _aimPress = Watch(_aimStick);
             _melee.Press = Watch(_melee.Shape);
             _ranged.Press = Watch(_ranged.Shape);
             _usePress = Watch(_use);
@@ -162,6 +162,18 @@ namespace Purge.Presentation.UI.Touch
         /// <summary>The aim stick of the two-stick scheme (null in old scenes).</summary>
         public TouchStick AimStick => _aimStick != null ? _aimStick.GetComponent<TouchStick>() : null;
 
+        public void SetSizes(float aim, float slots)
+        {
+            if (_aimArea != null) _aimArea.localScale = new Vector3(aim, aim, 1f);
+            if (_slots == null) return;
+
+            _slots.localScale = new Vector3(slots, slots, 1f);
+            var aimRadius = _scheme == TouchScheme.TwoSticks ? _aimStick.OuterRadius * aim : _attack.OuterRadius;
+            // Keep the sectors beyond the stick's touch area when their sizes differ.
+            var separation = Mathf.Max(0f, aimRadius - _ranged.Shape.InnerRadius * slots);
+            _slots.anchoredPosition = new Vector2(-separation, separation);
+        }
+
         public void SetMirrored(bool mirrored)
         {
             _mirrored = mirrored;
@@ -211,7 +223,6 @@ namespace Purge.Presentation.UI.Touch
         {
             if (_style == null) return;
             PaintButton(_attack, true, false, _attackPress);
-            PaintButton(_aimStick, true, false, _aimPress);
             PaintButton(_gas, true, false, _gasPress);
             PaintButton(_brake, true, false, _brakePress);
             PaintSlot(_melee);

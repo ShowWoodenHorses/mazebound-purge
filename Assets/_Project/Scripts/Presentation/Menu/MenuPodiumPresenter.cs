@@ -4,7 +4,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Assets;
 using Purge.Application.Flow;
-using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Common;
 using Purge.Core.Definitions;
@@ -16,129 +15,108 @@ using P = Purge.Presentation.Visual.PlayerAnimatorParameters;
 namespace Purge.Presentation.Menu
 {
     /// <summary>
-    /// The character on the main menu's podium (stage 11a): the player's look with the weapon of slot 1 of the last
-    /// preparation (<see cref="IProgressService.Loadout"/>; none or unknown — the base pistol), its hold set on the
-    /// Animator. Loaded on the first main menu by its own asset owner and kept for the application's lifetime (the
-    /// player's look is shared with the levels anyway); a weapon not shown yet is loaded when the loadout names it. The
-    /// stage is shown only in <see cref="GameFlowState.MainMenu"/>. The preparation (stage 11б) shows the weapon being
-    /// chosen (<see cref="Preview"/>) until the menu is left.
+    /// Owns the podium combat loop shared by the main menu and run preparation. The character and demo
+    /// assets load asynchronously on the first visit and stay available for the app's lifetime.
     /// </summary>
-    public sealed class MenuPodiumPresenter : IDisposable
+    public sealed class MenuPodiumPresenter : IMainMenuPreparation, IDisposable
     {
-        private readonly GameFlow _flow;
         private readonly MenuPodiumView _view;
         private readonly SharedDefinitionsService _definitions;
-        private readonly IProgressService _progress;
         private readonly IAddressablesService _addressables;
         private readonly Dictionary<WeaponDefinition, GameObject> _weapons = new Dictionary<WeaponDefinition, GameObject>();
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private IAssetOwner _assets;
+        private GameFlow _flow;
         private GameObject _character;
         private Animator _animator;
         private CharacterWeaponRig _rig;
-        private WeaponDefinition _shown;
-        private WeaponDefinition _preview;
-        private bool _previewing;
-        private bool _dirty;
-        private bool _loading;
-        private bool _initialized;
+        private MenuPodiumDemo _demo;
+        private bool _demoVisible = true;
 
-        public MenuPodiumPresenter(GameFlow flow, SharedDefinitionsService definitions, IProgressService progress,
+        public MenuPodiumPresenter(SharedDefinitionsService definitions,
             IAddressablesService addressables, MenuPodiumView view = null)
         {
-            _flow = flow;
             _definitions = definitions;
-            _progress = progress;
             _addressables = addressables;
             _view = view;
         }
 
-        /// <summary>The character or a weapon is loading (set as soon as the main menu opens).</summary>
-        public bool IsLoading => _loading;
+        public int LoadedAssetCount => _assets?.HandleCount ?? 0;
 
-        public void Initialize()
+        public void SetDemoVisible(bool visible)
         {
-            if (_initialized || _view == null) return;
-            _initialized = true;
+            _demoVisible = visible;
+            UpdateVisibility();
+        }
+
+        public void Initialize(GameFlow flow)
+        {
+            if (_flow != null || _view == null) return;
+            _flow = flow;
             _flow.StateChanged += OnStateChanged;
             OnStateChanged(_flow.State);
         }
 
         public void Dispose()
         {
-            if (_initialized) _flow.StateChanged -= OnStateChanged;
-            _initialized = false;
+            if (_flow != null) _flow.StateChanged -= OnStateChanged;
+            _flow = null;
             _lifetime.Cancel();
             _lifetime.Dispose();
-            _assets?.Dispose();
-            _assets = null;
-            _weapons.Clear();
+            ReleaseAssets();
         }
 
-        /// <summary>
-        /// Shows <paramref name="weapon"/> (null — the base pistol) instead of the last preparation's while the menu is
-        /// open (the preparation's choice, stage 11б); <see cref="EndPreview"/> goes back to it.
-        /// </summary>
-        public void Preview(WeaponDefinition weapon)
+        private void OnStateChanged(GameFlowState _) => UpdateVisibility();
+
+        private void UpdateVisibility()
         {
-            _preview = weapon;
-            _previewing = true;
-            if (_flow.State == GameFlowState.MainMenu) RefreshAsync(_lifetime.Token).Forget();
+            if (_flow == null) return;
+            var visible = _demoVisible && _flow.State == GameFlowState.MainMenu && _demo?.IsReady == true;
+            _view.SetVisible(visible);
+            _view.SetDemonstrating(visible);
         }
 
-        public void EndPreview()
+        public async UniTask PrepareAsync(CancellationToken cancellation)
         {
-            if (!_previewing) return;
-            _previewing = false;
-            _preview = null;
-            if (_flow.State == GameFlowState.MainMenu) RefreshAsync(_lifetime.Token).Forget();
-        }
-
-        private void OnStateChanged(GameFlowState state)
-        {
-            var menu = state == GameFlowState.MainMenu;
-            if (!menu)
-            {
-                _previewing = false;
-                _preview = null;
-            }
-            if (_view != null) _view.SetVisible(menu);
-            if (menu) RefreshAsync(_lifetime.Token).Forget();
-        }
-
-        private async UniTaskVoid RefreshAsync(CancellationToken cancellation)
-        {
-            if (_loading)
-            {
-                _dirty = true; // the choice changed while loading: shown once that is done
-                return;
-            }
-
-            _loading = true;
+            if (_view == null || _demo != null) return;
+            using var lifetime = CancellationTokenSource.CreateLinkedTokenSource(cancellation, _lifetime.Token);
+            MenuPodiumDemo demo = null;
             try
             {
-                if (_character == null) await LoadCharacterAsync(cancellation);
+                await LoadCharacterAsync(lifetime.Token);
                 if (_character == null) return;
-                do
-                {
-                    _dirty = false;
-                    await ShowWeaponAsync(_previewing ? _preview ?? _definitions.Player?.BaseWeapon : LoadoutWeapon(),
-                        cancellation);
-                } while (_dirty);
+                demo = new MenuPodiumDemo(_view, _animator, _rig, ShowLoadedWeapon);
+                await demo.LoadAsync(_definitions, _assets, GetOrCreateAsync, lifetime.Token);
+                lifetime.Token.ThrowIfCancellationRequested();
+                if (!demo.IsReady) return;
+                _view.SetDemo(demo);
+                _demo = demo;
             }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is not OperationCanceledException)
             {
                 // Decoration only: the menu works without it.
                 GameLog.Warning(LogChannel.Visual, $"Menu podium: {exception.Message}");
             }
             finally
             {
-                _loading = false;
+                if (_demo == null)
+                {
+                    demo?.Destroy();
+                    ReleaseAssets();
+                }
             }
+        }
+
+        private void ReleaseAssets()
+        {
+            _demo?.Destroy();
+            _demo = null;
+            UnityObjects.Destroy(_character);
+            _character = null;
+            _assets?.Dispose();
+            _assets = null;
+            _weapons.Clear();
         }
 
         private async UniTask LoadCharacterAsync(CancellationToken cancellation)
@@ -159,24 +137,13 @@ namespace Purge.Presentation.Menu
             _rig = _character.GetComponentInChildren<CharacterWeaponRig>();
         }
 
-        /// <summary>Slot 1 of the last preparation; empty or no longer in the game — the base pistol.</summary>
-        private WeaponDefinition LoadoutWeapon()
-        {
-            var id = _progress.Loadout?.WeaponId;
-            var weapon = !string.IsNullOrEmpty(id) ? _definitions.Content?.Find<WeaponDefinition>(id) : null;
-            return weapon != null ? weapon : _definitions.Player?.BaseWeapon;
-        }
+        private WeaponModel ShowLoadedWeapon(WeaponDefinition weapon) => ApplyWeapon(weapon, _weapons[weapon]);
 
-        private async UniTask ShowWeaponAsync(WeaponDefinition weapon, CancellationToken cancellation)
+        private WeaponModel ApplyWeapon(WeaponDefinition weapon, GameObject instance)
         {
-            if (weapon == _shown && weapon != null) return;
-            var instance = weapon != null ? await GetOrCreateAsync(weapon, cancellation) : null;
-            cancellation.ThrowIfCancellationRequested();
-
             foreach (var pair in _weapons)
                 if (pair.Value != null)
                     pair.Value.SetActive(pair.Value == instance);
-            _shown = weapon;
 
             SetHold(weapon);
             var model = instance != null ? instance.GetComponent<WeaponModel>() : null;
@@ -184,6 +151,7 @@ namespace Purge.Presentation.Menu
             // The base pistol uses the clip in combat, but its barrel should face forward on the podium.
             var alignWithFacing = gun != null && (weapon == _definitions.Player?.BaseWeapon || model?.AlignWithAim == true);
             _view.SetPose(_rig, gun, gun != null ? model : null, alignWithFacing);
+            return model;
         }
 
         private void SetHold(WeaponDefinition weapon)
@@ -215,6 +183,7 @@ namespace Purge.Presentation.Menu
             var model = instance.GetComponent<WeaponModel>();
             instance.transform.localRotation = model != null ? model.GripRotation : Quaternion.identity;
             if (model != null) instance.transform.localScale *= model.HeldScale;
+            instance.SetActive(false);
             return _weapons[weapon] = instance;
         }
     }

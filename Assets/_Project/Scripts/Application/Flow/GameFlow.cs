@@ -57,6 +57,7 @@ namespace Purge.Application.Flow
         private readonly AdsService _ads;
         private readonly SharedDefinitionsService _shared;
         private readonly SaveService _save;
+        private readonly IMainMenuPreparation _menuPreparation;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         private CancellationTokenSource _transition;
@@ -69,8 +70,10 @@ namespace Purge.Application.Flow
 
         public GameFlow(IReadOnlyList<IApplicationService> services, ILevelCatalog catalog,
             IAddressablesService addressables, ILevelSessionFactory sessionFactory, IProgressService progress,
-            AdsService ads = null, SharedDefinitionsService shared = null, SaveService save = null)
+            AdsService ads = null, SharedDefinitionsService shared = null, SaveService save = null,
+            IMainMenuPreparation menuPreparation = null)
         {
+            _menuPreparation = menuPreparation;
             _shared = shared;
             _save = save;
             _ads = ads;
@@ -164,6 +167,7 @@ namespace Purge.Application.Flow
                 if (levelEnded && _ads != null) await _ads.ShowOnMenuReturnAsync(cancellation);
             }
 
+            if (_menuPreparation != null) await _menuPreparation.PrepareAsync(cancellation);
             cancellation.ThrowIfCancellationRequested();
             SetState(GameFlowState.MainMenu);
         });

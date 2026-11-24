@@ -66,7 +66,7 @@ namespace Purge.Composition
 #endif
             _localization.Initialize();
             _screens.Initialize();
-            _podium.Initialize();
+            _podium.Initialize(_flow);
             _settings.Initialize();
             _audio.Initialize();
             _pause.Initialize();

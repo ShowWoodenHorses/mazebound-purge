@@ -101,6 +101,10 @@ MonoBehaviour:
   - settings.tab.shooting
   - settings.tab.other
   - settings.dead_zone
+  - settings.aim_dead_zone
+  - settings.fire_threshold
+  - settings.aim_stick_size
+  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -657,6 +661,10 @@ MonoBehaviour:
   - "ATI\u015E"
   - "D\u0130\u011EER"
   - "\xC7ubuk \xF6l\xFC b\xF6lgesi"
+  - "Ni\u015Fan \xE7ubu\u011Fu \xF6l\xFC b\xF6lgesi"
+  - "Ate\u015F b\xF6lgesi e\u015Fi\u011Fi"
+  - "Ni\u015Fan \xE7ubu\u011Fu boyutu"
+  - "Silah yuvas\u0131 boyutu"
   - "\xC7ubuk tepkisi"
   - Kontrol boyutu
   - "Kontrol opakl\u0131\u011F\u0131"

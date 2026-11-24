@@ -19,8 +19,8 @@ namespace Purge.Presentation.UI
     /// The waves on the HUD (stage 6b; ТЗ: волна/враги/деньги забега, пауза между волнами с отсчётом и «Пропустить +N»):
     /// the wave of how many, enemies left and money of the run under the time; in the pause between waves the countdown,
     /// the skip button (also Enter / Space / gamepad South — <see cref="IInputService.ConfirmRequested"/>; not in the
-    /// pause's first <see cref="SkipLock"/> s, so the shots at the last monster do not skip it) and the ammo reserve by
-    /// type; a big caption when a wave starts or is cleared. Texts change only when their numbers do. Hidden on a level
+    /// pause's first <see cref="SkipLock"/> s, so the shots at the last monster do not skip it); the ammo reserve by
+    /// type throughout the run; a big caption when a wave starts or is cleared. Texts change only when their numbers do. Hidden on a level
     /// without waves.
     /// </summary>
     public sealed class WaveHudPresenter : ILevelLoadStep, ILevelLateTickable, IDisposable
@@ -69,6 +69,8 @@ namespace Purge.Presentation.UI
             if (_content != null)
                 foreach (var item in _content.Items)
                     if (item is AmmoDefinition ammo) _ammoTypes.Add(ammo);
+
+            Hud?.PrepareAmmo(_ammoTypes.Count);
 
             if (!_bound)
             {
@@ -129,16 +131,12 @@ namespace Purge.Presentation.UI
 
             hud.SetEnemies(_waves.RemainingCount);
             hud.SetMoney(_wallet.Money);
+            if (_ammoDirty) RefreshAmmo();
 
             var waiting = phase == WavePhase.Delay || phase == WavePhase.Pause;
             if (!waiting)
             {
-                if (phase != _phaseShown)
-                {
-                    hud.SetCountdown(false);
-                    ShowAmmo(false);
-                }
-
+                if (phase != _phaseShown) hud.SetCountdown(false);
                 _phaseShown = phase;
                 return;
             }
@@ -153,7 +151,6 @@ namespace Purge.Presentation.UI
                 hud.SetCountdown(true, text, bonus >= 0 ? _texts.Format(TextKeys.HudWaveSkip, bonus) : null);
             }
 
-            if (phase != _phaseShown || _ammoDirty) ShowAmmo(phase == WavePhase.Pause);
             _phaseShown = phase;
         }
 
@@ -191,17 +188,16 @@ namespace Purge.Presentation.UI
             _ammoDirty = true;
         }
 
-        /// <summary>The reserve of every ammo type the player has, in the catalog's order (ТЗ: полный список — в паузе между волнами).</summary>
-        private void ShowAmmo(bool shown)
+        /// <summary>The reserve of every ammo type the player has, in the catalog's order.</summary>
+        private void RefreshAmmo()
         {
             _ammoDirty = false;
             _ammoEntries.Clear();
-            if (shown)
-                foreach (var ammo in _ammoTypes)
-                {
-                    var count = _ammo.Get(ammo);
-                    if (count > 0) _ammoEntries.Add(AmmoName(ammo) + "  " + count);
-                }
+            foreach (var ammo in _ammoTypes)
+            {
+                var count = _ammo.Get(ammo);
+                if (count > 0) _ammoEntries.Add(AmmoName(ammo) + "  " + count);
+            }
 
             Hud?.SetAmmo(_ammoEntries);
         }

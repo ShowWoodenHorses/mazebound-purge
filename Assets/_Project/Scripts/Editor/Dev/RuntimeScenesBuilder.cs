@@ -572,7 +572,8 @@ namespace Purge.Editor.Dev
             var right = PanelArea(area, "Preparation", new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-748f, 170f),
                 new Vector2(-48f, -160f));
             var content = ScrollColumn(right);
-            SectionTitle(content, "WeaponTitle", Loc(TextKeys.SetupWeapon), null);
+            var weaponTitle = SectionTitle(content, "WeaponTitle", Loc(TextKeys.SetupWeapon), null);
+            SetReference(screen, "_weaponName", AddLoadoutName(weaponTitle));
             var weaponList = TileGrid(content, "Weapons");
             var template = Shape(weaponList, "Template", Center, Vector2.zero, new Vector2(100f, 84f), true);
             template.CornerRadius = 2f;
@@ -585,7 +586,8 @@ namespace Purge.Editor.Dev
             var secondList = TileGrid(content, "SecondWeapons");
             SetReference(screen, "_secondTitle", secondTitle.gameObject);
             SetReference(screen, "_secondList", secondList);
-            SectionTitle(content, "ThrowableTitle", Loc(TextKeys.SetupThrowable), null);
+            var throwableTitle = SectionTitle(content, "ThrowableTitle", Loc(TextKeys.SetupThrowable), null);
+            SetReference(screen, "_throwableName", AddLoadoutName(throwableTitle));
             var throwableList = TileGrid(content, "Throwables");
             SectionTitle(content, "BoostersTitle", Loc(TextKeys.SetupBoosters), null);
             var boosterList = Rect(content, "Boosters", Center, Vector2.zero, new Vector2(676f, 10f));
@@ -656,6 +658,36 @@ namespace Purge.Editor.Dev
             AutoSize(title);
             if (position == null) title.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
             return title;
+        }
+
+        private static TMP_Text AddLoadoutName(TMP_Text title)
+        {
+            // The scroll column has a fixed width. Keep the caption and value in separate slots on the same row.
+            title.margin = new Vector4(0f, 0f, 390f, 0f);
+            title.textWrappingMode = TextWrappingModes.NoWrap;
+            var name = Text(title.transform, "Selected" + title.name, string.Empty, 26f, true, Center, Center,
+                Vector2.zero, Vector2.zero, TextAlignmentOptions.BottomLeft);
+            var rect = name.rectTransform;
+            rect.anchorMin = new Vector2(0.4f, 0f);
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = new Vector2(12f, 0f);
+            rect.offsetMax = new Vector2(-12f, 0f);
+            name.textWrappingMode = TextWrappingModes.NoWrap;
+            name.richText = false;
+            return AutoSize(name);
+        }
+
+        private static void AddBalanceCoin(TMP_Text money)
+        {
+            var rect = money.rectTransform;
+            var position = rect.anchoredPosition;
+            Icon(rect.parent, "Coin", UiIcons().Coin, rect.anchorMin, new Vector2(-260f, position.y), 34f);
+            rect.pivot = new Vector2(0f, 0.5f);
+            rect.anchoredPosition = new Vector2(-232f, position.y);
+            rect.sizeDelta = new Vector2(180f, rect.sizeDelta.y);
+            money.alignment = TextAlignmentOptions.MidlineLeft;
+            money.textWrappingMode = TextWrappingModes.NoWrap;
+            AutoSize(money);
         }
 
         /// <summary>A vertical scrolling list filling <paramref name="panel"/> (inside a margin); returns its content.</summary>
@@ -850,7 +882,7 @@ namespace Purge.Editor.Dev
             keyTemplate.gameObject.SetActive(false); // Cloned per carried key.
 
             // Top centre: the message between diamonds.
-            var messageRow = Row(root, "MessageRow", new Vector2(0.5f, 1f), new Vector2(0f, -176f), 14f, new Vector2(0.5f, 1f));
+            var messageRow = Row(root, "MessageRow", new Vector2(0.5f, 1f), new Vector2(0f, -210f), 14f, new Vector2(0.5f, 1f));
             messageRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
             Ornament(messageRow, false);
             var message = Text(messageRow, "Message", "", 32f, false, Center, Center, Vector2.zero, new Vector2(10f, 40f),
@@ -875,7 +907,7 @@ namespace Purge.Editor.Dev
 
             // Under the wave row (stage 7в): the safe dome's seconds left in this wave while the player is inside.
             var refugeText = Text(root, "Refuge", "DOME 0:10", 26f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0f, -140f), new Vector2(420f, 34f), TextAlignmentOptions.Center, _style.Accent, 4f);
+                new Vector2(0f, -169f), new Vector2(420f, 34f), TextAlignmentOptions.Center, _style.Accent, 4f);
             refugeText.textWrappingMode = TextWrappingModes.NoWrap;
             refugeText.gameObject.SetActive(false);
 
@@ -901,8 +933,8 @@ namespace Purge.Editor.Dev
             SetReference(vehicleBarView, "_fill", vehicleFill);
             vehicleBar.gameObject.SetActive(false);
 
-            // The pause between waves: the countdown, «Пропустить +N» (Space), the ammo reserve by type.
-            var countdown = Rect(root, "Countdown", new Vector2(0.5f, 1f), new Vector2(0f, -232f), new Vector2(760f, 200f));
+            // The pause between waves: the countdown and «Пропустить +N» (Space).
+            var countdown = Rect(root, "Countdown", new Vector2(0.5f, 1f), new Vector2(0f, -286f), new Vector2(760f, 160f));
             countdown.pivot = new Vector2(0.5f, 1f);
             var countdownText = Text(countdown, "Text", "WAVE 2 IN 20", 30f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
                 Vector2.zero, new Vector2(760f, 40f), TextAlignmentOptions.Center, spacing: 6f);
@@ -915,7 +947,8 @@ namespace Purge.Editor.Dev
             var skipText = skip.transform.Find("Label").GetComponent<TMP_Text>();
             var skipKey = Text(countdown, "SkipKey", Loc(TextKeys.HudKeySpace), 18f, true, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
                 new Vector2(0f, -120f), new Vector2(400f, 24f), TextAlignmentOptions.Center, _style.MutedText, 6f);
-            var ammoRow = Row(countdown, "AmmoRow", new Vector2(0.5f, 1f), new Vector2(0f, -152f), 28f, new Vector2(0.5f, 1f));
+            // The reserve stays visible in combat and between waves.
+            var ammoRow = Row(root, "AmmoRow", new Vector2(0.5f, 1f), new Vector2(0f, -135f), 18f, new Vector2(0.5f, 1f));
             ammoRow.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
             var ammoTemplate = Text(ammoRow, "AmmoTemplate", "9 mm  120", 24f, false, Center, Center, Vector2.zero,
                 new Vector2(10f, 32f), TextAlignmentOptions.Center, _style.MutedText);
@@ -1410,23 +1443,26 @@ namespace Purge.Editor.Dev
 
             var attack = SectorShape(combat, "AttackButton", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
             AddTouchButton(attack.gameObject, "<Gamepad>/buttonSouth");
-            var aimStick = BuildAimStick(combat, radius, icons.Attack);
+            var aimArea = Rect(combat, "AimArea", BottomRight, Vector2.zero, Vector2.zero);
+            var aimStick = BuildAimStick(aimArea, radius * 1.2f, icons.Attack);
             var arc = SectorShape(combat, "AttackHairline", BottomRight, Vector2.zero, radius - 11.5f, radius - 10f, 90f, 90f);
             arc.StrokeWidth = 0f;
             arc.Fill = Fade(_style.Line, 0.25f);
             var attackIcon = Icon(combat, "AttackIcon", icons.Attack, BottomRight, new Vector2(-74f, 74f), 62f);
 
             var cluster = root.gameObject.AddComponent<TouchAttackCluster>();
-            ClusterSlot(cluster, "_ranged", combat, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
+            var slots = Rect(combat, "WeaponSlots", BottomRight, Vector2.zero, Vector2.zero);
+            ClusterSlot(cluster, "_ranged", slots, "RangedButton", "<Gamepad>/rightShoulder", secondStart, sweep, inner, outer,
                 icons.Ranged);
-            ClusterSlot(cluster, "_melee", combat, "MeleeButton", "<Gamepad>/leftShoulder", firstStart, sweep, inner, outer,
-                icons.Melee);
+            ClusterSlot(cluster, "_melee", slots, "MeleeButton", "<Gamepad>/leftShoulder", firstStart, sweep, inner, outer,
+                icons.Melee, middle: true);
 
             // The throwable: press — aim (a touch on the game throws there), hold and release — throw at the aim.
-            var throwShape = SectorShape(combat, "ThrowButton", BottomRight, Vector2.zero, inner, outer, throwStart, sweep, true);
+            var throwShape = SectorShape(slots, "ThrowButton", BottomRight, Vector2.zero, inner, outer, throwStart, sweep, true);
+            throwShape.CornerRadius = 14f;
             AddTouchButton(throwShape.gameObject, "<Gamepad>/leftTrigger");
-            var throwIcon = Icon(combat, "ThrowIcon", icons.Grenade, BottomRight, Polar(throwStart + sweep * 0.5f, 240f), 58f);
-            var throwCount = Text(combat, "ThrowCount", "", 22f, true, BottomRight, Center,
+            var throwIcon = Icon(slots, "ThrowIcon", icons.Grenade, BottomRight, Polar(throwStart + sweep * 0.5f, 240f), 58f);
+            var throwCount = Text(slots, "ThrowCount", "", 22f, true, BottomRight, Center,
                 Polar(throwStart + sweep * 0.5f, 204f), new Vector2(60f, 26f), TextAlignmentOptions.Center);
 
             var drive = Rect(content, "Drive", Center, Vector2.zero, Vector2.zero);
@@ -1450,7 +1486,9 @@ namespace Purge.Editor.Dev
             SetReference(cluster, "_content", content);
             SetReference(cluster, "_attack", attack);
             SetReference(cluster, "_aimStick", aimStick);
-            SetReferences(cluster, "_attackOnly", new List<Object> { attack.gameObject, attackIcon.gameObject });
+            SetReference(cluster, "_aimArea", aimArea);
+            SetReference(cluster, "_slots", slots);
+            SetReferences(cluster, "_attackOnly", new List<Object> { attack.gameObject, arc.gameObject, attackIcon.gameObject });
             SetReference(cluster, "_use", useShape);
             SetReference(cluster, "_useIcon", useIcon);
             SetReference(cluster, "_throw", throwShape);
@@ -1478,9 +1516,10 @@ namespace Purge.Editor.Dev
         /// </summary>
         private static UiShape BuildAimStick(RectTransform content, float radius, Sprite crosshair)
         {
-            const float ring = 130f, knob = 64f, travel = 70f, rest = 78f;
+            const float ring = 156f, knob = 76.8f, travel = 84f, rest = 93.6f;
             var zone = SectorShape(content, "AimStick", BottomRight, Vector2.zero, 0f, radius, 90f, 90f, true);
-            zone.gameObject.AddComponent<TouchPress>();
+            zone.Fill = Color.clear;
+            zone.StrokeWidth = 0f;
 
             var ringShape = Shape(zone.transform, "Ring", Vector2.zero, Vector2.zero, new Vector2(ring, ring));
             ringShape.Kind = UiShapeKind.Capsule;
@@ -1494,7 +1533,7 @@ namespace Purge.Editor.Dev
             var knobShape = Shape(ringShape.transform, "Knob", Center, Vector2.zero, new Vector2(knob, knob));
             knobShape.Kind = UiShapeKind.Capsule;
             knobShape.Fill = _style.PressedFill;
-            Icon(knobShape.transform, "Icon", crosshair, Center, Vector2.zero, 38f);
+            Icon(knobShape.transform, "Icon", crosshair, Center, Vector2.zero, 45.6f);
 
             var stick = zone.gameObject.AddComponent<TouchStick>();
             SetReference(stick, "_ring", ringShape.rectTransform);
@@ -1513,11 +1552,16 @@ namespace Purge.Editor.Dev
 
         /// <summary>A weapon slot sector of the cluster: button, icon, reload arc, 12 magazine ticks, reserve number.</summary>
         private static void ClusterSlot(TouchAttackCluster cluster, string field, RectTransform content, string name,
-            string control, float start, float sweep, float inner, float outer, Sprite fallback)
+            string control, float start, float sweep, float inner, float outer, Sprite fallback, bool middle = false)
         {
             var shape = SectorShape(content, name, BottomRight, Vector2.zero, inner, outer, start, sweep, true);
+            shape.CornerRadius = 14f;
             AddTouchButton(shape.gameObject, control);
-            var icon = Icon(content, name + "Icon", fallback, BottomRight, Polar(start + sweep * 0.5f, 242f), 62f);
+            var midpoint = start + sweep * 0.5f;
+            var iconPosition = middle
+                ? new Vector2(shape.rectTransform.anchoredPosition.x, Polar(midpoint, 232f).y + 14f)
+                : Polar(midpoint, 242f);
+            var icon = Icon(content, name + "Icon", fallback, BottomRight, iconPosition, middle ? 50f : 62f);
 
             var reload = SectorShape(content, name + "Reload", BottomRight, Vector2.zero, 180f, 184.5f, start, sweep);
             reload.StrokeWidth = 0f;
@@ -1533,8 +1577,12 @@ namespace Purge.Editor.Dev
                 ticks.Add(tick);
             }
 
-            var reserve = Text(content, name + "Reserve", "", 20f, true, BottomRight, Center, Polar(start + sweep * 0.5f, 204f),
-                new Vector2(60f, 24f), TextAlignmentOptions.Center);
+            var reservePosition = middle
+                ? new Vector2(shape.rectTransform.anchoredPosition.x - 19f, iconPosition.y - 39f)
+                : Vector2.Lerp(Polar(midpoint, 204f), iconPosition, 0.3f);
+            var reserve = Text(content, name + "Reserve", "", 20f, true, BottomRight,
+                middle ? new Vector2(0f, 0.5f) : Center, reservePosition, new Vector2(65f, 24f),
+                middle ? TextAlignmentOptions.MidlineLeft : TextAlignmentOptions.Center);
             reserve.textWrappingMode = TextWrappingModes.NoWrap;
 
             SetReference(cluster, field + ".Shape", shape);
@@ -2179,18 +2227,18 @@ namespace Purge.Editor.Dev
             var close = RoundButton(buttons.transform, "CloseButton", icons.Close, new Vector2(1f, 1f), new Vector2(-100f, -90f),
                 84f, 34f);
 
-            // Switches and the map inside the safe area: a front camera or a notch on the left must not cover a switch.
+            // Keep the map and floor tabs inside the safe area.
             var safe = new GameObject("SafeArea", typeof(RectTransform));
             safe.transform.SetParent(screen.transform, false);
             Stretch(safe.GetComponent<RectTransform>());
             safe.AddComponent<SafeAreaFitter>();
 
-            // Area right of the switches; the image keeps the level's aspect ratio inside it.
+            // The map image keeps the level's aspect ratio inside the available area.
             var area = new GameObject("MapArea", typeof(RectTransform));
             area.transform.SetParent(safe.transform, false);
             var areaRect = area.GetComponent<RectTransform>();
             Stretch(areaRect);
-            areaRect.offsetMin = new Vector2(450f, 40f);
+            areaRect.offsetMin = new Vector2(40f, 40f);
             areaRect.offsetMax = new Vector2(-40f, -160f);
 
             var imageObject = new GameObject("MapImage", typeof(RectTransform));
@@ -2200,19 +2248,6 @@ namespace Purge.Editor.Dev
             var fitter = imageObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             fitter.aspectRatio = 1f;
-
-            // Icon switches (one per MapLayer, in its order) stacked at the left of the safe area.
-            // Children of SafeArea named "<name>Toggle" (tests).
-            (string name, string caption)[] layers =
-            {
-                ("ShowPlayer", TextKeys.MapPlayer), ("ShowZombies", TextKeys.MapZombies),
-                ("ShowWeapons", TextKeys.MapWeapons), ("ShowMedkits", TextKeys.MapMedkits), ("ShowKeys", TextKeys.MapKeys),
-                ("ShowObjects", TextKeys.MapObjects),
-            };
-            var toggles = new List<Object>();
-            for (var i = 0; i < layers.Length; i++)
-                toggles.Add(LabeledSwitch(safe.transform, layers[i].name, Loc(layers[i].caption), TopLeft,
-                    new Vector2(80f, -250f - 64f * i)));
 
             var mapIcons = AssetDatabase.LoadAssetAtPath<MapIconSet>(MapIconsBuilder.SetPath);
             if (mapIcons == null) mapIcons = MapIconsBuilder.Build();
@@ -2231,7 +2266,6 @@ namespace Purge.Editor.Dev
 
             SetReferences(screen, "_floorTabs", floors);
             SetReference(screen, "_icons", mapIcons);
-            SetReferences(screen, "_layers", toggles);
             SetReference(screen, "_image", image);
             SetReference(screen, "_fitter", fitter);
             SetReference(screen, "_closeButton", close);
@@ -2389,6 +2423,10 @@ namespace Purge.Editor.Dev
                 aimButtons.Add(segment);
             }
 
+            var (aimDeadZone, aimDeadZoneLabel) = SliderSetting(shootingPage, "AimDeadZone", Loc(TextKeys.SettingsAimDeadZone));
+            var (fireThreshold, fireThresholdLabel) = SliderSetting(shootingPage, "FireThreshold", Loc(TextKeys.SettingsFireThreshold));
+            var (aimSize, aimSizeLabel) = SliderSetting(shootingPage, "AimSize", Loc(TextKeys.SettingsAimSize));
+            var (slotsSize, slotsSizeLabel) = SliderSetting(shootingPage, "SlotsSize", Loc(TextKeys.SettingsSlotsSize));
             var aimAssist = SwitchSetting(shootingPage, "AimAssist", Loc(TextKeys.SettingsAimAssist));
 
             var gamePage = Page(pages.transform, "GamePage");
@@ -2450,6 +2488,14 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_languagePicker", BuildLanguagePicker(screen.transform)); // last: over the page
             SetReference(screen, "_deadZone", deadZone);
             SetReference(screen, "_deadZoneLabel", deadZoneLabel);
+            SetReference(screen, "_aimDeadZone", aimDeadZone);
+            SetReference(screen, "_aimDeadZoneLabel", aimDeadZoneLabel);
+            SetReference(screen, "_fireThreshold", fireThreshold);
+            SetReference(screen, "_fireThresholdLabel", fireThresholdLabel);
+            SetReference(screen, "_aimSize", aimSize);
+            SetReference(screen, "_aimSizeLabel", aimSizeLabel);
+            SetReference(screen, "_slotsSize", slotsSize);
+            SetReference(screen, "_slotsSizeLabel", slotsSizeLabel);
             SetReference(screen, "_sensitivity", sensitivity);
             SetReference(screen, "_sensitivityLabel", sensitivityLabel);
             SetReference(screen, "_size", size);
@@ -2904,7 +2950,7 @@ namespace Purge.Editor.Dev
             return toggle;
         }
 
-        /// <summary>A switch with a caption on its right, placed absolutely (map screen).</summary>
+        /// <summary>A switch with a caption on its right, placed absolutely.</summary>
         private static Toggle LabeledSwitch(Transform parent, string name, string caption, Vector2 anchor, Vector2 position)
         {
             var hit = Shape(parent, name + "Toggle", anchor, position, new Vector2(350f, 60f), true);

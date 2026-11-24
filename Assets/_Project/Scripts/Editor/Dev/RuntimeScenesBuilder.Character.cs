@@ -19,8 +19,10 @@ namespace Purge.Editor.Dev
             SetReference(screen, "_back", back);
             Text(area, "Title", Loc(TextKeys.MenuCharacter), 38, true, TopLeft, Center,
                 new Vector2(460, -78), new Vector2(600, 68), TextAlignmentOptions.Left);
-            SetReference(screen, "_money", Text(area, "Money", "", 38, true, new Vector2(1, 1), Center,
-                new Vector2(-175, -78), new Vector2(220, 68), TextAlignmentOptions.Center));
+            var money = Text(area, "Money", "", 38, true, new Vector2(1, 1), Center,
+                new Vector2(-175, -78), new Vector2(220, 68), TextAlignmentOptions.Center);
+            AddBalanceCoin(money);
+            SetReference(screen, "_money", money);
 
             BuildCharacterTree(area, screen);
 

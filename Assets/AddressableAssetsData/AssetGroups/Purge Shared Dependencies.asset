@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Purge Shared Dependencies
   m_GUID: f25b94d44c1933643bbcfe494300844d
   m_SerializeEntries:
+  - m_GUID: 0009b689531c453429cdb115d56bc43a
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/BigCharacters.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0019f5b7a4ddc814db771d7eb84cec60
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Textures/FantasyRivals_01_D.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 006c305d22cc14a4d91a00aa5fe2e027
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_Attach_Tank_03.fbx
     m_ReadOnly: 0
@@ -140,8 +150,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cc7f64e22e647b489a186b91c24a8c2
+    m_Address: Assets/_Project/Data/Recipes/DevBuilding.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d0d3b03dbdaec24c84be8063c92867c
     m_Address: Assets/_Project/Art/Animations/Brute_Attack_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dcad412e4df7364880958fbda1ede6b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/Characters.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dcdc81bf0263b94a92c13fc65fae90b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonWar/Models/SM_Wep_American_HeavyMachineGun_Tripod_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -155,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f096c17075f8554c8ead47630199a83
+    m_Address: Assets/_Project/Art/Horde/Ghoul_Snow/Ghoul_Snow_Mesh.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0fa527d1823ae8f4389e65739c224df5
     m_Address: Assets/_Project/Art/Animations/Officer_Attack_1.fbx
     m_ReadOnly: 0
@@ -162,6 +192,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0feb03e19a8394642b15e5bbab60f88c
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Hit_Left.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1066d4d09ff91fb4a8034c98ce08305c
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Models/SM_Tree_Pine_02.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -177,6 +212,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10d7aabf3ead4c4459e89fddb0730285
     m_Address: Assets/_Project/Art/Animations/Brute_Hit_Left.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10d9800efe526394f9389ab31d05c69b
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Death_Right.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -235,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16f8717bec8484c49a006c4411bf881a
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Idle.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 177e7f514292f9247aaff29e2bd7934f
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Textures/PolygonBattleRoyale_Texture_01_A.png
     m_ReadOnly: 0
@@ -262,6 +307,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 19edee8a04eb91045a9ccacef0ae3c99
     m_Address: Assets/_Project/Data/Weapons/Lynx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a37ae4304d29b84da372ec6b2750930
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonWar/Models/SM_Wep_American_HeavyMachineGun_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a6c3b68e34edbe48b8026b87933a115
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Alts/Characters/Alpha/Chr_Alpha_01_Normals.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b8d2495d84bec8478534259993ce947
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Death_Left.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -300,6 +360,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d56f58500a0bca4bafb2fb78e4085a8
+    m_Address: Assets/_Project/Art/Monster/Snow/Officer/Distant_Snow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1dbaf50770171fe42abe3dbb36e413cc
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Birch_Trunk.mat
     m_ReadOnly: 0
@@ -307,6 +372,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e149c22fe2cf6d44be01901d1733720
     m_Address: Assets/_Project/Art/Animations/Monster_Death_Right.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e4aa7fa677c4fa483e2f017285df6ab
+    m_Address: Assets/_Project/Data/Effects/Status_Electrified.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -335,6 +405,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2073fda6000a00e4b8ae352566ad98e1
+    m_Address: Assets/_Project/Data/Throwables/Decoy.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20cd28812b8941142ac8ebf089f14819
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/SM_Chr_Witch_Nose_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 20dd5a241858cd643b2b0deab0f98ac4
     m_Address: Assets/_Project/Data/Weapons/SCAR-L.asset
     m_ReadOnly: 0
@@ -347,6 +427,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 219de587148d8bb41a8e255859dafe53
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Prefabs/FX/Models/FX_Sphere.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2201873fd1cce694bb2347a8c13e652d
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/Castle/PolygonFantasyKingdon_Texture_Wall_Brick_Normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2201a4e3e9616e44db62f651426261cd
+    m_Address: Assets/_Project/Data/Monsters/Views/Ram_Castle.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -375,6 +465,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24f1ea296c9e695449086de7c2eca5e4
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Textures/Castle/PolygonFantasyKingdon_Texture_Wall_Brick_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 251536673fd465e4cb620be0108caef4
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/Distant/SM_Prop_Quiver_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25438a4be6ea1ca4d9f6a2d426a3de67
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Leaves_Base.mat
     m_ReadOnly: 0
@@ -385,8 +485,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 255f1aecb93db0748a58b99518921e51
+    m_Address: Assets/_Project/Data/Monsters/Views/Golem_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2567d5dc72b00744f9a60e77a5154a30
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_RPG_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25752ca29f3f8064f8548e834bbb2c74
+    m_Address: Assets/_Project/Art/Animations/Monster_Attack_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25e01712a1f68ef48a57dea7551cd8a4
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Materials/Alts/FantasyRivals_01_D.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 265fe159a928f6248b3d42ec4c595ffe
+    m_Address: Assets/_Project/Art/Horde/Skeleton_Castle/Skeleton_Castle.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2691306117356064ca3f058315c16684
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Alts/Characters/Alpha/Chr_Alpha_01.tga
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -412,6 +537,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28090f5c9f83d0a41bd0fd189da3107a
     m_Address: Assets/_Project/Art/Effects/fx_soft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 283bb8c83e58bbb469090dd3422ecdfb
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/SM_Chr_Attach_Brute_Bandana_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28ca920b908a1544ca2dd52337926c7f
+    m_Address: Assets/_Project/Art/Monster/Controllers/Distant_Castle.overrideController
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28f6f9adee1d7b94c91d68fbe6c65dff
+    m_Address: Assets/_Project/Data/Monsters/Visuals/Skeleton_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 296e66b85abbec645ac43742bb9d50d9
+    m_Address: Assets/_Project/Data/Throwables/Flashbang.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -465,6 +610,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e3983df7fd404a4784f19354a3fe0f8
+    m_Address: Assets/_Project/Art/Biomes/Purge/Snow/Materials/Winter_PolygonAncientEgypt_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e85d085836cfbc418b37c26a35b3385
     m_Address: Assets/_Project/Art/Animations/Zombie_scream.fbx
     m_ReadOnly: 0
@@ -505,6 +655,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d052eb020ac1344ae00bb10d1b5cbd
+    m_Address: Assets/_Project/Art/Animations/Monster_Hit_RightArm.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3143762e16a7e23408d38ae891030756
     m_Address: Assets/_Project/Data/Themes/CastleBlockFloorSet.asset
     m_ReadOnly: 0
@@ -530,6 +685,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3384bf8edf3e2fc408d6c9b64873aff9
+    m_Address: Assets/_Project/Art/Animations/Monster_Stunned.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3493d85149291cd41ac4d077cc3ec857
     m_Address: Assets/_Project/Data/Weapons/M416.asset
     m_ReadOnly: 0
@@ -537,6 +697,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 349feee45c5ec1643a21de9fa4f97926
     m_Address: Assets/_Project/Art/Animations/Officer_Hit_LeftArm.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 357330b921e342844863635edbe4b6f2
+    m_Address: Assets/_Project/Data/Monsters/Views/Shaman_Snow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -557,6 +722,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3779bacce5110da4aa0829fc8245ff67
     m_Address: Assets/_Project/Art/ThirdParty/PolygonWar/Models/SM_Wep_Mortar_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37929db543209034aaad7157c8c12843
+    m_Address: Assets/_Project/Art/Animations/Monster_Attack_2.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -585,6 +755,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a23457ea1daefd498d9554229c96a02
+    m_Address: Assets/_Project/Data/Monsters/Visuals/Ghoul_Snow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3aa6427bfbd046345937eb788bd5dc0c
+    m_Address: Assets/_Project/Art/Monster/Castle/Special/Capture_Castle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b9202af9d1ea3040a737c121af943f6
+    m_Address: Assets/_Project/Data/Monsters/Views/Demon_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bf1797a1e906ed419074e5bd4b7ff3b
     m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Models/SM_Rock_Boulder_01.fbx
     m_ReadOnly: 0
@@ -600,8 +785,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d023cbbee9b0b249aab655422bf67a5
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Shoot.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e059326bb875b240a56b90440e80af5
     m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Textures/Alts/PolygonDarkFantasy_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fd4f6731061f44469fc3ef2777845e2
+    m_Address: Assets/_Project/Art/Weapons/Purge/Throw/DecoyTarget.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fdbc2394908c004ea7e868cd0d1e37f
+    m_Address: Assets/_Project/Data/Throwables/MachineGun_Tower.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -612,6 +812,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4079e2051e4345248b3eb3283c25022d
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Models/SM_Wep_Pistol_Revolver_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40ca5f1d29e672a4c92689e4bae2e1a7
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Models/SM_Wep_Hammer_05.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -660,6 +865,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45000f779571d994f8a3d2a27b27945b
+    m_Address: Assets/_Project/Art/Monster/Common/Boss/Golem_Common.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4603c076b0dc82e439b037eb58eea531
     m_Address: Assets/_Project/Art/Animations/Officer_Scream.fbx
     m_ReadOnly: 0
@@ -680,8 +890,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 473a076e698a02a42af19dd80085b257
+    m_Address: Assets/_Project/Art/Horde/Zombie_2_Common/Zombie_2_Common_Castle_1.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 47e074f3cf2dcae47a6996b7f3a181ad
     m_Address: Assets/_Project/Data/Obstacles/Bush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 482c10d88048ac5408313e65a78284c9
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Textures/FantasyRivals_02_B.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -690,8 +910,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 485d007dfad75214baaec5f368686da7
+    m_Address: Assets/_Project/Art/Horde/Zombie_Common/Zombie_Common_Castle_1.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48843a2db7a47754f9c8d6ae390ebf4b
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Materials/PolygonMilitary_Mat_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a0ce1ba9e3519e45b3050a6487ba130
+    m_Address: Assets/_Project/Art/Monster/Snow/Boss/Elemental_Snow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -715,8 +945,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b5a960cc24c50546abbcf893302ae25
+    m_Address: Assets/_Project/Art/Monster/Castle/Officer/Ram_Castle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b799636d147b9f40956e104bb770819
     m_Address: Assets/_Project/Art/Biomes/Forest/Materials/floor_forest_soil.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c413af6de9af6c44a601950b5d29439
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/TwoHand/SM_Wep_Hammer_05.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -755,6 +995,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e8ffa81618ff1d46aa6deea7e425321
+    m_Address: Assets/_Project/Data/Throwables/Mine.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f3c02300ccda7548973a54ccdd245c4
     m_Address: Assets/_Project/Art/Biomes/Forest/Materials/Fog_Forest.mat
     m_ReadOnly: 0
@@ -767,6 +1012,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5000a6e6b70e32349b2f699421c01ad6
     m_Address: Assets/_Project/Art/Monster/Forest/Officer/Distant_Forest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50046b60b9f94ae4abaed0b4e6e1bef5
+    m_Address: Assets/_Project/Art/Monster/Castle/Boss/Gargoyle_Castle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -820,8 +1070,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53c36b732fdaf064f97a0a70431da61a
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/Distant/SM_Prop_Arrow_02_Optimized.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 53edea5b7886e02478f6d18c6ddb84ad
     m_Address: Assets/_Project/Data/Monsters/Visuals/Zombie_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5429444a236be9744b6721a92672ff10
+    m_Address: Assets/_Project/Data/Monsters/Views/Ram_Snow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -835,8 +1095,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5514696c048ea514c8e0bbd59d370247
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Models/SM_Tree_Pine_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 553364b506dd70247bf6f2d679442f35
+    m_Address: Assets/_Project/Data/Recipes/SnowRecipe.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 55599f2eb6845e14084afedcc2a9a368
     m_Address: Assets/_Project/Data/Weapons/Glock_base.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5572a64bd7a852043ad459aa87aa5d10
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/Characters.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -852,6 +1127,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 57fb4f9b141b4a0418f288a6e500075c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Textures/Weapons/PolygonMilitary_Weapons_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 581a8d72b73932c49a8aebac885e83b8
+    m_Address: Assets/_Project/Art/Monster/Castle/Special/Shaman_Castle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -920,6 +1200,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e629ff271d2ee447a32e094e96f1f9b
+    m_Address: Assets/_Project/Data/Monsters/Views/Elemental_Snow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f1b86882b34a5d40bbe21e5f780a099
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Branches_02_Trunk.mat
     m_ReadOnly: 0
@@ -927,6 +1212,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f3ef280ed507844392a768645a0ad5c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonCyberCity/Models/SM_Wep_Laser_Gun_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f45e89bc3031a94c961b7d6b26a04e4
+    m_Address: Assets/_Project/Data/Recipes/CastleRecipe.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -990,6 +1280,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6689667500a7af743b01875b8b21e9c1
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/OneHand/SM_Wep_Troll_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 66b45a2322eb92a4b8e3331b4b9789fd
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_SMG_Handle_01.fbx
     m_ReadOnly: 0
@@ -1007,6 +1302,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 68021691667e41745913058504a1d954
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Materials/Polygon_ZombieBoss_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6876c3ae0f852554aba9a7f4c310458e
+    m_Address: Assets/_Project/Data/Monsters/Views/Shaman_Castle.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1055,6 +1355,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c95754e58fe285408e86c2c2087872a
+    m_Address: Assets/_Project/Art/Monster/Hook/Hook_Chain_Snow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cd3ea3692ebec2418d4694f937861a7
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Textures/Alts/PolygonDarkFantasy_Texture_03_B.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d5d9cd4ecf6ec64c96c381d1f2a2fe0
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Death_Front.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc84dfea6a9d4342b46b2d0e120c676
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/SM_Chr_Demon_Tail_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6dcbd837340a66e4d8e6a64c605179e4
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Materials/Alts/PolygonApocalypseWasteland_01_A.mat
     m_ReadOnly: 0
@@ -1065,6 +1385,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ef71fb53ed68fd4180e64d11bb0de5b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Materials/Alts/PolygonHorrorMansion_Mat_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6f15bcccc9280cc41b9f531d25f913b3
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_Flamer_Barrel_01.fbx
     m_ReadOnly: 0
@@ -1072,6 +1397,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6f33311a646c0304d91bbf952f195201
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/Materials/PolygonParticleFX_Rock_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f5c72926e113fb45a595bcd71ab4454
+    m_Address: Assets/_Project/Art/Horde/Ghoul_Snow/Ghoul_Snow_Bones.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1100,6 +1430,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71eeebbd0112d0045a10f4ff7a166482
+    m_Address: Assets/_Project/Art/Effects/PolygonArsenal/Materials/PolySpriteRingGlowSoft_ADD.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 72b7690f1bc6b194981389b952c5b3c3
     m_Address: Assets/_Project/Data/Obstacles/Tree.asset
     m_ReadOnly: 0
@@ -1112,6 +1447,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 73b8f933e365f3447899798a2b87a869
     m_Address: Assets/_Project/Art/Animations/Officer_Throw.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73db67554c8d7cf44b43389e7004fa9d
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Death_Back.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74a60d0bb27f9244ca497d4afcab2ba5
+    m_Address: Assets/_Project/Data/Effects/Zone_IcePillars.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1165,8 +1510,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77030e5b77c9b574abfacf0d69d5f40f
+    m_Address: Assets/_Project/Art/Monster/Common/Officer/Shouter_CastlePalette.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 780c052f0fede104286d71d2bede8154
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Materials/Polygon_ZombieBoss_01_C.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7933c903cd8e81a4592f32062ab6883f
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/ZombieBoss_Blobbers.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1177,6 +1532,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7997e08a500f8fd48b18daf09d0ee624
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Hit_Front.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7adbbe05952526149a28094093b758a6
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Textures/Emissive/PolygonDarkFantasy_Emissive_03_B.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b0df970328955f4cb118b7294180b48
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Materials/Alts/PolygonDarkFantasy_Mat_03_B.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b245ff0ec4ba9941b78c0d9ddc36b06
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/SM_Chr_Witch_Hair_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1210,6 +1580,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ef12e9d6bbdfac4c95840d9ba60384d
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Models/SM_Prop_Bow_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 803f894d12957ee488fa9c7bec08586d
     m_Address: Assets/_Project/Art/Animations/Monster_Walk_1.fbx
     m_ReadOnly: 0
@@ -1220,8 +1595,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 806718a497e10884fba37755d4e60869
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Run.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80ee0593ae5039843801241881342ca4
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Sword_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 819d98c942e016a41bc4e8aec3c26450
+    m_Address: Assets/_Project/Data/Monsters/Snow/Elemental_Snow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1280,6 +1665,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 851e198ed62ac4f4c869b1906792c773
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/SM_Chr_Attach_Brute_Hair_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 86c49ab8f27d0194989bd16b2389ff73
     m_Address: Assets/_Project/Art/ThirdParty/PolygonBattleRoyale/Textures/PolygonBattleRoyale_Vehicles_01_Emmision.png
     m_ReadOnly: 0
@@ -1290,8 +1680,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86cb8764a08545e448b4a21250614374
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Models/SM_Wep_Troll_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 86d08ce4919207443b702b55cd54856d
     m_Address: Assets/_Project/Data/Throwables/Molotov.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86e87948d7a921a4b8a6ff3d0bd3185d
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Models/SM_Prop_Quiver_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 871b6ff6d1a643eeafbc7827c7a534c9
+    m_Address: Assets/_Project/Data/Effects/Status_Blind.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1307,6 +1712,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87ce18140ebba7349b83b89499e73423
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_Attach_Ironsight_04.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8886b4d0de03bab49a353a97aaa128fd
+    m_Address: Assets/_Project/Data/Effects/Zone_ElementalIce.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1350,6 +1760,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8da41a1025726944fbdef91979675e6e
+    m_Address: Assets/_Project/Art/Horde/Ghoul_Snow/Ghoul_Snow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8dd7065325e94ee4d8974ae92c74e8d3
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Death_Left.fbx
     m_ReadOnly: 0
@@ -1375,6 +1790,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ec8ddc87a6707b42acc9ddd8745a2a0
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/Capes.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8f11ab0970d6e0a42b8f2cd282cd68c6
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Leaves_Pine.mat
     m_ReadOnly: 0
@@ -1397,6 +1817,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 90e46759a33c26f48a8a7efd3c386617
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/PolygonNature_Tree_Trunk.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 915c7b69d99bcf048b0191c22c117f09
+    m_Address: Assets/_Project/Art/Animations/Monster_Hit_LeftArm.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1445,8 +1870,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97cfe3f06e3f95442913654aa572db38
+    m_Address: Assets/_Project/Art/Monster/Elemental.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97ef3c7cdf0c73648bad7e94f60e15ec
     m_Address: Assets/_Project/Art/Shaders/PurgeBlobShadow.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 982efac7a095bc041998a404d1b2aafd
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Characters/SM_Chr_Attach_Faceplate_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1455,8 +1890,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 983b79d3555ff6d41b2a0165875039fb
+    m_Address: Assets/_Project/Art/Monster/Gargoyle.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9841c20c900ed354dbc135cc4571d48e
     m_Address: Assets/_Project/Art/Biomes/Snow/Textures/floor_snow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98811a385d18ec045b274fa22cb43b37
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Textures/PolygonZombieBoss_Emissive.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1495,6 +1940,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d3506d98fb9a8645bf1899b9c779a9c
+    m_Address: Assets/_Project/Art/Monster/Hook/Hook_Chain_Castle.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d625a7702163dd48bc6338afc414a94
+    m_Address: Assets/_Project/Art/Biomes/Purge/Snow/Materials/Winter_PolygonNature_Tree_Trunk.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d67cc5e792301748bc8430849c72f13
+    m_Address: Assets/_Project/Art/Monster/Snow/Officer/Ram_Snow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9dafb61b2802e594c875d2c37791f6c4
     m_Address: Assets/_Project/Data/Weapons/Machete.asset
     m_ReadOnly: 0
@@ -1530,8 +1990,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a144ae36a9df4b64dbcebaa0934e4fb1
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/SM_Chr_Witch_Antlers_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a383ca08f0449be4a88e95211bf92d5c
     m_Address: Assets/_Project/Data/Monsters/Forest/Zombie_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3e83a0f262cafc488f67b82d33db0ea
+    m_Address: Assets/_Project/Art/Monster/Colossus.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1560,6 +2030,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6b5bec0350fafa47a09bf7a8570f4ac
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Materials/Alts/Characters/Alpha/PolygonApocalypseWasteland_Character_Chains_02.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a6f33f64366992e4989a77d9b65d2b8b
     m_Address: Assets/_Project/Art/Placeholders/Materials/M_D92626.mat
     m_ReadOnly: 0
@@ -1575,6 +2050,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a76557991b4f3b546a18130c25ffb2fa
+    m_Address: Assets/_Project/Data/Monsters/Views/Capture_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a77d1ab09c6f9a040b53b1939745e6c5
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Textures/PolygonMilitary_Texture_01_A.png
     m_ReadOnly: 0
@@ -1585,8 +2065,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7e926abf92510342b9cf423b531313b
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Models/SM_Chr_Witch_Hat_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a802f8f4751190d40a62739de495277f
     m_Address: Assets/_Project/Art/Biomes/Purge/Forest/Materials/Grass_Short_Mat_01_Leaves.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a80d5962015a1f54b81236c64537c0fc
+    m_Address: Assets/_Project/Art/Monster/Common/Boss/Demon_Common.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1610,6 +2100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aaec3cda7d52c0741abbbc5badc697df
+    m_Address: Assets/_Project/Art/Monster/Hook/hook_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ab22268a5332e2f41a33d06d22435735
     m_Address: Assets/_Project/Art/Animations/Elite_Hook_Death_Left.fbx
     m_ReadOnly: 0
@@ -1630,8 +2125,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc4ff48787c38a4cb25815b24280503
+    m_Address: Assets/_Project/Art/ThirdParty/FX/Polygon Arsenal/Textures/polySpriteRingGlowSoft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acd75803b4be04249818df536c89ce1c
     m_Address: Assets/_Project/Data/Weapons/Minigun.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad2462185548fec429a89a13ef0b2fca
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Textures/Alts/PolygonHorror_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adda3a291aa81654b99e5d42562a4ee1
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Models/SM_Env_Rock_Pile_05.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1665,8 +2175,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b10cff53d54fd164399e4bf6ff83d40b
+    m_Address: Assets/_Project/Art/Horde/Skeleton_Castle/Skeleton_Castle_Mesh.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b129ceb687b65cf41802c9c54ce422c2
     m_Address: Assets/_Project/Art/Animations/Boss_Attack_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b13d1bfdcfc6274409e1f884f988ce62
+    m_Address: Assets/_Project/Art/Weapons/Purge/For_monsters/Distant/SM_Prop_Bow_02.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1705,6 +2225,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b57d20a5f5641c742beb3dc308e0a549
+    m_Address: Assets/_Project/Data/Monsters/Views/Gargoyle_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b599fa91149950042a435a10ac20bca1
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/Materials/PolySolidIntense.mat
     m_ReadOnly: 0
@@ -1720,6 +2245,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6f9e17e51d3cff4a90940a2e90abd40
+    m_Address: Assets/_Project/Data/Monsters/Views/Medusa_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b72e16591230315448c77c827b522ae1
     m_Address: Assets/_Project/Art/ThirdParty/PolygonNature/Materials/PolygonNature_01.mat
     m_ReadOnly: 0
@@ -1727,6 +2257,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b733ec61742d91345b3f4027205340fa
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Props/SM_Prop_Trailer_Cage_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7372ebcdb40fbd4882a212c5d01ed21
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Textures/PolygonZombieBoss_Texture_01_B.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b74f2fa5ab1139a4e85fc12c7c696535
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Models/SM_Medusa_Snakes_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1755,8 +2295,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8bdaed21c9e9d746a2a9c5d3471290d
+    m_Address: Assets/_Project/Data/Monsters/Castle/Gargoyle_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9b97e61f6dccbe48a29aab99033983d
     m_Address: Assets/_Project/Art/Effects/PolygonArsenal/Materials/PolySpriteGlow_ADD.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9d804b8e831eb64e9312e1f2852228c
+    m_Address: Assets/_Project/Art/Animations/Monster_Hit_Head.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba598f8b718657f4c840aa35858f65e5
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Materials/Alts/FantasyRivals_02_B.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1812,6 +2367,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bec9ae0f1740b8f4cbf40cc4a25ce751
     m_Address: Assets/_Project/Data/Monsters/Champions/Affix_Armored.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfa11042be5d8774c9013c6f0dd2a1ba
+    m_Address: Assets/_Project/Art/Monster/Demon.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1900,6 +2460,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c87eabe799579cd40aa5b3f2eb771b46
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Models/SM_Chr_Attach_Brute_Extra_01.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9841321a6618c24586ba35a21ccb9c9
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Models/Weapons/SM_Wep_Attach_Tank_02.fbx
     m_ReadOnly: 0
@@ -1907,6 +2472,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c99c15fde0c393d4cae2e65f40ff8c0a
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Materials/WeaponTextures/PolygonMilitary_Weapon_Mat_Glass_01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9ceea1d6789bd64ea0970c837e138a5
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonHorrorMansion/Textures/Misc/Emissive_01.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1930,6 +2500,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caabb1413d06c334daebccc2da7d05a5
+    m_Address: Assets/_Project/Art/Monster/Snow/Special/Shaman_Snow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: caaea0a7325e0334fad01c82f2f1b82e
     m_Address: Assets/_Project/Data/Monsters/Views/Mutant_Forest.asset
     m_ReadOnly: 0
@@ -1937,6 +2512,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: caf01dd5152f3934d8079e6160aa3b1e
     m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Materials/Alts/FantasyRivals_01_A.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caf3ae9e9a879044eadbd183f8a16669
+    m_Address: Assets/_Project/Art/Monster/Gorgon.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2005,6 +2585,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf817e8cccac5c546be88d9603ca9180
+    m_Address: Assets/_Project/Art/Horde/Skeleton_Castle/Skeleton_Castle_Equipment_1.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cfa9392684729334e801c808b8fda77a
     m_Address: Assets/_Project/Data/Themes/CastleBlockLightSet.asset
     m_ReadOnly: 0
@@ -2015,6 +2600,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d028b75a172958f49832616d52258126
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/SM_Chr_Attach_Wing_02.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d050248346c3357449c66ac0e7fbf87e
     m_Address: Assets/_Project/Art/Animations/Zombie_run.fbx
     m_ReadOnly: 0
@@ -2022,6 +2612,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d0633eed99b7c9f439931c671dea93ea
     m_Address: Assets/_Project/Art/ThirdParty/PolygonNatureBiomes2/PNB_Meadow_Forest/Textures/Plants/leafPatch_01.tga
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d090ff393f940664b9cf5f50a833ffca
+    m_Address: Assets/_Project/Art/Animations/Monster_Attack_3.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2047,6 +2642,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d2de461987c562246aa949bb2a1b541c
     m_Address: Assets/_Project/Data/Weapons/MP5_silencer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d319e3fe00b44af4ca27a30dba5fe830
+    m_Address: Assets/_Project/Art/Weapons/Purge/Throw/DecoyWood.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2095,8 +2695,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4faeff94cff2794a82d1a9a3b9d4e02
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Materials/Alts/FantasyRivals_01_C.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d51778c1c4d5fe2459baf24916dd1a0b
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Attack_2.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d54f78986f025eb4ebc73d3642e0bbf2
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonBossZombies/Textures/PolygonZombieBoss_Texture_01_C.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2125,13 +2735,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d8c73bb445f0a95419d95b8d708419a8
-    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Hit_Right.fbx
+  - m_GUID: d88252b2a9aac5743bb1541673425aca
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/SM_Chr_Attach_Wing_03.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d92fa5c33bf69774084df3531cca1503
-    m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/Materials/PolygonParticleFX_VertexLitBlended_Light.mat
+  - m_GUID: d8c73bb445f0a95419d95b8d708419a8
+    m_Address: Assets/_Project/Art/Animations/Elite_Hook_Hit_Right.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2225,6 +2835,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e24207e93e04ede47993a5b18f570389
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonAncientEgypt/Textures/Alts/PolygonAncientEgypt_Texture_01_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e25d0ecfd92737e4aa7c89e1e377472c
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypseWasteland/Textures/Alts/PolygonApocalypseWasteland_01_A.png
     m_ReadOnly: 0
@@ -2232,6 +2847,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e2729b2e2788eac41bc2b8079be6f1fe
     m_Address: Assets/_Project/Data/Monsters/Forest/Capture_Forest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3672a482b4cd41488ca6b65da48d868
+    m_Address: Assets/_Project/Art/Monster/Snow/Special/Capture_Snow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2245,6 +2865,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4b37603c2a3baa4daba8a4a59273952
+    m_Address: Assets/_Project/Data/Monsters/Views/Distant_Snow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e53ac584f9cf9c14ab128896e5baa658
     m_Address: Assets/_Project/Data/Monsters/Common/Golem_Common.asset
     m_ReadOnly: 0
@@ -2252,6 +2877,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5d2212ef3cea7c489a426066c7dda59
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Idle.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e64680685bd03b041ba6ae4b4babdf31
+    m_Address: Assets/_Project/Art/Horde/Skeleton_Castle/Skeleton_Castle_Bones.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2340,6 +2970,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec6727ab7d8f7ab4797546070de70d18
+    m_Address: Assets/_Project/Art/Monster/Castle/Officer/Distant_Castle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eca203051502e8d41a37c55f99d3336c
+    m_Address: Assets/_Project/Art/Monster/Common/Boss/Medusa_Common.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed1f313bb83a9e94a8a566a231afdd26
     m_Address: Assets/_Project/Art/ThirdParty/PolygonMilitary/Models/SM_Wep_Pistol_Metal_01.fbx
     m_ReadOnly: 0
@@ -2381,6 +3021,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef24ebbf6c8187043885bc1bcd584feb
+    m_Address: Assets/_Project/Art/Animations/Officer_Bow_Walk.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: efd5730912d744e4fbfa7c03bfabae51
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Textures/PolygonApocalypse_Texture_03_A.png
     m_ReadOnly: 0
@@ -2406,6 +3051,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f252ca0c80f63934a9cc276a2ec2dfed
+    m_Address: Assets/_Project/Data/Monsters/Views/Distant_Castle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f27b134fb56d17341899f871cca56d03
     m_Address: Assets/_Project/Art/Effects/fx_noise_ring.mat
     m_ReadOnly: 0
@@ -2413,6 +3063,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f294deab423140143987aca118dd1ef5
     m_Address: Assets/_Project/Art/Animations/Elite_Shield_Death_Back.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f359a9476de537c46865f2e0d8094a80
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonDarkFantasy/Models/Tail_Rig_01.fbx
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2481,13 +3136,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa126d5e7932ab74eace747a323673b5
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonFantasyKingdom/Models/SM_Prop_Arrow_02_Optimized.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fa17c2d599ff7fa45876247dbf34fd09
     m_Address: Assets/_Project/Art/Decor/Materials/PolygonApocalypse_Material_01_A_Decor.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa94ebfb0647a5e43b887eff97ffbf5e
+    m_Address: Assets/_Project/Data/Monsters/Views/Capture_Snow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: faba2519e9165104795878d3c4a0ccae
     m_Address: Assets/_Project/Art/ThirdParty/PolygonApocalypse/Models/SM_Wep_Mod_Stock_03.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb09578ee639520458d6799a785294ad
+    m_Address: Assets/_Project/Art/ThirdParty/PolygonAncientEgypt/Textures/Alts/PolygonAncientEgypt_Texture_01_Normals.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2531,8 +3201,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdfbf19f095960f42b42db6196bc3729
+    m_Address: Assets/_Project/Art/ThirdParty/Synty/PolygonFantasyRivals/Textures/FantasyRivals_01_C.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe102ee82ec5b31478d8f038e76f739d
     m_Address: Assets/_Project/Art/Animations/Elite_Wizard_Attack_1.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe525b667475840479cb4fee410b9dd8
+    m_Address: Assets/_Project/Art/Biomes/Purge/Snow/Materials/Winter_PolygonNature_Leaves_Pine.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

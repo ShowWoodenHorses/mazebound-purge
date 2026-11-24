@@ -27,7 +27,8 @@ namespace Purge.Editor.Dev
             var next=TextButton(area,"Next","›",false,null,64,36);Place(next,TopLeft,new Vector2(840,-90),new Vector2(70,64));
             SetReference(screen,"_previous",prev);SetReference(screen,"_next",next);
             var money=Text(area,"Money","0",38,true,new Vector2(1,1),Center,new Vector2(-170,-90),new Vector2(240,65),TextAlignmentOptions.Center);
-            SetReference(screen,"_money",AutoSize(money));
+            AddBalanceCoin(money);
+            SetReference(screen,"_money",money);
             var left=PanelArea(area,"List",Vector2.zero,new Vector2(0,1),new Vector2(48,40),new Vector2(920,-165));
             var content=ScrollColumn(left);var grid=TileGrid(content,"Items");
             var layout=grid.GetComponent<GridLayoutGroup>();layout.constraintCount=3;layout.cellSize=new Vector2(264,174);layout.spacing=new Vector2(12,12);
@@ -40,7 +41,7 @@ namespace Purge.Editor.Dev
             BindArsenalCardFrame(screen, card.GetComponent<UiShape>(), _style);
             var name=Text(card,"Name","",38,true,new Vector2(0.5f,1),new Vector2(0.5f,1),new Vector2(0,-15),new Vector2(750,78),TextAlignmentOptions.Center);AutoSize(name);SetReference(screen,"_title",name);
             var imageRect=Rect(card,"Preview",new Vector2(0.5f,1),new Vector2(0,-171),new Vector2(480,142));
-            var image=imageRect.gameObject.AddComponent<RawImage>();image.color=Color.white;
+            var image=imageRect.gameObject.AddComponent<RawImage>();image.color=Color.white;image.enabled=false;
             var preview=imageRect.gameObject.AddComponent<ArsenalPreview>();
             var stage=new GameObject("ArsenalPreviewStage");stage.transform.position=new Vector3(0,-1500,0);
             var pivot=new GameObject("Pivot").transform;pivot.SetParent(stage.transform,false);

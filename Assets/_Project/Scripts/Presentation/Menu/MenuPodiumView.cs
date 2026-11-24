@@ -26,8 +26,49 @@ namespace Purge.Presentation.Menu
         private WeaponModel _gunModel;
         private bool _alignWithFacing;
         private float _turnTime;
+        private MenuPodiumDemo _demo;
+        private Vector3 _previewPosition;
+        private Quaternion _previewRotation;
+        private bool _demonstrating;
 
         public Transform Anchor => _anchor;
+        internal Transform Stage => _stage.transform;
+
+        internal void SetDemo(MenuPodiumDemo demo)
+        {
+            _demo = demo;
+            _previewPosition = _camera.transform.localPosition;
+            _previewRotation = _camera.transform.localRotation;
+        }
+
+        internal void SetDemonstrating(bool active)
+        {
+            if (_demo == null || _demonstrating == active) return;
+            _demonstrating = active;
+            var camera = _camera.transform;
+            var focus = new Vector3(0f, 0.55f, 0f);
+            var horizontal = new Vector3(3.8f, 0f, 10.5f).normalized;
+            const float pitch = 58.5f * Mathf.Deg2Rad;
+            const float distance = 21.25f;
+            var offset = (horizontal * Mathf.Cos(pitch) + Vector3.up * Mathf.Sin(pitch)) * distance;
+            camera.localPosition = active ? focus + offset : _previewPosition;
+            camera.localRotation = active ? Quaternion.LookRotation(-offset) : _previewRotation;
+            _anchor.localRotation = Quaternion.identity;
+            _demo.SetActive(active);
+        }
+
+        internal Vector3 FloorAtViewport(float x, float y)
+        {
+            var ray = _camera.ViewportPointToRay(new Vector3(x, y));
+            var ground = new Plane(Vector3.up, Stage.position);
+            return ground.Raycast(ray, out var distance) ? ray.GetPoint(distance) : Stage.position;
+        }
+
+        internal bool IsInFrame(Vector3 position)
+        {
+            var point = _camera.WorldToViewportPoint(position);
+            return point.z > 0f && point.x >= 0f && point.x <= 1f && point.y >= 0f && point.y <= 1f;
+        }
 
         public bool IsVisible => _stage != null && _stage.activeSelf;
 
@@ -50,13 +91,14 @@ namespace Purge.Presentation.Menu
         private void LateUpdate()
         {
             if (!IsVisible) return;
-            if (_anchor != null && _turnRange > 0f && _turnSpeed > 0f)
+            if (!_demonstrating && _anchor != null && _turnRange > 0f && _turnSpeed > 0f)
             {
                 _turnTime += Time.unscaledDeltaTime * _turnSpeed / _turnRange;
                 _anchor.localRotation = Quaternion.Euler(0f, Mathf.Sin(_turnTime) * _turnRange, 0f);
             }
 
             PoseGun(Time.unscaledDeltaTime);
+            if (_demonstrating) _demo.Tick(Time.unscaledDeltaTime);
         }
 
         private void PoseGun(float deltaTime)

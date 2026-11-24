@@ -1,7 +1,7 @@
 // Thin-line UI shapes (UiShape): a signed distance field per quad, anti-aliased by screen derivatives, so lines stay
 // crisp at any DPI and scale. Everything per shape comes in vertex channels (one material for all shapes → batching):
 //   uv0.xy — point relative to the shape origin (a sector's point already turned so its sweep is centred on +y),
-//   uv0.z  — kind (0 rounded rect / capsule, 1 sector, 2 arrow), uv0.w — outline width (canvas units, inside the edge),
+//   uv0.z  — kind (0 rounded rect / capsule, 1 sector, 2 arrow, negative = sector corner radius), uv0.w — outline width (canvas units, inside the edge),
 //   uv1    — fill colour, uv2 — outline colour (both sRGB),
 //   uv3    — rect: half size xy, corner radius z; arrow: half size xy, tip length z;
 //            sector: inner, outer radius, sin/cos of the half sweep (cos -2 = ring).
@@ -143,7 +143,7 @@ Shader "Purge/UIShape"
                 return max(box, edge);
             }
 
-            float Sector(float2 q, float inner, float outer, float2 halfSweep)
+            float Sector(float2 q, float inner, float outer, float2 halfSweep, float corner)
             {
                 float len = length(q);
                 float ring = len - outer;
@@ -154,7 +154,9 @@ Shader "Purge/UIShape"
                 float along = max(x * halfSweep.x + q.y * halfSweep.y, 0.0);
                 float toRay = length(float2(x, q.y) - halfSweep * along);
                 float side = halfSweep.y * x - halfSweep.x * q.y;
-                return max(ring, side > 0.0 ? toRay : -toRay);
+                float wedge = side > 0.0 ? toRay : -toRay;
+                if (corner <= 0.0) return max(ring, wedge);
+                return min(max(ring, wedge), -corner) + length(max(float2(ring, wedge) + corner, 0.0));
             }
 
             half4 frag(v2f i) : SV_Target
@@ -162,10 +164,10 @@ Shader "Purge/UIShape"
                 float2 p = i.point_kind_width.xy;
                 float width = i.point_kind_width.w;
                 float kind = i.point_kind_width.z;
-                float d = kind < 0.5
-                    ? RoundedRect(p, i.shape.xy, i.shape.z)
-                    : kind < 1.5
-                        ? Sector(p, i.shape.x, i.shape.y, i.shape.zw)
+                float d = kind < 0.0 || (kind > 0.5 && kind < 1.5)
+                    ? Sector(p, i.shape.x, i.shape.y, i.shape.zw, max(0.0, -kind))
+                    : kind < 0.5
+                        ? RoundedRect(p, i.shape.xy, i.shape.z)
                         : Arrow(p, i.shape.xy, i.shape.z);
 
                 // One screen pixel in shape units (from the point, not d: d has kinks at corners and the wedge axis).

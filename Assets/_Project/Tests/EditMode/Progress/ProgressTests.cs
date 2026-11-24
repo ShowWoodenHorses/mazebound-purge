@@ -416,6 +416,10 @@ namespace Purge.Tests.EditMode.Progress
 
             var controls = settings.Controls;
             controls.StickDeadZone = 0.3f;
+            controls.AimStickDeadZone = 0.15f;
+            controls.TouchFireThreshold = 0.75f;
+            controls.AimStickSize = 1.2f;
+            controls.WeaponSlotsSize = 0.9f;
             settings.PreviewControls(controls);
             controls.Size = 5f;
             settings.PreviewControls(controls);
@@ -433,6 +437,10 @@ namespace Purge.Tests.EditMode.Progress
             save.Load();
             Assert.AreEqual(0.3f, save.Data.Settings.Controls.StickDeadZone, 1e-5f);
             Assert.AreEqual(ControlsSettings.MaxSize, save.Data.Settings.Controls.Size, 1e-5f);
+            Assert.AreEqual(0.15f, save.Data.Settings.Controls.AimStickDeadZone, 1e-5f);
+            Assert.AreEqual(0.75f, save.Data.Settings.Controls.TouchFireThreshold, 1e-5f);
+            Assert.AreEqual(1.2f, save.Data.Settings.Controls.AimStickSize, 1e-5f);
+            Assert.AreEqual(0.9f, save.Data.Settings.Controls.WeaponSlotsSize, 1e-5f);
 
             settings.ResetControls();
             Assert.AreEqual(ControlsSettings.Default, settings.Controls);

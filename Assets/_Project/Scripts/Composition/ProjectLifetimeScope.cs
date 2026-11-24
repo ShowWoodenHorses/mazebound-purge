@@ -105,9 +105,8 @@ namespace Purge.Composition
             builder.Register<LocalizationPresenter>(Lifetime.Singleton);
             builder.Register<AppAudioPresenter>(Lifetime.Singleton);
             // The podium is optional (test scenes have none).
-            builder.Register(resolver => new MenuPodiumPresenter(resolver.Resolve<GameFlow>(),
-                resolver.Resolve<SharedDefinitionsService>(), resolver.Resolve<IProgressService>(),
-                resolver.Resolve<IAddressablesService>(), _podium), Lifetime.Singleton);
+            builder.Register(resolver => new MenuPodiumPresenter(resolver.Resolve<SharedDefinitionsService>(),
+                resolver.Resolve<IAddressablesService>(), _podium), Lifetime.Singleton).AsSelf().As<IMainMenuPreparation>();
 
             builder.RegisterEntryPoint<ApplicationEntryPoint>();
             builder.RegisterEntryPoint<AudioTickDriver>();

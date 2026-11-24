@@ -363,7 +363,7 @@ namespace Purge.Presentation.Visual
             tracer.Origin = new Vector3(bullet.Position.x, BulletHeight(bullet), bullet.Position.y);
             tracer.FromMuzzle = false;
             tracer.KeepMuzzleHeight = false;
-            tracer.Electric = bullet.Weapon?.Effects?.ElectricProjectile == true;
+            tracer.Plasma = effects?.ElectricProjectile == true && _visual.EffectParticles != null;
             tracer.Fire = bullet.Weapon?.Effects?.FireProjectile == true;
             tracer.FireballPending = tracer.FireballTrail != null;
             if (tracer.Model)
@@ -382,8 +382,9 @@ namespace Purge.Presentation.Visual
             else if (tracer.Renderer != null)
             {
                 tracer.Tint.Clear();
-                tracer.Renderer.sharedMaterial = tracer.Electric && _visual.ChainBolt != null ? _visual.ChainBolt : tracer.OriginalMaterial;
-                if (tracer.Fire) tracer.Tint.SetColor("_Color", new Color(2f, 0.65f, 0.12f, 1f));
+                tracer.Renderer.sharedMaterial = tracer.Plasma ? _visual.EffectParticles : tracer.OriginalMaterial;
+                if (tracer.Plasma) tracer.Tint.SetColor("_Color", new Color(0.42f, 0.73f, 1.65f, 1f));
+                else if (tracer.Fire) tracer.Tint.SetColor("_Color", new Color(2f, 0.65f, 0.12f, 1f));
                 tracer.Renderer.SetPropertyBlock(tracer.Tint);
             }
             _tracers[bullet] = tracer;
@@ -474,7 +475,7 @@ namespace Purge.Presentation.Visual
         {
             if (_streamLook == null) return;
             _streamLeft -= deltaTime;
-            if (_streamLeft > 0f && Muzzle(out var position, out var rotation, flat: true))
+            if (_streamLeft > 0f && !_player.IsOnStairs && Muzzle(out var position, out var rotation, flat: true))
             {
                 var reach = ReachToWall(position, rotation, out var cut);
                 _packEffects.Hold(_streamLook, position, rotation, reach, cut);
@@ -685,7 +686,7 @@ namespace Purge.Presentation.Visual
             }
 
             var travelled = Mathf.Max(0f, bullet.Travel - bullet.RangeLeft);
-            var length = tracer.Fire ? 0.22f : tracer.Electric ? 0.7f : _visual.TracerLength;
+            var length = tracer.Fire ? 0.22f : _visual.TracerLength;
             var shotDirection = new Vector3(bullet.Direction.x, 0f, bullet.Direction.y);
             var visibleTravel = travelled;
             Vector3 head;
@@ -712,12 +713,19 @@ namespace Purge.Presentation.Visual
             transform.localPosition = head;
             if (forward.sqrMagnitude > 0f)
                 transform.localRotation = Quaternion.LookRotation(forward, Vector3.up);
-            var width = tracer.Fire ? 3.2f : tracer.Electric ? 2.2f : 1f;
+            var width = tracer.Fire ? 3.2f : 1f;
             transform.localScale = tracer.Model
                 ? tracer.OriginalScale * (tracer.Fire ? 0.5f : 1f)
                 : length > 0f
                 ? new Vector3(width, width, Mathf.Max(distance, 0.01f))
                 : tracer.OriginalScale;
+            if (tracer.Plasma && !tracer.Model)
+            {
+                // The crossed tracer quads are 0.1 m wide and extend one unit behind their pivot.
+                const float diameter = 0.44f;
+                transform.localPosition = head + forward * (diameter * 0.5f);
+                transform.localScale = new Vector3(diameter / 0.1f, diameter / 0.1f, diameter);
+            }
 
             var visible = (tracer.Model || visibleTravel > 0f) &&
                 _visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor));
@@ -831,7 +839,7 @@ namespace Purge.Presentation.Visual
             public TrailRenderer Trail;
             public ObjectPool<Tracer> Pool;
             public bool Model;
-            public bool Electric;
+            public bool Plasma;
             public bool Fire;
 
             /// <summary>Where the gameplay bullet started (the player's centre), grid units.</summary>

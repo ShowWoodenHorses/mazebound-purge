@@ -39,7 +39,8 @@ namespace Purge.Gameplay.Waves
     /// <see cref="HordeSystem"/>.
     /// <para>Stage 6b: the pause between waves counts down <see cref="WaveScenario.PauseTime"/>; <see cref="Skip"/> starts
     /// the next wave at once and pays <see cref="SkipBonus"/> into the <see cref="RunWallet"/>. When the next wave starts
-    /// the monsters' drop still lying disappears (<see cref="PickupSystem.ClearDropped"/>).</para>
+    /// temporary consumables and older weapons disappear; fresh weapons lose their rarity rings and last one more wave
+    /// (<see cref="PickupSystem.AdvanceWaveDrops"/>).</para>
     /// <para>Stage 6d: a cleared wave pays <see cref="WaveScenario.MoneyBonusOf"/> into the wallet.</para>
     /// </summary>
     public sealed class WaveSystem : ILevelLoadStep, ILevelTickable
@@ -251,8 +252,7 @@ namespace Purge.Gameplay.Waves
 
         private void StartWave(int index)
         {
-            // ТЗ: дроп волны лежит до начала следующей волны, потом исчезает.
-            if (index > 0) _pickups?.ClearDropped();
+            if (index > 0) _pickups?.AdvanceWaveDrops();
             WaveIndex = index;
             _currentWave = IsSurvival ? _survival.Definition(index) : Scenario.Waves[index];
             if (IsSurvival)

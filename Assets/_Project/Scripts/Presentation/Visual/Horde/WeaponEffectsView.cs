@@ -182,7 +182,7 @@ namespace Purge.Presentation.Visual.Horde
             _shadowLook.SetColor("_Color", new Color(0f, 0f, 0f, 0.5f));
             _shadowLook.SetFloat("_Thickness", 0.45f);
             _curseLook = new MaterialPropertyBlock();
-            _curseLook.SetColor("_Color", new Color(0.75f, 0.24f, 1f, 0.85f));
+            _curseLook.SetColor("_Color", new Color(1f, 0.13f, 0.16f, 0.9f));
             _curseLook.SetFloat("_Thickness", 0.18f);
             _energyLook = new MaterialPropertyBlock();
             if (_visual?.BoltMaterial != null)
@@ -509,6 +509,9 @@ namespace Purge.Presentation.Visual.Horde
                 DrawEnergyImpact(_plasmaEnd, PlasmaColor);
             if (_visual.StatusRing == null) return;
             DrawCurses();
+            if (_combat.TryGetTouchLobAim(out var aimPoint, out var aimRadius))
+                DrawMarker(_visual.StatusRing, aimPoint, _player.Floor * GridPosition.FloorHeight + 0.04f,
+                    aimRadius * 2f, _landingLook);
             foreach (var bullet in _bullets.Active)
             {
                 if (!bullet.IsLobbed || bullet.Floor != _player.Floor) continue;

@@ -31,6 +31,8 @@ namespace Purge.Presentation.UI
         [SerializeField] private GameObject _totalCoin;
         [SerializeField] private TMP_Text _records;
         [SerializeField] private TMP_Text _money;
+        [SerializeField] private TMP_Text _weaponName;
+        [SerializeField] private TMP_Text _throwableName;
         [SerializeField] private TMP_Text _total;
 
         [Header("Level")]
@@ -183,6 +185,12 @@ namespace Purge.Presentation.UI
             _settingArena = true;
             _arena.isOn = on;
             _settingArena = false;
+        }
+
+        public void SetLoadoutNames(string weapon, string throwable)
+        {
+            _weaponName.text = weapon;
+            _throwableName.text = throwable;
         }
 
         public void SetWeapons(IReadOnlyList<Item> items, int chosen) => Fill(_weapons, _weaponList, items, chosen);

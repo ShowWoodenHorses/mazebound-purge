@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Cysharp.Threading.Tasks;
 using Purge.Application.Flow;
 using Purge.Application.Levels;
@@ -9,6 +10,7 @@ using Purge.Application.Save;
 using Purge.Application.Services;
 using Purge.Core.Monsters;
 using Purge.Presentation.Localization;
+using Purge.Presentation.Menu;
 using UnityEngine;
 
 namespace Purge.Presentation.UI
@@ -34,6 +36,7 @@ namespace Purge.Presentation.UI
         private readonly AccountService _account;
         private readonly RunSetupPresenter _setup;
         private readonly ArsenalPresenter _arsenal;
+        private readonly MenuPodiumPresenter _podium;
         private readonly Purge.Application.Meta.CharacterTree _tree;
         private readonly CharacterPresenter _character;
         private bool _characterOpen;
@@ -51,8 +54,10 @@ namespace Purge.Presentation.UI
         public ScreenRouter(GameFlow flow, ILevelCatalog catalog, UIRoot ui, IProgressService progress,
             LocalizationService texts, IInputService input = null, AccountService account = null,
             RunSetupPresenter setup = null, ArsenalPresenter arsenal = null, SaveService save = null,
-            SharedDefinitionsService shared = null, Purge.Application.Meta.CharacterTree tree = null, DailyTasks daily = null)
+            SharedDefinitionsService shared = null, Purge.Application.Meta.CharacterTree tree = null, DailyTasks daily = null,
+            MenuPodiumPresenter podium = null)
         {
+            _podium = podium;
             _daily = daily;
             _arsenal = arsenal;
             _tree = tree;
@@ -248,7 +253,9 @@ namespace Purge.Presentation.UI
             if (error) _ui.Error.SetMessage(_flow.ErrorMessage);
 
             var setupOpen = _setup != null && _setup.IsOpen;
-            _ui.MainMenu.SetVisible(menu && !_devLevelsOpen && !setupOpen && !_characterOpen && !_tasksOpen && !(_arsenal?.IsOpen ?? false));
+            var frontPage = menu && !_devLevelsOpen && !setupOpen && !_characterOpen && !_tasksOpen && !(_arsenal?.IsOpen ?? false);
+            _ui.MainMenu.SetVisible(frontPage);
+            _podium?.SetDemoVisible(frontPage || menu && setupOpen);
             _ui.Character?.SetVisible(menu && _characterOpen);
             _ui.Tasks?.SetVisible(menu && _tasksOpen);
             if (_ui.DevLevels != null) _ui.DevLevels.SetVisible(menu && _devLevelsOpen);
@@ -601,9 +608,28 @@ namespace Purge.Presentation.UI
                 _cheatWeapons.Add(new KeyValuePair<string, string>(weapon.Id, caption));
             }
 
+            var culture = CultureInfo.GetCultureInfo(_texts.Language ?? "en");
+            var cyrillicCulture = culture.TwoLetterISOLanguageName is "be" or "kk" ? culture : CultureInfo.GetCultureInfo("ru");
+            var cyrillicComparer = StringComparer.Create(cyrillicCulture, true);
+            var latinComparer = StringComparer.Create(culture, true);
+            _cheatWeapons.Sort((left, right) =>
+            {
+                var leftCyrillic = StartsWithCyrillicLetter(left.Value);
+                var rightCyrillic = StartsWithCyrillicLetter(right.Value);
+                if (leftCyrillic != rightCyrillic) return leftCyrillic ? -1 : 1;
+                var byCaption = (leftCyrillic ? cyrillicComparer : latinComparer).Compare(left.Value, right.Value);
+                return byCaption != 0 ? byCaption : StringComparer.Ordinal.Compare(left.Key, right.Key);
+            });
             _ui.Cheats.SetLevels(_cheatWeapons);
             _cheatsOpen = true;
             Show(_flow.State);
+        }
+
+        private static bool StartsWithCyrillicLetter(string caption)
+        {
+            foreach (var character in caption)
+                if (char.IsLetter(character)) return character is >= '\u0400' and <= '\u052F';
+            return false;
         }
 
         private void AddCheatAmmo() => _flow.UseCheat(null);

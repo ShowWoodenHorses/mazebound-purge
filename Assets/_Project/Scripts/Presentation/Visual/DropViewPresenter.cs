@@ -166,6 +166,8 @@ namespace Purge.Presentation.Visual
             {
                 var shown = _lying[i];
                 var pickup = shown.Pickup;
+                if (shown.Ring != null && shown.Ring.activeSelf && pickup.RarityRingSuppressed)
+                    shown.Ring.SetActive(false);
                 if (pickup.Attracted || shown.Lifted)
                 {
                     // The magnet of the run's cards: it flies to the player a little above the floor (and lands back where
@@ -246,7 +248,7 @@ namespace Purge.Presentation.Visual
             transform.localRotation = Quaternion.Euler(0f, StableHash.Of(pickup.Id) % 360, 0f);
             go.SetActive(_visibility.IsVisible(pickup.Cell));
             var ring = transform.Find(RingName);
-            if (ring != null) ring.gameObject.SetActive(true);
+            if (ring != null) ring.gameObject.SetActive(!pickup.RarityRingSuppressed);
             _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item), Scale = transform.localScale,
                 Ring = ring != null ? ring.gameObject : null });
         }
@@ -406,7 +408,7 @@ namespace Purge.Presentation.Visual
         private static Shown Lift(Shown shown, bool lifted)
         {
             shown.Lifted = lifted;
-            if (shown.Ring != null) shown.Ring.SetActive(!lifted);
+            if (shown.Ring != null) shown.Ring.SetActive(!lifted && !shown.Pickup.RarityRingSuppressed);
             return shown;
         }
 

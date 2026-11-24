@@ -51,7 +51,7 @@ namespace Purge.Presentation.UI.Touch
         [Tooltip("Aim-mode marks around the ring; the one the stick points at lights up.")]
         [SerializeField] private TouchStickMarks _marks;
 
-        [Tooltip("Optional ring of the fire threshold (the aim stick): sized to PlayerCombat.StickFireFrom, lit past it.")]
+        [Tooltip("Optional aim-stick ring: shows the configured fire threshold and lights up past it.")]
         [SerializeField] private UiShape _fireRing;
 
         [SerializeField] private Color _fireRingLit = Color.white;
@@ -89,16 +89,20 @@ namespace Purge.Presentation.UI.Touch
 
         private RectTransform Zone => (RectTransform)transform;
 
-        public void Configure(float deadZone, float exponent, bool floating, bool mirrored)
+        private float _fireThreshold = PlayerCombat.StickFireFrom;
+
+        public void Configure(float deadZone, float exponent, bool floating, bool mirrored,
+            float fireThreshold = PlayerCombat.StickFireFrom)
         {
             _deadZone = deadZone;
+            _fireThreshold = fireThreshold;
             _exponent = exponent;
             _floating = floating;
             _mirrored = mirrored;
             if (_fireRing != null)
             {
                 if (_fireRingIdle == null) _fireRingIdle = _fireRing.Stroke;
-                var diameter = 2f * _radius * StickResponse.DeflectionFor(PlayerCombat.StickFireFrom, deadZone, exponent);
+                var diameter = 2f * _radius * StickResponse.DeflectionFor(_fireThreshold, deadZone, exponent);
                 _fireRing.rectTransform.sizeDelta = new Vector2(diameter, diameter);
             }
 
@@ -245,7 +249,7 @@ namespace Purge.Presentation.UI.Touch
             var value = StickResponse.Shape(screen / _radius, _deadZone, _exponent);
             SendValueToControl(value);
             if (_marks != null) _marks.Point(Vector2.ClampMagnitude(offset / _radius, 1f));
-            LightFireRing(value.sqrMagnitude >= PlayerCombat.StickFireFrom * PlayerCombat.StickFireFrom);
+            LightFireRing(value.sqrMagnitude >= _fireThreshold * _fireThreshold);
         }
 
         private void LightFireRing(bool lit)

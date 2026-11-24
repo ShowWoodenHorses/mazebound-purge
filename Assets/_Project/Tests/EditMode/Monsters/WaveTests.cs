@@ -395,12 +395,13 @@ namespace Purge.Tests.EditMode.Monsters
         }
 
         [Test]
-        public void Skip_PaysTheSecondsLeft_AndTheWaveDropVanishes()
+        public void Skip_PaysTheSecondsLeft_AndWaveWeaponsLastOneExtraWave()
         {
             LevelEditing.AddMonsterSpawn(_level, new GridPosition(5, 5));
             var ammo = Create<AmmoDefinition>();
             ammo.Configure("ammo_test", 5f);
             var (runtime, horde, waves) = Run(Scenario(
+                new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f),
                 new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f),
                 new WaveDefinition(3f, new[] { new WaveMonster(_mass, 1f) }, spawnTime: 0f)));
             var skipped = -1;
@@ -410,11 +411,17 @@ namespace Purge.Tests.EditMode.Monsters
             Tick(runtime, 1.5f);
             Assert.That(waves.RemainingCount, Is.EqualTo(3));
             KillAll(horde);
+            var weapon = Create<WeaponDefinition>();
+            weapon.Configure("weapon_test", new MeleeAttack());
+            var oldWeapon = _pickups.DropWeaponItem(new Vector2(11f, 10f), 0, weapon, float.PositiveInfinity);
+            var chestReward = _pickups.DropWeaponItem(new Vector2(12f, 10f), 0, weapon, 0f, keep: true);
             var drop = _pickups.DropAmmo(new Vector2(10f, 10f), 0, ammo, 10, float.PositiveInfinity);
             Tick(runtime, 1.1f);
             Assert.That(waves.Phase, Is.EqualTo(WavePhase.Pause));
             Assert.That(waves.RemainingCount, Is.EqualTo(0));
             Assert.That(_pickups.IsLying(drop.Id), Is.True, "the drop lies through the pause");
+
+            Assert.That(oldWeapon.RarityRingSuppressed, Is.False);
 
             var money = _wallet.Money;
             var expected = Mathf.CeilToInt(waves.TimeLeft) * 2; // wave 2's rate: 2 a second
@@ -425,6 +432,23 @@ namespace Purge.Tests.EditMode.Monsters
             Assert.That(waves.WaveIndex, Is.EqualTo(1));
             Assert.That(_pickups.IsLying(drop.Id), Is.False, "the next wave starts: the drop is gone");
             Assert.That(drop.WasTaken, Is.False);
+            Assert.That(_pickups.IsLying(oldWeapon.Id), Is.True);
+            Assert.That(oldWeapon.RarityRingSuppressed, Is.True);
+            Assert.That(chestReward.RarityRingSuppressed, Is.True);
+
+            var newWeapon = _pickups.DropWeaponItem(new Vector2(13f, 10f), 0, weapon, float.PositiveInfinity);
+            Assert.That(newWeapon.RarityRingSuppressed, Is.False);
+            Tick(runtime, 0.2f);
+            Assert.That(horde.AliveCount, Is.EqualTo(3));
+            KillAll(horde);
+            Tick(runtime, 0.2f);
+            Assert.That(waves.Phase, Is.EqualTo(WavePhase.Pause));
+            Assert.That(waves.Skip(), Is.True);
+            Assert.That(waves.WaveIndex, Is.EqualTo(2));
+            Assert.That(_pickups.IsLying(oldWeapon.Id), Is.False);
+            Assert.That(_pickups.IsLying(newWeapon.Id), Is.True);
+            Assert.That(newWeapon.RarityRingSuppressed, Is.True);
+            Assert.That(_pickups.IsLying(chestReward.Id), Is.True);
         }
 
         [Test]

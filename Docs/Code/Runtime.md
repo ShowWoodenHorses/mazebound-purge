@@ -5,6 +5,7 @@
 ## Runtime-каркас
 - Сцены: **Bootstrap** (всегда загружена; `ProjectLifetimeScope` + UI-экраны) и **Game** (грузится аддитивно на каждый уровень; `LevelLifetimeScope` с `autoRun = false`, камера, свет). Пересоздаются меню **Purge → Dev → Build Runtime Scenes** (`RuntimeScenesBuilder`) — правки UI вносить в билдер, а не только в сцену.
 - Точка входа — `ApplicationEntryPoint` (VContainer `IAsyncStartable`). Сервисы приложения реализуют `IApplicationService`, инициализируются `GameFlow.InitializeApplication` в порядке регистрации.
+- `GameFlow.OpenMainMenu` ждёт `IMainMenuPreparation` до публикации `MainMenu`. Подиум готовится во время экрана загрузки при первом входе в меню и использует уже загруженные ассеты при возврате.
 - `GameFlow` (Application) не знает VContainer: уровень создаёт `ILevelSessionFactory` → `LevelSessionFactory` (Composition) грузит Game, строит `LevelLifetimeScope` дочерним к проектному и регистрирует в нём `LevelData` и `IAssetOwner` уровня. Переходы GameFlow идут по одному, новый отменяет текущий
   - любое исключение → полная выгрузка уровня → `GameFlowState.Error`.
 - Шаги загрузки уровня (§9) — `ILevelLoadStep` со `Stage` (`LevelLoadStage`), регистрируются в `LevelLifetimeScope` из любого слоя; `LevelRuntime` выполняет их по порядку.

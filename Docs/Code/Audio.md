@@ -4,6 +4,8 @@
 
 ## Звук
 
+- `LevelAudioPresenter` воспроизводит посадку приманки и мини-турели штатным звуком метательного. Выстрел мини-турели использует группу `machine_gun` и пространственное панорамирование на этаже игрока.
+
 - Светошумовая выбирает `AudioCatalog.Flashbang` через флаг в модуле взрыва. Build Audio берёт монофайл `Sounds/Weapon/explosion_flashbang.wav` из шортлиста Polygon Arsenal. Мина использует общий звук установки и обычный взрыв по радиусу.
 
 - **Замок (13б)** — `FloorStepSound.Stone` в `CastleBlockTheme` выбирает `AudioCatalog.FootstepStone` (`Player/step_stone*`). Эмбиент — `Sounds/Ambient/castle_block/loop.wav`. Музыка — общая `game`.

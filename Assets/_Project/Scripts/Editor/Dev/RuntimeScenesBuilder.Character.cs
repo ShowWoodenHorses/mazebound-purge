@@ -5,6 +5,7 @@ using Purge.Presentation.UI.Shapes;
 using Purge.Presentation.Localization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Purge.Editor.Dev
 {
@@ -24,16 +25,23 @@ namespace Purge.Editor.Dev
             BuildCharacterTree(area, screen);
 
             var details = Text(area, "Details", "", 25, false, TopLeft, Center,
-                new Vector2(650, -927), new Vector2(1090, 100), TextAlignmentOptions.Left);
+                Vector2.zero, Vector2.zero, TextAlignmentOptions.Left);
             SetReference(screen, "_details", AutoSize(details));
             var buy = TextButton(area, "Buy", "", true, null, 70, 26);
-            Place(buy, TopLeft, new Vector2(1420, -916), new Vector2(390, 70));
+            PlaceCharacterSummary(details, buy);
             SetReference(screen, "_buy", buy);
             SetReference(screen, "_buyLabel", buy.GetComponentInChildren<TMP_Text>(true));
             var reset = TextButton(area, "Reset", Loc(TextKeys.CharacterReset), false, null, 58, 23);
             Place(reset, TopLeft, new Vector2(970, -78), new Vector2(280, 58));
             SetReference(screen, "_reset", reset);
             return screen;
+        }
+
+        private static void PlaceCharacterSummary(TMP_Text details, Button buy)
+        {
+            const float summaryY = -970f;
+            Place(details, TopLeft, new Vector2(650, summaryY), new Vector2(1090, 100));
+            Place(buy, TopLeft, new Vector2(1420, summaryY), new Vector2(390, 70));
         }
 
         private const float CharacterNodeHeight = 46f;

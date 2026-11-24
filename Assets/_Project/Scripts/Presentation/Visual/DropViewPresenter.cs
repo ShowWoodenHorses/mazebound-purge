@@ -6,6 +6,7 @@ using Purge.Application.Assets;
 using Purge.Core.Common;
 using Purge.Core.Content;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Level;
 using Purge.Core.Visual;
@@ -106,6 +107,9 @@ namespace Purge.Presentation.Visual
                 if (_options.TryGetBoost<Core.Boosters.MedkitBoost>(out var medkit) && medkit.Medkit != null) _items.Add(medkit.Medkit);
             }
             foreach (var item in _pool.Throwables) _items.Add(item);
+            if (_level?.StressTest != null)
+                foreach (var item in _level.StressTest.SandboxThrowables)
+                    _items.Add(item);
             if (Debug.isDebugBuild && _shared?.Content != null)
                 foreach (var item in _shared.Content.Items)
                     if (item is WeaponDefinition) _items.Add(item);
@@ -126,8 +130,10 @@ namespace Purge.Presentation.Visual
                 }
 
                 kind.Pickup = await _assets.LoadAsync<GameObject>(visual.Pickup, cancellation);
-                if (item is ThrowableDefinition)
-                    kind.Flying = await _assets.LoadAsync<GameObject>(visual.Flying, cancellation);
+                if (item is ThrowableDefinition throwable)
+                    kind.Flying = throwable.Deployable?.Kind == DeployableKind.Turret
+                        ? kind.Pickup
+                        : await _assets.LoadAsync<GameObject>(visual.Flying, cancellation);
                 cancellation.ThrowIfCancellationRequested();
                 // Weapons: the most monsters can leave of one + the player's two slots dropped.
                 var poolSize = item is WeaponDefinition ? PickupSystem.MaxSameWeaponDropped + 2 : PickupPoolSize;
@@ -184,11 +190,20 @@ namespace Purge.Presentation.Visual
                 var p = bullet.Progress;
                 var definition = bullet.Throwable;
                 var arc = definition != null ? definition.ArcHeight * bullet.Travel * 4f * p * (1f - p) : 0f;
-                var height = Mathf.Lerp(HandHeight, 0.1f, p) + arc + bullet.Floor * GridPosition.FloorHeight;
+                var landingHeight = shown.GrowsOnLanding ? 0f : 0.1f;
+                var height = Mathf.Lerp(HandHeight, landingHeight, p) + arc + bullet.Floor * GridPosition.FloorHeight;
                 var transform = shown.Object.transform;
                 transform.localPosition = new Vector3(bullet.Position.x, height, bullet.Position.y);
-                transform.localRotation = Quaternion.LookRotation(new Vector3(bullet.Direction.x, 0f, bullet.Direction.y)) *
-                                          Quaternion.Euler(bullet.Age * SpinSpeed, 0f, 0f);
+                var heading = Quaternion.LookRotation(new Vector3(bullet.Direction.x, 0f, bullet.Direction.y));
+                if (shown.GrowsOnLanding)
+                {
+                    transform.localRotation = heading;
+                    transform.localScale = Vector3.one * Mathf.SmoothStep(1f, DeployablesView.DeployedScale, p);
+                }
+                else
+                {
+                    transform.localRotation = heading * Quaternion.Euler(bullet.Age * SpinSpeed, 0f, 0f);
+                }
                 var visible = _visibility.IsVisible(new GridPosition(Mathf.FloorToInt(bullet.Position.x + 0.5f),
                     Mathf.FloorToInt(bullet.Position.y + 0.5f), bullet.Floor));
                 if (shown.Object.activeSelf != visible) shown.Object.SetActive(visible);
@@ -304,7 +319,13 @@ namespace Purge.Presentation.Visual
         {
             if (bullet.Throwable == null || !TryTake(bullet.Throwable, true, out var go)) return;
             go.SetActive(false); // placed and shown in the late tick
-            _flying.Add(new Shown { Object = go, Bullet = bullet, Item = Key(bullet.Throwable) });
+            _flying.Add(new Shown
+            {
+                Object = go,
+                Bullet = bullet,
+                Item = Key(bullet.Throwable),
+                GrowsOnLanding = bullet.Throwable.Deployable?.Kind == DeployableKind.Turret
+            });
         }
 
         private void OnEnded(Bullet bullet, Vector2 point, BulletEnd end)
@@ -378,6 +399,7 @@ namespace Purge.Presentation.Visual
             public string Item;
             public Vector3 Scale;
             public float Age;
+            public bool GrowsOnLanding;
 
             /// <summary>Was flying to the player (the magnet): its place is set again.</summary>
             public bool Lifted;

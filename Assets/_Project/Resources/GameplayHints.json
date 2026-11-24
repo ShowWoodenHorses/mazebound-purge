@@ -116,6 +116,18 @@
       "throwableId": "mine"
     },
     {
+      "id": "decoy",
+      "textKey": "hint.decoy",
+      "condition": 12,
+      "throwableId": "decoy"
+    },
+    {
+      "id": "mini_turret",
+      "textKey": "hint.mini_turret",
+      "condition": 12,
+      "throwableId": "mini_turret"
+    },
+    {
       "id": "card_evolution",
       "textKey": "hint.card_evolution",
       "condition": 13

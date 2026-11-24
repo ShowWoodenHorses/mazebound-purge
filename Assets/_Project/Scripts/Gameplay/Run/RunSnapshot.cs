@@ -47,6 +47,8 @@ namespace Purge.Gameplay.Run
         public int ThrowableCount;
         public List<Visibility.SmokeCloud> Smoke = new List<Visibility.SmokeCloud>();
         public List<Throwing.PlantedMine> Mines = new List<Throwing.PlantedMine>();
+        public Throwing.DeployedItem Decoy;
+        public Throwing.DeployedItem Turret;
         public RunPerkState Perks;
 
         /// <summary>Barrels blown up (level object ids, stage 7в): a continued run has them gone.</summary>

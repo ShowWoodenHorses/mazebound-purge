@@ -159,6 +159,7 @@ namespace Purge.Gameplay.Run
         private readonly AmmoStock _ammoStock;
         private readonly SmokeScreen _smoke;
         private readonly PlayerThrowing _throwing;
+        private readonly Deployables _deployables;
         private readonly ContentCatalog _content;
 
         public RunCheckpoints(WaveSystem waves, RunWallet wallet, RunScore score, RunExperience experience, CardSystem cards,
@@ -167,7 +168,7 @@ namespace Purge.Gameplay.Run
             ChestSystem chests = null, MapExploration exploration = null, VehicleSystem vehicles = null,
             RunBoosters boosters = null, Horde.HordeSystem horde = null, RefugeSystem refuge = null,
             SpecialRunBoosters special = null, AmmoStock ammoStock = null, SmokeScreen smoke = null,
-            PlayerThrowing throwing = null, ContentCatalog content = null)
+            PlayerThrowing throwing = null, ContentCatalog content = null, Deployables deployables = null)
         {
             _horde = horde;
             _refuge = refuge;
@@ -175,6 +176,7 @@ namespace Purge.Gameplay.Run
             _ammoStock = ammoStock;
             _smoke = smoke;
             _throwing = throwing;
+            _deployables = deployables;
             _content = content;
             _boosters = boosters;
             _vehicles = vehicles;
@@ -219,6 +221,13 @@ namespace Purge.Gameplay.Run
                 if (_throwing != null && _content != null && resume.Mines != null)
                     foreach (var mine in resume.Mines)
                         _throwing.RestoreMine(_content.Find<ThrowableDefinition>(mine.ThrowableId), mine);
+                if (_deployables != null && _content != null)
+                {
+                    if (resume.Decoy.Remaining > 0f)
+                        _deployables.Restore(_content.Find<ThrowableDefinition>(resume.Decoy.ThrowableId), resume.Decoy);
+                    if (resume.Turret.Remaining > 0f)
+                        _deployables.Restore(_content.Find<ThrowableDefinition>(resume.Turret.ThrowableId), resume.Turret);
+                }
             }
 
             _waves.Skipped += OnSkipped;
@@ -261,6 +270,11 @@ namespace Purge.Gameplay.Run
             };
             if (_smoke != null) run.Smoke.AddRange(_smoke.Clouds);
             if (_throwing != null) run.Mines.AddRange(_throwing.Mines);
+            if (_deployables != null)
+            {
+                run.Decoy = _deployables.Decoy;
+                run.Turret = _deployables.Turret;
+            }
             run.Perks = _cards.PerkState;
             foreach (var pair in _cards.Levels)
                 for (var i = 0; i < pair.Value; i++)

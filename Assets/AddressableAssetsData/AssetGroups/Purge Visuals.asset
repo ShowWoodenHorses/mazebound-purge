@@ -585,6 +585,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 752f9d2ab602ec243896f448b11f7d0c
+    m_Address: Assets/_Project/Art/Items/Pickups/MachineGun_Tower_Flying.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 780afce8d708a7e4f8c52e256ad368bb
     m_Address: Assets/_Project/Art/Effects/PolygonParticleFX/FX_Explosion_01.prefab
     m_ReadOnly: 0
@@ -637,6 +642,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83c093c4e335b1d469a4032f23a75672
     m_Address: Assets/_Project/Art/Items/SM_Prop_MedicalBox_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84e625cc51cb7184c81b70e1915546fb
+    m_Address: Assets/_Project/Art/Items/Pickups/MachineGun_Tower_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -727,6 +737,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 96143ae90acecb54b86a5a49bf743f5e
     m_Address: Assets/_Project/Art/Biomes/Forest/Prefabs/floor_forest_soil.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 996a097b345b40842a31f0bd353ff4f7
+    m_Address: Assets/_Project/Art/Items/Pickups/Decoy_Pickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -887,6 +902,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b88c77b46cf1d3f4b858d10a78a6d6f0
     m_Address: Assets/_Project/Art/Doors/SM_Bld_Door_Barricaded_08_orange.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b97cd9eafdbfdd14185ba31b02035ac8
+    m_Address: Assets/_Project/Art/Items/Pickups/Decoy_Flying.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

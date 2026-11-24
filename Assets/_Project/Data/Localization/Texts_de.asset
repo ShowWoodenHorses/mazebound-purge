@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - Deutsch
   - Tagesaufgaben
@@ -1178,4 +1182,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - "K\xF6der"
+  - "Mini-Gesch\xFCtz"
+  - "Wirf einen K\xF6der, um gew\xF6hnliche Monster in der N\xE4he abzulenken."
+  - "Wirf ein Mini-Gesch\xFCtz. Es feuert auf das n\xE4chste sichtbare Monster."
   _missing: []

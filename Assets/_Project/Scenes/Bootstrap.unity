@@ -29274,7 +29274,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 650, y: -927}
+  m_AnchoredPosition: {x: 650, y: -970}
   m_SizeDelta: {x: 1090, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &577117156
@@ -37842,7 +37842,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4020573145b41ad47a1b771ae9aa99ae, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.ArsenalScreen
   _back: {fileID: 602235389}
   _previous: {fileID: 461487958}
@@ -37858,6 +37858,8 @@ MonoBehaviour:
   _grid: {fileID: 1507749958}
   _template: {fileID: 1614362226}
   _preview: {fileID: 536139554}
+  _style: {fileID: 11400000, guid: 6d69623c34cc3644094960fc86b1cfe4, type: 2}
+  _cardFrame: {fileID: 1664834747}
   _upgrade: {fileID: 1686803962}
   _fork4a: {fileID: 2083093786}
   _fork4b: {fileID: 1703304720}
@@ -81902,7 +81904,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1420, y: -916}
+  m_AnchoredPosition: {x: 1420, y: -970}
   m_SizeDelta: {x: 390, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1576691640
@@ -85170,7 +85172,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 527be98926276f14aa742c47cc1f6ca0, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Purge.Presentation::Purge.Presentation.UI.Shapes.UiShape
   m_Material: {fileID: 2100000, guid: e4aa9b4a075c04943b723931ae72d805, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -85183,7 +85185,7 @@ MonoBehaviour:
   _kind: 0
   _fill: {r: 0.055, g: 0.051, b: 0.047, a: 0.88}
   _stroke: {r: 0.925, g: 0.902, b: 0.839, a: 0.43200004}
-  _strokeWidth: 1.5
+  _strokeWidth: 2.5
   _cornerRadius: 2
   _center: {x: 0.5, y: 0.5}
   _innerRadius: 0

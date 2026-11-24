@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - "T\xFCrk\xE7e"
   - "G\xFCnl\xFCk g\xF6revler"
@@ -1189,4 +1193,9 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Yem
+  - Mini taret
+  - "Yak\u0131ndaki s\u0131radan canavarlar\u0131 oyalamak i\xE7in yem at."
+  - "Mini taret at. G\xF6r\xFC\u015F alan\u0131ndaki en yak\u0131n canavara ate\u015F
+    eder."
   _missing: []

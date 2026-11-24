@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - "Portugu\xEAs"
   - "Tarefas di\xE1rias"
@@ -1170,4 +1174,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Isca
+  - Minitorreta
+  - "Jogue uma isca para distrair os monstros comuns pr\xF3ximos."
+  - "Jogue uma minitorreta. Ela dispara no monstro vis\xEDvel mais pr\xF3ximo."
   _missing: []

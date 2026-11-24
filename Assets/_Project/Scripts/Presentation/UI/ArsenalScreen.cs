@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Purge.Core.Content;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +16,8 @@ namespace Purge.Presentation.UI
         [SerializeField] private RectTransform _grid;
         [SerializeField] private Button _template;
         [SerializeField] private ArsenalPreview _preview;
+        [SerializeField] private UiStyle _style;
+        [SerializeField] private UiShape _cardFrame;
         private readonly List<Button> _tiles = new List<Button>();
         [SerializeField] private Button _upgrade, _fork4a, _fork4b, _fork8a, _fork8b;
         public event Action UpgradeClicked;
@@ -29,9 +34,14 @@ namespace Purge.Presentation.UI
             Bind(_next, () => NextClicked?.Invoke()); Bind(_buy, () => BuyClicked?.Invoke());
             Bind(_favorite, () => FavoriteClicked?.Invoke()); Bind(_exclude, () => ExcludeClicked?.Invoke());
         }
-        public void List(string category, int money, IReadOnlyList<string> labels, IReadOnlyList<Sprite> icons, int selected)
+        public void List(string category, int money, IReadOnlyList<string> labels, IReadOnlyList<Sprite> icons,
+            IReadOnlyList<Rarity> rarities, int selected)
         {
             _className.text = category; _money.text = money.ToString();
+            if (_cardFrame != null && _style != null)
+                _cardFrame.Stroke = selected >= 0 && selected < rarities.Count
+                    ? _style.RarityColor(rarities[selected])
+                    : _style.Line;
             while (_tiles.Count < labels.Count)
             {
                 int index = _tiles.Count; var tile = Instantiate(_template, _grid);
@@ -43,7 +53,11 @@ namespace Purge.Presentation.UI
                 var tile = _tiles[i]; tile.gameObject.SetActive(i < labels.Count); if (i >= labels.Count) continue;
                 tile.GetComponentInChildren<TMP_Text>(true).text = labels[i];
                 var icon = tile.transform.Find("Icon").GetComponent<Image>(); icon.sprite = icons[i]; icon.enabled = icons[i] != null;
-                tile.GetComponent<Purge.Presentation.UI.Style.UiButton>().Accent = i == selected;
+                if (tile is UiButton button)
+                {
+                    button.SetRarity(rarities[i]);
+                    button.Accent = i == selected;
+                }
             }
         }
         public void Upgrades(string label, bool enabled, string[] labels, bool[] available)

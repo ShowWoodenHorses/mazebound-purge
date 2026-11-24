@@ -1,6 +1,7 @@
 using System;
 using Purge.Application.Meta;
 using Purge.Application.Services;
+using Purge.Core.Content;
 using Purge.Presentation.Localization;
 
 namespace Purge.Presentation.UI
@@ -44,8 +45,11 @@ namespace Purge.Presentation.UI
             {
                 var node = CharacterTree.Nodes[i];
                 var owned = _tree.Has(node.Id);
+                Rarity? permit = node.Branch == CharacterBranch.Trunk && Enum.TryParse<Rarity>(node.Id, out var rarity)
+                    ? rarity
+                    : (Rarity?)null;
                 _screen.SetNode(i, (owned ? "✓ " : "") + _texts.Get(TextKeys.CharacterNodePrefix + node.Id),
-                    node == _selected, owned, owned || _tree.MeetsRequirements(node));
+                    node == _selected, owned, owned || _tree.MeetsRequirements(node), permit);
             }
 
             var selectedOwned = _tree.Has(_selected.Id);

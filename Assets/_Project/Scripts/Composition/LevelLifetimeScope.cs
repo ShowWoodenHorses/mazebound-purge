@@ -95,6 +95,7 @@ namespace Purge.Composition
             builder.Register<PlayerRevival>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<ThrowableRunEffects>(Lifetime.Singleton);
+            builder.Register<Deployables>(Lifetime.Singleton);
             builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponFeelSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();
@@ -219,6 +220,7 @@ namespace Purge.Composition
             // Officers, elite, bosses (Animator) and what their abilities show.
             builder.Register<MonsterViewPresenter>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<MinefieldView>(Lifetime.Singleton).As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
+            builder.Register<DeployablesView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             builder.Register<AbilityWarningView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable>();
             builder.Register<MonsterProjectileView>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep, ILevelLateTickable, IViewWarmup>();
             // Chains of the hooks (stage 8b): after the views — from the hand where the pose put it.

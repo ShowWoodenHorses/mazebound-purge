@@ -20,6 +20,7 @@ namespace Purge.Presentation.UI
         private readonly LocalizationService _texts; private readonly IAddressablesService _assets; private readonly AudioService _audio;
         private readonly List<ContentDefinition> _items = new List<ContentDefinition>();
         private readonly List<string> _labels = new List<string>(); private readonly List<Sprite> _icons = new List<Sprite>();
+        private readonly List<Rarity> _rarities = new List<Rarity>();
         private CancellationTokenSource _selection; private IAssetOwner _owner;
         private int _category, _selected; private bool _initialized;
         public bool IsOpen { get; private set; }
@@ -78,20 +79,23 @@ namespace Purge.Presentation.UI
             _items.Sort((a,b) => { var r=RarityOf(a).CompareTo(RarityOf(b)); return r!=0?r:string.CompareOrdinal(a.Id,b.Id); });
             if (_guidedPurchase != null) _selected = _items.IndexOf(_guidedPurchase);
             _selected=Mathf.Clamp(_selected,0,Mathf.Max(0,_items.Count-1)); _labels.Clear(); _icons.Clear();
+            _rarities.Clear();
             foreach (var item in _items)
             {
                 var mark=_arsenal.Mark(item); var suffix=mark==PoolMark.Favorite?" ★":mark==PoolMark.Excluded?" ⊘":"";
-                _labels.Add(Name(item)+"\n"+T("arsenal.rarity."+(int)RarityOf(item))+suffix+(_arsenal.IsOpen(item)?"":" · "+T("arsenal.locked")));
+                var rarity = RarityOf(item);
+                _rarities.Add(rarity);
+                _labels.Add(Name(item)+"\n"+T("arsenal.rarity."+(int)rarity)+suffix+(_arsenal.IsOpen(item)?"":" · "+T("arsenal.locked")));
                 _icons.Add(item is WeaponDefinition w ? _shared.WeaponVisuals?.Find(w)?.Icon : _shared.ItemVisuals?.Find(item)?.Icon);
             }
-            View.List(T("arsenal.class."+_category),_arsenal.Money,_labels,_icons,_selected); Select(_selected);
+            Select(_selected);
         }
         private string Name(ContentDefinition item) => T((item is WeaponDefinition?"weapon.":"throwable.")+item.Id);
         private static Rarity RarityOf(ContentDefinition item) => item is WeaponDefinition w?w.Rarity:((ThrowableDefinition)item).Rarity;
         private void Select(int index)
         {
             if (_guidedPurchase != null) index = _items.IndexOf(_guidedPurchase);
-            _selected=index; View.List(T("arsenal.class."+_category),_arsenal.Money,_labels,_icons,_selected); var item=Item; if(item==null) { ClearPreview(); return; }
+            _selected=index; View.List(T("arsenal.class."+_category),_arsenal.Money,_labels,_icons,_rarities,_selected); var item=Item; if(item==null) { ClearPreview(); return; }
             var open=_arsenal.IsOpen(item); var mark=_arsenal.Mark(item);
             var details=T("arsenal.rarity."+(int)RarityOf(item))+" · "+T("arsenal.level")+" "+_arsenal.Level(item);
             if (_guidedPurchase != null) details = T(TextKeys.GuidedDesertPurchase) + "\n" + details;
@@ -128,11 +132,11 @@ namespace Purge.Presentation.UI
         }
         private async UniTask LoadPreview(ContentDefinition item,CancellationToken token)
         {
-            var reference=item is WeaponDefinition w?_shared.WeaponVisuals?.Find(w)?.HeldPrefab:_shared.ItemVisuals?.Find(item)?.Pickup;
+            var reference=item is WeaponDefinition w?_shared.WeaponVisuals?.Find(w)?.HeldPrefab:_shared.ItemVisuals?.Find(item)?.Flying;
             if(reference==null || !reference.RuntimeKeyIsValid()) return;
             IsLoading=true;
             var owner=_assets.CreateOwner("Arsenal preview: "+item.Id); _owner=owner;
-            try { var prefab=await owner.LoadAsync<GameObject>(reference,token); token.ThrowIfCancellationRequested(); if(IsOpen) View.Preview.Show(prefab); }
+            try { var prefab=await owner.LoadAsync<GameObject>(reference,token); token.ThrowIfCancellationRequested(); if(IsOpen) View.Preview.Show(prefab, item is ThrowableDefinition); }
             catch(OperationCanceledException) { }
             catch(Exception e) { GameLog.Exception(LogChannel.Visual,e,"Arsenal preview"); }
             finally { if(!token.IsCancellationRequested) IsLoading=false; }

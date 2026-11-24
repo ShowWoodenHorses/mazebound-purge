@@ -149,7 +149,9 @@
       "Molotov": "Uncommon",
       "Grenade_Smoke": "Common",
       "Flashbang": "Uncommon",
-      "Mine": "Rare"
+      "Mine": "Rare",
+      "Decoy": "Uncommon",
+      "MachineGun_Tower": "Rare"
     },
     "start": [
       "Grenade"

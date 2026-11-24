@@ -995,6 +995,81 @@ namespace Purge.Tests.PlayMode
             await _flow.ExitToMenu();
         });
 
+        [UnityTest]
+        public IEnumerator CombatSandbox_ThrowsAndShowsBothTimedDeployables() => Async(async () =>
+        {
+            await _flow.StartLevel("Level_Sandbox", new LevelLaunchOptions(startIndex: 0));
+            Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
+            var container = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
+            var player = container.Resolve<PlayerSystem>();
+            var horde = container.Resolve<Purge.Gameplay.Horde.HordeSystem>();
+            horde.GodMode = true;
+            var throwing = container.Resolve<Purge.Gameplay.Throwing.PlayerThrowing>();
+            var sandbox = container.Resolve<Purge.Gameplay.Horde.CombatSandbox>();
+            var deployables = container.Resolve<Purge.Gameplay.Throwing.Deployables>();
+            var root = container.Resolve<LevelViewRoot>().transform;
+            for (var i = 0; i < 7 && throwing.Slot.Definition?.Id != "decoy"; i++)
+                sandbox.NextThrowable();
+            Assert.That(throwing.Slot.Definition.Id, Is.EqualTo("decoy"));
+            Assert.IsTrue(throwing.TryThrow(player.Position));
+            await WaitFor(() => deployables.Decoy.Remaining > 0f && root.Find("Decoy").gameObject.activeSelf);
+
+            sandbox.NextThrowable();
+            Assert.That(throwing.Slot.Definition.Id, Is.EqualTo("mini_turret"));
+            await WaitFor(() => throwing.Cooldown <= 0f);
+            var destination = throwing.Clamp(player.Position + Vector2.up * 3f);
+            Assert.That(Vector2.Distance(destination, player.Position), Is.GreaterThan(1f));
+            Assert.IsTrue(throwing.TryThrow(destination));
+
+            var bullets = container.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+            var dropView = container.Resolve<DropViewPresenter>();
+            var bullet = bullets.Active.Single(b => b.Throwable?.Id == "mini_turret");
+            var flightTime = bullet.Travel / bullet.Speed;
+            dropView.LateTick(0f);
+            var flying = root.Find("Drops").GetComponentsInChildren<Transform>()
+                .Single(model => model.name == "mini_turret (flying)");
+            var startScale = flying.localScale.x;
+            var startHeight = flying.localPosition.y;
+
+            bullets.Tick(flightTime * 0.5f);
+            dropView.LateTick(0f);
+            var midScale = flying.localScale.x;
+            Assert.That(midScale, Is.GreaterThan(startScale));
+            Assert.That(flying.localPosition.y, Is.GreaterThan(startHeight));
+            Assert.That(deployables.Turret.Remaining, Is.Zero);
+
+            bullets.Tick(flightTime * 0.49f);
+            dropView.LateTick(0f);
+            var finalFlightScale = flying.localScale.x;
+            Assert.That(finalFlightScale, Is.GreaterThan(midScale));
+            bullets.Tick(flightTime * 0.02f);
+            var turret = root.Find("MachineGun_Tower");
+            var turretView = container.Resolve<DeployablesView>();
+            var shotSeen = false;
+            var tracerAtMuzzle = false;
+            var flashAtMuzzle = false;
+            deployables.TurretFired += (item, _) =>
+            {
+                if (shotSeen) return;
+                shotSeen = true;
+                if (!turretView.TryGetMuzzle(item, out var muzzle)) return;
+                var activeViews = root.GetComponentsInChildren<Transform>();
+                tracerAtMuzzle = activeViews.Any(view => view.name == "Bullet" &&
+                    Vector3.Distance(view.position, muzzle.position) < 0.01f);
+                flashAtMuzzle = activeViews.Any(view => view.name == "MuzzleFlash" &&
+                    Vector3.Distance(view.position, muzzle.position) < 0.01f);
+            };
+            await WaitFor(() => deployables.Turret.Remaining > 0f && turret.gameObject.activeSelf);
+            Assert.That(deployables.Turret.Position, Is.EqualTo(destination));
+            Assert.That(turret.localScale.x, Is.EqualTo(finalFlightScale).Within(0.01f));
+            Assert.That(flying.gameObject.activeSelf, Is.False);
+            Assert.That(deployables.Decoy.Remaining, Is.GreaterThan(0f));
+            await WaitFor(() => shotSeen);
+            Assert.That(tracerAtMuzzle, Is.True);
+            Assert.That(flashAtMuzzle, Is.True);
+            await _flow.ExitToMenu();
+        });
+
         private static Vector2 AgentPosition(Purge.Gameplay.Horde.HordeSystem horde, int agent) => horde.Positions[agent];
 
         [UnityTest]

@@ -59,7 +59,7 @@ namespace Purge.Editor.Dev
             swing.SetFloat("_Inner", 0.7f); // a crescent, not a wedge
             var tracerMesh = SaveTracerMesh();
             // Throwing and zones (stage 4б): arc dots over everything, the landing ring, cells of a zone.
-            var throwArc = SaveMaterial("fx_throw_arc", "Purge/Particle", soft, Blend.Alpha, new Color(1f, 1f, 1f, 0.85f), overModels: true);
+            var throwArc = SaveMaterial("fx_throw_arc", "Purge/Particle", null, Blend.Alpha, new Color(1f, 1f, 1f, 0.95f), overModels: true);
             var throwTarget = SaveMaterial("fx_throw_target", "Purge/Ring", null, Blend.Alpha, new Color(1f, 0.85f, 0.45f, 0.65f));
             throwTarget.SetFloat("_Fill", 0.2f);
             var zoneCells = SaveMaterial("fx_zone_cells", "Purge/FireCells", null, Blend.Alpha, Color.white);

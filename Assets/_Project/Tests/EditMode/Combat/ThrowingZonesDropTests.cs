@@ -51,6 +51,7 @@ namespace Purge.Tests.EditMode.Combat
         private BulletSystem _bullets;
         private ThrowableSlot _slot;
         private PlayerThrowing _throwing;
+        private Deployables _deployables;
         private AmmoStock _ammo;
         private WeaponSystem _weapons;
         private PickupSystem _pickups;
@@ -127,7 +128,9 @@ namespace Purge.Tests.EditMode.Combat
             _effects = new EffectSystem(_targets, _zones, _statuses, _sounds);
             _bullets = new BulletSystem(_targets);
             _slot = new ThrowableSlot();
-            _throwing = new PlayerThrowing(_input, _player, _slot, _bullets, _targets, _effects, _sounds, _pointer);
+            _deployables = new Deployables(passability: passability);
+            _throwing = new PlayerThrowing(_input, _player, _slot, _bullets, _targets, _effects, _sounds, _pointer,
+                deployables: _deployables);
             _ammo = new AmmoStock();
             _weapons = new WeaponSystem(_input, _definition);
             _pickups = new PickupSystem(_level, _player, _health, new PlayerInventory(), _weapons, _sounds, _ammo, _slot);
@@ -230,6 +233,23 @@ namespace Purge.Tests.EditMode.Combat
 
             Assert.AreEqual(50f, near.Health, 1e-3f, "Explodes at the cell centre (6, 3).");
             Assert.AreEqual(100f, far.Health);
+        }
+
+        [Test]
+        public void Deployable_ChoosesWalkableGround_WhenAimReachesAMovementOnlyBlocker()
+        {
+            var decoy = ScriptableObject.CreateInstance<ThrowableDefinition>();
+            _created.Add(decoy);
+            decoy.Configure("decoy", 3, 8f, new DeployableEffect());
+            _slot.Add(decoy, 1);
+            var blocked = new Vector2(8f, 1f);
+
+            var landing = _throwing.Clamp(blocked);
+            Assert.That(landing, Is.Not.EqualTo(blocked));
+            Assert.That(landing, Is.Not.EqualTo(_player.Position));
+            Assert.That(_throwing.TryThrow(blocked), Is.True);
+            Fly();
+            Assert.That(_deployables.Decoy.Position, Is.EqualTo(landing));
         }
 
         [Test]

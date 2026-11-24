@@ -74,7 +74,7 @@
 - [x] **[4]** Граната осколочная — `Throw/Grenade`
 - [x] **[4]** Молотов — `Throw/Molotov`
 - [x] **[13–15]** Дымовая шашка — `Throw/Grenade_Smoke`; ещё светошумовая `Throw/Flashbang`
-- [x] **позже** Мина — `Throw/Mine`; мини-турель — `Throw/Turret/MachineGun_Tower`, `AAGun_Tower`; манекена-приманки нет
+- [x] Мина — `Throw/Mine`; мини-турель — `Throw/Turret/MachineGun_Tower`; манекен-приманка — `Throw/Decoy`.
 
 ---
 

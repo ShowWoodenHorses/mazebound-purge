@@ -51,6 +51,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 83e03865f42011d468dfc95aa8e3b1e4, type: 2}
   - {fileID: 11400000, guid: 296e66b85abbec645ac43742bb9d50d9, type: 2}
   - {fileID: 11400000, guid: 4e8ffa81618ff1d46aa6deea7e425321, type: 2}
+  - {fileID: 11400000, guid: 2073fda6000a00e4b8ae352566ad98e1, type: 2}
+  - {fileID: 11400000, guid: 3fdbc2394908c004ea7e868cd0d1e37f, type: 2}
   _monsterCounts: 000000001e0000003c0000006400000096000000c80000002c010000
   _startCount: 60
   _cameraHalfExtents:

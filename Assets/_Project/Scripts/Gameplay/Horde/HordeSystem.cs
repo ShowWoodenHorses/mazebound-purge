@@ -14,6 +14,7 @@ using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Visibility;
 using UnityEngine;
 
@@ -211,10 +212,15 @@ namespace Purge.Gameplay.Horde
         internal float WaveDamageFactor { get; set; } = 1f;
         internal float? WaveChampionChance { get; set; }
         private readonly float _healthFactor; // difficulty
+        private readonly Deployables _deployables;
+        private FlowField _decoyFlow;
+        private bool[] _decoyWalkable;
+        private bool _decoyFlowDirty;
+        private DeployedItem _decoy;
 
         public HordeSystem(LevelData level, LevelGrid grid, LevelPassability passability, DoorSystem doors,
             PlayerSystem player, PlayerHealth playerHealth, SoundEventBus sounds = null, VisibilitySystem visibility = null,
-            LevelLaunchOptions options = null, SmokeScreen smoke = null)
+            LevelLaunchOptions options = null, SmokeScreen smoke = null, Deployables deployables = null)
         {
             _level = level;
             _grid = grid;
@@ -223,6 +229,7 @@ namespace Purge.Gameplay.Horde
             _player = player;
             _playerHealth = playerHealth;
             _sounds = sounds;
+            _deployables = deployables;
             Horde = level.Horde;
             Stress = level.StressTest;
             Difficulty = options?.Difficulty != null ? options.Difficulty : Horde != null ? Horde.Difficulty : null;
@@ -859,6 +866,11 @@ namespace Purge.Gameplay.Horde
 
             RefreshWalkable();
             _flow = new FlowField(_grid.Width, _grid.Height);
+            if (_deployables != null)
+            {
+                _decoyFlow = new FlowField(_grid.Width, _grid.Height);
+                _decoyWalkable = new bool[_grid.FloorSize];
+            }
             InitializeBodies();
             _buckets = new CellBuckets(_grid.Width, _grid.Height, capacity, _grid.FloorCount);
             _random = new DeterministicRandom((int)StableHash.Of(_level.name + "/horde"));
@@ -962,7 +974,11 @@ namespace Purge.Gameplay.Horde
                 }
             CollectWide();
 
-            if (!Frozen) Perception.Tick(Time);
+            if (!Frozen)
+            {
+                Perception.Tick(Time);
+                RefreshDecoy();
+            }
 
             var playerPosition = _player.Position;
             for (var i = 0; i < _highWater; i++)
@@ -1157,6 +1173,7 @@ namespace Purge.Gameplay.Horde
             }
 
             var cell = PlayerMovement.CellOf(_positions[agent], _floors[agent]);
+            if (TickDecoy(agent, _positions[agent], _player.Position, StatsOf(agent), deltaTime)) return;
             if (Perception.AwarenessOf(agent) == HordeAwareness.Chase)
             {
                 if (_stairsFlow != null && _stairsFlow.TryNext(cell, out var next))
@@ -1276,11 +1293,62 @@ namespace Purge.Gameplay.Horde
 
         }
 
+        private void RefreshDecoy()
+        {
+            _decoy = _deployables?.Decoy ?? default;
+            if (_decoy.Remaining <= 0f) return;
+            var cell = PlayerMovement.CellOf(_decoy.Position, _decoy.Floor);
+            if (_decoyFlow.HasResult && _decoyFlow.Target == cell && !_decoyFlowDirty) return;
+            for (var y = 0; y < _grid.Height; y++)
+            for (var x = 0; x < _grid.Width; x++)
+                _decoyWalkable[y * _grid.Width + x] = _passability.IsWalkable(new GridPosition(x, y, cell.Floor), false);
+            _decoyFlow.Build(cell, _decoyWalkable);
+            _decoyFlowDirty = false;
+        }
+
+        public bool IsDistracted(int agent) => TryGetDecoyCell(agent, _positions[agent], out _);
+
+        private bool TryGetDecoyCell(int agent, Vector2 position, out GridPosition cell)
+        {
+            cell = default;
+            if (_decoy.Remaining <= 0f || _floors[agent] != _decoy.Floor || _held[agent] || CannotAim(agent) ||
+                _affix[agent] != 0 || (_kinds[_kind[agent]].Definition?.Rank ?? MonsterRank.Mass) != MonsterRank.Mass)
+                return false;
+            var radius = _deployables.DecoyRadius;
+            if ((_decoy.Position - position).sqrMagnitude > radius * radius) return false;
+            cell = PlayerMovement.CellOf(position, _decoy.Floor);
+            return _decoyFlow.DistanceAt(cell) != FlowField.Unreachable;
+        }
+
+        private bool TickDecoy(int i, Vector2 position, Vector2 playerPosition, MonsterStats stats, float deltaTime)
+        {
+            if (!TryGetDecoyCell(i, position, out var cell)) return false;
+            var offset = _decoy.Position - position;
+
+            if (_states[i] != HordeAgentState.Moving)
+            {
+                _states[i] = HordeAgentState.Moving;
+                _stateStart[i] = Time;
+            }
+
+            var moving = offset.sqrMagnitude > stats.AttackReach * stats.AttackReach || cell != _decoyFlow.Target;
+            if (moving && _decoyFlow.TryNext(cell, out var next))
+                offset = new Vector2(next.X, next.Y) - position;
+            var direction = offset.normalized;
+            var step = moving ? direction * (_speed[i] * _speedFactor[i] * deltaTime) : Vector2.zero;
+            if (_floors[i] == _player.Floor) step += Separation(i, position, playerPosition, stats);
+            _positions[i] = MoveWithWalls(position, step, stats.Radius, _decoy.Floor);
+            _pace[i] = moving ? HordePace.Run : HordePace.Still;
+            Turn(i, direction, stats, deltaTime);
+            return true;
+        }
+
         private void TickAlive(int i, Vector2 playerPosition, float deltaTime)
         {
             var stats = _kinds[_kind[i]].Stats;
             var position = ApplyPush(i, _positions[i], deltaTime);
-            if (_stunned[i] || CannotAim(i) || Perception.LostInSmoke(i)) _dashLeft[i] = 0f;
+            if (_stunned[i] || CannotAim(i) || Perception.LostInSmoke(i) || (_dashLeft[i] > 0f && IsDistracted(i)))
+                _dashLeft[i] = 0f;
             if (_dashLeft[i] > 0f)
             {
                 TickDash(i, position, stats, deltaTime);
@@ -1319,6 +1387,8 @@ namespace Purge.Gameplay.Horde
                 TickDisoriented(i, position, playerPosition, stats, deltaTime);
                 return;
             }
+
+            if (TickDecoy(i, position, playerPosition, stats, deltaTime)) return;
 
             var awareness = Perception.AwarenessOf(i);
             if (awareness != HordeAwareness.Chase)
@@ -1757,12 +1827,12 @@ namespace Purge.Gameplay.Horde
         }
 
         /// <summary>Moves by axis so the square footprint never enters an unwalkable cell (slides along walls).</summary>
-        private Vector2 MoveWithWalls(Vector2 position, Vector2 step, float radius)
+        private Vector2 MoveWithWalls(Vector2 position, Vector2 step, float radius, int? floor = null)
         {
             var x = new Vector2(position.x + step.x, position.y);
-            if (FootprintFree(x, radius)) position = x;
+            if (FootprintFree(x, radius, floor)) position = x;
             var y = new Vector2(position.x, position.y + step.y);
-            if (FootprintFree(y, radius)) position = y;
+            if (FootprintFree(y, radius, floor)) position = y;
             return position;
         }
 
@@ -2300,12 +2370,14 @@ namespace Purge.Gameplay.Horde
         {
             RefreshWalkable();
             _flowDirty = true;
+            _decoyFlowDirty = true;
         }
 
         private void OnDoorChanged(DoorData door, bool open)
         {
             RefreshWalkable();
             _flowDirty = true;
+            _decoyFlowDirty = true;
             Perception.OnDoorChanged();
         }
 

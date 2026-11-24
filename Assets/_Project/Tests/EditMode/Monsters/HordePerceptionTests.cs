@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 using Purge.Core.Definitions;
+using Purge.Core.Effects;
 using Purge.Core.Grid;
 using Purge.Core.Horde;
 using Purge.Core.Level;
@@ -13,6 +14,8 @@ using Purge.Gameplay.Horde;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Sound;
+using Purge.Gameplay.Spatial;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Visibility;
 using Purge.Tests.EditMode.Player;
 using UnityEngine;
@@ -100,9 +103,10 @@ namespace Purge.Tests.EditMode.Monsters
             _created.Clear();
         }
 
-        private HordeSystem Horde()
+        private HordeSystem Horde(Deployables deployables = null)
         {
-            _horde = new HordeSystem(_level, _grid, _passability, _doors, _player, _health, _sounds, _visibility);
+            _horde = new HordeSystem(_level, _grid, _passability, _doors, _player, _health, _sounds, _visibility,
+                deployables: deployables);
             _horde.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
             return _horde;
         }
@@ -113,6 +117,54 @@ namespace Purge.Tests.EditMode.Monsters
         }
 
         private HordeAwareness Of(int agent) => _horde.Perception.AwarenessOf(agent);
+
+        [Test]
+        public void Decoy_RedirectsHunterUntilExpiry()
+        {
+            var deployables = new Deployables();
+            Horde(deployables);
+            var hunter = Spawn(9f, 10f, MonsterPerception.Hunter);
+            var item = ScriptableObject.CreateInstance<ThrowableDefinition>();
+            _created.Add(item);
+            item.Configure("decoy", 3, 8f, new DeployableEffect());
+            deployables.Place(item, new Vector2(12f, 10f), 0, Vector2.right);
+
+            Tick(1f);
+            Assert.That(_horde.Positions[hunter].x, Is.GreaterThan(10f));
+
+            deployables.Tick(8f, null, null, new ThrowableSlot());
+            Tick(1f);
+            Assert.That(_horde.Positions[hunter].x, Is.LessThan(10f));
+        }
+
+        [Test]
+        public void Turret_IgnoresEnemyBehindWall_AndStopsOnExpiry()
+        {
+            var deployables = new Deployables();
+            Horde(deployables);
+            var covered = Spawn(21f, 10f);
+            var nearest = Spawn(17f, 10f);
+            var far = Spawn(19f, 14f);
+            Tick(Dt);
+            var item = ScriptableObject.CreateInstance<ThrowableDefinition>();
+            _created.Add(item);
+            item.Configure("turret", 2, 8f, new DeployableEffect(DeployableKind.Turret));
+            var targets = new CombatTargets(new SpatialQueryService(_grid, _doors), _horde);
+            var bullets = new BulletSystem(targets);
+            var slot = new ThrowableSlot();
+            var shots = 0;
+            deployables.TurretFired += (_, _) => shots++;
+            deployables.Place(item, new Vector2(19f, 10f), 0, Vector2.up);
+
+            deployables.Tick(Dt, targets, bullets, slot);
+            bullets.Tick(0.1f);
+            Assert.That(shots, Is.EqualTo(1));
+            Assert.That(_horde.Health[nearest], Is.EqualTo(70f));
+            Assert.That(_horde.Health[covered], Is.EqualTo(100f));
+            Assert.That(_horde.Health[far], Is.EqualTo(100f));
+            deployables.Tick(8f, targets, bullets, slot);
+            Assert.That(shots, Is.EqualTo(1));
+        }
 
         private int Spawn(float x, float y, MonsterPerception perception = MonsterPerception.Wanderer)
         {

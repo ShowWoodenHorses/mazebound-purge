@@ -73,10 +73,13 @@ namespace Purge.Editor.Dev
                 var created = new List<string>();
                 var used = new HashSet<string>();
 
-                foreach (var model in Models(ThrowModels))
+                var towerModels = Models(ThrowModels + "/Turret")
+                    .Where(model => File.Exists($"{ThrowablesPath}/{Name(model)}.asset"));
+                foreach (var model in Models(ThrowModels).Concat(towerModels))
                 {
                     var throwable = LoadOrCreate<ThrowableDefinition>($"{ThrowablesPath}/{Name(model)}.asset", created);
-                    var pickup = BuildPrefab(model, "_Pickup", PickupSize, onFloor: true, layOnSide: Name(model) != "Mine");
+                    var pickup = BuildPrefab(model, "_Pickup", PickupSize, onFloor: true,
+                        layOnSide: Name(model) != "Mine" && throwable.Deployable == null);
                     var flying = BuildPrefab(model, "_Flying", FlyingSize, onFloor: false);
                     used.Add(pickup);
                     used.Add(flying);

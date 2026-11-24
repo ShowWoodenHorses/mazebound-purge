@@ -70,6 +70,7 @@ namespace Purge.Presentation.Audio
         private int _health0;
         private bool _subscribed;
         private readonly PlayerThrowing _throwing;
+        private readonly Deployables _deployables;
         private readonly EffectSystem _effects;
         private readonly ZoneSystem _zones;
         private readonly DropSystem _drops;
@@ -91,7 +92,7 @@ namespace Purge.Presentation.Audio
             PlayerInteraction interaction, WeaponSystem weapons, BulletSystem bullets, PickupSystem pickups,
             SoundEventBus sounds, FrozenDoorsView frozenDoors, PlayerThrowing throwing = null,
             EffectSystem effects = null, ZoneSystem zones = null, DropSystem drops = null, WaveSystem waves = null,
-            RunExperience experience = null, PlayerRevival revival = null)
+            RunExperience experience = null, PlayerRevival revival = null, Deployables deployables = null)
         {
             _experience = experience;
             _revival = revival;
@@ -99,6 +100,7 @@ namespace Purge.Presentation.Audio
             _zones = zones;
             _drops = drops;
             _throwing = throwing;
+            _deployables = deployables;
             _effects = effects;
             _frozenDoors = frozenDoors;
             _audio = audio;
@@ -140,6 +142,7 @@ namespace Purge.Presentation.Audio
                     _throwing.Thrown += OnThrown;
                     _throwing.Landed += OnLanded;
                 }
+                if (_deployables != null) _deployables.TurretFired += OnTurretFired;
                 if (_effects != null)
                 {
                     _effects.Exploded += OnExploded;
@@ -184,6 +187,7 @@ namespace Purge.Presentation.Audio
                     _throwing.Thrown -= OnThrown;
                     _throwing.Landed -= OnLanded;
                 }
+                if (_deployables != null) _deployables.TurretFired -= OnTurretFired;
                 if (_effects != null)
                 {
                     _effects.Exploded -= OnExploded;
@@ -265,6 +269,12 @@ namespace Purge.Presentation.Audio
         }
 
         private void OnLanded(ThrowableDefinition throwable, Vector2 at) => PlayAt(Catalog.Land, at);
+
+        private void OnTurretFired(DeployedItem turret, Bullet bullet)
+        {
+            if (turret.Floor == _player.Floor)
+                PlayAt(Catalog.WeaponAttack("machine_gun") ?? Catalog.Shot, turret.Position);
+        }
 
         private void OnExploded(Vector2 at, int floor, float radius, IExplosionLook source) =>
             PlayAt(source is ExplosionEffect { FlashbangSound: true } ? Catalog.Flashbang : Catalog.ExplosionOf(radius), at);

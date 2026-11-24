@@ -15,14 +15,16 @@ namespace Purge.Presentation.Visual
     /// <summary>
     /// The throw aim (ТЗ: от игрока до клетки рисуется дуга): dots along the arc from the hand to
     /// <see cref="PlayerThrowing.Target"/> and a ring on the ground as wide as the throwable's effect. One dynamic mesh of
-    /// quads and one quad for the ring, drawn over everything while <see cref="PlayerThrowing.IsAiming"/>; the dots run
+    /// quads and one quad for the ring, drawn over everything while <see cref="PlayerThrowing.IsAiming"/>; the dashes run
     /// towards the target. Materials — <see cref="CombatVisualDefinition.ThrowArc"/> and
     /// <see cref="CombatVisualDefinition.ThrowTarget"/>; without them nothing is drawn. Allocation-free per frame.
     /// </summary>
     public sealed class ThrowAimView : ILevelLoadStep, ILevelLateTickable, IDisposable
     {
-        private const int Dots = 18;
-        private const float DotSize = 0.16f;
+        private const int Dashes = 12;
+        private const int DashQuads = Dashes + 1;
+        private const float DashFraction = 0.65f;
+        private const float DashHalfWidth = 0.055f;
         private const float HandHeight = 1.1f;
         private const float RingWidth = 0.08f;
         private const float RunSpeed = 1.2f;
@@ -56,10 +58,10 @@ namespace Purge.Presentation.Visual
             _bounds = new Bounds(new Vector3(geometry.Width * 0.5f, 2f, geometry.Height * 0.5f),
                 new Vector3(geometry.Width + 20f, 40f, geometry.Height + 20f));
 
-            _vertices = new Vector3[Dots * 4];
-            var uvs = new Vector2[Dots * 4];
-            var indices = new int[Dots * 6];
-            for (var q = 0; q < Dots; q++)
+            _vertices = new Vector3[DashQuads * 4];
+            var uvs = new Vector2[DashQuads * 4];
+            var indices = new int[DashQuads * 6];
+            for (var q = 0; q < DashQuads; q++)
             {
                 int v = q * 4, i = q * 6;
                 uvs[v] = new Vector2(0f, 0f);
@@ -105,20 +107,23 @@ namespace Purge.Presentation.Visual
             var from = _player.Position;
             var to = _throwing.Target;
             var floorHeight = _player.Floor * GridPosition.FloorHeight;
-            var distance = (to - from).magnitude;
+            var offset = to - from;
+            var distance = offset.magnitude;
+            var across = distance > 1e-4f
+                ? new Vector3(offset.y, 0f, -offset.x) * (DashHalfWidth / distance)
+                : Vector3.zero;
             var arc = definition.ArcHeight * distance;
             var shift = Mathf.Repeat(_time * RunSpeed, 1f);
-            for (var d = 0; d < Dots; d++)
+            for (var d = 0; d < DashQuads; d++)
             {
-                var p = Mathf.Clamp01((d + shift) / Dots);
-                var flat = Vector2.Lerp(from, to, p);
-                var height = Mathf.Lerp(HandHeight, 0.05f, p) + arc * 4f * p * (1f - p) + floorHeight;
-                var size = DotSize * (d == 0 ? shift : 1f) * 0.5f;
+                var start = d + shift - 1f;
+                var tail = ArcPoint(from, offset, floorHeight, arc, Mathf.Clamp01(start / Dashes));
+                var head = ArcPoint(from, offset, floorHeight, arc, Mathf.Clamp01((start + DashFraction) / Dashes));
                 var v = d * 4;
-                _vertices[v] = new Vector3(flat.x - size, height, flat.y - size);
-                _vertices[v + 1] = new Vector3(flat.x - size, height, flat.y + size);
-                _vertices[v + 2] = new Vector3(flat.x + size, height, flat.y + size);
-                _vertices[v + 3] = new Vector3(flat.x + size, height, flat.y - size);
+                _vertices[v] = tail - across;
+                _vertices[v + 1] = head - across;
+                _vertices[v + 2] = head + across;
+                _vertices[v + 3] = tail + across;
             }
 
             _dots.SetVertices(_vertices, 0, _vertices.Length, MeshUpdateFlags.DontRecalculateBounds | MeshUpdateFlags.DontValidateIndices);
@@ -130,6 +135,13 @@ namespace Purge.Presentation.Visual
             var matrix = Matrix4x4.TRS(new Vector3(to.x, floorHeight + 0.03f, to.y), Quaternion.identity,
                 new Vector3(radius * 2f, 1f, radius * 2f));
             Graphics.RenderMesh(Params(_visual.ThrowTarget, _block), _quad, 0, matrix);
+        }
+
+        private static Vector3 ArcPoint(Vector2 from, Vector2 offset, float floorHeight, float arc, float progress)
+        {
+            var flat = from + offset * progress;
+            var height = Mathf.Lerp(HandHeight, 0.05f, progress) + arc * 4f * progress * (1f - progress) + floorHeight;
+            return new Vector3(flat.x, height, flat.y);
         }
 
         public void Dispose()

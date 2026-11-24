@@ -11,6 +11,7 @@ using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Visibility;
+using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Weapons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -78,6 +79,8 @@ namespace Purge.Presentation.Visual
         private readonly PlayerWeaponPresenter _weaponView;
         private readonly PlayerViewPresenter _playerView;
         private readonly PackEffectsPlayer _packEffects;
+        private readonly Deployables _deployables;
+        private readonly DeployablesView _deployablesView;
         private readonly CombatTargets _targets;
 
         private readonly Dictionary<Bullet, Tracer> _tracers = new Dictionary<Bullet, Tracer>();
@@ -116,9 +119,12 @@ namespace Purge.Presentation.Visual
 
         public CombatViewPresenter(CombatVisualDefinition visual, IAssetOwner assets, LevelViewRoot root, BulletSystem bullets,
             PlayerCombat combat, PlayerSystem player, VisibilitySystem visibility, PlayerWeaponPresenter weaponView,
-            PlayerViewPresenter playerView, PackEffectsPlayer packEffects = null, CombatTargets targets = null)
+            PlayerViewPresenter playerView, PackEffectsPlayer packEffects = null, CombatTargets targets = null,
+            Deployables deployables = null, DeployablesView deployablesView = null)
         {
             _targets = targets;
+            _deployables = deployables;
+            _deployablesView = deployablesView;
             _playerView = playerView;
             _packEffects = packEffects;
             _visual = visual;
@@ -162,6 +168,7 @@ namespace Purge.Presentation.Visual
             {
                 _bullets.Spawned += OnBulletSpawned;
                 _bullets.Ended += OnBulletEnded;
+                if (_deployables != null) _deployables.TurretFired += OnTurretFired;
                 _combat.Attacked += OnAttacked;
                 _subscribed = true;
             }
@@ -204,6 +211,7 @@ namespace Purge.Presentation.Visual
             {
                 _bullets.Spawned -= OnBulletSpawned;
                 _bullets.Ended -= OnBulletEnded;
+                if (_deployables != null) _deployables.TurretFired -= OnTurretFired;
                 _combat.Attacked -= OnAttacked;
                 _subscribed = false;
             }
@@ -354,6 +362,7 @@ namespace Purge.Presentation.Visual
             tracer.Spawn = bullet.Position;
             tracer.Origin = new Vector3(bullet.Position.x, BulletHeight(bullet), bullet.Position.y);
             tracer.FromMuzzle = false;
+            tracer.KeepMuzzleHeight = false;
             tracer.Electric = bullet.Weapon?.Effects?.ElectricProjectile == true;
             tracer.Fire = bullet.Weapon?.Effects?.FireProjectile == true;
             tracer.FireballPending = tracer.FireballTrail != null;
@@ -380,6 +389,21 @@ namespace Purge.Presentation.Visual
             _tracers[bullet] = tracer;
             if (!bullet.IsLobbed) _newTracers.Add(tracer);
             PlaceTracer(bullet, tracer);
+        }
+
+        private void OnTurretFired(DeployedItem turret, Bullet bullet)
+        {
+            if (!_tracers.TryGetValue(bullet, out var tracer)) return;
+            _newTracers.Remove(tracer);
+            if (_deployablesView == null || !_deployablesView.TryGetMuzzle(turret, out var muzzle)) return;
+
+            var root = _root.transform;
+            tracer.Origin = root.InverseTransformPoint(muzzle.position);
+            tracer.FromMuzzle = true;
+            tracer.KeepMuzzleHeight = true;
+            PlaceTracer(bullet, tracer);
+            if (_visibility.IsVisible(PlayerMovement.CellOf(turret.Position, turret.Floor)))
+                ShowAt(_flashPool, tracer.Origin, Quaternion.LookRotation(root.InverseTransformDirection(muzzle.forward)));
         }
 
         private void OnBulletEnded(Bullet bullet, Vector2 point, BulletEnd reason)
@@ -723,7 +747,7 @@ namespace Purge.Presentation.Visual
 
         private static Vector3 TracerPoint(Bullet bullet, Tracer tracer, Vector2 point, float travelled)
         {
-            var height = BulletHeight(bullet);
+            var height = tracer.KeepMuzzleHeight ? tracer.Origin.y : BulletHeight(bullet);
             var position = new Vector3(point.x, height, point.y);
             if (!tracer.FromMuzzle) return position;
             var simulatedOrigin = new Vector3(tracer.Spawn.x, height, tracer.Spawn.y);
@@ -796,6 +820,7 @@ namespace Purge.Presentation.Visual
             public Vector3 Origin;
 
             public bool FromMuzzle;
+            public bool KeepMuzzleHeight;
         }
 
         private struct ActiveEffect

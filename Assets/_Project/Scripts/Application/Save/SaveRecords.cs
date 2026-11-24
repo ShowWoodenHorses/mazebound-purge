@@ -169,6 +169,8 @@ namespace Purge.Application.Save
         public int ThrowableCount;
         public List<Purge.Gameplay.Visibility.SmokeCloud> Smoke = new List<Purge.Gameplay.Visibility.SmokeCloud>();
         public List<Purge.Gameplay.Throwing.PlantedMine> Mines = new List<Purge.Gameplay.Throwing.PlantedMine>();
+        public Purge.Gameplay.Throwing.DeployedItem Decoy;
+        public Purge.Gameplay.Throwing.DeployedItem Turret;
         public Purge.Gameplay.Run.RunPerkState Perks;
 
         /// <summary>Level objects (stage 7в): barrels blown up, chests opened (ids of the level), the chest key dropped.</summary>
@@ -232,6 +234,8 @@ namespace Purge.Application.Save
             Smoke.Clear();
             Mines ??= new List<Purge.Gameplay.Throwing.PlantedMine>();
             Mines.Clear();
+            Decoy = default;
+            Turret = default;
             Perks = default;
             BrokenBarrels ??= new List<string>();
             OpenedChests ??= new List<string>();

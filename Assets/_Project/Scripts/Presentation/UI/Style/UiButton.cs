@@ -1,3 +1,4 @@
+using Purge.Core.Content;
 using Purge.Presentation.UI.Shapes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,8 +29,16 @@ namespace Purge.Presentation.UI.Style
         private SelectionState _state;
         private float _scale = 1f;
         private float _targetScale = 1f;
+        private Rarity? _rarity;
 
         public UiShape Body => _body;
+
+        public void SetRarity(Rarity rarity)
+        {
+            if (_rarity == rarity) return;
+            _rarity = rarity;
+            Paint(_state);
+        }
 
         /// <summary>The main action of its screen (Play, Next): outline and content in the accent.</summary>
         public bool Accent
@@ -103,6 +112,13 @@ namespace Purge.Presentation.UI.Style
 
             if (_body != null)
             {
+                if (_rarity.HasValue)
+                {
+                    line = _style.RarityColor(_rarity.Value);
+                    _body.StrokeWidth = _style.Stroke + (_accent ? 2.5f : 1f);
+                    if (state == SelectionState.Highlighted || state == SelectionState.Selected)
+                        _body.StrokeWidth += 0.5f;
+                }
                 _body.Stroke = line;
                 _body.Fill = fill;
             }

@@ -58,6 +58,7 @@ namespace Purge.Gameplay.Throwing
         private readonly IAimPointer _pointer;
         private readonly RunStats _stats;
         private readonly ThrowableRunEffects _runEffects;
+        private readonly Deployables _deployables;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         public const int MineLimit = 3;
         private readonly List<PlantedMine> _mines = new List<PlantedMine>(MineLimit);
@@ -69,7 +70,7 @@ namespace Purge.Gameplay.Throwing
 
         public PlayerThrowing(IPlayerInput input, PlayerSystem player, ThrowableSlot slot, BulletSystem bullets,
             CombatTargets targets, EffectSystem effects, SoundEventBus sounds, IAimPointer pointer = null, RunStats stats = null,
-            ThrowableRunEffects runEffects = null)
+            ThrowableRunEffects runEffects = null, Deployables deployables = null)
         {
             _input = input;
             _player = player;
@@ -81,6 +82,7 @@ namespace Purge.Gameplay.Throwing
             _pointer = pointer;
             _stats = stats;
             _runEffects = runEffects;
+            _deployables = deployables;
             _bullets.Ended += OnBulletEnded;
             _subscribed = true;
         }
@@ -113,6 +115,7 @@ namespace Purge.Gameplay.Throwing
         {
             _runEffects?.Tick(deltaTime);
             TickMines(deltaTime);
+            _deployables?.Tick(deltaTime, _targets, _bullets, _slot);
             ConsumedAttack = false;
             _cooldown = Mathf.Max(0f, _cooldown - deltaTime);
             if (!_player.IsSpawned || _slot.IsEmpty || _player.InVehicle)
@@ -198,6 +201,8 @@ namespace Purge.Gameplay.Throwing
             }
 
             target = Clamp(target);
+            if (definition.Deployable != null && _deployables?.CanPlace(target, _player.Floor) == false)
+                return false;
             var offset = target - origin;
             var distance = offset.magnitude;
             var direction = distance > 1e-3f ? offset / distance : _player.Facing;
@@ -223,8 +228,10 @@ namespace Purge.Gameplay.Throwing
             var offset = wanted - origin;
             if (offset.sqrMagnitude > range * range) offset = offset.normalized * range;
             var floor = _player.Floor;
+            var requiresGround = _slot.Definition?.Deployable != null && _deployables != null;
             var cell = CellCentre(origin + offset);
-            if (_targets.IsClear(origin, cell, floor)) return cell;
+            if (_targets.IsClear(origin, cell, floor) && (!requiresGround || _deployables.CanPlace(cell, floor)))
+                return cell;
 
             // Walk the line and keep the last cell centre still in the open.
             var distance = offset.magnitude;
@@ -235,7 +242,8 @@ namespace Purge.Gameplay.Throwing
                 var point = origin + direction * d;
                 if (!_targets.IsClear(origin, point, floor)) break;
                 var centre = CellCentre(point);
-                if (_targets.IsClear(origin, centre, floor)) best = centre;
+                if (_targets.IsClear(origin, centre, floor) && (!requiresGround || _deployables.CanPlace(centre, floor)))
+                    best = centre;
             }
 
             return best;
@@ -299,6 +307,19 @@ namespace Purge.Gameplay.Throwing
         {
             var definition = bullet.Throwable;
             if (definition == null || end == BulletEnd.Cleared) return;
+            if (_deployables != null && definition.Deployable != null)
+            {
+                var cell = CellCentre(point);
+                var travel = bullet.Travel - bullet.RangeLeft;
+                for (var back = 0f; back < travel && !_deployables.CanPlace(cell, bullet.Floor);)
+                {
+                    back = Mathf.Min(back + LineStep, travel);
+                    cell = CellCentre(point - bullet.Direction * back);
+                }
+                if (!_deployables.CanPlace(cell, bullet.Floor)) return;
+                point = cell;
+                _deployables.Place(definition, point, bullet.Floor, bullet.Direction);
+            }
             Detonate(definition, point, bullet.Floor, _stats?.Has(RunPerk.Cluster) == true);
             Landed?.Invoke(definition, point);
         }

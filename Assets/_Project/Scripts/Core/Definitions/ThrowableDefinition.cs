@@ -69,6 +69,7 @@ namespace Purge.Core.Definitions
         public float SoundRadius => _soundRadius;
         public IReadOnlyList<EffectModule> Effects => _effects;
         public ProximityMineEffect Mine => _effects.Find(effect => effect is ProximityMineEffect) as ProximityMineEffect;
+        public DeployableEffect Deployable => _effects.Find(effect => effect is DeployableEffect) as DeployableEffect;
 
         /// <summary>The widest effect's reach, cells (the aim's ring).</summary>
         public float EffectRadius

@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - Polski
   - Zadania dzienne
@@ -1183,4 +1187,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Wabik
+  - "Miniwie\u017Cyczka"
+  - "Rzu\u0107 wabik, aby odci\u0105gn\u0105\u0107 pobliskie zwyk\u0142e potwory."
+  - "Rzu\u0107 miniwie\u017Cyczk\u0119. Strzela do najbli\u017Cszego widocznego potwora."
   _missing: []

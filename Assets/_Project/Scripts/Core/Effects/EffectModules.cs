@@ -77,6 +77,27 @@ namespace Purge.Core.Effects
         public override float Radius => 0f;
     }
 
+    public enum DeployableKind { Decoy, Turret }
+
+    [Serializable, ModuleInfo("Timed deployable", Category = "Effect")]
+    public sealed class DeployableEffect : EffectModule
+    {
+        [SerializeField] private DeployableKind _kind;
+        [SerializeField, Min(0.1f)] private float _duration = 8f;
+        [SerializeField, Min(0.5f)] private float _radius = 6f;
+        [SerializeField, Min(1f)] private float _damage = 30f;
+        [SerializeField, Min(0.1f)] private float _interval = 0.4f;
+
+        public DeployableEffect() { }
+        internal DeployableEffect(DeployableKind kind) => _kind = kind;
+
+        public DeployableKind Kind => _kind;
+        public float Duration => _duration;
+        public override float Radius => _radius;
+        public float Damage => _damage;
+        public float Interval => _interval;
+    }
+
     /// <summary>A zone on every cell in the radius that a bullet could reach from the point.</summary>
     [Serializable, ModuleInfo("Place zone", Category = "Effect", AllowMultiple = true)]
     public sealed class PlaceZoneEffect : EffectModule

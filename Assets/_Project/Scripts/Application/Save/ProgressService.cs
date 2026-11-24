@@ -283,6 +283,8 @@ namespace Purge.Application.Save
                     run.VehicleHealth[vehicle.Id] = vehicle.Health;
             if (save.Smoke != null) run.Smoke.AddRange(save.Smoke);
             if (save.Mines != null) run.Mines.AddRange(save.Mines);
+            run.Decoy = save.Decoy;
+            run.Turret = save.Turret;
             run.Perks = save.Perks;
             run.Explored = save.Explored;
             run.Difficulty = save.Difficulty;
@@ -342,6 +344,8 @@ namespace Purge.Application.Save
                 save.Vehicles.Add(new RunVehicle { Id = pair.Key, Health = pair.Value });
             if (run.Smoke != null) save.Smoke.AddRange(run.Smoke);
             if (run.Mines != null) save.Mines.AddRange(run.Mines);
+            save.Decoy = run.Decoy;
+            save.Turret = run.Turret;
             save.Perks = run.Perks;
             save.Explored = run.Explored;
             save.ArenaClosed = run.ArenaClosed;

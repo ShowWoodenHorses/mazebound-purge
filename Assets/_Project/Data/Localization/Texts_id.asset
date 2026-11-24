@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - Bahasa Indonesia
   - Misi harian
@@ -1184,4 +1188,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Umpan
+  - Menara mini
+  - Lempar umpan untuk mengalihkan monster biasa di sekitar.
+  - Lempar menara mini. Menara menembaki monster terdekat yang terlihat.
   _missing: []

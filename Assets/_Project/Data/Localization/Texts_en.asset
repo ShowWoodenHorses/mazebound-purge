@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - English
   - Daily tasks
@@ -1182,4 +1186,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Decoy
+  - Mini-turret
+  - Throw a decoy to distract nearby ordinary monsters.
+  - Throw a mini-turret. It fires at the nearest monster in sight.
   _missing: []

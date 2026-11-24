@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - "Fran\xE7ais"
   - Missions quotidiennes
@@ -1181,4 +1185,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Leurre
+  - Mini-tourelle
+  - Lance un leurre pour distraire les monstres ordinaires proches.
+  - Lance une mini-tourelle. Elle tire sur le monstre visible le plus proche.
   _missing: []

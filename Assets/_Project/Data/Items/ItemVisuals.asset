@@ -13,6 +13,20 @@ MonoBehaviour:
   m_Name: ItemVisuals
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Visual.ItemVisualCatalog
   _items:
+  - _item: {fileID: 11400000, guid: 2073fda6000a00e4b8ae352566ad98e1, type: 2}
+    _pickup:
+      m_AssetGUID: 996a097b345b40842a31f0bd353ff4f7
+      m_SubObjectName:
+      m_SubObjectType:
+      m_SubObjectGUID:
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: b97cd9eafdbfdd14185ba31b02035ac8
+      m_SubObjectName:
+      m_SubObjectType:
+      m_SubObjectGUID:
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 04ab568223461464bb39187e1ed6e801, type: 3}
   - _item: {fileID: 11400000, guid: 296e66b85abbec645ac43742bb9d50d9, type: 2}
     _pickup:
       m_AssetGUID: 300132d104272624d860dbc0eb5a5ed6
@@ -83,6 +97,20 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     _icon: {fileID: 21300000, guid: cce63fa54aed00649a287e86d4aaee04, type: 3}
+  - _item: {fileID: 11400000, guid: 3fdbc2394908c004ea7e868cd0d1e37f, type: 2}
+    _pickup:
+      m_AssetGUID: 84e625cc51cb7184c81b70e1915546fb
+      m_SubObjectName:
+      m_SubObjectType:
+      m_SubObjectGUID:
+      m_EditorAssetChanged: 0
+    _flying:
+      m_AssetGUID: 752f9d2ab602ec243896f448b11f7d0c
+      m_SubObjectName:
+      m_SubObjectType:
+      m_SubObjectGUID:
+      m_EditorAssetChanged: 0
+    _icon: {fileID: 21300000, guid: 5c9b5d67b8f4f10419dea48799f21128, type: 3}
   - _item: {fileID: 11400000, guid: b30e8ff6ee506b044a04c08f8af7ed5f, type: 2}
     _pickup:
       m_AssetGUID: b385154d477cea544a658c86a860b4cb

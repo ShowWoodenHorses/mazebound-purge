@@ -564,6 +564,10 @@ MonoBehaviour:
   - character.node.PiercingReserve.text
   - booster.booster_piercing_reserve
   - booster.booster_piercing_reserve.text
+  - throwable.decoy
+  - throwable.mini_turret
+  - hint.decoy
+  - hint.mini_turret
   _texts:
   - "O\u02BBzbekcha"
   - Kunlik topshiriqlar
@@ -1170,4 +1174,8 @@ MonoBehaviour:
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   - Piercing Reserves
   - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - "Chalg\u2018itgich"
+  - Mini-turel
+  - "Yaqindagi oddiy maxluqlarni chalg\u2018itish uchun chalg\u2018itgichni uloqtir."
+  - "Mini-turelni uloqtir. U ko\u2018rinib turgan eng yaqin maxluqqa o\u2018q uzadi."
   _missing: []

@@ -16,6 +16,7 @@ MonoBehaviour:
   _purchasePrice: 11000
   _upgradeBurn: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
   _upgradeFreeze: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+  _upgradeElectrify: {fileID: 0}
   _upgradeExplosion:
     _interval: 0.9
     _automatic: 0
@@ -25,6 +26,8 @@ MonoBehaviour:
     _explosionDamage: 60
     _radius: 2
     _edgeDamage: 0.3
+    _minimumRange: 0
+    _flightTime: 0
     _explosionLook:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -109,7 +112,7 @@ MonoBehaviour:
       data:
         _interval: 1
         _automatic: 0
-        _damage: 198
+        _damage: 220
         _speed: 40
         _range: 22
         _pellets: 1
@@ -120,6 +123,7 @@ MonoBehaviour:
       data:
         _ammo: {fileID: 11400000, guid: eafdf1935eb98494e85039d52d9b1be6, type: 2}
         _magazine: 5
+        _fixedMagazine: 0
         _reloadTime: 2.5
         _perAttack: 1
         _infiniteReserve: 0

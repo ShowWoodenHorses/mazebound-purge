@@ -1,4 +1,5 @@
 using System;
+using Purge.Core.Content;
 using Purge.Presentation.UI.Shapes;
 using Purge.Presentation.UI.Style;
 using TMPro;
@@ -40,10 +41,14 @@ namespace Purge.Presentation.UI
             }
         }
 
-        public void SetNode(int index, string label, bool selected, bool owned, bool available)
+        public void SetNode(int index, string label, bool selected, bool owned, bool available, Rarity? permit)
         {
             _labels[index].text = label;
-            if (_nodes[index] is UiButton button) button.Accent = selected;
+            if (_nodes[index] is UiButton button)
+            {
+                if (permit.HasValue) button.SetRarity(permit.Value);
+                button.Accent = selected;
+            }
             if (_style == null || _incoming[index] == null) return;
 
             var color = owned ? _style.Accent : _style.Line;

@@ -11,10 +11,10 @@ namespace Purge.Presentation.UI
         [SerializeField] private RawImage _image;
         private RenderTexture _texture;
         private GameObject _model;
-        public void Show(GameObject prefab)
+        public void Show(GameObject prefab, bool isThrowable)
         {
             Clear(); if (prefab == null) return;
-            if (_texture == null) { _texture = new RenderTexture(640, 400, 16); _camera.targetTexture = _texture; _image.texture = _texture; }
+            EnsureTexture();
             _camera.gameObject.SetActive(true);
             _pivot.localRotation = Quaternion.identity;
             _model = Instantiate(prefab, _pivot, false);
@@ -24,9 +24,24 @@ namespace Purge.Presentation.UI
             {
                 var bounds = renderers[0].bounds; foreach (var r in renderers) bounds.Encapsulate(r.bounds);
                 _model.transform.position += _pivot.position - bounds.center;
-                _camera.orthographicSize = Mathf.Max(0.2f, bounds.size.magnitude * 0.6f);
+                _camera.orthographicSize = Mathf.Max(0.01f, bounds.size.magnitude * 0.56f)
+                    / Mathf.Min(1f, _camera.aspect);
             }
-            _pivot.localRotation = Quaternion.Euler(15, -35, 0);
+            _pivot.localRotation = Quaternion.Euler(isThrowable ? -25 : 15, -35, 0);
+        }
+
+        private void EnsureTexture()
+        {
+            if (_texture != null) return;
+            var rect = _image.rectTransform.rect;
+            var aspect = rect.width > 0f && rect.height > 0f ? rect.width / rect.height : 1f;
+            const int maxSize = 768;
+            var width = Mathf.Max(1, Mathf.RoundToInt(maxSize * Mathf.Min(1f, aspect)));
+            var height = Mathf.Max(1, Mathf.RoundToInt(maxSize / Mathf.Max(1f, aspect)));
+            _texture = new RenderTexture(width, height, 16);
+            _camera.targetTexture = _texture;
+            _camera.aspect = (float)width / height;
+            _image.texture = _texture;
         }
         public void OnDrag(PointerEventData e) { if (_pivot != null) _pivot.Rotate(Vector3.up, -e.delta.x * 0.5f, Space.World); }
         public void Clear()

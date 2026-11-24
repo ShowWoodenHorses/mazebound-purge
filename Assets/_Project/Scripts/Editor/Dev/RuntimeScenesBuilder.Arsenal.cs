@@ -1,4 +1,6 @@
 using Purge.Presentation.UI;
+using Purge.Presentation.UI.Shapes;
+using Purge.Presentation.UI.Style;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +8,13 @@ namespace Purge.Editor.Dev
 {
     internal static partial class RuntimeScenesBuilder
     {
+        private static void BindArsenalCardFrame(ArsenalScreen screen, UiShape frame, UiStyle style)
+        {
+            frame.StrokeWidth = style.Stroke + 1f;
+            SetReference(screen, "_cardFrame", frame);
+            SetReference(screen, "_style", style);
+        }
+
         private static ArsenalScreen BuildArsenal(Transform parent)
         {
             var screen=Screen<ArsenalScreen>(parent,"ArsenalScreen",new Color(0.025f,0.025f,0.03f,1f));
@@ -28,6 +37,7 @@ namespace Purge.Editor.Dev
             Icon(tile.transform,"Icon",icons.Ranged,Center,new Vector2(0,38),72);
             tile.gameObject.SetActive(false);SetReference(screen,"_grid",grid);SetReference(screen,"_template",tile);
             var card=PanelArea(area,"Card",new Vector2(1,0),new Vector2(1,1),new Vector2(-850,40),new Vector2(-48,-165));
+            BindArsenalCardFrame(screen, card.GetComponent<UiShape>(), _style);
             var name=Text(card,"Name","",38,true,new Vector2(0.5f,1),new Vector2(0.5f,1),new Vector2(0,-15),new Vector2(750,78),TextAlignmentOptions.Center);AutoSize(name);SetReference(screen,"_title",name);
             var imageRect=Rect(card,"Preview",new Vector2(0.5f,1),new Vector2(0,-171),new Vector2(480,142));
             var image=imageRect.gameObject.AddComponent<RawImage>();image.color=Color.white;

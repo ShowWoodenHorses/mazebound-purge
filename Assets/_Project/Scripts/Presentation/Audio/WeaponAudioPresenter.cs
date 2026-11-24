@@ -56,6 +56,7 @@ namespace Purge.Presentation.Audio
         private WeaponRuntime _firing;
         private float _lastAttack = float.NegativeInfinity;
         private int _loopVoice;
+        private bool _streamHeld;
         private bool _burst;
 
         private WeaponRuntime _reloadWeapon;
@@ -145,6 +146,7 @@ namespace Purge.Presentation.Audio
 
             if (group != null && group.IsContinuous)
             {
+                _streamHeld |= _combat.IsHoldingStream(weapon);
                 if (starting || !_audio.IsPlaying(_loopVoice))
                 {
                     if (starting) Play(group.Start, definition.SoundVolume, pitch);
@@ -170,11 +172,13 @@ namespace Purge.Presentation.Audio
                 Play(Catalog.LowAmmo, 1f, 1f);
         }
 
-        /// <summary>A burst or continuous fire ends after its interval plus <see cref="BurstGap"/> without an attack.</summary>
+        /// <summary>Held stream audio follows input. Other bursts time out between attacks.</summary>
         private void TickBurst()
         {
             if (_firing == null) return;
-            if (_time - _lastAttack <= _combat.CooldownOf(_firing.Definition) + BurstGap && _weapons.Active == _firing) return;
+            if (_streamHeld && _combat.IsHoldingStream(_firing)) return;
+            if (!_streamHeld && _time - _lastAttack <= _combat.CooldownOf(_firing.Definition) + BurstGap &&
+                _weapons.Active == _firing) return;
             EndBurst();
         }
 
@@ -182,6 +186,7 @@ namespace Purge.Presentation.Audio
         {
             var weapon = _firing;
             _firing = null;
+            _streamHeld = false;
             var group = Catalog.FindWeaponSound(weapon.Definition.SoundGroup);
             if (group == null) return;
             var pitch = weapon.Definition.SoundPitch;

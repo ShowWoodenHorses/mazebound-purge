@@ -403,8 +403,9 @@ namespace Purge.Editor.Dev
             var character = MenuTab(area, "CharacterButton", Loc(TextKeys.MenuCharacter), icons.Player, new Vector2(-340f, 110f));
             var play = TextButton(area, "PlayButton", Loc(TextKeys.MenuPlay), true, icons.ChevronRight, 128f, 46f, centerLabel: true);
             Place(play, bottom, new Vector2(0f, 110f), new Vector2(400f, 128f));
-            var tasks = MenuTab(area, "TasksButton", Loc(TextKeys.MenuTasks), icons.Star, new Vector2(340f, 110f));
-            var shop = MenuTab(area, "ShopButton", Loc(TextKeys.MenuShop), icons.Coin, new Vector2(600f, 110f));
+            var tasks = MenuTab(area, "TasksButton", Loc(TextKeys.MenuTasks), icons.Star, new Vector2(330f, 110f));
+            var records = MenuTab(area, "RecordsButton", Loc(TextKeys.SurvivalRecords), icons.Star, new Vector2(570f, 110f));
+            var shop = MenuTab(area, "ShopButton", Loc(TextKeys.MenuShop), icons.Coin, new Vector2(810f, 110f));
             var resume = TextButton(area, "ContinueButton", Loc(TextKeys.MenuContinue), true, icons.Resume, 84f);
             Place(resume, bottom, new Vector2(0f, 110f + 64f + 24f + 42f), new Vector2(400f, 84f));
             resume.gameObject.SetActive(false); // shown by the router while a run is saved
@@ -419,8 +420,6 @@ namespace Purge.Editor.Dev
             var version = Text(area, "Version", "v0.1", 24f, true, new Vector2(1f, 0f), new Vector2(1f, 0f),
                 new Vector2(-64f, 52f), new Vector2(140f, 36f), TextAlignmentOptions.BottomRight, _style.MutedText, 6f);
 
-            var records = TextButton(area, "RecordsButton", Loc(TextKeys.SurvivalRecords), false, icons.Star, 62f, 24f, centerLabel: true);
-            Place(records, TopLeft, new Vector2(374f, -170f), new Vector2(260f, 62f));
             SetReference(screen, "_recordsButton", records);
             SetReference(screen, "_continueButton", resume);
             SetReference(screen, "_playButton", play);

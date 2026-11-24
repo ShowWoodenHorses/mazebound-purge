@@ -17,6 +17,7 @@ using Purge.Gameplay.Pickups;
 using Purge.Gameplay.Throwing;
 using Purge.Gameplay.Visibility;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Purge.Presentation.Visual
 {
@@ -36,6 +37,12 @@ namespace Purge.Presentation.Visual
         private const float HandHeight = 1.1f;
         private const float SpinSpeed = 540f;
         private const float MagnetHeight = 0.5f;
+        private const float MinRingDiameter = 1.55f;
+        private const float RingPadding = 0.08f;
+        private const float RingTexturePeak = 0.65f;
+        private const float RingSizeScale = 0.7f;
+        private const string RingName = "Rarity Ring";
+        private static readonly int RingColorId = Shader.PropertyToID("_Color");
 
         private readonly DropPool _pool;
         private readonly PickupSystem _pickups;
@@ -59,18 +66,17 @@ namespace Purge.Presentation.Visual
         private bool _subscribed;
         private readonly LevelData _level;
         private readonly Application.Services.SharedDefinitionsService _shared;
-        private readonly PackEffectsPlayer _effects;
+        private Mesh _lootQuad;
 
         public DropViewPresenter(DropPool pool, PickupSystem pickups, BulletSystem bullets, ThrowableSlot slot,
             VisibilitySystem visibility, IAssetOwner assets, LevelViewRoot root, ItemVisualCatalog catalog = null,
             CombatVisualDefinition visual = null, PackEmitters emitters = null, LevelData level = null,
-            PackEffectsPlayer effects = null, LevelLaunchOptions options = null,
+            LevelLaunchOptions options = null,
             Application.Services.SharedDefinitionsService shared = null)
         {
             _options = options;
             _shared = shared;
             _level = level;
-            _effects = effects;
             _visual = visual;
             _emitters = emitters;
             _pool = pool;
@@ -138,7 +144,7 @@ namespace Purge.Presentation.Visual
                 // Weapons: the most monsters can leave of one + the player's two slots dropped.
                 var poolSize = item is WeaponDefinition ? PickupSystem.MaxSameWeaponDropped + 2 : PickupPoolSize;
                 if (_options?.Survival == true && item is AmmoDefinition) poolSize += PickupSystem.SurvivalAmmoPilesPerType;
-                for (var i = 0; i < poolSize; i++) kind.FreePickups.Push(Create(kind.Pickup, item.Id));
+                for (var i = 0; i < poolSize; i++) kind.FreePickups.Push(Create(kind.Pickup, item.Id, item as WeaponDefinition));
                 if (kind.Flying != null)
                     for (var i = 0; i < FlyingPoolSize; i++) kind.FreeFlying.Push(Create(kind.Flying, item.Id + " (flying)"));
             }
@@ -181,7 +187,6 @@ namespace Purge.Presentation.Visual
                 var left = shown.Pickup.ExpiresAt - time;
                 if (visible && left < BlinkTime) visible = Mathf.Repeat(left, 0.3f) > 0.1f;
                 if (shown.Object.activeSelf != visible) shown.Object.SetActive(visible);
-                if (shown.RayLook != null) _lying[i] = TickRay(shown, seen);
             }
 
             foreach (var shown in _flying)
@@ -222,6 +227,8 @@ namespace Purge.Presentation.Visual
             }
 
             foreach (var go in _all) UnityObjects.Destroy(go);
+            UnityObjects.Destroy(_lootQuad);
+            _lootQuad = null;
             _all.Clear();
             _kinds.Clear();
             _lying.Clear();
@@ -238,36 +245,10 @@ namespace Purge.Presentation.Visual
             // A steady turn of its own (from the id), not a random one.
             transform.localRotation = Quaternion.Euler(0f, StableHash.Of(pickup.Id) % 360, 0f);
             go.SetActive(_visibility.IsVisible(pickup.Cell));
-            var ray = _visual != null && _effects != null && pickup.Weapon != null
-                ? _visual.LootRayOf(pickup.Weapon.Definition.Rarity)
-                : null;
+            var ring = transform.Find(RingName);
+            if (ring != null) ring.gameObject.SetActive(true);
             _lying.Add(new Shown { Object = go, Pickup = pickup, Item = Key(pickup.Item), Scale = transform.localScale,
-                RayLook = ray, Ray = -1 });
-        }
-
-        /// <summary>
-        /// The ray of a rare weapon's rarity over it (stage 6e): follows it while its cell is seen (the magnet carries it),
-        /// fades where it is otherwise.
-        /// </summary>
-        private Shown TickRay(Shown shown, bool seen)
-        {
-            if (!seen || shown.Pickup.Attracted)
-            {
-                StopRay(ref shown);
-                return shown;
-            }
-
-            var position = shown.Object.transform.localPosition;
-            if (shown.Ray < 0) shown.Ray = _effects.Follow(shown.RayLook, position, Quaternion.identity);
-            else _effects.Move(shown.Ray, position, Quaternion.identity);
-            return shown;
-        }
-
-        private void StopRay(ref Shown shown)
-        {
-            if (shown.Ray < 0) return;
-            _effects.Unfollow(shown.Ray);
-            shown.Ray = -1;
+                Ring = ring != null ? ring.gameObject : null });
         }
 
         private void OnRemoved(Pickup pickup)
@@ -277,7 +258,7 @@ namespace Purge.Presentation.Visual
                 var shown = _lying[i];
                 if (shown.Pickup != pickup) continue;
                 _lying.RemoveAt(i);
-                StopRay(ref shown);
+                if (shown.Ring != null) shown.Ring.SetActive(false);
                 if (!pickup.WasTaken && _visual != null && _visibility.IsVisible(pickup.Cell)) Vanish(shown);
                 else Return(shown, false);
                 return;
@@ -354,7 +335,7 @@ namespace Purge.Presentation.Visual
             var prefab = flying ? kind.Flying : kind.Pickup;
             if (prefab == null) return false;
             GameLog.Warning(LogChannel.Visual, $"Pool of '{item.Id}' looks ran dry: one more is created during play.");
-            go = Create(prefab, item.Id);
+            go = Create(prefab, item.Id, flying ? null : item as WeaponDefinition);
             return true;
         }
 
@@ -365,18 +346,67 @@ namespace Purge.Presentation.Visual
             (flying ? kind.FreeFlying : kind.FreePickups).Push(shown.Object);
         }
 
-        private GameObject Create(GameObject prefab, string name)
+        private GameObject Create(GameObject prefab, string name, WeaponDefinition weapon = null)
         {
             var go = UnityEngine.Object.Instantiate(prefab, _parent, false);
             go.name = name;
+            if (_visual?.LootRing != null && weapon != null && weapon.Rarity > Rarity.Common)
+                AddLootRing(go.transform, weapon.Rarity);
             go.SetActive(false);
             _all.Add(go);
             return go;
         }
 
+        private void AddLootRing(Transform weapon, Rarity rarity)
+        {
+            if (_lootQuad == null)
+            {
+                _lootQuad = new Mesh { name = RingName, hideFlags = HideFlags.DontSave };
+                _lootQuad.vertices = new[] { new Vector3(-0.5f, 0f, -0.5f), new Vector3(-0.5f, 0f, 0.5f),
+                    new Vector3(0.5f, 0f, 0.5f), new Vector3(0.5f, 0f, -0.5f) };
+                _lootQuad.uv = new[] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+                _lootQuad.triangles = new[] { 0, 1, 2, 0, 2, 3 };
+            }
+
+            // The texture has a soft margin. Fit the bright part of the ring around the weapon's footprint.
+            var radius = 0f;
+            foreach (var model in weapon.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var bounds = model.bounds;
+                var offset = bounds.center - weapon.position;
+                var x = Mathf.Abs(offset.x) + bounds.extents.x;
+                var z = Mathf.Abs(offset.z) + bounds.extents.z;
+                radius = Mathf.Max(radius, Mathf.Sqrt(x * x + z * z));
+            }
+            var diameter = RingSizeScale * Mathf.Max(MinRingDiameter, 2f * (radius + RingPadding) / RingTexturePeak);
+            var scale = weapon.lossyScale;
+            var ring = new GameObject(RingName);
+            var transform = ring.transform;
+            transform.SetParent(weapon, false);
+            transform.localPosition = new Vector3(0f, 0.04f, 0f);
+            transform.localScale = new Vector3(diameter / Mathf.Abs(scale.x), 1f, diameter / Mathf.Abs(scale.z));
+            ring.AddComponent<MeshFilter>().sharedMesh = _lootQuad;
+            var renderer = ring.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = _visual.LootRing;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.lightProbeUsage = LightProbeUsage.Off;
+            renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            var tint = new MaterialPropertyBlock();
+            tint.SetColor(RingColorId, rarity switch
+            {
+                Rarity.Uncommon => new Color(0.25f, 1f, 0.25f),
+                Rarity.Rare => new Color(0.2f, 0.6f, 1f),
+                Rarity.Epic => new Color(0.75f, 0.3f, 1f),
+                _ => new Color(1f, 0.55f, 0.15f),
+            });
+            renderer.SetPropertyBlock(tint);
+        }
+
         private static Shown Lift(Shown shown, bool lifted)
         {
             shown.Lifted = lifted;
+            if (shown.Ring != null) shown.Ring.SetActive(!lifted);
             return shown;
         }
 
@@ -404,11 +434,7 @@ namespace Purge.Presentation.Visual
             /// <summary>Was flying to the player (the magnet): its place is set again.</summary>
             public bool Lifted;
 
-            /// <summary>The ray of a rare weapon's rarity (stage 6e); null — none.</summary>
-            public UnityEngine.AddressableAssets.AssetReferenceGameObject RayLook;
-
-            /// <summary>Handle of the shown ray; -1 — not shown.</summary>
-            public int Ray;
+            public GameObject Ring;
         }
     }
 }

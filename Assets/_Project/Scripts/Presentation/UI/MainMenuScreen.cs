@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Purge.Presentation.UI
 {
     /// <summary>
-    /// Main menu (stage 11a, ТЗ А.10): the bottom bar of five tabs — Arsenal, Character, ▶ PLAY, Tasks, Shop — with
+    /// Main menu (ТЗ А.10): the bottom bar has Arsenal, Character, ▶ PLAY, Tasks, Records and Shop, with
     /// «Продолжить» above PLAY while a run is saved; money, settings and the site's account at the top. The middle is
     /// transparent: the character on the podium (<see cref="Menu.MenuPodiumView"/>) shows through. Tabs that have no
     /// screen yet are disabled (Character — 11д) or hidden (Tasks — 16б, Shop — 17б). DEV (the level list)

@@ -610,7 +610,8 @@ MonoBehaviour:
       _maxVoices: 1
       _minInterval: 0
     _loop:
-      _clips: []
+      _clips:
+      - {fileID: 8300000, guid: 9e289da73a63e26499803f0624e210af, type: 3}
       _volume: 0.5
       _pitch: {x: 1, y: 1}
       _range: 0

@@ -387,6 +387,14 @@ namespace Purge.Gameplay.Combat
             return _input.AttackHeld && weapon.Definition.Attack != null && weapon.Definition.Attack.Automatic;
         }
 
+        /// <summary>Whether an automatic stream should continue between damage ticks.</summary>
+        public bool IsHoldingStream(WeaponRuntime weapon) =>
+            weapon != null && weapon == _weapons.Active && weapon.Definition.Attack is StreamAttack { Automatic: true } &&
+            _player.IsSpawned && !_player.Down && !_player.InVehicle && !_player.Stunned &&
+            !weapon.IsReloading && HasRounds(weapon) &&
+            ((_input.AttackHeld && _throwing?.ConsumedAttack != true) ||
+             (StickAiming() && _input.AimStick.sqrMagnitude >= StickFireFrom * StickFireFrom));
+
         private static bool HasRounds(WeaponRuntime weapon) =>
             !weapon.Definition.UsesAmmo || weapon.Ammo >= weapon.Definition.Ammo.PerAttack;
 

@@ -329,11 +329,7 @@ namespace Purge.Presentation.Visual
             }
             if (_drops != null)
             {
-                foreach (var weapon in _drops.Weapons)
-                {
-                    AddWeapon(wanted, weapon);
-                    if (weapon != null && _visual != null) Add(wanted, _visual.LootRayOf(weapon.Rarity)); // stage 6e
-                }
+                foreach (var weapon in _drops.Weapons) AddWeapon(wanted, weapon);
                 foreach (var throwable in _drops.Throwables) AddThrowable(wanted, throwable);
             }
             if (_player != null)

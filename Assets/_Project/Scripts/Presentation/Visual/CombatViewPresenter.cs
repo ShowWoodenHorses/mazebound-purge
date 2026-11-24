@@ -22,8 +22,8 @@ namespace Purge.Presentation.Visual
     /// <summary>
     /// Views of combat (ТЗ §79, §83), display only, cartoon style:
     /// <list type="bullet">
-    /// <item>shot: a flash at the gun's muzzle, a shell thrown out to the right, a tracer that leaves the muzzle and
-    /// joins the bullet's real line (gameplay bullets fly from the player's centre) within <see cref="ConvergeDistance"/>;</item>
+    /// <item>shot: a flash at the muzzle, a shell thrown out to the right, and a straight tracer from the muzzle
+    /// in the bullet's direction;</item>
     /// <item>bullet stopped by a wall or closed door: sparks and dust out of the wall; hit on a zombie (bullet or
     /// melee): a hit "star" (the model's flash is <see cref="ZombieViewPresenter"/>'s);</item>
     /// <item>melee: a swing stroke over the weapon's sector (<see cref="SwingArc"/>: arc and reach of the weapon);</item>
@@ -49,7 +49,7 @@ namespace Purge.Presentation.Visual
         /// <summary>Seconds the swing stroke starts before the clip's hit: its head is mid-sector at the hit.</summary>
         public const float SwingLead = 0.06f;
 
-        /// <summary>Cells over which a tracer moves from the muzzle onto the bullet's real line.</summary>
+        /// <summary>Cells over which a projectile model moves from the muzzle onto the bullet's real line.</summary>
         public const float ConvergeDistance = 1.5f;
         private static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
 
@@ -686,12 +686,27 @@ namespace Purge.Presentation.Visual
 
             var travelled = Mathf.Max(0f, bullet.Travel - bullet.RangeLeft);
             var length = tracer.Fire ? 0.22f : tracer.Electric ? 0.7f : _visual.TracerLength;
-            var head = TracerPoint(bullet, tracer, bullet.Position, travelled);
-            var tailDistance = Mathf.Min(Mathf.Max(length, 0.01f), travelled);
-            var tail = TracerPoint(bullet, tracer, bullet.Position - bullet.Direction * tailDistance, travelled - tailDistance);
+            var shotDirection = new Vector3(bullet.Direction.x, 0f, bullet.Direction.y);
+            var visibleTravel = travelled;
+            Vector3 head;
+            Vector3 tail;
+            if (tracer.Model)
+            {
+                var tailDistance = Mathf.Min(Mathf.Max(length, 0.01f), travelled);
+                head = ProjectilePoint(bullet, tracer, bullet.Position, travelled);
+                tail = ProjectilePoint(bullet, tracer, bullet.Position - bullet.Direction * tailDistance, travelled - tailDistance);
+            }
+            else
+            {
+                // The simulated bullet starts at the shooter. Wait until it reaches the muzzle along the shot axis.
+                visibleTravel = Mathf.Max(0f, travelled - MuzzleLead(bullet, tracer));
+                var tailDistance = Mathf.Min(Mathf.Max(length, 0.01f), visibleTravel);
+                head = tracer.Origin + shotDirection * visibleTravel;
+                tail = tracer.Origin + shotDirection * (visibleTravel - tailDistance);
+            }
             var toHead = head - tail;
             var distance = toHead.magnitude;
-            var forward = distance > 1e-3f ? toHead / distance : new Vector3(bullet.Direction.x, 0f, bullet.Direction.y);
+            var forward = distance > 1e-3f ? toHead / distance : shotDirection;
 
             var transform = tracer.View.transform;
             transform.localPosition = head;
@@ -704,7 +719,8 @@ namespace Purge.Presentation.Visual
                 ? new Vector3(width, width, Mathf.Max(distance, 0.01f))
                 : tracer.OriginalScale;
 
-            var visible = _visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor));
+            var visible = (tracer.Model || visibleTravel > 0f) &&
+                _visibility.IsVisible(PlayerMovement.CellOf(bullet.Position, bullet.Floor));
             if (tracer.Trail != null)
             {
                 if (!visible) tracer.Trail.Clear();
@@ -745,15 +761,20 @@ namespace Purge.Presentation.Visual
             tracer.View.transform.localPosition = head;
         }
 
-        private static Vector3 TracerPoint(Bullet bullet, Tracer tracer, Vector2 point, float travelled)
+        private static Vector3 ProjectilePoint(Bullet bullet, Tracer tracer, Vector2 point, float travelled)
         {
             var height = tracer.KeepMuzzleHeight ? tracer.Origin.y : BulletHeight(bullet);
             var position = new Vector3(point.x, height, point.y);
             if (!tracer.FromMuzzle) return position;
             var simulatedOrigin = new Vector3(tracer.Spawn.x, height, tracer.Spawn.y);
             var offset = tracer.Origin - simulatedOrigin;
-            var barrelLead = Mathf.Max(0f, Vector2.Dot(new Vector2(offset.x, offset.z), bullet.Direction));
-            return position + offset * (1f - Mathf.Clamp01(travelled / (ConvergeDistance + barrelLead)));
+            return position + offset * (1f - Mathf.Clamp01(travelled / (ConvergeDistance + MuzzleLead(bullet, tracer))));
+        }
+
+        private static float MuzzleLead(Bullet bullet, Tracer tracer)
+        {
+            var muzzle = new Vector2(tracer.Origin.x, tracer.Origin.z);
+            return Mathf.Max(0f, Vector2.Dot(muzzle - tracer.Spawn, bullet.Direction));
         }
 
         private Effect Show(EffectPool pool, Vector2 position, float height, Vector2 direction, int floor, bool play = true)

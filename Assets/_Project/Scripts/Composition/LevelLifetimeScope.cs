@@ -94,6 +94,7 @@ namespace Purge.Composition
             // Death and revive (stage 6d): the fallen player's delay before the window, the revived one's invulnerability.
             builder.Register<PlayerRevival>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponSystem>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
+            builder.Register<ThrowableRunEffects>(Lifetime.Singleton);
             builder.Register<PlayerThrowing>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<PlayerCombat>(Lifetime.Singleton).AsSelf().As<ILevelTickable>();
             builder.Register<WeaponFeelSystem>(Lifetime.Singleton).AsSelf().As<ILevelLoadStep>();

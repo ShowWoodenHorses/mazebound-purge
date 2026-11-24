@@ -18,6 +18,26 @@ namespace Purge.Tests.EditMode.Progress
 
         private static CharacterNode Node(string id) => CharacterTree.Nodes.Single(node => node.Id == id);
 
+        [TestCase(CharacterBranch.Shooter, "Headhunter", "Duet")]
+        [TestCase(CharacterBranch.Demolisher, "Minefield", "Pyrotechnic")]
+        [TestCase(CharacterBranch.Survivor, "DropLoad", "SecondDome")]
+        public void BranchHasSevenSkillsAndThreeBoosters(CharacterBranch branch, string previous, string next)
+        {
+            using var save = new SaveService(new Storage());
+            save.Load();
+            save.Data.Money = 100000;
+            var tree = new CharacterTree(save);
+            var nodes = CharacterTree.Nodes.Where(node => node.Branch == branch).ToArray();
+            Assert.That(nodes.Count(node => node.Skill != CharacterSkills.None), Is.EqualTo(7));
+            Assert.That(nodes.Count(node => node.Skill == CharacterSkills.None), Is.EqualTo(3));
+            foreach (var node in nodes.TakeWhile(node => node.Id != previous))
+                Assert.That(tree.TryPurchase(node), Is.True, node.Id);
+
+            Assert.That(tree.TryPurchase(Node(next)), Is.False);
+            Assert.That(tree.TryPurchase(Node(previous)), Is.True);
+            Assert.That(tree.TryPurchase(Node(next)), Is.True);
+        }
+
         [Test]
         public void BuyingAndResettingBranchesSurvivesReloadAndKeepsTrunk()
         {

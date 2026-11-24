@@ -540,6 +540,30 @@ MonoBehaviour:
   - hint.survival
   - monster.elemental_snow
   - hint.elemental
+  - character.node.Pyrotechnic
+  - character.node.Pyrotechnic.text
+  - character.node.ScorchedEarth
+  - character.node.ScorchedEarth.text
+  - character.node.ConcussionCharge
+  - character.node.ConcussionCharge.text
+  - character.node.OrdnanceReserve
+  - character.node.OrdnanceReserve.text
+  - character.node.EmergencySmoke
+  - character.node.EmergencySmoke.text
+  - booster.booster_emergency_smoke
+  - booster.booster_emergency_smoke.text
+  - character.node.Volley
+  - character.node.Volley.text
+  - booster.booster_volley
+  - booster.booster_volley.text
+  - character.node.Duet
+  - character.node.Duet.text
+  - character.node.SteadyAim
+  - character.node.SteadyAim.text
+  - character.node.PiercingReserve
+  - character.node.PiercingReserve.text
+  - booster.booster_piercing_reserve
+  - booster.booster_piercing_reserve.text
   _texts:
   - "\u049A\u0430\u0437\u0430\u049B\u0448\u0430"
   - "\u041A\u04AF\u043D\u0434\u0435\u043B\u0456\u043A\u0442\u0456 \u0442\u0430\u043F\u0441\u044B\u0440\u043C\u0430\u043B\u0430\u0440"
@@ -1420,4 +1444,31 @@ MonoBehaviour:
     \u0448\u0435\u04A3\u0431\u0435\u0440\u0434\u0435\u043D \u0448\u044B\u049B. \u041C\u04B1\u0437
     \u0431\u0430\u0493\u0430\u043D\u0434\u0430\u0440\u044B \u0435\u0440\u0456\u0433\u0435\u043D\u0448\u0435
     \u0436\u043E\u043B\u0434\u044B \u0431\u04E9\u0433\u0435\u0439\u0434\u0456."
+  - Pyrotechnic
+  - Damaging thrown explosions ignite survivors for 3 s.
+  - Scorched Earth
+  - Grenades leave fire within 1.5 m for 3 s.
+  - Concussion Charge
+  - Grenades slow enemies that survive the explosion for 2 s.
+  - Ordnance Reserve
+  - Once per wave, killing an officer or elite with a thrown explosion returns one
+    charge.
+  - Emergency Smoke
+  - In the first wave, falling to 40% HP or less deploys smoke once.
+  - Emergency Smoke
+  - In the first wave, falling to 40% HP or less deploys smoke once.
+  - Volley
+  - The first thrown explosion repeats after 0.4 s at half damage.
+  - Volley
+  - The first thrown explosion repeats after 0.4 s at half damage.
+  - Duet
+  - 'The first ranged attack after switching slots deals 25% more damage. Cooldown:
+    3 s.'
+  - Steady Aim
+  - Every fourth bullet hit in a row on the same enemy deals 35% more damage. For
+    shotguns, the centre pellet counts.
+  - Piercing Reserves
+  - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Piercing Reserves
+  - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   _missing: []

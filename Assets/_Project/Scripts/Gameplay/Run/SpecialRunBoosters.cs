@@ -42,6 +42,10 @@ namespace Purge.Gameplay.Run
         private readonly CombatTargets _targets;
         private readonly EffectSystem _effects;
         private readonly SoundEventBus _sounds;
+        private readonly RunStats _stats;
+        private readonly PlayerHealth _health;
+        private ThrowableDefinition _emergencySmoke;
+        private int _previousHealth;
         private readonly List<CombatTarget> _nearby = new List<CombatTarget>();
         private readonly List<Vector2> _mines = new List<Vector2>(4);
         private readonly Dictionary<Pickup, SupplyAmmo> _supply = new Dictionary<Pickup, SupplyAmmo>();
@@ -52,7 +56,7 @@ namespace Purge.Gameplay.Run
 
         public SpecialRunBoosters(LevelLaunchOptions options, WaveSystem waves, HordeSystem horde, WeaponSystem weapons,
             PickupSystem pickups, PlayerSystem player, LevelPassability passability, ContentCatalog content,
-            CombatTargets targets, EffectSystem effects, SoundEventBus sounds)
+            CombatTargets targets, EffectSystem effects, SoundEventBus sounds, RunStats stats = null, PlayerHealth health = null)
         {
             _options = options;
             _waves = waves;
@@ -65,6 +69,8 @@ namespace Purge.Gameplay.Run
             _targets = targets;
             _effects = effects;
             _sounds = sounds;
+            _stats = stats;
+            _health = health;
         }
 
         public LevelLoadStage Stage => LevelLoadStage.SpawnZombies;
@@ -75,6 +81,21 @@ namespace Purge.Gameplay.Run
         {
             if (!_player.IsSpawned) return UniTask.CompletedTask;
             _start = _player.Cell;
+            if (_stats != null && _health != null && _options.HasBoost(SpecialBoosterKind.EmergencySmoke))
+            {
+                _emergencySmoke = _content?.Find<ThrowableDefinition>("grenade_smoke");
+                _previousHealth = _health.Current;
+                if (_emergencySmoke != null) _health.Changed += OnHealthChanged;
+            }
+
+            if (_stats != null && _options.Resume == null && _options.HasBoost(SpecialBoosterKind.PiercingReserve))
+            {
+                _stats.PiercingWeaponFirst = BallisticWeaponId(WeaponSlot.First);
+                _stats.PiercingWeaponSecond = BallisticWeaponId(WeaponSlot.Second);
+                _stats.PiercingRoundsFirst = _stats.PiercingWeaponFirst == null ? 0 : 5;
+                _stats.PiercingRoundsSecond = _stats.PiercingWeaponSecond == null ||
+                    _stats.PiercingWeaponFirst == _stats.PiercingWeaponSecond ? 0 : 5;
+            }
             if (_options.HasBoost(SpecialBoosterKind.Headhunter)) _horde.Killed += OnKilled;
             _waves.WaveStarted += OnWaveStarted;
             _waves.WaveCleared += OnWaveCleared;
@@ -103,6 +124,7 @@ namespace Purge.Gameplay.Run
             _waves.WaveStarted -= OnWaveStarted;
             _waves.WaveCleared -= OnWaveCleared;
             _pickups.Removed -= OnPickupRemoved;
+            if (_health != null) _health.Changed -= OnHealthChanged;
         }
 
         public void Capture(RunSnapshot snapshot)
@@ -110,6 +132,25 @@ namespace Purge.Gameplay.Run
             snapshot.BountiesPaid = _bountiesPaid;
             snapshot.SupplyPlaced = _supplyPlaced;
             snapshot.Supply.AddRange(_supply.Values);
+        }
+
+        private string BallisticWeaponId(WeaponSlot slot)
+        {
+            var weapon = _weapons.Get(slot);
+            if (weapon?.IsBase == true && slot != _weapons.ActiveSlot) return null;
+            return weapon?.Definition.Attack is BulletAttack ? weapon.Definition.Id : null;
+        }
+
+        private void OnHealthChanged(int current, int maximum)
+        {
+            var previous = _previousHealth;
+            _previousHealth = current;
+            var threshold = maximum * 2L;
+            if (_stats.EmergencySmokeUsed || previous * 5L <= threshold || current <= 0 || current * 5L > threshold ||
+                _waves.WaveIndex != 0 || _waves.Phase != WavePhase.Running) return;
+
+            _stats.EmergencySmokeUsed = true;
+            _effects.Apply(_emergencySmoke.Effects, _player.Position, _player.Floor);
         }
 
         private void OnPickupRemoved(Pickup pickup) => _supply.Remove(pickup);

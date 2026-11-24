@@ -44,7 +44,8 @@ namespace Purge.Presentation.UI
             {
                 var node = CharacterTree.Nodes[i];
                 var owned = _tree.Has(node.Id);
-                _screen.SetNode(i, (owned ? "✓ " : "") + _texts.Get(TextKeys.CharacterNodePrefix + node.Id), node == _selected);
+                _screen.SetNode(i, (owned ? "✓ " : "") + _texts.Get(TextKeys.CharacterNodePrefix + node.Id),
+                    node == _selected, owned, owned || _tree.MeetsRequirements(node));
             }
 
             var selectedOwned = _tree.Has(_selected.Id);

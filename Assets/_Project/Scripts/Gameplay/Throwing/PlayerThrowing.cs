@@ -57,6 +57,7 @@ namespace Purge.Gameplay.Throwing
         private readonly SoundEventBus _sounds;
         private readonly IAimPointer _pointer;
         private readonly RunStats _stats;
+        private readonly ThrowableRunEffects _runEffects;
         private readonly List<CombatTarget> _found = new List<CombatTarget>();
         public const int MineLimit = 3;
         private readonly List<PlantedMine> _mines = new List<PlantedMine>(MineLimit);
@@ -67,7 +68,8 @@ namespace Purge.Gameplay.Throwing
         private bool _subscribed;
 
         public PlayerThrowing(IPlayerInput input, PlayerSystem player, ThrowableSlot slot, BulletSystem bullets,
-            CombatTargets targets, EffectSystem effects, SoundEventBus sounds, IAimPointer pointer = null, RunStats stats = null)
+            CombatTargets targets, EffectSystem effects, SoundEventBus sounds, IAimPointer pointer = null, RunStats stats = null,
+            ThrowableRunEffects runEffects = null)
         {
             _input = input;
             _player = player;
@@ -78,6 +80,7 @@ namespace Purge.Gameplay.Throwing
             _sounds = sounds;
             _pointer = pointer;
             _stats = stats;
+            _runEffects = runEffects;
             _bullets.Ended += OnBulletEnded;
             _subscribed = true;
         }
@@ -108,6 +111,7 @@ namespace Purge.Gameplay.Throwing
 
         public void Tick(float deltaTime)
         {
+            _runEffects?.Tick(deltaTime);
             TickMines(deltaTime);
             ConsumedAttack = false;
             _cooldown = Mathf.Max(0f, _cooldown - deltaTime);
@@ -295,8 +299,7 @@ namespace Purge.Gameplay.Throwing
         {
             var definition = bullet.Throwable;
             if (definition == null || end == BulletEnd.Cleared) return;
-            _effects.Apply(definition.Effects, point, bullet.Floor, damageFactor: _slot.DamageFactor(definition),
-                radiusFactor: _slot.RadiusFactor(definition), cluster: _stats?.Has(RunPerk.Cluster) == true);
+            Detonate(definition, point, bullet.Floor, _stats?.Has(RunPerk.Cluster) == true);
             Landed?.Invoke(definition, point);
         }
 
@@ -336,9 +339,17 @@ namespace Purge.Gameplay.Throwing
                 _mines.RemoveAt(i);
                 Array.Copy(_mineDefinitions, i + 1, _mineDefinitions, i, _mines.Count - i);
                 _mineDefinitions[_mines.Count] = null;
-                _effects.Apply(definition.Effects, mine.Position, mine.Floor,
-                    damageFactor: _slot.DamageFactor(definition), radiusFactor: _slot.RadiusFactor(definition));
+                Detonate(definition, mine.Position, mine.Floor, cluster: false);
             }
+        }
+
+        private void Detonate(ThrowableDefinition definition, Vector2 at, int floor, bool cluster)
+        {
+            if (_runEffects != null)
+                _runEffects.Detonate(definition, at, floor, cluster);
+            else
+                _effects.Apply(definition.Effects, at, floor, damageFactor: _slot.DamageFactor(definition),
+                    radiusFactor: _slot.RadiusFactor(definition), cluster: cluster);
         }
 
         private static Vector2 CellCentre(Vector2 point) =>

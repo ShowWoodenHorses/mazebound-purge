@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Purge.Core.Boosters
 {
-    public enum SpecialBoosterKind { SecondBarrel, Headhunter, Minefield, QuietStart, DropLoad, SecondDome }
+    public enum SpecialBoosterKind { SecondBarrel, Headhunter, Minefield, QuietStart, DropLoad, SecondDome, EmergencySmoke, Volley, PiercingReserve }
 
     [Serializable, ModuleInfo("Character booster")]
     public sealed class SpecialBoost : BoosterModule

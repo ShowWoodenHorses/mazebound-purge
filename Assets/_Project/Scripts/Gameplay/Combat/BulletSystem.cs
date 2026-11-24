@@ -42,6 +42,7 @@ namespace Purge.Gameplay.Combat
         /// <summary>Monsters it still passes through.</summary>
         public int Pierce { get; internal set; }
         public bool ExplosiveRound { get; internal set; }
+        internal bool TracksPrecision { get; set; }
 
         /// <summary>Explodes where it ends (grenade launcher); null for a plain bullet.</summary>
         public ExplosiveAttack Explosive { get; internal set; }
@@ -84,6 +85,9 @@ namespace Purge.Gameplay.Combat
         private readonly List<Bullet> _active = new List<Bullet>();
         private readonly Stack<Bullet> _pool = new Stack<Bullet>();
         private int _nextId;
+        private int _precisionAgent = -1;
+        private int _precisionGeneration;
+        private int _precisionHits;
 
         public BulletSystem(CombatTargets targets, IItemUpgrades upgrades = null)
         {
@@ -102,10 +106,11 @@ namespace Purge.Gameplay.Combat
 
         public Bullet Spawn(Vector2 origin, Vector2 direction, float speed, float damage, int floor = 0, float range = DefaultRange,
             int pierce = 0, ExplosiveAttack explosive = null, WeaponDefinition weapon = null, ThrowableDefinition throwable = null,
-            bool explosiveRound = false, float blastFactor = 1f)
+            bool explosiveRound = false, float blastFactor = 1f, bool tracksPrecision = false)
         {
             var bullet = _pool.Count > 0 ? _pool.Pop() : new Bullet();
-            bullet.ExplosiveRound=explosiveRound;
+            bullet.ExplosiveRound = explosiveRound;
+            bullet.TracksPrecision = tracksPrecision;
             bullet.Id = ++_nextId;
             bullet.Position = origin;
             bullet.PreviousPosition = origin;
@@ -159,7 +164,8 @@ namespace Purge.Gameplay.Combat
                 {
                     case CombatHitKind.Target:
                         bullet.Position = hit.Point;
-                        _targets.Damage(hit.Target, bullet.Damage, bullet.Direction, bullet.Weapon, PlayerDamage.Precise);
+                        var precisionFactor = ResolvePrecision(bullet, hit.Target);
+                        _targets.Damage(hit.Target, bullet.Damage * precisionFactor, bullet.Direction, bullet.Weapon, PlayerDamage.Precise);
                         if(bullet.ExplosiveRound && bullet.Weapon!=null)
                         {
                             var w=bullet.Weapon;
@@ -251,10 +257,32 @@ namespace Purge.Gameplay.Combat
             Explode(at, bullet.Explosive, bullet.Floor, bullet.Weapon, bullet.BlastFactor);
         }
 
+        private float ResolvePrecision(Bullet bullet, CombatTarget target)
+        {
+            if (!bullet.TracksPrecision) return 1f;
+            bullet.TracksPrecision = false;
+            if (target.Agent < 0)
+            {
+                _precisionHits = 0;
+                return 1f;
+            }
+            var generation = _targets.AgentGeneration(target.Agent);
+            if (_precisionAgent != target.Agent || _precisionGeneration != generation)
+            {
+                _precisionAgent = target.Agent;
+                _precisionGeneration = generation;
+                _precisionHits = 0;
+            }
+            if (++_precisionHits < 4) return 1f;
+            _precisionHits = 0;
+            return 1.35f;
+        }
+
         private void End(int index, BulletEnd reason)
         {
             var bullet = _active[index];
             _active.RemoveAt(index);
+            if (bullet.TracksPrecision) _precisionHits = 0;
             Ended?.Invoke(bullet, bullet.Position, reason);
             bullet.Explosive = null;
             bullet.Weapon = null;

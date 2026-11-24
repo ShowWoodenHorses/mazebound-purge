@@ -308,11 +308,13 @@ namespace Purge.Tests.PlayMode
                 var shared = _container.Resolve<SharedDefinitionsService>();
                 var second = shared.Content.Items.OfType<WeaponDefinition>()
                     .First(weapon => weapon.UsesAmmo && weapon.Id != shared.Player.BaseWeapon.Id);
-                var boosterIds = new[] { "booster_second_barrel", "booster_minefield", "booster_quiet_start" };
+                var boosterIds = new[] { "booster_second_barrel", "booster_minefield", "booster_quiet_start",
+                    "booster_emergency_smoke", "booster_volley", "booster_piercing_reserve" };
                 var boosters = boosterIds.Select(shared.Content.Find<Purge.Core.Boosters.BoosterDefinition>).ToArray();
                 Assert.That(boosters.All(booster => booster != null), Is.True);
+                var launchSkills = skills | CharacterSkills.Barrier | CharacterSkills.ScorchedEarth;
                 await _flow.StartLevel(FirstLevelId(), new LevelLaunchOptions(startIndex: 0,
-                    skills: skills | CharacterSkills.Barrier, secondWeapon: second, boosters: boosters));
+                    skills: launchSkills, secondWeapon: second, boosters: boosters));
                 Assert.AreEqual(GameFlowState.Playing, _flow.State, _flow.ErrorMessage);
                 var level = FindRoot<LevelLifetimeScope>(SceneManager.GetSceneByName(GameScene)).Container;
                 Assert.That(level.Resolve<PlayerRevival>().HasSkill, Is.True);
@@ -326,11 +328,32 @@ namespace Purge.Tests.PlayMode
                 Assert.That(health.Barrier, Is.EqualTo(Mathf.RoundToInt(health.Max * 0.1f)));
                 var snapshot = _container.Resolve<IProgressService>().LoadRun();
                 Assert.IsNotNull(snapshot);
-                Assert.That(snapshot.Skills, Is.EqualTo(skills | CharacterSkills.Barrier));
+                Assert.That(snapshot.Skills, Is.EqualTo(launchSkills));
                 Assert.That(snapshot.Barrier, Is.EqualTo(health.Barrier));
                 Assert.That(snapshot.Boosters, Is.EquivalentTo(boosterIds));
                 Assert.That(level.Resolve<Purge.Gameplay.Run.SpecialRunBoosters>().Mines.Count, Is.InRange(1, 4));
                 Assert.That(level.Resolve<Purge.Gameplay.Sound.SoundEventBus>().PlayerNoiseFactor, Is.EqualTo(0.4f));
+
+                var checkpoints = level.Resolve<Purge.Gameplay.Run.RunCheckpoints>();
+                var combat = level.Resolve<Purge.Gameplay.Combat.PlayerCombat>();
+                Assert.That(combat.TryAttack(Vector2.up), Is.True);
+                var bullets = level.Resolve<Purge.Gameplay.Combat.BulletSystem>();
+                Assert.That(bullets.Active.Last().Pierce, Is.EqualTo(1));
+                health.Restore(health.Max / 3);
+                Assert.That(level.Resolve<SmokeScreen>().Clouds.Count, Is.EqualTo(1));
+
+                var throwing = level.Resolve<Purge.Gameplay.Throwing.ThrowableRunEffects>();
+                var player = level.Resolve<PlayerSystem>();
+                var grenade = shared.Content.Find<ThrowableDefinition>("grenade");
+                throwing.Detonate(grenade, player.Position, player.Floor, cluster: false);
+                var zones = level.Resolve<Purge.Gameplay.Effects.ZoneSystem>();
+                Assert.That(zones.ZoneAt(player.Cell)?.Id, Is.EqualTo("zone_fire"));
+                var used = checkpoints.Take(0, inProgress: false).Perks;
+                Assert.That(used.EmergencySmokeUsed && used.VolleyUsed, Is.True);
+                Assert.That(used.PiercingRoundsFirst, Is.EqualTo(4));
+                Assert.That(used.PendingVolleyItem, Is.EqualTo(grenade.Id));
+                throwing.Tick(0.5f);
+                Assert.That(checkpoints.Take(0, inProgress: false).Perks.PendingVolleyItem, Is.Null);
             }
             finally
             {

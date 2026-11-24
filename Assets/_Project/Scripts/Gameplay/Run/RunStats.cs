@@ -13,6 +13,13 @@ namespace Purge.Gameplay.Run
         public float CalmTime, EscapeTime, EscapeCooldown, RageTime, GrindTime;
         public int RageStacks;
         public bool ConverterPrimed;
+        public bool EmergencySmokeUsed, VolleyUsed;
+        public string PiercingWeaponFirst, PiercingWeaponSecond;
+        public int PiercingRoundsFirst, PiercingRoundsSecond;
+        public string PendingVolleyItem;
+        public Vector2 PendingVolleyPosition;
+        public int PendingVolleyFloor;
+        public float PendingVolleyTime;
     }
 
     /// <summary>
@@ -30,7 +37,7 @@ namespace Purge.Gameplay.Run
         public RunStats(Level.LevelLaunchOptions options = null) => _options = options;
 
         public bool TacticianActive { get; set; }
-        private bool Has(CharacterSkills skill) => _options?.HasSkill(skill) == true;
+        internal bool Has(CharacterSkills skill) => _options?.HasSkill(skill) == true;
 
         /// <summary>The shortest reload, × the weapon's (−12 % × 5 levels is −60 %).</summary>
         public const float MinReloadFactor = 0.25f;
@@ -49,10 +56,41 @@ namespace Purge.Gameplay.Run
         internal float GrindTime { get; set; }
         public bool ConverterPrimed { get; set; }
 
+        internal bool EmergencySmokeUsed { get; set; }
+        internal bool VolleyUsed { get; set; }
+        internal string PendingVolleyItem { get; set; }
+        internal Vector2 PendingVolleyPosition { get; set; }
+        internal int PendingVolleyFloor { get; set; }
+        internal float PendingVolleyTime { get; set; }
+        internal int PiercingRoundsFirst { get; set; }
+        internal int PiercingRoundsSecond { get; set; }
+        internal string PiercingWeaponFirst { get; set; }
+        internal string PiercingWeaponSecond { get; set; }
+
+        internal bool ConsumePiercingRound(string weaponId)
+        {
+            if (PiercingRoundsFirst > 0 && PiercingWeaponFirst == weaponId)
+            {
+                PiercingRoundsFirst--;
+                return true;
+            }
+            if (PiercingRoundsSecond > 0 && PiercingWeaponSecond == weaponId)
+            {
+                PiercingRoundsSecond--;
+                return true;
+            }
+            return false;
+        }
+
         internal RunPerkState CapturePerks() => new RunPerkState
         {
             CalmTime = CalmTime, EscapeTime = EscapeTime, EscapeCooldown = EscapeCooldown,
-            RageTime = RageTime, RageStacks = RageStacks, GrindTime = GrindTime, ConverterPrimed = ConverterPrimed
+            RageTime = RageTime, RageStacks = RageStacks, GrindTime = GrindTime, ConverterPrimed = ConverterPrimed,
+            EmergencySmokeUsed = EmergencySmokeUsed, VolleyUsed = VolleyUsed,
+            PiercingWeaponFirst = PiercingWeaponFirst, PiercingWeaponSecond = PiercingWeaponSecond,
+            PiercingRoundsFirst = PiercingRoundsFirst, PiercingRoundsSecond = PiercingRoundsSecond,
+            PendingVolleyItem = PendingVolleyItem, PendingVolleyPosition = PendingVolleyPosition,
+            PendingVolleyFloor = PendingVolleyFloor, PendingVolleyTime = PendingVolleyTime
         };
 
         internal void RestorePerks(RunPerkState state)
@@ -64,6 +102,16 @@ namespace Purge.Gameplay.Run
             RageStacks = state.RageStacks;
             GrindTime = state.GrindTime;
             ConverterPrimed = state.ConverterPrimed;
+            EmergencySmokeUsed = state.EmergencySmokeUsed;
+            VolleyUsed = state.VolleyUsed;
+            PiercingWeaponFirst = state.PiercingWeaponFirst;
+            PiercingWeaponSecond = state.PiercingWeaponSecond;
+            PiercingRoundsFirst = state.PiercingRoundsFirst;
+            PiercingRoundsSecond = state.PiercingRoundsSecond;
+            PendingVolleyItem = state.PendingVolleyItem;
+            PendingVolleyPosition = state.PendingVolleyPosition;
+            PendingVolleyFloor = state.PendingVolleyFloor;
+            PendingVolleyTime = state.PendingVolleyTime;
         }
         private readonly List<(StatusDefinition Status, float Bonus)> _statusDamage = new List<(StatusDefinition, float)>();
 

@@ -540,6 +540,30 @@ MonoBehaviour:
   - hint.survival
   - monster.elemental_snow
   - hint.elemental
+  - character.node.Pyrotechnic
+  - character.node.Pyrotechnic.text
+  - character.node.ScorchedEarth
+  - character.node.ScorchedEarth.text
+  - character.node.ConcussionCharge
+  - character.node.ConcussionCharge.text
+  - character.node.OrdnanceReserve
+  - character.node.OrdnanceReserve.text
+  - character.node.EmergencySmoke
+  - character.node.EmergencySmoke.text
+  - booster.booster_emergency_smoke
+  - booster.booster_emergency_smoke.text
+  - character.node.Volley
+  - character.node.Volley.text
+  - booster.booster_volley
+  - booster.booster_volley.text
+  - character.node.Duet
+  - character.node.Duet.text
+  - character.node.SteadyAim
+  - character.node.SteadyAim.text
+  - character.node.PiercingReserve
+  - character.node.PiercingReserve.text
+  - booster.booster_piercing_reserve
+  - booster.booster_piercing_reserve.text
   _texts:
   - Italiano
   - Missioni giornaliere
@@ -1118,4 +1142,31 @@ MonoBehaviour:
   - Elementale del ghiaccio
   - "Esci dal cerchio prima del gelo. I pilastri di ghiaccio bloccano il passaggio
     finch\xE9 non si sciolgono."
+  - Pyrotechnic
+  - Damaging thrown explosions ignite survivors for 3 s.
+  - Scorched Earth
+  - Grenades leave fire within 1.5 m for 3 s.
+  - Concussion Charge
+  - Grenades slow enemies that survive the explosion for 2 s.
+  - Ordnance Reserve
+  - Once per wave, killing an officer or elite with a thrown explosion returns one
+    charge.
+  - Emergency Smoke
+  - In the first wave, falling to 40% HP or less deploys smoke once.
+  - Emergency Smoke
+  - In the first wave, falling to 40% HP or less deploys smoke once.
+  - Volley
+  - The first thrown explosion repeats after 0.4 s at half damage.
+  - Volley
+  - The first thrown explosion repeats after 0.4 s at half damage.
+  - Duet
+  - 'The first ranged attack after switching slots deals 25% more damage. Cooldown:
+    3 s.'
+  - Steady Aim
+  - Every fourth bullet hit in a row on the same enemy deals 35% more damage. For
+    shotguns, the centre pellet counts.
+  - Piercing Reserves
+  - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
+  - Piercing Reserves
+  - The first 5 shots of each starting ballistic weapon pierce one extra enemy.
   _missing: []

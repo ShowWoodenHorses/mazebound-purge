@@ -145,6 +145,8 @@ namespace Purge.Gameplay.Combat
                 ? HordeActive && target.Agent < _horde.HighWater && HordeSystem.IsAlive(_horde.States[target.Agent])
                 : target.Object != null && target.Object.IsAlive;
 
+        internal int AgentGeneration(int agent) => _horde.Generations[agent];
+
         public Vector2 PositionOf(in CombatTarget target) =>
             target.Agent >= 0 ? _horde.Positions[target.Agent] : target.Object?.Position ?? default;
 
@@ -290,7 +292,7 @@ namespace Purge.Gameplay.Combat
         /// Returns the radius it reached.
         /// </summary>
         public float Blast(Vector2 at, float damage, float radius, float edgeShare, int floor, WeaponDefinition weapon = null,
-            PlayerDamage kind = PlayerDamage.None, bool hostile = false)
+            PlayerDamage kind = PlayerDamage.None, bool hostile = false, Action<CombatTarget, bool> resolved = null)
         {
             if (Modifier != null && (kind == PlayerDamage.Explosion || kind == PlayerDamage.WeaponExplosion)) radius *= Modifier.ExplosionRadiusFactor;
             Collect(at, radius, floor, _blast);
@@ -304,9 +306,11 @@ namespace Purge.Gameplay.Combat
                 if (!IsClear(at, position, floor)) continue;
                 var offset = position - at;
                 var share = Mathf.Clamp01((offset.magnitude - RadiusOf(target)) / radius);
-                if (Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
-                        offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon, kind)
-                    && target.Agent >= 0 && !killedMonster)
+                if (!IsAlive(target)) continue;
+                var killed = Damage(target, damage * Mathf.Lerp(1f, edgeShare, share),
+                    offset.sqrMagnitude > 1e-6f ? offset.normalized : Vector2.up, weapon, kind);
+                if (target.Agent >= 0) resolved?.Invoke(target, killed);
+                if (killed && target.Agent >= 0 && !killedMonster)
                 {
                     killedMonster = true;
                     killedAt = position;

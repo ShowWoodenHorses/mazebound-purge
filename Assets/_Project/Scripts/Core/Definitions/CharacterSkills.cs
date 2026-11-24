@@ -21,5 +21,11 @@ namespace Purge.Core.Definitions
         QuietSteps = 1 << 12,
         Buyer = 1 << 13,
         ChestHunter = 1 << 14,
+        Pyrotechnic = 1 << 15,
+        ScorchedEarth = 1 << 16,
+        ConcussionCharge = 1 << 17,
+        OrdnanceReserve = 1 << 18,
+        Duet = 1 << 19,
+        SteadyAim = 1 << 20,
     }
 }

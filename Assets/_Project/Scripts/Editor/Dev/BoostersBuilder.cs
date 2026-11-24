@@ -61,6 +61,9 @@ namespace Purge.Editor.Dev
                 Special("Quiet_Start", SpecialBoosterKind.QuietStart, set => set.Player),
                 Special("Drop_Load", SpecialBoosterKind.DropLoad, set => set.Medkit),
                 Special("Second_Dome", SpecialBoosterKind.SecondDome, set => set.Retry),
+                Special("Emergency_Smoke", SpecialBoosterKind.EmergencySmoke, set => set.Grenade),
+                Special("Volley", SpecialBoosterKind.Volley, set => set.Grenade),
+                Special("Piercing_Reserve", SpecialBoosterKind.PiercingReserve, set => set.Ranged),
             };
 
             var created = 0;

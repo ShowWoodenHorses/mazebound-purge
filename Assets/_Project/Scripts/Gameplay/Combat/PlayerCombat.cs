@@ -48,7 +48,7 @@ namespace Purge.Gameplay.Combat
     /// again) reloads earlier. No rounds left anywhere — the attack only clicks (<see cref="DryFired"/>).</para>
     /// Must be registered before <see cref="PlayerSystem"/> (it sets this tick's aim and speed).
     /// </summary>
-    public sealed class PlayerCombat : ILevelTickable
+    public sealed class PlayerCombat : ILevelTickable, IDisposable
     {
         private const float DeadZone = 0.1f;
 
@@ -99,6 +99,8 @@ namespace Purge.Gameplay.Combat
         private readonly Vector2[] _chainPoints = new Vector2[MaxChainPoints];
         private readonly CombatTarget[] _chainTargets = new CombatTarget[MaxChainPoints];
         private readonly DeterministicRandom _random = new DeterministicRandom(0x5eed);
+        private WeaponRuntime _duetWeapon;
+        private float _duetCooldown;
         private WeaponRuntime _chargingWeapon;
         private float _chargeElapsed;
         private float _firingLeft;
@@ -122,6 +124,7 @@ namespace Purge.Gameplay.Combat
             _ammo = ammo;
             _pointer = pointer;
             _throwing = throwing;
+            if (_stats?.Has(CharacterSkills.Duet) == true) _weapons.Switched += OnWeaponSwitched;
         }
 
         /// <summary>(weapon, direction) after every attack — for views, animation and HUD.</summary>
@@ -160,8 +163,16 @@ namespace Purge.Gameplay.Combat
         /// <summary>Direction of the last attack (or of the aim while the attack is held).</summary>
         public Vector2 AimDirection { get; private set; } = Vector2.up;
 
+        public void Dispose() => _weapons.Switched -= OnWeaponSwitched;
+
+        private void OnWeaponSwitched(WeaponSlot slot)
+        {
+            _duetWeapon = _duetCooldown <= 0f ? _weapons.Get(slot) : null;
+        }
+
         public void Tick(float deltaTime)
         {
+            _duetCooldown = Mathf.Max(0f, _duetCooldown - deltaTime);
             _firingLeft = Mathf.Max(0f, _firingLeft - deltaTime);
             _stanceLeft = Mathf.Max(0f, _stanceLeft - deltaTime);
             if (_player.Down || _player.InVehicle)
@@ -444,6 +455,12 @@ namespace Purge.Gameplay.Combat
             _attackDamageFactor = definition.UsesAmmo && weapon.Ammo - definition.Ammo.PerAttack < definition.Ammo.PerAttack
                 && _stats?.Has(RunPerk.LastRound) == true
                 ? (MagazineOf(definition) <= definition.Ammo.PerAttack ? 1.15f : 1.5f) : 1f;
+            if (_duetWeapon == weapon && !definition.IsMelee)
+            {
+                _attackDamageFactor *= 1.25f;
+                _duetCooldown = 3f;
+                _duetWeapon = null;
+            }
             _stanceLeft = StanceTime;
             AimDirection = direction;
             _player.AimAt(direction);
@@ -451,8 +468,10 @@ namespace Purge.Gameplay.Combat
             switch (definition.Attack)
             {
                 case BulletAttack bullets:
-                    FireBullets(definition, bullets, origin, direction, floor);
-                    if(Has(definition,WeaponUpgrade.DoubleShot) && _random.NextDouble()<definition.UpgradeParameter("double_shot_chance")) FireBullets(definition,bullets,origin,direction,floor);
+                    var bonusPierce = _stats?.ConsumePiercingRound(definition.Id) == true ? 1 : 0;
+                    FireBullets(definition, bullets, origin, direction, floor, bonusPierce, primary: true);
+                    if (Has(definition, WeaponUpgrade.DoubleShot) && _random.NextDouble() < definition.UpgradeParameter("double_shot_chance"))
+                        FireBullets(definition, bullets, origin, direction, floor, bonusPierce, primary: false);
                     break;
                 case ExplosiveAttack explosive:
                     var range = lob ? Vector2.Distance(origin, landing) : explosive.Range;
@@ -533,7 +552,8 @@ namespace Purge.Gameplay.Combat
             return false;
         }
 
-        private void FireBullets(WeaponDefinition definition, BulletAttack attack, Vector2 origin, Vector2 direction, int floor)
+        private void FireBullets(WeaponDefinition definition, BulletAttack attack, Vector2 origin, Vector2 direction,
+            int floor, int bonusPierce, bool primary)
         {
             var pellets = Mathf.Max(1, attack.Pellets);
             var spread = attack.Spread * (Has(definition,WeaponUpgrade.Wide)?1.5f:1f);
@@ -552,7 +572,8 @@ namespace Purge.Gameplay.Combat
                 }
 
                 _bullets.Spawn(origin, Rotate(direction, degrees * Mathf.Deg2Rad), attack.Speed, attack.Damage * _attackDamageFactor * (Has(definition,WeaponUpgrade.FullMagazineCritical) && _weapons.Active.Ammo>=MagazineOf(definition)?2f:1f), floor,
-                    attack.Range * (Has(definition,WeaponUpgrade.Range)?definition.UpgradeParameter("range_factor"):1f), attack.Pierce + (Has(definition,WeaponUpgrade.Pierce)?definition.ArsenalClass==ArsenalClass.Snipers?2:1:0), weapon: definition, explosiveRound: Has(definition,WeaponUpgrade.ExplosiveRounds) && _weapons.Active.Shots % Mathf.Max(1,Mathf.RoundToInt(definition.UpgradeParameter("explosive_every"))) == 0);
+                    attack.Range * (Has(definition,WeaponUpgrade.Range)?definition.UpgradeParameter("range_factor"):1f), attack.Pierce + bonusPierce + (Has(definition,WeaponUpgrade.Pierce)?definition.ArsenalClass==ArsenalClass.Snipers?2:1:0), weapon: definition, explosiveRound: Has(definition,WeaponUpgrade.ExplosiveRounds) && _weapons.Active.Shots % Mathf.Max(1,Mathf.RoundToInt(definition.UpgradeParameter("explosive_every"))) == 0,
+                    tracksPrecision: primary && i == pellets / 2 && _stats?.Has(CharacterSkills.SteadyAim) == true);
             }
         }
 

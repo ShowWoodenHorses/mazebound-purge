@@ -556,6 +556,9 @@ def main():
     for branch, node in order:
         tree.append([branch, node, model.node_cost(index), f"{index + 1}th node bought"])
         index += 1
+    for branch, nodes in params["tree"].get("branch_extensions", {}).items():
+        for node, price_index in nodes:
+            tree.append([branch, node, model.node_cost(price_index), "Extended branch"])
     write_csv(os.path.join(out, "tree.csv"), ["branch", "node", "cost", "note"], tree)
 
     boosters = []

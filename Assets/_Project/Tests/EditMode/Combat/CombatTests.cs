@@ -9,6 +9,7 @@ using Purge.Gameplay.Doors;
 using Purge.Gameplay.Grid;
 using Purge.Gameplay.Level;
 using Purge.Gameplay.Player;
+using Purge.Gameplay.Run;
 using Purge.Gameplay.Sound;
 using Purge.Gameplay.Spatial;
 using Purge.Gameplay.Weapons;
@@ -598,6 +599,24 @@ namespace Purge.Tests.EditMode.Combat
         }
 
         // ------------------------------------------------------------------ Ranged
+
+        [Test]
+        public void DuetBoostsOneAttackAfterSwitching()
+        {
+            var stats = new RunStats(new LevelLaunchOptions(skills: CharacterSkills.Duet));
+            using var combat = new PlayerCombat(_input, _player, _weapons, _targets, _bullets, _sounds,
+                _aim, _doors, _stock, stats: stats);
+            Equip(Weapon("first", Bullets(), Ammo(5)));
+            Equip(Weapon("second", Bullets(), Ammo(5)), "weapon_2");
+
+            Assert.That(_weapons.Activate(WeaponSlot.First), Is.True);
+            Assert.That(combat.TryAttack(Vector2.right), Is.True);
+            Assert.That(_bullets.Active[0].Damage, Is.EqualTo(50f));
+
+            Assert.That(_weapons.Activate(WeaponSlot.Second), Is.True);
+            Assert.That(combat.TryAttack(Vector2.right), Is.True);
+            Assert.That(_bullets.Active[1].Damage, Is.EqualTo(40f));
+        }
 
         [Test]
         public void Bullet_HitsTheFirstTarget_AndStops()

@@ -199,6 +199,21 @@
     "node_base": 2.0,
     "node_growth": 1.2,
     "node_power": 0.04,
+    "branch_extensions": {
+      "Shooter": [
+        ["Duet", 17],
+        ["Steady aim", 18],
+        ["Booster: Piercing reserve", 19]
+      ],
+      "Demolisher": [
+        ["Pyrotechnic", 12],
+        ["Scorched earth", 14],
+        ["Concussion charge", 16],
+        ["Ordnance reserve", 17],
+        ["Booster: Emergency smoke", 18],
+        ["Booster: Volley", 19]
+      ]
+    },
     "branches": {
       "Shooter": [
         "Quick hands",

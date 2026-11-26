@@ -11,6 +11,7 @@ namespace Purge.Application.Save
         Use,
         Melee,
         Ranged,
+        Throwable,
     }
 
     /// <summary>
@@ -72,7 +73,9 @@ namespace Purge.Application.Save
         public TouchPlacement Melee;
         public TouchPlacement Ranged;
 
-        public const int Count = 5;
+        public TouchPlacement Throwable;
+
+        public const int Count = 6;
 
         public static TouchLayout Default => new TouchLayout
         {
@@ -81,6 +84,7 @@ namespace Purge.Application.Save
             Use = TouchPlacement.Default,
             Melee = TouchPlacement.Default,
             Ranged = TouchPlacement.Default,
+            Throwable = TouchPlacement.Default,
         };
 
         public TouchPlacement this[TouchElement element]
@@ -92,6 +96,7 @@ namespace Purge.Application.Save
                 TouchElement.Use => Use,
                 TouchElement.Melee => Melee,
                 TouchElement.Ranged => Ranged,
+                TouchElement.Throwable => Throwable,
                 _ => throw new ArgumentOutOfRangeException(nameof(element)),
             };
             set
@@ -103,6 +108,7 @@ namespace Purge.Application.Save
                     case TouchElement.Use: Use = value; break;
                     case TouchElement.Melee: Melee = value; break;
                     case TouchElement.Ranged: Ranged = value; break;
+                    case TouchElement.Throwable: Throwable = value; break;
                     default: throw new ArgumentOutOfRangeException(nameof(element));
                 }
             }
@@ -115,14 +121,15 @@ namespace Purge.Application.Save
             Use = Use.Clamped(),
             Melee = Melee.Clamped(),
             Ranged = Ranged.Clamped(),
+            Throwable = Throwable.Clamped(),
         };
 
         public bool Equals(TouchLayout other) =>
             Stick.Equals(other.Stick) && Attack.Equals(other.Attack) && Use.Equals(other.Use) &&
-            Melee.Equals(other.Melee) && Ranged.Equals(other.Ranged);
+            Melee.Equals(other.Melee) && Ranged.Equals(other.Ranged) && Throwable.Equals(other.Throwable);
 
         public override bool Equals(object obj) => obj is TouchLayout other && Equals(other);
 
-        public override int GetHashCode() => HashCode.Combine(Stick, Attack, Use, Melee, Ranged);
+        public override int GetHashCode() => HashCode.Combine(Stick, Attack, Use, Melee, Ranged, Throwable);
     }
 }

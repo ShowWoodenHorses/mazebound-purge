@@ -1,3 +1,4 @@
+using Purge.Application.Services;
 using Purge.Gameplay.Combat;
 using Purge.Presentation.UI.Shapes;
 using UnityEngine;
@@ -167,6 +168,7 @@ namespace Purge.Presentation.UI.Touch
             }
 
             _pointerId = eventData.pointerId;
+            if (control?.device is TouchAimDevice aim) aim.IsHeld = true;
             Deflect(point);
         }
 
@@ -186,6 +188,7 @@ namespace Purge.Presentation.UI.Touch
         public void OnPointerUp(PointerEventData eventData)
         {
             if (eventData.pointerId != _pointerId) return;
+            if (control?.device is TouchAimDevice aim) aim.ReleaseCount++;
             Release();
             SendValueToControl(Vector2.zero);
         }
@@ -262,6 +265,7 @@ namespace Purge.Presentation.UI.Touch
         private void Release()
         {
             _pointerId = NoPointer;
+            if (control?.device is TouchAimDevice aim) aim.IsHeld = false;
             _thumbAngle = float.NaN;
             LightFireRing(false);
             ResetToRest();

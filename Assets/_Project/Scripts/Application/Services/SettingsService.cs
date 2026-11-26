@@ -165,7 +165,6 @@ namespace Purge.Application.Services
             controls.AimStickDeadZone = Controls.AimStickDeadZone;
             controls.TouchFireThreshold = Controls.TouchFireThreshold;
             controls.AimStickSize = Controls.AimStickSize;
-            controls.WeaponSlotsSize = Controls.WeaponSlotsSize;
             SetControls(controls);
         }
 
@@ -178,7 +177,6 @@ namespace Purge.Application.Services
             controls.AimStickDeadZone = ControlsSettings.Default.AimStickDeadZone;
             controls.TouchFireThreshold = ControlsSettings.Default.TouchFireThreshold;
             controls.AimStickSize = ControlsSettings.Default.AimStickSize;
-            controls.WeaponSlotsSize = ControlsSettings.Default.WeaponSlotsSize;
             SetControls(controls);
         }
 

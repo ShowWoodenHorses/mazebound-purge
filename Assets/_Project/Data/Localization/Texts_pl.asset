@@ -104,7 +104,6 @@ MonoBehaviour:
   - settings.aim_dead_zone
   - settings.fire_threshold
   - settings.aim_stick_size
-  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -146,6 +145,7 @@ MonoBehaviour:
   - layout.element.use
   - layout.element.melee
   - layout.element.ranged
+  - layout.element.throwable
   - layout.reset
   - layout.done
   - menu.tutorial
@@ -664,7 +664,6 @@ MonoBehaviour:
   - "Martwa strefa ga\u0142ki celowania"
   - "Pr\xF3g strza\u0142u"
   - "Rozmiar ga\u0142ki celowania"
-  - "Rozmiar miejsc na bro\u0144"
   - "Czu\u0142o\u015B\u0107 ga\u0142ki"
   - "Rozmiar przycisk\xF3w"
   - "Widoczno\u015B\u0107 przycisk\xF3w"
@@ -703,10 +702,11 @@ MonoBehaviour:
     jego rozmiar."
   - '{0}: rozmiar {1}'
   - "Ga\u0142ka"
-  - "Atak i bro\u0144"
+  - Celowanie / atak
   - Akcja
-  - "Walka wr\u0119cz"
-  - Dystans
+  - "Pierwsza bro\u0144"
+  - "Druga bro\u0144"
+  - "Bro\u0144 miotana"
   - RESETUJ
   - GOTOWE
   - SAMOUCZEK

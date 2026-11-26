@@ -110,21 +110,21 @@ MonoBehaviour:
     - rid: 1763807262009983062
       type: {class: BulletAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
-        _interval: 0.3
-        _automatic: 0
-        _damage: 198
+        _interval: 0.6
+        _automatic: 1
+        _damage: 190
         _speed: 40
         _range: 22
         _pellets: 1
         _spread: 0
-        _pierce: 2
+        _pierce: 3
     - rid: 1763807262009983063
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _ammo: {fileID: 11400000, guid: eafdf1935eb98494e85039d52d9b1be6, type: 2}
-        _magazine: 5
+        _magazine: 10
         _fixedMagazine: 0
-        _reloadTime: 2.5
+        _reloadTime: 3
         _perAttack: 1
         _infiniteReserve: 0
         _soundRadius: 0

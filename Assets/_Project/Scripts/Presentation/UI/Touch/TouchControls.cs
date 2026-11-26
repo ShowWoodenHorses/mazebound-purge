@@ -28,9 +28,11 @@ namespace Purge.Presentation.UI.Touch
         [Tooltip("Safe area the controls live in (layout positions are relative to it).")]
         [SerializeField] private RectTransform _area;
 
-        [Tooltip("Stick zone, attack cluster and Use in TouchElement order (the zone stands for the stick, the cluster " +
-                 "for Attack with its Melee and Ranged slots); mirrored horizontally for the left-handed layout.")]
+        [Tooltip("Stick zone, attack cluster and Use in TouchElement order; mirrored for left-handed layout.")]
         [SerializeField] private RectTransform[] _mirrored;
+
+        [SerializeField] private RectTransform[] _slotRoots;
+        private Vector2[] _slotPositions;
 
         [SerializeField] private TouchAttackCluster _cluster;
         [SerializeField] private TouchStickMarks _marks;
@@ -48,6 +50,7 @@ namespace Purge.Presentation.UI.Touch
         private ControlsSettings _settings = ControlsSettings.Default;
         private bool _shownByHud;
         private bool _editing;
+        private bool _driving;
         private int _normalSortingOrder;
         private Vector2 _appliedAreaSize;
         private OnScreenButton[] _buttons;
@@ -72,12 +75,11 @@ namespace Purge.Presentation.UI.Touch
             _settings = settings;
             _size = settings.Size;
             if (_group != null) _group.alpha = settings.Opacity;
-            SetLeftHanded(settings.LeftHanded);
             if (_cluster != null)
             {
                 _cluster.SetMirrored(settings.LeftHanded);
                 _cluster.SetScheme(settings.Scheme);
-                _cluster.SetSizes(settings.AimStickSize, settings.WeaponSlotsSize);
+                _cluster.SetAimSize(settings.AimStickSize, settings.Layout.Attack.Scale);
             }
 
             if (_marks != null) _marks.SetMode(settings.AimMode);
@@ -112,8 +114,9 @@ namespace Purge.Presentation.UI.Touch
         /// </summary>
         public void SetDriving(bool driving)
         {
+            _driving = driving;
             if (_cluster != null) _cluster.SetDriving(driving);
-            if (_stick != null) _stick.SetSteering(driving);
+            if (_stick != null) _stick.SetSteering(driving && !_editing);
         }
 
         /// <summary>What Use would do now (lights the button).</summary>
@@ -140,6 +143,8 @@ namespace Purge.Presentation.UI.Touch
             if (_stick != null) _stick.enabled = !editing;
             if (AimStick != null) AimStick.enabled = !editing;
             foreach (var handle in _handles) handle.enabled = editing;
+            if (_cluster != null) _cluster.SetEditing(editing);
+            if (_stick != null) _stick.SetSteering(_driving && !editing);
             // The stick zone (where the stick may go) is invisible in play, faintly drawn while editing.
             var zone = _mirrored[0].GetComponent<Image>();
             if (zone != null) zone.color = editing ? new Color(1f, 1f, 1f, 0.06f) : Color.clear;
@@ -148,8 +153,12 @@ namespace Purge.Presentation.UI.Touch
         }
 
         /// <summary>The drawn control: a button or the stick ring.</summary>
-        public RectTransform ElementRect(TouchElement element) =>
-            element == TouchElement.Stick ? _stick.Ring : _mirrored[(int)element];
+        public RectTransform ElementRect(TouchElement element) => element switch
+        {
+            TouchElement.Stick => _stick.Ring,
+            TouchElement.Melee or TouchElement.Ranged or TouchElement.Throwable => _slotRoots[(int)element - (int)TouchElement.Melee],
+            _ => _mirrored[(int)element],
+        };
 
         /// <summary>Centre of the control as shown, normalized to the safe area.</summary>
         public Vector2 DisplayedCenter(TouchElement element)
@@ -183,7 +192,10 @@ namespace Purge.Presentation.UI.Touch
             {
                 min = Vector2.zero;
                 max = Vector2.one;
-                half = _mirrored[(int)element].rect.size * (0.5f * scale);
+                var rect = ElementRect(element);
+                var parent = rect.parent;
+                var localSize = _area.InverseTransformVector(parent.TransformVector(rect.rect.size));
+                half = new Vector2(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y)) * (0.5f * scale);
             }
 
             return new Vector2(
@@ -236,6 +248,7 @@ namespace Purge.Presentation.UI.Touch
         {
             if (_area == null || _mirrored == null || _stick == null) return;
             _appliedAreaSize = _area.rect.size;
+            SetLeftHanded(LeftHanded);
             var layout = _settings.Layout;
 
             for (var element = TouchElement.Attack; (int)element < _mirrored.Length; element++)
@@ -248,6 +261,23 @@ namespace Purge.Presentation.UI.Touch
                 rect.anchorMin = rect.anchorMax = point;
                 rect.pivot = new Vector2(0.5f, 0.5f);
                 rect.anchoredPosition = Vector2.zero;
+            }
+
+            if (_slotRoots != null)
+            {
+                _slotPositions ??= System.Array.ConvertAll(_slotRoots, rect => rect.anchoredPosition);
+                for (var i = 0; i < _slotRoots.Length; i++)
+                {
+                    var element = (TouchElement)((int)TouchElement.Melee + i);
+                    var placement = layout[element];
+                    var rect = _slotRoots[i];
+                    rect.localScale = new Vector3(placement.Scale, placement.Scale, 1f);
+                    rect.anchoredPosition = _slotPositions[i];
+                    var displayed = placement.Moved ? ToLayout(placement.Position) : DisplayedCenter(element);
+                    var clamped = ClampDisplayed(element, displayed, placement.Scale);
+                    if (placement.Moved || clamped != displayed)
+                        rect.position = _area.TransformPoint(_area.rect.min + clamped * _area.rect.size);
+                }
             }
 
             var stick = layout.Stick;

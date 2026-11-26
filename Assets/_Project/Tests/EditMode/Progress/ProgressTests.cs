@@ -440,7 +440,10 @@ namespace Purge.Tests.EditMode.Progress
             Assert.AreEqual(0.15f, save.Data.Settings.Controls.AimStickDeadZone, 1e-5f);
             Assert.AreEqual(0.75f, save.Data.Settings.Controls.TouchFireThreshold, 1e-5f);
             Assert.AreEqual(1.2f, save.Data.Settings.Controls.AimStickSize, 1e-5f);
-            Assert.AreEqual(0.9f, save.Data.Settings.Controls.WeaponSlotsSize, 1e-5f);
+            Assert.AreEqual(0.9f, save.Data.Settings.Controls.Layout.Melee.Scale, 1e-5f);
+            Assert.AreEqual(0.9f, save.Data.Settings.Controls.Layout.Ranged.Scale, 1e-5f);
+            Assert.AreEqual(0.9f, save.Data.Settings.Controls.Layout.Throwable.Scale, 1e-5f);
+            Assert.AreEqual(1f, save.Data.Settings.Controls.WeaponSlotsSize, 1e-5f);
 
             settings.ResetControls();
             Assert.AreEqual(ControlsSettings.Default, settings.Controls);

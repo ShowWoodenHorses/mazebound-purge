@@ -16,6 +16,7 @@ MonoBehaviour:
   _purchasePrice: 4500
   _upgradeBurn: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
   _upgradeFreeze: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+  _upgradeElectrify: {fileID: 0}
   _upgradeExplosion:
     _interval: 0.9
     _automatic: 0
@@ -25,6 +26,8 @@ MonoBehaviour:
     _explosionDamage: 60
     _radius: 2
     _edgeDamage: 0.3
+    _minimumRange: 0
+    _flightTime: 0
     _explosionLook:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -100,16 +103,17 @@ MonoBehaviour:
   - rid: 1763807262009983143
   - rid: 1763807262009983144
   - rid: 1763807262009983200
+  - rid: 8342087686987448324
   references:
     version: 2
     RefIds:
     - rid: 1763807262009983143
       type: {class: BulletAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
-        _interval: 0.28
+        _interval: 0.6
         _automatic: 0
-        _damage: 41
-        _speed: 28
+        _damage: 85
+        _speed: 35
         _range: 12
         _pellets: 1
         _spread: 3
@@ -119,6 +123,7 @@ MonoBehaviour:
       data:
         _ammo: {fileID: 11400000, guid: eafdf1935eb98494e85039d52d9b1be6, type: 2}
         _magazine: 12
+        _fixedMagazine: 0
         _reloadTime: 1.2
         _perAttack: 1
         _infiniteReserve: 0
@@ -146,3 +151,8 @@ MonoBehaviour:
         _hitRing: 0.55
         _vibrateAttack: 10
         _vibrateKill: 14
+    - rid: 8342087686987448324
+      type: {class: MobilityModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _inHands: 1.15
+        _whileFiring: 1

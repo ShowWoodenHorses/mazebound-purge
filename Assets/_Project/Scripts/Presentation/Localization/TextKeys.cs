@@ -202,7 +202,6 @@ namespace Purge.Presentation.Localization
         public const string SettingsAimDeadZone = "settings.aim_dead_zone";
         public const string SettingsFireThreshold = "settings.fire_threshold";
         public const string SettingsAimSize = "settings.aim_stick_size";
-        public const string SettingsSlotsSize = "settings.weapon_slots_size";
         public const string SettingsStickResponse = "settings.stick_response";
         public const string SettingsControlsSize = "settings.controls_size";
         public const string SettingsControlsOpacity = "settings.controls_opacity";

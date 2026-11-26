@@ -58,6 +58,13 @@ namespace Purge.Application.Services
         public Vector2 Look => _look != null ? _look.ReadValue<Vector2>() : Vector2.zero;
         public bool LookIsPointer => _look?.activeControl?.device is Pointer;
         public Vector2 AimStick => _aimStick != null ? _aimStick.ReadValue<Vector2>() : Vector2.zero;
+
+        private TouchAimDevice TouchAim => _aimStick != null && _aimStick.controls.Count > 0
+            ? _aimStick.controls[0].device as TouchAimDevice
+            : null;
+
+        public bool AimStickHeld => TouchAim?.IsHeld ?? false;
+        public uint AimStickReleaseCount => TouchAim?.ReleaseCount ?? 0;
         public bool AttackHeld
         {
             get

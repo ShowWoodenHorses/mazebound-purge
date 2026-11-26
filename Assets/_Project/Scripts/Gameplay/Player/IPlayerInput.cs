@@ -49,6 +49,11 @@ namespace Purge.Gameplay.Player
         /// </summary>
         Vector2 AimStick { get; }
 
+        bool AimStickHeld => AimStick.sqrMagnitude > 0f;
+
+        /// <summary>Counts actual pointer-up events on the on-screen aim stick, including release in its dead zone.</summary>
+        uint AimStickReleaseCount => 0;
+
         /// <summary>True while the attack control is held (automatic weapons).</summary>
         bool AttackHeld { get; }
 

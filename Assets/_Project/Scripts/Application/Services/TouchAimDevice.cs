@@ -31,6 +31,9 @@ namespace Purge.Application.Services
 
         public StickControl Stick { get; private set; }
 
+        public bool IsHeld { get; set; }
+        public uint ReleaseCount { get; set; }
+
         /// <summary>Before any scene loads, so no on-screen stick is ever enabled without its layout (again by InputService: harmless).</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Register() => InputSystem.RegisterLayout<TouchAimDevice>(LayoutName);

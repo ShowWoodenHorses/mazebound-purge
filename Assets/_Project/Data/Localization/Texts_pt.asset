@@ -104,7 +104,6 @@ MonoBehaviour:
   - settings.aim_dead_zone
   - settings.fire_threshold
   - settings.aim_stick_size
-  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -146,6 +145,7 @@ MonoBehaviour:
   - layout.element.use
   - layout.element.melee
   - layout.element.ranged
+  - layout.element.throwable
   - layout.reset
   - layout.done
   - menu.tutorial
@@ -663,7 +663,6 @@ MonoBehaviour:
   - Zona morta da mira
   - Limiar de disparo
   - "Tamanho do anal\xF3gico de mira"
-  - "Tamanho dos espa\xE7os de armas"
   - "Resposta do anal\xF3gico"
   - "Tamanho dos bot\xF5es"
   - "Opacidade dos bot\xF5es"
@@ -701,10 +700,11 @@ MonoBehaviour:
   - "Arraste o anal\xF3gico e os bot\xF5es. Toque em um para mudar o tamanho."
   - '{0}: tamanho {1}'
   - "Anal\xF3gico"
-  - Ataque e armas
+  - Mirar / atacar
   - "A\xE7\xE3o"
-  - Corpo a corpo
-  - "\xC0 dist\xE2ncia"
+  - Primeira arma
+  - Segunda arma
+  - "Arremess\xE1vel"
   - REDEFINIR
   - PRONTO
   - TUTORIAL

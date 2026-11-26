@@ -104,7 +104,6 @@ MonoBehaviour:
   - settings.aim_dead_zone
   - settings.fire_threshold
   - settings.aim_stick_size
-  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -146,6 +145,7 @@ MonoBehaviour:
   - layout.element.use
   - layout.element.melee
   - layout.element.ranged
+  - layout.element.throwable
   - layout.reset
   - layout.done
   - menu.tutorial
@@ -665,7 +665,6 @@ MonoBehaviour:
   - Totzone des Zielsticks
   - Feuerschwelle
   - "Gr\xF6\xDFe des Zielsticks"
-  - "Gr\xF6\xDFe der Waffenpl\xE4tze"
   - Stick-Reaktion
   - "Gr\xF6\xDFe der Steuerung"
   - Deckkraft der Steuerung
@@ -703,10 +702,11 @@ MonoBehaviour:
   - "Stick und Tasten ziehen. Antippen, um die Gr\xF6\xDFe zu \xE4ndern."
   - "{0}: Gr\xF6\xDFe {1}"
   - Stick
-  - Angriff und Waffen
+  - Zielen / Angriff
   - Benutzen
-  - Nahkampf
-  - Fernkampf
+  - Erste Waffe
+  - Zweite Waffe
+  - Wurfwaffe
   - "ZUR\xDCCKSETZEN"
   - FERTIG
   - TUTORIAL

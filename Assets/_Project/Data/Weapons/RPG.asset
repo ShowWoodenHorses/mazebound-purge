@@ -16,6 +16,7 @@ MonoBehaviour:
   _purchasePrice: 11000
   _upgradeBurn: {fileID: 11400000, guid: ac6b0ffd7b6a08f47826717c471cb6c1, type: 2}
   _upgradeFreeze: {fileID: 11400000, guid: 4674515793802e84b90f003fc3343db5, type: 2}
+  _upgradeElectrify: {fileID: 0}
   _upgradeExplosion:
     _interval: 0.9
     _automatic: 0
@@ -25,6 +26,8 @@ MonoBehaviour:
     _explosionDamage: 60
     _radius: 2
     _edgeDamage: 0.3
+    _minimumRange: 0
+    _flightTime: 0
     _explosionLook:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -105,21 +108,19 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1763807300000000017
-      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
-      data:
-        _rocketProjectile: 1
     - rid: 1763807262009983044
       type: {class: ExplosiveAttack, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _interval: 0.9
         _automatic: 0
         _speed: 14
-        _range: 10
-        _directDamage: 88
-        _explosionDamage: 264
-        _radius: 2
+        _range: 15
+        _directDamage: 250
+        _explosionDamage: 420
+        _radius: 4
         _edgeDamage: 0.3
+        _minimumRange: 0
+        _flightTime: 0
         _explosionLook:
           m_AssetGUID: 
           m_SubObjectName: 
@@ -132,7 +133,7 @@ MonoBehaviour:
         _ammo: {fileID: 11400000, guid: f8e702f46f833fe48883f8c075ad39be, type: 2}
         _magazine: 1
         _fixedMagazine: 1
-        _reloadTime: 2.5
+        _reloadTime: 6.5
         _perAttack: 1
         _infiniteReserve: 0
         _soundRadius: 0
@@ -164,3 +165,35 @@ MonoBehaviour:
         _hitRing: 0
         _vibrateAttack: 25
         _vibrateKill: 15
+    - rid: 1763807300000000017
+      type: {class: WeaponEffectsModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _muzzleFlash:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _stream:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _targetHit:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _barrelSmoke:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        _electricProjectile: 0
+        _electricCone: 0
+        _fireProjectile: 0
+        _rocketProjectile: 1
+        _frostStream: 0

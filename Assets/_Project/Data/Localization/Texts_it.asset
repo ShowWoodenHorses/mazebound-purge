@@ -104,7 +104,6 @@ MonoBehaviour:
   - settings.aim_dead_zone
   - settings.fire_threshold
   - settings.aim_stick_size
-  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -146,6 +145,7 @@ MonoBehaviour:
   - layout.element.use
   - layout.element.melee
   - layout.element.ranged
+  - layout.element.throwable
   - layout.reset
   - layout.done
   - menu.tutorial
@@ -663,7 +663,6 @@ MonoBehaviour:
   - Zona morta dello stick di mira
   - Soglia di fuoco
   - Dimensione dello stick di mira
-  - Dimensione degli slot arma
   - Risposta dello stick
   - Dimensione dei pulsanti
   - "Opacit\xE0 dei pulsanti"
@@ -701,10 +700,11 @@ MonoBehaviour:
   - Trascina lo stick e i pulsanti. Toccane uno per cambiarne la dimensione.
   - '{0}: dimensione {1}'
   - Stick
-  - Attacco e armi
+  - Mira / attacco
   - Azione
-  - Mischia
-  - Distanza
+  - Prima arma
+  - Seconda arma
+  - Arma da lancio
   - RIPRISTINA
   - FATTO
   - TUTORIAL

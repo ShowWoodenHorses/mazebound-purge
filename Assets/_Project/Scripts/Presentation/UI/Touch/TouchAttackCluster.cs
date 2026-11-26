@@ -8,18 +8,7 @@ using UnityEngine.UI;
 
 namespace Purge.Presentation.UI.Touch
 {
-    /// <summary>
-    /// Look of the attack cluster and the Use button (stage 4в): a quarter-circle Attack with its right angle at the
-    /// bottom-right, three ring sectors along its arc — weapon slot 2 (top, RB), weapon slot 1 (LB), the throwable (LT) —
-    /// and Use apart on the left. A weapon slot shows its weapon, the magazine as ticks on its outer arc, the reload as an
-    /// arc on its inner edge and the reserve as a number; the active slot is outlined in the accent, a gun with neither
-    /// rounds nor reserve in red; an empty slot is faint. The throwable sector shows the kind and the count, the accent
-    /// while aiming. Use lights up when it would do something. Pressed buttons get the light fill. Only the look: the
-    /// buttons are <c>OnScreenButton</c>s. The left-handed layout mirrors the content (icons and numbers stay readable).
-    /// "Melee" / "Ranged" in the field names are the slots 1 / 2 of Maze's layout: either slot holds any weapon.
-    /// The two-stick scheme (<see cref="TouchScheme"/>, stage Т) puts the aim stick in the Attack quarter instead of the
-    /// button (<see cref="SetScheme"/>); the sectors stay around it.
-    /// </summary>
+    /// <summary>Paints the touch weapon slots, throwable, attack and interaction buttons.</summary>
     public sealed class TouchAttackCluster : MonoBehaviour
     {
         private const int MaxTicks = 12;
@@ -29,6 +18,7 @@ namespace Purge.Presentation.UI.Touch
         private sealed class SlotView
         {
             public UiShape Shape;
+            public Vector2 Center;
             public Image Icon;
             public Sprite Fallback;
 
@@ -72,7 +62,6 @@ namespace Purge.Presentation.UI.Touch
         [SerializeField] private SlotView _ranged = new SlotView();
 
         [Header("Geometry (content space)")]
-        [SerializeField] private Vector2 _center;
         [SerializeField] private float _tickRadius = 284f;
 
         [Header("Use")]
@@ -100,6 +89,7 @@ namespace Purge.Presentation.UI.Touch
         private UseTarget _useTarget;
         private TouchScheme _scheme;
         private bool _driving;
+        private bool _editing;
         private WeaponSlotState _throwState;
         private TouchPress _throwPress;
         private bool _mirrored;
@@ -143,13 +133,21 @@ namespace Purge.Presentation.UI.Touch
             ApplyParts();
         }
 
+        public void SetEditing(bool editing)
+        {
+            _editing = editing;
+            ApplyParts();
+            Refresh();
+        }
+
         private void ApplyParts()
         {
             var sticks = _scheme == TouchScheme.TwoSticks;
-            if (_aimStick != null) _aimStick.gameObject.SetActive(sticks && !_driving);
-            SetActive(_attackOnly, !sticks && !_driving);
-            SetActive(_combatOnly, !_driving);
-            SetActive(_driveOnly, _driving);
+            var driving = _driving && !_editing;
+            if (_aimStick != null) _aimStick.gameObject.SetActive(sticks && !driving);
+            SetActive(_attackOnly, !sticks && !driving);
+            SetActive(_combatOnly, !driving);
+            SetActive(_driveOnly, driving);
         }
 
         private static void SetActive(GameObject[] parts, bool active)
@@ -162,16 +160,14 @@ namespace Purge.Presentation.UI.Touch
         /// <summary>The aim stick of the two-stick scheme (null in old scenes).</summary>
         public TouchStick AimStick => _aimStick != null ? _aimStick.GetComponent<TouchStick>() : null;
 
-        public void SetSizes(float aim, float slots)
+        public void SetAimSize(float aim, float attackScale)
         {
             if (_aimArea != null) _aimArea.localScale = new Vector3(aim, aim, 1f);
             if (_slots == null) return;
 
-            _slots.localScale = new Vector3(slots, slots, 1f);
-            var aimRadius = _scheme == TouchScheme.TwoSticks ? _aimStick.OuterRadius * aim : _attack.OuterRadius;
-            // Keep the sectors beyond the stick's touch area when their sizes differ.
-            var separation = Mathf.Max(0f, aimRadius - _ranged.Shape.InnerRadius * slots);
-            _slots.anchoredPosition = new Vector2(-separation, separation);
+            // Slot size is edited separately from Attack.
+            var inverseAttackScale = 1f / attackScale;
+            _slots.localScale = new Vector3(inverseAttackScale, inverseAttackScale, 1f);
         }
 
         public void SetMirrored(bool mirrored)
@@ -234,12 +230,12 @@ namespace Purge.Presentation.UI.Touch
         private void PaintThrow()
         {
             if (_throw == null) return;
-            PaintButton(_throw, _throwState.Equipped, _throwState.Active, _throwPress);
+            PaintButton(_throw, _editing || _throwState.Equipped, _throwState.Active, _throwPress);
             if (_throwIcon != null)
             {
                 _throwIcon.sprite = _throwState.Icon != null ? _throwState.Icon : _throwIconFallback;
                 var color = _throwState.Active ? _style.Accent : _style.Text;
-                if (!_throwState.Equipped) color.a *= _style.DisabledAlpha;
+                if (!_editing && !_throwState.Equipped) color.a *= _style.DisabledAlpha;
                 _throwIcon.color = color;
             }
 
@@ -272,11 +268,11 @@ namespace Purge.Presentation.UI.Touch
         private void PaintSlot(SlotView slot)
         {
             var state = slot.State;
-            PaintButton(slot.Shape, state.Equipped, state.Active, slot.Press, state.Equipped && state.OutOfAmmo);
+            PaintButton(slot.Shape, _editing || state.Equipped, state.Active, slot.Press, state.Equipped && state.OutOfAmmo);
             if (slot.Icon != null)
             {
-                slot.Icon.enabled = state.Equipped;
-                if (state.Equipped)
+                slot.Icon.enabled = _editing || state.Equipped;
+                if (slot.Icon.enabled)
                 {
                     slot.Icon.sprite = state.Icon != null ? state.Icon : slot.Fallback;
                     var color = _style.Text;
@@ -349,7 +345,7 @@ namespace Purge.Presentation.UI.Touch
                 var angle = count > 1 ? Mathf.Lerp(from, to, i / (float)(count - 1)) : (from + to) * 0.5f;
                 var rad = angle * Mathf.Deg2Rad;
                 var rect = tick.rectTransform;
-                rect.anchoredPosition = _center + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * _tickRadius;
+                rect.anchoredPosition = slot.Center + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * _tickRadius;
                 rect.localRotation = Quaternion.Euler(0f, 0f, angle - 90f);
             }
         }

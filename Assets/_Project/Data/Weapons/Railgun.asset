@@ -26,6 +26,8 @@ MonoBehaviour:
     _explosionDamage: 60
     _radius: 2
     _edgeDamage: 0.3
+    _minimumRange: 0
+    _flightTime: 0
     _explosionLook:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -114,15 +116,16 @@ MonoBehaviour:
       data:
         _interval: 0.45
         _automatic: 1
-        _damage: 145
-        _range: 10
-        _chargeTime: 0.6
+        _damage: 270
+        _range: 14
+        _chargeTime: 0.4
         _piercing: 1
     - rid: 1763807262009983080
       type: {class: AmmoModule, ns: Purge.Core.Definitions, asm: Purge.Core}
       data:
         _ammo: {fileID: 11400000, guid: aa5d75d61099ae648b7757c7c71a6062, type: 2}
         _magazine: 20
+        _fixedMagazine: 0
         _reloadTime: 2
         _perAttack: 1
         _infiniteReserve: 0

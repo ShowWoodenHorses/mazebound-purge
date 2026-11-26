@@ -104,7 +104,6 @@ MonoBehaviour:
   - settings.aim_dead_zone
   - settings.fire_threshold
   - settings.aim_stick_size
-  - settings.weapon_slots_size
   - settings.stick_response
   - settings.controls_size
   - settings.controls_opacity
@@ -146,6 +145,7 @@ MonoBehaviour:
   - layout.element.use
   - layout.element.melee
   - layout.element.ranged
+  - layout.element.throwable
   - layout.reset
   - layout.done
   - menu.tutorial
@@ -663,7 +663,6 @@ MonoBehaviour:
   - Zona muerta del stick de apuntado
   - Umbral de disparo
   - "Tama\xF1o del stick de apuntado"
-  - "Tama\xF1o de ranuras de arma"
   - Respuesta del stick
   - "Tama\xF1o de los controles"
   - Opacidad de los controles
@@ -701,10 +700,11 @@ MonoBehaviour:
   - "Arrastra el stick y los botones. Toca uno para cambiar su tama\xF1o."
   - "{0}: tama\xF1o {1}"
   - Stick
-  - Ataque y armas
+  - Apuntar / atacar
   - Usar
-  - Cuerpo a cuerpo
-  - A distancia
+  - Primera arma
+  - Segunda arma
+  - Arrojadiza
   - RESTABLECER
   - LISTO
   - TUTORIAL

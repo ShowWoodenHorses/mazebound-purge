@@ -573,6 +573,27 @@ namespace Purge.Tests.EditMode.Combat
             Assert.That(_bullets.Active[0].LandingPoint, Is.EqualTo(preview));
         }
 
+        [TestCase("mortar", true)]
+        [TestCase("other_lob", false)]
+        public void TouchStick_ReleaseInAimZoneFiresOnlyTheMortar(string weaponId, bool shouldFire)
+        {
+            Equip(Weapon(weaponId, new ExplosiveAttack { MinimumRange = 2f, FlightTime = 1f, Range = 6f }, Ammo(1)));
+            _input.AimStickHeld = true;
+            _input.AimStick = Vector2.right * 0.3f;
+            Frame();
+            Assert.That(_combat.TryGetTouchLobAim(out var preview, out _), Is.True);
+
+            _input.AimStick = Vector2.zero;
+            Frame();
+            Assert.That(_bullets.Active, Is.Empty, "Returning to the dead zone is not a release.");
+
+            _input.AimStickHeld = false;
+            _input.AimStickReleaseCount++;
+            Frame();
+            Assert.That(_bullets.Active, Has.Count.EqualTo(shouldFire ? 1 : 0));
+            if (shouldFire) Assert.That(_bullets.Active[0].LandingPoint, Is.EqualTo(preview));
+        }
+
         [Test]
         public void Mortar_DirectAttackDoesNotReadTheMouse()
         {

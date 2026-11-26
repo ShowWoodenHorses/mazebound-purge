@@ -13,8 +13,41 @@ MonoBehaviour:
   m_Name: Glock_base
   m_EditorClassIdentifier: Purge.Core::Purge.Core.Definitions.WeaponDefinition
   _id: glock_base
+  _purchasePrice: 0
+  _upgradeBurn: {fileID: 0}
+  _upgradeFreeze: {fileID: 0}
+  _upgradeElectrify: {fileID: 0}
+  _upgradeExplosion:
+    _interval: 0.9
+    _automatic: 0
+    _speed: 14
+    _range: 10
+    _directDamage: 20
+    _explosionDamage: 60
+    _radius: 2
+    _edgeDamage: 0.3
+    _minimumRange: 0
+    _flightTime: 0
+    _explosionLook:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  _upgradeParameters: []
+  _upgradeDamage: []
+  _fork4:
+    First: 0
+    Second: 0
+  _fork8:
+    First: 0
+    Second: 0
+  _upgradeCosts: 
+  _uniqueReward: 0
+  _arsenalClass: 0
   _rarity: 0
   _noUpgrades: 0
+  _startPool: 0
   _hold: 0
   _sound: 
   _soundPitch: 1
@@ -23,6 +56,7 @@ MonoBehaviour:
   - rid: 1763807262009983065
   - rid: 1763807262009983066
   - rid: 1763807262009983188
+  - rid: 8342087686987448321
   references:
     version: 2
     RefIds:
@@ -32,7 +66,7 @@ MonoBehaviour:
         _interval: 0.28
         _automatic: 0
         _damage: 24
-        _speed: 28
+        _speed: 40
         _range: 12
         _pellets: 1
         _spread: 3
@@ -42,6 +76,7 @@ MonoBehaviour:
       data:
         _ammo: {fileID: 11400000, guid: ee423f1a7685a68489acd93156535d4e, type: 2}
         _magazine: 12
+        _fixedMagazine: 0
         _reloadTime: 1.2
         _perAttack: 1
         _infiniteReserve: 1
@@ -69,3 +104,8 @@ MonoBehaviour:
         _hitRing: 0.45
         _vibrateAttack: 0
         _vibrateKill: 10
+    - rid: 8342087686987448321
+      type: {class: MobilityModule, ns: Purge.Core.Definitions, asm: Purge.Core}
+      data:
+        _inHands: 1.15
+        _whileFiring: 1

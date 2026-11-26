@@ -85,6 +85,8 @@ namespace Purge.Gameplay.Horde
         public Vector2 Look => Shoots ? Vector2.zero : _inner.Look;
         public bool LookIsPointer => !Shoots && _inner.LookIsPointer;
         public Vector2 AimStick => Shoots ? Vector2.zero : _inner.AimStick;
+        public bool AimStickHeld => !Shoots && _inner.AimStickHeld;
+        public uint AimStickReleaseCount => Shoots ? 0 : _inner.AimStickReleaseCount;
         public bool AttackHeld => Shoots || _inner.AttackHeld;
         public bool WasPressed(PlayerAction action) => _inner.WasPressed(action);
         public bool IsHeld(PlayerAction action) => _inner.IsHeld(action);

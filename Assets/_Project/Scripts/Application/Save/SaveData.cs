@@ -340,6 +340,7 @@ namespace Purge.Application.Save
         public float AimStickDeadZone;
         public float TouchFireThreshold;
         public float AimStickSize;
+        // Legacy shared size. Migrated to the three slot placements when loading settings.
         public float WeaponSlotsSize;
 
         /// <summary>The stick appears where the thumb touches (its side of the screen) rather than staying in place.</summary>
@@ -404,8 +405,17 @@ namespace Purge.Application.Save
             result.TouchFireThreshold = PositiveSetting(TouchFireThreshold, MinTouchFireThreshold,
                 MaxTouchFireThreshold, Default.TouchFireThreshold);
             result.AimStickSize = PositiveSetting(AimStickSize, MinSize, MaxSize, 1f);
-            result.WeaponSlotsSize = PositiveSetting(WeaponSlotsSize, MinSize, MaxSize, 1f);
-            result.Layout = Layout.Clamped();
+            result.Layout = Layout;
+            var legacySlotSize = PositiveSetting(WeaponSlotsSize, MinSize, MaxSize, 1f);
+            for (var element = TouchElement.Melee; element <= TouchElement.Throwable; element++)
+            {
+                var placement = result.Layout[element];
+                if (!UnityEngine.Mathf.Approximately(legacySlotSize, 1f))
+                    placement.Scale = placement.Clamped().Scale * legacySlotSize;
+                result.Layout[element] = placement;
+            }
+            result.WeaponSlotsSize = 1f;
+            result.Layout = result.Layout.Clamped();
             return result;
         }
 
